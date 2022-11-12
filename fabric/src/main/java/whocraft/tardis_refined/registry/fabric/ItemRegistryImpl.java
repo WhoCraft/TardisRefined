@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.TardisRefined;
 
-public class TardisItemsImpl {
+public class ItemRegistryImpl {
 
     public static final CreativeModeTab TAB = FabricItemGroupBuilder.build(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID), () -> new ItemStack(Blocks.REDSTONE_WIRE));
 

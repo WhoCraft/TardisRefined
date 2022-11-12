@@ -9,14 +9,14 @@ import whocraft.tardis_refined.TardisRefined;
 
 import java.util.function.Supplier;
 
-public class TardisBlocks {
+public class BlockRegistry {
 
     public static final DeferredRegistry<Block> BLOCKS = DeferredRegistry.create(TardisRefined.MODID, Registry.BLOCK_REGISTRY);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, CreativeModeTab itemGroup, boolean registerItem) {
         RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);
         if(registerItem) {
-            TardisItems.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(itemGroup)));
+            ItemRegistry.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(itemGroup)));
         }
         return registryObject;
     }

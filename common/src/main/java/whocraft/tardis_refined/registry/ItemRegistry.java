@@ -6,7 +6,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import whocraft.tardis_refined.TardisRefined;
 
-public class TardisItems {
+public class ItemRegistry {
 
     public static CreativeModeTab MAIN_TAB = null;
 

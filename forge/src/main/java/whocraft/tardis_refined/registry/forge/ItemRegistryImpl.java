@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.TardisRefined;
 
-public class TardisItemsImpl {
+public class ItemRegistryImpl {
 
     public static CreativeModeTab TAB = new CreativeModeTab(TardisRefined.MODID) {
         @Override
