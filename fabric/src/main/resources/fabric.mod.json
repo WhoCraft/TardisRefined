@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "tardis_refined",
+  "version": "${version}",
+  "name": "TARDIS Refined",
+  "description": "",
+  "authors": [
+    "CommandrMoose",
+    "Suff99"
+  ],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "whocraft.tardis_refined.fabric.TARDISRefinedFabric"
+    ]
+  },
+  "mixins": [
+    "tardis_refined.mixins.json",
+    "tardis_refined-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "minecraft": ">=1.19.2"
+  }
+}
