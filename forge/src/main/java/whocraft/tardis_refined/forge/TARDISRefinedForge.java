@@ -1,12 +1,11 @@
 package whocraft.tardis_refined.forge;
 
-import whocraft.tardis_refined.TARDISRefined;
+import whocraft.tardis_refined.TardisRefined;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod(TARDISRefined.MOD_ID)
+@Mod(TardisRefined.MODID)
 public class TARDISRefinedForge {
     public TARDISRefinedForge() {
-        TARDISRefined.init();
+        TardisRefined.init();
     }
 }
