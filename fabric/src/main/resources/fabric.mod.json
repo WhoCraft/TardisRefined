@@ -15,6 +15,9 @@
   "entrypoints": {
     "main": [
       "whocraft.tardis_refined.fabric.TARDISRefinedFabric"
+    ],
+    "cardinal-components": [
+      "whocraft.tardis_refined.common.capability.fabric.TRComponents"
     ]
   },
   "mixins": [
@@ -24,5 +27,10 @@
   "depends": {
     "fabricloader": ">=0.14.10",
     "minecraft": ">=1.19.2"
+  },
+  "custom": {
+    "cardinal-components": [
+      "tardis_refined:tardis_data"
+    ]
   }
 }

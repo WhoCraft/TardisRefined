@@ -2,10 +2,7 @@ package whocraft.tardis_refined.common.dimension;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -14,10 +11,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.util.Unit;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.border.BorderChangeListener;
+import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
@@ -31,33 +32,31 @@ import whocraft.tardis_refined.registry.DimensionTypes;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.concurrent.Executor;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
 public class DimensionHandler {
-    // Let's get creative.
 
     public static ServerLevel getOrCreateInterior(Level interactionLevel, String id) {
 
         if (interactionLevel instanceof ServerLevel serverLevel) {
-            ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, id));
-            Map<ResourceKey<Level>, ServerLevel> levelMap = serverLevel.getServer().levels;
-            @Nullable ServerLevel existingLevel = levelMap.get(levelResourceKey);
-
-            return existingLevel == null ? createDimension(interactionLevel, levelResourceKey) : existingLevel;
+           ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, id));
+           Map<ResourceKey<Level>, ServerLevel> levelMap = serverLevel.getServer().levels;
+           @Nullable ServerLevel existingLevel = levelMap.get(levelResourceKey);
+           return existingLevel == null ? createDimension(interactionLevel, levelResourceKey) : existingLevel;
         }
 
         return null;
+
     }
 
-    private static ServerLevel createDimension(Level interactionLevel, ResourceKey<Level> id) {
+    private static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
 
-        MinecraftServer server = interactionLevel.getServer();
+        MinecraftServer server = level.getServer();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
-        ResourceKey<Level> levelResourceKey = id;
-        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, levelResourceKey.location());
+        ResourceKey<Level> levelKey = id;
+        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, levelKey.location());
 
         LevelStem dimension = dimensionFactory.apply(server, dimensionKey);
 
@@ -75,13 +74,14 @@ public class DimensionHandler {
             throw new IllegalStateException("Unable to register dimension '" + dimensionKey.location() + "'! Registry not writable!");
         }
 
+
         // now we have everything we need to create the world instance
         ServerLevel newLevel = new ServerLevel(
                 server,
                 executor,
                 levelSave,
                 derivedWorldInfo,
-                levelResourceKey,
+                levelKey,
                 dimension,
                 chunkListener,
                 false, // boolean: is-debug-world
@@ -94,15 +94,17 @@ public class DimensionHandler {
 
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
 
-        overrideLevelMapping(server, levelResourceKey, newLevel);
+        overrideLevelMapping(server, levelKey, newLevel);
 
-        BlockPos blockpos = interactionLevel.getSharedSpawnPos();
+        BlockPos blockpos = level.getSharedSpawnPos();
         chunkListener.updateSpawnPos(new ChunkPos(blockpos));
-        ServerChunkCache serverchunkcache = (ServerChunkCache) interactionLevel.getChunkSource();
+        ServerChunkCache serverchunkcache = (ServerChunkCache) level.getChunkSource();
         serverchunkcache.getLightEngine().setTaskPerBatch(500);
         serverchunkcache.addRegionTicket(TicketType.START, new ChunkPos(blockpos), 11, Unit.INSTANCE);
 
-        new SyncLevelListMessage(newLevel.dimension(), true).sendToAll((ServerLevel) interactionLevel);
+        new SyncLevelListMessage(newLevel.dimension(), true).sendToAll((ServerLevel) level);
+
+        newLevel.tick(() -> true);
 
         return newLevel;
     }

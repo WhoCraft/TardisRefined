@@ -1,0 +1,77 @@
+package whocraft.tardis_refined.common.capability.forge;
+
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.registry.DimensionTypes;
+
+@Mod.EventBusSubscriber(modid = TardisRefined.MODID)
+public class TardisLevelOperatorImpl implements ICapabilitySerializable<CompoundTag> {
+
+    public static Capability<TardisLevelOperator> TARDIS_DATA = CapabilityManager.get(new CapabilityToken<>() {
+    });
+
+    @SubscribeEvent
+    public static void init(RegisterCapabilitiesEvent event) {
+        event.register(TardisLevelOperator.class);
+    }
+
+    @SubscribeEvent
+    public static void onLevelCapabilities(AttachCapabilitiesEvent<Level> event) {
+        if (event.getObject() instanceof ServerLevel level) {
+        if (level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+            System.out.println("Applying TARDIS Capability to: " + event.getObject().dimension().location());
+            event.addCapability(new ResourceLocation(TardisRefined.MODID, "tardis_data"), new TardisLevelOperatorImpl(level));
+
+            event.getObject().getCapability(TardisLevelOperatorImpl.TARDIS_DATA).ifPresent(x -> x.tick(event.getObject()));
+
+        }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.level instanceof ServerLevel level) {
+            if (event.level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+                event.level.getCapability(TardisLevelOperatorImpl.TARDIS_DATA).ifPresent(x -> x.tick(level));
+            }
+        }
+    }
+
+    public final TardisLevelOperator operator;
+    public final LazyOptional<TardisLevelOperator> lazyOptional;
+
+    public TardisLevelOperatorImpl(ServerLevel level) {
+        this.operator = new TardisLevelOperator(level);
+        this.lazyOptional = LazyOptional.of(() -> this.operator);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
+        return capability == TARDIS_DATA ? this.lazyOptional.cast() : LazyOptional.empty();
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        return this.operator.serializeNBT();
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag arg) {
+        this.operator.deserializeNBT(arg);
+    }
+
+}

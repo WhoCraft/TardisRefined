@@ -15,8 +15,8 @@ public class TardisRefined {
         BlockRegistry.BLOCKS.register();
         ItemRegistry.ITEMS.register();
         BlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
-        ChunkGenerators.CHUNK_GENERATORS.register();
         DimensionTypes.register();
+        ChunkGenerators.CHUNK_GENERATORS.register();
         TardisNetwork.init();
     }
 }
