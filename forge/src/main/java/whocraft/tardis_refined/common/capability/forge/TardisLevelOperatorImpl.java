@@ -20,6 +20,8 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
+import java.util.Optional;
+
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID)
 public class TardisLevelOperatorImpl implements ICapabilitySerializable<CompoundTag> {
 
@@ -73,6 +75,10 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     @Override
     public void deserializeNBT(CompoundTag arg) {
         this.operator.deserializeNBT(arg);
+    }
+
+    public static Optional<TardisLevelOperator> get(ServerLevel level) {
+        return level.getCapability(TARDIS_DATA).resolve();
     }
 
 }

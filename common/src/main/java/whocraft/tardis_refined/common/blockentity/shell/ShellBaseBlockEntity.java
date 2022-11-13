@@ -3,12 +3,14 @@ package whocraft.tardis_refined.common.blockentity.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
@@ -52,7 +54,14 @@ public class ShellBaseBlockEntity extends BlockEntity {
         // Fun times happen here.
         if (!level.isClientSide()) {
             // Load the dimension stuff here:
-            DimensionHandler.getOrCreateInterior(level, this.id);
+
+            // Let's do some quick stuff.
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.id);
+
+            TardisLevelOperator.get(interior).ifPresent(cap -> {
+                 cap.enterTardis(player);
+            });
+
         }
     }
 

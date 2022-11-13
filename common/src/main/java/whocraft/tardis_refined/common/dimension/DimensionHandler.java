@@ -10,15 +10,11 @@ import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.progress.ChunkProgressListener;
-import net.minecraft.util.Unit;
-import net.minecraft.world.Difficulty;
+import net.minecraft.util.Unit;;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.border.BorderChangeListener;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
@@ -34,6 +30,11 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
+/*
+* Majority of this code is sourced from Commoble's Hyberbox with permission.
+* You can view their project here: https://github.com/Commoble/hyperbox
+* */
+
 public class DimensionHandler {
 
     public static ServerLevel getOrCreateInterior(Level interactionLevel, String id) {
@@ -42,7 +43,13 @@ public class DimensionHandler {
            ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, id));
            Map<ResourceKey<Level>, ServerLevel> levelMap = serverLevel.getServer().levels;
            @Nullable ServerLevel existingLevel = levelMap.get(levelResourceKey);
-           return existingLevel == null ? createDimension(interactionLevel, levelResourceKey) : existingLevel;
+
+           if (existingLevel != null) {
+               return existingLevel;
+           }
+
+           ServerLevel newLevel = createDimension(interactionLevel, levelResourceKey);
+           return newLevel;
         }
 
         return null;
