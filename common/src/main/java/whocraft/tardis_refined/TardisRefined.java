@@ -2,6 +2,7 @@ package whocraft.tardis_refined;
 
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
+import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.DimensionTypes;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
@@ -13,6 +14,7 @@ public class TardisRefined {
     public static void init() {
         BlockRegistry.BLOCKS.register();
         ItemRegistry.ITEMS.register();
+        BlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         DimensionTypes.register();
         TardisNetwork.init();
