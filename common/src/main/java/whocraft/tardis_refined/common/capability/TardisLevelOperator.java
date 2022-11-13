@@ -9,10 +9,10 @@ import java.util.Optional;
 
 public class TardisLevelOperator {
 
-    //private ServerLevel level;
+    private ServerLevel level;
 
     public TardisLevelOperator(ServerLevel level) {
-        //this.level = level;
+        this.level = level;
     }
 
     @ExpectPlatform

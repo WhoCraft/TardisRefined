@@ -5,11 +5,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -32,15 +34,14 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     @SubscribeEvent
     public static void onLevelCapabilities(AttachCapabilitiesEvent<Level> event) {
         if (event.getObject() instanceof ServerLevel level) {
-        if (level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
-            System.out.println("Applying TARDIS Capability to: " + event.getObject().dimension().location());
-            event.addCapability(new ResourceLocation(TardisRefined.MODID, "tardis_data"), new TardisLevelOperatorImpl(level));
+            if (level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+                System.out.println("Applying TARDIS Capability to: " + event.getObject().dimension().location());
 
-            event.getObject().getCapability(TardisLevelOperatorImpl.TARDIS_DATA).ifPresent(x -> x.tick(event.getObject()));
-
-        }
+                event.addCapability(new ResourceLocation(TardisRefined.MODID, "tardis_data"), new TardisLevelOperatorImpl((ServerLevel) event.getObject()));
+            }
         }
     }
+
 
     @SubscribeEvent
     public static void onLevelTick(TickEvent.LevelTickEvent event) {
