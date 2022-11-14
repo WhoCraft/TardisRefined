@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.desktop.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 
@@ -20,6 +21,7 @@ public class BlockRegistry {
 
     // Shell Blocks
     public static final RegistrySupplier<ShellBaseBlock> SHELL_BASE_BLOCK = register("shell_base_block", () -> new RootedShellBlock( BlockBehaviour.Properties.of(Material.STONE)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<InternalDoorBlock> INTERNAL_DOOR_BLOCK = register("internal_door_block", () -> new InternalDoorBlock( BlockBehaviour.Properties.of(Material.STONE)), ItemRegistry.MAIN_TAB, true);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, CreativeModeTab itemGroup, boolean registerItem) {
         RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);

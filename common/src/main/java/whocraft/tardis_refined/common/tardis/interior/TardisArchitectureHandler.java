@@ -4,7 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.Optional;
 
@@ -19,6 +22,20 @@ public class TardisArchitectureHandler {
             BlockPos offsetPosition = calculateArcOffset(theme, consolePosition);
             structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
         });
+    }
+
+    public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme) {
+        generateDesktop(operator.getLevel(), theme);
+    }
+
+    // TODO: Logic works in only one scenario. Got to change that.
+    // Ideally the door will already be set up and ready to go.
+    public static void createDesktopDoor(TardisLevelOperator operator, BlockPos position) {
+        operator.getLevel().setBlockAndUpdate(position, BlockRegistry.INTERNAL_DOOR_BLOCK.get().defaultBlockState());
+        ITardisInternalDoor internalDoor = (ITardisInternalDoor) operator.getLevel().getBlockEntity(position);
+        if (internalDoor != null) {
+            operator.setInternalDoor(internalDoor);
+        }
     }
 
     public static BlockPos calculateArcOffset(DesktopTheme theme, BlockPos centerPos) {

@@ -59,7 +59,7 @@ public class ShellBaseBlockEntity extends BlockEntity {
             ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.id);
 
             TardisLevelOperator.get(interior).ifPresent(cap -> {
-                 cap.enterTardis(player);
+                 cap.enterTardis(player, blockPos, level);
             });
 
         }
