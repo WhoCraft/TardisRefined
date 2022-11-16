@@ -2,44 +2,64 @@ package whocraft.tardis_refined.common.tardis.interior;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
+import java.util.Iterator;
 import java.util.Optional;
 
 // Responsible for all the tedious generation of the desktop;
 public class TardisArchitectureHandler {
 
+    public static final BlockPos DESKTOP_CENTER_POS = new BlockPos(0, 100, 0);
+
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
-        System.out.println(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.name));
+        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.name));
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.resourceLocation);
         structureNBT.ifPresent(structure -> {
-            BlockPos consolePosition = new BlockPos(0, 100, 0);
-            BlockPos offsetPosition = calculateArcOffset(theme, consolePosition);
+            BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
             structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
+
+            // Assign the door from the created structure.
+            assignInteriorDoorFromGeneration(structure, operator);
+
         });
+    }
+
+    public static void assignInteriorDoorFromGeneration(StructureTemplate template, ServerLevel level) {
+
+        BlockPos minPos = calculateArcOffset(template, DESKTOP_CENTER_POS);
+        BlockPos maxPos = new BlockPos(minPos.getX() + template.getSize().getX(),
+                minPos.getY() + template.getSize().getY(),
+                minPos.getZ() + template.getSize().getZ()
+                );
+        
+        for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(minPos, maxPos).iterator(); iterator.hasNext();) {
+            BlockPos pos = iterator.next();
+
+            if (level.getBlockEntity(pos) instanceof ITardisInternalDoor internalDoor) {
+                TardisLevelOperator.get(level).ifPresent(cap -> {
+                    cap.setInternalDoor(internalDoor);
+                });
+
+                return;
+            }
+        }
     }
 
     public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme) {
         generateDesktop(operator.getLevel(), theme);
     }
 
-    // TODO: Logic works in only one scenario. Got to change that.
-    // Ideally the door will already be set up and ready to go.
-    public static void createDesktopDoor(TardisLevelOperator operator, BlockPos position) {
-        operator.getLevel().setBlockAndUpdate(position, BlockRegistry.INTERNAL_DOOR_BLOCK.get().defaultBlockState());
-        ITardisInternalDoor internalDoor = (ITardisInternalDoor) operator.getLevel().getBlockEntity(position);
-        if (internalDoor != null) {
-            operator.setInternalDoor(internalDoor);
-        }
-    }
-
-    public static BlockPos calculateArcOffset(DesktopTheme theme, BlockPos centerPos) {
-        return new BlockPos(centerPos.getX() - theme.offset.getX(), centerPos.getY() - theme.offset.getY(),centerPos.getZ() - theme.offset.getZ());
+    public static BlockPos calculateArcOffset(StructureTemplate structureTemplate, BlockPos centerPos) {
+        return new BlockPos(centerPos.getX() - structureTemplate.getSize().getX() / 2, centerPos.getY() - structureTemplate.getSize().getY()  / 2,centerPos.getZ() - structureTemplate.getSize().getZ()  / 2);
     }
     
 }

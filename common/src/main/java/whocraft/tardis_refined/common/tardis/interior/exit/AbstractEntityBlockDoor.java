@@ -1,13 +1,19 @@
 package whocraft.tardis_refined.common.tardis.interior.exit;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.common.block.desktop.InternalDoorBlock;
+import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
 import java.util.Optional;
@@ -63,12 +69,25 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
 
     @Override
     public BlockPos getEntryPosition() {
-        return this.getBlockPos().above();
+
+        int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
+        switch (direction) {
+            case 3:
+                return new BlockPos(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ() );
+            case 2:
+                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() +1);
+            case 1:
+                return new BlockPos(getBlockPos().getX()+1, getBlockPos().getY(), getBlockPos().getZ());
+            case 0:
+                return new BlockPos(getBlockPos().getX() , getBlockPos().getY(), getBlockPos().getZ()-1);
+        }
+
+        return getBlockPos().above();
     }
 
     @Override
-    public Rotation getEntryRotation() {
-        return Rotation.NONE;
+    public Direction getEntryRotation() {
+        return getBlockState().getValue(InternalDoorBlock.FACING).getOpposite();
     }
 
     @Override
@@ -81,9 +100,11 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     }
 
     public void onBlockPlaced() {
-        Optional<TardisLevelOperator> lvlOper = TardisLevelOperator.get((ServerLevel) this.getLevel());
-        if (lvlOper.isPresent()) {
-            this.operator = lvlOper.get();
+        if (!getLevel().isClientSide()) {
+            Optional<TardisLevelOperator> lvlOper = TardisLevelOperator.get((ServerLevel) this.getLevel());
+            if (lvlOper.isPresent()) {
+                this.operator = lvlOper.get();
+            }
         }
     }
 
@@ -93,23 +114,18 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
 
-        compoundTag.putBoolean(NBT_IsMainDoor, this.isMainDoor);
-        compoundTag.putBoolean(NBT_IsOpen, this.isOpen);
-        compoundTag.putString(NBT_ID, this.uuid_id);
+        compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
+        compoundTag.putBoolean(NbtConstants.DOOR_IS_OPEN, this.isOpen);
+        compoundTag.putString(NbtConstants.DOOR_ID, this.uuid_id);
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
         super.load(compoundTag);
 
-        this.isMainDoor = compoundTag.getBoolean(NBT_IsMainDoor);
-        this.uuid_id = compoundTag.getString(NBT_ID);
-        this.isOpen = compoundTag.getBoolean(NBT_IsOpen);
+        this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
+        this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
+        this.isOpen = compoundTag.getBoolean(NbtConstants.DOOR_IS_OPEN);
     }
-
-    private static String NBT_IsMainDoor = "is_main_door";
-    private static String NBT_ID = "uuid_id";
-    private static String NBT_IsOpen = "is_open";
-
 
 }

@@ -21,7 +21,7 @@ public class BlockRegistry {
 
     // Shell Blocks
     public static final RegistrySupplier<ShellBaseBlock> SHELL_BASE_BLOCK = register("shell_base_block", () -> new RootedShellBlock( BlockBehaviour.Properties.of(Material.STONE)), ItemRegistry.MAIN_TAB, true);
-    public static final RegistrySupplier<InternalDoorBlock> INTERNAL_DOOR_BLOCK = register("internal_door_block", () -> new InternalDoorBlock( BlockBehaviour.Properties.of(Material.STONE)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<InternalDoorBlock> INTERNAL_DOOR_BLOCK = register("internal_door_block", () -> new InternalDoorBlock( BlockBehaviour.Properties.of(Material.STONE).noOcclusion()), ItemRegistry.MAIN_TAB, true);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, CreativeModeTab itemGroup, boolean registerItem) {
         RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);

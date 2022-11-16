@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.common.tardis.data;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -12,7 +14,7 @@ import net.minecraft.world.level.block.Rotation;
  * **/
 public class TardisNavLocation {
     public BlockPos position;
-    public int rotation;
+    public Direction rotation;
     public ServerLevel level;
 
     /**
@@ -20,7 +22,7 @@ public class TardisNavLocation {
      * @param rotation Rotation/Facing direction.
      * @param level ResourceKey of the desired level.
      * **/
-    public TardisNavLocation(BlockPos position, int rotation, ServerLevel level) {
+    public TardisNavLocation(BlockPos position, Direction rotation, ServerLevel level) {
         this.position = position;
         this.rotation = rotation;
         this.level = level;

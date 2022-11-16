@@ -2,19 +2,21 @@ package whocraft.tardis_refined.common.capability;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.tardis.data.TardisExternalReadingsData;
 import whocraft.tardis_refined.common.tardis.data.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.interior.TardisArchitecture;
 import whocraft.tardis_refined.common.tardis.interior.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
-import whocraft.tardis_refined.common.util.NbtUtil;
+import whocraft.tardis_refined.common.tardis.interior.shell.IExteriorShell;
 
 import java.util.Optional;
 
@@ -38,10 +40,10 @@ public class TardisLevelOperator {
 
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.putBoolean(NBT_IS_SETUP, this.setUp);
+        compoundTag.putBoolean(NbtConstants.TARDIS_IS_SETUP, this.setUp);
         if (this.internalDoor != null) {
-            compoundTag.putString(NBT_INTERNAL_DOOR_ID, this.internalDoor.getID());
-            compoundTag.putIntArray(NBT_INTERNAL_DOOR_POSITION, NbtUtil.getIntArrayFromBlockPos(this.internalDoor.getDoorPosition()));
+            compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
+            compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION, NbtUtils.writeBlockPos(this.internalDoor.getDoorPosition()));
         }
 
         compoundTag = this.externalReadingsData.saveData(compoundTag);
@@ -50,14 +52,19 @@ public class TardisLevelOperator {
     }
 
     public void deserializeNBT(CompoundTag tag) {
-        this.setUp = tag.getBoolean(NBT_IS_SETUP);
-        int[] doorPos = tag.getIntArray(NBT_INTERNAL_DOOR_POSITION);
+        this.setUp = tag.getBoolean(NbtConstants.TARDIS_IS_SETUP);
+        CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
         if (doorPos != null) {
-            this.internalDoor = (ITardisInternalDoor) level.getBlockEntity(NbtUtil.getBlockPosFromIntArray(doorPos));
+            if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof ITardisInternalDoor door) {
+                this.internalDoor = door;
+            }
         }
 
         // Datareadings
-        this.externalReadingsData.loadData(tag);
+        if (!level.isClientSide()) {
+            this.externalReadingsData.loadData(tag);
+        }
+
     }
 
     public ServerLevel getLevel() {
@@ -72,39 +79,47 @@ public class TardisLevelOperator {
      * Moves the entity into the TARDIS. If the TARDIS has no door established, the player is sent to 0,0,0.
      * @param player Player Entity.
      * **/
-    public void enterTardis(Player player, BlockPos externalPos, Level level) {
+    public void enterTardis(Player player, BlockPos externalPos, Level level, Direction direction) {
         if (!setUp) {
             TardisArchitectureHandler.generateDesktop(getLevel(), TardisArchitecture.FACTORY_THEME);
-            TardisArchitectureHandler.createDesktopDoor(this, new BlockPos(2,99,0));
-            this.externalReadingsData.setLastKnownLocation(new TardisNavLocation(externalPos, 0, (ServerLevel) level));
+            this.externalReadingsData.setLastKnownLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
             this.setUp = true;
         }
 
-        ServerPlayer serverPlayer = (ServerPlayer) player;
-        if (internalDoor != null) {
-            BlockPos targetPosition = internalDoor.getEntryPosition();
-            ChunkAccess preloadedArea = getLevel().getChunk(targetPosition);
-            serverPlayer.teleportTo(getLevel(), targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), 0,0);
-        } else {
-            ChunkAccess preloadedArea = getLevel().getChunk(new BlockPos(0,0,0));
-            serverPlayer.teleportTo(getLevel(), 0, 101, 0, 0, 0);
+        if (player instanceof ServerPlayer serverPlayer) {
+            if (internalDoor != null) {
+                BlockPos targetPosition = internalDoor.getEntryPosition();
+                Direction dir = internalDoor.getEntryRotation();
+                ChunkAccess preloadedArea = getLevel().getChunk(targetPosition);
+                System.out.println(dir.get2DDataValue());
+                serverPlayer.teleportTo(getLevel(), targetPosition.getX() + 0.5f, targetPosition.getY() + 0.5f, targetPosition.getZ() + 0.5f, (360 / 4) * dir.get2DDataValue(),0);
+            } else {
+
+                // TODO: Scan for console units near the center to warp to.
+                ChunkAccess preloadedArea = getLevel().getChunk(TardisArchitectureHandler.DESKTOP_CENTER_POS);
+                serverPlayer.teleportTo(getLevel(), TardisArchitectureHandler.DESKTOP_CENTER_POS.getX(), TardisArchitectureHandler.DESKTOP_CENTER_POS.getY() + 1, TardisArchitectureHandler.DESKTOP_CENTER_POS.getZ(), 0, 0);
+            }
         }
     }
 
     public void exitTardis(Player player) {
+        if (!getLevel().isClientSide())
+        {
+            if (this.externalReadingsData != null) {
+                if (this.externalReadingsData.getLastKnownLocation() != null) {
+                    BlockPos targetPosition =  this.externalReadingsData.getLastKnownLocation().position;
+                    ServerLevel targetLevel = this.externalReadingsData.getLastKnownLocation().level;
 
-        System.out.println("Exiting for the player.");
+                    ChunkAccess preloadedArea = this.externalReadingsData.getLastKnownLocation().level.getChunk(targetPosition);
 
-        if (this.externalReadingsData != null) {
-            if (this.externalReadingsData.getLastKnownLocation() != null) {
-                BlockPos targetPosition =  this.externalReadingsData.getLastKnownLocation().position;
-                ServerLevel targetLevel = this.externalReadingsData.getLastKnownLocation().level;
-
-                ChunkAccess preloadedArea = this.externalReadingsData.getLastKnownLocation().level.getChunk(targetPosition);
-                ServerPlayer serverPlayer = (ServerPlayer) player;
-                serverPlayer.teleportTo(targetLevel, targetPosition.getX(), targetPosition.getY() + 1, targetPosition.getZ(), 0,0);
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        if (targetLevel.getBlockEntity(targetPosition) instanceof IExteriorShell shellBaseBlockEntity) {
+                            BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
+                            serverPlayer.teleportTo(targetLevel, landingArea.getX() + 0.5, landingArea.getY(), landingArea.getZ() + 0.5, this.externalReadingsData.getLastKnownLocation().rotation.get2DDataValue() * (360/4),0);
+                        }
+                    }
+                }
             }
-
         }
     }
 
@@ -128,9 +143,5 @@ public class TardisLevelOperator {
     public ITardisInternalDoor getInternalDoor() {
         return this.internalDoor;
     }
-
-    private static final String NBT_IS_SETUP = "has_setup";
-    private static final String NBT_INTERNAL_DOOR_ID = "internal_door_id";
-    private static final String NBT_INTERNAL_DOOR_POSITION = "internal_door_pos";
 
 }
