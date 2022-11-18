@@ -14,10 +14,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "whocraft.tardis_refined.fabric.TARDISRefinedFabric"
+      "whocraft.tardis_refined.fabric.TardisRefinedFabric"
     ],
     "cardinal-components": [
       "whocraft.tardis_refined.common.capability.fabric.TRComponents"
+    ],
+    "client": [
+      "whocraft.tardis_refined.fabric.TardisRefinedFabricClient"
     ]
   },
   "mixins": [

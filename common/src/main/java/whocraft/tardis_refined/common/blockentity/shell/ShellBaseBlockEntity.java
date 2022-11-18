@@ -4,36 +4,39 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
+import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.tardis.interior.TardisArchitecture;
+import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.interior.shell.IExteriorShell;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 import java.util.UUID;
 
-public class ShellBaseBlockEntity extends BlockEntity {
+public class ShellBaseBlockEntity extends BlockEntity implements IExteriorShell {
 
     public ShellBaseBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.TARDIS_SHELL.get(), blockPos, blockState);
+        super(BlockEntityRegistry.ROOT_SHELL.get(), blockPos, blockState);
     }
 
-    private String id = null;
+    private UUID id = null;
 
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        this.id = pTag.getString(NBT_ID);
+        this.id = UUID.fromString(pTag.getString(NbtConstants.TARDIS_ID));
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
-        pTag.putString(NBT_ID, id);
+        pTag.putString(NbtConstants.TARDIS_ID, id.toString());
     }
 
     @Override
@@ -46,25 +49,38 @@ public class ShellBaseBlockEntity extends BlockEntity {
             return;
         }
         // We need some information on our first creation of this block.
-        this.id = UUID.randomUUID().toString();
-        System.out.println("Recorded UUID " + this.id + " to a new shell block.");
+        this.id = UUID.randomUUID();
     }
 
-    public void onRightClick(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        // Fun times happen here.
-        if (!level.isClientSide()) {
-            // Load the dimension stuff here:
-
-            // Let's do some quick stuff.
-            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.id);
-
+    public void onAttemptEnter(BlockState blockState, Level level, BlockPos blockPos, Player player) {
+        if (level instanceof ServerLevel serverLevel) {
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.id.toString());
             TardisLevelOperator.get(interior).ifPresent(cap -> {
-                 cap.enterTardis(player);
+                cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
             });
-
         }
+
     }
 
-    public static final String NBT_ID = "tardis_id";
+    @Override
+    public BlockPos getExitPosition() {
+        int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
+        switch (direction) {
+            case 3:
+                return new BlockPos(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ() );
+            case 2:
+                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() +1);
+            case 1:
+                return new BlockPos(getBlockPos().getX()+1, getBlockPos().getY(), getBlockPos().getZ());
+            case 0:
+                return new BlockPos(getBlockPos().getX() , getBlockPos().getY(), getBlockPos().getZ()-1);
+        }
 
+        return getBlockPos().above();
+    }
+
+    @Override
+    public DesktopTheme getAssociatedTheme() {
+        return TardisArchitecture.FACTORY_THEME;
+    }
 }
