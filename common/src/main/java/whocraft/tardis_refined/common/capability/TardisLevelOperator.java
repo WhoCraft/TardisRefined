@@ -9,11 +9,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.data.TardisExternalReadingsData;
 import whocraft.tardis_refined.common.tardis.data.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.interior.TardisArchitecture;
 import whocraft.tardis_refined.common.tardis.interior.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
 import whocraft.tardis_refined.common.tardis.interior.shell.IExteriorShell;
@@ -79,44 +81,53 @@ public class TardisLevelOperator {
      * Moves the entity into the TARDIS. If the TARDIS has no door established, the player is sent to 0,0,0.
      * @param player Player Entity.
      * **/
-    public void enterTardis(Player player, BlockPos externalPos, Level level, Direction direction) {
+    public void enterTardis(IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
+
         if (!setUp) {
-            TardisArchitectureHandler.generateDesktop(getLevel(), TardisArchitecture.FACTORY_THEME);
+            TardisArchitectureHandler.generateDesktop(getLevel(), shell.getAssociatedTheme());
             this.externalReadingsData.setLastKnownLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
             this.setUp = true;
+            return;
         }
 
         if (player instanceof ServerPlayer serverPlayer) {
             if (internalDoor != null) {
                 BlockPos targetPosition = internalDoor.getEntryPosition();
                 Direction dir = internalDoor.getEntryRotation();
-                ChunkAccess preloadedArea = getLevel().getChunk(targetPosition);
-                System.out.println(dir.get2DDataValue());
-                serverPlayer.teleportTo(getLevel(), targetPosition.getX() + 0.5f, targetPosition.getY() + 0.5f, targetPosition.getZ() + 0.5f, (360 / 4) * dir.get2DDataValue(),0);
+
+                ChunkAccess chunk = getLevel().getChunk(internalDoor.getDoorPosition());
+                getLevel().setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
+                getLevel().getChunkSource().updateChunkForced(chunk.getPos(), true);
+
+                DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360/4));
             } else {
 
                 // TODO: Scan for console units near the center to warp to.
-                ChunkAccess preloadedArea = getLevel().getChunk(TardisArchitectureHandler.DESKTOP_CENTER_POS);
-                serverPlayer.teleportTo(getLevel(), TardisArchitectureHandler.DESKTOP_CENTER_POS.getX(), TardisArchitectureHandler.DESKTOP_CENTER_POS.getY() + 1, TardisArchitectureHandler.DESKTOP_CENTER_POS.getZ(), 0, 0);
+
+                ChunkAccess chunk = getLevel().getChunk(TardisArchitectureHandler.DESKTOP_CENTER_POS);
+                getLevel().setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
+                getLevel().getChunkSource().updateChunkForced(chunk.getPos(), true);
+                DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }
+
+
+
+
     }
 
     public void exitTardis(Player player) {
-        if (!getLevel().isClientSide())
-        {
-            if (this.externalReadingsData != null) {
-                if (this.externalReadingsData.getLastKnownLocation() != null) {
-                    BlockPos targetPosition =  this.externalReadingsData.getLastKnownLocation().position;
-                    ServerLevel targetLevel = this.externalReadingsData.getLastKnownLocation().level;
+        if (this.externalReadingsData != null) {
+            if (this.externalReadingsData.getLastKnownLocation() != null) {
+                BlockPos targetPosition =  this.externalReadingsData.getLastKnownLocation().position;
+                ServerLevel targetLevel = this.externalReadingsData.getLastKnownLocation().level;
 
-                    ChunkAccess preloadedArea = this.externalReadingsData.getLastKnownLocation().level.getChunk(targetPosition);
+                ChunkAccess preloadedArea = this.externalReadingsData.getLastKnownLocation().level.getChunk(targetPosition);
 
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        if (targetLevel.getBlockEntity(targetPosition) instanceof IExteriorShell shellBaseBlockEntity) {
-                            BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
-                            serverPlayer.teleportTo(targetLevel, landingArea.getX() + 0.5, landingArea.getY(), landingArea.getZ() + 0.5, this.externalReadingsData.getLastKnownLocation().rotation.get2DDataValue() * (360/4),0);
-                        }
+                if (player instanceof ServerPlayer serverPlayer) {
+                    if (targetLevel.getBlockEntity(targetPosition) instanceof IExteriorShell shellBaseBlockEntity) {
+                        BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
+                        DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.externalReadingsData.getLastKnownLocation().rotation.get2DDataValue() * (360/4));
                     }
                 }
             }
