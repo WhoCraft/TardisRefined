@@ -1,7 +1,9 @@
-package whocraft.tardis_refined.common.tardis.interior.shell;
+package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
-import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+
+import java.util.UUID;
 
 public interface IExteriorShell {
 

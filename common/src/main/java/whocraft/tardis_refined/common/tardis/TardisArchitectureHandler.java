@@ -1,16 +1,14 @@
-package whocraft.tardis_refined.common.tardis.interior;
+package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
-import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.Iterator;
 import java.util.Optional;
@@ -22,6 +20,18 @@ public class TardisArchitectureHandler {
 
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
         TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.name));
+
+        // Fill the area out.
+        BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - 100, DESKTOP_CENTER_POS.getY() - 100, DESKTOP_CENTER_POS.getZ() - 100);
+        BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + 100, DESKTOP_CENTER_POS.getY() + 100, DESKTOP_CENTER_POS.getZ() + 100);
+
+        for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
+            BlockPos pos = iterator.next();
+
+            operator.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+        }
+
+
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.resourceLocation);
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);

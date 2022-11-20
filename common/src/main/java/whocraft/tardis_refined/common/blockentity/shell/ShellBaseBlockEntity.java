@@ -2,30 +2,32 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.tardis.interior.TardisArchitecture;
-import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.interior.shell.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 import java.util.UUID;
 
-public class ShellBaseBlockEntity extends BlockEntity implements IExteriorShell {
+public abstract class ShellBaseBlockEntity extends BlockEntity implements IExteriorShell {
 
-    public ShellBaseBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.ROOT_SHELL.get(), blockPos, blockState);
+    public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
     }
 
-    private UUID id = null;
+    public UUID id = null;
 
     @Override
     public void load(CompoundTag pTag) {
@@ -56,7 +58,17 @@ public class ShellBaseBlockEntity extends BlockEntity implements IExteriorShell 
         if (level instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.id.toString());
             TardisLevelOperator.get(interior).ifPresent(cap -> {
-                cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
+
+                if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
+                    cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
+                } else {
+
+                    if (!cap.isTardisReady()) {
+                        // TODO: Create lang file for this message!!!!!!
+                        player.displayClientMessage(Component.translatable("You must wait " + cap.getInteriorManager().getInteriorGenerationCooldown() + " seconds"), true);
+                        return;
+                    }
+                }
             });
         }
 
@@ -81,6 +93,6 @@ public class ShellBaseBlockEntity extends BlockEntity implements IExteriorShell 
 
     @Override
     public DesktopTheme getAssociatedTheme() {
-        return TardisArchitecture.FACTORY_THEME;
+        return TardisDesktops.FACTORY_THEME;
     }
 }

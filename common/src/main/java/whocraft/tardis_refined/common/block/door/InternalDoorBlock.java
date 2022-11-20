@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.block.desktop;
+package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
@@ -23,10 +24,12 @@ import whocraft.tardis_refined.common.tardis.interior.exit.AbstractEntityBlockDo
 public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty OPEN = BooleanProperty.create("open");
+
 
     public InternalDoorBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false));
     }
 
     @Override
@@ -35,8 +38,6 @@ public class InternalDoorBlock extends BaseEntityBlock {
         if (level.getBlockEntity(blockPos) instanceof AbstractEntityBlockDoor door) {
             door.onBlockPlaced();
         }
-
-
     }
 
     @Override
@@ -59,12 +60,13 @@ public class InternalDoorBlock extends BaseEntityBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FACING);
+        builder.add(OPEN);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection());
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false);
     }
 
     @Override
@@ -77,5 +79,6 @@ public class InternalDoorBlock extends BaseEntityBlock {
     public <T extends BlockEntity> GameEventListener getListener(ServerLevel pLevel, T pBlockEntity) {
         return super.getListener(pLevel, pBlockEntity);
     }
+
 
 }

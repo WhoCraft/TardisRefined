@@ -14,6 +14,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.rootplant.RootShellModel;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
+import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 
@@ -22,6 +23,7 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
     private static RootShellModel rootShellModel;
 
     private static ResourceLocation rootShellTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root_shell.png");
+    private static ResourceLocation rootShellClosed = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root_shell_closed.png");
 
     public RootShellRenderer(BlockEntityRendererProvider.Context context) {
         rootShellModel = new RootShellModel(context.bakeLayer((ModelRegistry.ROOT_SHELL)));
@@ -36,8 +38,20 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
         float rotation = ((Direction)blockstate.getValue(RootedShellBlock.FACING)).toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
 
-        rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(rootShellTexture)),
+        boolean isOpen = blockEntity.getBlockState().getValue(ShellBaseBlock.OPEN);
+
+        rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent( (isOpen) ? rootShellTexture : rootShellClosed)),
                 i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+        float sine = 0;
+        if (blockstate.getValue(ShellBaseBlock.REGEN)) {
+            sine = (float) ((Math.sin(0.1 * (blockEntity.getLevel().dayTime())) * 1));
+            if (sine < 0) {sine =0;}
+
+            rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(rootShellClosed)),
+                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+        }
+
 
         poseStack.popPose();
     }

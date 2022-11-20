@@ -5,14 +5,15 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import whocraft.tardis_refined.NbtConstants;
-import whocraft.tardis_refined.common.block.desktop.InternalDoorBlock;
+import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
+import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
@@ -54,12 +55,14 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
 
     @Override
     public boolean isOpen() {
-        return isOpen;
+        return getBlockState().getValue(GlobalDoorBlock.OPEN);
     }
 
     @Override
-    public void setOpen(boolean state) {
-        isOpen = state;
+    public void setClosed(boolean state) {
+        BlockState blockState = getLevel().getBlockState(getDoorPosition());
+        getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
+        getLevel().playSound(null, getDoorPosition(),(state) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, 1 );
     }
 
     @Override
@@ -115,17 +118,14 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
         super.saveAdditional(compoundTag);
 
         compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
-        compoundTag.putBoolean(NbtConstants.DOOR_IS_OPEN, this.isOpen);
         compoundTag.putString(NbtConstants.DOOR_ID, this.uuid_id);
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
         super.load(compoundTag);
-
         this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
         this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
-        this.isOpen = compoundTag.getBoolean(NbtConstants.DOOR_IS_OPEN);
     }
 
 }

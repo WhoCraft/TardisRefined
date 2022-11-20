@@ -3,8 +3,6 @@ package whocraft.tardis_refined.common.tardis.interior.exit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerEntity;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Rotation;
 
 public interface ITardisInternalDoor {
 
@@ -15,7 +13,7 @@ public interface ITardisInternalDoor {
     void setID(String id);
 
     boolean isOpen();
-    void setOpen(boolean state);
+    void setClosed(boolean state);
 
     BlockPos getDoorPosition();
 

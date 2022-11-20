@@ -1,20 +1,31 @@
-package whocraft.tardis_refined.common.blockentity.desktop.door;
+package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.interior.exit.AbstractEntityBlockDoor;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 import java.util.Optional;
 
-public class RootShellDoorBlockEntity extends AbstractEntityBlockDoor {
+public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
 
-    public RootShellDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.ROOT_SHELL_DOOR.get(), blockPos, blockState);
+    public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
+        super(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), blockPos, blockState);
+    }
+
+    public void onRightClick(BlockState blockState) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
+
+            // we know that in this instance the serverlevel has a capability.
+            TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
+            });
+        }
     }
 
     public void onAttemptEnter(Level level, Player player) {

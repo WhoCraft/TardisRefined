@@ -9,8 +9,10 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.forge.ModelRegistryImpl;
-import whocraft.tardis_refined.client.renderer.blockentity.interior.door.RootShellDoorRenderer;
-import whocraft.tardis_refined.client.renderer.blockentity.shell.RootPlantRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
@@ -28,6 +30,8 @@ public class ClientModBus {
        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_PLANT.get(), RootPlantRenderer::new);
        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_SHELL.get(), RootShellRenderer::new);
        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_SHELL_DOOR.get(), RootShellDoorRenderer::new);
+       BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
+       BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
     }
 
 }

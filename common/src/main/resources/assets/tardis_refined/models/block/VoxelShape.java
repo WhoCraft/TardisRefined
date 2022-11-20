@@ -1,0 +1,21 @@
+Stream.of(
+Block.createCuboidShape(1, 2, 3, 15, 12, 13),
+Block.createCuboidShape(3, 7, 9.5, 13, 12, 14.5),
+Block.createCuboidShape(4, 12, 11.5, 6, 19, 13.5),
+Block.createCuboidShape(3.75, 11.5, 11.25, 6.25, 18.5, 13.75),
+Block.createCuboidShape(7.75, 9.5, 11.25, 10.25, 16.5, 13.75),
+Block.createCuboidShape(8, 12, 11.5, 10, 17, 13.5),
+Block.createCuboidShape(-1, 9, 11.5, 3, 11, 13.5),
+Block.createCuboidShape(-0.5, 8.75, 11.25, 2.5, 11.25, 13.75),
+Block.createCuboidShape(0, 0, 3, 16, 5, 13),
+Block.createCuboidShape(-1.5, 6, 5, 1.5, 9, 11),
+Block.createCuboidShape(0, 8.5, 5.5, 1, 10.5, 10.5),
+Block.createCuboidShape(-0.75, 1, 7, 2.25, 6, 9),
+Block.createCuboidShape(1.1, 12, 6.5, 16.1, 15, 9.5),
+Block.createCuboidShape(1.5, 15, 8, 12.5, 18, 9),
+Block.createCuboidShape(3, 5, -3, 13, 7, 3),
+Block.createCuboidShape(10, 5, -1, 12, 7, 5),
+Block.createCuboidShape(4, 5, -1, 6, 7, 5),
+Block.createCuboidShape(13, 2, 6, 17, 19, 10),
+Block.createCuboidShape(14, 19, 7, 16, 22, 9)
+).reduce((v1, v2) -> VoxelShapes.combineAndSimplify(v1, v2, BooleanBiFunction.OR)).get();

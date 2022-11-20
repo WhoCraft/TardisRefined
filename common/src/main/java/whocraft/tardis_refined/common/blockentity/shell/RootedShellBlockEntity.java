@@ -2,16 +2,17 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.common.tardis.interior.TardisArchitecture;
-import whocraft.tardis_refined.common.tardis.interior.arctypes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 public class RootedShellBlockEntity extends ShellBaseBlockEntity{
     public RootedShellBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(blockPos, blockState);
+        super(BlockEntityRegistry.ROOT_SHELL.get(), blockPos, blockState);
     }
 
     @Override
     public DesktopTheme getAssociatedTheme() {
-        return TardisArchitecture.DEFAULT_OVERGROWN_THEME;
+        return TardisDesktops.DEFAULT_OVERGROWN_THEME;
     }
 }

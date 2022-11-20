@@ -43,8 +43,7 @@ public class DimensionHandler {
 
         if (interactionLevel instanceof ServerLevel serverLevel) {
            ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, id));
-           Map<ResourceKey<Level>, ServerLevel> levelMap = serverLevel.getServer().levels;
-           @Nullable ServerLevel existingLevel = levelMap.get(levelResourceKey);
+           ServerLevel existingLevel = getExistingLevel(serverLevel, levelResourceKey);
 
            if (existingLevel != null) {
                return existingLevel;
@@ -70,5 +69,13 @@ public class DimensionHandler {
     }
 
 
-    public static void addToServerList() {}
+    public static ServerLevel getExistingLevel(ServerLevel serverLevel, String id) {
+        return getExistingLevel(serverLevel, ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, id)));
+    }
+
+    public static ServerLevel getExistingLevel(ServerLevel serverLevel, ResourceKey<Level> levelResourceKey) {
+        Map<ResourceKey<Level>, ServerLevel> levelMap = serverLevel.getServer().levels;
+        @Nullable ServerLevel existingLevel = levelMap.get(levelResourceKey);
+        return existingLevel;
+    }
 }

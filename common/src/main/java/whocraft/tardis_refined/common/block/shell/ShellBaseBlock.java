@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.phys.BlockHitResult;
@@ -29,6 +31,8 @@ import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 public abstract class ShellBaseBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty OPEN = BooleanProperty.create("open");
+    public static final BooleanProperty REGEN = BooleanProperty.create("regen");
     protected static final VoxelShape SOUTH_AABB;
     protected static final VoxelShape NORTH_AABB;
     protected static final VoxelShape WEST_AABB;
@@ -36,12 +40,11 @@ public abstract class ShellBaseBlock extends BaseEntityBlock {
 
     public ShellBaseBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(REGEN, false));
     }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
@@ -57,12 +60,14 @@ public abstract class ShellBaseBlock extends BaseEntityBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FACING);
+        builder.add(OPEN);
+        builder.add(REGEN);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection());
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(REGEN, false);
     }
 
     @Override

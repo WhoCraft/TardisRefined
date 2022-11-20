@@ -1,42 +1,75 @@
-package whocraft.tardis_refined.common.block.desktop.door;
+package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoorBlock;
-import net.minecraft.world.level.block.EndPortalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.DoorHingeSide;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.desktop.InternalDoorBlock;
+import whocraft.tardis_refined.common.block.properties.ShellProperty;
 import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.data.TardisInteriorManager;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class RootShellDoorBlock extends InternalDoorBlock {
+public class GlobalDoorBlock extends InternalDoorBlock{
 
+    public static final ShellProperty SHELL = ShellProperty.create("external_shell");
     protected static final VoxelShape SOUTH_AABB;
     protected static final VoxelShape NORTH_AABB;
     protected static final VoxelShape WEST_AABB;
     protected static final VoxelShape EAST_AABB;
 
-    public RootShellDoorBlock(Properties properties) {
+
+    public GlobalDoorBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true).setValue(SHELL, ShellTheme.FACTORY));
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new RootShellDoorBlockEntity(blockPos, blockState);
+        return new GlobalDoorBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(SHELL);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
+        return super.getStateForPlacement(blockPlaceContext).setValue(SHELL, ShellTheme.FACTORY);
+    }
+
+    @Override
+    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        if (level instanceof ServerLevel serverLevel) {
+
+            if (TardisLevelOperator.get(serverLevel).isPresent()) {
+                if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
+                    entity.onRightClick(blockState);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -72,10 +105,9 @@ public class RootShellDoorBlock extends InternalDoorBlock {
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
 
         if (!level.isClientSide()) {
-            if (level.getBlockEntity(blockPos) instanceof RootShellDoorBlockEntity door) {
+            if (level.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity door) {
                 if (entity instanceof Player player) {
-                    door.onRightClick(level,player);
-
+                    door.onAttemptEnter(level,player);
                 }
             }
         }
@@ -87,4 +119,5 @@ public class RootShellDoorBlock extends InternalDoorBlock {
         WEST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
         EAST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 16.0D, 16.0D);
     }
+
 }

@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.client.renderer.blockentity.interior.door;
+package whocraft.tardis_refined.client.renderer.blockentity.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -15,7 +15,6 @@ import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 
 public class RootShellDoorRenderer implements BlockEntityRenderer<RootShellDoorBlockEntity>, BlockEntityRendererProvider<RootShellDoorBlockEntity> {
 
