@@ -8,7 +8,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 
 import java.util.Iterator;
 import java.util.Optional;

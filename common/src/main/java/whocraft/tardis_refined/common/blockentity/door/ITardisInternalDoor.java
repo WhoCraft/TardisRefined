@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.interior.exit;
+package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.data;
+package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
@@ -7,21 +7,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.NbtConstants;
-import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
-
-import java.util.UUID;
 
 public class TardisInteriorManager {
 
@@ -71,7 +67,6 @@ public class TardisInteriorManager {
     public void tick(Level level) {
         if (this.isWaitingToGenerate) {
             if (level.players().size() == 0) {
-                System.out.println("Generating new TARDIS");
                 this.operator.getExteriorManager().triggerShellRegenState();
                 operator.setDoorClosed(true);
                 generateDesktop(this.preparedTheme);
@@ -93,7 +88,6 @@ public class TardisInteriorManager {
             }
 
             if (interiorGenerationCooldown == 0) {
-                System.out.println("Completed generating desktop.");
                 this.operator.setShellTheme(ShellTheme.FACTORY);
                 this.isGeneratingDesktop = false;
             }
@@ -102,7 +96,6 @@ public class TardisInteriorManager {
                 operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getExteriorManager().getLastKnownLocation().level.getRandom().nextFloat(), 0.1f);
             }
         }
-
     }
 
     public void generateDesktop(DesktopTheme theme) {

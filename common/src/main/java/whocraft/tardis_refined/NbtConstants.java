@@ -32,5 +32,8 @@ public class NbtConstants {
     public static final String SHELL_THEME_ID = "shell_id";
 
 
+    // Controls
+    public static final String CONTROL_ID = "control_id";
+
 
 }

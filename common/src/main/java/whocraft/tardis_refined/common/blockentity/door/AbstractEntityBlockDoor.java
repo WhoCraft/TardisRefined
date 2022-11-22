@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.interior.exit;
+package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
-import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 

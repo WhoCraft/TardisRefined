@@ -20,11 +20,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.block.properties.ShellProperty;
-import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.data.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalDoorBlock extends InternalDoorBlock{

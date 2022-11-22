@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.forge;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -9,12 +10,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.forge.ModelRegistryImpl;
+import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
+import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.EntityRegistry;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
@@ -32,6 +36,9 @@ public class ClientModBus {
        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_SHELL_DOOR.get(), RootShellDoorRenderer::new);
        BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
        BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
+       BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
+
+        EntityRenderers.register(EntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
     }
 
 }

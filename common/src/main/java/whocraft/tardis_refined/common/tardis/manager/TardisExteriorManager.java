@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.data;
+package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -17,8 +17,8 @@ import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 

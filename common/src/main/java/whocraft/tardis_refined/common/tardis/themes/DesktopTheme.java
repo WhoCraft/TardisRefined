@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.common.tardis.interior.arctypes.ArchitectureTheme;
 
 
 public class DesktopTheme extends ArchitectureTheme {

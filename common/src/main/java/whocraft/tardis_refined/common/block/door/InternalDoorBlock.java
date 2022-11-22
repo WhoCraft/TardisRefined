@@ -19,7 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.desktop.InternalDoorBlockEntity;
-import whocraft.tardis_refined.common.tardis.interior.exit.AbstractEntityBlockDoor;
+import whocraft.tardis_refined.common.blockentity.door.AbstractEntityBlockDoor;
 
 public class InternalDoorBlock extends BaseEntityBlock {
 

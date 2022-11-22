@@ -7,8 +7,7 @@ import whocraft.tardis_refined.TardisRefined;
 public enum ShellTheme implements StringRepresentable {
 
     FACTORY("factory", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell_door.png")),
-    // This doesn't exist, but we need at least two to work this!
-    COPPER("copper", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/copper_shell.png"),new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/copper_shell_door.png"));
+    POLICE_BOX("police_box", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell.png"),new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_door.png"));
 
 
     private final String id;

@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
@@ -20,9 +21,11 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
     private static FactoryDoorModel factoryDoorModel;
+    private static PoliceBoxModel policeBoxModel;
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
+        policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
     }
 
     @Override
@@ -40,6 +43,13 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
             factoryDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
             factoryDoorModel.setDoorPosition(isOpen);
+        }
+
+        if (theme == ShellTheme.POLICE_BOX) {
+
+            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
+                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            policeBoxModel.setDoorPosition(isOpen);
         }
 
         poseStack.popPose();

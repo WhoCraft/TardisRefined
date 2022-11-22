@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.data;
+package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

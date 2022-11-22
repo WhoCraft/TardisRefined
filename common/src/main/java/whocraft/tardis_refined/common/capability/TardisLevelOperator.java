@@ -13,11 +13,11 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
-import whocraft.tardis_refined.common.tardis.data.TardisExteriorManager;
-import whocraft.tardis_refined.common.tardis.data.TardisInteriorManager;
-import whocraft.tardis_refined.common.tardis.data.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
-import whocraft.tardis_refined.common.tardis.interior.exit.ITardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 

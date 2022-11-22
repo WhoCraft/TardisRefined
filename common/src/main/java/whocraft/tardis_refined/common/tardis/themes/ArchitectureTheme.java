@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.interior.arctypes;
+package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
