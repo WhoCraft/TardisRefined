@@ -13,6 +13,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
+import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -30,11 +31,13 @@ public class TardisLevelOperator {
     private ITardisInternalDoor internalDoor = null;
     private TardisExteriorManager exteriorManager;
     private TardisInteriorManager interiorManager;
+    private TardisControlManager controlManager;
 
     public TardisLevelOperator(ServerLevel level) {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
+        this.controlManager = new TardisControlManager(this);
     }
 
     @ExpectPlatform
@@ -53,6 +56,7 @@ public class TardisLevelOperator {
 
         compoundTag = this.exteriorManager.saveData(compoundTag);
         compoundTag = this.interiorManager.saveData(compoundTag);
+        compoundTag = this.controlManager.saveData(compoundTag);
 
         return compoundTag;
     }
@@ -67,11 +71,10 @@ public class TardisLevelOperator {
             }
         }
 
-        // Datareadings
-        if (!level.isClientSide()) {
-            this.exteriorManager.loadData(tag);
-            this.interiorManager.loadData(tag);
-        }
+        // Managers
+        this.exteriorManager.loadData(tag);
+        this.interiorManager.loadData(tag);
+        this.controlManager.loadData(tag);
 
     }
 
@@ -82,6 +85,7 @@ public class TardisLevelOperator {
     public void tick(Level level) {
         if (!level.isClientSide()) {
             interiorManager.tick(level);
+            controlManager.tick(level);
         }
     }
 
@@ -175,5 +179,6 @@ public class TardisLevelOperator {
     }
 
     public TardisInteriorManager getInteriorManager() {return this.interiorManager;}
+    public TardisControlManager getControlManager() {return this.controlManager;}
 
 }

@@ -15,6 +15,7 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -27,7 +28,6 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 public class ControlEntity extends PathfinderMob {
 
     private ControlSpecification controlSpecification;
-    private IControl consoleControl;
 
     public ControlEntity(Level level) {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
@@ -35,15 +35,8 @@ public class ControlEntity extends PathfinderMob {
 
     public void setControlSpecification(ControlSpecification consoleControl) {
         this.controlSpecification = consoleControl;
-
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                switch (controlSpecification.control) {
-                    case THROTTLE -> this.consoleControl = new ThrottleControl();
-                }
-            });
-        }
-
+        this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale)));
+        this.refreshDimensions();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -51,8 +44,16 @@ public class ControlEntity extends PathfinderMob {
                 add(Attributes.FOLLOW_RANGE, 35D).
                 add(Attributes.MOVEMENT_SPEED, 0.23F).
                 add(Attributes.ATTACK_DAMAGE, 3F).
-                add(Attributes.MAX_HEALTH, 20D).
-                add(Attributes.ARMOR, 2.0D);
+                add(Attributes.MAX_HEALTH, 20000000000D).
+                add(Attributes.ARMOR, 2000000000.0D);
+    }
+
+    @Override
+    protected AABB makeBoundingBox() {
+        if (controlSpecification != null) {
+            return new AABB(new BlockPos(controlSpecification.scale));
+        }
+        return super.makeBoundingBox();
     }
 
     @Override
@@ -82,11 +83,11 @@ public class ControlEntity extends PathfinderMob {
 
         if (getLevel() instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                // this.consoleControl.onRightClick(cap);
+                this.controlSpecification.control.getControl().onRightClick(cap);
             });
         }
 
-        return super.interactAt(player, vec3, interactionHand);
+        return InteractionResult.SUCCESS;
     }
 
 

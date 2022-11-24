@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.client.multiplayer.chat.report.ReportEnvironment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
@@ -41,9 +42,10 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 // Spawn a control!
                 ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
                 controlEntity.setControlSpecification(control);
-                Vec3 entityPos = new Vec3(getBlockPos().getX() + 0.5f, getBlockPos().getY() + 0.5f, getBlockPos().getZ() + 0.5f);
-                Vec3 controlEntityPos = new Vec3(entityPos.x + control.offsetPosition.getX(), entityPos.y + control.offsetPosition.getY(), entityPos.z + control.offsetPosition.getZ());
-                controlEntity.setPos(controlEntityPos);
+
+                BlockPos controlPosition = getBlockPos().offset(control.offsetPosition);
+                Vec3 vector3 = new Vec3(controlPosition.getX() + 0.5f, controlPosition.getY(), controlPosition.getZ() + 0.5f);
+                controlEntity.setPos(vector3);
                 level.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
             });

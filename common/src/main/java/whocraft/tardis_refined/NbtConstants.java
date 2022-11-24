@@ -22,6 +22,7 @@ public class NbtConstants {
     public static final String TARDIS_EXT_READ_LAST_KNOWN_ROT = "terd_lk_rotation";
     public static final String TARDIS_EXT_READ_LAST_KNOWN_LVL_MODID = "terd_lk_lvl_id";
     public static final String TARDIS_EXT_READ_LAST_KNOWN_LVL_LOC = "terd_lk_lvl_loc";
+    public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
 
     // Internal Door
     public static final String DOOR_IS_MAIN_DOOR = "is_main_door";
@@ -36,4 +37,5 @@ public class NbtConstants {
     public static final String CONTROL_ID = "control_id";
 
 
+    public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
 }

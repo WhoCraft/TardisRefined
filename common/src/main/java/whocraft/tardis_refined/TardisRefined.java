@@ -16,6 +16,7 @@ public class TardisRefined {
         BlockRegistry.BLOCKS.register();
         ItemRegistry.ITEMS.register();
         EntityRegistry.ENTITY_TYPES.register();
+        SoundRegistry.SOUNDS.register();
         BlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
         DimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();

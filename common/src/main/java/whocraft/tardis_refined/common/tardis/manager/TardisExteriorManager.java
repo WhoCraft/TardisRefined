@@ -11,13 +11,17 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
+import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
@@ -31,6 +35,8 @@ public class TardisExteriorManager {
 
     private TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation;
+    private ShellTheme currentTheme;
+
 
     public TardisExteriorManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -49,10 +55,17 @@ public class TardisExteriorManager {
     }
 
     public CompoundTag saveData(CompoundTag tag) {
-        tag.put(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_POS, NbtUtils.writeBlockPos(this.lastKnownLocation.position));
-        tag.putInt(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_ROT, this.lastKnownLocation.rotation.get2DDataValue());
-        tag.putString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_MODID, this.lastKnownLocation.level.dimension().location().getNamespace());
-        tag.putString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_LOC, this.lastKnownLocation.level.dimension().location().getPath());
+
+        if (this.lastKnownLocation != null) {
+            tag.put(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_POS, NbtUtils.writeBlockPos(this.lastKnownLocation.position));
+            tag.putInt(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_ROT, this.lastKnownLocation.rotation.get2DDataValue());
+            tag.putString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_MODID, this.lastKnownLocation.level.dimension().location().getNamespace());
+            tag.putString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_LOC, this.lastKnownLocation.level.dimension().location().getPath());
+        }
+
+        if (this.currentTheme != null) {tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());}
+
+
         return tag;
     }
 
@@ -61,6 +74,10 @@ public class TardisExteriorManager {
         int lkRotation = tag.getInt(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_ROT);
         String lkLevelModID = tag.getString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_MODID);
         String lkLevelLoc = tag.getString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_LOC);
+
+        if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
+            this.currentTheme = ShellTheme.valueOf(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
+        }
 
         if (lkLevelLoc != null && lkLevelModID != null && lkLevelLoc != null) {
             // Fetch the level.
@@ -85,8 +102,8 @@ public class TardisExteriorManager {
 
     public void setShellTheme(ShellTheme theme) {
         BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
-        // Check if its our default global shell.
 
+        // Check if its our default global shell.
         if (state.getBlock() instanceof GlobalShellBlock) {
             lastKnownLocation.level.setBlock(lastKnownLocation.position,
                     state.setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
@@ -103,6 +120,8 @@ public class TardisExteriorManager {
                 }
             }
         }
+
+        this.currentTheme = theme;
     }
 
     public void triggerShellRegenState() {
@@ -110,6 +129,40 @@ public class TardisExteriorManager {
 
         lastKnownLocation.level.setBlock(lastKnownLocation.position,
                 state.setValue(ShellBaseBlock.REGEN, true), 2);
+    }
+
+    public void removeExteriorBlock() {
+        if (lastKnownLocation != null) {
+            if (lastKnownLocation.level.getBlockState(lastKnownLocation.position).getBlock() instanceof GlobalShellBlock shellBlock) {
+                lastKnownLocation.level.setBlockAndUpdate(lastKnownLocation.position, Blocks.AIR.defaultBlockState());
+            }
+        }
+    }
+
+    public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
+        ShellTheme theme = (this.currentTheme != null) ? ShellTheme.POLICE_BOX : ShellTheme.FACTORY; // Could be a funny way of the circuit breaking...
+
+
+        location.level.setBlockAndUpdate(location.position, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
+                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false));
+
+        GlobalShellBlockEntity shell = (GlobalShellBlockEntity) location.level.getBlockEntity(location.position);
+        shell.id = UUID.fromString(operator.getLevel().dimension().location().getPath());
+
+        this.lastKnownLocation = location;
+    }
+
+    public boolean isExitLocationSafe() {
+        if (lastKnownLocation.level.getBlockEntity(lastKnownLocation.position) instanceof IExteriorShell shellBaseBlockEntity) {
+            BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
+            if (lastKnownLocation.level.getBlockState(landingArea) == Blocks.AIR.defaultBlockState()) {
+                if (lastKnownLocation.level.getBlockState(landingArea.above()) == Blocks.AIR.defaultBlockState()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }

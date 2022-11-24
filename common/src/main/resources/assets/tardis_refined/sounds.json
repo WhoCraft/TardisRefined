@@ -1,0 +1,20 @@
+{
+  "tardis_takeoff": {
+    "subtitle": "subtitle.tardis_refined.tardis_takeoff",
+    "sounds": [
+      "tardis_refined:common/tardis_takeoff"
+    ]
+  },
+  "tardis_land": {
+    "subtitle": "subtitle.tardis_refined.tardis_land",
+    "sounds": [
+      "tardis_refined:common/tardis_land"
+    ]
+  },
+  "tardis_single_fly": {
+    "subtitle": "subtitle.tardis_refined.tardis_single_fly",
+    "sounds": [
+      "tardis_refined:common/tardis_single_fly"
+    ]
+  }
+}
