@@ -1,15 +1,11 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
-import com.mojang.math.Vector3f;
-import net.minecraft.client.multiplayer.chat.report.ReportEnvironment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
@@ -59,14 +55,12 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
-        System.out.println("Removed");
         controlEntityList.forEach(Entity::kill);
     }
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
         if (this.isDirty) {
-            System.out.println("Spawned in entities");
             spawnControlEntities();}
     }
 }

@@ -20,15 +20,15 @@ public class NetworkManagerImpl extends NetworkManager {
 
     private final SimpleChannel channel;
 
-    public static NetworkManager create(ResourceLocation channelName) {
-        return new NetworkManagerImpl(channelName);
-    }
-
     public NetworkManagerImpl(ResourceLocation channelName) {
         super(channelName);
         this.channel = NetworkRegistry.newSimpleChannel(channelName, () -> "1.0.0", (s) -> true, (s) -> true);
         this.channel.registerMessage(0, ToServer.class, ToServer::toBytes, ToServer::new, ToServer::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         this.channel.registerMessage(1, ToClient.class, ToClient::toBytes, ToClient::new, ToClient::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+    }
+
+    public static NetworkManager create(ResourceLocation channelName) {
+        return new NetworkManagerImpl(channelName);
     }
 
     @Override
@@ -72,16 +72,16 @@ public class NetworkManagerImpl extends NetworkManager {
             this.message = (MessageC2S) type.getDecoder().decode(buf);
         }
 
-        public void toBytes(FriendlyByteBuf buf) {
-            buf.writeUtf(this.message.getType().getId());
-            this.message.toBytes(buf);
-        }
-
         public static void handle(ToServer msg, Supplier<NetworkEvent.Context> ctx) {
-            if(msg.message != null) {
+            if (msg.message != null) {
                 ctx.get().enqueueWork(msg.message::handle);
             }
             ctx.get().setPacketHandled(true);
+        }
+
+        public void toBytes(FriendlyByteBuf buf) {
+            buf.writeUtf(this.message.getType().getId());
+            this.message.toBytes(buf);
         }
 
     }
@@ -107,16 +107,16 @@ public class NetworkManagerImpl extends NetworkManager {
             this.message = (MessageS2C) type.getDecoder().decode(buf);
         }
 
-        public void toBytes(FriendlyByteBuf buf) {
-            buf.writeUtf(this.message.getType().getId());
-            this.message.toBytes(buf);
-        }
-
         public static void handle(ToClient msg, Supplier<NetworkEvent.Context> ctx) {
-            if(msg.message != null) {
+            if (msg.message != null) {
                 ctx.get().enqueueWork(msg.message::handle);
             }
             ctx.get().setPacketHandled(true);
+        }
+
+        public void toBytes(FriendlyByteBuf buf) {
+            buf.writeUtf(this.message.getType().getId());
+            this.message.toBytes(buf);
         }
 
     }

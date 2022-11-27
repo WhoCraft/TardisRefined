@@ -33,10 +33,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty REGEN = BooleanProperty.create("regen");
-    protected static final VoxelShape SOUTH_AABB;
-    protected static final VoxelShape NORTH_AABB;
-    protected static final VoxelShape WEST_AABB;
-    protected static final VoxelShape EAST_AABB;
+    protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
 
     public ShellBaseBlock(Properties properties) {
         super(properties);
@@ -59,9 +56,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING);
-        builder.add(OPEN);
-        builder.add(REGEN);
+        builder.add(FACING, OPEN, REGEN);
     }
 
     @Override

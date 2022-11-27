@@ -17,17 +17,15 @@ public class ShellProperty extends EnumProperty<ShellTheme> {
     }
 
     public static ShellProperty create(String string) {
-        return create(string, (shell) -> {
-            return true;
-        });
+        return create(string, (shell) -> true);
     }
 
     public static ShellProperty create(String string, Predicate<ShellTheme> predicate) {
-        return create(string, (Collection) Arrays.stream(ShellTheme.values()).filter(predicate).collect(Collectors.toList()));
+        return create(string, Arrays.stream(ShellTheme.values()).filter(predicate).collect(Collectors.toList()));
     }
 
     public static ShellProperty create(String string, ShellTheme... themes) {
-        return create(string, (Collection) Lists.newArrayList(themes));
+        return create(string, Lists.newArrayList(themes));
     }
 
     public static ShellProperty create(String string, Collection<ShellTheme> collection) {

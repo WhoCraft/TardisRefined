@@ -17,17 +17,15 @@ public class ConsoleProperty extends EnumProperty<ConsoleTheme> {
     }
 
     public static ConsoleProperty create(String string) {
-        return create(string, (shell) -> {
-            return true;
-        });
+        return create(string, (shell) -> true);
     }
 
     public static ConsoleProperty create(String string, Predicate<ConsoleTheme> predicate) {
-        return create(string, (Collection) Arrays.stream(ConsoleTheme.values()).filter(predicate).collect(Collectors.toList()));
+        return create(string, Arrays.stream(ConsoleTheme.values()).filter(predicate).collect(Collectors.toList()));
     }
 
     public static ConsoleProperty create(String string, ConsoleTheme... themes) {
-        return create(string, (Collection) Lists.newArrayList(themes));
+        return create(string, Lists.newArrayList(themes));
     }
 
     public static ConsoleProperty create(String string, Collection<ConsoleTheme> collection) {

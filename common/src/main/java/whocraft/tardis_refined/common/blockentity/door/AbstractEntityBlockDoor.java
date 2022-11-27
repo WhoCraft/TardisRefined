@@ -61,7 +61,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     public void setClosed(boolean state) {
         BlockState blockState = getLevel().getBlockState(getDoorPosition());
         getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
-        getLevel().playSound(null, getDoorPosition(),(state) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, 1 );
+        getLevel().playSound(null, getDoorPosition(), (state) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
     }
 
     @Override
@@ -75,13 +75,13 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
         int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
         switch (direction) {
             case 3:
-                return new BlockPos(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ() );
+                return new BlockPos(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ());
             case 2:
-                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() +1);
+                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() + 1);
             case 1:
-                return new BlockPos(getBlockPos().getX()+1, getBlockPos().getY(), getBlockPos().getZ());
+                return new BlockPos(getBlockPos().getX() + 1, getBlockPos().getY(), getBlockPos().getZ());
             case 0:
-                return new BlockPos(getBlockPos().getX() , getBlockPos().getY(), getBlockPos().getZ()-1);
+                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() - 1);
         }
 
         return getBlockPos().above();

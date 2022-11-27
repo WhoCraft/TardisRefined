@@ -46,8 +46,7 @@ public class RootPlantBlock extends BaseEntityBlock  {
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING);
-        builder.add(AGE);
+        builder.add(FACING, AGE);
     }
 
     public IntegerProperty getAgeProperty() {
@@ -59,7 +58,7 @@ public class RootPlantBlock extends BaseEntityBlock  {
     }
 
     protected int getAge(BlockState blockState) {
-        return (Integer)blockState.getValue(this.getAgeProperty());
+        return blockState.getValue(this.getAgeProperty());
     }
 
     public boolean isMaxAge(BlockState blockState) {

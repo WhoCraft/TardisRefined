@@ -77,10 +77,10 @@ public class DimensionHandlerImpl {
 
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
 
-        server.levels.put(levelKey,newLevel);
+        server.levels.put(levelKey, newLevel);
         new SyncLevelListMessage(newLevel.dimension(), true).sendToAll((ServerLevel) level);
 
-        BlockPos blockpos = new BlockPos(0,0,0);
+        BlockPos blockpos = new BlockPos(0, 0, 0);
         chunkListener.updateSpawnPos(new ChunkPos(blockpos));
         ServerChunkCache serverchunkcache = (ServerChunkCache) newLevel.getChunkSource();
         serverchunkcache.getLightEngine().setTaskPerBatch(500);

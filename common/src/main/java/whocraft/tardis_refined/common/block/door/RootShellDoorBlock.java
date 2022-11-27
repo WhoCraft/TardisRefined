@@ -15,10 +15,7 @@ import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBloc
 
 public class RootShellDoorBlock extends InternalDoorBlock {
 
-    protected static final VoxelShape SOUTH_AABB;
-    protected static final VoxelShape NORTH_AABB;
-    protected static final VoxelShape WEST_AABB;
-    protected static final VoxelShape EAST_AABB;
+    protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
 
 
     public RootShellDoorBlock(Properties properties) {

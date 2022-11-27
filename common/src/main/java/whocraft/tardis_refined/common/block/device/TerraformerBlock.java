@@ -40,8 +40,7 @@ public class TerraformerBlock extends Block {
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ACTIVE);
-        builder.add(FACING);
+        builder.add(ACTIVE, FACING);
     }
 
     @Override

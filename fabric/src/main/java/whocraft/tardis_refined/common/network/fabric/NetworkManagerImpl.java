@@ -16,10 +16,6 @@ import whocraft.tardis_refined.common.util.Platform;
 
 public class NetworkManagerImpl extends NetworkManager {
 
-    public static NetworkManager create(ResourceLocation channelName) {
-        return new NetworkManagerImpl(channelName);
-    }
-
     public NetworkManagerImpl(ResourceLocation channelName) {
         super(channelName);
         ServerPlayNetworking.registerGlobalReceiver(channelName, (server, player, handler, buf, responseSender) -> {
@@ -35,9 +31,13 @@ public class NetworkManagerImpl extends NetworkManager {
             server.execute(message::handle);
         });
 
-        if(Platform.isClient()) {
+        if (Platform.isClient()) {
             this.registerClient();
         }
+    }
+
+    public static NetworkManager create(ResourceLocation channelName) {
+        return new NetworkManagerImpl(channelName);
     }
 
     @Environment(EnvType.CLIENT)

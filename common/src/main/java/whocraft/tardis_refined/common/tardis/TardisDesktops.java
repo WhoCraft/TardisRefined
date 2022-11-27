@@ -7,6 +7,7 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // TODO: Reimplement datapack system.
 public class TardisDesktops {
@@ -23,7 +24,7 @@ public class TardisDesktops {
     }
 
     public static DesktopTheme getDesktopThemeById(String id) {
-        return DESKTOPS.stream().filter(theme -> theme.id == id).findAny().get();
+        return DESKTOPS.stream().filter(theme -> Objects.equals(theme.id, id)).findAny().get();
     }
 
 }

@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.forge;
 
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;

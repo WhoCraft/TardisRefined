@@ -27,11 +27,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 public class GlobalDoorBlock extends InternalDoorBlock{
 
     public static final ShellProperty SHELL = ShellProperty.create("external_shell");
-    protected static final VoxelShape SOUTH_AABB;
-    protected static final VoxelShape NORTH_AABB;
-    protected static final VoxelShape WEST_AABB;
-    protected static final VoxelShape EAST_AABB;
-
+    protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
 
     public GlobalDoorBlock(Properties properties) {
         super(properties);

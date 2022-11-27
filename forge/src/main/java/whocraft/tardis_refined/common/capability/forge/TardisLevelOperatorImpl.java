@@ -5,13 +5,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.level.LevelEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +24,14 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
 
     public static Capability<TardisLevelOperator> TARDIS_DATA = CapabilityManager.get(new CapabilityToken<>() {
     });
+    public final TardisLevelOperator operator;
+    public final LazyOptional<TardisLevelOperator> lazyOptional;
+
+
+    public TardisLevelOperatorImpl(ServerLevel level) {
+        this.operator = new TardisLevelOperator(level);
+        this.lazyOptional = LazyOptional.of(() -> this.operator);
+    }
 
     @SubscribeEvent
     public static void init(RegisterCapabilitiesEvent event) {
@@ -44,7 +49,6 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
         }
     }
 
-
     @SubscribeEvent
     public static void onLevelTick(TickEvent.LevelTickEvent event) {
         if (event.level instanceof ServerLevel level) {
@@ -54,12 +58,8 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
         }
     }
 
-    public final TardisLevelOperator operator;
-    public final LazyOptional<TardisLevelOperator> lazyOptional;
-
-    public TardisLevelOperatorImpl(ServerLevel level) {
-        this.operator = new TardisLevelOperator(level);
-        this.lazyOptional = LazyOptional.of(() -> this.operator);
+    public static Optional<TardisLevelOperator> get(ServerLevel level) {
+        return level.getCapability(TARDIS_DATA).resolve();
     }
 
     @Override
@@ -75,10 +75,6 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     @Override
     public void deserializeNBT(CompoundTag arg) {
         this.operator.deserializeNBT(arg);
-    }
-
-    public static Optional<TardisLevelOperator> get(ServerLevel level) {
-        return level.getCapability(TARDIS_DATA).resolve();
     }
 
 }

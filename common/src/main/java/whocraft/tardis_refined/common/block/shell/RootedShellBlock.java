@@ -26,7 +26,7 @@ public class RootedShellBlock extends ShellBaseBlock {
     public RootedShellBlock(BlockBehaviour.Properties properties) {
 
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false));
     }
 
     @Nullable

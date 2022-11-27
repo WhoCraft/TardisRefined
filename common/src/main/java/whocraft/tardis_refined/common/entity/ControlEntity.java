@@ -2,26 +2,21 @@ package whocraft.tardis_refined.common.entity;
 
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
-import whocraft.tardis_refined.common.tardis.control.IControl;
-import whocraft.tardis_refined.common.tardis.control.flight.ThrottleControl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -79,14 +74,11 @@ public class ControlEntity extends PathfinderMob {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
-        System.out.println("Interacted in any wya");
-
         if (getLevel() instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
                 this.controlSpecification.control.getControl().onRightClick(cap);
             });
         }
-
         return InteractionResult.SUCCESS;
     }
 

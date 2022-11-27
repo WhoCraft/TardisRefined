@@ -13,7 +13,7 @@ import whocraft.tardis_refined.common.network.handler.ClientPacketHandler;
 public class SyncLevelListMessage extends MessageS2C {
 
     public ResourceKey<Level> level;
-    public boolean add = true;
+    public boolean add;
 
     public SyncLevelListMessage(ResourceKey<Level> level, boolean add) {
         this.level = level;
