@@ -3,6 +3,7 @@ package whocraft.tardis_refined.fabric;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
@@ -19,6 +20,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
         establishBlockEntityRenderers();
         registerEntityRenderers();
+        ModelRegistry.init();
     }
 
     private void establishBlockEntityRenderers() {

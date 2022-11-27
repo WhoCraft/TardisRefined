@@ -38,13 +38,12 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         // Get the current factory shell.
 
 
-
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
         BlockState blockstate = blockEntity.getBlockState();
-        float rotation = ((Direction)blockstate.getValue(RootedShellBlock.FACING)).toYRot();
+        float rotation = ((Direction) blockstate.getValue(RootedShellBlock.FACING)).toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         ShellTheme theme = blockstate.getValue(GlobalShellBlock.SHELL);
         boolean isOpen = blockstate.getValue(GlobalShellBlock.OPEN);
@@ -52,18 +51,19 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         float sine = 0;
         if (blockstate.getValue(ShellBaseBlock.REGEN)) {
             sine = (float) ((Math.sin(0.1 * (blockEntity.getLevel().dayTime())) * 1));
-            if (sine < 0) {sine =0;}
+            if (sine < 0) {
+                sine = 0;
+            }
         }
 
         // TODO: Clean this up.
 
+
         if (theme == ShellTheme.FACTORY) {
-            factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
             if (blockstate.getValue(ShellBaseBlock.REGEN)) {
-                factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())),
-                        i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
             }
 
             factoryShellModel.setDoorPosition(isOpen);
@@ -72,15 +72,11 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         if (theme == ShellTheme.POLICE_BOX) {
             poseStack.scale(1.05f, 1.05f, 1.05f);
             poseStack.translate(0, -0.07, 0);
-            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-
-            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(policeBoxEmissive)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(policeBoxEmissive)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
             if (blockstate.getValue(ShellBaseBlock.REGEN)) {
-                policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())),
-                        i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
             }
 
             policeBoxModel.setDoorPosition(isOpen);

@@ -12,12 +12,8 @@ import java.util.Optional;
 
 public class TardisLevelOperatorImpl extends TardisLevelOperator implements ComponentV3, AutoSyncedComponent {
 
-    public TardisLevelOperatorImpl(ServerLevel level) {
-        super(level);
-    }
-
     public TardisLevelOperatorImpl(Level level) {
-        super((ServerLevel) level);
+        super(level);
     }
 
     public static Optional<TardisLevelOperator> get(ServerLevel level) {

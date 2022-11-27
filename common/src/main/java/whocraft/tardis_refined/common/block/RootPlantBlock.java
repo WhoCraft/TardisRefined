@@ -32,13 +32,12 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 import java.util.List;
 
 
-public class RootPlantBlock extends BaseEntityBlock  {
+public class RootPlantBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_5;
 
     public RootPlantBlock(Properties properties) {
-
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(AGE, 0));
     }
@@ -83,17 +82,16 @@ public class RootPlantBlock extends BaseEntityBlock  {
     @Override
     public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
 
-        int i = this.getAge(blockState);
+        int age = this.getAge(blockState);
         Direction facing = blockState.getValue(FACING);
-        if (i < this.getMaxAge()) {
+        if (age < this.getMaxAge()) {
             if (serverLevel.getBlockState(blockPos.below()).getBlock() == Blocks.MAGMA_BLOCK) {
-
                 if (randomSource.nextInt(6) == 0) {
-                    if (i + 1 == this.getMaxAge()) {
+                    if (age + 1 == this.getMaxAge()) {
                         serverLevel.setBlock(blockPos, Blocks.AIR.defaultBlockState(), 3);
                         serverLevel.setBlock(blockPos, BlockRegistry.ROOT_SHELL_BLOCK.get().defaultBlockState().setValue(RootedShellBlock.FACING, facing), 3);
                     } else {
-                        serverLevel.setBlock(blockPos, this.getStateForAging(i + 1, facing), 3);
+                        serverLevel.setBlock(blockPos, this.getStateForAging(age + 1, facing), 3);
                     }
 
                     serverLevel.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1, 1);
@@ -101,6 +99,7 @@ public class RootPlantBlock extends BaseEntityBlock  {
             }
         }
     }
+
     @Override
     public List<ItemStack> getDrops(BlockState blockState, LootContext.Builder builder) {
         return super.getDrops(blockState, builder);

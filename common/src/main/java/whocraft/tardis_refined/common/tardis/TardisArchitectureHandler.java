@@ -50,22 +50,19 @@ public class TardisArchitectureHandler {
                 minPos.getY() + template.getSize().getY(),
                 minPos.getZ() + template.getSize().getZ()
                 );
-        
-        for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(minPos, maxPos).iterator(); iterator.hasNext();) {
-            BlockPos pos = iterator.next();
 
+        for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             if (level.getBlockEntity(pos) instanceof ITardisInternalDoor internalDoor) {
-                TardisLevelOperator.get(level).ifPresent(cap -> {
-                    cap.setInternalDoor(internalDoor);
-                });
-
+                TardisLevelOperator.get(level).ifPresent(cap -> cap.setInternalDoor(internalDoor));
                 return;
             }
         }
     }
 
     public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme) {
-        generateDesktop(operator.getLevel(), theme);
+        if(operator.getLevel() instanceof ServerLevel serverLevel){
+            generateDesktop(serverLevel, theme);
+        }
     }
 
     public static BlockPos calculateArcOffset(StructureTemplate structureTemplate, BlockPos centerPos) {

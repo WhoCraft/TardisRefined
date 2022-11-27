@@ -74,6 +74,6 @@ public class DelayedTeleportData extends SavedData {
         return compound;
     }
 
-    private static record TeleportEntry(UUID playerUUID, ResourceKey<Level> targetLevel, Vec3 targetVec, int dir) {
+    private record TeleportEntry(UUID playerUUID, ResourceKey<Level> targetLevel, Vec3 targetVec, int dir) {
     }
 }

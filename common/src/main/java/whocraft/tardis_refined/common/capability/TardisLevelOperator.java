@@ -26,14 +26,14 @@ import java.util.Optional;
 
 public class TardisLevelOperator {
 
-    private ServerLevel level;
+    private Level level;
     private boolean setUp = false;
     private ITardisInternalDoor internalDoor = null;
     private TardisExteriorManager exteriorManager;
     private TardisInteriorManager interiorManager;
     private TardisControlManager controlManager;
 
-    public TardisLevelOperator(ServerLevel level) {
+    public TardisLevelOperator(Level level) {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
@@ -78,7 +78,7 @@ public class TardisLevelOperator {
 
     }
 
-    public ServerLevel getLevel() {
+    public Level getLevel() {
         return level;
     }
 
@@ -107,8 +107,11 @@ public class TardisLevelOperator {
                 Direction dir = internalDoor.getEntryRotation();
 
                 ChunkAccess chunk = getLevel().getChunk(internalDoor.getDoorPosition());
-                getLevel().setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
-                getLevel().getChunkSource().updateChunkForced(chunk.getPos(), true);
+                if(getLevel() instanceof ServerLevel serverLevel) {
+                    serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
+                }
+                level.getChunkSource().updateChunkForced(chunk.getPos(), true);
+
 
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360/4));
             } else {
@@ -116,8 +119,12 @@ public class TardisLevelOperator {
                 // TODO: Scan for console units near the center to warp to.
 
                 ChunkAccess chunk = getLevel().getChunk(TardisArchitectureHandler.DESKTOP_CENTER_POS);
-                getLevel().setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
-                getLevel().getChunkSource().updateChunkForced(chunk.getPos(), true);
+
+                if(getLevel() instanceof ServerLevel serverLevel) {
+                    serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
+                }
+                level.getChunkSource().updateChunkForced(chunk.getPos(), true);
+
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }

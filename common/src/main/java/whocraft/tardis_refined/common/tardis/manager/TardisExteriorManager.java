@@ -76,15 +76,17 @@ public class TardisExteriorManager {
         String lkLevelLoc = tag.getString(NbtConstants.TARDIS_EXT_READ_LAST_KNOWN_LVL_LOC);
 
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
-            this.currentTheme = ShellTheme.valueOf(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
+            this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);
         }
 
         if (lkLevelLoc != null && lkLevelModID != null && lkLevelLoc != null) {
             // Fetch the level.
 
-            ServerLevel level = operator.getLevel().getServer().levels.get(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(lkLevelModID, lkLevelLoc)));
-            if (level != null) {
-                this.lastKnownLocation = new TardisNavLocation(lkPosition, Direction.from2DDataValue(lkRotation), level);
+            if(operator.getLevel() instanceof ServerLevel serverLevel){
+                ServerLevel level = serverLevel.getServer().levels.get(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(lkLevelModID, lkLevelLoc)));
+                if (level != null) {
+                    this.lastKnownLocation = new TardisNavLocation(lkPosition, Direction.from2DDataValue(lkRotation), level);
+                }
             }
         }
     }

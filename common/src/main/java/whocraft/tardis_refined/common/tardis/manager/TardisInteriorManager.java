@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -103,7 +104,9 @@ public class TardisInteriorManager {
             this.operator.getLevel().setBlockAndUpdate(this.operator.getInternalDoor().getDoorPosition(), Blocks.AIR.defaultBlockState()); // Remove the already existing door.
         }
 
-        TardisArchitectureHandler.generateDesktop(operator.getLevel(), theme);
+        if(operator.getLevel() instanceof ServerLevel serverLevel){
+            TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+        }
     }
 
     public void prepareDesktop(DesktopTheme theme) {

@@ -31,7 +31,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void spawnControlEntities() {
         // Things needed.
 
-        if (getLevel() instanceof ServerLevel level) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
             ConsoleTheme theme = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
             ControlSpecification[] controls = theme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
@@ -42,7 +42,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 BlockPos controlPosition = getBlockPos().offset(control.offsetPosition);
                 Vec3 vector3 = new Vec3(controlPosition.getX() + 0.5f, controlPosition.getY(), controlPosition.getZ() + 0.5f);
                 controlEntity.setPos(vector3);
-                level.addFreshEntity(controlEntity);
+                serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
             });
         }
