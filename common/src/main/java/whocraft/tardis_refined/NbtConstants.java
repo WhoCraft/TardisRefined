@@ -1,5 +1,16 @@
 package whocraft.tardis_refined;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+
 public class NbtConstants {
 
     // TARDIS Level Operator
@@ -18,10 +29,6 @@ public class NbtConstants {
     public static final String TARDIS_IM_GENERATION_COOLDOWN = "im_generation_cooldown";
 
     // External Readings Data
-    public static final String TARDIS_EXT_READ_LAST_KNOWN_POS = "terd_lk_position";
-    public static final String TARDIS_EXT_READ_LAST_KNOWN_ROT = "terd_lk_rotation";
-    public static final String TARDIS_EXT_READ_LAST_KNOWN_LVL_MODID = "terd_lk_lvl_id";
-    public static final String TARDIS_EXT_READ_LAST_KNOWN_LVL_LOC = "terd_lk_lvl_loc";
     public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
 
     // Internal Door
@@ -36,6 +43,35 @@ public class NbtConstants {
     // Controls
     public static final String CONTROL_ID = "control_id";
 
-
     public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
+    public static final String CONTROL_INCREMENT_INDEX = "ctrl_increment_index";
+
+    // Location Constant
+    public static final String LOCATION_POSITION = "_location_position";
+    public static final String LOCATION_ROTATION = "_location_rotation";
+    public static final String LOCATION_DIMENSION_MODID = "_location_dimension_id";
+    public static final String LOCATION_DIMENSION_PATH = "_location_dimension_path";
+
+
+    public static TardisNavLocation getTardisNavLocation(CompoundTag tag, String prefix, TardisLevelOperator operator) {
+        BlockPos position = NbtUtils.readBlockPos(tag.getCompound(prefix + NbtConstants.LOCATION_POSITION));
+        Direction direction = Direction.from2DDataValue(tag.getInt(prefix + NbtConstants.LOCATION_ROTATION));
+        String dimension_modid = tag.getString(prefix + NbtConstants.LOCATION_DIMENSION_MODID);
+        String dimension_path = tag.getString(prefix + NbtConstants.LOCATION_DIMENSION_PATH);
+
+        if (position != null && dimension_modid != null && dimension_path != null) {
+            ServerLevel level = operator.getLevel().getServer().levels.get(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension_modid, dimension_path)));
+            if (level != null) {
+                return new TardisNavLocation(position, direction, level);
+            }
+        }
+        return null;
+    }
+
+    public static void putTardisNavLocation(CompoundTag tag, String prefix, TardisNavLocation location) {
+        tag.put(prefix + NbtConstants.LOCATION_POSITION, NbtUtils.writeBlockPos(location.position));
+        tag.putInt(prefix + NbtConstants.LOCATION_ROTATION, location.rotation.get2DDataValue());
+        tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, location.level.dimension().location().getNamespace());
+        tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, location.level.dimension().location().getPath());
+    }
 }

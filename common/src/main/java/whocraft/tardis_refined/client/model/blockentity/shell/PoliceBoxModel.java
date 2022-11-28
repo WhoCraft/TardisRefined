@@ -136,6 +136,6 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-		this.right_door.yRot = (open) ? -250f : 0;
+		this.right_door.yRot = (open) ? -275f : 0;
 	}
 }

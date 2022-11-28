@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
@@ -19,7 +20,9 @@ public class RootShellDoorBlock extends InternalDoorBlock {
 
 
     public RootShellDoorBlock(Properties properties) {
+
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true));
     }
 
     @Nullable

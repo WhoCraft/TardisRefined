@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -32,17 +33,27 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         // Things needed.
 
         if (getLevel() instanceof ServerLevel serverLevel) {
+
+        BlockPos currentBlockPos = getBlockPos();
+
+        if (getLevel() instanceof ServerLevel level) {
+
             ConsoleTheme theme = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
             ControlSpecification[] controls = theme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
                 ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
-                controlEntity.setControlSpecification(control);
 
-                BlockPos controlPosition = getBlockPos().offset(control.offsetPosition);
-                Vec3 vector3 = new Vec3(controlPosition.getX() + 0.5f, controlPosition.getY(), controlPosition.getZ() + 0.5f);
-                controlEntity.setPos(vector3);
-                serverLevel.addFreshEntity(controlEntity);
+                controlEntity.setControlSpecification(control);
+                System.out.println("Offset: " + control.offsetPosition);
+
+                Vector3f location = new Vector3f(((float)currentBlockPos.getX() + (float)control.offsetPosition.x() + 0.5f), (float)getBlockPos().getY() + (float)control.offsetPosition.y()+ 0.5f,
+                        (float)getBlockPos().getZ() + (float)control.offsetPosition.z()+ 0.5f);
+
+                System.out.println("BlockPos: " + location);
+
+                controlEntity.teleportTo(location.x(), location.y(), location.z());
+                level.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
             });
         }
@@ -50,6 +61,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
 
         this.isDirty = false;
+    }
     }
 
     @Override

@@ -46,7 +46,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         }
 
         if (theme == ShellTheme.POLICE_BOX) {
-
+            poseStack.scale(1.05f, 1.05f, 1.05f);
+            poseStack.translate(0, -0.07, 0);
             policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
             policeBoxModel.setDoorPosition(isOpen);

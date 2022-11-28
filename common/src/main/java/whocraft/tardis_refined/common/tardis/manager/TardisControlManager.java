@@ -2,11 +2,14 @@ package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -23,18 +26,35 @@ public class TardisControlManager {
     private boolean isInFlight = false;
     private int ticksInFlight = 0;
 
+    private int[] coordinateIncrements = new int[] {1,10,100,1000};
+    private int cordIncrementIndex = 0;
+
     private ShellTheme currentExteriorTheme;
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
+        this.targetLocation= new TardisNavLocation(new BlockPos(0,0,0), Direction.NORTH, operator.getLevel().getServer().getLevel(Level.OVERWORLD));
     }
 
     public void loadData(CompoundTag tag) {
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
+        this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
+        if (this.targetLocation == null) {
+            this.targetLocation = new TardisNavLocation(new BlockPos(0,0,0), Direction.NORTH, operator.getLevel().getServer().getLevel(Level.OVERWORLD));
+        }
+
+        this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
+
     }
 
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT, this.isInFlight);
+        if (targetLocation != null) {
+            NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
+        }
+
+        tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
+
         return tag;
     }
 
@@ -103,7 +123,7 @@ public class TardisControlManager {
                 if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER)  && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
 
                     // Check that the facing location !!!!!
-                    Direction[] directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+                    Direction[] directions = new Direction[]{startingLocation.rotation,startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
                     for (Direction dir:
                          directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
@@ -130,8 +150,10 @@ public class TardisControlManager {
                 // Check if the Shell can be physically in the location.
                 if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
 
+//
+
                     // Check that the facing location !!!!!
-                    Direction[] directions = new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+                    Direction[] directions = new Direction[]{startingLocation.rotation,startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
                     for (Direction dir:
                             directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
@@ -150,8 +172,6 @@ public class TardisControlManager {
         return null;
     }
 
-
-
     public void beginFlight() {
         if (isInFlight) {return;}
         System.out.println("TARDIS is taking off");
@@ -162,18 +182,16 @@ public class TardisControlManager {
         this.isInFlight = true;
         this.ticksInFlight = 0;
     }
-
     public void endFlight() {
         if (!isInFlight || ticksInFlight < (20 * 5)) {return;}
         this.isInFlight = false;
         this.ticksInFlight = 0;
 
-        // TEMP SET POSITION;
-        BlockPos landingLocation = new BlockPos(operator.getLevel().random.nextInt(1000), 64, operator.getLevel().random.nextInt(1000));
+        BlockPos landingLocation = this.targetLocation.position;
 
         TardisNavLocation location = null;
         while (location == null) {
-            location = getClosestValidPosition(new TardisNavLocation(landingLocation, Direction.NORTH, operator.getExteriorManager().getLevel()));
+            location = getClosestValidPosition(new TardisNavLocation(landingLocation, targetLocation.rotation, operator.getExteriorManager().getLevel()));
             if (location != null) {
                 break;
             } else {
@@ -186,6 +204,43 @@ public class TardisControlManager {
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 5, 1);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
     }
+
+    public void offsetTargetPositionX(float x) {
+        this.targetLocation.position = this.targetLocation.position.offset(x, 0,0);
+        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
+    }
+
+    public void offsetTargetPositionY(float y) {
+        this.targetLocation.position = this.targetLocation.position.offset(0, y,0);
+        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
+    }
+
+    public void offsetTargetPositionZ(float z) {
+        this.targetLocation.position = this.targetLocation.position.offset(0, 0,z);
+        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
+    }
+
+    public TardisNavLocation getTargetLocation(){
+        return this.targetLocation;
+    }
+
+    public void setTargetPosition(BlockPos pos) {
+        this.targetLocation.position = pos;
+        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
+    }
+
+    public int getCordIncrement() {
+        return this.coordinateIncrements[this.cordIncrementIndex];
+    }
+
+    public void cycleCordIncrement(int direction) {
+        int nextIndex = this.cordIncrementIndex + direction;
+        if (nextIndex < 0) nextIndex = this.coordinateIncrements.length - 1;
+        if (nextIndex >= this.coordinateIncrements.length) nextIndex = 0;
+
+        this.cordIncrementIndex = nextIndex;
+    }
+
 
 
 }

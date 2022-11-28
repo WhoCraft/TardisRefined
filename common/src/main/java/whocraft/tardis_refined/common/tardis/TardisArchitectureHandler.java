@@ -22,19 +22,22 @@ public class TardisArchitectureHandler {
         TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.name));
 
         // Fill the area out.
-        BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - 100, DESKTOP_CENTER_POS.getY() - 100, DESKTOP_CENTER_POS.getZ() - 100);
-        BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + 100, DESKTOP_CENTER_POS.getY() + 100, DESKTOP_CENTER_POS.getZ() + 100);
+        BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - 100, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - 100);
+        BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + 100, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + 100);
 
         for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
             BlockPos pos = iterator.next();
 
-            operator.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+            operator.setBlock(pos, Blocks.STONE.defaultBlockState(),1);
         }
 
 
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.resourceLocation);
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
+            structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
+
+            offsetPosition = calculateArcOffset(structure, new BlockPos(1000,100,0));
             structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
 
             // Assign the door from the created structure.

@@ -6,7 +6,11 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -73,13 +77,36 @@ public class ControlEntity extends PathfinderMob {
     }
 
     @Override
-    public InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
-        if (getLevel() instanceof ServerLevel serverLevel) {
-            TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                this.controlSpecification.control.getControl().onRightClick(cap);
-            });
+    public boolean hurt(DamageSource damageSource, float f) {
+        if (damageSource.getDirectEntity() instanceof Player player) {
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                    this.controlSpecification.control.getControl().onLeftClick(cap, this, player);
+
+                });
+
+                return true;
+            }
         }
-        return InteractionResult.SUCCESS;
+        return super.hurt(damageSource, f);
+    }
+
+    @Override
+    public InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+        if (interactionHand == InteractionHand.MAIN_HAND) {
+            if (getLevel() instanceof ServerLevel serverLevel) {
+                TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                    this.controlSpecification.control.getControl().onRightClick(cap, this, player);
+                });
+                return InteractionResult.SUCCESS;
+            }
+
+
+        }
+
+
+
+        return InteractionResult.FAIL;
     }
 
 

@@ -26,6 +26,7 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -70,6 +71,14 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_, ChunkAccess p_223053_) {
+        BlockPos cornerPos = new BlockPos(p_223053_.getPos().getMinBlockX(), p_223050_.getMinBuildHeight()+75, p_223053_.getPos().getMinBlockZ());
+        BlockPos lastCornerPos = new BlockPos(p_223053_.getPos().getMaxBlockX(), p_223050_.getMaxBuildHeight()-75, p_223053_.getPos().getMaxBlockZ());
+
+        for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(cornerPos, lastCornerPos).iterator(); iterator.hasNext();) {
+            BlockPos pos = iterator.next();
+
+            p_223053_.setBlockState(pos, Blocks.STONE.defaultBlockState(), true);
+        }
 
     }
 

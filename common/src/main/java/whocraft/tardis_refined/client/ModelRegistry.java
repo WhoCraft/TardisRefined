@@ -5,7 +5,9 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.console.CopperConsoleModel;
 import whocraft.tardis_refined.client.model.blockentity.console.FactoryConsoleModel;
+import whocraft.tardis_refined.client.model.blockentity.console.NukaConsoleModel;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.PoliceBoxDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.FactoryShellModel;
@@ -27,6 +29,8 @@ public class ModelRegistry {
     public static ModelLayerLocation ROOT_PLANT_STATE_FIVE;
 
     public static ModelLayerLocation FACTORY_CONSOLE;
+    public static ModelLayerLocation NUKA_CONSOLE;
+    public static ModelLayerLocation COPPER_CONSOLE;
 
     public static ModelLayerLocation ROOT_SHELL;
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -46,6 +50,8 @@ public class ModelRegistry {
         ROOT_PLANT_STATE_FIVE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_five"), "root_plant_five"), RootPlantStateFiveModel::createBodyLayer);
 
         FACTORY_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_console"), "factory_console"), FactoryConsoleModel::createBodyLayer);
+        NUKA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_console"), "nuka_console"), NukaConsoleModel::createBodyLayer);
+        COPPER_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "copper_console"), "copper_console"), CopperConsoleModel::createBodyLayer);
 
         ROOT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
