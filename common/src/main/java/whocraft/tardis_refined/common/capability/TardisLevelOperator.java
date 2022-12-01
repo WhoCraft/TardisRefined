@@ -12,14 +12,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
+import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
-import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Optional;
@@ -33,11 +34,14 @@ public class TardisLevelOperator {
     private TardisInteriorManager interiorManager;
     private TardisControlManager controlManager;
 
+    private TardisIntReactions tardisIntReactions;
+
     public TardisLevelOperator(Level level) {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
+        this.tardisIntReactions = new TardisIntReactions(level.dimension());
     }
 
     @ExpectPlatform
@@ -88,6 +92,11 @@ public class TardisLevelOperator {
             interiorManager.tick(level);
             controlManager.tick(level);
 
+            if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
+                if(level instanceof ServerLevel serverLevel) {
+                    tardisIntReactions.sync(serverLevel);
+                }
+            }
 
 
         }
@@ -95,8 +104,9 @@ public class TardisLevelOperator {
 
     /**
      * Moves the entity into the TARDIS. If the TARDIS has no door established, the player is sent to 0,0,0.
+     *
      * @param player Player Entity.
-     * **/
+     **/
     public void enterTardis(IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
 
         if (!setUp) {
@@ -111,20 +121,20 @@ public class TardisLevelOperator {
                 Direction dir = internalDoor.getEntryRotation();
 
                 ChunkAccess chunk = getLevel().getChunk(internalDoor.getDoorPosition());
-                if(getLevel() instanceof ServerLevel serverLevel) {
+                if (getLevel() instanceof ServerLevel serverLevel) {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
 
 
-                DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360/4));
+                DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360 / 4));
             } else {
 
                 // TODO: Scan for console units near the center to warp to.
 
                 ChunkAccess chunk = getLevel().getChunk(TardisArchitectureHandler.DESKTOP_CENTER_POS);
 
-                if(getLevel() instanceof ServerLevel serverLevel) {
+                if (getLevel() instanceof ServerLevel serverLevel) {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
@@ -140,11 +150,13 @@ public class TardisLevelOperator {
 
     public void exitTardis(Player player) {
 
-        if (!this.internalDoor.isOpen()) {return;}
+        if (!this.internalDoor.isOpen()) {
+            return;
+        }
 
         if (this.exteriorManager != null) {
             if (this.exteriorManager.getLastKnownLocation() != null) {
-                BlockPos targetPosition =  this.exteriorManager.getLastKnownLocation().position;
+                BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
                 ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().level;
 
                 ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().level.getChunk(targetPosition);
@@ -152,7 +164,7 @@ public class TardisLevelOperator {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (targetLevel.getBlockEntity(targetPosition) instanceof IExteriorShell shellBaseBlockEntity) {
                         BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
-                        DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().rotation.get2DDataValue() * (360/4));
+                        DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().rotation.get2DDataValue() * (360 / 4));
                     }
                 }
             }
@@ -171,8 +183,9 @@ public class TardisLevelOperator {
 
     /**
      * Sets the main operating door of an interior.
+     *
      * @param door Internal door object.
-     * **/
+     **/
     public void setInternalDoor(ITardisInternalDoor door) {
         if (this.internalDoor != null) {
             this.internalDoor.onSetMainDoor(false);
@@ -189,7 +202,12 @@ public class TardisLevelOperator {
         return this.internalDoor;
     }
 
-    public TardisInteriorManager getInteriorManager() {return this.interiorManager;}
-    public TardisControlManager getControlManager() {return this.controlManager;}
+    public TardisInteriorManager getInteriorManager() {
+        return this.interiorManager;
+    }
+
+    public TardisControlManager getControlManager() {
+        return this.controlManager;
+    }
 
 }
