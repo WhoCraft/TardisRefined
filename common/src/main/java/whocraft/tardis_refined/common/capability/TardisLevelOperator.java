@@ -87,6 +87,9 @@ public class TardisLevelOperator {
         if (!level.isClientSide()) {
             interiorManager.tick(level);
             controlManager.tick(level);
+
+
+
         }
     }
 
