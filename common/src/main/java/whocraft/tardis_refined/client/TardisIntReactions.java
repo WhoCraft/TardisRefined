@@ -55,11 +55,11 @@ public class TardisIntReactions {
             ROTOR_ANIMATION.stop();
         }
 
-        if (flying) {
+        if (flying && !ROTOR_ANIMATION.isStarted()) {
             ROTOR_ANIMATION.start(0);
         }
 
-        System.out.println("CAR!");
+        System.out.println(ROTOR_ANIMATION.isStarted());
     }
 
     protected static Map<ResourceKey<Level>, TardisIntReactions> DATA = Util.make(new Object2ObjectOpenHashMap<>(), (objectOpenHashMap) -> {

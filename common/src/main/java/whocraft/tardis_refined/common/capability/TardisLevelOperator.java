@@ -94,6 +94,7 @@ public class TardisLevelOperator {
 
             if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
                 if(level instanceof ServerLevel serverLevel) {
+                    tardisIntReactions.setFlying(controlManager.isInFlight());
                     tardisIntReactions.sync(serverLevel);
                 }
             }
