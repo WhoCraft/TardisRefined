@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.client.renderer.entity;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
@@ -13,6 +15,8 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
         super(context);
     }
 
-
-
+    @Override
+    protected boolean shouldShowName(ControlEntity entity) {
+        return (Minecraft.renderNames() && this.entityRenderDispatcher.crosshairPickEntity == entity);
+    }
 }

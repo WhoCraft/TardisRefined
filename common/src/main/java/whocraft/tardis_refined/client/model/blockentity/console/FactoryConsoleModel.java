@@ -9,14 +9,20 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
-public class FactoryConsoleModel extends HierarchicalModel {
+public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
 	private final ModelPart bone168;
+	private final ModelPart doorLever;
 
 	public FactoryConsoleModel(ModelPart root) {
+
 		this.bone168 = root.getChild("bone168");
+		this.doorLever = root.getChild("bone168").getChild("controls").getChild("north").getChild("bone159").getChild("door_lever");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -373,7 +379,7 @@ public class FactoryConsoleModel extends HierarchicalModel {
 		.texOffs(29, 45).addBox(2.5F, -0.1F, 0.75F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 		.texOffs(29, 45).mirror().addBox(-4.5F, -0.1F, 0.75F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -1.5F, -17.0F, 0.4363F, 0.0F, 0.0F));
 
-		PartDefinition lever = bone159.addOrReplaceChild("lever", CubeListBuilder.create().texOffs(9, 13).addBox(-0.5F, -2.0F, -0.25F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.75F, 2.0F, -0.6109F, 0.0F, 0.0F));
+		PartDefinition lever = bone159.addOrReplaceChild("door_lever", CubeListBuilder.create().texOffs(9, 13).addBox(-0.5F, -2.0F, -0.25F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.75F, 2.0F, -0.6109F, 0.0F, 0.0F));
 
 		PartDefinition switchboard = bone159.addOrReplaceChild("switchboard", CubeListBuilder.create().texOffs(0, 23).addBox(-2.25F, 0.0F, 0.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.75F, 5.25F, 0.3054F, 0.0F, 0.0F));
 
@@ -558,5 +564,13 @@ public class FactoryConsoleModel extends HierarchicalModel {
 	@Override
 	public void setupAnim(Entity entity, float f, float g, float h, float i, float j) {
 
+	}
+
+	@Override
+	public void renderConsole(GlobalConsoleBlockEntity entity) {
+//		TardisLevelOperator.get((ServerLevel) entity.getLevel()).ifPresent(cap -> {
+//				System.out.println("Printing!!!!");
+//			}
+//		);
 	}
 }

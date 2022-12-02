@@ -5,16 +5,15 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.CopperConsoleModel;
-import whocraft.tardis_refined.client.model.blockentity.console.FactoryConsoleModel;
-import whocraft.tardis_refined.client.model.blockentity.console.NukaConsoleModel;
+import whocraft.tardis_refined.client.model.blockentity.door.BulkHeadDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
+import whocraft.tardis_refined.client.model.blockentity.console.*;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.PoliceBoxDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.FactoryShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.rootplant.*;
-import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 
 import java.util.function.Supplier;
@@ -31,6 +30,8 @@ public class ModelRegistry {
     public static ModelLayerLocation FACTORY_CONSOLE;
     public static ModelLayerLocation NUKA_CONSOLE;
     public static ModelLayerLocation COPPER_CONSOLE;
+    public static ModelLayerLocation CORAL_CONSOLE;
+    public static ModelLayerLocation TOYOTA_CONSOLE;
 
     public static ModelLayerLocation ROOT_SHELL;
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -40,6 +41,9 @@ public class ModelRegistry {
 
     public static ModelLayerLocation POLICE_BOX_SHELL;
     public static ModelLayerLocation POLICE_BOX_DOOR;
+
+    public static ModelLayerLocation ARS_EGG;
+    public static ModelLayerLocation BULK_HEAD_DOOR;
 
 
     public static void init() {
@@ -52,6 +56,8 @@ public class ModelRegistry {
         FACTORY_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_console"), "factory_console"), FactoryConsoleModel::createBodyLayer);
         NUKA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_console"), "nuka_console"), NukaConsoleModel::createBodyLayer);
         COPPER_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "copper_console"), "copper_console"), CopperConsoleModel::createBodyLayer);
+        CORAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "coral_console"), "coral_console"), CoralConsoleModel::createBodyLayer);
+        TOYOTA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "toyota_console"), "toyota_console"), ToyotaConsoleModel::createBodyLayer);
 
         ROOT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
@@ -61,6 +67,9 @@ public class ModelRegistry {
 
         POLICE_BOX_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "police_box_shell"), "police_box_shell"), PoliceBoxModel::createBodyLayer);
         POLICE_BOX_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "police_box_door"), "police_box_door"), PoliceBoxDoorModel::createBodyLayer);
+
+        ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
+        BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
     }
 
     @ExpectPlatform

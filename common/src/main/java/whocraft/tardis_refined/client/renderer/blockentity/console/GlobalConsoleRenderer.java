@@ -12,9 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.console.CopperConsoleModel;
-import whocraft.tardis_refined.client.model.blockentity.console.FactoryConsoleModel;
-import whocraft.tardis_refined.client.model.blockentity.console.NukaConsoleModel;
+import whocraft.tardis_refined.client.model.blockentity.console.*;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -30,10 +28,18 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     private static CopperConsoleModel copperConsoleModel;
     private static ResourceLocation copperConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper_console.png");
 
+    private static CoralConsoleModel coralConsoleModel;
+    private static ResourceLocation coralConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral_console.png");
+
+    private static ToyotaConsoleModel toyotaConsoleModel;
+    private static ResourceLocation toyotaConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota_console.png");
+
     public GlobalConsoleRenderer(BlockEntityRendererProvider.Context context) {
         factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
         nukaConsoleModel = new NukaConsoleModel(context.bakeLayer((ModelRegistry.NUKA_CONSOLE)));
         copperConsoleModel = new CopperConsoleModel(context.bakeLayer((ModelRegistry.COPPER_CONSOLE)));
+        coralConsoleModel = new CoralConsoleModel(context.bakeLayer((ModelRegistry.CORAL_CONSOLE)));
+        toyotaConsoleModel = new ToyotaConsoleModel(context.bakeLayer((ModelRegistry.TOYOTA_CONSOLE)));
     }
 
     @Override
@@ -45,6 +51,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
         if (theme == ConsoleTheme.FACTORY) {
+            factoryConsoleModel.renderConsole(blockEntity);
             factoryConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(factoryConsoleBaseTexture)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
@@ -58,6 +65,17 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             copperConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(copperConsoleBaseTexture)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
+
+        if (theme == ConsoleTheme.CORAL) {
+            coralConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(coralConsoleBaseTexture)),
+                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        }
+
+        if (theme == ConsoleTheme.TOYOTA) {
+            toyotaConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(toyotaConsoleBaseTexture)),
+                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        }
+
 
         poseStack.popPose();
     }

@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.entity;
 
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -9,7 +10,6 @@ import net.minecraft.world.InteractionResult;
 
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
 
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -36,6 +36,7 @@ public class ControlEntity extends PathfinderMob {
         this.controlSpecification = consoleControl;
         this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale)));
         this.refreshDimensions();
+        this.setCustomName(Component.translatable(consoleControl.control.getLangId()));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -108,8 +109,6 @@ public class ControlEntity extends PathfinderMob {
 
         return InteractionResult.FAIL;
     }
-
-
 
 
     @Override
