@@ -53,7 +53,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
         if (theme == ConsoleTheme.FACTORY) {
-            factoryConsoleModel.renderConsole(blockEntity);
+            factoryConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(factoryConsoleBaseTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
 
         if (theme == ConsoleTheme.NUKA) {

@@ -71,13 +71,6 @@ public class TardisIntReactions {
      * @param serverLevel The server level to sync the Tardis with.
      */
     public void sync(ServerLevel serverLevel) {
-        // Check if the current code is running on the server-side
-        if (Platform.isClient()) {
-            // If the code is running on the client-side, log a warning message and return
-            TardisRefined.LOGGER.warn("sync() was called on the client-side. This may cause the game to crash.");
-            return;
-        }
-
         // Send a SyncIntReactionsMessage to the specified server level, using the Tardis's current level key
         // and serialized NBT data
         TardisNetwork.NETWORK.sendToDimension(serverLevel, new SyncIntReactionsMessage(getLevelKey(), serializeNBT()));
@@ -98,6 +91,8 @@ public class TardisIntReactions {
             // If the Tardis is flying but the rotor animation is not started, start the animation
             ROTOR_ANIMATION.start(0);
         }
+
+        System.out.println(ROTOR_ANIMATION.isStarted());
     }
 
     // A map that stores information about Tardis instances, keyed by level resource key
