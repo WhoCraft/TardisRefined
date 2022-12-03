@@ -23,18 +23,43 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 	private final ModelPart bone168;
 	private final ModelPart doorLever;
 	private final ModelPart root;
+	private final ModelPart throttleLever;
 
 
-	public static final AnimationDefinition ROTOR = AnimationDefinition.Builder.withLength(1.5f).looping()
+	public static final AnimationDefinition ROTOR_LOOP = AnimationDefinition.Builder.withLength(6.367666f).looping()
 			.addAnimation("rotorhead",
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
-							new Keyframe(0f, KeyframeAnimations.posVec(0f, -5f, 0f),
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, -1f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, 2.25f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.1676665f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.2f, KeyframeAnimations.posVec(0f, -1f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.2f, KeyframeAnimations.posVec(0f, 2.25f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6.367666f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("rotorhead",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(0.5f, KeyframeAnimations.posVec(0f, 2f, 0f),
+							new Keyframe(6.367666f, KeyframeAnimations.degreeVec(0f, 359f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("balls",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(1f, KeyframeAnimations.posVec(0f, -5f, 0f),
+							new Keyframe(6.367666f, KeyframeAnimations.degreeVec(0f, 360 * 3 - 1f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("mirror",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(1.5f, KeyframeAnimations.posVec(0f, 2f, 0f),
+							new Keyframe(6.367666f, KeyframeAnimations.degreeVec(0f, -359 * 2f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
 
 	public FactoryConsoleModel(ModelPart root) {
@@ -42,6 +67,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 		this.bone168 = root.getChild("bone168");
 		this.doorLever = root.getChild("bone168").getChild("controls").getChild("north").getChild("bone159").getChild("door_lever");
 		this.root = root;
+		this.throttleLever = bone168.getChild("controls").getChild("north_right").getChild("bone169").getChild("lever2");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -580,7 +606,11 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
-		this.animate(TardisIntReactions.getInstance(level.dimension()).ROTOR_ANIMATION, ROTOR, Minecraft.getInstance().player.tickCount);
+		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
+		this.animate(reactions.ROTOR_ANIMATION, ROTOR_LOOP, Minecraft.getInstance().player.tickCount);
+
+		this.throttleLever.xRot = (reactions.isFlying()) ? -155: -125;
+
 
 		bone168.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
