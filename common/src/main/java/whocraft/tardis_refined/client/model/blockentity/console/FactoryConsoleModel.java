@@ -1,10 +1,12 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.1
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -13,16 +15,33 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.TardisIntReactions;
 
 public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
 	private final ModelPart bone168;
 	private final ModelPart doorLever;
+	private final ModelPart root;
+
+
+	public static final AnimationDefinition ROTOR = AnimationDefinition.Builder.withLength(1.5f).looping()
+			.addAnimation("rotorhead",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, -5f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.5f, KeyframeAnimations.posVec(0f, 2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, -5f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.5f, KeyframeAnimations.posVec(0f, 2f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
 
 	public FactoryConsoleModel(ModelPart root) {
 
 		this.bone168 = root.getChild("bone168");
 		this.doorLever = root.getChild("bone168").getChild("controls").getChild("north").getChild("bone159").getChild("door_lever");
+		this.root = root;
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -553,12 +572,23 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		root().getAllParts().forEach(ModelPart::resetPose);
 		bone168.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
+
+	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		root().getAllParts().forEach(ModelPart::resetPose);
+
+		this.animate(TardisIntReactions.getInstance(level.dimension()).ROTOR_ANIMATION, ROTOR, Minecraft.getInstance().player.tickCount);
+
+		bone168.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+
 	@Override
 	public ModelPart root() {
-		return null;
+		return root;
 	}
 
 	@Override
@@ -568,9 +598,9 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 
 	@Override
 	public void renderConsole(GlobalConsoleBlockEntity entity) {
-//		TardisLevelOperator.get((ServerLevel) entity.getLevel()).ifPresent(cap -> {
-//				System.out.println("Printing!!!!");
-//			}
-//		);
+	/*	TardisLevelOperator.get((ServerLevel) entity.getLevel()).ifPresent(cap -> {
+				System.out.println("Printing!!!!");
+			}
+		);*/
 	}
 }

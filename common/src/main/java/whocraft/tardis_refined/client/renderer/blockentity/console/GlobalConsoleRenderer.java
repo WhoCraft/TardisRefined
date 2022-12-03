@@ -17,6 +17,8 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
+import java.util.Objects;
+
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
     private static FactoryConsoleModel factoryConsoleModel;
@@ -51,9 +53,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
         if (theme == ConsoleTheme.FACTORY) {
-            factoryConsoleModel.renderConsole(blockEntity);
-            factoryConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(factoryConsoleBaseTexture)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            factoryConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(factoryConsoleBaseTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
 
         if (theme == ConsoleTheme.NUKA) {
