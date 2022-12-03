@@ -26,6 +26,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     public GlobalConsoleBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(CONSOLE, ConsoleTheme.FACTORY));
+        System.out.println("PLACED BITCH");
     }
 
     @Nullable
@@ -47,7 +48,14 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+
+        if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+            globalConsoleBlock.spawnControlEntities();
+            System.out.println("PLACED BITCH");
+        }
+
         super.onPlace(blockState, level, blockPos, blockState2, bl);
+
     }
 
     @Override
@@ -58,4 +66,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
             }
         };
     }
+
+
 }

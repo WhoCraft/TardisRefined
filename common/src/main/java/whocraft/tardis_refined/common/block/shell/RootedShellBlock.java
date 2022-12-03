@@ -26,7 +26,7 @@ public class RootedShellBlock extends ShellBaseBlock {
     public RootedShellBlock(BlockBehaviour.Properties properties) {
 
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true).setValue(REGEN, false));
     }
 
     @Nullable
@@ -38,6 +38,6 @@ public class RootedShellBlock extends ShellBaseBlock {
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, true);
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, true).setValue(REGEN, false);
     }
 }

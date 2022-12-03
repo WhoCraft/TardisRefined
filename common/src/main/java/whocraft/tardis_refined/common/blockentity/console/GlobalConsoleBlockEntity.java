@@ -73,6 +73,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
         if (this.isDirty) {
-            spawnControlEntities();}
+           // spawnControlEntities();
+            }
     }
 }

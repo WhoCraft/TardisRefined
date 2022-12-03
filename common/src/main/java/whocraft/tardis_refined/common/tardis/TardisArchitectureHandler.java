@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class TardisArchitectureHandler {
 
     public static final BlockPos DESKTOP_CENTER_POS = new BlockPos(0, 100, 0);
+    public static final BlockPos CORRIDOR_ENTRY_POS = new BlockPos(1000, 100, 0);
 
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
         TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.name));
@@ -37,16 +39,39 @@ public class TardisArchitectureHandler {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
             structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
 
-            offsetPosition = calculateArcOffset(structure, new BlockPos(1000,100,0));
-            structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
-
             // Assign the door from the created structure.
-            assignInteriorDoorFromGeneration(structure, operator);
-
+            setInteriorDoorFromStructure(structure, operator);
         });
     }
 
-    public static void assignInteriorDoorFromGeneration(StructureTemplate template, ServerLevel level) {
+    public static void generateEssentialCorridors(ServerLevel operator) {
+        // Generate corridor hub
+        Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub_roomless"));
+        structureNBT.ifPresent(structure -> {
+            BlockPos offsetPosition = new BlockPos(13, 28, 5);
+            structure.placeInWorld(operator.getLevel(), CORRIDOR_ENTRY_POS.subtract(offsetPosition), CORRIDOR_ENTRY_POS.subtract(offsetPosition), new StructurePlaceSettings(), operator.getLevel().random, 3);
+        });
+
+        generateArsTree(operator);
+
+        // Generate workshop.
+        structureNBT = operator.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/workshop"));
+        structureNBT.ifPresent(structure -> {
+            BlockPos position = new BlockPos(977,99,9);
+            structure.placeInWorld(operator.getLevel(), position, position, new StructurePlaceSettings(), operator.getLevel().random, 3);
+        });
+
+    }
+
+    public static void generateArsTree(ServerLevel level) {
+        Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/room_ars_stage_one"));
+        structureNBT.ifPresent(structure -> {
+            BlockPos position = new BlockPos(1011,97,3);
+            structure.placeInWorld(level.getLevel(), position, position, new StructurePlaceSettings(), level.getLevel().random, 3);
+        });
+    }
+
+    public static void setInteriorDoorFromStructure(StructureTemplate template, ServerLevel level) {
 
         BlockPos minPos = calculateArcOffset(template, DESKTOP_CENTER_POS);
         BlockPos maxPos = new BlockPos(minPos.getX() + template.getSize().getX(),

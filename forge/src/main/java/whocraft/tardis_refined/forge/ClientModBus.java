@@ -12,8 +12,10 @@ import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.forge.ModelRegistryImpl;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
@@ -37,6 +39,8 @@ public class ClientModBus {
         BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
         BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
         BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
 
         EntityRenderers.register(EntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
     }

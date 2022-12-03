@@ -4,17 +4,19 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
+import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.common.block.RootPlantBlock;
+import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -55,10 +57,28 @@ public class BlockRegistry {
     // Roots
     public static final RegistrySupplier<RootPlantBlock> ROOT_PLANT_BLOCK = register("root_plant", () -> new RootPlantBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3,3).sound(SoundType.CORAL_BLOCK)), ItemRegistry.MAIN_TAB, true);
 
+    public static final RegistrySupplier<BulkHeadDoorBlock> BULK_HEAD_DOOR = register("bulk_head_door", () -> new BulkHeadDoorBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3,3).sound(SoundType.CORAL_BLOCK)), ItemRegistry.MAIN_TAB, true);
+
+    //////////// REMOVE THESE BLOCKS FROM CREATIVE TABS BEFORE PRODUCTION
+
+    // ARS Tree
+    public static final RegistrySupplier<ArsEggBlock> ARS_EGG = register("ars_egg", () -> new ArsEggBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3,3).sound(SoundType.AZALEA_LEAVES).lightLevel((x) -> {
+        return 12;
+    })), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new LeavesBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3,3).sound(SoundType.AZALEA_LEAVES)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<SlabBlock> ARS_LEAVES_SLAB = register("ars_leaves_slab", () -> new SlabBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3,3).sound(SoundType.AZALEA_LEAVES)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<FenceBlock> ARS_LEAVES_FENCE = register("ars_leaves_fence", () -> new FenceBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3,3).sound(SoundType.AZALEA_LEAVES)), ItemRegistry.MAIN_TAB, true);
+
+    ///////////////////////////////////////////////////////////////////////////////
+
     // Devices
     public static final RegistrySupplier<TerraformerBlock> TERRAFORMER_BLOCK = register("terraformer", () -> new TerraformerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3,3).sound(SoundType.ANVIL).noOcclusion()), ItemRegistry.MAIN_TAB, true);
 
     // Console
-    public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000,1000).sound(SoundType.ANVIL).noOcclusion()), null, true);
+    public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000,1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
+        return 15;
+    })), null, true);
+
+
 
 }

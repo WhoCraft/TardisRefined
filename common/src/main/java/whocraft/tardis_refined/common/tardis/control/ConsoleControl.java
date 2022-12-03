@@ -6,21 +6,23 @@ import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
 public enum ConsoleControl implements StringRepresentable {
 
-    DOOR_TOGGLE("door_toggle", new ToggleDoorControl()),
-    X("x_cord", new CoordinateControl(CoordinateButton.X)),
-    Y("y_cord", new CoordinateControl(CoordinateButton.Y)),
-    Z("z_cord", new CoordinateControl(CoordinateButton.Z)),
-    INCREMENT("increment", new IncrementControl()),
-    ROTATE("rotate", new RotationControl()),
-    RANDOM("random", new RandomControl()),
-    THROTTLE("throttle", new ThrottleControl());
+    DOOR_TOGGLE("door_toggle", new ToggleDoorControl(), "control.tardis_refined.door_toggle"),
+    X("x_cord", new CoordinateControl(CoordinateButton.X), "control.tardis_refined.cord_x"),
+    Y("y_cord", new CoordinateControl(CoordinateButton.Y), "control.tardis_refined.cord_y"),
+    Z("z_cord", new CoordinateControl(CoordinateButton.Z), "control.tardis_refined.cord_z"),
+    INCREMENT("increment", new IncrementControl(), "control.tardis_refined.increment"),
+    ROTATE("rotate", new RotationControl(), "control.tardis_refined.rotate"),
+    RANDOM("random", new RandomControl(), "control.tardis_refined.random"),
+    THROTTLE("throttle", new ThrottleControl(), "control.tardis_refined.throttle");
 
     private String id;
     private IControl control;
+    private String langId;
 
-    ConsoleControl(String id, IControl control) {
+    ConsoleControl(String id, IControl control, String langId) {
         this.id = id;
         this.control = control;
+        this.langId = langId;
     }
 
     @Override
@@ -31,4 +33,6 @@ public enum ConsoleControl implements StringRepresentable {
     public IControl getControl() {
         return control;
     }
+
+    public String getLangId() {return langId;}
 }

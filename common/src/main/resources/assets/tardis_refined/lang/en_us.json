@@ -1,0 +1,11 @@
+{
+    "entity.tardis_refined.console_control": "Generic Control",
+    "control.tardis_refined.door_toggle": "Door Toggle",
+    "control.tardis_refined.cord_x": "X",
+    "control.tardis_refined.cord_y": "Y",
+    "control.tardis_refined.cord_z": "Z",
+    "control.tardis_refined.increment": "Increment",
+    "control.tardis_refined.rotate": "Direction",
+    "control.tardis_refined.random": "Randomizer",
+    "control.tardis_refined.throttle": "Throttle"
+}
