@@ -92,9 +92,14 @@ public class TardisLevelOperator {
             interiorManager.tick(level);
             controlManager.tick(level);
 
+            // If the Tardis's flying status does not match the control manager's in-flight status
             if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
-                if(level instanceof ServerLevel serverLevel) {
+                // If the current level is a ServerLevel instance
+                if (level instanceof ServerLevel serverLevel) {
+                    // Set the Tardis's flying status to match the control manager's in-flight status
                     tardisIntReactions.setFlying(controlManager.isInFlight());
+
+                    // Synchronize the Tardis's data across the server
                     tardisIntReactions.sync(serverLevel);
                 }
             }

@@ -40,8 +40,13 @@ public class SyncIntReactionsMessage extends MessageS2C {
 
     @Override
     public void handle() {
+        // Retrieve the TardisIntReactions instance for the current level
         TardisIntReactions data = TardisIntReactions.getInstance(level);
+
+        // Deserialize the Tardis instance from the given CompoundTag
         data.deserializeNBT(compoundTag);
+
+        // Update the Tardis instance
         data.update();
     }
 }
