@@ -25,6 +25,7 @@ public class TardisInteriorManager {
     private TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
+    private boolean hasGeneratedCorridors = false;
     private int interiorGenerationCooldown = 0;
 
     private DesktopTheme preparedTheme;
@@ -49,6 +50,7 @@ public class TardisInteriorManager {
         tag.putBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE, this.isWaitingToGenerate);
         tag.putBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP, this.isGeneratingDesktop);
         tag.putInt(NbtConstants.TARDIS_IM_GENERATION_COOLDOWN, this.interiorGenerationCooldown);
+        tag.putBoolean(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS, this.hasGeneratedCorridors);
         if (this.preparedTheme != null) {
             tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme.id);
         } else {
@@ -62,6 +64,7 @@ public class TardisInteriorManager {
         this.isWaitingToGenerate = tag.getBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE);
         this.isGeneratingDesktop = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP);
         this.interiorGenerationCooldown = tag.getInt(NbtConstants.TARDIS_IM_GENERATION_COOLDOWN);
+        this.hasGeneratedCorridors = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS);
         this.preparedTheme = TardisDesktops.getDesktopThemeById(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME));
     }
 
@@ -100,8 +103,17 @@ public class TardisInteriorManager {
     }
 
     public void generateDesktop(DesktopTheme theme) {
+
+        // Has generated before.
         if (this.operator.getInternalDoor() != null) {
             this.operator.getLevel().setBlockAndUpdate(this.operator.getInternalDoor().getDoorPosition(), Blocks.AIR.defaultBlockState()); // Remove the already existing door.
+
+            if (!this.hasGeneratedCorridors) {
+                if(operator.getLevel() instanceof ServerLevel serverLevel){
+                    TardisArchitectureHandler.generateEssentialCorridors(serverLevel);
+                    this.hasGeneratedCorridors = true;
+                }
+            }
         }
 
         if(operator.getLevel() instanceof ServerLevel serverLevel){

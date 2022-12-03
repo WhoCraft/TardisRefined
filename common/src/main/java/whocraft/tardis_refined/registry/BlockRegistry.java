@@ -75,7 +75,9 @@ public class BlockRegistry {
     public static final RegistrySupplier<TerraformerBlock> TERRAFORMER_BLOCK = register("terraformer", () -> new TerraformerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3,3).sound(SoundType.ANVIL).noOcclusion()), ItemRegistry.MAIN_TAB, true);
 
     // Console
-    public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000,1000).sound(SoundType.ANVIL).noOcclusion()), null, true);
+    public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000,1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
+        return 15;
+    })), null, true);
 
 
 

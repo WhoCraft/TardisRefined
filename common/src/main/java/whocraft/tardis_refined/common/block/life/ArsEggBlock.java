@@ -22,8 +22,4 @@ public class ArsEggBlock extends BaseEntityBlock {
         return new ArsEggBlockEntity(blockPos, blockState);
     }
 
-
-    public int getLightLevel() {
-        return 15;
-    }
 }
