@@ -32,12 +32,11 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void spawnControlEntities() {
         // Things needed.
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
-
         BlockPos currentBlockPos = getBlockPos();
 
         if (getLevel() instanceof ServerLevel level) {
 
+            killControls();
             ConsoleTheme theme = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
             ControlSpecification[] controls = theme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
@@ -47,8 +46,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 controlEntity.setControlSpecification(control);
                 System.out.println("Offset: " + control.offsetPosition);
 
-                Vector3f location = new Vector3f(((float)currentBlockPos.getX() + (float)control.offsetPosition.x() + 0.5f), (float)getBlockPos().getY() + (float)control.offsetPosition.y()+ 0.5f,
-                        (float)getBlockPos().getZ() + (float)control.offsetPosition.z()+ 0.5f);
+                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + (float) control.offsetPosition.x() + 0.5f), (float) getBlockPos().getY() + (float) control.offsetPosition.y() + 0.5f,
+                        (float) getBlockPos().getZ() + (float) control.offsetPosition.z() + 0.5f);
 
                 System.out.println("BlockPos: " + location);
 
@@ -56,24 +55,32 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 level.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
             });
+
+            this.isDirty = false;
         }
-
-
-
-        this.isDirty = false;
     }
+
+    public void markDirty() {
+        this.isDirty = true;
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        controlEntityList.forEach(Entity::kill);
+        killControls();
+    }
+
+    public void killControls() {
+        controlEntityList.forEach(x -> {
+            x.teleportTo(0, -1000, 0);
+            x.kill();
+        });
     }
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
         if (this.isDirty) {
-           // spawnControlEntities();
-            }
+            spawnControlEntities();
+        }
     }
 }

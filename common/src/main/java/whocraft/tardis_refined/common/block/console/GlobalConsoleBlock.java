@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -46,17 +47,20 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         return super.getStateForPlacement(blockPlaceContext).setValue(CONSOLE, ConsoleTheme.FACTORY);
     }
 
+
+
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
         if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-            globalConsoleBlock.spawnControlEntities();
-            System.out.println("PLACED BITCH");
+            globalConsoleBlock.markDirty();
         }
 
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
     }
+
+
 
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {

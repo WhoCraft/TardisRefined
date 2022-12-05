@@ -24,36 +24,36 @@ public enum ConsoleTheme implements StringRepresentable {
     }),
 
     COPPER("copper", new ControlSpecification[] {
-            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0,0.6f,-1), new BlockPos(0.125f, 0.1875f, 0.1875f)),
-            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.85f,0.55f,-0.425f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.X, new Vector3f(-.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.Y, new Vector3f(-.275f, .54f, 0.875f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.Z, new Vector3f(-.275f, .5f, 1), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(1f, 0.525f, 0.215f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.06f, .5f, 1f), new BlockPos(0.1f, 0.1f, 0.1f))
+            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(-0.16f, 0.65f, -1.2f), new BlockPos(0.125f, 0.1875f, 0.1875f)),
+            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.175f, 0.65f, -1.2f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.X, new Vector3f(0.725f, 0.95f, 0.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Y, new Vector3f(.725f, 0.95f, 0), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Z, new Vector3f(0.725f, 0.95f, -0.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(1.22f, 0.45f, -0.25f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(0.775f, 0.55f, 0.95f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.7f, 0.25f, -1.2f), new BlockPos(0.1f, 0.1f, 0.1f))
     }),
 
     CORAL("coral", new ControlSpecification[] {
-            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0,0.6f,-1), new BlockPos(0.125f, 0.1875f, 0.1875f)),
-            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.85f,0.55f,-0.425f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.X, new Vector3f(-.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.Y, new Vector3f(-.275f, .54f, 0.875f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.Z, new Vector3f(-.275f, .5f, 1), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(1f, 0.525f, 0.215f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.06f, .5f, 1f), new BlockPos(0.1f, 0.1f, 0.1f))
+            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0.9f, 0.45f ,-1), new BlockPos(0.125f, 0.1875f, 0.1875f)),
+            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.615f, 0.6f, -1.1f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.X, new Vector3f(-0.25f, 0.5f, 1.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Y, new Vector3f(0, 0.5f, 1.05f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Z, new Vector3f(0.25f, 0.5f, 1.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.075f, 0.65f, 0.8f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-.35f, 0.5f, -1.25f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.45f, 0.6f, 0.9f), new BlockPos(0.1f, 0.1f, 0.1f))
     }),
 
     TOYOTA("toyota", new ControlSpecification[] {
-            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0,0.6f,-1), new BlockPos(0.125f, 0.1875f, 0.1875f)),
-            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.85f,0.55f,-0.425f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.X, new Vector3f(-.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.Y, new Vector3f(-.275f, .54f, 0.875f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.Z, new Vector3f(-.275f, .5f, 1), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(1f, 0.525f, 0.215f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.06f, .5f, 1f), new BlockPos(0.1f, 0.1f, 0.1f))
+            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0f, 0.65f, -0.65f), new BlockPos(0.125f, 0.1875f, 0.1875f)),
+            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.31f, 0.525f, 1f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.X, new Vector3f(-0.1f, 0.6f, 0.8f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Y, new Vector3f(0f, 0.6f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Z, new Vector3f(0.1f, 0.6f, 0.8f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.7f, 0.65f, 0.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-1.05f, 0.5f, -0.175f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.6f, 0.55f, -0.7f), new BlockPos(0.1f, 0.1f, 0.1f))
     }),
 
     NUKA("nuka", new ControlSpecification[] {
