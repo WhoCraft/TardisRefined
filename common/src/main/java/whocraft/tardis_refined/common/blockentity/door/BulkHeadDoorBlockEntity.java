@@ -22,19 +22,27 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BulkHeadDoorBlockEntity blockEntity) {
-        System.out.println("PING");
-        Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);
-        System.out.println(player);
-        if (player != null) {
-            if (!blockState.getValue(BulkHeadDoorBlock.OPEN)) {
-                level.playSound(null, blockPos, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
-                level.setBlock(blockPos, blockState.setValue(BulkHeadDoorBlock.OPEN, true), 2);
-            }
-        } else {
-            if (blockState.getValue(BulkHeadDoorBlock.OPEN)) {
-                level.playSound(null, blockPos, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 1, 1);
-                level.setBlock(blockPos, blockState.setValue(BulkHeadDoorBlock.OPEN, false), 2);
+        if (!blockState.getValue(BulkHeadDoorBlock.LOCKED)) {
+            Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);
+            if (player != null) {
+                if (!blockState.getValue(BulkHeadDoorBlock.OPEN)) {
+                    openDoor(level,blockPos,blockState);
+                }
+            } else {
+                if (blockState.getValue(BulkHeadDoorBlock.OPEN)) {
+                    closeDoor(level,blockPos,blockState);
+                }
             }
         }
+    }
+
+    public void openDoor(Level level, BlockPos blockPos, BlockState blockState) {
+        level.playSound(null, blockPos, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
+        level.setBlock(blockPos, blockState.setValue(BulkHeadDoorBlock.OPEN, true), 2);
+    }
+
+    public void closeDoor(Level level, BlockPos blockPos, BlockState blockState) {
+        level.playSound(null, blockPos, SoundEvents.PISTON_EXTEND, SoundSource.BLOCKS, 1, 1);
+        level.setBlock(blockPos, blockState.setValue(BulkHeadDoorBlock.OPEN, false), 2);
     }
 }
