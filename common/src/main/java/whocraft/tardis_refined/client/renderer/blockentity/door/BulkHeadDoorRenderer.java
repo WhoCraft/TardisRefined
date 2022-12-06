@@ -18,8 +18,8 @@ import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 
 public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlockEntity>, BlockEntityRendererProvider<BulkHeadDoorBlockEntity> {
 
-    private BulkHeadDoorModel bulkHeadDoorModel;
-    private ResourceLocation bulkHeadDoorTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/door/bulk_head_door.png");
+    private final BulkHeadDoorModel bulkHeadDoorModel;
+    private final ResourceLocation bulkHeadDoorTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/door/bulk_head_door.png");
 
     public BulkHeadDoorRenderer(BlockEntityRendererProvider.Context context) {
         bulkHeadDoorModel = new BulkHeadDoorModel(context.bakeLayer((ModelRegistry.BULK_HEAD_DOOR)));
@@ -31,11 +31,10 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
-        float rotation = ((Direction)blockstate.getValue(GlobalDoorBlock.FACING)).toYRot();
+        float rotation = blockstate.getValue(GlobalDoorBlock.FACING).toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         bulkHeadDoorModel.setDoorPosition(blockstate);
-        bulkHeadDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(bulkHeadDoorTexture)),
-                i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        bulkHeadDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(bulkHeadDoorTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
 
