@@ -20,6 +20,19 @@ import whocraft.tardis_refined.client.TardisIntReactions;
 
 public class CopperConsoleModel extends HierarchicalModel {
 
+	public static final AnimationDefinition COPPER_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.2916765f).looping()
+			.addAnimation("rotor",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.8343334f, KeyframeAnimations.posVec(0f, -5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.5416767f, KeyframeAnimations.posVec(0f, 2f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.2916765f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
+
+	private final ModelPart modelRoot;
 	private final ModelPart root;
 	private final ModelPart rotor;
 	private final ModelPart misc;
@@ -33,21 +46,10 @@ public class CopperConsoleModel extends HierarchicalModel {
 	private final ModelPart south_right;
 	private final ModelPart south_left;
 	private final ModelPart west;
-
-
-	public static final AnimationDefinition COPPER_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.2916765f).looping()
-			.addAnimation("rotor",
-					new AnimationChannel(AnimationChannel.Targets.POSITION,
-							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(0.8343334f, KeyframeAnimations.posVec(0f, -5f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.5416767f, KeyframeAnimations.posVec(0f, 2f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.2916765f, KeyframeAnimations.posVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR))).build();
+	private final ModelPart throttle;
 
 	public CopperConsoleModel(ModelPart root) {
+		this.modelRoot = root;
 		this.root = root.getChild("root");
 		this.rotor = root.getChild("rotor");
 		this.misc = root.getChild("misc");
@@ -61,6 +63,7 @@ public class CopperConsoleModel extends HierarchicalModel {
 		this.south_right = root.getChild("south_right");
 		this.south_left = root.getChild("south_left");
 		this.west = root.getChild("west");
+		this.throttle = north_right.getChild("bone203").getChild("bone213").getChild("main_lever_control2");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -995,7 +998,7 @@ public class CopperConsoleModel extends HierarchicalModel {
 
 	@Override
 	public ModelPart root() {
-		return root;
+		return modelRoot;
 	}
 
 	@Override
@@ -1004,35 +1007,14 @@ public class CopperConsoleModel extends HierarchicalModel {
 	}
 
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		root.getAllParts().forEach(ModelPart::resetPose);
-		rotor.getAllParts().forEach(ModelPart::resetPose);
-		misc.getAllParts().forEach(ModelPart::resetPose);
-		misc2.getAllParts().forEach(ModelPart::resetPose);
-		misc3.getAllParts().forEach(ModelPart::resetPose);
-		misc4.getAllParts().forEach(ModelPart::resetPose);
-		misc5.getAllParts().forEach(ModelPart::resetPose);
-		north_left.getAllParts().forEach(ModelPart::resetPose);
-		north_right.getAllParts().forEach(ModelPart::resetPose);
-		east.getAllParts().forEach(ModelPart::resetPose);
-		south_right.getAllParts().forEach(ModelPart::resetPose);
-		south_left.getAllParts().forEach(ModelPart::resetPose);
-		west.getAllParts().forEach(ModelPart::resetPose);
+		this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
 
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, COPPER_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		north_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		north_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		east.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		south_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		south_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		west.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.throttle.zRot = (reactions.isFlying()) ? -1f : 1f;
+
+		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+
 	}
 }

@@ -40,10 +40,12 @@ public class ToyotaConsoleModel extends HierarchicalModel {
 
 	private final ModelPart bone181;
 	private final ModelPart bb_main;
+	private final ModelPart throttle;
 
 	public ToyotaConsoleModel(ModelPart root) {
 		this.bone181 = root.getChild("bone181");
 		this.bb_main = root.getChild("bb_main");
+		this.throttle = root.getChild("bone181").getChild("components").getChild("south").getChild("bone197").getChild("bone198");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -657,6 +659,7 @@ public class ToyotaConsoleModel extends HierarchicalModel {
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		throttle.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -674,6 +677,9 @@ public class ToyotaConsoleModel extends HierarchicalModel {
 
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+		this.throttle.xRot = (reactions.isFlying()) ? -1f : 1f;
+
 		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

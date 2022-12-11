@@ -66,6 +66,9 @@ public class NukaConsoleModel extends HierarchicalModel {
 	private final ModelPart bone61;
 	private final ModelPart root;
 
+	private final ModelPart throttle;
+
+
 	public NukaConsoleModel(ModelPart root) {
 		this.root = root;
 		this.rotor_zminus3_yplus5_rotateY = root.getChild("rotor_zminus3_yplus5_rotateY");
@@ -75,6 +78,7 @@ public class NukaConsoleModel extends HierarchicalModel {
 		this.bone43 = root.getChild("bone43");
 		this.bone67 = root.getChild("bone67");
 		this.bone61 = root.getChild("bone61");
+		this.throttle = this.panels.getChild("North").getChild("bone148").getChild("bigLever1");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -491,6 +495,8 @@ public class NukaConsoleModel extends HierarchicalModel {
 
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+		throttle.xRot = (reactions.isFlying()) ? 1f : -1f;
 
 		rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
