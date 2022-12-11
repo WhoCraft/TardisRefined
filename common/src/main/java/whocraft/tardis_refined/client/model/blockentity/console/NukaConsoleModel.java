@@ -1,7 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -67,8 +64,10 @@ public class NukaConsoleModel extends HierarchicalModel {
 	private final ModelPart bone43;
 	private final ModelPart bone67;
 	private final ModelPart bone61;
+	private final ModelPart root;
 
 	public NukaConsoleModel(ModelPart root) {
+		this.root = root;
 		this.rotor_zminus3_yplus5_rotateY = root.getChild("rotor_zminus3_yplus5_rotateY");
 		this.panels = root.getChild("panels");
 		this.console = root.getChild("console");
@@ -477,7 +476,7 @@ public class NukaConsoleModel extends HierarchicalModel {
 
 	@Override
 	public ModelPart root() {
-		return rotor_zminus3_yplus5_rotateY;
+		return root;
 	}
 
 	@Override
