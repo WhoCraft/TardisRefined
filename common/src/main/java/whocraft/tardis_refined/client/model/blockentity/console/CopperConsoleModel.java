@@ -5,14 +5,34 @@ package whocraft.tardis_refined.client.model.blockentity.console;// Made with Bl
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.TardisIntReactions;
 
 public class CopperConsoleModel extends HierarchicalModel {
 
+	public static final AnimationDefinition COPPER_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.2916765f).looping()
+			.addAnimation("rotor",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.8343334f, KeyframeAnimations.posVec(0f, -5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.5416767f, KeyframeAnimations.posVec(0f, 2f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.2916765f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
+
+	private final ModelPart modelRoot;
 	private final ModelPart root;
 	private final ModelPart rotor;
 	private final ModelPart misc;
@@ -26,8 +46,10 @@ public class CopperConsoleModel extends HierarchicalModel {
 	private final ModelPart south_right;
 	private final ModelPart south_left;
 	private final ModelPart west;
+	private final ModelPart throttle;
 
 	public CopperConsoleModel(ModelPart root) {
+		this.modelRoot = root;
 		this.root = root.getChild("root");
 		this.rotor = root.getChild("rotor");
 		this.misc = root.getChild("misc");
@@ -41,6 +63,7 @@ public class CopperConsoleModel extends HierarchicalModel {
 		this.south_right = root.getChild("south_right");
 		this.south_left = root.getChild("south_left");
 		this.west = root.getChild("west");
+		this.throttle = north_right.getChild("bone203").getChild("bone213").getChild("main_lever_control2");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -975,11 +998,23 @@ public class CopperConsoleModel extends HierarchicalModel {
 
 	@Override
 	public ModelPart root() {
-		return null;
+		return modelRoot;
 	}
 
 	@Override
 	public void setupAnim(Entity entity, float f, float g, float h, float i, float j) {
+
+	}
+
+	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
+
+		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
+		this.animate(reactions.ROTOR_ANIMATION, COPPER_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+		this.throttle.zRot = (reactions.isFlying()) ? -1f : 1f;
+
+		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
 	}
 }

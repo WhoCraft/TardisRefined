@@ -1,5 +1,7 @@
 package whocraft.tardis_refined;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.common.network.TardisNetwork;
@@ -11,6 +13,7 @@ public class TardisRefined {
     public static final String PLATFORM_ERROR = "Something has gone critically wrong with platform definitions. Please contact the mod author.";
 
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     public static void init() {
         BlockRegistry.BLOCKS.register();

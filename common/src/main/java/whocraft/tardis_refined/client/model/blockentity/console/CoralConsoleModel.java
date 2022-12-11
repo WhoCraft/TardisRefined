@@ -5,20 +5,53 @@ package whocraft.tardis_refined.client.model.blockentity.console;// Made with Bl
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.TardisIntReactions;
 
 public class CoralConsoleModel extends HierarchicalModel {
 
+
+
+	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.375f).looping()
+			.addAnimation("rotor_bottom_T_add20",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, -10f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, 2.5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.375f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("rotor_top_t_minus20",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 10f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, -2.5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.375f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
+
 	private final ModelPart bone20;
 	private final ModelPart bb_main;
+	private final ModelPart throttle;
 
 	public CoralConsoleModel(ModelPart root) {
 		this.bone20 = root.getChild("bone20");
 		this.bb_main = root.getChild("bb_main");
+		this.throttle = bone20.getChild("controls").getChild("borders").getChild("bone23").getChild("bone17").getChild("throttle");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -696,6 +729,18 @@ public class CoralConsoleModel extends HierarchicalModel {
 			PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		root().getAllParts().forEach(ModelPart::resetPose);
+
+		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
+		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+		this.throttle.xRot = (reactions.isFlying()) ? 2f : 0f;
+
+		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
