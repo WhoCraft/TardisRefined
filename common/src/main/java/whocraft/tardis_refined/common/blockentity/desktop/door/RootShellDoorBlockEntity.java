@@ -18,12 +18,12 @@ public class RootShellDoorBlockEntity extends AbstractEntityBlockDoor {
     }
 
     public void onAttemptEnter(Level level, Player player) {
-        if (!level.isClientSide()) {
-            Optional<TardisLevelOperator> operator = TardisLevelOperator.get((ServerLevel) level);
-            operator.ifPresent(x -> {
-                x.setInternalDoor(this);
-                x.exitTardis(player);
-            });
-        }
+      if(level instanceof ServerLevel serverLevel){
+          Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
+          data.ifPresent(tardisLevelOperator -> {
+              tardisLevelOperator.setInternalDoor(this);
+              tardisLevelOperator.exitTardis(player);
+          });
+      }
     }
 }

@@ -12,6 +12,17 @@ loom {
     forge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        dataGen {
+            mod "tardis_refined"
+        }
+
+    }
+
+    launches {
+        data {
+            arg "--existing", project(":common").file("src/main/resources/").absolutePath
+        }
     }
 }
 

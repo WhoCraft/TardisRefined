@@ -21,7 +21,7 @@ public class ClientPacketHandler {
                 levels.remove(level);
             }
         }
-        //If player does not know about this dim and we're trying to add it
+        //If player does not know about this dim, and we're trying to add it
         else if (add) {
             levels.add(level);
         }

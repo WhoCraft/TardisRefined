@@ -1,0 +1,19 @@
+{
+  "block.tardis_refined.ars_egg": "ARS Egg",
+  "block.tardis_refined.ars_leaves": "ARS Leaves",
+  "block.tardis_refined.ars_leaves_fence": "ARS Fence",
+  "block.tardis_refined.ars_leaves_slab": "ARS Slab",
+  "block.tardis_refined.bulk_head_door": "Bulk Head Door",
+  "block.tardis_refined.root_plant": "Root Plant",
+  "block.tardis_refined.root_shell": "Root Shell",
+  "block.tardis_refined.terraformer": "Terraformer",
+  "control.tardis_refined.cord_x": "X",
+  "control.tardis_refined.cord_y": "Y",
+  "control.tardis_refined.cord_z": "Z",
+  "control.tardis_refined.door_toggle": "Door Toggle",
+  "control.tardis_refined.increment": "Increment",
+  "control.tardis_refined.random": "Randomizer",
+  "control.tardis_refined.rotate": "Direction",
+  "control.tardis_refined.throttle": "Throttle",
+  "entity.tardis_refined.console_control": "Generic Control"
+}

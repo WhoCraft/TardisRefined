@@ -22,9 +22,7 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BulkHeadDoorBlockEntity blockEntity) {
-        System.out.println("PING");
         Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);
-        System.out.println(player);
         if (player != null) {
             if (!blockState.getValue(BulkHeadDoorBlock.OPEN)) {
                 level.playSound(null, blockPos, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
