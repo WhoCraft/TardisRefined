@@ -20,7 +20,6 @@ public class MonitorScreen extends Screen {
     private Direction currentDirection;
     private BlockPos targetPosition;
     private Direction targetDirection;
-    protected Button doneButton;
 
     public MonitorScreen(BlockPos exteriorPosition, Direction exteriorDirection, BlockPos targetPosition, Direction targetDirection) {
         super(Component.translatable("tardis_refined.gui.monitor"));
@@ -76,15 +75,15 @@ public class MonitorScreen extends Screen {
 
         int minGPSY = height - 60;
         int minGPSDestY = height - 25;
-        renderWidthScaledText("GPS:", poseStack, Minecraft.getInstance().font, 25, minGPSY - 30, Color.WHITE.getRGB(), 75, false);
+        renderWidthScaledText(Component.translatable("tardis_refined.monitor.main.gps").getString() + ":", poseStack, Minecraft.getInstance().font, 25, minGPSY - 30, Color.WHITE.getRGB(), 75, false);
         renderWidthScaledText(currentDirection.getName().toUpperCase() + " @ " + currentPosition.toShortString(), poseStack, Minecraft.getInstance().font, 25, minGPSY - 20, Color.LIGHT_GRAY.getRGB(), 100, false);
         renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, 25, minGPSY - 10, Color.LIGHT_GRAY.getRGB(), 100, false);
 
-        renderWidthScaledText("Destination:", poseStack, Minecraft.getInstance().font, 25, minGPSDestY - 30, Color.WHITE.getRGB(), 75, false);
+        renderWidthScaledText( Component.translatable("tardis_refined.monitor.main.destination").getString() + ":", poseStack, Minecraft.getInstance().font, 25, minGPSDestY - 30, Color.WHITE.getRGB(), 75, false);
         renderWidthScaledText(targetDirection.getName().toUpperCase() + " @ " + targetPosition.toShortString(), poseStack, Minecraft.getInstance().font, 25, minGPSDestY - 20, Color.LIGHT_GRAY.getRGB(), 100, false);
         renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, 25, minGPSDestY - 10, Color.LIGHT_GRAY.getRGB(), 100, false);
 
-        renderWidthScaledText("INTERNAL MONITOR READOUT", poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
+        renderWidthScaledText(Component.translatable("tardis_refined.monitor.main_title").getString(), poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
         super.render(poseStack, i, j, f);
     }
 }

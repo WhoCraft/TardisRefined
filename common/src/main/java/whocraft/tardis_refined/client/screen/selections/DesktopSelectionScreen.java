@@ -37,7 +37,6 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
 
     public static void selectDesktop(DesktopTheme theme) {
-        System.out.println("Selected desktop: " + theme.id);
         new ChangeDesktopMessage(Minecraft.getInstance().player.getLevel().dimension(), theme).send();
         Minecraft.getInstance().setScreen(null);
     }

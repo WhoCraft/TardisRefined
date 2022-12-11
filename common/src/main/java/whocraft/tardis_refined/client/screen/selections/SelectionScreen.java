@@ -88,7 +88,7 @@ public class SelectionScreen extends Screen {
 
 
         renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
-        renderWidthScaledText("Currently Selected: " + this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2, 45, Color.LIGHT_GRAY.getRGB(), 130, true);
+        renderWidthScaledText(Component.translatable("tardis_refined.monitor.list.selection").toString() + ": " + this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2, 45, Color.LIGHT_GRAY.getRGB(), 130, true);
         super.render(poseStack, i, j, f);
     }
 
