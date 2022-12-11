@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.FactoryShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.PhoneBoothModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
@@ -24,13 +25,16 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
     private static FactoryShellModel factoryShellModel;
     private static PoliceBoxModel policeBoxModel;
+    private static PhoneBoothModel phoneBoothModel;
 
     // Too specific for ShellTheme textures
     private static ResourceLocation policeBoxEmissive = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_emissive.png");
+    private static ResourceLocation phoneBoothEmissive = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_emissive.png");
 
     public GlobalShellRenderer(Context context) {
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
         policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_SHELL)));
+        phoneBoothModel = new PhoneBoothModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_SHELL)));
     }
 
     @Override
@@ -56,30 +60,43 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             }
         }
 
-        // TODO: Clean this up.
+        switch (theme) {
+            case POLICE_BOX -> {
+                poseStack.scale(1.05f, 1.05f, 1.05f);
+                poseStack.translate(0, -0.07, 0);
+                policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(policeBoxEmissive)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
+                if (blockstate.getValue(ShellBaseBlock.REGEN)) {
+                    policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                }
 
-        if (theme == ShellTheme.FACTORY) {
-            factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-
-            if (blockstate.getValue(ShellBaseBlock.REGEN)) {
-                factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                policeBoxModel.setDoorPosition(isOpen);
+                break;
             }
 
-            factoryShellModel.setDoorPosition(isOpen);
-        }
+            case PHONE_BOOTH -> {
+                phoneBoothModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                phoneBoothModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(phoneBoothEmissive)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
-        if (theme == ShellTheme.POLICE_BOX) {
-            poseStack.scale(1.05f, 1.05f, 1.05f);
-            poseStack.translate(0, -0.07, 0);
-            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(policeBoxEmissive)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                if (blockstate.getValue(ShellBaseBlock.REGEN)) {
+                    phoneBoothModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(phoneBoothEmissive)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                }
 
-            if (blockstate.getValue(ShellBaseBlock.REGEN)) {
-                policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                phoneBoothModel.setDoorPosition(isOpen);
+                break;
             }
 
-            policeBoxModel.setDoorPosition(isOpen);
+            default -> {
+                factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+                if (blockstate.getValue(ShellBaseBlock.REGEN)) {
+                    factoryShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(theme.getExternalShellTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                }
+
+                factoryShellModel.setDoorPosition(isOpen);
+                break;
+            }
         }
 
         poseStack.popPose();

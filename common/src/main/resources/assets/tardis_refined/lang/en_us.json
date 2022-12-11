@@ -7,5 +7,18 @@
     "control.tardis_refined.increment": "Increment",
     "control.tardis_refined.rotate": "Direction",
     "control.tardis_refined.random": "Randomizer",
-    "control.tardis_refined.throttle": "Throttle"
+    "control.tardis_refined.throttle": "Throttle",
+    "tardis_refined.shell.factory": "Factory",
+    "tardis_refined.shell.police_box": "Police Box",
+    "tardis_refined.shell.phone_booth": "Phone Booth",
+    "tardis_refined.monitor.external_shell": "EXTERNAL SHELL CONFIGURATION",
+    "tardis_refined.gui.shell_selection": "EXTERNAL SHELL CONFIGURATION",
+    "tardis_refined.gui.desktop_selection": "DESKTOP CONFIGURATION",
+    "tardis_refined.monitor.desktop": "DESKTOP CONFIGURATION",
+    "tardis_refined.monitor.desktop_cancel.title": "OPERATION IN PROGRESS",
+    "tardis_refined.desktop.default_overgrown": "Overgrown Cave",
+    "tardis_refined.desktop.factory": "Factory",
+    "tardis_refined.desktop.coral": "Coral",
+    "tardis_refined.monitor.desktop_cancel_description": "Systems disabled as a Desktop reconfiguration has been schedueled.",
+    "tardis_refined.monitor.desktop_cancel_confirmation": "Would you like to cancel the upcoming reconfiguration?"
 }
