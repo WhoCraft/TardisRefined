@@ -5,11 +5,18 @@ package whocraft.tardis_refined.client.model.blockentity.console;// Made with Bl
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.TardisIntReactions;
 
 public class CopperConsoleModel extends HierarchicalModel {
 
@@ -26,6 +33,19 @@ public class CopperConsoleModel extends HierarchicalModel {
 	private final ModelPart south_right;
 	private final ModelPart south_left;
 	private final ModelPart west;
+
+
+	public static final AnimationDefinition COPPER_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.2916765f).looping()
+			.addAnimation("rotor",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.8343334f, KeyframeAnimations.posVec(0f, -5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.5416767f, KeyframeAnimations.posVec(0f, 2f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.2916765f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
 
 	public CopperConsoleModel(ModelPart root) {
 		this.root = root.getChild("root");
@@ -975,11 +995,44 @@ public class CopperConsoleModel extends HierarchicalModel {
 
 	@Override
 	public ModelPart root() {
-		return null;
+		return root;
 	}
 
 	@Override
 	public void setupAnim(Entity entity, float f, float g, float h, float i, float j) {
 
+	}
+
+	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		root.getAllParts().forEach(ModelPart::resetPose);
+		rotor.getAllParts().forEach(ModelPart::resetPose);
+		misc.getAllParts().forEach(ModelPart::resetPose);
+		misc2.getAllParts().forEach(ModelPart::resetPose);
+		misc3.getAllParts().forEach(ModelPart::resetPose);
+		misc4.getAllParts().forEach(ModelPart::resetPose);
+		misc5.getAllParts().forEach(ModelPart::resetPose);
+		north_left.getAllParts().forEach(ModelPart::resetPose);
+		north_right.getAllParts().forEach(ModelPart::resetPose);
+		east.getAllParts().forEach(ModelPart::resetPose);
+		south_right.getAllParts().forEach(ModelPart::resetPose);
+		south_left.getAllParts().forEach(ModelPart::resetPose);
+		west.getAllParts().forEach(ModelPart::resetPose);
+
+		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
+		this.animate(reactions.ROTOR_ANIMATION, COPPER_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		misc.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		misc2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		misc3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		misc4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		misc5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		north_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		north_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		east.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		south_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		south_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		west.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

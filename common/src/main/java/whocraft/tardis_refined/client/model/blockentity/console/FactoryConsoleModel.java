@@ -628,9 +628,5 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 
 	@Override
 	public void renderConsole(GlobalConsoleBlockEntity entity) {
-	/*	TardisLevelOperator.get((ServerLevel) entity.getLevel()).ifPresent(cap -> {
-				System.out.println("Printing!!!!");
-			}
-		);*/
 	}
 }

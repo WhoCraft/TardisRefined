@@ -57,22 +57,24 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         }
 
         if (theme == ConsoleTheme.NUKA) {
-            nukaConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(nukaConsoleBaseTexture)),
+            nukaConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(nukaConsoleBaseTexture)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
 
         if (theme == ConsoleTheme.COPPER) {
-            copperConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(copperConsoleBaseTexture)),
+            copperConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()),poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(copperConsoleBaseTexture)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
 
         if (theme == ConsoleTheme.CORAL) {
-            coralConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(coralConsoleBaseTexture)),
+            coralConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(coralConsoleBaseTexture)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+
         }
 
         if (theme == ConsoleTheme.TOYOTA) {
-            toyotaConsoleModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(toyotaConsoleBaseTexture)),
+            toyotaConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(toyotaConsoleBaseTexture)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
 
