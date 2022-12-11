@@ -101,12 +101,7 @@ public class ControlEntity extends PathfinderMob {
                 });
                 return InteractionResult.SUCCESS;
             }
-
-
         }
-
-
-
         return InteractionResult.FAIL;
     }
 

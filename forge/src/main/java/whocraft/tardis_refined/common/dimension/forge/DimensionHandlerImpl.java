@@ -23,22 +23,20 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.SyncLevelListMessage;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
 public class DimensionHandlerImpl {
 
-    // TODO: REWORK THIS FOR A REAL FABRIC IMPLEMENTATION OF THIS SYSTEM!!!!.
-
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
 
-        MinecraftServer server = level.getServer();
+        MinecraftServer server = Platform.getServer();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
-        ResourceKey<Level> levelKey = id;
-        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, levelKey.location());
+        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, id.location());
 
         LevelStem dimension = dimensionFactory.apply(server, dimensionKey);
 
@@ -64,7 +62,7 @@ public class DimensionHandlerImpl {
                 executor,
                 levelSave,
                 derivedWorldInfo,
-                levelKey,
+                id,
                 dimension,
                 chunkListener,
                 false, // boolean: is-debug-world
@@ -77,15 +75,15 @@ public class DimensionHandlerImpl {
 
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
 
-        server.levels.put(levelKey, newLevel);
+        server.levels.put(id, newLevel);
 
         server.markWorldsDirty();
 
-        new SyncLevelListMessage(newLevel.dimension(), true).sendToAll((ServerLevel) level);
+        new SyncLevelListMessage(newLevel.dimension(), true).sendToAll();
 
         BlockPos blockpos = new BlockPos(0, 0, 0);
         chunkListener.updateSpawnPos(new ChunkPos(blockpos));
-        ServerChunkCache serverchunkcache = (ServerChunkCache) newLevel.getChunkSource();
+        ServerChunkCache serverchunkcache = newLevel.getChunkSource();
         serverchunkcache.getLightEngine().setTaskPerBatch(500);
         serverchunkcache.addRegionTicket(TicketType.START, new ChunkPos(blockpos), 11, Unit.INSTANCE);
 
