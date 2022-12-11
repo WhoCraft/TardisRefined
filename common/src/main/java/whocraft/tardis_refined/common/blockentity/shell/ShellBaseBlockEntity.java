@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
@@ -56,7 +58,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
 
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos blockPos, Player player) {
         if (level instanceof ServerLevel serverLevel) {
-            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.id.toString());
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.id.toString()));
             TardisLevelOperator.get(interior).ifPresent(cap -> {
 
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {

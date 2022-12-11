@@ -7,10 +7,8 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-
-import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.damagesource.DamageSource;
-
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -97,7 +95,9 @@ public class ControlEntity extends PathfinderMob {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    this.controlSpecification.control.getControl().onRightClick(cap, this, player);
+                    if (controlSpecification != null) {
+                        this.controlSpecification.control.getControl().onRightClick(cap, this, player);
+                    }
                 });
                 return InteractionResult.SUCCESS;
             }
