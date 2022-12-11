@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.util;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import dev.architectury.injectables.targets.ArchitecturyTarget;
+import net.minecraft.server.MinecraftServer;
 
 import java.util.Collection;
 
@@ -32,6 +33,11 @@ public class Platform {
 
     @ExpectPlatform
     public static boolean isServer() {
+        throw new AssertionError();
+    }
+
+    @ExpectPlatform
+    public static MinecraftServer getServer() {
         throw new AssertionError();
     }
 }

@@ -62,12 +62,10 @@ public class RootShellDoorBlock extends InternalDoorBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-
         if (!level.isClientSide()) {
             if (level.getBlockEntity(blockPos) instanceof RootShellDoorBlockEntity door) {
                 if (entity instanceof Player player) {
                     door.onAttemptEnter(level,player);
-
                 }
             }
         }
