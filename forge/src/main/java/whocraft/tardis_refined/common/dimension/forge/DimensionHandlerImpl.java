@@ -50,6 +50,8 @@ public class DimensionHandlerImpl {
         writeLevels();
     }
 
+
+    /*Only present in Forge so that worlds can be opened in Fabric*/
     private static void writeLevels() {
         File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
         JsonObject jsonObject = new JsonObject();
