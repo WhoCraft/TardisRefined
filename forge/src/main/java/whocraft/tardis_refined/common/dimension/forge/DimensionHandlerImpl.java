@@ -38,7 +38,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.util.Platform.getServer;
+import static whocraft.tardis_refined.common.util.forge.PlatformImpl.getServer;
 
 public class DimensionHandlerImpl {
 
