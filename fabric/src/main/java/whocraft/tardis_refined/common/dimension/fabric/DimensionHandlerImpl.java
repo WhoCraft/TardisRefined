@@ -53,7 +53,8 @@ public class DimensionHandlerImpl {
 
     public static void loadLevels(ServerLevel serverLevel){
         File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        // create a reader
+        if(!file.exists()) return;
+
         Reader reader = null;
         try {
             reader = Files.newBufferedReader(file.toPath());
