@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
@@ -39,7 +40,7 @@ public class SyncIntReactionsMessage extends MessageS2C {
     }
 
     @Override
-    public void handle() {
+    public void handle(MessageContext context) {
         // Retrieve the TardisIntReactions instance for the current level
         TardisIntReactions data = TardisIntReactions.getInstance(level);
 

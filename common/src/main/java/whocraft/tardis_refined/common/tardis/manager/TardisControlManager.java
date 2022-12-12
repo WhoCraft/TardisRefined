@@ -198,7 +198,6 @@ public class TardisControlManager {
         }
 
         operator.getExteriorManager().placeExteriorBlock(operator, location);
-        operator.setShellTheme(ShellTheme.POLICE_BOX);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 5, 1);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
     }

@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,6 +21,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -80,8 +83,14 @@ public class ControlEntity extends PathfinderMob {
         if (damageSource.getDirectEntity() instanceof Player player) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    this.controlSpecification.control.getControl().onLeftClick(cap, this, player);
 
+                    if (!(this.controlSpecification.control.getControl() instanceof MonitorControl)) {
+                        if (cap.getInteriorManager().isWaitingToGenerate()) {
+                            serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
+                            return;
+                        }
+                    }
+                    this.controlSpecification.control.getControl().onLeftClick(cap, this, player);
                 });
 
                 return true;
@@ -95,13 +104,21 @@ public class ControlEntity extends PathfinderMob {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (controlSpecification != null) {
-                        this.controlSpecification.control.getControl().onRightClick(cap, this, player);
+
+                    if (!(this.controlSpecification.control.getControl() instanceof MonitorControl)) {
+                        if (cap.getInteriorManager().isWaitingToGenerate()) {
+                            serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
+                            return;
+                        }
                     }
+
+                    this.controlSpecification.control.getControl().onRightClick(cap, this, player);
+
                 });
                 return InteractionResult.SUCCESS;
             }
         }
+
         return InteractionResult.FAIL;
     }
 

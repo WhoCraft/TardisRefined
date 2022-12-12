@@ -4,6 +4,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -34,11 +35,36 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.ROTATE, "Direction");
         addControl(ConsoleControl.RANDOM, "Randomizer");
         addControl(ConsoleControl.THROTTLE, "Throttle");
+        addControl(ConsoleControl.MONITOR, "Computer Bank");
+
+        add("tardis_refined.monitor.main.title", "COMPUTER BANK");
+        add("tardis_refined.monitor.main.gps", "GPS");
+        add("tardis_refined.monitor.main.destination", "Destination");
+        add("tardis_refined.monitor.list.selection", "Currently selected");
+        add("tardis_refined.monitor.external_shell", "EXTERNAL SHELL CONFIGURATION");
+        add("tardis_refined.gui.shell_selection", "EXTERNAL SHELL CONFIGURATION");
+        add("tardis_refined.gui.desktop_selection", "DESKTOP CONFIGURATION");
+        add("tardis_refined.monitor.desktop", "DESKTOP CONFIGURATION");
+        add("tardis_refined.monitor.desktop_cancel.title", "OPERATION IN PROGRESS");
+        add("tardis_refined.monitor.desktop_cancel_description", "Systems disabled as a Desktop reconfiguration has been scheduled.");
+        add("tardis_refined.monitor.desktop_cancel_confirmation", "Would you like to cancel the upcoming reconfiguration?");
+
+        addShell(ShellTheme.FACTORY, "Factory");
+        addShell(ShellTheme.POLICE_BOX, "Police Box");
+        addShell(ShellTheme.PHONE_BOOTH, "Phone Booth");
+
+        add("tardis_refined.desktop.default_overgrown", "Overgrown Cave");
+        add("tardis_refined.desktop.factory", "Factory");
+        add("tardis_refined.desktop.coral", "Coral");
 
     }
 
     public void addControl(ConsoleControl control, String name){
         add(control.getLangId(), name);
     }
+    public void addShell(ShellTheme theme, String name){
+        add(theme.getRawLang(), name);
+    }
+
 
 }

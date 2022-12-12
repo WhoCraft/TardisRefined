@@ -64,7 +64,6 @@ public class TerraformerBlock extends Block {
         if (level instanceof ServerLevel serverLevel) {
 
             if (checkIfStructure(serverLevel, blockPos)) {
-                System.out.println("Is a valid structure");
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
@@ -81,7 +80,6 @@ public class TerraformerBlock extends Block {
 
             } else {
                 blockState.setValue(ACTIVE, false);
-                System.out.println("Is not a valid structure");
             }
         }
     }
@@ -94,14 +92,6 @@ public class TerraformerBlock extends Block {
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
 
         if (blockState.getValue(ACTIVE)) {
-            if (randomSource.nextInt(3) == 0) {
-                level.playLocalSound((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 1, (double)blockPos.getZ() + 0.5D, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + randomSource.nextFloat(), randomSource.nextFloat() * 0.7F + 0.3F, false);
-            }
-
-            if (randomSource.nextInt(10) == 0) {
-                level.playLocalSound((double)blockPos.getX() + 0.5D, (double)blockPos.getY() + 1, (double)blockPos.getZ() + 0.5D, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + randomSource.nextFloat(), 0.1f, false);
-            }
-
             int i;
             double d;
             double e;

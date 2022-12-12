@@ -11,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.door.PhoneBoothDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
@@ -22,10 +23,12 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
     private static FactoryDoorModel factoryDoorModel;
     private static PoliceBoxModel policeBoxModel;
+    private static PhoneBoothDoorModel phoneBoothDoorModel;
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
         policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
+        phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
     }
 
     @Override
@@ -39,18 +42,28 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         ShellTheme theme = blockstate.getValue(GlobalDoorBlock.SHELL);
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
 
-        if (theme == ShellTheme.FACTORY) {
-            factoryDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-            factoryDoorModel.setDoorPosition(isOpen);
-        }
+        switch (theme) {
+            case POLICE_BOX -> {
+                poseStack.scale(1.05f, 1.05f, 1.05f);
+                poseStack.translate(0, -0.07, 0);
+                policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
+                        i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                policeBoxModel.setDoorPosition(isOpen);
+                break;
+            }
+            case PHONE_BOOTH -> {
+                phoneBoothDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
+                        i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                phoneBoothDoorModel.setDoorPosition(isOpen);
+                break;
+            }
 
-        if (theme == ShellTheme.POLICE_BOX) {
-            poseStack.scale(1.05f, 1.05f, 1.05f);
-            poseStack.translate(0, -0.07, 0);
-            policeBoxModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-            policeBoxModel.setDoorPosition(isOpen);
+            default -> {
+                factoryDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
+                        i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                factoryDoorModel.setDoorPosition(isOpen);
+                break;
+            }
         }
 
         poseStack.popPose();

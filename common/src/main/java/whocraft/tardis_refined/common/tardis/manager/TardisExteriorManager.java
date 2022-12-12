@@ -50,6 +50,8 @@ public class TardisExteriorManager {
         return this.lastKnownLocation;
     }
 
+    public ShellTheme getCurrentTheme() {return this.currentTheme;}
+
     public ServerLevel getLevel() {
         return this.lastKnownLocation.level;
     }
@@ -128,8 +130,7 @@ public class TardisExteriorManager {
     }
 
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
-        ShellTheme theme = (this.currentTheme != null) ? ShellTheme.POLICE_BOX : ShellTheme.FACTORY; // Could be a funny way of the circuit breaking...
-
+        ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
         location.level.setBlockAndUpdate(location.position, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false));

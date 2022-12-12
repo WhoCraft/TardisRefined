@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.tardis.control;
 
 import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.common.tardis.control.flight.*;
+import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
 public enum ConsoleControl implements StringRepresentable {
@@ -13,7 +14,8 @@ public enum ConsoleControl implements StringRepresentable {
     INCREMENT("increment", new IncrementControl(), "control.tardis_refined.increment"),
     ROTATE("rotate", new RotationControl(), "control.tardis_refined.rotate"),
     RANDOM("random", new RandomControl(), "control.tardis_refined.random"),
-    THROTTLE("throttle", new ThrottleControl(), "control.tardis_refined.throttle");
+    THROTTLE("throttle", new ThrottleControl(), "control.tardis_refined.throttle"),
+    MONITOR("monitor", new MonitorControl(), "control.tardis_refined.monitor");
 
     private String id;
     private IControl control;
