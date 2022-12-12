@@ -35,7 +35,10 @@ public enum ShellTheme implements StringRepresentable, Theme {
         return this.id;
     }
 
-    public Component getDisplayName() {return Component.translatable("tardis_refined.shell." + id);}
+    public String getRawLang() {
+        return "tardis_refined.shell." + id;
+    }
+    public Component getDisplayName() {return Component.translatable(getRawLang());}
 
     public static ShellTheme findOr(String id, ShellTheme shellTheme) {
         for (ShellTheme value : ShellTheme.values()) {

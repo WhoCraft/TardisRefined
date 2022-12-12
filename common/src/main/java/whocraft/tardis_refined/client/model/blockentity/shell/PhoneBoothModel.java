@@ -16,8 +16,10 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 
 	private final ModelPart bone9;
 	private final ModelPart door;
+	private final ModelPart root;
 
 	public PhoneBoothModel(ModelPart root) {
+		this.root = root;
 		this.bone9 = root.getChild("bone9");
 		this.door = this.bone9.getChild("Door");
 	}
@@ -77,12 +79,12 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
 	public ModelPart root() {
-		return bone9;
+		return root;
 	}
 
 	@Override

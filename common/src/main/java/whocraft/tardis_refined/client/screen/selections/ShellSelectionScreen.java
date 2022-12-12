@@ -33,8 +33,6 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
     public static void selectShell(ShellTheme theme) {
-        // Send current shell to server.
-        System.out.println(Minecraft.getInstance().player.getLevel().dimension());
         new ChangeShellMessage(Minecraft.getInstance().player.getLevel().dimension(), theme).send();
         Minecraft.getInstance().setScreen(null);
     }

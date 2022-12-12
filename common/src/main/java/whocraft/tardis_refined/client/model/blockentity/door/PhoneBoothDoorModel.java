@@ -18,8 +18,10 @@ public class PhoneBoothDoorModel extends HierarchicalModel implements IShellMode
 	private final ModelPart bone5;
 	private final ModelPart bone10;
 	private final ModelPart bb_main;
+	private final ModelPart root;
 
 	public PhoneBoothDoorModel(ModelPart root) {
+		this.root = root;
 		this.Door2 = root.getChild("Door2");
 		this.bone5 = root.getChild("bone5");
 		this.bone10 = root.getChild("bone10");
@@ -61,7 +63,7 @@ public class PhoneBoothDoorModel extends HierarchicalModel implements IShellMode
 
 	@Override
 	public ModelPart root() {
-		return Door2;
+		return root;
 	}
 
 	@Override

@@ -2,19 +2,16 @@ package whocraft.tardis_refined.client.screen.selections;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
+import whocraft.tardis_refined.client.screen.ScreenHelper;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SelectionScreen extends Screen {
-
-
 
     private SelectionScreenRun onSubmit;
     private SelectionScreenRun onCancel;
@@ -33,8 +30,8 @@ public class SelectionScreen extends Screen {
         this.onCancel = onCancel;
     }
 
-    public int listWidth = 200;
-    public int listHeight = this.height;
+    protected int listWidth = 200;
+    protected int listHeight = this.height;
 
     @Override
     protected void init() {
@@ -59,22 +56,6 @@ public class SelectionScreen extends Screen {
         return null;
     }
 
-    public static void renderWidthScaledText(String text, PoseStack matrix, Font font, float x, float y, int color, int width, boolean centered) {
-        matrix.pushPose();
-        int textWidth = font.width(text);
-        float scale = width / (float) textWidth;
-        scale = Mth.clamp(scale, 0.0F, 1.0F);
-        matrix.translate(x, y, 0);
-        matrix.scale(scale, scale, scale);
-        if (centered) {
-            drawCenteredString(matrix, Minecraft.getInstance().font, text, 0, 0, color);
-        } else {
-            drawString(matrix, Minecraft.getInstance().font, text, 0, 0, color);
-        }
-
-        matrix.popPose();
-    }
-
 
     @Override
     public boolean isPauseScreen() {
@@ -84,11 +65,9 @@ public class SelectionScreen extends Screen {
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         this.renderBackground(poseStack);
-        renderWidthScaledText(this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2, height / 2 - 30, Color.LIGHT_GRAY.getRGB(), 300, true);
-
-
-        renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
-        renderWidthScaledText(Component.translatable("tardis_refined.monitor.list.selection").toString() + ": " + this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2, 45, Color.LIGHT_GRAY.getRGB(), 130, true);
+        ScreenHelper.renderWidthScaledText(this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2, height / 2 - 30, Color.LIGHT_GRAY.getRGB(), 300, true);
+        ScreenHelper.renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
+        ScreenHelper.renderWidthScaledText(Component.translatable("tardis_refined.monitor.list.selection").toString() + ": " + this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2, 45, Color.LIGHT_GRAY.getRGB(), 130, true);
         super.render(poseStack, i, j, f);
     }
 
