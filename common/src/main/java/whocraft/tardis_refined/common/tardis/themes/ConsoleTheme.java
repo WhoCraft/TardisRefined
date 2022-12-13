@@ -56,7 +56,8 @@ public enum ConsoleTheme implements StringRepresentable {
             new ControlSpecification(ConsoleControl.Z, new Vector3f(0.1f, 0.6f, 0.8f), new BlockPos(0.1f, 0.1f, 0.1f)),
             new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.7f, 0.65f, 0.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
             new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-1.05f, 0.5f, -0.175f), new BlockPos(0.1f, 0.1f, 0.1f)),
-            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.6f, 0.55f, -0.7f), new BlockPos(0.1f, 0.1f, 0.1f))
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.6f, 0.55f, -0.7f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0.35f,1.05f,0.6f), new BlockPos(0.1f, 0.1f, 0.1f))
     }),
 
     NUKA("nuka", new ControlSpecification[] {
