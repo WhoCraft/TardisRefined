@@ -23,7 +23,7 @@ import java.util.List;
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
 
     private boolean isDirty = true;
-    private List<ControlEntity> controlEntityList = new ArrayList<>();
+    private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
@@ -46,8 +46,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 controlEntity.setControlSpecification(control);
                 System.out.println("Offset: " + control.offsetPosition);
 
-                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + (float) control.offsetPosition.x() + 0.5f), (float) getBlockPos().getY() + (float) control.offsetPosition.y() + 0.5f,
-                        (float) getBlockPos().getZ() + (float) control.offsetPosition.z() + 0.5f);
+                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition.x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition.y() + 0.5f,
+                        (float) getBlockPos().getZ() + control.offsetPosition.z() + 0.5f);
 
                 System.out.println("BlockPos: " + location);
 

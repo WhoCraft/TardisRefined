@@ -27,7 +27,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     public GlobalConsoleBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(CONSOLE, ConsoleTheme.FACTORY));
-        System.out.println("PLACED BITCH");
     }
 
     @Nullable

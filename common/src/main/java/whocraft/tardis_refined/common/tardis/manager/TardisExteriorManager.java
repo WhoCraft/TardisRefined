@@ -28,14 +28,27 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.UUID;
 
+import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
+
 /**
  * External Shell data.
- * **/
+ **/
 public class TardisExteriorManager {
 
     private TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation;
     private ShellTheme currentTheme;
+
+    public boolean locked() {
+        return locked;
+    }
+
+    public TardisExteriorManager setLocked(boolean locked) {
+        this.locked = locked;
+        return this;
+    }
+
+    private boolean locked;
 
 
     public TardisExteriorManager(TardisLevelOperator operator) {
@@ -50,7 +63,9 @@ public class TardisExteriorManager {
         return this.lastKnownLocation;
     }
 
-    public ShellTheme getCurrentTheme() {return this.currentTheme;}
+    public ShellTheme getCurrentTheme() {
+        return this.currentTheme;
+    }
 
     public ServerLevel getLevel() {
         return this.lastKnownLocation.level;
@@ -62,8 +77,11 @@ public class TardisExteriorManager {
             NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
         }
 
-        if (this.currentTheme != null) {tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());}
+        if (this.currentTheme != null) {
+            tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());
+        }
 
+        tag.putBoolean(NbtConstants.LOCKED, locked);
 
         return tag;
     }
@@ -77,6 +95,8 @@ public class TardisExteriorManager {
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
             this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);
         }
+
+        locked = tag.getBoolean(NbtConstants.LOCKED);
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
@@ -84,6 +104,11 @@ public class TardisExteriorManager {
     }
 
     public void setDoorClosed(boolean closed) {
+
+        if (locked) {
+            closed = true;
+        }
+
         // Get the exterior block.
         BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
         lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
@@ -133,7 +158,7 @@ public class TardisExteriorManager {
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
         location.level.setBlockAndUpdate(location.position, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
-                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false));
+                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked));
 
         GlobalShellBlockEntity shell = (GlobalShellBlockEntity) location.level.getBlockEntity(location.position);
         shell.id = UUID.fromString(operator.getLevel().dimension().location().getPath());
