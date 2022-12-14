@@ -3,14 +3,18 @@
   "id": "tardis_refined",
   "version": "${version}",
   "name": "TARDIS Refined",
-  "description": "",
+  "description": "TARDIS: Refined is a Minecraft mod based on the world of Doctor Who that adds a personal, teleporting base to the game. The mod explores the nature of the TARDIS and how it operates and expresses its personality. ",
   "authors": [
     "CommandrMoose",
     "Suff99"
   ],
-  "contact": {},
+  "contact": {
+    "sources": "https://github.com/CommandrMoose/TardisRefined",
+    "issues": "https://github.com/CommandrMoose/TardisRefined/issues",
+    "homepage": "https://github.com/CommandrMoose/TardisRefined"
+  },
   "license": "All-Rights-Reserved",
-  "icon": "icon.png",
+  "icon": "tardis_refined.png",
   "environment": "*",
   "entrypoints": {
     "main": [
