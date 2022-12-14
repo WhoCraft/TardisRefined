@@ -67,8 +67,11 @@ public class LangProviderEnglish extends LanguageProvider {
         add("tardis_refined.desktop.default_overgrown", "Overgrown Cave");
         add("tardis_refined.desktop.factory", "Factory");
         add("tardis_refined.desktop.coral", "Coral");
+        add("tardis_refined.desktop.copper", "Copper");
+        add("tardis_refined.desktop.toyota", "Toyota");
 
         add(KeyItem.TARDIS_LIST_TITLE, "Key Set:");
+        add(KeyItem.KEY_BOUND, "Key Bound to %s");
     }
 
     public void addControl(ConsoleControl control, String name){

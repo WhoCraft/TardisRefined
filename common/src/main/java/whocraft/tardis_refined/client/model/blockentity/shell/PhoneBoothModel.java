@@ -1,7 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.shell;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -9,8 +6,9 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 
@@ -95,5 +93,10 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 	@Override
 	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? 1.75f : 0;
+	}
+
+	@Override
+	public ResourceLocation texture() {
+		return ShellTheme.PHONE_BOOTH.getExternalShellTexture();
 	}
 }

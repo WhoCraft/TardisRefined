@@ -10,9 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -22,6 +22,9 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,7 @@ public class KeyItem extends Item {
 
     public static String KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";
     public static String TARDIS_LIST_TITLE = "tooltip."+ TardisRefined.MODID + ".tardis_list";
+    public static String KEY_BOUND = "msg."+ TardisRefined.MODID + ".key_bound";
 
     public KeyItem(Properties properties) {
         super(properties);
@@ -101,13 +105,18 @@ public class KeyItem extends Item {
 
         if (livingEntity instanceof ControlEntity control) {
             ResourceKey<Level> tardis = control.getLevel().dimension();
-            if(!keychainContains(itemStack, tardis) && !control.level.isClientSide()) {
+            if(control.controlSpecification().control() != null && control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis) && !control.level.isClientSide()) {
                 player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
+                PlayerUtil.sendMessage(player, Component.translatable(KEY_BOUND, tardis.location().getPath()), true);
+                player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
+                return InteractionResult.SUCCESS;
             }
         }
 
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
+
+
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
@@ -118,11 +127,11 @@ public class KeyItem extends Item {
         if(!keychain.isEmpty()) {
             list.add(Component.translatable(TARDIS_LIST_TITLE));
 
-            MutableComponent hyphen = Component.literal(ChatFormatting.YELLOW + "- ");
-
             for (ResourceKey<Level> resourceKey : keychain) {
+                MutableComponent hyphen = Component.literal(ChatFormatting.YELLOW + "- ");
                 list.add(hyphen.append(Component.literal(resourceKey.location().getPath().substring(0, 5))));
             }
+
         }
     }
 }

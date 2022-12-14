@@ -1,9 +1,10 @@
 package whocraft.tardis_refined.client.model.blockentity.shell;
 
-import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import net.minecraft.resources.ResourceLocation;
 
 public interface IShellModel {
 
     void setDoorPosition(boolean open);
 
+    ResourceLocation texture();
 }
