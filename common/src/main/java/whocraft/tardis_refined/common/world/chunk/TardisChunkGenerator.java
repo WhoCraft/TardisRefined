@@ -26,7 +26,6 @@ import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -69,17 +68,14 @@ public class TardisChunkGenerator extends ChunkGenerator {
     public void applyCarvers(WorldGenRegion p_223043_, long p_223044_, RandomState p_223045_, BiomeManager p_223046_, StructureManager p_223047_, ChunkAccess p_223048_, GenerationStep.Carving p_223049_) {
     }
 
+
     @Override
-    public void buildSurface(WorldGenRegion p_223050_, StructureManager p_223051_, RandomState p_223052_, ChunkAccess p_223053_) {
-        BlockPos cornerPos = new BlockPos(p_223053_.getPos().getMinBlockX(), p_223050_.getMinBuildHeight()+75, p_223053_.getPos().getMinBlockZ());
-        BlockPos lastCornerPos = new BlockPos(p_223053_.getPos().getMaxBlockX(), p_223050_.getMaxBuildHeight()-75, p_223053_.getPos().getMaxBlockZ());
-
-        for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(cornerPos, lastCornerPos).iterator(); iterator.hasNext();) {
-            BlockPos pos = iterator.next();
-
-            p_223053_.setBlockState(pos, Blocks.STONE.defaultBlockState(), true);
+    public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
+        BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), chunk.getMinBuildHeight() + 75, chunk.getPos().getMinBlockZ());
+        BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
+        for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
+            chunk.setBlockState(pos, Blocks.STONE.defaultBlockState(), true);
         }
-
     }
 
     @Override
