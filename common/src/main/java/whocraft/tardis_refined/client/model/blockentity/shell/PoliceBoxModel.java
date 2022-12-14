@@ -119,6 +119,7 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		poseStack.scale(1.05f, 1.05f, 1.05f);
 		poseStack.translate(0, -0.07, 0);
+
 		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -142,5 +143,10 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 	@Override
 	public ResourceLocation texture() {
 		return ShellTheme.POLICE_BOX.getExternalShellTexture();
+	}
+
+	@Override
+	public ResourceLocation lightTexture() {
+		return ShellTheme.POLICE_BOX.emmissiveExternal();
 	}
 }

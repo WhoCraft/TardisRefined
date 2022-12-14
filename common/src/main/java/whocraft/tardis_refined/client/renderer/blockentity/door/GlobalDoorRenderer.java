@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.door.MysticDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.PhoneBoothDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
@@ -20,12 +21,13 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
-    private static IShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel;
+    private static IShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor;
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
         policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
         phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
+        mysticDoor = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
     }
 
     @Override
@@ -40,6 +42,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
 
         switch (theme) {
+            default:
             case FACTORY:
                 currentModel = factoryDoorModel;
                 break;
@@ -49,7 +52,11 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
             case PHONE_BOOTH:
                 currentModel = phoneBoothDoorModel;
                 break;
+            case MYSTIC:
+                currentModel = mysticDoor;
+                break;
         }
+
         currentModel.setDoorPosition(isOpen);
 
         if (currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
