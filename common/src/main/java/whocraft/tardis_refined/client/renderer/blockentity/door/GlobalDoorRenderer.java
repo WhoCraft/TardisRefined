@@ -37,7 +37,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
-        float rotation = ((Direction)blockstate.getValue(GlobalDoorBlock.FACING)).toYRot();
+        float rotation = blockstate.getValue(GlobalDoorBlock.FACING).toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         ShellTheme theme = blockstate.getValue(GlobalDoorBlock.SHELL);
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
@@ -52,8 +52,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
                 break;
             }
             case PHONE_BOOTH -> {
-                phoneBoothDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())),
-                        i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                phoneBoothDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
                 phoneBoothDoorModel.setDoorPosition(isOpen);
                 break;
             }

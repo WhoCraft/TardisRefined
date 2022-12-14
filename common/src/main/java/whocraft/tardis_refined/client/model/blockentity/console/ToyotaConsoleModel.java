@@ -1,8 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
-
+package whocraft.tardis_refined.client.model.blockentity.console;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -14,11 +10,16 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class ToyotaConsoleModel extends HierarchicalModel {
+public class ToyotaConsoleModel extends HierarchicalModel implements IConsoleUnit {
+
+	private static ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2f).looping()
 			.addAnimation("rotor_bottom_translate_2",
@@ -672,6 +673,7 @@ public class ToyotaConsoleModel extends HierarchicalModel {
 
 	}
 
+	@Override
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
@@ -682,5 +684,10 @@ public class ToyotaConsoleModel extends HierarchicalModel {
 
 		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	@Override
+	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return TOYOTA_TEXTURE;
 	}
 }

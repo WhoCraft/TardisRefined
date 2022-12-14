@@ -1,6 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package whocraft.tardis_refined.client.model.blockentity.console;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -14,11 +12,16 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class CopperConsoleModel extends HierarchicalModel {
+public class CopperConsoleModel extends HierarchicalModel implements IConsoleUnit {
+
+	private static ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper_console.png");
 
 	public static final AnimationDefinition COPPER_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.2916765f).looping()
 			.addAnimation("rotor",
@@ -1006,15 +1009,18 @@ public class CopperConsoleModel extends HierarchicalModel {
 
 	}
 
+	@Override
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
-
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, COPPER_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
-
 		this.throttle.zRot = (reactions.isFlying()) ? -1f : 1f;
-
 		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
+	}
+
+	@Override
+	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return COPPER_TEXTURE;
 	}
 }
