@@ -21,8 +21,6 @@ subprojects {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-${rootProject.mappings}")
         }
-
-
     }
 }
 

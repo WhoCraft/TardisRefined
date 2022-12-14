@@ -33,14 +33,14 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
 
         ResourceLocation temp = new ResourceLocation(TardisRefined.MODID, "item/walter_white");
-        basicItem(BlockRegistry.BULK_HEAD_DOOR.getId(), temp);
-        basicItem(BlockRegistry.GLOBAL_CONSOLE_BLOCK.getId(), temp);
-        basicItem(BlockRegistry.ARS_EGG.getId(), temp);
-        basicItem(BlockRegistry.ROOT_SHELL_BLOCK.getId(), temp);
-        basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId(), temp);
+        basicItem(BlockRegistry.BULK_HEAD_DOOR.getId());
+        basicItem(BlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());
+        basicItem(BlockRegistry.ARS_EGG.getId());
+        basicItem(BlockRegistry.ROOT_SHELL_BLOCK.getId());
+        basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId());
         basicItem(BlockRegistry.INTERNAL_DOOR_BLOCK.getId(), temp);
-        basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId(), temp);
-        basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId(), temp);
+        basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId());
+        basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
     }
 
     public ItemModelBuilder basicItem(ResourceLocation item, ResourceLocation texture) {

@@ -29,6 +29,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get(), "Console");
         add(BlockRegistry.INTERNAL_DOOR_BLOCK.get(), "Internal Door");
         add(BlockRegistry.GLOBAL_DOOR_BLOCK.get(), "Tardis Door");
+        add(BlockRegistry.ROOT_SHELL_DOOR.get(), "Root Door");
 
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(KeyItem.KEYCHAIN, "Tardis Keyset");

@@ -40,10 +40,6 @@ public class ProviderBlockTags extends BlockTagsProvider {
             if(block instanceof SlabBlock slabBlock){
                 tag(BlockTags.SLABS).add(slabBlock);
             }
-
-
-
-
         }
 
     }
