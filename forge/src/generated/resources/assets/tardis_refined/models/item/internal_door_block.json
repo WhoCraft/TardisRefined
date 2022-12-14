@@ -1,3 +1,6 @@
 {
-  "parent": "tardis_refined:block/internal_door_block"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tardis_refined:item/walter_white"
+  }
 }

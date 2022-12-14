@@ -3,10 +3,12 @@ package whocraft.tardis_refined.common.data;
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -24,6 +26,12 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ROOT_PLANT_BLOCK.get(), "Root Plant");
         add(BlockRegistry.ROOT_SHELL_BLOCK.get(), "Root Shell");
         add(BlockRegistry.TERRAFORMER_BLOCK.get(), "Terraformer");
+        add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get(), "Console");
+        add(BlockRegistry.INTERNAL_DOOR_BLOCK.get(), "Internal Door");
+        add(BlockRegistry.GLOBAL_DOOR_BLOCK.get(), "Tardis Door");
+
+        add(ItemRegistry.KEY.get(), "Tardis Key");
+        add(KeyItem.KEYCHAIN, "Tardis Keyset");
 
         add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
 
@@ -36,6 +44,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.RANDOM, "Randomizer");
         addControl(ConsoleControl.THROTTLE, "Throttle");
         addControl(ConsoleControl.MONITOR, "Computer Bank");
+
+        add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");
+        add("itemGroup.tardis_refined", "Tardis Refined");
 
         add("tardis_refined.monitor.main.title", "COMPUTER BANK");
         add("tardis_refined.monitor.main.gps", "GPS");

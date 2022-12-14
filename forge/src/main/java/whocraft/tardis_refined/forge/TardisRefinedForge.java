@@ -10,6 +10,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.data.ItemModelProvider;
 import whocraft.tardis_refined.common.data.LangProviderEnglish;
+import whocraft.tardis_refined.common.data.ModelProviderBlock;
 
 @Mod(TardisRefined.MODID)
 public class TardisRefinedForge {
@@ -25,6 +26,7 @@ public class TardisRefinedForge {
         ExistingFileHelper existingFileHelper = e.getExistingFileHelper();
         generator.addProvider(true, new LangProviderEnglish(generator));
         generator.addProvider(true, new ItemModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new ModelProviderBlock(generator, existingFileHelper));
     }
 
 }

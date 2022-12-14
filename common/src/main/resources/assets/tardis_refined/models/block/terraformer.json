@@ -3,7 +3,7 @@
 	"texture_size": [128, 128],
 	"render_type" : "cutout",
 	"textures": {
-		"main_texture": "tardis_refined:block/transformer_on",
+		"main_texture": "tardis_refined:block/transformer_off",
 		"particle": "block/lapis_block"
 	},
 	"elements": [

@@ -122,7 +122,6 @@ public class ControlEntity extends PathfinderMob {
         return InteractionResult.FAIL;
     }
 
-
     @Override
     public void tick() {
         setNoAi(true);
