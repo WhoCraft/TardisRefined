@@ -16,9 +16,7 @@ public class MiscHelper {
     }
 
     public static boolean shouldCancelBreaking(BlockState blockState) {
-        boolean s = blockState.getBlock() instanceof GlobalConsoleBlock || blockState.getBlock() instanceof GlobalShellBlock;
-        System.out.println(s);
-        return s;
+        return blockState.getBlock() instanceof GlobalConsoleBlock || blockState.getBlock() instanceof GlobalShellBlock;
     }
 
 }
