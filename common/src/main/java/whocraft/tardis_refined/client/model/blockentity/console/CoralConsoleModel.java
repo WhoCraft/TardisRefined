@@ -1,7 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -14,13 +11,17 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class CoralConsoleModel extends HierarchicalModel {
+public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit{
 
 
+	private static ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.375f).looping()
 			.addAnimation("rotor_bottom_T_add20",
@@ -731,6 +732,7 @@ public class CoralConsoleModel extends HierarchicalModel {
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
+	@Override
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
@@ -741,6 +743,11 @@ public class CoralConsoleModel extends HierarchicalModel {
 
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	@Override
+	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return CORAL_TEXTURE;
 	}
 
 	@Override

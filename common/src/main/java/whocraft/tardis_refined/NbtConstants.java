@@ -32,6 +32,7 @@ public class NbtConstants {
 
     // External Readings Data
     public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
+    public static final String LOCKED = "terd_locked";
 
     // Internal Door
     public static final String DOOR_IS_MAIN_DOOR = "is_main_door";

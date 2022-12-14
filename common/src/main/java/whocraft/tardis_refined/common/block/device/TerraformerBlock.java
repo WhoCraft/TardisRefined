@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.block.device;
 
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -26,32 +28,58 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static net.minecraft.world.phys.shapes.BooleanOp.OR;
 
 public class TerraformerBlock extends Block {
 
     public static BooleanProperty ACTIVE = BlockStateProperties.POWERED;
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-
+    
+    public static VoxelShape SHAPE = Stream.of(
+            Stream.of(
+            Block.box(0.5, 5, 13.5, 2.5, 10, 15.5),
+            Block.box(1.5, 10, 13.5, 1.5, 18, 15.5),
+            Block.box(0, 0, 13, 3, 5, 16)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
+            Stream.of(
+            Block.box(0.5, 5, 0.5, 2.5, 10, 2.5),
+            Block.box(1.5, 10, 0.5, 1.5, 18, 2.5),
+            Block.box(0, 0, 0, 3, 5, 3)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
+            Stream.of(
+            Block.box(13.5, 5, 0.5, 15.5, 10, 2.5),
+            Block.box(14.5, 10, 0.5, 14.5, 18, 2.5),
+            Block.box(13, 0, 0, 16, 5, 3)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
+            Stream.of(
+            Block.box(13.5, 5, 13.5, 15.5, 10, 15.5),
+            Block.box(14.5, 10, 13.5, 14.5, 18, 15.5),
+            Block.box(13, 0, 13, 16, 5, 16)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
+            Stream.of(
+            Block.box(12.5, 17.5, 12.5, 16.5, 21.5, 16.5),
+            Block.box(0, 19, 0, 16, 19, 16),
+            Block.box(12.5, 17.5, -0.5, 16.5, 21.5, 3.5),
+            Block.box(-0.5, 17.5, -0.5, 3.5, 21.5, 3.5),
+            Block.box(-0.5, 17.5, 12.5, 3.5, 21.5, 16.5),
+            Block.box(2, 17, 2, 14, 20, 14),
+            Block.box(5, 15.5, 5, 11, 17.5, 11)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
+            Block.box(2, 0, 2, 14, 4, 14),
+            Block.box(4, 4, 4, 12, 6, 12)
+            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get();
+    
     public TerraformerBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false).setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(ACTIVE, FACING);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
-        BlockState state = super.getStateForPlacement(context);
-        return state.setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
+        builder.add(ACTIVE);
     }
 
     @Override
@@ -72,7 +100,7 @@ public class TerraformerBlock extends Block {
                     } else {
                         cap.getInteriorManager().prepareDesktop(TardisDesktops.FACTORY_THEME);
                         destroyStructure(serverLevel, blockPos);
-                        serverLevel.setBlock(blockPos, (BlockState)blockState.setValue(ACTIVE, true), 3);
+                        serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
                     }
 
 
@@ -168,6 +196,6 @@ public class TerraformerBlock extends Block {
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return super.getShape(blockState, blockGetter, blockPos, collisionContext);
+        return SHAPE;
     }
 }

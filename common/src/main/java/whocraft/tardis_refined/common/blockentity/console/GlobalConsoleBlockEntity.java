@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.blockentity.console;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -23,10 +24,17 @@ import java.util.List;
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
 
     private boolean isDirty = true;
-    private List<ControlEntity> controlEntityList = new ArrayList<>();
+    private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
+    }
+
+    @Override
+    public void load(CompoundTag tag) {
+        super.load(tag);
+
+        spawnControlEntities();
     }
 
     public void spawnControlEntities() {
@@ -34,7 +42,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
         BlockPos currentBlockPos = getBlockPos();
 
-        if (getLevel() instanceof ServerLevel level) {
+        if (getLevel() instanceof ServerLevel serverLevel) {
 
             killControls();
             ConsoleTheme theme = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
@@ -42,17 +50,12 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
                 ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
-
                 controlEntity.setControlSpecification(control);
-                System.out.println("Offset: " + control.offsetPosition);
 
-                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + (float) control.offsetPosition.x() + 0.5f), (float) getBlockPos().getY() + (float) control.offsetPosition.y() + 0.5f,
-                        (float) getBlockPos().getZ() + (float) control.offsetPosition.z() + 0.5f);
-
-                System.out.println("BlockPos: " + location);
-
+                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
                 controlEntity.teleportTo(location.x(), location.y(), location.z());
-                level.addFreshEntity(controlEntity);
+
+                serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
             });
 

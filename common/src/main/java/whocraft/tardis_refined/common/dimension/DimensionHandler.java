@@ -1,8 +1,11 @@
 package whocraft.tardis_refined.common.dimension;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -47,6 +50,7 @@ public class DimensionHandler {
 
     public static LevelStem formLevelStem(MinecraftServer server, ResourceKey<LevelStem> stem) {
         RegistryAccess access = server.registryAccess();
+
         return new LevelStem(access.registryOrThrow(Registry.DIMENSION_TYPE_REGISTRY).getHolderOrThrow(DimensionTypes.TARDIS), new TardisChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), access.registryOrThrow(Registry.BIOME_REGISTRY)));
     }
 

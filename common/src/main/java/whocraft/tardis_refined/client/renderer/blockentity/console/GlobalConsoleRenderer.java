@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
@@ -20,21 +19,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import java.util.Objects;
 
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
-
-    private static FactoryConsoleModel factoryConsoleModel;
-    private static ResourceLocation factoryConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory_console.png");
-
-    private static NukaConsoleModel nukaConsoleModel;
-    private static ResourceLocation nukaConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka_console.png");
-
-    private static CopperConsoleModel copperConsoleModel;
-    private static ResourceLocation copperConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper_console.png");
-
-    private static CoralConsoleModel coralConsoleModel;
-    private static ResourceLocation coralConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral_console.png");
-
-    private static ToyotaConsoleModel toyotaConsoleModel;
-    private static ResourceLocation toyotaConsoleBaseTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota_console.png");
+    IConsoleUnit currentConsoleUnit, toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel;
 
     public GlobalConsoleRenderer(BlockEntityRendererProvider.Context context) {
         factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
@@ -45,40 +30,32 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     }
 
     @Override
-    public void render(GlobalConsoleBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
+    public void render(GlobalConsoleBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
-        if (theme == ConsoleTheme.FACTORY) {
-            factoryConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(factoryConsoleBaseTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        switch (theme) {
+            case FACTORY:
+                currentConsoleUnit = factoryConsoleModel;
+                break;
+            case COPPER:
+                currentConsoleUnit = copperConsoleModel;
+                break;
+            case CORAL:
+                currentConsoleUnit = coralConsoleModel;
+                break;
+            case TOYOTA:
+                currentConsoleUnit = toyotaConsoleModel;
+                break;
+            case NUKA:
+                currentConsoleUnit = nukaConsoleModel;
+                break;
         }
 
-        if (theme == ConsoleTheme.NUKA) {
-            nukaConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(nukaConsoleBaseTexture)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-        }
-
-        if (theme == ConsoleTheme.COPPER) {
-            copperConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()),poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(copperConsoleBaseTexture)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-        }
-
-        if (theme == ConsoleTheme.CORAL) {
-            coralConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(coralConsoleBaseTexture)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-
-
-        }
-
-        if (theme == ConsoleTheme.TOYOTA) {
-            toyotaConsoleModel.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(toyotaConsoleBaseTexture)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-        }
-
-
+        currentConsoleUnit.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentConsoleUnit.getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
 

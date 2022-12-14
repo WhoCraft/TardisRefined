@@ -1,3 +1,6 @@
 {
-  "parent": "tardis_refined:block/root_shell"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "tardis_refined:item/walter_white"
+  }
 }

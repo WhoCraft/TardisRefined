@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 

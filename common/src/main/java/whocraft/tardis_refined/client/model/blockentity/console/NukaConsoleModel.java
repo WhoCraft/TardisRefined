@@ -11,11 +11,16 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class NukaConsoleModel extends HierarchicalModel {
+public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
+
+	private static ResourceLocation NUKA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(6f).looping()
 			.addAnimation("rotor_zminus3_yplus5_rotateY",
@@ -488,6 +493,7 @@ public class NukaConsoleModel extends HierarchicalModel {
 
 	}
 
+	@Override
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		panels.getAllParts().forEach(ModelPart::resetPose);
@@ -505,5 +511,10 @@ public class NukaConsoleModel extends HierarchicalModel {
 		bone43.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone67.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone61.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	}
+
+	@Override
+	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return NUKA_TEXTURE;
 	}
 }

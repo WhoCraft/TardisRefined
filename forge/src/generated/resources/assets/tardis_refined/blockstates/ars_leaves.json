@@ -1,5 +1,4 @@
 {
-  "render_type": "cutout",
   "variants": {
     "": {
       "model": "tardis_refined:block/ars_leaves"

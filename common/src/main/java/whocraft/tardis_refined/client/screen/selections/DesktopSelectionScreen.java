@@ -5,12 +5,9 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
-import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class DesktopSelectionScreen extends SelectionScreen {

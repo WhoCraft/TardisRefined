@@ -1,5 +1,4 @@
 {
-  "render_type": "cutout",
   "multipart": [
     {
       "apply": {
@@ -13,16 +12,6 @@
       },
       "when": {
         "north": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "tardis_refined:block/ars_leaves_fence_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "true"
       }
     },
     {
@@ -43,6 +32,16 @@
       },
       "when": {
         "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "tardis_refined:block/ars_leaves_fence_side",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true"
       }
     }
   ]

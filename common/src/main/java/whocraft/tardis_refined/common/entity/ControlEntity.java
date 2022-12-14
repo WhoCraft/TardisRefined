@@ -33,11 +33,15 @@ public class ControlEntity extends PathfinderMob {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
     }
 
+    public ControlSpecification controlSpecification() {
+        return controlSpecification;
+    }
+
     public void setControlSpecification(ControlSpecification consoleControl) {
         this.controlSpecification = consoleControl;
-        this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale)));
+        this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale())));
         this.refreshDimensions();
-        this.setCustomName(Component.translatable(consoleControl.control.getLangId()));
+        this.setCustomName(Component.translatable(consoleControl.control().getLangId()));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -52,7 +56,7 @@ public class ControlEntity extends PathfinderMob {
     @Override
     protected AABB makeBoundingBox() {
         if (controlSpecification != null) {
-            return new AABB(new BlockPos(controlSpecification.scale));
+            return new AABB(new BlockPos(controlSpecification.scale()));
         }
         return super.makeBoundingBox();
     }
@@ -84,13 +88,13 @@ public class ControlEntity extends PathfinderMob {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
-                    if (!(this.controlSpecification.control.getControl() instanceof MonitorControl)) {
+                    if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
                             return;
                         }
                     }
-                    this.controlSpecification.control.getControl().onLeftClick(cap, this, player);
+                    this.controlSpecification.control().getControl().onLeftClick(cap, this, player);
                 });
 
                 return true;
@@ -105,14 +109,14 @@ public class ControlEntity extends PathfinderMob {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
-                    if (!(this.controlSpecification.control.getControl() instanceof MonitorControl)) {
+                    if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
                             return;
                         }
                     }
 
-                    this.controlSpecification.control.getControl().onRightClick(cap, this, player);
+                    this.controlSpecification.control().getControl().onRightClick(cap, this, player);
 
                 });
                 return InteractionResult.SUCCESS;
@@ -121,7 +125,6 @@ public class ControlEntity extends PathfinderMob {
 
         return InteractionResult.FAIL;
     }
-
 
     @Override
     public void tick() {
