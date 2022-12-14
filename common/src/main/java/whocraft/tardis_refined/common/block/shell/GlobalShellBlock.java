@@ -68,19 +68,14 @@ public class GlobalShellBlock extends ShellBaseBlock{
                         ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString()));
 
                         boolean validKey = KeyItem.keychainContains(itemStack, dimension);
-                        System.out.println("valid: " + validKey);
                         if (validKey) {
                             BlockState state = blockState.cycle(LOCKED);
                             boolean locked = state.getValue(LOCKED);
                             level.setBlock(blockPos, state, 77);
                             TardisLevelOperator.get(Platform.getServer().getLevel(dimension)).ifPresent(tardisLevelOperator -> tardisLevelOperator.getExteriorManager().setLocked(locked));
-                            System.out.println(locked);
                         }
-
                     }
-
                     entity.onRightClick(blockState);
-
                     return InteractionResult.SUCCESS;
                 }
 
