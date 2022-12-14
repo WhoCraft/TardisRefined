@@ -5,13 +5,11 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.door.BulkHeadDoorModel;
-import whocraft.tardis_refined.client.model.blockentity.door.PhoneBoothDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.door.*;
 import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
-import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
-import whocraft.tardis_refined.client.model.blockentity.door.PoliceBoxDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.FactoryShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.MysticShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PhoneBoothModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;
@@ -39,11 +37,13 @@ public class ModelRegistry {
     public static ModelLayerLocation FACTORY_SHELL;
     public static ModelLayerLocation POLICE_BOX_SHELL;
     public static ModelLayerLocation PHONE_BOOTH_SHELL;
+    public static ModelLayerLocation MYSTIC_SHELL;
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
     public static ModelLayerLocation FACTORY_DOOR;
     public static ModelLayerLocation POLICE_BOX_DOOR;
     public static ModelLayerLocation PHONE_BOOTH_DOOR;
+    public static ModelLayerLocation MYSTIC_DOOR;
 
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
@@ -66,11 +66,13 @@ public class ModelRegistry {
         FACTORY_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_shell"), "factory_shell"), FactoryShellModel::createBodyLayer);
         POLICE_BOX_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "police_box_shell"), "police_box_shell"), PoliceBoxModel::createBodyLayer);
         PHONE_BOOTH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "phone_booth_shell"), "phone_booth_shell"), PhoneBoothModel::createBodyLayer);
+        MYSTIC_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "mystic_shell"), "mystic_shell"), MysticShellModel::createBodyLayer);
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
         FACTORY_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_door"), "factory_door"), FactoryDoorModel::createBodyLayer);
         POLICE_BOX_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "police_box_door"), "police_box_door"), PoliceBoxDoorModel::createBodyLayer);
         PHONE_BOOTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "phone_booth_door"), "phone_booth_door"), PhoneBoothDoorModel::createBodyLayer);
+        MYSTIC_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "mystic_door"), "mystic_door"), MysticDoorModel::createBodyLayer);
 
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);

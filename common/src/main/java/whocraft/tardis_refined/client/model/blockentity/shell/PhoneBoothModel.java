@@ -99,4 +99,9 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 	public ResourceLocation texture() {
 		return ShellTheme.PHONE_BOOTH.getExternalShellTexture();
 	}
+
+	@Override
+	public ResourceLocation lightTexture() {
+		return ShellTheme.PHONE_BOOTH.emmissiveExternal();
+	}
 }

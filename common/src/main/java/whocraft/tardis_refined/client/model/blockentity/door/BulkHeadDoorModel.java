@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.client.model.blockentity.door;
 
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;

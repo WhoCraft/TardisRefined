@@ -8,18 +8,27 @@ import whocraft.tardis_refined.TardisRefined;
 public enum ShellTheme implements StringRepresentable, Theme {
 
     FACTORY("factory", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell_door.png")),
-    POLICE_BOX("police_box", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_door.png")),
-    PHONE_BOOTH("phone_booth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_door.png"));
+    POLICE_BOX("police_box", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_emissive.png")),
+    PHONE_BOOTH("phone_booth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_emissive.png")),
+    MYSTIC("mystic", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_emmissive.png"));
 
 
     private final String id;
-    private final ResourceLocation externalShellTexture;
-    private final ResourceLocation internalDoorTexture;
+    private final ResourceLocation externalShellTexture, internalDoorTexture;
+    private ResourceLocation emmissiveExternal;
 
     ShellTheme(String id, ResourceLocation externalShellTexture, ResourceLocation internalDoorTexture) {
         this.id = id;
         this.externalShellTexture = externalShellTexture;
         this.internalDoorTexture = internalDoorTexture;
+        this.emmissiveExternal = null;
+    }
+
+    ShellTheme(String id, ResourceLocation externalShellTexture, ResourceLocation internalDoorTexture, ResourceLocation emmissiveExternalShellTexture) {
+        this.id = id;
+        this.externalShellTexture = externalShellTexture;
+        this.internalDoorTexture = internalDoorTexture;
+        this.emmissiveExternal = emmissiveExternalShellTexture;
     }
 
     public ResourceLocation getExternalShellTexture() {
@@ -30,6 +39,10 @@ public enum ShellTheme implements StringRepresentable, Theme {
         return this.internalDoorTexture;
     }
 
+    public ResourceLocation emmissiveExternal() {
+        return emmissiveExternal;
+    }
+
     @Override
     public String getSerializedName() {
         return this.id;
@@ -38,7 +51,10 @@ public enum ShellTheme implements StringRepresentable, Theme {
     public String getRawLang() {
         return "tardis_refined.shell." + id;
     }
-    public Component getDisplayName() {return Component.translatable(getRawLang());}
+
+    public Component getDisplayName() {
+        return Component.translatable(getRawLang());
+    }
 
     public static ShellTheme findOr(String id, ShellTheme shellTheme) {
         for (ShellTheme value : ShellTheme.values()) {

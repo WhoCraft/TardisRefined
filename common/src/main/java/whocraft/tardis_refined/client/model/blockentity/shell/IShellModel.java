@@ -7,4 +7,7 @@ public interface IShellModel {
     void setDoorPosition(boolean open);
 
     ResourceLocation texture();
+    default ResourceLocation lightTexture() {
+        return null;
+    }
 }
