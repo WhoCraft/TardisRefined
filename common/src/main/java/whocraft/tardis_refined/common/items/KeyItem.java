@@ -1,11 +1,13 @@
 package whocraft.tardis_refined.common.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -27,6 +29,7 @@ import java.util.List;
 public class KeyItem extends Item {
 
     public static String KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";
+    public static String TARDIS_LIST_TITLE = "tooltip."+ TardisRefined.MODID + ".tardis_list";
 
     public KeyItem(Properties properties) {
         super(properties);
@@ -62,7 +65,6 @@ public class KeyItem extends Item {
         keychain.add(dim);
 
         itemStack.setTag(itemtag);
-        System.out.println(itemtag);
         return itemStack;
     }
 
@@ -111,8 +113,16 @@ public class KeyItem extends Item {
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, level, list, tooltipFlag);
 
-        for (ResourceKey<Level> resourceKey : KeyItem.keychain(itemStack)) {
-            list.add(Component.literal(resourceKey.location().getPath()));
+        ArrayList<ResourceKey<Level>> keychain = KeyItem.keychain(itemStack);
+
+        if(!keychain.isEmpty()) {
+            list.add(Component.translatable(TARDIS_LIST_TITLE));
+
+            MutableComponent hyphen = Component.literal(ChatFormatting.YELLOW + "- ");
+
+            for (ResourceKey<Level> resourceKey : keychain) {
+                list.add(hyphen.append(Component.literal(resourceKey.location().getPath().substring(0, 5))));
+            }
         }
     }
 }

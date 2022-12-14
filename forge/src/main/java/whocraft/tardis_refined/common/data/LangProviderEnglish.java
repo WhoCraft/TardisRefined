@@ -68,6 +68,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add("tardis_refined.desktop.factory", "Factory");
         add("tardis_refined.desktop.coral", "Coral");
 
+        add(KeyItem.TARDIS_LIST_TITLE, "Key Set:");
     }
 
     public void addControl(ConsoleControl control, String name){

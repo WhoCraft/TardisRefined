@@ -40,5 +40,6 @@
   "tardis_refined.monitor.main.title": "COMPUTER BANK",
   "tardis_refined.shell.factory": "Factory",
   "tardis_refined.shell.phone_booth": "Phone Booth",
-  "tardis_refined.shell.police_box": "Police Box"
+  "tardis_refined.shell.police_box": "Police Box",
+  "tooltip.tardis_refined.tardis_list": "Key Set:"
 }
