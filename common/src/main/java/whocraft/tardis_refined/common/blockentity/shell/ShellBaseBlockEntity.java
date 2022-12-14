@@ -16,10 +16,9 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 import java.util.UUID;
 
@@ -60,7 +59,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
         if (level instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.id.toString()));
             TardisLevelOperator.get(interior).ifPresent(cap -> {
-
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
                 } else {
