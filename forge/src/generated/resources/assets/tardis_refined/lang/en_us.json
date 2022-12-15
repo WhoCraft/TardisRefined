@@ -1,4 +1,5 @@
 {
+  "block.tardis_refined.air_lock_generator": "Air Lock Generator",
   "block.tardis_refined.ars_egg": "ARS Egg",
   "block.tardis_refined.ars_leaves": "ARS Leaves",
   "block.tardis_refined.ars_leaves_fence": "ARS Fence",
@@ -7,6 +8,7 @@
   "block.tardis_refined.internal_door_block": "Internal Door",
   "block.tardis_refined.root_plant": "Root Plant",
   "block.tardis_refined.root_shell": "Root Shell",
+  "block.tardis_refined.root_shell_door": "Root Door",
   "block.tardis_refined.tardis_console": "Console",
   "block.tardis_refined.tardis_door": "Tardis Door",
   "block.tardis_refined.terraformer": "Terraformer",

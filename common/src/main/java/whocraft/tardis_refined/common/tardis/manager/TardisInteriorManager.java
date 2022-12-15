@@ -66,8 +66,12 @@ public class TardisInteriorManager {
     }
 
     public AABB[] unbreakableZones(){
-        AABB[] zones = new AABB[]{new AABB(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)), new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4))};
-        return zones;
+
+        if(corridorAirlockCenter == null){
+            return new AABB[]{};
+        }
+
+        return new AABB[]{new AABB(STATIC_CORRIDOR_POSITION.below().north(2).west(2), STATIC_CORRIDOR_POSITION.above().south(2).east(2).above(4)), new AABB(corridorAirlockCenter.below().north(2).west(2), corridorAirlockCenter.above().south(2).east(2).above(4))};
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -99,6 +103,7 @@ public class TardisInteriorManager {
     }
 
     public void tick(Level level) {
+
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
