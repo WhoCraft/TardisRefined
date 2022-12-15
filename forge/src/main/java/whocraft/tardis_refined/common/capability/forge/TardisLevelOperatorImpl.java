@@ -50,8 +50,10 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     @SubscribeEvent
     public static void onLevelTick(TickEvent.LevelTickEvent event) {
         if (event.level instanceof ServerLevel level) {
-            if (event.level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
-                event.level.getCapability(TardisLevelOperatorImpl.TARDIS_DATA).ifPresent(x -> x.tick(level));
+            if (event.phase == TickEvent.Phase.START) {
+                if (event.level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+                    event.level.getCapability(TardisLevelOperatorImpl.TARDIS_DATA).ifPresent(x -> x.tick(level));
+                }
             }
         }
     }

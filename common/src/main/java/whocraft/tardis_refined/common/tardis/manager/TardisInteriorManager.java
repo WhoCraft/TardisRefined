@@ -41,8 +41,8 @@ public class TardisInteriorManager {
 
     // Airlock systems.
     private boolean processingWarping = false;
-    private int airlockCountdownSeconds = 6;
-    private int airlockTimerSeconds = 10;
+    private int airlockCountdownSeconds = 3;
+    private int airlockTimerSeconds = 5;
 
     private DesktopTheme preparedTheme;
 
@@ -144,7 +144,7 @@ public class TardisInteriorManager {
                     if (airlockCountdownSeconds <=0 ) {
 
                         this.processingWarping = true;
-                        airlockCountdownSeconds = 20;
+                        airlockCountdownSeconds = 10;
                         this.airlockTimerSeconds = 0;
 
                         // Lock the doors.
@@ -171,12 +171,12 @@ public class TardisInteriorManager {
 
         if (processingWarping) {
             if (level.getGameTime() % 20 == 0) {
-                if (airlockTimerSeconds == 2) {
+                if (airlockTimerSeconds == 1) {
                     level.playSound(null, corridorAirlockCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
                     level.playSound(null, staticCorridorCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
                 }
 
-                if (airlockTimerSeconds == 10) {
+                if (airlockTimerSeconds == 5) {
                     List<LivingEntity> desktopEntities = getAirlockEntities(level);
                     List<LivingEntity> corridorEntities = getCorridorEntities(level, staticCorridorCenter);
 
@@ -191,7 +191,7 @@ public class TardisInteriorManager {
                     });
                 }
 
-                if (airlockTimerSeconds == 14) {
+                if (airlockTimerSeconds == 7) {
                     airlockTimerSeconds = 0;
                     this.processingWarping = false;
                     this.airlockTimerSeconds = 20;
