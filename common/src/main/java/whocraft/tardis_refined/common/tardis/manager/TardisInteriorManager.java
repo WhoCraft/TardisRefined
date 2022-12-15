@@ -44,6 +44,9 @@ public class TardisInteriorManager {
     private int airlockCountdownSeconds = 6;
     private int airlockTimerSeconds = 10;
 
+    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000,100,0);
+
+
     private DesktopTheme preparedTheme;
 
     public TardisInteriorManager(TardisLevelOperator operator) {
@@ -60,6 +63,11 @@ public class TardisInteriorManager {
 
     public int getInteriorGenerationCooldown() {
         return this.interiorGenerationCooldown / 20;
+    }
+
+    public AABB[] unbreakableZones(){
+        AABB[] zones = new AABB[]{new AABB(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)), new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4))};
+        return zones;
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -130,14 +138,12 @@ public class TardisInteriorManager {
 
         /// Airlock Logic
 
-        BlockPos staticCorridorCenter = new BlockPos(1000,100,0);
-
         // Check if a player is in the radius of either airlock points
         if (!processingWarping) {
             if (level.getGameTime() % 20 == 0) {
                 // Dynamic desktop position.
                 List<LivingEntity> desktopEntities = getAirlockEntities(level);
-                List<LivingEntity> corridorEntities = getCorridorEntities(level, staticCorridorCenter);
+                List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
                 if (desktopEntities.size() > 0 || corridorEntities.size() > 0) {
                     airlockCountdownSeconds--;
@@ -173,12 +179,12 @@ public class TardisInteriorManager {
             if (level.getGameTime() % 20 == 0) {
                 if (airlockTimerSeconds == 2) {
                     level.playSound(null, corridorAirlockCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
-                    level.playSound(null, staticCorridorCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
+                    level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
                 }
 
                 if (airlockTimerSeconds == 10) {
                     List<LivingEntity> desktopEntities = getAirlockEntities(level);
-                    List<LivingEntity> corridorEntities = getCorridorEntities(level, staticCorridorCenter);
+                    List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2))) ;
@@ -214,8 +220,8 @@ public class TardisInteriorManager {
         }
     }
 
-    private static List<LivingEntity> getCorridorEntities(Level level, BlockPos staticCorridorCenter) {
-        return level.getEntitiesOfClass(LivingEntity.class, new AABB(staticCorridorCenter.north(2).west(2), staticCorridorCenter.south(2).east(2).above(4)));
+    public List<LivingEntity> getCorridorEntities(Level level) {
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)));
     }
 
     private List<LivingEntity> getAirlockEntities(Level level) {
@@ -228,11 +234,12 @@ public class TardisInteriorManager {
     }
 
     public boolean isInAirlock(LivingEntity livingEntity){
+
+        if(!hasGeneratedCorridors) return false;
+
         List<LivingEntity> airlock = getAirlockEntities(livingEntity.level);
         //TODO BlockPos may change
-        BlockPos staticCorridorCenter = new BlockPos(1000,100,0);
-
-        List<LivingEntity> corridor = getCorridorEntities(livingEntity.level, staticCorridorCenter);
+        List<LivingEntity> corridor = getCorridorEntities(livingEntity.level);
 
         return airlock.contains(livingEntity) || corridor.contains(livingEntity);
     }
