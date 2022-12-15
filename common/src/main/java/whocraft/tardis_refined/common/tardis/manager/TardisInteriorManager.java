@@ -135,8 +135,8 @@ public class TardisInteriorManager {
         if (!processingWarping) {
             if (level.getGameTime() % 20 == 0) {
                 // Dynamic desktop position.
-                List<LivingEntity> desktopEntities = level.getEntitiesOfClass(LivingEntity.class, new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
-                List<LivingEntity> corridorEntities = level.getEntitiesOfClass(LivingEntity.class, new AABB(staticCorridorCenter.north(2).west(2), staticCorridorCenter.south(2).east(2).above(4)));
+                List<LivingEntity> desktopEntities = getAirlockEntities(level);
+                List<LivingEntity> corridorEntities = getCorridorEntities(level, staticCorridorCenter);
 
                 if (desktopEntities.size() > 0 || corridorEntities.size() > 0) {
                     airlockCountdownSeconds--;
@@ -176,8 +176,8 @@ public class TardisInteriorManager {
                 }
 
                 if (airlockTimerSeconds == 10) {
-                    List<LivingEntity> desktopEntities = level.getEntitiesOfClass(LivingEntity.class, new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
-                    List<LivingEntity> corridorEntities = level.getEntitiesOfClass(LivingEntity.class, new AABB(staticCorridorCenter.north(2).west(2), staticCorridorCenter.south(2).east(2).above(4)));
+                    List<LivingEntity> desktopEntities = getAirlockEntities(level);
+                    List<LivingEntity> corridorEntities = getCorridorEntities(level, staticCorridorCenter);
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2))) ;
@@ -211,6 +211,24 @@ public class TardisInteriorManager {
                 airlockTimerSeconds++;
             }
         }
+    }
+
+    private static List<LivingEntity> getCorridorEntities(Level level, BlockPos staticCorridorCenter) {
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(staticCorridorCenter.north(2).west(2), staticCorridorCenter.south(2).east(2).above(4)));
+    }
+
+    private List<LivingEntity> getAirlockEntities(Level level) {
+        return level.getEntitiesOfClass(LivingEntity.class, new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
+    }
+
+    public boolean isInAirlock(LivingEntity livingEntity){
+        List<LivingEntity> airlock = getAirlockEntities(livingEntity.level);
+        //TODO BlockPos may change
+        BlockPos staticCorridorCenter = new BlockPos(1000,100,0);
+
+        List<LivingEntity> corridor = getCorridorEntities(livingEntity.level, staticCorridorCenter);
+
+        return airlock.contains(livingEntity) || corridor.contains(livingEntity);
     }
 
     public void generateDesktop(DesktopTheme theme) {
