@@ -35,7 +35,7 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
-        float rotation = ((Direction)blockstate.getValue(RootedShellBlock.FACING)).toYRot();
+        float rotation = blockstate.getValue(RootedShellBlock.FACING).toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
 
         boolean isOpen = blockEntity.getBlockState().getValue(ShellBaseBlock.OPEN);
