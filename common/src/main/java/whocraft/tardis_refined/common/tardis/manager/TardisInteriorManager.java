@@ -27,6 +27,7 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TardisInteriorManager {
@@ -218,6 +219,11 @@ public class TardisInteriorManager {
     }
 
     private List<LivingEntity> getAirlockEntities(Level level) {
+
+        if(corridorAirlockCenter == null){
+            return new ArrayList<>();
+        }
+
         return level.getEntitiesOfClass(LivingEntity.class, new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
     }
 

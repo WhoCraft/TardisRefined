@@ -26,7 +26,7 @@ public class CommonBus {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event){
-        event.setCanceled(MiscHelper.shouldCancelBreaking(event.getState()));
+        event.setCanceled(MiscHelper.shouldCancelBreaking(event.getPlayer().level, event.getPlayer(), event.getPos(), event.getState()));
     }
 
 }
