@@ -92,7 +92,7 @@ public class TardisIntReactions {
             ROTOR_ANIMATION.start(0);
         }
 
-        System.out.println(ROTOR_ANIMATION.isStarted());
+        
     }
 
     // A map that stores information about Tardis instances, keyed by level resource key

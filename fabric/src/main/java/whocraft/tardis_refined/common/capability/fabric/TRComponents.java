@@ -1,10 +1,12 @@
 package whocraft.tardis_refined.common.capability.fabric;
 
+import dev.onyxstudios.cca.api.v3.component.ComponentFactory;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistryV3;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 
 public class TRComponents implements WorldComponentInitializer {

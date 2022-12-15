@@ -2,18 +2,16 @@ package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class TardisControlManager {
@@ -33,14 +31,14 @@ public class TardisControlManager {
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
-        this.targetLocation= new TardisNavLocation(new BlockPos(0,0,0), Direction.NORTH, operator.getLevel().getServer().getLevel(Level.OVERWORLD));
+        this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
     }
 
     public void loadData(CompoundTag tag) {
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
         if (this.targetLocation == null) {
-            this.targetLocation = new TardisNavLocation(new BlockPos(0,0,0), Direction.NORTH, operator.getLevel().getServer().getLevel(Level.OVERWORLD));
+            this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
@@ -200,7 +198,6 @@ public class TardisControlManager {
         }
 
         operator.getExteriorManager().placeExteriorBlock(operator, location);
-        operator.setShellTheme(ShellTheme.POLICE_BOX);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 5, 1);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
     }

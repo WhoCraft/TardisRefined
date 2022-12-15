@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
@@ -38,7 +39,7 @@ public class SyncLevelListMessage extends MessageS2C {
     }
 
     @Override
-    public void handle() {
+    public void handle(MessageContext context) {
         ClientPacketHandler.handleDimSyncPacket(this.level, this.add);
     }
 }

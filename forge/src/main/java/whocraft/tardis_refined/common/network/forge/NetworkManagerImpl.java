@@ -74,7 +74,7 @@ public class NetworkManagerImpl extends NetworkManager {
 
         public static void handle(ToServer msg, Supplier<NetworkEvent.Context> ctx) {
             if (msg.message != null) {
-                ctx.get().enqueueWork(msg.message::handle);
+                ctx.get().enqueueWork(() -> msg.message.handle(() -> ctx.get().getSender()));
             }
             ctx.get().setPacketHandled(true);
         }
@@ -109,7 +109,7 @@ public class NetworkManagerImpl extends NetworkManager {
 
         public static void handle(ToClient msg, Supplier<NetworkEvent.Context> ctx) {
             if (msg.message != null) {
-                ctx.get().enqueueWork(msg.message::handle);
+                ctx.get().enqueueWork(() -> msg.message.handle(() -> null));
             }
             ctx.get().setPacketHandled(true);
         }

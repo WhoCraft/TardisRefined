@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.Platform;
 
 public class NbtConstants {
 
@@ -32,6 +33,7 @@ public class NbtConstants {
 
     // External Readings Data
     public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
+    public static final String LOCKED = "terd_locked";
 
     // Internal Door
     public static final String DOOR_IS_MAIN_DOOR = "is_main_door";
@@ -61,8 +63,8 @@ public class NbtConstants {
         String dimension_modid = tag.getString(prefix + NbtConstants.LOCATION_DIMENSION_MODID);
         String dimension_path = tag.getString(prefix + NbtConstants.LOCATION_DIMENSION_PATH);
 
-        if (position != null && dimension_modid != null && dimension_path != null) {
-            ServerLevel level = operator.getLevel().getServer().levels.get(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension_modid, dimension_path)));
+        if (dimension_modid != null && dimension_path != null) {
+            ServerLevel level = Platform.getServer().levels.get(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension_modid, dimension_path)));
             if (level != null) {
                 return new TardisNavLocation(position, direction, level);
             }
@@ -73,6 +75,9 @@ public class NbtConstants {
     public static void putTardisNavLocation(CompoundTag tag, String prefix, TardisNavLocation location) {
         tag.put(prefix + NbtConstants.LOCATION_POSITION, NbtUtils.writeBlockPos(location.position));
         tag.putInt(prefix + NbtConstants.LOCATION_ROTATION, location.rotation.get2DDataValue());
+
+        if(location.level == null) return;
+
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, location.level.dimension().location().getNamespace());
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, location.level.dimension().location().getPath());
     }

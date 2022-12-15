@@ -91,7 +91,16 @@ public class TardisInteriorManager {
 
     public void tick(Level level) {
         if (this.isWaitingToGenerate) {
+            if (level.random.nextInt(30) == 0) {
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
+            }
+
+            if (level.random.nextInt(100) == 0) {
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
+            }
+
             if (level.players().size() == 0) {
+
                 this.operator.getExteriorManager().triggerShellRegenState();
                 operator.setDoorClosed(true);
                 generateDesktop(this.preparedTheme);
@@ -108,7 +117,7 @@ public class TardisInteriorManager {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme(ShellTheme.FACTORY);
+                this.operator.setShellTheme( (this.operator.getExteriorManager().getCurrentTheme() != null) ? operator.getExteriorManager().getCurrentTheme() : ShellTheme.FACTORY);
                 this.isGeneratingDesktop = false;
             }
 

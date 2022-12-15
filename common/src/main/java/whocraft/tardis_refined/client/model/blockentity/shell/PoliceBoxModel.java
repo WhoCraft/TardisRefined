@@ -1,7 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.shell;// Made with Blockbench 4.5.1
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -9,8 +6,9 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 
@@ -119,6 +117,8 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		poseStack.scale(1.05f, 1.05f, 1.05f);
+		poseStack.translate(0, -0.07, 0);
 		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -137,5 +137,10 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 	@Override
 	public void setDoorPosition(boolean open) {
 		this.right_door.yRot = (open) ? -275f : 0;
+	}
+
+	@Override
+	public ResourceLocation texture() {
+		return ShellTheme.POLICE_BOX.getExternalShellTexture();
 	}
 }

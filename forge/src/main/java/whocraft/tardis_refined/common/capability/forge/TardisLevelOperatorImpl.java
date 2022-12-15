@@ -42,8 +42,6 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     public static void onLevelCapabilities(AttachCapabilitiesEvent<Level> event) {
         if (event.getObject() instanceof ServerLevel level) {
             if (level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
-                System.out.println("Applying TARDIS Capability to: " + event.getObject().dimension().location());
-
                 event.addCapability(new ResourceLocation(TardisRefined.MODID, "tardis_data"), new TardisLevelOperatorImpl((ServerLevel) event.getObject()));
             }
         }

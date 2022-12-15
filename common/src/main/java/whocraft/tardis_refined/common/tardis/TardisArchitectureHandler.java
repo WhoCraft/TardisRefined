@@ -3,9 +3,11 @@ package whocraft.tardis_refined.common.tardis;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.phys.AABB;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -15,6 +17,7 @@ import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 // Responsible for all the tedious generation of the desktop;
@@ -25,7 +28,7 @@ public class TardisArchitectureHandler {
     public static final int INTERIOR_SIZE = 150;
 
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
-        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.name));
+        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.id));
 
         // Fill the area out.
         BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);
@@ -37,8 +40,12 @@ public class TardisArchitectureHandler {
             operator.setBlock(pos, Blocks.STONE.defaultBlockState(),1);
         }
 
+        // Cheap and easy entity removal. Might want to make this more robust for items!
+        List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
+        desktopEntities.forEach(x -> x.teleportTo(0,-1000,0));
 
-        Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.resourceLocation);
+
+        Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.location);
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
             structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
