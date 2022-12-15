@@ -1,11 +1,13 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -21,10 +23,11 @@ import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.ArrayList;
@@ -102,7 +105,7 @@ public class TardisInteriorManager {
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
     }
 
-    public void tick(Level level) {
+    public void tick(ServerLevel level) {
 
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
@@ -181,24 +184,39 @@ public class TardisInteriorManager {
         }
 
         if (processingWarping) {
+
+
             if (level.getGameTime() % 20 == 0) {
-                if (airlockTimerSeconds == 1) {
-                    level.playSound(null, corridorAirlockCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
-                    level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
+
+                RandomSource rand = level.getRandom();
+                for (AABB aabb : unbreakableZones()) {
+                    BlockPos.betweenClosedStream(aabb).forEach(position -> {
+                        double velocityX = (rand.nextDouble() - 0.5) * 0.02;
+                        double velocityY = (rand.nextDouble() - 0.5) * 0.02;
+                        double velocityZ = (rand.nextDouble() - 0.5) * 0.02;
+
+                        level.sendParticles(ParticleTypes.CLOUD, position.getX(), position.getY(), position.getZ(), 2, velocityX, velocityY, velocityZ, velocityZ);
+                    });
                 }
 
-                if (airlockTimerSeconds == 5) {
-                    List<LivingEntity> desktopEntities = getAirlockEntities(level);
-                    List<LivingEntity> corridorEntities = getCorridorEntities(level);
+
+            if (airlockTimerSeconds == 1) {
+                level.playSound(null, corridorAirlockCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
+                level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
+            }
+
+            if (airlockTimerSeconds == 5) {
+                List<LivingEntity> desktopEntities = getAirlockEntities(level);
+                List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
                     desktopEntities.forEach(x -> {
-                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2))) ;
-                        x.teleportTo(1000.5f + offsetPos.x(), 100.5f + offsetPos.y(), -1.5f + offsetPos.z());
+                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
+                        MiscHelper.performTeleport(x, level, 1000.5f + offsetPos.x(), 100.5f + offsetPos.y(), -1.5f + offsetPos.z(), x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(new BlockPos(1000, 100, -2))) ;
-                        x.teleportTo(corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f);
+                        MiscHelper.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
 
