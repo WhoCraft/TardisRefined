@@ -14,6 +14,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.BulkHeadDoorModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 
 public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlockEntity>, BlockEntityRendererProvider<BulkHeadDoorBlockEntity> {
@@ -36,6 +37,11 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
         bulkHeadDoorModel.setDoorPosition(blockstate);
         bulkHeadDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(bulkHeadDoorTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(BulkHeadDoorBlockEntity blockEntity) {
+        return true;
     }
 
     @Override

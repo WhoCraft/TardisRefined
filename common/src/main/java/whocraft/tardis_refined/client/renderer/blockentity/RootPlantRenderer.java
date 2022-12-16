@@ -73,6 +73,11 @@ public class RootPlantRenderer implements BlockEntityRenderer<RootPlantBlockEnti
     }
 
     @Override
+    public boolean shouldRenderOffScreen(RootPlantBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public BlockEntityRenderer<RootPlantBlockEntity> create(Context context) {
         return new RootPlantRenderer(context);
     }

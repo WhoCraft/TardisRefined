@@ -89,6 +89,11 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
     }
 
     @Override
+    public boolean shouldRenderOffScreen(GlobalShellBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
         return new GlobalShellRenderer(context);
     }
