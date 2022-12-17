@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -11,12 +12,12 @@ public class ConsoleModelCollection {
 
     IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel;
 
-    public ConsoleModelCollection(BlockEntityRendererProvider.Context context) {
-        factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
-        nukaConsoleModel = new NukaConsoleModel(context.bakeLayer((ModelRegistry.NUKA_CONSOLE)));
-        copperConsoleModel = new CopperConsoleModel(context.bakeLayer((ModelRegistry.COPPER_CONSOLE)));
-        coralConsoleModel = new CoralConsoleModel(context.bakeLayer((ModelRegistry.CORAL_CONSOLE)));
-        toyotaConsoleModel = new ToyotaConsoleModel(context.bakeLayer((ModelRegistry.TOYOTA_CONSOLE)));
+    public ConsoleModelCollection() {
+        factoryConsoleModel = new FactoryConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
+        nukaConsoleModel = new NukaConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.NUKA_CONSOLE)));
+        copperConsoleModel = new CopperConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.COPPER_CONSOLE)));
+        coralConsoleModel = new CoralConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.CORAL_CONSOLE)));
+        toyotaConsoleModel = new ToyotaConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.TOYOTA_CONSOLE)));
     }
 
     /**
@@ -39,5 +40,15 @@ public class ConsoleModelCollection {
             default:
                 throw new RuntimeException("Renderer has accessed theme that isn't accounted for! - " + theme.getSerializedName());
         }
+    }
+
+    private static ConsoleModelCollection instance = null;
+
+    public static ConsoleModelCollection getInstance() {
+        if (ConsoleModelCollection.instance == null) {
+            ConsoleModelCollection.instance = new ConsoleModelCollection();
+        }
+
+        return instance;
     }
 }

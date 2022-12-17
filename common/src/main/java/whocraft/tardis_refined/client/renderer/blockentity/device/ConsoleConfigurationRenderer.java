@@ -23,14 +23,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class ConsoleConfigurationRenderer implements BlockEntityRenderer<ConsoleConfigurationBlockEntity>, BlockEntityRendererProvider<ConsoleConfigurationBlockEntity> {
 
-    private ConsoleModelCollection consoleModelCollection;
     private ConsoleConfigurationModel consoleConfigurationModel;
     private ResourceLocation consoleConfigurationTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/device/console_configuration.png");
 
     public ConsoleConfigurationRenderer(Context context) {
         this.consoleConfigurationModel = new ConsoleConfigurationModel(context.bakeLayer(ModelRegistry.CONSOLE_CONFIGURATION));
-        this.consoleModelCollection = new ConsoleModelCollection(context);
-
     }
 
     @Override
@@ -57,7 +54,7 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
 
             ConsoleTheme theme = blockstate.getValue(ConsoleConfigurationBlock.CONSOLE);
 
-            consoleModelCollection.getConsoleModel(theme).renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(consoleModelCollection.getConsoleModel(theme).getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
+            ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(ConsoleModelCollection.getInstance().getConsoleModel(theme).getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
         }
 
         poseStack.popPose();

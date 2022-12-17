@@ -17,10 +17,8 @@ import java.util.Objects;
 
 public class  GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
-    private ConsoleModelCollection modelCollection;
 
     public GlobalConsoleRenderer(BlockEntityRendererProvider.Context context) {
-        modelCollection = new ConsoleModelCollection(context);
     }
 
     @Override
@@ -31,7 +29,7 @@ public class  GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsole
         BlockState blockstate = blockEntity.getBlockState();
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
-        modelCollection.getConsoleModel(theme).renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(modelCollection.getConsoleModel(theme).getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(ConsoleModelCollection.getInstance().getConsoleModel(theme).getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
 
