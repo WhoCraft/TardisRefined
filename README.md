@@ -27,3 +27,5 @@
 
    </tbody>
 </table>
+
+With special thanks to 50ap5ud5, Commoble, and Lucraft.
