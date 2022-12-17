@@ -23,20 +23,14 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class ConsoleConfigurationRenderer implements BlockEntityRenderer<ConsoleConfigurationBlockEntity>, BlockEntityRendererProvider<ConsoleConfigurationBlockEntity> {
 
-    IConsoleUnit currentConsoleUnit, toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel;
-
+    private ConsoleModelCollection consoleModelCollection;
     private ConsoleConfigurationModel consoleConfigurationModel;
     private ResourceLocation consoleConfigurationTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/device/console_configuration.png");
 
     public ConsoleConfigurationRenderer(Context context) {
         this.consoleConfigurationModel = new ConsoleConfigurationModel(context.bakeLayer(ModelRegistry.CONSOLE_CONFIGURATION));
-        this.factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer(ModelRegistry.FACTORY_CONSOLE));
+        this.consoleModelCollection = new ConsoleModelCollection(context);
 
-        factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
-        nukaConsoleModel = new NukaConsoleModel(context.bakeLayer((ModelRegistry.NUKA_CONSOLE)));
-        copperConsoleModel = new CopperConsoleModel(context.bakeLayer((ModelRegistry.COPPER_CONSOLE)));
-        coralConsoleModel = new CoralConsoleModel(context.bakeLayer((ModelRegistry.CORAL_CONSOLE)));
-        toyotaConsoleModel = new ToyotaConsoleModel(context.bakeLayer((ModelRegistry.TOYOTA_CONSOLE)));
     }
 
     @Override
@@ -54,39 +48,17 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
         float rotation = blockstate.getValue(GlobalDoorBlock.FACING).getOpposite().toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
 
-        consoleConfigurationModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleConfigurationTexture)),
-                packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        consoleConfigurationModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleConfigurationTexture)), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         if (blockEntity.getLevel().random.nextInt(20) != 0) {
-            poseStack.scale(0.25f,0.25f,0.25f);
+            poseStack.scale(0.25f, 0.25f, 0.25f);
             poseStack.translate(0, 1.5f + blockEntity.getLevel().random.nextFloat() * 0.01, 0);
             poseStack.mulPose(Vector3f.YP.rotationDegrees(blockEntity.getLevel().getGameTime() % 360));
 
             ConsoleTheme theme = blockstate.getValue(ConsoleConfigurationBlock.CONSOLE);
 
-            switch (theme) {
-                case FACTORY:
-                    currentConsoleUnit = factoryConsoleModel;
-                    break;
-                case COPPER:
-                    currentConsoleUnit = copperConsoleModel;
-                    break;
-                case CORAL:
-                    currentConsoleUnit = coralConsoleModel;
-                    break;
-                case TOYOTA:
-                    currentConsoleUnit = toyotaConsoleModel;
-                    break;
-                case NUKA:
-                    currentConsoleUnit = nukaConsoleModel;
-                    break;
-            }
-
-            currentConsoleUnit.renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentConsoleUnit.getDefaultTexture())),
-                    packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
+            consoleModelCollection.getConsoleModel(theme).renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(consoleModelCollection.getConsoleModel(theme).getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
         }
-
-
 
         poseStack.popPose();
     }
