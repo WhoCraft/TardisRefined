@@ -747,6 +747,11 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 
 	@Override
 	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return getDefaultTexture();
+	}
+
+	@Override
+	public ResourceLocation getDefaultTexture() {
 		return CORAL_TEXTURE;
 	}
 

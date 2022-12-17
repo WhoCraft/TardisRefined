@@ -1021,6 +1021,11 @@ public class CopperConsoleModel extends HierarchicalModel implements IConsoleUni
 
 	@Override
 	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return getDefaultTexture();
+	}
+
+	@Override
+	public ResourceLocation getDefaultTexture() {
 		return COPPER_TEXTURE;
 	}
 }

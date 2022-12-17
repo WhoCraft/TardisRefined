@@ -59,8 +59,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
     }
 
-
-
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> type) {
         return (level1, blockPos, blockState, t) -> {
@@ -70,5 +68,13 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         };
     }
 
+    @Override
+    public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
 
+        if (levelAccessor.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+            globalConsoleBlock.killControls();
+        }
+
+        super.destroy(levelAccessor, blockPos, blockState);
+    }
 }

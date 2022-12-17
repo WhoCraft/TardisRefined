@@ -629,6 +629,11 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 
 	@Override
 	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return getDefaultTexture();
+	}
+
+	@Override
+	public ResourceLocation getDefaultTexture() {
 		return FACTORY_TEXTURE;
 	}
 }
