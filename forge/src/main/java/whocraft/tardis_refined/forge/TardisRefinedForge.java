@@ -9,6 +9,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.data.*;
+import whocraft.tardis_refined.common.data.ItemModelProvider;
+import whocraft.tardis_refined.common.data.LangProviderEnglish;
+import whocraft.tardis_refined.common.data.RecipeProvider;
 
 @Mod(TardisRefined.MODID)
 public class TardisRefinedForge {
@@ -31,6 +34,6 @@ public class TardisRefinedForge {
         /*Data Pack*/
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator, existingFileHelper));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator));
+        generator.addProvider(e.includeServer(), new RecipeProvider(generator));
     }
-
 }

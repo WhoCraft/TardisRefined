@@ -88,4 +88,10 @@ public enum ConsoleTheme implements StringRepresentable {
     public ControlSpecification[] getControlSpecificationList() {
         return controlSpecificationList;
     }
+
+    private static final ConsoleTheme[] vals = values();
+
+    public ConsoleTheme next() {
+        return vals[(this.ordinal() + 1) % vals.length];
+    }
 }

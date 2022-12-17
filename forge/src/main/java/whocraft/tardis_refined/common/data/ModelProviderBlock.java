@@ -12,6 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
@@ -48,7 +49,9 @@ public class ModelProviderBlock extends BlockStateProvider {
 
         /*Slabs*/
         slabBlock(BlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture);
+
     }
+
 
 
     public JsonObject emptyBlockState(Block block) {
@@ -60,6 +63,13 @@ public class ModelProviderBlock extends BlockStateProvider {
                 state -> state.getValue(TerraformerBlock.ACTIVE) ?
                         ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer_on"))).build() :
                         ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer"))).build()).toJson();
+
+    }
+
+    // Paul McGann is...
+    public JsonObject threeDeeRotating(Block block, ResourceLocation location) {
+        return getVariantBuilder(block).forAllStates(
+                state -> ConfiguredModel.builder().rotationY(state.getValue(ConsoleConfigurationBlock.FACING).get2DDataValue() * 90).modelFile(models().getExistingFile(location)).build()).toJson();
 
     }
 }
