@@ -40,6 +40,11 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
     }
 
     @Override
+    public boolean shouldRenderOffScreen(ArsEggBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public BlockEntityRenderer<ArsEggBlockEntity> create(Context context) {
         return new ArsEggRenderer(context);
     }

@@ -47,7 +47,7 @@ public class TardisInteriorManager {
     private int airlockCountdownSeconds = 3;
     private int airlockTimerSeconds = 5;
 
-    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000,100,0);
+    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
 
 
     private DesktopTheme preparedTheme;
@@ -68,9 +68,9 @@ public class TardisInteriorManager {
         return this.interiorGenerationCooldown / 20;
     }
 
-    public AABB[] unbreakableZones(){
+    public AABB[] unbreakableZones() {
 
-        if(corridorAirlockCenter == null){
+        if (corridorAirlockCenter == null) {
             return new AABB[]{};
         }
 
@@ -133,8 +133,13 @@ public class TardisInteriorManager {
                 interiorGenerationCooldown--;
             }
 
+
+            if (level.getGameTime() % 20 == 0) {
+                System.out.println("Seconds till done: " + getInteriorGenerationCooldown());
+            }
+
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme( (this.operator.getExteriorManager().getCurrentTheme() != null) ? operator.getExteriorManager().getCurrentTheme() : ShellTheme.FACTORY);
+                this.operator.setShellTheme((this.operator.getExteriorManager().getCurrentTheme() != null) ? operator.getExteriorManager().getCurrentTheme() : ShellTheme.FACTORY);
                 this.isGeneratingDesktop = false;
             }
 
@@ -274,14 +279,14 @@ public class TardisInteriorManager {
             this.operator.getLevel().setBlockAndUpdate(this.operator.getInternalDoor().getDoorPosition(), Blocks.AIR.defaultBlockState()); // Remove the already existing door.
 
             if (!this.hasGeneratedCorridors) {
-                if(operator.getLevel() instanceof ServerLevel serverLevel){
+                if (operator.getLevel() instanceof ServerLevel serverLevel) {
                     TardisArchitectureHandler.generateEssentialCorridors(serverLevel);
                     this.hasGeneratedCorridors = true;
                 }
             }
         }
 
-        if(operator.getLevel() instanceof ServerLevel serverLevel){
+        if (operator.getLevel() instanceof ServerLevel serverLevel) {
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
         }
     }

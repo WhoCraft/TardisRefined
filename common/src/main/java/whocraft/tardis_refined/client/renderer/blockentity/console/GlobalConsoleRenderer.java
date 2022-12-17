@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
@@ -57,6 +58,11 @@ public class  GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsole
 
         currentConsoleUnit.renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentConsoleUnit.getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(GlobalConsoleBlockEntity blockEntity) {
+        return true;
     }
 
     @Override

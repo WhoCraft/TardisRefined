@@ -40,6 +40,11 @@ public class RootShellDoorRenderer implements BlockEntityRenderer<RootShellDoorB
     }
 
     @Override
+    public boolean shouldRenderOffScreen(RootShellDoorBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public BlockEntityRenderer<RootShellDoorBlockEntity> create(Context context) {
         return new RootShellDoorRenderer(context);
     }

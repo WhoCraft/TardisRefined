@@ -57,6 +57,11 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
     }
 
     @Override
+    public boolean shouldRenderOffScreen(RootedShellBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
     public BlockEntityRenderer<RootedShellBlockEntity> create(Context context) {
         return new RootShellRenderer(context);
     }
