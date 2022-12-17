@@ -9,9 +9,12 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
+import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.Iterator;
 import java.util.List;
@@ -22,13 +25,14 @@ public class TardisArchitectureHandler {
 
     public static final BlockPos DESKTOP_CENTER_POS = new BlockPos(0, 100, 0);
     public static final BlockPos CORRIDOR_ENTRY_POS = new BlockPos(1000, 100, 0);
+    public static final int INTERIOR_SIZE = 150;
 
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
         TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.id));
 
         // Fill the area out.
-        BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - 100, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - 100);
-        BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + 100, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + 100);
+        BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);
+        BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + INTERIOR_SIZE, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + INTERIOR_SIZE);
 
         for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
             BlockPos pos = iterator.next();
@@ -48,7 +52,39 @@ public class TardisArchitectureHandler {
 
             // Assign the door from the created structure.
             setInteriorDoorFromStructure(structure, operator);
+            buildAirlockEntranceFromStructure(structure, operator);
         });
+    }
+
+
+    public static void buildAirlockEntranceFromStructure(StructureTemplate template, ServerLevel level) {
+        BlockPos minPos = calculateArcOffset(template, DESKTOP_CENTER_POS);
+        BlockPos maxPos = new BlockPos(minPos.getX() + template.getSize().getX(),
+                minPos.getY() + template.getSize().getY(),
+                minPos.getZ() + template.getSize().getZ()
+        );
+
+        for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
+            if (level.getBlockState(pos).getBlock() == BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get()) {
+
+                TardisLevelOperator.get(level).ifPresent(cap -> {
+                    Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/airlock_entrance"));
+                    structureNBT.ifPresent(structure -> {
+                        BlockPos offsetPosition = new BlockPos(3,2,0);
+                        structure.placeInWorld(level.getLevel(), pos.subtract(offsetPosition) , pos.subtract(offsetPosition) , new StructurePlaceSettings(), level.getLevel().random, 3);
+
+                        cap.getInteriorManager().setCorridorAirlockCenter(pos.south(2));
+                        level.setBlock(cap.getInteriorManager().getCorridorAirlockCenter(), Blocks.MAGMA_BLOCK.defaultBlockState(), 2);
+                        level.setBlock(pos, level.getBlockState(pos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
+
+                    });
+                });
+
+
+
+                return;
+            }
+        }
     }
 
     public static void generateEssentialCorridors(ServerLevel operator) {

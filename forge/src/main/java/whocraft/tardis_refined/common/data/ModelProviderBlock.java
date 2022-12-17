@@ -42,6 +42,7 @@ public class ModelProviderBlock extends BlockStateProvider {
 
         /*Basic Blocks*/
         simpleBlock(BlockRegistry.ARS_LEAVES.get());
+        simpleBlock(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
 
         /*Fences*/
         fenceBlock(BlockRegistry.ARS_LEAVES_FENCE.get(), leavesTexture);

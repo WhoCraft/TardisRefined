@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.capability;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.client.TardisIntReactions;
@@ -87,24 +89,18 @@ public class TardisLevelOperator {
     }
 
 
-    public void tick(Level level) {
-        if (!level.isClientSide()) {
-            interiorManager.tick(level);
-            controlManager.tick(level);
+    public void tick(ServerLevel level) {
+        interiorManager.tick(level);
+        controlManager.tick(level);
 
-            // If the Tardis's flying status does not match the control manager's in-flight status
-            if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
-                // If the current level is a ServerLevel instance
-                if (level instanceof ServerLevel serverLevel) {
-                    // Set the Tardis's flying status to match the control manager's in-flight status
-                    tardisIntReactions.setFlying(controlManager.isInFlight());
+        // If the Tardis's flying status does not match the control manager's in-flight status
+        if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
+            // If the current level is a ServerLevel instance
+            // Set the Tardis's flying status to match the control manager's in-flight status
+            tardisIntReactions.setFlying(controlManager.isInFlight());
 
-                    // Synchronize the Tardis's data across the server
-                    tardisIntReactions.sync(serverLevel);
-                }
-            }
-
-
+            // Synchronize the Tardis's data across the server
+            tardisIntReactions.sync(level);
         }
     }
 

@@ -29,6 +29,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
 
         blockItem(BlockRegistry.ARS_LEAVES_FENCE.getId(), new ResourceLocation(TardisRefined.MODID, "item/ars_leaves_fence_inventory"));
         blockItem(BlockRegistry.TERRAFORMER_BLOCK.getId());
+        blockItem(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
 
 
 

@@ -29,6 +29,7 @@ public class NbtConstants {
     public static final String TARDIS_IM_GENERATING_DESKTOP = "im_generating_desktop";
     public static final String TARDIS_IM_GENERATION_COOLDOWN = "im_generation_cooldown";
     public static final String TARDIS_IM_GENERATED_CORRIDORS = "im_generated_corridors";
+    public static final String TARDIS_IM_AIRLOCK_CENTER = "im_generated_airlock_center";
 
     // External Readings Data
     public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
