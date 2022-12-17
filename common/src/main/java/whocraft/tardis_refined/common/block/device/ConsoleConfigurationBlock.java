@@ -104,6 +104,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                         }
                     }
                     return InteractionResult.CONSUME;
+                } else {
+                    return InteractionResult.FAIL;
                 }
             } else {
 
