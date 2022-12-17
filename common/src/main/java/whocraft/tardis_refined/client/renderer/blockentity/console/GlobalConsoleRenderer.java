@@ -19,7 +19,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.util.Objects;
 
-public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
+public class  GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
     IConsoleUnit currentConsoleUnit, toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel;
 
     public GlobalConsoleRenderer(BlockEntityRendererProvider.Context context) {

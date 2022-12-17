@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -103,15 +104,22 @@ public class KeyItem extends Item {
     @Override
     public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
 
-        if (livingEntity instanceof ControlEntity control) {
-            ResourceKey<Level> tardis = control.getLevel().dimension();
-            if(control.controlSpecification().control() != null && control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis) && !control.level.isClientSide()) {
-                player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
-                PlayerUtil.sendMessage(player, Component.translatable(KEY_BOUND, tardis.location().getPath()), true);
-                player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
-                return InteractionResult.SUCCESS;
+        if (livingEntity.level instanceof ServerLevel serverLevel) {
+            if (livingEntity instanceof ControlEntity control) {
+                ResourceKey<Level> tardis = serverLevel.dimension();
+                if(control.controlSpecification().control() != null) {
+                    if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis))
+                    {
+                        player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
+                        PlayerUtil.sendMessage(player, Component.translatable(KEY_BOUND, tardis.location().getPath()), true);
+                        player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
             }
         }
+
+
 
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
