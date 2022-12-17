@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.capability;
 
-import com.mojang.math.Vector3d;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -91,22 +90,6 @@ public class TardisLevelOperator {
 
 
     public void tick(ServerLevel level) {
-
-        for (AABB aabb : get(level).get().interiorManager.unbreakableZones()) {
-            BlockPos.betweenClosedStream(aabb).forEach(blockPos -> {
-                Vec3 end = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-                Vec3 start = aabb.getCenter();
-                Vec3 path = start.subtract(end);
-                for (int i = 0; i < 10; ++i) {
-                    double percent = (double) i / 10.0D;
-                    Vec3 spawnPoint = new Vec3(start.x() + 0.5D + path.x() * percent, start.y() + 1.3D + path.y() * percent, start.z() + 0.5D + path.z * percent);
-                    level.sendParticles(ParticleTypes.ANGRY_VILLAGER, spawnPoint.x, spawnPoint.y, spawnPoint.z, 2, 0.0D, 0.0D, 0.0D, 0);
-                }
-            });
-
-        }
-
-
         interiorManager.tick(level);
         controlManager.tick(level);
 

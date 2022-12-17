@@ -74,7 +74,7 @@ public class TardisInteriorManager {
             return new AABB[]{};
         }
 
-        return new AABB[]{new AABB(STATIC_CORRIDOR_POSITION.below().north(2).west(2), STATIC_CORRIDOR_POSITION.above().south(2).east(2).above(4)), new AABB(corridorAirlockCenter.below().north(2).west(2), corridorAirlockCenter.above().south(2).east(2).above(4))};
+        return new AABB[]{new AABB(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.above().south(3).east(3).above(6)), new AABB(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6))};
     }
 
     public CompoundTag saveData(CompoundTag tag) {
