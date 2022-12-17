@@ -36,5 +36,5 @@ public enum ConsoleControl implements StringRepresentable {
         return control;
     }
 
-    public String getLangId() {return langId;}
+    public String getTranslationKey() {return langId;}
 }

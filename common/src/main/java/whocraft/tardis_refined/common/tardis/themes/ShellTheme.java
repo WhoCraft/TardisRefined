@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.tardis.themes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
+import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 
 public enum ShellTheme implements StringRepresentable, Theme {
@@ -48,12 +49,12 @@ public enum ShellTheme implements StringRepresentable, Theme {
         return this.id;
     }
 
-    public String getRawLang() {
-        return "tardis_refined.shell." + id;
+    public String getTranslationKey() {
+        return ModMessages.shell(id);
     }
 
     public Component getDisplayName() {
-        return Component.translatable(getRawLang());
+        return Component.translatable(getTranslationKey());
     }
 
     public static ShellTheme findOr(String id, ShellTheme shellTheme) {

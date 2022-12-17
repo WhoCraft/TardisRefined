@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 
 public class RandomControl implements IControl {
     @Override
@@ -18,7 +19,7 @@ public class RandomControl implements IControl {
                         (currentExLoc.getZ() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2)
                         );
 
-        player.displayClientMessage(Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
     }
 
     @Override

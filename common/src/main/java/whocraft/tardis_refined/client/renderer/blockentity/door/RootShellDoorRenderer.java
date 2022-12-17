@@ -32,10 +32,9 @@ public class RootShellDoorRenderer implements BlockEntityRenderer<RootShellDoorB
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
         BlockState state = blockEntity.getBlockState();
-        float rotation = ((Direction)state.getValue(RootedShellBlock.FACING)).toYRot();
+        float rotation = state.getValue(RootedShellBlock.FACING).toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
-        rootShellDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(rootShellDoorTexture)),
-                i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        rootShellDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(rootShellDoorTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         poseStack.popPose();
     }
 

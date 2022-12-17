@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client.screen.selections;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
+import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -16,7 +17,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     private ShellTheme currentShellTheme;
 
     public ShellSelectionScreen() {
-        super(Component.translatable("tardis_refined.gui.shell_selection"));
+        super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = List.of(ShellTheme.values());
     }
 

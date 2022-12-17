@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -19,6 +20,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 
 import java.util.UUID;
 
@@ -62,10 +64,8 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
                 } else {
-
                     if (!cap.isTardisReady()) {
-                        // TODO: Create lang file for this message!!!!!!
-                        player.displayClientMessage(Component.translatable("You must wait " + cap.getInteriorManager().getInteriorGenerationCooldown() + " seconds"), true);
+                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_EXTERIOR_COOLDOWN, cap.getInteriorManager().getInteriorGenerationCooldown()), true);
                         return;
                     }
                 }

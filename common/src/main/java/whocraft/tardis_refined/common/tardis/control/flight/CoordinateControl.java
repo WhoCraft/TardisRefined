@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class CoordinateControl implements IControl {
@@ -36,7 +37,7 @@ public class CoordinateControl implements IControl {
             case Z -> operator.getControlManager().offsetTargetPositionZ(increment);
         }
 
-        player.displayClientMessage(Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
     }
 
     @Override
@@ -55,7 +56,7 @@ public class CoordinateControl implements IControl {
             case Z -> operator.getControlManager().offsetTargetPositionZ(-increment);
         }
 
-        player.displayClientMessage(Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
     }
 }
 
