@@ -7,29 +7,19 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
-import whocraft.tardis_refined.client.model.blockentity.device.ConsoleConfigurationModel;
-import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
-import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class ConsoleConfigurationRenderer implements BlockEntityRenderer<ConsoleConfigurationBlockEntity>, BlockEntityRendererProvider<ConsoleConfigurationBlockEntity> {
 
     IConsoleUnit currentConsoleUnit, toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel;
 
-    private ConsoleConfigurationModel consoleConfigurationModel;
-    private ResourceLocation consoleConfigurationTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/device/console_configuration.png");
-
     public ConsoleConfigurationRenderer(Context context) {
-        this.consoleConfigurationModel = new ConsoleConfigurationModel(context.bakeLayer(ModelRegistry.CONSOLE_CONFIGURATION));
         this.factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer(ModelRegistry.FACTORY_CONSOLE));
 
         factoryConsoleModel = new FactoryConsoleModel(context.bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
@@ -54,8 +44,6 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
         float rotation = blockstate.getValue(GlobalDoorBlock.FACING).getOpposite().toYRot();
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
 
-        consoleConfigurationModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleConfigurationTexture)),
-                packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         if (blockEntity.getLevel().random.nextInt(20) != 0) {
             poseStack.scale(0.25f,0.25f,0.25f);
@@ -82,8 +70,7 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
                     break;
             }
 
-            currentConsoleUnit.renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentConsoleUnit.getDefaultTexture())),
-                    packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
+            currentConsoleUnit.renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentConsoleUnit.getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
         }
 
 

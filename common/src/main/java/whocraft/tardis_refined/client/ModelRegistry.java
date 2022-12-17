@@ -5,10 +5,9 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.device.ConsoleConfigurationModel;
+import whocraft.tardis_refined.client.model.blockentity.console.*;
 import whocraft.tardis_refined.client.model.blockentity.door.*;
 import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
-import whocraft.tardis_refined.client.model.blockentity.console.*;
 import whocraft.tardis_refined.client.model.blockentity.shell.FactoryShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.MysticShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PhoneBoothModel;
@@ -49,9 +48,6 @@ public class ModelRegistry {
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
 
-    public static ModelLayerLocation CONSOLE_CONFIGURATION;
-
-
 
     public static void init() {
         ROOT_PLANT_STATE_ONE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_one"), "root_plant_one"), RootPlantStateOneModel::createBodyLayer);
@@ -81,7 +77,6 @@ public class ModelRegistry {
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
         BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
-        CONSOLE_CONFIGURATION = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "console_configuration"), "console_configuration"), ConsoleConfigurationModel::createBodyLayer);
     }
 
     @ExpectPlatform

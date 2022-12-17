@@ -13,10 +13,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -64,9 +61,14 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     }
 
     @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.MODEL;
+    }
+
+    @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        return state.setValue(FACING, context.getHorizontalDirection().getOpposite()).setValue(CONSOLE, ConsoleTheme.FACTORY);
+        return state.setValue(FACING, context.getHorizontalDirection()).setValue(CONSOLE, ConsoleTheme.FACTORY);
     }
 
     @Override
@@ -78,7 +80,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (interactionHand == InteractionHand.MAIN_HAND) {
-            var offset = blockState.getValue(FACING).getOpposite().getNormal();
+            var offset = blockState.getValue(FACING).getNormal();
             BlockState consoleBlock = level.getBlockState(blockPos.offset(offset));
             ConsoleTheme nextTheme = blockState.getValue(ConsoleConfigurationBlock.CONSOLE).next();
 
