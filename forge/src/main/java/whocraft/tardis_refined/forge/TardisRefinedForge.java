@@ -34,6 +34,6 @@ public class TardisRefinedForge {
         /*Data Pack*/
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator, existingFileHelper));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator));
-        generator.addProvider(true, new RecipeProvider(generator));
+        generator.addProvider(e.includeServer(), new RecipeProvider(generator));
     }
 }

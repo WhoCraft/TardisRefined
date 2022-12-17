@@ -78,8 +78,6 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (interactionHand == InteractionHand.MAIN_HAND) {
-
-            System.out.println("Right clicked");
             var offset = blockState.getValue(FACING).getOpposite().getNormal();
             BlockState consoleBlock = level.getBlockState(blockPos.offset(offset));
             ConsoleTheme nextTheme = blockState.getValue(ConsoleConfigurationBlock.CONSOLE).next();
