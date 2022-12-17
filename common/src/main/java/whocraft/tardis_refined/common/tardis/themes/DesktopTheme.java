@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import whocraft.tardis_refined.ModMessages;
 
 
 public class DesktopTheme {
@@ -18,8 +19,12 @@ public class DesktopTheme {
         this.location = location;
     }
 
+    public String getTranslationkey(){
+        return ModMessages.desktop(id);
+    }
+
     public Component getDisplayName() {
-        return Component.translatable("tardis_refined.desktop." + id);
+        return Component.translatable(getTranslationkey());
     }
 
 }

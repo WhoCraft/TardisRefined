@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
@@ -32,10 +33,6 @@ import java.util.List;
 
 public class KeyItem extends Item {
 
-    public static String KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";
-    public static String TARDIS_LIST_TITLE = "tooltip."+ TardisRefined.MODID + ".tardis_list";
-    public static String KEY_BOUND = "msg."+ TardisRefined.MODID + ".key_bound";
-
     public KeyItem(Properties properties) {
         super(properties);
     }
@@ -44,7 +41,7 @@ public class KeyItem extends Item {
     public Component getName(ItemStack itemStack) {
 
         if(keychain(itemStack).size() >= 2){
-            return Component.translatable(KEYCHAIN);
+            return Component.translatable(ModMessages.ITEM_KEYCHAIN);
         }
 
         return super.getName(itemStack);
@@ -111,7 +108,7 @@ public class KeyItem extends Item {
                     if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis))
                     {
                         player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
-                        PlayerUtil.sendMessage(player, Component.translatable(KEY_BOUND, tardis.location().getPath()), true);
+                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                         player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
                         return InteractionResult.SUCCESS;
                     }
@@ -133,7 +130,7 @@ public class KeyItem extends Item {
         ArrayList<ResourceKey<Level>> keychain = KeyItem.keychain(itemStack);
 
         if(!keychain.isEmpty()) {
-            list.add(Component.translatable(TARDIS_LIST_TITLE));
+            list.add(Component.translatable(ModMessages.TOOLTIP_TARDIS_LIST_TITLE));
 
             for (ResourceKey<Level> resourceKey : keychain) {
                 MutableComponent hyphen = Component.literal(ChatFormatting.YELLOW + "- ");

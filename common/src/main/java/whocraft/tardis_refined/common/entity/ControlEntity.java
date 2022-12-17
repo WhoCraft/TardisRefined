@@ -21,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -47,7 +46,7 @@ public class ControlEntity extends PathfinderMob {
         this.controlSpecification = consoleControl;
         this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale())));
         this.refreshDimensions();
-        this.setCustomName(Component.translatable(consoleControl.control().getLangId()));
+        this.setCustomName(Component.translatable(consoleControl.control().getTranslationKey()));
         this.setPersistenceRequired();
     }
 

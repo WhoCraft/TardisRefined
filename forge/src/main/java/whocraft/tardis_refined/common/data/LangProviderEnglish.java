@@ -2,9 +2,11 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
+import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.items.KeyItem;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
@@ -18,6 +20,8 @@ public class LangProviderEnglish extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+
+        /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
         add(BlockRegistry.ARS_LEAVES.get(), "ARS Leaves");
         add(BlockRegistry.ARS_LEAVES_FENCE.get(), "ARS Fence");
@@ -31,12 +35,16 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.GLOBAL_DOOR_BLOCK.get(), "Tardis Door");
         add(BlockRegistry.ROOT_SHELL_DOOR.get(), "Root Door");
         add(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
+        add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), "Console Configurator");
 
+        /*Items*/
         add(ItemRegistry.KEY.get(), "Tardis Key");
-        add(KeyItem.KEYCHAIN, "Tardis Keyset");
+        add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
 
+        /*Entity*/
         add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
 
+        /*Controls*/
         addControl(ConsoleControl.DOOR_TOGGLE, "Door Toggle");
         addControl(ConsoleControl.X, "X");
         addControl(ConsoleControl.Y, "Y");
@@ -47,42 +55,54 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.THROTTLE, "Throttle");
         addControl(ConsoleControl.MONITOR, "Computer Bank");
 
+        /*Messages*/
+        add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
+        add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
+
+        /*Creative Tab*/
         add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");
         add("itemGroup.tardis_refined", "Tardis Refined");
 
-        add("tardis_refined.monitor.main.title", "COMPUTER BANK");
-        add("tardis_refined.monitor.main.gps", "GPS");
-        add("tardis_refined.monitor.main.destination", "Destination");
-        add("tardis_refined.monitor.list.selection", "Currently selected");
-        add("tardis_refined.monitor.external_shell", "EXTERNAL SHELL CONFIGURATION");
-        add("tardis_refined.gui.shell_selection", "EXTERNAL SHELL CONFIGURATION");
-        add("tardis_refined.gui.desktop_selection", "DESKTOP CONFIGURATION");
-        add("tardis_refined.monitor.desktop", "DESKTOP CONFIGURATION");
-        add("tardis_refined.monitor.desktop_cancel.title", "OPERATION IN PROGRESS");
-        add("tardis_refined.monitor.desktop_cancel_description", "Systems disabled as a Desktop reconfiguration has been scheduled.");
-        add("tardis_refined.monitor.desktop_cancel_confirmation", "Would you like to cancel the upcoming reconfiguration?");
+        /*GUI*/
+        add(ModMessages.UI_MONITOR_MAIN_TITLE, "COMPUTER BANK");
+        add(ModMessages.UI_MONITOR_GPS, "GPS");
+        add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
+        add(ModMessages.UI_LIST_SELECTION, "Currently selected: &s");
+        add(ModMessages.UI_EXTERNAL_SHELL, "EXTERNAL SHELL CONFIGURATION");
+        add(ModMessages.UI_SHELL_SELECTION, "EXTERNAL SHELL CONFIGURATION");
+        add(ModMessages.UI_DESKTOP_SELECTION, "DESKTOP CONFIGURATION");
+        add(ModMessages.UI_DESKTOP_CONFIGURATION, "DESKTOP CONFIGURATION");
+        add(ModMessages.UI_DESKTOP_CANCEL_TITLE, "OPERATION IN PROGRESS");
+        add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems disabled as a Desktop reconfiguration has been scheduled.");
+        add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
 
+        /*Shell Themes*/
         addShell(ShellTheme.FACTORY, "Factory");
         addShell(ShellTheme.POLICE_BOX, "Police Box");
         addShell(ShellTheme.PHONE_BOOTH, "Phone Booth");
+        addShell(ShellTheme.MYSTIC, "Mystic");
 
-        add("tardis_refined.desktop.default_overgrown", "Overgrown Cave");
-        add("tardis_refined.desktop.factory", "Factory");
-        add("tardis_refined.desktop.coral", "Coral");
-        add("tardis_refined.desktop.copper", "Copper");
-        add("tardis_refined.desktop.toyota", "Toyota");
+        /*Desktop Themes*/
+        addDesktopTheme(TardisDesktops.CORAL_THEME, "Coral");
+        addDesktopTheme(TardisDesktops.FACTORY_THEME, "Factory");
+        addDesktopTheme(TardisDesktops.COPPER, "Copper");
+        addDesktopTheme(TardisDesktops.TOYOTA_THEME, "Toyota");
+        addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
 
-        add("block.tardis_refined.console_configuration", "Console Configurator");
-
-        add(KeyItem.TARDIS_LIST_TITLE, "Key Set:");
-        add(KeyItem.KEY_BOUND, "Key Bound to %s");
+        /*Tool Tips*/
+        add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
     }
 
-    public void addControl(ConsoleControl control, String name){
-        add(control.getLangId(), name);
+    public void addControl(ConsoleControl control, String name) {
+        add(control.getTranslationKey(), name);
     }
-    public void addShell(ShellTheme theme, String name){
-        add(theme.getRawLang(), name);
+
+    public void addShell(ShellTheme theme, String name) {
+        add(theme.getTranslationKey(), name);
+    }
+
+    public void addDesktopTheme(DesktopTheme desktopTheme, String translation) {
+        add(desktopTheme.getTranslationkey(), translation);
     }
 
 
