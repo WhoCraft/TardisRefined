@@ -1,8 +1,10 @@
 package whocraft.tardis_refined.common.capability;
 
+import com.mojang.math.Vector3d;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -10,6 +12,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.client.TardisIntReactions;
@@ -88,6 +91,22 @@ public class TardisLevelOperator {
 
 
     public void tick(ServerLevel level) {
+
+        for (AABB aabb : get(level).get().interiorManager.unbreakableZones()) {
+            BlockPos.betweenClosedStream(aabb).forEach(blockPos -> {
+                Vec3 end = new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+                Vec3 start = aabb.getCenter();
+                Vec3 path = start.subtract(end);
+                for (int i = 0; i < 10; ++i) {
+                    double percent = (double) i / 10.0D;
+                    Vec3 spawnPoint = new Vec3(start.x() + 0.5D + path.x() * percent, start.y() + 1.3D + path.y() * percent, start.z() + 0.5D + path.z * percent);
+                    level.sendParticles(ParticleTypes.ANGRY_VILLAGER, spawnPoint.x, spawnPoint.y, spawnPoint.z, 2, 0.0D, 0.0D, 0.0D, 0);
+                }
+            });
+
+        }
+
+
         interiorManager.tick(level);
         controlManager.tick(level);
 
