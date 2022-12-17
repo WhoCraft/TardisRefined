@@ -688,6 +688,11 @@ public class ToyotaConsoleModel extends HierarchicalModel implements IConsoleUni
 
 	@Override
 	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+		return getDefaultTexture();
+	}
+
+	@Override
+	public ResourceLocation getDefaultTexture() {
 		return TOYOTA_TEXTURE;
 	}
 }

@@ -14,7 +14,7 @@ public class TardisDesktops {
 
     public static List<DesktopTheme> DESKTOPS = new ArrayList<>();
 
-    public static final DesktopTheme DEFAULT_OVERGROWN_THEME = registerDesktop(new DesktopTheme("default_overgrown" ,new ResourceLocation(TardisRefined.MODID, "cave/cave_generation_one"), true));
+    public static final DesktopTheme DEFAULT_OVERGROWN_THEME = registerDesktop(new DesktopTheme("default_overgrown" ,new ResourceLocation(TardisRefined.MODID, "cave/cave_generation_one"), false));
 
     public static final DesktopTheme FACTORY_THEME = registerDesktop(new DesktopTheme("factory", new ResourceLocation(TardisRefined.MODID, "desktop/factory"), true));
     public static final DesktopTheme CORAL_THEME = registerDesktop(new DesktopTheme("coral", new ResourceLocation(TardisRefined.MODID, "desktop/coral"), true));
