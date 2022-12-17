@@ -26,6 +26,8 @@ public class ConsoleModelCollection {
      * **/
     public IConsoleUnit getConsoleModel(ConsoleTheme theme) {
         switch (theme) {
+            case FACTORY:
+                return factoryConsoleModel;
             case COPPER:
                 return copperConsoleModel;
             case CORAL:
@@ -35,8 +37,7 @@ public class ConsoleModelCollection {
             case NUKA:
                 return nukaConsoleModel;
             default:
-                return factoryConsoleModel;
+                throw new RuntimeException("Renderer has accessed theme that isn't accounted for! - " + theme.getSerializedName());
         }
     }
-
 }
