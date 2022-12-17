@@ -2,6 +2,8 @@ package whocraft.tardis_refined.common.entity;
 
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerLevel;
@@ -19,6 +21,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
@@ -28,6 +32,7 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 public class ControlEntity extends PathfinderMob {
 
     private ControlSpecification controlSpecification;
+    private BlockPos consoleBlockPos;
 
     public ControlEntity(Level level) {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
@@ -37,11 +42,13 @@ public class ControlEntity extends PathfinderMob {
         return controlSpecification;
     }
 
-    public void setControlSpecification(ControlSpecification consoleControl) {
+    public void assignControlData(ControlSpecification consoleControl, BlockPos entityPosition) {
+        this.consoleBlockPos = entityPosition;
         this.controlSpecification = consoleControl;
         this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale())));
         this.refreshDimensions();
         this.setCustomName(Component.translatable(consoleControl.control().getLangId()));
+        this.setPersistenceRequired();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -52,6 +59,23 @@ public class ControlEntity extends PathfinderMob {
                 add(Attributes.MAX_HEALTH, 20000000000D).
                 add(Attributes.ARMOR, 2000000000.0D);
     }
+
+    @Override
+    public boolean save(CompoundTag compound) {
+        compound.put("CONSOLE_POS",NbtUtils.writeBlockPos(this.consoleBlockPos));
+        return super.save(compound);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag compound) {
+        super.readAdditionalSaveData(compound);
+        var consolePos = (CompoundTag) compound.get("CONSOLE_POS");
+        if (consolePos != null) {
+            this.consoleBlockPos = NbtUtils.readBlockPos(consolePos);
+        }
+
+    }
+
 
     @Override
     protected AABB makeBoundingBox() {
@@ -129,6 +153,23 @@ public class ControlEntity extends PathfinderMob {
     @Override
     public void tick() {
         setNoAi(true);
+
+        if (this.controlSpecification == null) {
+
+            if (this.consoleBlockPos != null) {
+                if (level.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+                    kill();
+
+                    globalConsoleBlockEntity.markDirty();
+
+                }
+            } else {
+                kill();
+            }
+
+
+        }
+
         super.tick();
     }
 

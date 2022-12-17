@@ -72,6 +72,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add("tardis_refined.desktop.copper", "Copper");
         add("tardis_refined.desktop.toyota", "Toyota");
 
+        add("block.tardis_refined.console_configuration", "Console Configurator");
+
         add(KeyItem.TARDIS_LIST_TITLE, "Key Set:");
         add(KeyItem.KEY_BOUND, "Key Bound to %s");
     }

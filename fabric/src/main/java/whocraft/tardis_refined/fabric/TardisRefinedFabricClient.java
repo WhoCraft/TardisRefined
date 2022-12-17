@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
@@ -40,6 +41,8 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
         BlockEntityRendererRegistry.register(BlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
         BlockEntityRendererRegistry.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+
+        BlockEntityRendererRegistry.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
 
         /*Required to Render Transparency*/
         for (RegistrySupplier<Block> entry : BlockRegistry.BLOCKS.getEntries()) {

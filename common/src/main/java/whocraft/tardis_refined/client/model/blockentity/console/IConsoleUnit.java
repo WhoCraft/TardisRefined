@@ -9,4 +9,5 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 public interface IConsoleUnit {
     void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
     ResourceLocation getTexture(GlobalConsoleBlockEntity entity);
+    ResourceLocation getDefaultTexture();
 }

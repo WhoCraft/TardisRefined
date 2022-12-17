@@ -49,7 +49,8 @@ public class DesktopSelectionScreen extends SelectionScreen {
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
-        TardisDesktops.DESKTOPS.forEach(x -> selectionList.children().add(new GenericMonitorSelectionList.Entry(x.getDisplayName(), () -> {
+        var desktops = TardisDesktops.DESKTOPS.stream().filter(x -> x.availableByDefault);
+        desktops.forEach(x -> selectionList.children().add(new GenericMonitorSelectionList.Entry(x.getDisplayName(), () -> {
             this.currentDesktopTheme = x;
         })));
         return selectionList;
