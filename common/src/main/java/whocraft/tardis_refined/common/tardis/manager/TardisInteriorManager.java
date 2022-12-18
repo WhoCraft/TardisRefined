@@ -261,7 +261,6 @@ public class TardisInteriorManager {
         if(!hasGeneratedCorridors) return false;
 
         List<LivingEntity> airlock = getAirlockEntities(livingEntity.level);
-        //TODO BlockPos may change
         List<LivingEntity> corridor = getCorridorEntities(livingEntity.level);
 
         return airlock.contains(livingEntity) || corridor.contains(livingEntity);

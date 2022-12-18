@@ -16,6 +16,7 @@ import whocraft.tardis_refined.client.model.blockentity.door.PhoneBoothDoorModel
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -64,6 +65,11 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         }
 
         poseStack.popPose();
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(GlobalDoorBlockEntity blockEntity) {
+        return true;
     }
 
     @Override
