@@ -27,7 +27,9 @@ public class TardisControlManager {
     private int[] coordinateIncrements = new int[] {1,10,100,1000};
     private int cordIncrementIndex = 0;
 
-    public ShellTheme currentExteriorTheme;
+    private ShellTheme currentExteriorTheme;
+    public ShellTheme getCurrentExteriorTheme() {return this.currentExteriorTheme;}
+    public void setCurrentExteriorTheme(ShellTheme theme) {this.currentExteriorTheme = theme;}
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;

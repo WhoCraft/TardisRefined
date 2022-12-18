@@ -181,7 +181,7 @@ public class TardisLevelOperator {
     public void setShellTheme(ShellTheme theme) {
         getExteriorManager().setShellTheme(theme);
         getInteriorManager().setShellTheme(theme);
-        this.getControlManager().currentExteriorTheme = theme;
+        this.getControlManager().setCurrentExteriorTheme(theme);
     }
 
     /**
