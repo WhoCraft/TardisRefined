@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.util;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -12,9 +11,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import whocraft.tardis_refined.TardisRefined;
@@ -22,8 +22,6 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.registry.DimensionTypes;
-
-import java.util.List;
 
 public class MiscHelper {
 
@@ -91,6 +89,17 @@ public class MiscHelper {
 
             return true;
         }
+    }
+
+    public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos){
+            if (level.dimensionTypeId() == DimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
+                TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
+                for (AABB aabb : data.getInteriorManager().unbreakableZones()) {
+                    boolean shouldCancel = isBlockPosInBox(blockPos, aabb);
+                    if(shouldCancel) return true;
+            }
+        }
+        return false;
     }
 
     public static boolean shouldCancelBreaking(Level world, Player player, BlockPos pos, BlockState state) {
