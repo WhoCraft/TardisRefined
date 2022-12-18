@@ -74,7 +74,6 @@ public class TardisArchitectureHandler {
                         structure.placeInWorld(level.getLevel(), pos.subtract(offsetPosition) , pos.subtract(offsetPosition) , new StructurePlaceSettings(), level.getLevel().random, 3);
 
                         cap.getInteriorManager().setCorridorAirlockCenter(pos.south(2));
-                        level.setBlock(cap.getInteriorManager().getCorridorAirlockCenter(), Blocks.MAGMA_BLOCK.defaultBlockState(), 2);
                         level.setBlock(pos, level.getBlockState(pos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
 
                     });

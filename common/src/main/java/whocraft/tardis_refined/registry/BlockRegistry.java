@@ -66,9 +66,9 @@ public class BlockRegistry {
     public static final RegistrySupplier<ArsEggBlock> ARS_EGG = register("ars_egg", () -> new ArsEggBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES).lightLevel((x) -> {
         return 12;
     })), ItemRegistry.MAIN_TAB, true);
-    public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new LeavesBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), ItemRegistry.MAIN_TAB, true);
-    public static final RegistrySupplier<SlabBlock> ARS_LEAVES_SLAB = register("ars_leaves_slab", () -> new SlabBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), ItemRegistry.MAIN_TAB, true);
-    public static final RegistrySupplier<FenceBlock> ARS_LEAVES_FENCE = register("ars_leaves_fence", () -> new FenceBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new LeavesBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), null, true);
+    public static final RegistrySupplier<SlabBlock> ARS_LEAVES_SLAB = register("ars_leaves_slab", () -> new SlabBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), null, true);
+    public static final RegistrySupplier<FenceBlock> ARS_LEAVES_FENCE = register("ars_leaves_fence", () -> new FenceBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), null, true);
 
     ///////////////////////////////////////////////////////////////////////////////
 
@@ -80,7 +80,7 @@ public class BlockRegistry {
     // Console
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
         return 15;
-    })), null, true);
+    })), ItemRegistry.MAIN_TAB, true);
 
 
 }

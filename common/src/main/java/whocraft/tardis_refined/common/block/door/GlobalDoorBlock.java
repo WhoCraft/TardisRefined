@@ -58,7 +58,7 @@ public class GlobalDoorBlock extends InternalDoorBlock{
 
                 if (TardisLevelOperator.get(serverLevel).isPresent()) {
                     if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
-                        entity.onRightClick(blockState);
+                        entity.onRightClick(blockState, entity);
                         return InteractionResult.SUCCESS;
                     }
                 }

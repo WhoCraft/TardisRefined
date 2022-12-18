@@ -16,7 +16,6 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class ConsoleConfigurationRenderer implements BlockEntityRenderer<ConsoleConfigurationBlockEntity>, BlockEntityRendererProvider<ConsoleConfigurationBlockEntity> {
 
-
     public ConsoleConfigurationRenderer(Context context) {
 
     }
