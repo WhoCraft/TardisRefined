@@ -10,7 +10,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
  */
 public class ConsoleModelCollection {
 
-    IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel;
+    IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel;
 
     public ConsoleModelCollection() {
         factoryConsoleModel = new FactoryConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
@@ -18,6 +18,7 @@ public class ConsoleModelCollection {
         copperConsoleModel = new CopperConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.COPPER_CONSOLE)));
         coralConsoleModel = new CoralConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.CORAL_CONSOLE)));
         toyotaConsoleModel = new ToyotaConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.TOYOTA_CONSOLE)));
+        crystalConsoleModel = new CrystalConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.CRYSTAL_CONSOLE)));
     }
 
     /**
@@ -37,6 +38,8 @@ public class ConsoleModelCollection {
                 return toyotaConsoleModel;
             case NUKA:
                 return nukaConsoleModel;
+            case CRYSTAL:
+                return crystalConsoleModel;
             default:
                 throw new RuntimeException("Renderer has accessed theme that isn't accounted for! - " + theme.getSerializedName());
         }

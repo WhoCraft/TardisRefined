@@ -32,6 +32,7 @@ public class ModelRegistry {
     public static ModelLayerLocation COPPER_CONSOLE;
     public static ModelLayerLocation CORAL_CONSOLE;
     public static ModelLayerLocation TOYOTA_CONSOLE;
+    public static ModelLayerLocation CRYSTAL_CONSOLE;
 
     public static ModelLayerLocation ROOT_SHELL;
     public static ModelLayerLocation FACTORY_SHELL;
@@ -61,6 +62,7 @@ public class ModelRegistry {
         COPPER_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "copper_console"), "copper_console"), CopperConsoleModel::createBodyLayer);
         CORAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "coral_console"), "coral_console"), CoralConsoleModel::createBodyLayer);
         TOYOTA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "toyota_console"), "toyota_console"), ToyotaConsoleModel::createBodyLayer);
+        CRYSTAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "crystal_console"), "crystal_console"), CrystalConsoleModel::createBodyLayer);
 
         ROOT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
         FACTORY_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_shell"), "factory_shell"), FactoryShellModel::createBodyLayer);
