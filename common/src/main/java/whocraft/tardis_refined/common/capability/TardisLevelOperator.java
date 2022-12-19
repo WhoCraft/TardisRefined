@@ -100,13 +100,11 @@ public class TardisLevelOperator {
             shouldSync = true;
         }
 
-
         if (controlManager.shouldThrottleBeDown() != tardisClientData.isThrottleDown()) {
             tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
             shouldSync = true;
         }
-
-
+        
         // Synchronize the Tardis's data across the server
         if (shouldSync) {
             tardisClientData.sync(level);

@@ -109,6 +109,7 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 		// Use sine wave to oscillate the value of currentAlpha between 0 and 1.0
 		double elapsedTime = entity.getLevel().getGameTime() / 50.0;
 		float currentAlpha = clientData.isFlying() ? (float) ((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, clientData.isFlying() ? currentAlpha : alpha);
 	}
 

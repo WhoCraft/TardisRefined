@@ -8,6 +8,7 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.model.WardenModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -15,21 +16,53 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.warden.Warden;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
+	private final ModelPart root;
 	private final ModelPart left_door;
 	private final ModelPart right_door;
 	private final ModelPart frame;
+	private final ModelPart fade_value;
+
+	public static final AnimationDefinition MODEL_LAND = AnimationDefinition.Builder.withLength(8.834334f).looping()
+			.addAnimation("fade_value",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 3f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3f, KeyframeAnimations.posVec(0f, 5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5f, KeyframeAnimations.posVec(0f, 6f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 4f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6.834333f, KeyframeAnimations.posVec(0f, 8f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(7.458343f, KeyframeAnimations.posVec(0f, 5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(8.834334f, KeyframeAnimations.posVec(0f, 10f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM))).build();
+
+	private float initAlpha = 0;
 
 	public PoliceBoxModel(ModelPart root) {
 
+		this.root = root;
 		this.frame = root.getChild("frame");
 		this.left_door = root.getChild("left_door");
 		this.right_door = root.getChild("right_door");
+		this.fade_value = root.getChild("fade_value");
+		this.initAlpha = this.fade_value.y;
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -133,7 +166,7 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 
 	@Override
 	public ModelPart root() {
-		return this.frame;
+		return this.root;
 	}
 
 	@Override
@@ -146,20 +179,26 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 		this.right_door.yRot = (open) ? -275f : 0;
 	}
 
+
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 		if(entity.id == null) return;
-
+		this.root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
 
+		this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
 		// Use sine wave to oscillate the value of currentAlpha between 0 and 1.0
 		double elapsedTime = entity.getLevel().getGameTime() / 50.0;
-		float currentAlpha = reactions.isFlying() ? (float)((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+		//float currentAlpha = reactions.isFlying() ? (float)((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+		float currentAlpha = (this.initAlpha - this.fade_value.y) * 0.05f;
+		System.out.println(currentAlpha);
+
 
 		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
 		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
 		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
+		fade_value.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
 	}
 
 	@Override

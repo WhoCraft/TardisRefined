@@ -48,11 +48,13 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 	private final ModelPart bone20;
 	private final ModelPart bb_main;
 	private final ModelPart throttle;
+	private final ModelPart rotor_bottom;
 
 	public CoralConsoleModel(ModelPart root) {
 		this.bone20 = root.getChild("bone20");
 		this.bb_main = root.getChild("bb_main");
 		this.throttle = bone20.getChild("controls").getChild("borders").getChild("bone23").getChild("bone17").getChild("throttle");
+		this.rotor_bottom = bone20.getChild("rotor_bottom_T_add20");
 	}
 
 	public static LayerDefinition createBodyLayer() {
