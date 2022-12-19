@@ -127,7 +127,9 @@ public class KeyItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         if (context.getLevel() instanceof ServerLevel) {
-            if (context.getPlayer().isCreative() && context.getPlayer().isCrouching()) {
+
+            if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
+
                 var keychain = keychain(context.getItemInHand());
                 if (keychain.size() > 0) {
                     ResourceKey<Level> tardis = keychain.get(0);

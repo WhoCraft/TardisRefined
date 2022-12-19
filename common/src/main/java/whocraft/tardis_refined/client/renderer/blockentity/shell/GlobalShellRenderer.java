@@ -51,10 +51,10 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
         switch (theme) {
-            case PHONE_BOOTH :
+            case PHONE_BOOTH:
                 currentModel = phoneBoothModel;
                 break;
-            case POLICE_BOX :
+            case POLICE_BOX:
                 currentModel = policeBoxModel;
                 break;
             case FACTORY:
@@ -70,17 +70,11 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         currentModel.setDoorPosition(isOpen);
 
-        currentModel.renderShell(blockEntity,poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.renderShell(blockEntity, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
-        /*Render Base*/
-        if(currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
-
-
-            /*Emmissive*/
-            if(currentModel.lightTexture() != null){
-                hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,  1);
-            }
-
+        /*Emmissive*/
+        if (currentModel.lightTexture() != null) {
+            currentModel.renderShell(blockEntity, poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1);
         }
 
         poseStack.popPose();

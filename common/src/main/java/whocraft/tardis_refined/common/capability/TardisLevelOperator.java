@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.capability;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -11,10 +10,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
-import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
@@ -24,7 +22,6 @@ import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Optional;
 
@@ -37,14 +34,14 @@ public class TardisLevelOperator {
     private TardisInteriorManager interiorManager;
     private TardisControlManager controlManager;
 
-    private TardisIntReactions tardisIntReactions;
+    private TardisClientData tardisClientData;
 
     public TardisLevelOperator(Level level) {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
-        this.tardisIntReactions = new TardisIntReactions(level.dimension());
+        this.tardisClientData = new TardisClientData(level.dimension());
     }
 
     @ExpectPlatform
@@ -89,10 +86,6 @@ public class TardisLevelOperator {
         return level;
     }
 
-    public TardisIntReactions getTardisIntReactions() {
-        return this.tardisIntReactions;
-    }
-
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         controlManager.tick(level);
@@ -100,35 +93,24 @@ public class TardisLevelOperator {
         var shouldSync = false;
 
         // If the Tardis's flying status does not match the control manager's in-flight status
-        if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
+        if (controlManager.isInFlight() != tardisClientData.isFlying()) {
             // If the current level is a ServerLevel instance
             // Set the Tardis's flying status to match the control manager's in-flight status
-            tardisIntReactions.setFlying(controlManager.isInFlight());
+            tardisClientData.setFlying(controlManager.isInFlight());
             shouldSync = true;
         }
 
 
-        if (controlManager.shouldThrottleBeDown() != tardisIntReactions.isThrottleDown()) {
-            tardisIntReactions.setThrottleDown(controlManager.shouldThrottleBeDown());
+        if (controlManager.shouldThrottleBeDown() != tardisClientData.isThrottleDown()) {
+            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
             shouldSync = true;
-        }
-
-        if (!controlManager.isInFlight()) {
-            tardisIntReactions.setLandingAnimation(false);
-            shouldSync = true;
-        }
-
-        if (controlManager.isLanding() != tardisIntReactions.isLanding()) {
-            tardisIntReactions.setLandingAnimation(controlManager.isLanding());
-            shouldSync = true;
-
         }
 
 
         // Synchronize the Tardis's data across the server
         if (shouldSync) {
-            tardisIntReactions.sync(level);
-            tardisIntReactions.sync(getExteriorManager().getLastKnownLocation().level);
+            tardisClientData.sync(level);
+            tardisClientData.sync(getExteriorManager().getLastKnownLocation().level);
         }
     }
 

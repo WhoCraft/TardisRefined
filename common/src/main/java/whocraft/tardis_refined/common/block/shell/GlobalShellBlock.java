@@ -14,6 +14,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
@@ -86,6 +88,13 @@ public class GlobalShellBlock extends ShellBaseBlock{
     }
 
 
-
-
+    @Nullable
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return (level1, blockPos, blockState, t) -> {
+            if (t instanceof GlobalShellBlockEntity globalShellBlockEntity) {
+                globalShellBlockEntity.tick(level, blockPos, blockState, globalShellBlockEntity);
+            }
+        };
+    }
 }

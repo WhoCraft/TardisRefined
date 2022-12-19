@@ -104,8 +104,10 @@ public class TardisExteriorManager {
 
         // Get the exterior block.
         BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
-        lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
-        playSoundAtShell(locked ? SoundEvents.PLAYER_ATTACK_SWEEP : (closed) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
+        if (state.hasProperty(ShellBaseBlock.OPEN)) {
+            lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
+            playSoundAtShell(locked ? SoundEvents.PLAYER_ATTACK_SWEEP : (closed) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
+        }
     }
 
     public void setShellTheme(ShellTheme theme) {
@@ -113,18 +115,15 @@ public class TardisExteriorManager {
 
         // Check if its our default global shell.
         if (state.getBlock() instanceof GlobalShellBlock) {
-            lastKnownLocation.level.setBlock(lastKnownLocation.position,
-                    state.setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
+            lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
         } else {
             if (state.getBlock() instanceof RootedShellBlock) {
                 lastKnownLocation.level.setBlock(lastKnownLocation.position,
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
-                                .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme)
-                                .setValue(GlobalShellBlock.REGEN, false), 2);
+                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
 
                 var shellBlockEntity = lastKnownLocation.level.getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
-                    entity.id = UUID.fromString((operator.getLevel().dimension().location().getPath().toString()));
+                    entity.id = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     entity.setChanged();
                 }
             }

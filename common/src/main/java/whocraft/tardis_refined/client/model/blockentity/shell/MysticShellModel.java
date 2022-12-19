@@ -8,8 +8,12 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -151,8 +155,13 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
 
     @Override
     public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        if(entity.id == null) return;
 
-    }
+        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
+        // Use sine wave to oscillate the value of currentAlpha between 0 and 1.0
+        double elapsedTime = entity.getLevel().getGameTime() / 50.0;
+        float currentAlpha = reactions.isFlying() ? (float) ((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? currentAlpha : alpha);    }
 
     @Override
     public ResourceLocation texture() {

@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
 public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit{
@@ -736,7 +736,7 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
-		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
+		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
 		this.throttle.xRot = (reactions.isThrottleDown()) ? 2f : 0f;
