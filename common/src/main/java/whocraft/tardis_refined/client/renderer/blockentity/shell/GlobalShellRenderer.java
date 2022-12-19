@@ -50,20 +50,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             }
         }
 
-        switch (theme) {
-            case PHONE_BOOTH :
-                currentModel = phoneBoothModel;
-                break;
-            case POLICE_BOX :
-                currentModel = policeBoxModel;
-                break;
-            case FACTORY:
-                currentModel = factoryShellModel;
-                break;
-            case MYSTIC:
-                currentModel = mysticModel;
-                break;
-        }
+        currentModel = getModelForTheme(theme);
 
 
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
@@ -71,12 +58,12 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         currentModel.setDoorPosition(isOpen);
 
         /*Render Base*/
-        if(currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
+        if (currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
 
 
             /*Emmissive*/
-            if(currentModel.lightTexture() != null){
-                hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,  1);
+            if (currentModel.lightTexture() != null) {
+                hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1);
             }
 
             RenderType renderType = isRegenerating ? RenderType.entityCutout(theme.getExternalShellTexture()) : RenderType.entityTranslucent(theme.getExternalShellTexture());
@@ -86,6 +73,20 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         poseStack.popPose();
 
+    }
+
+    public static IShellModel getModelForTheme(ShellTheme theme) {
+        switch (theme) {
+            case PHONE_BOOTH:
+                return phoneBoothModel;
+            case POLICE_BOX:
+                return policeBoxModel;
+            case FACTORY:
+                return factoryShellModel;
+            case MYSTIC:
+                return mysticModel;
+        }
+        return null;
     }
 
     @Override

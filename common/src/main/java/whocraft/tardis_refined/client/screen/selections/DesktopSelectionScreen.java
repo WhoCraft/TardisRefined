@@ -1,9 +1,16 @@
 package whocraft.tardis_refined.client.screen.selections;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.renderer.CubeMap;
+import net.minecraft.client.renderer.PanoramaRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -25,7 +32,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
     protected void init() {
         this.setEvents(() -> {
             DesktopSelectionScreen.selectDesktop(currentDesktopTheme);
-        }, ()-> {
+        }, () -> {
             Minecraft.getInstance().setScreen(null);
         });
         this.currentDesktopTheme = this.themeList.get(0);
@@ -33,6 +40,12 @@ public class DesktopSelectionScreen extends SelectionScreen {
         super.init();
     }
 
+    @Override
+    public void render(PoseStack poseStack, int i, int j, float f) {
+        renderBackground(poseStack);
+
+        super.render(poseStack, i, j, f);
+    }
 
     public static void selectDesktop(DesktopTheme theme) {
         new ChangeDesktopMessage(Minecraft.getInstance().player.getLevel().dimension(), theme).send();

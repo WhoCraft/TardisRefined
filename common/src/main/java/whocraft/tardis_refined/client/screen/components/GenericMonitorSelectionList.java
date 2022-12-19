@@ -1,14 +1,19 @@
 package whocraft.tardis_refined.client.screen.components;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.PresetFlatWorldScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Optional;
 
 public class GenericMonitorSelectionList extends ObjectSelectionList<GenericMonitorSelectionList.Entry> {
@@ -80,8 +85,9 @@ public class GenericMonitorSelectionList extends ObjectSelectionList<GenericMoni
         }
 
         @Override
-        public void render(PoseStack poseStack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float f) {
-            drawString(poseStack, Minecraft.getInstance().font, itemDisplayName.getString(), i ,j,k);
+        public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            drawString(poseStack, Minecraft.getInstance().font, itemDisplayName.getString(), left, top, Color.WHITE.getRGB());
         }
     }
 
