@@ -74,7 +74,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
         BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), chunk.getMinBuildHeight() + 75, chunk.getPos().getMinBlockZ());
         BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
         for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
-            chunk.setBlockState(pos, Blocks.STONE.defaultBlockState(), true);
+            chunk.setBlockState(pos, Blocks.STONE.defaultBlockState(), false);
         }
     }
 

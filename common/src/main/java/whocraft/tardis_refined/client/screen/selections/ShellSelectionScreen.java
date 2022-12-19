@@ -8,14 +8,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.ModMessages;
@@ -28,7 +25,6 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
@@ -40,9 +36,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     private int leftPos, topPos;
 
 
-    private ResourceLocation gui = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
-    private boolean showOpen = false;
-
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = List.of(ShellTheme.values());
@@ -57,17 +51,8 @@ public class ShellSelectionScreen extends SelectionScreen {
         });
         this.currentShellTheme = this.themeList.get(0);
 
-        Button showOpenButton = this.addRenderableWidget(new Button(width / 2 + 80, (height) / 2 + 60, 30, 20, Component.translatable(String.valueOf(showOpen)), (button) -> {
-            showOpen = !showOpen;
-            button.setMessage(Component.translatable(String.valueOf(showOpen)));
-        }));
-
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
-
-        addRenderableWidget(showOpenButton);
-
-
 
         super.init();
     }
@@ -82,19 +67,18 @@ public class ShellSelectionScreen extends SelectionScreen {
     public void render(PoseStack poseStack, int i, int j, float f) {
         renderBackground(poseStack);
 
+        /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, gui);
-
+        RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-
         IShellModel model = GlobalShellRenderer.getModelForTheme(currentShellTheme);
 
         if (model instanceof HierarchicalModel<?> hierarchicalModel) {
 
-            model.setDoorPosition(showOpen);
+            model.setDoorPosition(false);
 
             Lighting.setupForFlatItems();
             int k = (int) this.minecraft.getWindow().getGuiScale();
@@ -109,9 +93,9 @@ public class ShellSelectionScreen extends SelectionScreen {
             PoseStack.Pose pose = poseStack.last();
             pose.pose().setIdentity();
             pose.normal().setIdentity();
-            poseStack.translate(-3,-2.6,1984.0);
-            poseStack.scale(5.0F, 5.0F, 5.0F);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(-minecraft.level.getGameTime()));
+            poseStack.translate(-3, -1.0, 1984.0);
+            poseStack.scale(4.5F, 4.5F, 4.5F);
+            poseStack.mulPose(Vector3f.YP.rotationDegrees(minecraft.level.getGameTime()));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
 
             MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
@@ -125,6 +109,7 @@ public class ShellSelectionScreen extends SelectionScreen {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }
 
+        /*Render Widgets*/
         super.render(poseStack, i, j, f);
 
     }
@@ -136,7 +121,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 + this.listWidth +  200, this.listHeight, height / 2 + this.listHeight - 50, this.imageWidth, 15);
+        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 + 450 - (Minecraft.getInstance().options.guiScale().get() * 10), this.listHeight, height / 2 - 50, 80, 7);
 
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);

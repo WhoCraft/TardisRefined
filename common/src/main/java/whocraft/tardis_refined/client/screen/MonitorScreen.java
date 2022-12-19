@@ -1,14 +1,19 @@
 package whocraft.tardis_refined.client.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
+import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import java.awt.Color;
 
@@ -20,6 +25,13 @@ public class MonitorScreen extends Screen {
     private BlockPos targetPosition;
     private Direction targetDirection;
 
+    protected int imageWidth = 256;
+    protected int imageHeight = 173;
+    private int leftPos, topPos;
+
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/monitor.png");
+
+
     public MonitorScreen(BlockPos exteriorPosition, Direction exteriorDirection, BlockPos targetPosition, Direction targetDirection) {
         super(Component.translatable("tardis_refined.gui.monitor"));
         this.currentPosition = exteriorPosition;
@@ -30,7 +42,7 @@ public class MonitorScreen extends Screen {
 
     @Override
     public boolean isPauseScreen() {
-        return true;
+        return false;
     }
 
     @Override
@@ -43,6 +55,9 @@ public class MonitorScreen extends Screen {
         this.addRenderableWidget(new Button(this.width / 2 - (175/2) , this.height / 2 - 10, 175, 20, Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), (button) -> {
             Minecraft.getInstance().setScreen(new DesktopSelectionScreen());
         }));
+
+        this.leftPos = (this.width - this.imageWidth) / 2;
+        this.topPos = (this.height - this.imageHeight) / 2;
     }
 
 
@@ -50,6 +65,12 @@ public class MonitorScreen extends Screen {
     public void render(PoseStack poseStack, int i, int j, float f) {
 
         this.renderBackground(poseStack);
+
+        /*Render Back drop*/
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
+        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 
         int minGPSY = height - 60;
