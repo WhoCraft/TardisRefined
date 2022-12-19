@@ -13,6 +13,7 @@ import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.MysticDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.PhoneBoothDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.door.PoliceBoxDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
@@ -26,7 +27,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
-        policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
+        policeBoxModel = new PoliceBoxDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
         phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
         mysticDoor = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
     }

@@ -24,6 +24,7 @@ import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Optional;
 
@@ -88,19 +89,46 @@ public class TardisLevelOperator {
         return level;
     }
 
+    public TardisIntReactions getTardisIntReactions() {
+        return this.tardisIntReactions;
+    }
 
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         controlManager.tick(level);
+
+        var shouldSync = false;
 
         // If the Tardis's flying status does not match the control manager's in-flight status
         if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
             // If the current level is a ServerLevel instance
             // Set the Tardis's flying status to match the control manager's in-flight status
             tardisIntReactions.setFlying(controlManager.isInFlight());
+            shouldSync = true;
+        }
 
-            // Synchronize the Tardis's data across the server
+
+        if (controlManager.shouldThrottleBeDown() != tardisIntReactions.isThrottleDown()) {
+            tardisIntReactions.setThrottleDown(controlManager.shouldThrottleBeDown());
+            shouldSync = true;
+        }
+
+        if (!controlManager.isInFlight()) {
+            tardisIntReactions.setLandingAnimation(false);
+            shouldSync = true;
+        }
+
+        if (controlManager.isLanding() != tardisIntReactions.isLanding()) {
+            tardisIntReactions.setLandingAnimation(controlManager.isLanding());
+            shouldSync = true;
+
+        }
+
+
+        // Synchronize the Tardis's data across the server
+        if (shouldSync) {
             tardisIntReactions.sync(level);
+            tardisIntReactions.sync(getExteriorManager().getLastKnownLocation().level);
         }
     }
 

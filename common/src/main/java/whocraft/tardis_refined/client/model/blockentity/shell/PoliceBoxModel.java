@@ -2,25 +2,67 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 
+
+	public static final AnimationDefinition MODEL_LAND = AnimationDefinition.Builder.withLength(8.834334f).looping()
+			.addAnimation("fade_value",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 3f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3f, KeyframeAnimations.posVec(0f, 5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5f, KeyframeAnimations.posVec(0f, 6f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 4f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6.834333f, KeyframeAnimations.posVec(0f, 8f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(7.458343f, KeyframeAnimations.posVec(0f, 5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(8.834334f, KeyframeAnimations.posVec(0f, 10f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM))).build();
+
 	private final ModelPart left_door;
 	private final ModelPart right_door;
 	private final ModelPart frame;
+	private final ModelPart fade_value;
+	private float initialFadePos = 0;
+	private float currentAlpha = 0;
 
 	public PoliceBoxModel(ModelPart root) {
 
 		this.frame = root.getChild("frame");
 		this.left_door = root.getChild("left_door");
 		this.right_door = root.getChild("right_door");
+		this.fade_value = root.getChild("fade_value");
+		this.initialFadePos = this.fade_value.y;
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -111,18 +153,15 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 		.texOffs(32, 64).mirror().addBox(-0.5F, -31.5F, -10.75F, 1.0F, 30.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
 		.texOffs(0, 15).mirror().addBox(1.75F, -30.5F, -10.35F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
 
+		PartDefinition fade_value = partdefinition.addOrReplaceChild("fade_value", CubeListBuilder.create().texOffs(60, 13).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-24.0F, 24.0F, 0.0F));
+
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		poseStack.scale(1.05f, 1.05f, 1.05f);
-		poseStack.translate(0, -0.07, 0);
 
-		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -135,9 +174,26 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 
 	}
 
+	public void renderAlpha(GlobalShellBlockEntity entity) {
+		if (entity.id != null) {
+
+		}
+
+
+	}
+
 	@Override
 	public void setDoorPosition(boolean open) {
 		this.right_door.yRot = (open) ? -275f : 0;
+	}
+
+	@Override
+	public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		TardisIntReactions reactions = TardisIntReactions.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
+		this.animate(reactions.SHELL_LANDING_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
+		this.currentAlpha = this.fade_value.y - this.initialFadePos * 0.1f;
+		System.out.println(this.currentAlpha);
+
 	}
 
 	@Override

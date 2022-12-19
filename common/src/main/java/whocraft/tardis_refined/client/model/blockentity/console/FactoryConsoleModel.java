@@ -612,7 +612,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, ROTOR_LOOP, Minecraft.getInstance().player.tickCount);
-		this.throttleLever.xRot = (reactions.isFlying()) ? -155: -125;
+		this.throttleLever.xRot = (reactions.isThrottleDown()) ? -155: -125;
 		bone168.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

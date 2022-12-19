@@ -739,7 +739,7 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-		this.throttle.xRot = (reactions.isFlying()) ? 2f : 0f;
+		this.throttle.xRot = (reactions.isThrottleDown()) ? 2f : 0f;
 
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

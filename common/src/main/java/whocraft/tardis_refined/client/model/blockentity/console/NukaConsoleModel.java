@@ -502,7 +502,7 @@ public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-		throttle.xRot = (reactions.isFlying()) ? 1f : -1f;
+		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
 
 		rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

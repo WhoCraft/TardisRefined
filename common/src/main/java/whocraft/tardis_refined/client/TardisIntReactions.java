@@ -7,10 +7,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
-import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Map;
 
@@ -19,6 +17,7 @@ public class TardisIntReactions {
 
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
+    public AnimationState SHELL_LANDING_ANIMATION = new AnimationState();
 
     public TardisIntReactions(ResourceKey<Level> resourceKey){
         this.levelKey = resourceKey;
@@ -32,6 +31,8 @@ public class TardisIntReactions {
     }
 
     private boolean flying = false;
+    private boolean throttleDown = false;
+    private boolean playlandingAnimation = false;
 
     public void setFlying(boolean flying) {
         this.flying = flying;
@@ -40,6 +41,23 @@ public class TardisIntReactions {
     public boolean isFlying() {
         return flying;
     }
+
+    public void setThrottleDown(boolean throttleDown) {
+        this.throttleDown = throttleDown;
+    }
+
+    public boolean isThrottleDown() {
+        return throttleDown;
+    }
+
+    public void setLandingAnimation(boolean shouldPlay) {
+        this.playlandingAnimation = shouldPlay;
+    }
+    public boolean isLanding() {
+        return this.playlandingAnimation;
+    }
+
+
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -51,6 +69,8 @@ public class TardisIntReactions {
 
         // Set the "flying" tag in the compound tag to the current flying state of the Tardis
         compoundTag.putBoolean("flying", flying);
+        compoundTag.putBoolean("throttleDown", throttleDown);
+        compoundTag.putBoolean("playLandingAnimation", playlandingAnimation);
         return compoundTag;
     }
 
@@ -62,6 +82,8 @@ public class TardisIntReactions {
     public void deserializeNBT(CompoundTag arg) {
         // Set the flying state of the Tardis to the value of the "flying" tag in the compound tag
         flying = arg.getBoolean("flying");
+        throttleDown = arg.getBoolean("throttleDown");
+        playlandingAnimation = arg.getBoolean("playLandingAnimation");
     }
 
     /**
@@ -92,7 +114,14 @@ public class TardisIntReactions {
             ROTOR_ANIMATION.start(0);
         }
 
-        
+        if (playlandingAnimation && !SHELL_LANDING_ANIMATION.isStarted()) {
+            SHELL_LANDING_ANIMATION.start(0);
+        }
+
+        if (!playlandingAnimation && SHELL_LANDING_ANIMATION.isStarted()) {
+            SHELL_LANDING_ANIMATION.stop();
+        }
+
     }
 
     // A map that stores information about Tardis instances, keyed by level resource key

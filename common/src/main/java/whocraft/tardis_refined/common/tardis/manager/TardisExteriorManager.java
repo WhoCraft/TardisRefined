@@ -125,6 +125,7 @@ public class TardisExteriorManager {
                 var shellBlockEntity = lastKnownLocation.level.getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.id = UUID.fromString((operator.getLevel().dimension().location().getPath().toString()));
+                    entity.setChanged();
                 }
             }
         }

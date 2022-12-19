@@ -680,7 +680,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements IConsoleUni
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-		this.throttle.xRot = (reactions.isFlying()) ? -1f : 1f;
+		this.throttle.xRot = (reactions.isThrottleDown()) ? -1f : 1f;
 
 		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

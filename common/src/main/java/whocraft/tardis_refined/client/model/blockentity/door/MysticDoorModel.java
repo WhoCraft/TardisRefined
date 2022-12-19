@@ -9,6 +9,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class MysticDoorModel extends HierarchicalModel implements IShellModel {
@@ -83,6 +84,11 @@ public class MysticDoorModel extends HierarchicalModel implements IShellModel {
             this.left_door.yRot = 0;
             this.right_door.yRot = 0;
         }
+    }
+
+    @Override
+    public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
     }
 
     @Override

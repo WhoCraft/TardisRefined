@@ -70,6 +70,8 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         currentModel.setDoorPosition(isOpen);
 
+        currentModel.renderShell(blockEntity,poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
         /*Render Base*/
         if(currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
 
@@ -78,9 +80,6 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             if(currentModel.lightTexture() != null){
                 hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,  1);
             }
-
-            RenderType renderType = isRegenerating ? RenderType.entityCutout(theme.getExternalShellTexture()) : RenderType.entityTranslucent(theme.getExternalShellTexture());
-            hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(renderType), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, isRegenerating ? sine : 1);
 
         }
 

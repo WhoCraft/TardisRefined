@@ -1014,7 +1014,7 @@ public class CopperConsoleModel extends HierarchicalModel implements IConsoleUni
 		this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
 		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, COPPER_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
-		this.throttle.zRot = (reactions.isFlying()) ? -1f : 1f;
+		this.throttle.zRot = (reactions.isThrottleDown()) ? -1f : 1f;
 		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
 	}
