@@ -2,6 +2,7 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -18,7 +19,7 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 
-public class MysticShellModel extends HierarchicalModel implements IShellModel {
+public class MysticShellModel extends IShellModel {
 
     private final ModelPart right_door;
     private final ModelPart left_door;
@@ -32,6 +33,7 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
     private final ModelPart root;
 
     public MysticShellModel(ModelPart root) {
+        super(root);
         this.root = root;
         this.right_door = root.getChild("right_door");
         this.left_door = root.getChild("left_door");
@@ -116,6 +118,9 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
                 .texOffs(44, 0).addBox(-6.9F, -35.9F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F))
                 .texOffs(44, 0).addBox(-6.9F, -4.1F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
+        IShellModel.splice(partdefinition);
+
+
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
@@ -154,13 +159,16 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         if(entity.id == null) return;
-
+        this.root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
-        // Use sine wave to oscillate the value of currentAlpha between 0 and 1.0
-        double elapsedTime = entity.getLevel().getGameTime() / 50.0;
-        float currentAlpha = reactions.isFlying() ? (float) ((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+
+        this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
+
+        setDoorPosition(open);
+
+        float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
         root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? currentAlpha : alpha);    }
 
     @Override

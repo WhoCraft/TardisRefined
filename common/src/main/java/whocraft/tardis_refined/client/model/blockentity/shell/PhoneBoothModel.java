@@ -16,13 +16,14 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
+public class PhoneBoothModel extends IShellModel {
 
 	private final ModelPart bone9;
 	private final ModelPart door;
 	private final ModelPart root;
 
 	public PhoneBoothModel(ModelPart root) {
+		super(root);
 		this.root = root;
 		this.bone9 = root.getChild("bone9");
 		this.door = this.bone9.getChild("Door");
@@ -77,6 +78,9 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 		.texOffs(0, 0).addBox(-1.5F, 8.0F, -1.0F, 2.0F, 8.0F, 2.0F, new CubeDeformation(0.25F))
 		.texOffs(0, 23).addBox(-1.5F, -20.75F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.25F)), PartPose.offset(-7.5F, -18.0F, -8.0F));
 
+		IShellModel.splice(partdefinition);
+
+
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
@@ -102,15 +106,18 @@ public class PhoneBoothModel extends HierarchicalModel implements IShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if(entity.id == null) return;
+		this.root().getAllParts().forEach(ModelPart::resetPose);
+		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
 
-		TardisClientData clientData = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
-		// Use sine wave to oscillate the value of currentAlpha between 0 and 1.0
-		double elapsedTime = entity.getLevel().getGameTime() / 50.0;
-		float currentAlpha = clientData.isFlying() ? (float) ((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+		this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
 
-		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, clientData.isFlying() ? currentAlpha : alpha);
+		setDoorPosition(open);
+
+		float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
+
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? currentAlpha : alpha);
 	}
 
 	@Override

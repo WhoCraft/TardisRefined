@@ -13,7 +13,7 @@ import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PhoneBoothDoorModel extends HierarchicalModel implements IShellModel {
+public class PhoneBoothDoorModel extends IShellModel {
 
 	private final ModelPart Door2;
 	private final ModelPart bone5;
@@ -22,6 +22,7 @@ public class PhoneBoothDoorModel extends HierarchicalModel implements IShellMode
 	private final ModelPart root;
 
 	public PhoneBoothDoorModel(ModelPart root) {
+		super(root);
 		this.root = root;
 		this.Door2 = root.getChild("Door2");
 		this.bone5 = root.getChild("bone5");
@@ -49,6 +50,9 @@ public class PhoneBoothDoorModel extends HierarchicalModel implements IShellMode
 
 		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(40, 27).addBox(-8.5F, -40.0F, 7.225F, 17.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 79).addBox(-9.0F, -37.0F, 7.25F, 18.0F, 37.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+
+		IShellModel.splice(partdefinition);
+
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -78,12 +82,17 @@ public class PhoneBoothDoorModel extends HierarchicalModel implements IShellMode
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 
 	@Override
 	public ResourceLocation texture() {
 		return ShellTheme.PHONE_BOOTH.getInternalDoorTexture();
+	}
+
+	@Override
+	public ResourceLocation lightTexture() {
+		return null;
 	}
 }

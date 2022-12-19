@@ -68,13 +68,12 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
 
-        currentModel.setDoorPosition(isOpen);
 
-        currentModel.renderShell(blockEntity, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.renderShell(blockEntity, isOpen, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         /*Emmissive*/
         if (currentModel.lightTexture() != null) {
-            currentModel.renderShell(blockEntity, poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1);
+            currentModel.renderShell(blockEntity, isOpen,  poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1);
         }
 
         poseStack.popPose();

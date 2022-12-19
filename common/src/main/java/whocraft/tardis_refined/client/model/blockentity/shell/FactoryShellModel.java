@@ -2,7 +2,7 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -15,13 +15,14 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class FactoryShellModel extends HierarchicalModel implements IShellModel {
+public class FactoryShellModel extends IShellModel {
 
 	private final ModelPart root;
 	private final ModelPart leftDoor;
 	private final ModelPart rightDoor;
 
 	public FactoryShellModel(ModelPart root) {
+		super(root);
 		this.root = root.getChild("root");
 		this.leftDoor = this.root.getChild("left_door");
 		this.rightDoor = this.root.getChild("right_door");
@@ -39,15 +40,18 @@ public class FactoryShellModel extends HierarchicalModel implements IShellModel 
 		.texOffs(95, 45).addBox(-7.0F, -37.0F, 9.0F, 14.0F, 34.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 52).addBox(7.0F, -37.0F, -6.0F, 1.0F, 34.0F, 16.0F, new CubeDeformation(0.0F))
 		.texOffs(19, 52).addBox(-7.0F, -37.0F, -6.0F, 14.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(19, 57).addBox(-7.0F, -5.0F, -6.0F, 14.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(81, 0).mirror().addBox(8.0F, -37.0F, -3.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)).mirror(false)
-		.texOffs(81, 0).addBox(-10.0F, -37.0F, -3.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -2.0F));
+				.texOffs(19, 57).addBox(-7.0F, -5.0F, -6.0F, 14.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(81, 0).mirror().addBox(8.0F, -37.0F, -3.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(81, 0).addBox(-10.0F, -37.0F, -3.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -2.0F));
 
 		PartDefinition left_door = root.addOrReplaceChild("left_door", CubeListBuilder.create().texOffs(70, 97).addBox(0.0F, -15.0F, -0.5F, 7.0F, 30.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-7.0F, -20.0F, -5.6F));
 
 		PartDefinition right_door = root.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(95, 81).addBox(-7.0F, -15.0F, -0.5F, 7.0F, 30.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, -20.0F, -5.6F));
 
 		PartDefinition bone = root.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(70, 52).addBox(-1.0F, -17.0F, -5.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -20.0F, 11.0F, 0.0F, 1.5708F, 0.0F));
+
+		IShellModel.splice(partdefinition);
+
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -79,14 +83,14 @@ public class FactoryShellModel extends HierarchicalModel implements IShellModel 
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if (entity.id == null) return;
-
+		this.root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
 
-		// Use sine wave to oscillate the value of currentAlpha between 0 and 1.0
-		double elapsedTime = entity.getLevel().getGameTime() / 50.0;
-		float currentAlpha = reactions.isFlying() ? (float) ((1.0 - Math.abs(Math.sin(elapsedTime))) / 2.0) : alpha;
+		this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
+		float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
+		setDoorPosition(open);
 
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
 	}
@@ -94,5 +98,10 @@ public class FactoryShellModel extends HierarchicalModel implements IShellModel 
 	@Override
 	public ResourceLocation texture() {
 		return ShellTheme.FACTORY.getExternalShellTexture();
+	}
+
+	@Override
+	public ResourceLocation lightTexture() {
+		return null;
 	}
 }
