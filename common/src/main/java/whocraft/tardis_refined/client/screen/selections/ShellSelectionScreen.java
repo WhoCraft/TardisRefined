@@ -8,7 +8,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -120,8 +119,8 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
     @Override
-    public ObjectSelectionList createSelectionList() {
-        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 + 450 - (Minecraft.getInstance().options.guiScale().get() * 10), this.listHeight, height / 2 - 50, 80, 7);
+    public GenericMonitorSelectionList createSelectionList() {
+        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 - 55 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 60, 150, 80, 12);
 
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);

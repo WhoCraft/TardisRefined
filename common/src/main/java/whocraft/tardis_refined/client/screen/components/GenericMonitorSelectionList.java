@@ -4,63 +4,35 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.PresetFlatWorldScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Item;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.resources.ResourceLocation;
+import whocraft.tardis_refined.client.screen.ScreenHelper;
+import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.awt.*;
-import java.util.Optional;
 
-public class GenericMonitorSelectionList extends ObjectSelectionList<GenericMonitorSelectionList.Entry> {
+public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
+    public GenericMonitorSelectionList(Minecraft minecraft, int x, int y, int width, int height, int itemHeight) {
+        super(minecraft, width, height, y, y + height, itemHeight);
+        this.setLeftPos(x);
+        this.setRenderHeader(false, 0);
+        this.setRenderTopAndBottom(false);
+        this.setRenderSelection(false);
+        this.setRenderBackground(true);
+    }
 
-    public GenericMonitorSelectionList(Minecraft minecraft, int i, int j, int k, int l, int m) {
-        super(minecraft, i, j, k, l, m);
+    protected int getScrollbarPosition() {
+        return this.x0 + this.width;
     }
 
     @Override
-    public Optional<GuiEventListener> getChildAt(double d, double e) {
-        return super.getChildAt(d, e);
-    }
-
-    @Override
-    public void mouseMoved(double d, double e) {
-        super.mouseMoved(d, e);
-    }
-
-    @Override
-    public boolean keyReleased(int i, int j, int k) {
-        return super.keyReleased(i, j, k);
-    }
-
-    @Override
-    public boolean charTyped(char c, int i) {
-        return super.charTyped(c, i);
-    }
-
-    @Override
-    public void setInitialFocus(@Nullable GuiEventListener guiEventListener) {
-        super.setInitialFocus(guiEventListener);
-    }
-
-    @Override
-    public void magicalSpecialHackyFocus(@Nullable GuiEventListener guiEventListener) {
-        super.magicalSpecialHackyFocus(guiEventListener);
-    }
-
-    @Override
-    public boolean isActive() {
-        return super.isActive();
-    }
-
-    @Override
-    public void render(PoseStack poseStack, int i, int j, float f) {
-
-        super.render(poseStack, i, j, f);
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+        super.render(poseStack, mouseX, mouseY, partialTick);
     }
 
     @Environment(EnvType.CLIENT)
@@ -86,9 +58,9 @@ public class GenericMonitorSelectionList extends ObjectSelectionList<GenericMoni
 
         @Override
         public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            drawString(poseStack, Minecraft.getInstance().font, itemDisplayName.getString(), left, top, Color.WHITE.getRGB());
+            ScreenHelper.renderWidthScaledText(itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, ChatFormatting.GOLD.getColor(), 300, false);
         }
+
     }
 
     @FunctionalInterface

@@ -1,16 +1,10 @@
 package whocraft.tardis_refined.client.screen.selections;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.renderer.CubeMap;
-import net.minecraft.client.renderer.PanoramaRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import whocraft.tardis_refined.ModMessages;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -59,7 +53,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        var selectionList = new GenericMonitorSelectionList(this.minecraft, this.listWidth, this.listHeight, 0, 100, 15);
+        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 60, 50, 80, 12);
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 

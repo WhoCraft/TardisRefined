@@ -57,6 +57,8 @@ public class SelectionScreen extends Screen {
 
         this.addRenderableWidget(list);
 
+
+
     }
 
     public ObjectSelectionList createSelectionList() {
@@ -77,8 +79,6 @@ public class SelectionScreen extends Screen {
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
         ScreenHelper.renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
-        ScreenHelper.renderWidthScaledText(this.getSelectedDisplayName().getString(), poseStack, Minecraft.getInstance().font, width / 2 + 47, height / 2  - 50, Color.WHITE.getRGB(), 210, true);
-        TardisRefined.LOGGER.info("X {} Y {} ", i - (width / 2), j - (height / 2));
     }
 
 

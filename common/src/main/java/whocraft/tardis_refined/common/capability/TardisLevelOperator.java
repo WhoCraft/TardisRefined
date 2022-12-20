@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.capability;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -11,7 +10,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.client.TardisIntReactions;
@@ -174,8 +172,12 @@ public class TardisLevelOperator {
     }
 
     public void setDoorClosed(boolean closeDoor) {
-        getExteriorManager().setDoorClosed(closeDoor);
-        getInternalDoor().setClosed(closeDoor);
+        if (getExteriorManager() != null) {
+            getExteriorManager().setDoorClosed(closeDoor);
+        }
+        if (getInternalDoor() != null) {
+            getInternalDoor().setClosed(closeDoor);
+        }
     }
 
     public void setShellTheme(ShellTheme theme) {
