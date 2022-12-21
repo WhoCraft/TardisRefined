@@ -1,12 +1,17 @@
 package whocraft.tardis_refined.common.data;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FenceGateBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -50,12 +55,17 @@ public class ModelProviderBlock extends BlockStateProvider {
         /*Slabs*/
         slabBlock(BlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture);
 
+        threeDeeRotating(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
     }
 
 
 
     public JsonObject emptyBlockState(Block block) {
         return getVariantBuilder(block).partialState().modelForState().modelFile(models().getExistingFile(new ResourceLocation("minecraft:block/barrier"))).addModel().toJson();
+    }
+
+    public JsonObject customLocation(Block block, ResourceLocation resourceLocation) {
+        return getVariantBuilder(block).partialState().modelForState().modelFile(models().getExistingFile(resourceLocation)).addModel().toJson();
     }
 
     public JsonObject terraformer(Block block) {
@@ -69,7 +79,7 @@ public class ModelProviderBlock extends BlockStateProvider {
     // Paul McGann is...
     public JsonObject threeDeeRotating(Block block, ResourceLocation location) {
         return getVariantBuilder(block).forAllStates(
-                state -> ConfiguredModel.builder().rotationY(state.getValue(ConsoleConfigurationBlock.FACING).get2DDataValue() * 90).modelFile(models().getExistingFile(location)).build()).toJson();
+                state ->  ConfiguredModel.builder().modelFile(new ModelFile.UncheckedModelFile(location)).rotationY((int) state.getValue(HorizontalDirectionalBlock.FACING).toYRot()).build()).toJson();
 
     }
 }

@@ -28,6 +28,8 @@ public class TardisControlManager {
     private int cordIncrementIndex = 0;
 
     private ShellTheme currentExteriorTheme;
+    public ShellTheme getCurrentExteriorTheme() {return this.currentExteriorTheme;}
+    public void setCurrentExteriorTheme(ShellTheme theme) {this.currentExteriorTheme = theme;}
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -198,23 +200,21 @@ public class TardisControlManager {
         }
 
         operator.getExteriorManager().placeExteriorBlock(operator, location);
+        operator.getInteriorManager().setShellTheme(currentExteriorTheme);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 5, 1);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
     }
 
     public void offsetTargetPositionX(float x) {
         this.targetLocation.position = this.targetLocation.position.offset(x, 0,0);
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public void offsetTargetPositionY(float y) {
         this.targetLocation.position = this.targetLocation.position.offset(0, y,0);
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public void offsetTargetPositionZ(float z) {
         this.targetLocation.position = this.targetLocation.position.offset(0, 0,z);
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public TardisNavLocation getTargetLocation(){
@@ -223,7 +223,6 @@ public class TardisControlManager {
 
     public void setTargetPosition(BlockPos pos) {
         this.targetLocation.position = pos;
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public int getCordIncrement() {

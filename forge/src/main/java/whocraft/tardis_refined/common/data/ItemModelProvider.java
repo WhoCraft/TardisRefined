@@ -31,15 +31,11 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         blockItem(BlockRegistry.TERRAFORMER_BLOCK.getId());
         blockItem(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
 
-
-
-        ResourceLocation temp = new ResourceLocation(TardisRefined.MODID, "item/walter_white");
         basicItem(BlockRegistry.BULK_HEAD_DOOR.getId());
         basicItem(BlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());
         basicItem(BlockRegistry.ARS_EGG.getId());
         basicItem(BlockRegistry.ROOT_SHELL_BLOCK.getId());
         basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId());
-        basicItem(BlockRegistry.INTERNAL_DOOR_BLOCK.getId(), temp);
         basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId());
         basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
 

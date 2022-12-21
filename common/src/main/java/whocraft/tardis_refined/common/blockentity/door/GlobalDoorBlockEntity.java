@@ -17,11 +17,15 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
         super(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), blockPos, blockState);
     }
 
-    public void onRightClick(BlockState blockState) {
+
+    public void onRightClick(BlockState blockState, ITardisInternalDoor door) {
         if (getLevel() instanceof ServerLevel serverLevel) {
 
             // we know that in this instance the serverlevel has a capability.
             TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                if (cap.getInternalDoor() != door) {
+                    cap.setInternalDoor(door);
+                }
                 cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
             });
         }

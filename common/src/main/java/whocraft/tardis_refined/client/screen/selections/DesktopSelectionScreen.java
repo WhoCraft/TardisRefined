@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client.screen.selections;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
+import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -16,7 +17,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
     private DesktopTheme currentDesktopTheme;
 
     public DesktopSelectionScreen() {
-        super(Component.translatable("tardis_refined.gui.desktop_selection"));
+        super(Component.translatable(ModMessages.UI_DESKTOP_SELECTION));
         this.themeList = TardisDesktops.DESKTOPS;
     }
 
