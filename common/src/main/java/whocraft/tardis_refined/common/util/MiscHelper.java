@@ -21,6 +21,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.protection.ProtectedZone;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 public class MiscHelper {
@@ -94,8 +95,8 @@ public class MiscHelper {
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos){
             if (level.dimensionTypeId() == DimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
                 TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
-                for (AABB aabb : data.getInteriorManager().unbreakableZones()) {
-                    boolean shouldCancel = isBlockPosInBox(blockPos, aabb);
+                for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
+                    boolean shouldCancel = !protectedZone.isAllowPlacement() && isBlockPosInBox(blockPos, protectedZone.getArea());
                     if(shouldCancel) return true;
             }
         }
@@ -106,8 +107,8 @@ public class MiscHelper {
 
         if (world.dimensionTypeId() == DimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
-            for (AABB aabb : data.getInteriorManager().unbreakableZones()) {
-                boolean shouldCancel = isBlockPosInBox(pos, aabb);
+            for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
+                boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
                 if(shouldCancel) return true;
             }
         }
