@@ -36,6 +36,14 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
     public void load(CompoundTag pTag) {
         super.load(pTag);
         this.id = UUID.fromString(pTag.getString(NbtConstants.TARDIS_ID));
+
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
     }
 
     @Override

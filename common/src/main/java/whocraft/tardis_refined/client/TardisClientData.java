@@ -7,20 +7,19 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
-import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Map;
 
-public class TardisIntReactions {
+public class TardisClientData {
 
 
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
-
-    public TardisIntReactions(ResourceKey<Level> resourceKey){
+    public AnimationState LANDING_ANIMATION = new AnimationState();
+    public AnimationState TAKEOFF_ANIMATION = new AnimationState();
+    public TardisClientData(ResourceKey<Level> resourceKey){
         this.levelKey = resourceKey;
     }
 
@@ -32,7 +31,9 @@ public class TardisIntReactions {
     }
 
     private boolean flying = false;
-
+    private boolean throttleDown = false;
+    private boolean isLanding = false;
+    private boolean isTakingOff = false;
     public void setFlying(boolean flying) {
         this.flying = flying;
     }
@@ -40,6 +41,20 @@ public class TardisIntReactions {
     public boolean isFlying() {
         return flying;
     }
+
+    public void setThrottleDown(boolean throttleDown) {
+        this.throttleDown = throttleDown;
+    }
+
+    public boolean isThrottleDown() {
+        return throttleDown;
+    }
+
+    public void setIsLanding(boolean landing) {this.isLanding = landing;}
+    public boolean isLanding() {return isLanding;}
+
+    public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
+    public boolean isTakingOff() {return isTakingOff;}
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -51,6 +66,9 @@ public class TardisIntReactions {
 
         // Set the "flying" tag in the compound tag to the current flying state of the Tardis
         compoundTag.putBoolean("flying", flying);
+        compoundTag.putBoolean("throttleDown", throttleDown);
+        compoundTag.putBoolean("isLanding", isLanding);
+        compoundTag.putBoolean("isTakingOff", isTakingOff);
         return compoundTag;
     }
 
@@ -62,6 +80,9 @@ public class TardisIntReactions {
     public void deserializeNBT(CompoundTag arg) {
         // Set the flying state of the Tardis to the value of the "flying" tag in the compound tag
         flying = arg.getBoolean("flying");
+        throttleDown = arg.getBoolean("throttleDown");
+        isLanding = arg.getBoolean("isLanding");
+        isTakingOff = arg.getBoolean("isTakingOff");
     }
 
     /**
@@ -84,6 +105,8 @@ public class TardisIntReactions {
         if (!flying && ROTOR_ANIMATION.isStarted()) {
             // If the Tardis is not flying but the rotor animation is started, stop the animation
             ROTOR_ANIMATION.stop();
+            LANDING_ANIMATION.updateTime(0,0);
+            TAKEOFF_ANIMATION.updateTime(0,0);
         }
 
         // Check if the Tardis is flying and the rotor animation is not started
@@ -92,25 +115,39 @@ public class TardisIntReactions {
             ROTOR_ANIMATION.start(0);
         }
 
-        
+        if (isLanding && !LANDING_ANIMATION.isStarted()) {
+            TAKEOFF_ANIMATION.stop();
+            LANDING_ANIMATION.start(0);
+        }
+        if (!isLanding && LANDING_ANIMATION.isStarted()) {
+            LANDING_ANIMATION.stop();
+        }
+
+        if (isTakingOff && !TAKEOFF_ANIMATION.isStarted()) {
+            LANDING_ANIMATION.stop();
+            TAKEOFF_ANIMATION.start(0);
+        }
+        if (!isTakingOff && TAKEOFF_ANIMATION.isStarted()) {
+            TAKEOFF_ANIMATION.stop();
+        }
     }
 
     // A map that stores information about Tardis instances, keyed by level resource key
-    protected static Map<ResourceKey<Level>, TardisIntReactions> DATA = Util.make(new Object2ObjectOpenHashMap<>(), (objectOpenHashMap) -> {
+    protected static Map<ResourceKey<Level>, TardisClientData> DATA = Util.make(new Object2ObjectOpenHashMap<>(), (objectOpenHashMap) -> {
         // Set the default return value for the map to be a new TardisIntReactions instance with a null level resource key
-        objectOpenHashMap.defaultReturnValue(new TardisIntReactions(null));
+        objectOpenHashMap.defaultReturnValue(new TardisClientData(null));
     });
 
 
     /**
      * Registers information about a Tardis instance.
      *
-     * @param tardisIntReactions The TardisIntReactions instance containing information about the Tardis.
+     * @param tardisClientData The TardisIntReactions instance containing information about the Tardis.
      * @param levelResourceKey The resource key of the level the Tardis is in.
      */
-    public static void add(TardisIntReactions tardisIntReactions, ResourceKey<Level> levelResourceKey) {
+    public static void add(TardisClientData tardisClientData, ResourceKey<Level> levelResourceKey) {
         // Add the information about the Tardis to the map
-        DATA.put(levelResourceKey, tardisIntReactions);
+        DATA.put(levelResourceKey, tardisClientData);
     }
 
     /**
@@ -119,7 +156,7 @@ public class TardisIntReactions {
      * @param levelResourceKey The resource key of the level the Tardis is in.
      * @return The TardisIntReactions instance containing information about the Tardis.
      */
-    public static TardisIntReactions getInstance(ResourceKey<Level> levelResourceKey){
+    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey){
         // Check if the map contains information about the Tardis
         if (DATA.containsKey(levelResourceKey)) {
             // If the map contains information about the Tardis, return it
@@ -127,7 +164,7 @@ public class TardisIntReactions {
         }
 
         // If the map does not contain information about the Tardis, create a new TardisIntReactions instance and add it to the map
-        DATA.put(levelResourceKey, new TardisIntReactions(levelResourceKey));
+        DATA.put(levelResourceKey, new TardisClientData(levelResourceKey));
         return DATA.get(levelResourceKey);
     }
 

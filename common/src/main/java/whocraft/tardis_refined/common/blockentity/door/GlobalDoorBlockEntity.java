@@ -26,7 +26,9 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
                 if (cap.getInternalDoor() != door) {
                     cap.setInternalDoor(door);
                 }
-                cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
+                if (!cap.getControlManager().isInFlight()) {
+                    cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
+                }
             });
         }
     }

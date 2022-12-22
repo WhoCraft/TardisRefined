@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.renderer.blockentity.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -13,10 +12,9 @@ import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.FactoryDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.MysticDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.door.PhoneBoothDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.door.PoliceBoxDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
-import whocraft.tardis_refined.client.model.blockentity.shell.PoliceBoxModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -26,7 +24,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
-        policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
+        policeBoxModel = new PoliceBoxDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
         phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
         mysticDoor = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
     }
@@ -49,6 +47,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
                 break;
             case POLICE_BOX:
                 currentModel = policeBoxModel;
+                poseStack.scale(1.05f, 1.05f, 1.05f);
+                poseStack.translate(0, -0.07, 0);
                 break;
             case PHONE_BOOTH:
                 currentModel = phoneBoothDoorModel;
@@ -60,9 +60,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
         currentModel.setDoorPosition(isOpen);
 
-        if (currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
-            hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-        }
+        currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();
     }

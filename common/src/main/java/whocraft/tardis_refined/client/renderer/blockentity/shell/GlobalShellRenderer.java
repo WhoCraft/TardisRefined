@@ -51,11 +51,13 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
         switch (theme) {
-            case PHONE_BOOTH :
+            case PHONE_BOOTH:
                 currentModel = phoneBoothModel;
                 break;
-            case POLICE_BOX :
+            case POLICE_BOX:
                 currentModel = policeBoxModel;
+                poseStack.scale(1.05f, 1.05f, 1.05f);
+                poseStack.translate(0, -0.07, 0);
                 break;
             case FACTORY:
                 currentModel = factoryShellModel;
@@ -66,22 +68,16 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
 
+        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+        /*Emmissive*/
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
-
-        currentModel.setDoorPosition(isOpen);
-
-        /*Render Base*/
-        if(currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
-
-
-            /*Emmissive*/
-            if(currentModel.lightTexture() != null){
-                hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,  1);
+        if (currentModel.lightTexture() != null) {
+            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
+        } else {
+            if (isRegenerating) {
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,sine);
             }
-
-            RenderType renderType = isRegenerating ? RenderType.entityCutout(theme.getExternalShellTexture()) : RenderType.entityTranslucent(theme.getExternalShellTexture());
-            hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(renderType), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, isRegenerating ? sine : 1);
-
         }
 
         poseStack.popPose();

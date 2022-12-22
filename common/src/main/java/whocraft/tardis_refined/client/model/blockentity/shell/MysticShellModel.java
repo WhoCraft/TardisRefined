@@ -2,18 +2,16 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 
-public class MysticShellModel extends HierarchicalModel implements IShellModel {
+public class MysticShellModel extends IShellModel {
 
     private final ModelPart right_door;
     private final ModelPart left_door;
@@ -27,6 +25,7 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
     private final ModelPart root;
 
     public MysticShellModel(ModelPart root) {
+        super(root);
         this.root = root;
         this.right_door = root.getChild("right_door");
         this.left_door = root.getChild("left_door");
@@ -111,6 +110,9 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
                 .texOffs(44, 0).addBox(-6.9F, -35.9F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F))
                 .texOffs(44, 0).addBox(-6.9F, -4.1F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
+        IShellModel.splice(partdefinition);
+
+
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
@@ -146,6 +148,11 @@ public class MysticShellModel extends HierarchicalModel implements IShellModel {
             this.left_door.yRot = 0;
             this.right_door.yRot = 0;
         }
+    }
+
+    @Override
+    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
