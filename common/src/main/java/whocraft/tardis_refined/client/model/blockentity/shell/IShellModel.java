@@ -78,7 +78,7 @@ public abstract class IShellModel extends HierarchicalModel {
             takingOffTime = 0;
         }
 
-        currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : 1f;
+        currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : baseAlpha;
         root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? this.getCurrentAlpha() : baseAlpha);
     }
 

@@ -68,14 +68,16 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
 
-        Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
-
-
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         /*Emmissive*/
+        Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
         if (currentModel.lightTexture() != null) {
-            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
+        } else {
+            if (isRegenerating) {
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,sine);
+            }
         }
 
         poseStack.popPose();

@@ -141,9 +141,6 @@ public class PoliceBoxModel extends IShellModel {
 		this.right_door.yRot = (open) ? -275f : 0;
 	}
 
-	private float landingTime = 0;
-	private float takingOffTime = 0;
-
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 

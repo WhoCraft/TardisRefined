@@ -84,37 +84,10 @@ public class FactoryShellModel extends IShellModel {
 		}
 	}
 
-	private float landingTime = 0;
-	private float takingOffTime = 0;
-
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
-		if (entity.id == null) return;
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
-
-		if (reactions.isLanding()) {
-			this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, landingTime * animationTimeMultiplier);
-			if (isBaseModel) {
-				landingTime++;
-			}
-		} else {
-			landingTime = 0;
-		}
-		if (reactions.isTakingOff()) {
-			this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, takingOffTime * animationTimeMultiplier);
-			if (isBaseModel) {
-				takingOffTime++;
-			}
-		} else {
-			takingOffTime = 0;
-		}
-
-		float currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : 1f;
-		setDoorPosition(open);
-
-		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
+		handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
