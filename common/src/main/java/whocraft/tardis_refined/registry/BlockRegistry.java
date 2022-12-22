@@ -11,6 +11,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.RootPlantBlock;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
+import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
 import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -81,6 +82,7 @@ public class BlockRegistry {
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
         return 15;
     })), ItemRegistry.MAIN_TAB, true);
+
 
 
 }

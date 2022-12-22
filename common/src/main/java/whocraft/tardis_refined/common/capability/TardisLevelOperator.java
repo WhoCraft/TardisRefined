@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.NbtConstants;
-import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
@@ -34,14 +34,14 @@ public class TardisLevelOperator {
     private TardisInteriorManager interiorManager;
     private TardisControlManager controlManager;
 
-    private TardisIntReactions tardisIntReactions;
+    private TardisClientData tardisClientData;
 
     public TardisLevelOperator(Level level) {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
-        this.tardisIntReactions = new TardisIntReactions(level.dimension());
+        this.tardisClientData = new TardisClientData(level.dimension());
     }
 
     @ExpectPlatform
@@ -86,19 +86,40 @@ public class TardisLevelOperator {
         return level;
     }
 
-
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         controlManager.tick(level);
 
+        var shouldSync = false;
+
         // If the Tardis's flying status does not match the control manager's in-flight status
-        if (controlManager.isInFlight() != tardisIntReactions.isFlying()) {
+        if (controlManager.isInFlight() != tardisClientData.isFlying()) {
             // If the current level is a ServerLevel instance
             // Set the Tardis's flying status to match the control manager's in-flight status
-            tardisIntReactions.setFlying(controlManager.isInFlight());
+            tardisClientData.setFlying(controlManager.isInFlight());
+            shouldSync = true;
+        }
 
-            // Synchronize the Tardis's data across the server
-            tardisIntReactions.sync(level);
+        if (controlManager.shouldThrottleBeDown() != tardisClientData.isThrottleDown()) {
+            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
+            shouldSync = true;
+        }
+
+        if (exteriorManager.isLanding() != tardisClientData.isLanding()) {
+            tardisClientData.setIsLanding(exteriorManager.isLanding());
+            shouldSync = true;
+        }
+
+        if (exteriorManager.isTakingOff() != tardisClientData.isTakingOff()) {
+            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+            shouldSync = true;
+        }
+
+
+        // Synchronize the Tardis's data across the server
+        if (shouldSync) {
+            tardisClientData.sync(level);
+            tardisClientData.sync(getExteriorManager().getLastKnownLocation().level);
         }
     }
 

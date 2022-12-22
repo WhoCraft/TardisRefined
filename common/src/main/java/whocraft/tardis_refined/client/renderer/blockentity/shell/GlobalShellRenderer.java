@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.renderer.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -53,26 +52,30 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         currentModel = getModelForTheme(theme);
 
 
+        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
+        /*Emmissive*/
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
-
-        currentModel.setDoorPosition(isOpen);
-
-        /*Render Base*/
-        if (currentModel instanceof HierarchicalModel<?> hierarchicalModel) {
-
-
-            /*Emmissive*/
-            if (currentModel.lightTexture() != null) {
-                hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityCutout(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1);
+        if (currentModel.lightTexture() != null) {
+            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
+        } else {
+            if (isRegenerating) {
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
             }
-
-            RenderType renderType = isRegenerating ? RenderType.entityCutout(theme.getExternalShellTexture()) : RenderType.entityTranslucent(theme.getExternalShellTexture());
-            hierarchicalModel.renderToBuffer(poseStack, bufferSource.getBuffer(renderType), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, isRegenerating ? sine : 1);
-
         }
 
         poseStack.popPose();
 
+    }
+
+    @Override
+    public boolean shouldRenderOffScreen(GlobalShellBlockEntity blockEntity) {
+        return true;
+    }
+
+    @Override
+    public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
+        return new GlobalShellRenderer(context);
     }
 
     public static IShellModel getModelForTheme(ShellTheme theme) {
@@ -87,15 +90,5 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
                 return mysticModel;
         }
         return null;
-    }
-
-    @Override
-    public boolean shouldRenderOffScreen(GlobalShellBlockEntity blockEntity) {
-        return true;
-    }
-
-    @Override
-    public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
-        return new GlobalShellRenderer(context);
     }
 }
