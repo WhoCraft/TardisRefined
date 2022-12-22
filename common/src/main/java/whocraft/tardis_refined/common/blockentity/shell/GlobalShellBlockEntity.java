@@ -19,7 +19,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
-public class GlobalShellBlockEntity extends ShellBaseBlockEntity implements BlockEntityTicker<GlobalShellBlockEntity> {
+public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), blockPos, blockState);
@@ -34,19 +34,5 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity implements Bloc
                 });
             }
         }
-    }
-
-    @Override
-    public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalShellBlockEntity blockEntity) {
-        if(id == null) return;
-
-     /*   if(level.getGameTime() % 100 == 0){
-            ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, id.toString()));
-            TardisLevelOperator.get(Platform.getServer().getLevel(key)).ifPresent(tardisLevelOperator -> {
-                if(getBlockPos() != tardisLevelOperator.getExteriorManager().getLastKnownLocation().position){
-                    level.destroyBlock(getBlockPos(), false);
-                }
-            });
-        }*/
     }
 }
