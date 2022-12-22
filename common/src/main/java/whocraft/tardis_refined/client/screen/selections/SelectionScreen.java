@@ -43,13 +43,17 @@ public class SelectionScreen extends Screen {
     protected void init() {
         super.init();
 
-        this.selectShellButton = this.addRenderableWidget(new ImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
-            this.onSubmit.onPress();
-        }));
+        if(onSubmit != null) {
+            this.selectShellButton = this.addRenderableWidget(new ImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
+                this.onSubmit.onPress();
+            }));
+        }
 
-        this.cancelButton = this.addRenderableWidget(new ImageButton(width / 2 - 11, (height) / 2 + 35, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
-            this.onSubmit.onPress();
-        }));
+        if(onCancel != null) {
+            this.cancelButton = this.addRenderableWidget(new ImageButton(width / 2 - 11, (height) / 2 + 35, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
+                this.onSubmit.onPress();
+            }));
+        }
 
         list = createSelectionList();
 

@@ -35,11 +35,14 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
         super.render(poseStack, mouseX, mouseY, partialTick);
     }
 
+
+
     @Environment(EnvType.CLIENT)
     public static class Entry extends ObjectSelectionList.Entry<Entry> {
 
         private Component itemDisplayName;
         private GenericListSelection press;
+        private boolean checked = false;
 
         public Entry(Component name, GenericListSelection onSelection) {
             this.itemDisplayName = name;
@@ -52,20 +55,23 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
 
         @Override
         public boolean mouseClicked(double d, double e, int i) {
-            press.onClick();
+            press.onClick(this);
             return super.mouseClicked(d, e, i);
         }
 
         @Override
         public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            ScreenHelper.renderWidthScaledText(itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, ChatFormatting.GOLD.getColor(), 300, false);
+            ScreenHelper.renderWidthScaledText(itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, checked ? ChatFormatting.YELLOW.getColor() : ChatFormatting.GOLD.getColor(), width /2 - 20, false);
         }
 
+        public void setChecked(boolean checked) {
+            this.checked = checked;
+        }
     }
 
     @FunctionalInterface
     public interface GenericListSelection {
-        void onClick();
+        void onClick(GenericMonitorSelectionList.Entry entry);
     }
 }
 

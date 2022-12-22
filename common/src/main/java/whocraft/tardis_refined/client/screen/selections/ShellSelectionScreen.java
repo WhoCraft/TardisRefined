@@ -120,13 +120,25 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public GenericMonitorSelectionList createSelectionList() {
-        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 - 55 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 60, 150, 80, 12);
+        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 - 55 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 60, 150, 80, 12);
 
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
-        Arrays.stream(ShellTheme.values()).toList().forEach(x -> selectionList.children().add(new GenericMonitorSelectionList.Entry(x.getDisplayName(), () -> {
-            this.currentShellTheme = x;
-        })));
+
+        for (ShellTheme shellTheme : ShellTheme.values()) {
+            selectionList.children().add(new GenericMonitorSelectionList.Entry(shellTheme.getDisplayName(), (entry) -> {
+                this.currentShellTheme = shellTheme;
+
+                for (Object child : selectionList.children()) {
+                    if(child instanceof GenericMonitorSelectionList.Entry current){
+                        current.setChecked(false);
+                    }
+                }
+                entry.setChecked(true);
+
+            }));
+        }
+
         return selectionList;
     }
 }

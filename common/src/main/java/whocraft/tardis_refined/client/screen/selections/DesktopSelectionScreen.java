@@ -26,12 +26,11 @@ public class DesktopSelectionScreen extends SelectionScreen {
     protected int imageHeight = 173;
     private int leftPos, topPos;
 
-
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
 
     public DesktopSelectionScreen() {
         super(Component.translatable(ModMessages.UI_DESKTOP_SELECTION));
-        this.themeList = TardisDesktops.DESKTOPS;
+        this.themeList = TardisDesktops.DESKTOPS.stream().toList();
     }
 
     @Override
@@ -41,12 +40,21 @@ public class DesktopSelectionScreen extends SelectionScreen {
         }, () -> {
             Minecraft.getInstance().setScreen(null);
         });
-        this.currentDesktopTheme = this.themeList.get(0);
+        this.currentDesktopTheme = grabDesktop();
 
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
 
         super.init();
+    }
+
+    private DesktopTheme grabDesktop() {
+        for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
+            if(desktop.availableByDefault){
+                return desktop;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -59,6 +67,16 @@ public class DesktopSelectionScreen extends SelectionScreen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+
+        /*Render Interior Image*/
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, new ResourceLocation(TardisRefined.MODID, "textures/ui/interiors/" + currentDesktopTheme.id + ".png"));
+        poseStack.pushPose();
+        poseStack.translate(width / 2 + 10, height / 2 - 50, 0);
+        poseStack.scale(0.2F, 0.2F, 0.2F);
+        blit(poseStack, 0, 0, 0, 0, 400, 400, 400, 400);
+        poseStack.popPose();
 
         super.render(poseStack, i, j, f);
     }
@@ -75,14 +93,25 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 60, 50, 80, 12);
+        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 - 100 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 60, 50, 80, 12);
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
-        var desktops = TardisDesktops.DESKTOPS.stream().filter(x -> x.availableByDefault);
-        desktops.forEach(x -> selectionList.children().add(new GenericMonitorSelectionList.Entry(x.getDisplayName(), () -> {
-            this.currentDesktopTheme = x;
-        })));
+        for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
+            if(desktop.availableByDefault){
+                selectionList.children().add(new GenericMonitorSelectionList.Entry(desktop.getDisplayName(), (entry) -> {
+                    this.currentDesktopTheme = desktop;
+
+                    for (Object child : selectionList.children()) {
+                        if(child instanceof GenericMonitorSelectionList.Entry current){
+                            current.setChecked(false);
+                        }
+                    }
+                    entry.setChecked(true);
+                }));
+            }
+        }
+
         return selectionList;
     }
 
