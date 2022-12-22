@@ -124,33 +124,35 @@ public class KeyItem extends Item {
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
 
-    @Override
-    public InteractionResult useOn(UseOnContext context) {
-        if (context.getLevel() instanceof ServerLevel) {
+    // USED FOR DEVELOPMENT. ENSURE THIS IS NOT IN PRODUCTION.
 
-            if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
-
-                var keychain = keychain(context.getItemInHand());
-                if (keychain.size() > 0) {
-                    ResourceKey<Level> tardis = keychain.get(0);
-                    var tardisLevel = Platform.getServer().levels.get(tardis);
-                    TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-                        if (cap.getControlManager().isInFlight()) {
-                            cap.getControlManager().setTargetPosition(context.getClickedPos().above());
-                            cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
-                            cap.getControlManager().endFlight();
-                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS LANDING", true);
-                        } else {
-                            cap.getControlManager().beginFlight();
-                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS TAKING OFF", true);
-                        }
-                    });
-                }
-            }
-        }
-
-        return super.useOn(context);
-    }
+//    @Override
+//    public InteractionResult useOn(UseOnContext context) {
+//        if (context.getLevel() instanceof ServerLevel) {
+//
+//            if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
+//
+//                var keychain = keychain(context.getItemInHand());
+//                if (keychain.size() > 0) {
+//                    ResourceKey<Level> tardis = keychain.get(0);
+//                    var tardisLevel = Platform.getServer().levels.get(tardis);
+//                    TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
+//                        if (cap.getControlManager().isInFlight()) {
+//                            cap.getControlManager().setTargetPosition(context.getClickedPos().above());
+//                            cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
+//                            cap.getControlManager().endFlight();
+//                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS LANDING", true);
+//                        } else {
+//                            cap.getControlManager().beginFlight();
+//                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS TAKING OFF", true);
+//                        }
+//                    });
+//                }
+//            }
+//        }
+//
+//        return super.useOn(context);
+//    }
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
