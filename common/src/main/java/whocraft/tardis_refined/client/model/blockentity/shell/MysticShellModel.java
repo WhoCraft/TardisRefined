@@ -2,19 +2,11 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HierarchicalModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -159,17 +151,9 @@ public class MysticShellModel extends IShellModel {
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if(entity.id == null) return;
-        this.root().getAllParts().forEach(ModelPart::resetPose);
-        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
-
-        this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
-
-        setDoorPosition(open);
-
-        float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? currentAlpha : alpha);    }
+    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
 
     @Override
     public ResourceLocation texture() {

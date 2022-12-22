@@ -104,7 +104,18 @@ public class TardisLevelOperator {
             tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
             shouldSync = true;
         }
-        
+
+        if (exteriorManager.isLanding() != tardisClientData.isLanding()) {
+            tardisClientData.setIsLanding(exteriorManager.isLanding());
+            shouldSync = true;
+        }
+
+        if (exteriorManager.isTakingOff() != tardisClientData.isTakingOff()) {
+            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+            shouldSync = true;
+        }
+
+
         // Synchronize the Tardis's data across the server
         if (shouldSync) {
             tardisClientData.sync(level);

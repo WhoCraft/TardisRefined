@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -122,7 +121,6 @@ public class PoliceBoxModel extends IShellModel {
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
-
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
@@ -143,23 +141,17 @@ public class PoliceBoxModel extends IShellModel {
 		this.right_door.yRot = (open) ? -275f : 0;
 	}
 
+	private float landingTime = 0;
+	private float takingOffTime = 0;
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
-		if (entity.id == null) return;
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
+		handleAnimations(entity,frame,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
-		this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
-		float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
-
-		setDoorPosition(open);
-
-		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
-		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
-		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
-		fade_value.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);
+		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 	}
 
 	@Override

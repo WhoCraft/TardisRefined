@@ -17,12 +17,14 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class FactoryShellModel extends IShellModel {
 
+	private final ModelPart realRoot;
 	private final ModelPart root;
 	private final ModelPart leftDoor;
 	private final ModelPart rightDoor;
 
 	public FactoryShellModel(ModelPart root) {
 		super(root);
+		this.realRoot = root;
 		this.root = root.getChild("root");
 		this.leftDoor = this.root.getChild("left_door");
 		this.rightDoor = this.root.getChild("right_door");
@@ -64,7 +66,7 @@ public class FactoryShellModel extends IShellModel {
 
 	@Override
 	public ModelPart root() {
-		return this.root;
+		return this.realRoot;
 	}
 
 	@Override
@@ -82,14 +84,34 @@ public class FactoryShellModel extends IShellModel {
 		}
 	}
 
+	private float landingTime = 0;
+	private float takingOffTime = 0;
+
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
 		if (entity.id == null) return;
 		this.root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
 
-		this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
-		float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
+		if (reactions.isLanding()) {
+			this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, landingTime * animationTimeMultiplier);
+			if (isBaseModel) {
+				landingTime++;
+			}
+		} else {
+			landingTime = 0;
+		}
+		if (reactions.isTakingOff()) {
+			this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, takingOffTime * animationTimeMultiplier);
+			if (isBaseModel) {
+				takingOffTime++;
+			}
+		} else {
+			takingOffTime = 0;
+		}
+
+		float currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : 1f;
 		setDoorPosition(open);
 
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, currentAlpha);

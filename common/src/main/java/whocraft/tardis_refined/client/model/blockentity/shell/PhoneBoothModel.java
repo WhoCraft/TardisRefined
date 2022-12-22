@@ -106,18 +106,8 @@ public class PhoneBoothModel extends IShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		if(entity.id == null) return;
-		this.root().getAllParts().forEach(ModelPart::resetPose);
-		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
-
-		this.animate(reactions.ROTOR_ANIMATION, MODEL_LAND, Minecraft.getInstance().player.tickCount);
-
-		setDoorPosition(open);
-
-		float currentAlpha = (this.initAlpha() - this.fadeValue().y) * 0.05f;
-
-		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? currentAlpha : alpha);
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

@@ -81,7 +81,7 @@ public class PoliceBoxDoorModel extends IShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open,boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 

@@ -42,6 +42,12 @@ public class TardisExteriorManager {
     }
 
     private boolean locked;
+    private boolean isLanding;
+    public boolean isLanding() {return this.isLanding;}
+
+    private boolean isTakingOff;
+    public boolean isTakingOff() {return this.isTakingOff;}
+    public void setIsTakingOff(boolean isTakingOff) {this.isTakingOff = isTakingOff; }
 
 
     public TardisExteriorManager(TardisLevelOperator operator) {
@@ -140,6 +146,7 @@ public class TardisExteriorManager {
     }
 
     public void removeExteriorBlock() {
+        this.isLanding = false;
         if (lastKnownLocation != null) {
             if (lastKnownLocation.level.getBlockState(lastKnownLocation.position).getBlock() instanceof GlobalShellBlock shellBlock) {
                 lastKnownLocation.level.setBlockAndUpdate(lastKnownLocation.position, Blocks.AIR.defaultBlockState());
@@ -148,6 +155,7 @@ public class TardisExteriorManager {
     }
 
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
+
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
         location.level.setBlockAndUpdate(location.position, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
@@ -157,6 +165,7 @@ public class TardisExteriorManager {
         shell.id = UUID.fromString(operator.getLevel().dimension().location().getPath());
 
         this.lastKnownLocation = location;
+        this.isLanding = true;
     }
 
     public boolean isExitLocationSafe() {

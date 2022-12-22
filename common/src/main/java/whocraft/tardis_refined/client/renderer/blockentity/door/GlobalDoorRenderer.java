@@ -47,6 +47,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
                 break;
             case POLICE_BOX:
                 currentModel = policeBoxModel;
+                poseStack.scale(1.05f, 1.05f, 1.05f);
+                poseStack.translate(0, -0.07, 0);
                 break;
             case PHONE_BOOTH:
                 currentModel = phoneBoothDoorModel;

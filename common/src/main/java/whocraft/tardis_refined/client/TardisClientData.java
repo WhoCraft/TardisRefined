@@ -17,6 +17,8 @@ public class TardisClientData {
 
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
+    public AnimationState LANDING_ANIMATION = new AnimationState();
+    public AnimationState TAKEOFF_ANIMATION = new AnimationState();
     public TardisClientData(ResourceKey<Level> resourceKey){
         this.levelKey = resourceKey;
     }
@@ -30,6 +32,8 @@ public class TardisClientData {
 
     private boolean flying = false;
     private boolean throttleDown = false;
+    private boolean isLanding = false;
+    private boolean isTakingOff = false;
     public void setFlying(boolean flying) {
         this.flying = flying;
     }
@@ -46,6 +50,12 @@ public class TardisClientData {
         return throttleDown;
     }
 
+    public void setIsLanding(boolean landing) {this.isLanding = landing;}
+    public boolean isLanding() {return isLanding;}
+
+    public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
+    public boolean isTakingOff() {return isTakingOff;}
+
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -57,6 +67,8 @@ public class TardisClientData {
         // Set the "flying" tag in the compound tag to the current flying state of the Tardis
         compoundTag.putBoolean("flying", flying);
         compoundTag.putBoolean("throttleDown", throttleDown);
+        compoundTag.putBoolean("isLanding", isLanding);
+        compoundTag.putBoolean("isTakingOff", isTakingOff);
         return compoundTag;
     }
 
@@ -69,6 +81,8 @@ public class TardisClientData {
         // Set the flying state of the Tardis to the value of the "flying" tag in the compound tag
         flying = arg.getBoolean("flying");
         throttleDown = arg.getBoolean("throttleDown");
+        isLanding = arg.getBoolean("isLanding");
+        isTakingOff = arg.getBoolean("isTakingOff");
     }
 
     /**
@@ -91,6 +105,8 @@ public class TardisClientData {
         if (!flying && ROTOR_ANIMATION.isStarted()) {
             // If the Tardis is not flying but the rotor animation is started, stop the animation
             ROTOR_ANIMATION.stop();
+            LANDING_ANIMATION.updateTime(0,0);
+            TAKEOFF_ANIMATION.updateTime(0,0);
         }
 
         // Check if the Tardis is flying and the rotor animation is not started
@@ -99,7 +115,21 @@ public class TardisClientData {
             ROTOR_ANIMATION.start(0);
         }
 
+        if (isLanding && !LANDING_ANIMATION.isStarted()) {
+            TAKEOFF_ANIMATION.stop();
+            LANDING_ANIMATION.start(0);
+        }
+        if (!isLanding && LANDING_ANIMATION.isStarted()) {
+            LANDING_ANIMATION.stop();
+        }
 
+        if (isTakingOff && !TAKEOFF_ANIMATION.isStarted()) {
+            LANDING_ANIMATION.stop();
+            TAKEOFF_ANIMATION.start(0);
+        }
+        if (!isTakingOff && TAKEOFF_ANIMATION.isStarted()) {
+            TAKEOFF_ANIMATION.stop();
+        }
     }
 
     // A map that stores information about Tardis instances, keyed by level resource key

@@ -27,6 +27,7 @@ public class TardisControlManager {
     private boolean isInFlight = false;
     private int ticksInFlight = 0;
     private int ticksLanding = 0;
+    private int ticksTakingOff = 0;
 
     private int[] coordinateIncrements = new int[] {1,10,100,1000};
     private int cordIncrementIndex = 0;
@@ -65,6 +66,14 @@ public class TardisControlManager {
     public void tick(Level level) {
         if (isInFlight) {
             ticksInFlight++;
+
+            if (ticksTakingOff > 0) {
+                ticksTakingOff++;
+            }
+
+            if (ticksTakingOff == (11 * 20)) {
+                this.enterTimeVortex();
+            }
 
             if (ticksLanding > 0) {
                 ticksLanding--;
@@ -187,16 +196,18 @@ public class TardisControlManager {
     }
 
     public void beginFlight() {
-        if (isInFlight) {return;}
+        if (isInFlight || ticksTakingOff > 0) {return;}
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 5, 1);
-        operator.getExteriorManager().removeExteriorBlock();
         this.isInFlight = true;
         this.ticksInFlight = 0;
+        this.ticksTakingOff = 1;
+        this.operator.getExteriorManager().setIsTakingOff(true);
+
     }
     public void endFlight() {
-        if (!isInFlight || ticksInFlight < (20 * 5)) {return;}
+        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {return;}
         this.ticksInFlight = 0;
         this.ticksLanding = 9 * 20;
 
@@ -217,12 +228,19 @@ public class TardisControlManager {
             operator.getInteriorManager().setShellTheme(currentExteriorTheme);
         }
 
-        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 5, 1);
+        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
         operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+    }
+
+    public void enterTimeVortex() {
+        operator.getExteriorManager().removeExteriorBlock();
+        this.ticksTakingOff = 0;
+        this.operator.getExteriorManager().setIsTakingOff(false);
     }
 
     public void onFlightEnd() {
         this.isInFlight = false;
+        this.ticksTakingOff = 0;
     }
 
     public void offsetTargetPositionX(float x) {
