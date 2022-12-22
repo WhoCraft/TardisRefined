@@ -26,6 +26,7 @@ public class SelectionScreen extends Screen {
     private ObjectSelectionList list;
 
     private static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/save.png");
+    private static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/back.png");
 
 
     public SelectionScreen(Component title) {
@@ -38,9 +39,6 @@ public class SelectionScreen extends Screen {
         this.onCancel = onCancel;
     }
 
-    protected int listWidth = 200;
-    protected int listHeight = this.height;
-
     @Override
     protected void init() {
         super.init();
@@ -49,8 +47,8 @@ public class SelectionScreen extends Screen {
             this.onSubmit.onPress();
         }));
 
-        this.cancelButton = this.addRenderableWidget(new Button(this.width - 70, this.height - 30, 60, 20, CommonComponents.GUI_CANCEL, (button) -> {
-            this.onCancel.onPress();
+        this.cancelButton = this.addRenderableWidget(new ImageButton(width / 2 - 11, (height) / 2 + 35, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
+            this.onSubmit.onPress();
         }));
 
         list = createSelectionList();
