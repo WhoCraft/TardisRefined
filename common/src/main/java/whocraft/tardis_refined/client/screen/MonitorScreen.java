@@ -62,7 +62,7 @@ public class MonitorScreen extends SelectionScreen {
 
     @Override
     public GenericMonitorSelectionList createSelectionList() {
-        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 - 45 - (Minecraft.getInstance().options.guiScale().get() * 10), height / 2 - 45, 150, 80, 12);
+        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 - 140, height / 2 - 55, 150, 80, 12);
 
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
@@ -84,19 +84,13 @@ public class MonitorScreen extends SelectionScreen {
         RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
+        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 96, height /2 + 10, Color.WHITE.getRGB(), 90, false);
+        ScreenHelper.renderWidthScaledText(currentDirection.getName().toUpperCase() + " @ " + currentPosition.toShortString(), poseStack, Minecraft.getInstance().font, width / 2 - 96, height /2 + 20, Color.LIGHT_GRAY.getRGB(), 90, false);
+        ScreenHelper.renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, width / 2 - 96, height /2 + 30, Color.LIGHT_GRAY.getRGB(), 90, false);
 
-        int minGPSY = height - 60;
-        int minGPSDestY = height - 25;
-
-        int heightOffset = 70, widthOffset = 90;
-
-        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 96, minGPSY - 30 - heightOffset, Color.WHITE.getRGB(), 75, false);
-        ScreenHelper.renderWidthScaledText(currentDirection.getName().toUpperCase() + " @ " + currentPosition.toShortString(), poseStack, Minecraft.getInstance().font, width / 2 - 96, minGPSY - 20- heightOffset, Color.LIGHT_GRAY.getRGB(), 100, false);
-        ScreenHelper.renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, width / 2 - 96, minGPSY - 10 - heightOffset, Color.LIGHT_GRAY.getRGB(), 100, false);
-
-        ScreenHelper.renderWidthScaledText( Component.translatable(ModMessages.UI_MONITOR_DESTINATION).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 96, minGPSDestY - 30 - heightOffset, Color.WHITE.getRGB(), 75, false);
-        ScreenHelper.renderWidthScaledText(targetDirection.getName().toUpperCase() + " @ " + targetPosition.toShortString(), poseStack, Minecraft.getInstance().font, width / 2 - 96, minGPSDestY - 20 - heightOffset, Color.LIGHT_GRAY.getRGB(), 100, false);
-        ScreenHelper.renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, width / 2 - 96, minGPSDestY - 10 - heightOffset, Color.LIGHT_GRAY.getRGB(), 100, false);
+        ScreenHelper.renderWidthScaledText( Component.translatable(ModMessages.UI_MONITOR_DESTINATION).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 + 5, height /2 + 10, Color.WHITE.getRGB(), 90, false);
+        ScreenHelper.renderWidthScaledText(targetDirection.getName().toUpperCase() + " @ " + targetPosition.toShortString(), poseStack, Minecraft.getInstance().font, width / 2 + 5, height /2 + 20, Color.LIGHT_GRAY.getRGB(), 90, false);
+        ScreenHelper.renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, width / 2 + 5, height /2 + 30, Color.LIGHT_GRAY.getRGB(), 90, false);
 
         super.render(poseStack, i, j, f);
     }

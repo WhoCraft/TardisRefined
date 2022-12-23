@@ -36,7 +36,6 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
     }
 
 
-
     @Environment(EnvType.CLIENT)
     public static class Entry extends ObjectSelectionList.Entry<Entry> {
 
@@ -48,6 +47,7 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
             this.itemDisplayName = name;
             this.press = onSelection;
         }
+
         @Override
         public Component getNarration() {
             return itemDisplayName;
@@ -61,7 +61,8 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
 
         @Override
         public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            ScreenHelper.renderWidthScaledText(itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, checked ? ChatFormatting.YELLOW.getColor() : ChatFormatting.GOLD.getColor(), width /2 - 20, false);
+            int color = isMouseOver ? ChatFormatting.YELLOW.getColor() : (checked ? ChatFormatting.YELLOW.getColor() : ChatFormatting.GOLD.getColor());
+            ScreenHelper.renderWidthScaledText(itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, color, width, false);
         }
 
         public void setChecked(boolean checked) {

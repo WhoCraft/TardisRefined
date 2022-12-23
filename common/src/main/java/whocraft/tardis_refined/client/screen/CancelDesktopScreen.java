@@ -40,7 +40,7 @@ public class CancelDesktopScreen extends Screen {
             Minecraft.getInstance().setScreen(null);
         }));
 
-        this.addRenderableWidget(new Button(this.width / 2 - (175/2) , this.height / 2 + 30, 175, 20, CommonComponents.GUI_BACK, (button) -> {
+        this.addRenderableWidget(new Button(this.width / 2 - (175/2) , this.height / 2 + 30, 175, 20, CommonComponents.GUI_ACKNOWLEDGE, (button) -> {
             Minecraft.getInstance().setScreen(null);
         }));
 

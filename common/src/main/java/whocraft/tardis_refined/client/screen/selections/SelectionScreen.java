@@ -51,7 +51,7 @@ public class SelectionScreen extends Screen {
 
         if(onCancel != null) {
             this.cancelButton = this.addRenderableWidget(new ImageButton(width / 2 - 11, (height) / 2 + 35, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
-                this.onSubmit.onPress();
+                this.onCancel.onPress();
             }));
         }
 
