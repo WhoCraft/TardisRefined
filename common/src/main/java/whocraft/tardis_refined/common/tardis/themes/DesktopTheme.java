@@ -7,6 +7,7 @@ import whocraft.tardis_refined.ModMessages;
 
 public class DesktopTheme {
 
+    private final ResourceLocation uiTexture;
     public boolean availableByDefault = false;
     public String id = "";
     public ResourceLocation location;
@@ -17,6 +18,7 @@ public class DesktopTheme {
         this.id = id;
         this.availableByDefault = availableByDefault;
         this.location = location;
+        this.uiTexture = new ResourceLocation(location.getNamespace(), "textures/ui/interiors/" + id + ".png");
     }
 
     public String getTranslationkey(){
@@ -25,6 +27,10 @@ public class DesktopTheme {
 
     public Component getDisplayName() {
         return Component.translatable(getTranslationkey());
+    }
+
+    public ResourceLocation getTexture(){
+        return uiTexture;
     }
 
 }

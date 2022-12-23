@@ -71,7 +71,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         /*Render Interior Image*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, new ResourceLocation(TardisRefined.MODID, "textures/ui/interiors/" + currentDesktopTheme.id + ".png"));
+        RenderSystem.setShaderTexture(0, currentDesktopTheme.getTexture());
         poseStack.pushPose();
         poseStack.translate(width / 2 + 10, height / 2 - 50, 0);
         poseStack.scale(0.2F, 0.2F, 0.2F);
