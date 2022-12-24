@@ -79,16 +79,11 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
     }
 
     public static IShellModel getModelForTheme(ShellTheme theme) {
-        switch (theme) {
-            case PHONE_BOOTH:
-                return phoneBoothModel;
-            case POLICE_BOX:
-                return policeBoxModel;
-            case FACTORY:
-                return factoryShellModel;
-            case MYSTIC:
-                return mysticModel;
-        }
-        return null;
+        return switch (theme) {
+            case PHONE_BOOTH -> phoneBoothModel;
+            case POLICE_BOX -> policeBoxModel;
+            case FACTORY -> factoryShellModel;
+            case MYSTIC -> mysticModel;
+        };
     }
 }
