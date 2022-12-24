@@ -9,14 +9,16 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class MysticDoorModel extends HierarchicalModel implements IShellModel {
+public class MysticDoorModel extends IShellModel {
     private final ModelPart right_door;
     private final ModelPart left_door;
     private final ModelPart root;
 
     public MysticDoorModel(ModelPart root) {
+        super(root);
         this.root = root;
         this.right_door = root.getChild("right_door");
         this.left_door = root.getChild("left_door");
@@ -56,6 +58,8 @@ public class MysticDoorModel extends HierarchicalModel implements IShellModel {
 
         PartDefinition bone5 = bone4.addOrReplaceChild("bone5", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
 
+        IShellModel.splice(partdefinition);
+
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
@@ -86,12 +90,19 @@ public class MysticDoorModel extends HierarchicalModel implements IShellModel {
     }
 
     @Override
+    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+    }
+
+
+    @Override
     public ResourceLocation texture() {
         return ShellTheme.MYSTIC.getInternalDoorTexture();
     }
 
     @Override
     public ResourceLocation lightTexture() {
-        return IShellModel.super.lightTexture();
+        return null;
     }
+
 }

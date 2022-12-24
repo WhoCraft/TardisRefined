@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisIntReactions;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
 public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit{
@@ -48,11 +48,13 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 	private final ModelPart bone20;
 	private final ModelPart bb_main;
 	private final ModelPart throttle;
+	private final ModelPart rotor_bottom;
 
 	public CoralConsoleModel(ModelPart root) {
 		this.bone20 = root.getChild("bone20");
 		this.bb_main = root.getChild("bb_main");
 		this.throttle = bone20.getChild("controls").getChild("borders").getChild("bone23").getChild("bone17").getChild("throttle");
+		this.rotor_bottom = bone20.getChild("rotor_bottom_T_add20");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -736,10 +738,10 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
-		TardisIntReactions reactions = TardisIntReactions.getInstance(level.dimension());
+		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-		this.throttle.xRot = (reactions.isFlying()) ? 2f : 0f;
+		this.throttle.xRot = (reactions.isThrottleDown()) ? 2f : 0f;
 
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

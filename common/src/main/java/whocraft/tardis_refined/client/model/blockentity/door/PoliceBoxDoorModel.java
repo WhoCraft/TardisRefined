@@ -10,15 +10,17 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PoliceBoxDoorModel extends HierarchicalModel implements IShellModel {
+public class PoliceBoxDoorModel extends IShellModel {
 
 	private final ModelPart left_door;
 	private final ModelPart right_door;
 	private final ModelPart frame;
 
 	public PoliceBoxDoorModel(ModelPart root) {
+		super(root);
 		this.frame = root.getChild("frame");
 		this.left_door = root.getChild("left_door");
 		this.right_door = root.getChild("right_door");
@@ -50,6 +52,9 @@ public class PoliceBoxDoorModel extends HierarchicalModel implements IShellModel
 				.texOffs(19, 46).addBox(-10.0F, -37.0F, -11.0F, 2.0F, 35.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(19, 46).mirror().addBox(8.0F, -37.0F, -11.0F, 2.0F, 35.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 25.0F, 16.75F));
 
+		IShellModel.splice(partdefinition);
+
+
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
@@ -76,7 +81,17 @@ public class PoliceBoxDoorModel extends HierarchicalModel implements IShellModel
 	}
 
 	@Override
+	public void renderShell(GlobalShellBlockEntity entity, boolean open,boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+	}
+
+	@Override
 	public ResourceLocation texture() {
 		return ShellTheme.POLICE_BOX.getInternalDoorTexture();
+	}
+
+	@Override
+	public ResourceLocation lightTexture() {
+		return null;
 	}
 }

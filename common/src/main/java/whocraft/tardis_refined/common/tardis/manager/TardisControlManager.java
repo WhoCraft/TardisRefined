@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
@@ -21,13 +22,19 @@ public class TardisControlManager {
     // Location based.
     private TardisNavLocation believedLocation;
     private TardisNavLocation targetLocation;
+
+    // Inflight coundowns
     private boolean isInFlight = false;
     private int ticksInFlight = 0;
+    private int ticksLanding = 0;
+    private int ticksTakingOff = 0;
 
     private int[] coordinateIncrements = new int[] {1,10,100,1000};
     private int cordIncrementIndex = 0;
 
     private ShellTheme currentExteriorTheme;
+    public ShellTheme getCurrentExteriorTheme() {return this.currentExteriorTheme;}
+    public void setCurrentExteriorTheme(ShellTheme theme) {this.currentExteriorTheme = theme;}
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -56,20 +63,38 @@ public class TardisControlManager {
         return tag;
     }
 
-
     public void tick(Level level) {
         if (isInFlight) {
             ticksInFlight++;
 
-            if (level.getGameTime() % (20 * 1.75) == 0) {
+            if (ticksTakingOff > 0) {
+                ticksTakingOff++;
+            }
+
+            if (ticksTakingOff == (11 * 20)) {
+                this.enterTimeVortex();
+            }
+
+            if (ticksLanding > 0) {
+                ticksLanding--;
+            }
+
+            if (ticksLanding == 1) {
+                this.onFlightEnd();
+            }
+
+            if (level.getGameTime() % (20 * 1.75) == 0 && ticksLanding == 0) {
                 operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 1000f, 1f);
             }
         }
+
+
     }
 
     public boolean isInFlight() {
         return this.isInFlight;
     }
+    public boolean isLanding() {return (ticksLanding > 0);}
 
     public TardisNavLocation getClosestValidPosition(TardisNavLocation location) {
         ServerLevel level = location.level;
@@ -171,19 +196,20 @@ public class TardisControlManager {
     }
 
     public void beginFlight() {
-        if (isInFlight) {return;}
-        System.out.println("TARDIS is taking off");
+        if (isInFlight || ticksTakingOff > 0) {return;}
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 5, 1);
-        operator.getExteriorManager().removeExteriorBlock();
         this.isInFlight = true;
         this.ticksInFlight = 0;
+        this.ticksTakingOff = 1;
+        this.operator.getExteriorManager().setIsTakingOff(true);
+
     }
     public void endFlight() {
-        if (!isInFlight || ticksInFlight < (20 * 5)) {return;}
-        this.isInFlight = false;
+        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {return;}
         this.ticksInFlight = 0;
+        this.ticksLanding = 9 * 20;
 
         BlockPos landingLocation = this.targetLocation.position;
 
@@ -198,23 +224,35 @@ public class TardisControlManager {
         }
 
         operator.getExteriorManager().placeExteriorBlock(operator, location);
-        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 5, 1);
-        operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+        if (currentExteriorTheme != null) {
+            operator.getInteriorManager().setShellTheme(currentExteriorTheme);
+        }
+
+        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
+        operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+    }
+
+    public void enterTimeVortex() {
+        operator.getExteriorManager().removeExteriorBlock();
+        this.ticksTakingOff = 0;
+        this.operator.getExteriorManager().setIsTakingOff(false);
+    }
+
+    public void onFlightEnd() {
+        this.isInFlight = false;
+        this.ticksTakingOff = 0;
     }
 
     public void offsetTargetPositionX(float x) {
         this.targetLocation.position = this.targetLocation.position.offset(x, 0,0);
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public void offsetTargetPositionY(float y) {
         this.targetLocation.position = this.targetLocation.position.offset(0, y,0);
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public void offsetTargetPositionZ(float z) {
         this.targetLocation.position = this.targetLocation.position.offset(0, 0,z);
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public TardisNavLocation getTargetLocation(){
@@ -223,7 +261,6 @@ public class TardisControlManager {
 
     public void setTargetPosition(BlockPos pos) {
         this.targetLocation.position = pos;
-        System.out.println("Set the coordinates to: " +  this.targetLocation.position.toShortString());
     }
 
     public int getCordIncrement() {
@@ -238,6 +275,9 @@ public class TardisControlManager {
         this.cordIncrementIndex = nextIndex;
     }
 
+    public boolean shouldThrottleBeDown() {
+        return isInFlight && ticksLanding == 0;
+    }
 
 
 }

@@ -43,8 +43,7 @@ public class TardisArchitectureHandler {
         // Cheap and easy entity removal. Might want to make this more robust for items!
         List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
         desktopEntities.forEach(x -> x.teleportTo(0,-1000,0));
-
-
+        
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.location);
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
@@ -74,7 +73,6 @@ public class TardisArchitectureHandler {
                         structure.placeInWorld(level.getLevel(), pos.subtract(offsetPosition) , pos.subtract(offsetPosition) , new StructurePlaceSettings(), level.getLevel().random, 3);
 
                         cap.getInteriorManager().setCorridorAirlockCenter(pos.south(2));
-                        level.setBlock(cap.getInteriorManager().getCorridorAirlockCenter(), Blocks.MAGMA_BLOCK.defaultBlockState(), 2);
                         level.setBlock(pos, level.getBlockState(pos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
 
                     });

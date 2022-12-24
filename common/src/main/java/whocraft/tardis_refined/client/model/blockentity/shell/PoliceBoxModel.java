@@ -2,22 +2,27 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
-
+public class PoliceBoxModel extends IShellModel {
+	private final ModelPart root;
 	private final ModelPart left_door;
 	private final ModelPart right_door;
 	private final ModelPart frame;
 
 	public PoliceBoxModel(ModelPart root) {
-
+		super(root);
+		this.root = root;
 		this.frame = root.getChild("frame");
 		this.left_door = root.getChild("left_door");
 		this.right_door = root.getChild("right_door");
@@ -111,23 +116,19 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 		.texOffs(32, 64).mirror().addBox(-0.5F, -31.5F, -10.75F, 1.0F, 30.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
 		.texOffs(0, 15).mirror().addBox(1.75F, -30.5F, -10.35F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
 
+		IShellModel.splice(partdefinition);
+
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
-
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		poseStack.scale(1.05f, 1.05f, 1.05f);
-		poseStack.translate(0, -0.07, 0);
 
-		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
 	public ModelPart root() {
-		return this.frame;
+		return this.root;
 	}
 
 	@Override
@@ -138,6 +139,16 @@ public class PoliceBoxModel extends HierarchicalModel implements IShellModel {
 	@Override
 	public void setDoorPosition(boolean open) {
 		this.right_door.yRot = (open) ? -275f : 0;
+	}
+
+	@Override
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+		handleAnimations(entity,frame,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+
+		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 	}
 
 	@Override

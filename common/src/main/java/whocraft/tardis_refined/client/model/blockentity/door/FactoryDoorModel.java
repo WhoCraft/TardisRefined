@@ -10,16 +10,17 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class FactoryDoorModel extends HierarchicalModel implements IShellModel {
+public class FactoryDoorModel extends IShellModel {
 
 	private final ModelPart root;
 	private final ModelPart leftDoor;
 	private final ModelPart rightDoor;
 
 	public FactoryDoorModel(ModelPart root) {
-
+		super(root);
 		this.root = root.getChild("root");
 		this.leftDoor = this.root.getChild("left_door");
 		this.rightDoor = this.root.getChild("right_door");
@@ -40,6 +41,9 @@ public class FactoryDoorModel extends HierarchicalModel implements IShellModel {
 		PartDefinition left_door = root.addOrReplaceChild("left_door", CubeListBuilder.create().texOffs(70, 96).addBox(0.0F, -15.0F, -0.6F, 7.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-7.0F, -20.0F, -5.6F));
 
 		PartDefinition right_door = root.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(95, 81).addBox(-7.0F, -15.0F, -0.6F, 7.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, -20.0F, -5.6F));
+
+		IShellModel.splice(partdefinition);
+
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -71,8 +75,19 @@ public class FactoryDoorModel extends HierarchicalModel implements IShellModel {
 		}
 	}
 
+
+	@Override
+	public void renderShell(GlobalShellBlockEntity entity, boolean open,boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+	}
+
 	@Override
 	public ResourceLocation texture() {
 		return ShellTheme.FACTORY.getInternalDoorTexture();
+	}
+
+	@Override
+	public ResourceLocation lightTexture() {
+		return null;
 	}
 }

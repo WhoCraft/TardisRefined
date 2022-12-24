@@ -23,6 +23,7 @@ import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.protection.ProtectedZone;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
@@ -48,7 +49,7 @@ public class TardisInteriorManager {
     private int airlockTimerSeconds = 5;
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
-
+    public static final ProtectedZone CORRIDOR_HUB = new ProtectedZone(new BlockPos(978, 146, 34), new BlockPos(1046, 69, -18));
 
     private DesktopTheme preparedTheme;
 
@@ -68,13 +69,14 @@ public class TardisInteriorManager {
         return this.interiorGenerationCooldown / 20;
     }
 
-    public AABB[] unbreakableZones() {
+    public ProtectedZone[] unbreakableZones() {
 
-        if (corridorAirlockCenter == null) {
-            return new AABB[]{};
-        }
+        if (!hasGeneratedCorridors) return new ProtectedZone[]{};
 
-        return new AABB[]{new AABB(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.above().south(3).east(3).above(6)), new AABB(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6))};
+        ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
+        ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
+
+        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, CORRIDOR_HUB};
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -133,11 +135,6 @@ public class TardisInteriorManager {
                 interiorGenerationCooldown--;
             }
 
-
-            if (level.getGameTime() % 20 == 0) {
-                System.out.println("Seconds till done: " + getInteriorGenerationCooldown());
-            }
-
             if (interiorGenerationCooldown == 0) {
                 this.operator.setShellTheme((this.operator.getExteriorManager().getCurrentTheme() != null) ? operator.getExteriorManager().getCurrentTheme() : ShellTheme.FACTORY);
                 this.isGeneratingDesktop = false;
@@ -160,7 +157,7 @@ public class TardisInteriorManager {
 
                 if (desktopEntities.size() > 0 || corridorEntities.size() > 0) {
                     airlockCountdownSeconds--;
-                    if (airlockCountdownSeconds <=0 ) {
+                    if (airlockCountdownSeconds <= 0) {
 
                         this.processingWarping = true;
                         airlockCountdownSeconds = 10;
@@ -173,7 +170,7 @@ public class TardisInteriorManager {
                             level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), 2);
                         }
 
-                        BlockPos corridorDoorBlockPos = new BlockPos(1000,100,2);
+                        BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                             bulkHeadDoorBlockEntity.closeDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos));
                             level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), 2);
@@ -194,8 +191,9 @@ public class TardisInteriorManager {
             if (level.getGameTime() % 20 == 0) {
 
                 RandomSource rand = level.getRandom();
-                for (AABB aabb : unbreakableZones()) {
-                    BlockPos.betweenClosedStream(aabb).forEach(position -> {
+                for (ProtectedZone protectedZone : unbreakableZones()) {
+                    if(!protectedZone.getName().contains("_airlock")) continue;
+                    BlockPos.betweenClosedStream(protectedZone.getArea()).forEach(position -> {
                         double velocityX = (rand.nextDouble() - 0.5) * 0.02;
                         double velocityY = (rand.nextDouble() - 0.5) * 0.02;
                         double velocityZ = (rand.nextDouble() - 0.5) * 0.02;
@@ -205,14 +203,14 @@ public class TardisInteriorManager {
                 }
 
 
-            if (airlockTimerSeconds == 1) {
-                level.playSound(null, corridorAirlockCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
-                level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
-            }
+                if (airlockTimerSeconds == 1) {
+                    level.playSound(null, corridorAirlockCenter, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
+                    level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
+                }
 
-            if (airlockTimerSeconds == 5) {
-                List<LivingEntity> desktopEntities = getAirlockEntities(level);
-                List<LivingEntity> corridorEntities = getCorridorEntities(level);
+                if (airlockTimerSeconds == 5) {
+                    List<LivingEntity> desktopEntities = getAirlockEntities(level);
+                    List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
@@ -220,7 +218,7 @@ public class TardisInteriorManager {
                     });
 
                     corridorEntities.forEach(x -> {
-                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(new BlockPos(1000, 100, -2))) ;
+                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(new BlockPos(1000, 100, -2)));
                         MiscHelper.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
@@ -235,7 +233,7 @@ public class TardisInteriorManager {
                         level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
                     }
 
-                    BlockPos corridorDoorBlockPos = new BlockPos(1000,100,2);
+                    BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                         bulkHeadDoorBlockEntity.openDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos));
                         level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
@@ -254,19 +252,18 @@ public class TardisInteriorManager {
 
     private List<LivingEntity> getAirlockEntities(Level level) {
 
-        if(corridorAirlockCenter == null){
+        if (corridorAirlockCenter == null) {
             return new ArrayList<>();
         }
 
         return level.getEntitiesOfClass(LivingEntity.class, new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
     }
 
-    public boolean isInAirlock(LivingEntity livingEntity){
+    public boolean isInAirlock(LivingEntity livingEntity) {
 
-        if(!hasGeneratedCorridors) return false;
+        if (!hasGeneratedCorridors) return false;
 
         List<LivingEntity> airlock = getAirlockEntities(livingEntity.level);
-        //TODO BlockPos may change
         List<LivingEntity> corridor = getCorridorEntities(livingEntity.level);
 
         return airlock.contains(livingEntity) || corridor.contains(livingEntity);

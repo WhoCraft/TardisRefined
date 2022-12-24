@@ -54,6 +54,7 @@ public class ControlEntity extends PathfinderMob {
         this.controlSpecification = consoleControl;
         this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale())));
         this.refreshDimensions();
+        this.setCustomName(Component.translatable(consoleControl.control().getTranslationKey()));
         this.setPersistenceRequired();
     }
 
