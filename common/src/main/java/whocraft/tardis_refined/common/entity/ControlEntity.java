@@ -18,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -118,10 +119,12 @@ public class ControlEntity extends PathfinderMob {
         if (damageSource.getDirectEntity() instanceof Player player) {
             if (getLevel() instanceof ServerLevel serverLevel) {
 
-                setPos(position().add(player.isCrouching() ? -0.1 : 0.1, 0, 0));
+                if (player.getMainHandItem().getItem() == Items.DEBUG_STICK) {
+                    setPos(position().add(player.isCrouching() ? -0.1 : 0.1, 0, 0));
+                    return false;
+                }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
@@ -142,8 +145,10 @@ public class ControlEntity extends PathfinderMob {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (getLevel() instanceof ServerLevel serverLevel) {
 
-                setPos(position().add(0, 0, player.isCrouching() ? -0.1 : 0.1));
-
+                if (player.getMainHandItem().getItem() == Items.DEBUG_STICK) {
+                    setPos(position().add(0, 0, player.isCrouching() ? -0.1 : 0.1));
+                    return InteractionResult.SUCCESS;
+                }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
