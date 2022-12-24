@@ -86,15 +86,4 @@ public class GlobalShellBlock extends ShellBaseBlock{
 
         return InteractionResult.SUCCESS;
     }
-
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return (level1, blockPos, blockState, t) -> {
-            if (t instanceof GlobalShellBlockEntity globalShellBlockEntity) {
-                globalShellBlockEntity.tick(level, blockPos, blockState, globalShellBlockEntity);
-            }
-        };
-    }
 }

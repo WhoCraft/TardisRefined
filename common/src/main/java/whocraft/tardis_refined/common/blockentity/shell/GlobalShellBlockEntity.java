@@ -19,7 +19,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
-public class GlobalShellBlockEntity extends ShellBaseBlockEntity implements BlockEntityTicker<GlobalShellBlockEntity> {
+public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), blockPos, blockState);

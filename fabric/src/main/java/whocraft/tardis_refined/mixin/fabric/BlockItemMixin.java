@@ -1,31 +1,28 @@
 package whocraft.tardis_refined.mixin.fabric;
 
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.context.UseOnContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.common.util.MiscHelper;
 
 @Mixin(BlockItem.class)
-public abstract class BlockItemMixin {
+public class BlockItemMixin {
 
 
-    @Inject(at = @At("HEAD"), method = "place(Lnet/minecraft/world/item/context/BlockPlaceContext;)Lnet/minecraft/world/InteractionResult;", cancellable = true)
-    private void place(BlockPlaceContext context, CallbackInfoReturnable<InteractionResult> cir) {
-
-        Level level = context.getLevel();
-        if (level.dimensionTypeId() == DimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
-            TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
-            if (data.getInteriorManager().isInAirlock(context.getPlayer())) {
-                cir.setReturnValue(InteractionResult.FAIL);
+    @Inject(method = "useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
+    private void restrict(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir) {
+        if (MiscHelper.shouldStopItem(useOnContext.getLevel(), useOnContext.getPlayer(), useOnContext.getClickedPos())) {
+            if (useOnContext.getPlayer() instanceof ServerPlayer serverPlayer) {
+                serverPlayer.inventoryMenu.sendAllDataToRemote();
             }
+            cir.setReturnValue(InteractionResult.PASS);
         }
     }
+
 
 }
