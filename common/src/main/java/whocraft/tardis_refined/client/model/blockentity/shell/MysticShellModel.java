@@ -11,7 +11,7 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 
-public class MysticShellModel extends IShellModel {
+public class MysticShellModel extends ShellModel {
 
     private final ModelPart right_door;
     private final ModelPart left_door;
@@ -110,7 +110,7 @@ public class MysticShellModel extends IShellModel {
                 .texOffs(44, 0).addBox(-6.9F, -35.9F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F))
                 .texOffs(44, 0).addBox(-6.9F, -4.1F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        IShellModel.splice(partdefinition);
+        ShellModel.splice(partdefinition);
 
 
         return LayerDefinition.create(meshdefinition, 128, 128);

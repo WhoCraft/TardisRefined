@@ -2,20 +2,15 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class FactoryShellModel extends IShellModel {
+public class FactoryShellModel extends ShellModel {
 
 	private final ModelPart realRoot;
 	private final ModelPart root;
@@ -52,7 +47,7 @@ public class FactoryShellModel extends IShellModel {
 
 		PartDefinition bone = root.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(70, 52).addBox(-1.0F, -17.0F, -5.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -20.0F, 11.0F, 0.0F, 1.5708F, 0.0F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
