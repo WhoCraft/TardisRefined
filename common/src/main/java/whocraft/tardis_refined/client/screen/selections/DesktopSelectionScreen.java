@@ -46,7 +46,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         this.topPos = (this.height - this.imageHeight) / 2;
 
         addSubmitButton(width / 2 + 90, (height) / 2 + 35);
-        addCancelButton(width / 2 - 11, (height) / 2 + 35);
+        addCancelButton(width / 2 + 40, (height) / 2 + 35);
 
         super.init();
     }

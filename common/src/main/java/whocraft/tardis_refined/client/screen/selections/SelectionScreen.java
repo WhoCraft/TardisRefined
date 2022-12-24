@@ -89,7 +89,7 @@ public class SelectionScreen extends Screen {
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         super.render(poseStack, i, j, f);
-        ScreenHelper.renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, 25, Color.LIGHT_GRAY.getRGB(), 300, true);
+        ScreenHelper.renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, height / 2 - 100, Color.LIGHT_GRAY.getRGB(), 300, true);
     }
 
 
