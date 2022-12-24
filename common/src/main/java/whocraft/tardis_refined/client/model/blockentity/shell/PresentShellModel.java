@@ -13,7 +13,7 @@ import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PresentShellModel extends IShellModel {
+public class PresentShellModel extends ShellModel {
 
 	private final ModelPart root;
 	private final ModelPart bone;
@@ -72,7 +72,7 @@ public class PresentShellModel extends IShellModel {
 
 		PartDefinition cube_r4 = bone4.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(81, 12).addBox(-2.0F, 0.0F, -4.0F, 10.0F, 4.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.0F, 0.0F, 0.0F, 0.0F, 0.0F, -0.5672F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}

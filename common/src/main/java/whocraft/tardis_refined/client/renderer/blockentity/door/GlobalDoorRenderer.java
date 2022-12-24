@@ -10,14 +10,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.*;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
-    private static IShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor, drifterModel, presentModel;
+    private static ShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor, drifterModel, presentModel, vendingModel, briefcaseModel, groeningModel;
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
@@ -26,6 +26,9 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         mysticDoor = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
         drifterModel = new DrifterDoorModel(context.bakeLayer((ModelRegistry.DRIFTER_DOOR)));
         presentModel = new PresentDoorModel(context.bakeLayer((ModelRegistry.PRESENT_DOOR)));
+        vendingModel = new VendingMachineDoorModel(context.bakeLayer((ModelRegistry.VENDING_DOOR)));
+        briefcaseModel = new BriefcaseDoorModel(context.bakeLayer((ModelRegistry.BRIEFCASE_DOOR)));
+        groeningModel = new GroeningDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)));
     }
 
     @Override
@@ -38,6 +41,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         ShellTheme theme = blockstate.getValue(GlobalDoorBlock.SHELL);
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
+
+        poseStack.translate(0, 0, -0.01);
 
         switch (theme) {
             default:
@@ -59,13 +64,20 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
                 currentModel = drifterModel;
                 break;
             case PRESENT:
-                poseStack.translate(0, 0, -0.01);
                 currentModel = presentModel;
+                break;
+            case VENDING:
+                currentModel = vendingModel;
+                break;
+            case BRIEFCASE:
+                currentModel = briefcaseModel;
+                break;
+             case GROENING:
+                currentModel = groeningModel;
                 break;
         }
 
         currentModel.setDoorPosition(isOpen);
-
         currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();

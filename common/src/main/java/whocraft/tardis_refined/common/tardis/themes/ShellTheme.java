@@ -11,9 +11,12 @@ public enum ShellTheme implements StringRepresentable, Theme {
     FACTORY("factory", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell_door.png")),
     POLICE_BOX("police_box", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_emissive.png")),
     PHONE_BOOTH("phone_booth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_emissive.png")),
-    MYSTIC("mystic", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_emmissive.png")),
+    MYSTIC("mystic", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_emissive.png")),
     PRESENT("present", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/present_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/present_shell_door.png")),
-    DRIFTER("drifter", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/drifter_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/drifter_shell_door.png"));
+    DRIFTER("drifter", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/drifter_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/drifter_shell_door.png")),
+    VENDING("vending", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/vending_machine_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/vending_machine_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/vending_machine_shell_emissive.png")),
+    BRIEFCASE("briefcase", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/briefcase_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/briefcase_shell_door.png")),
+    GROENING("groening", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell_door.png"));
 
 
     private final String id;

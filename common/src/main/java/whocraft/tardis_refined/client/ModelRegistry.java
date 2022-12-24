@@ -37,6 +37,9 @@ public class ModelRegistry {
     public static ModelLayerLocation MYSTIC_SHELL;
     public static ModelLayerLocation DRIFTER_SHELL;
     public static ModelLayerLocation PRESENT_SHELL;
+    public static ModelLayerLocation VENDING_SHELL;
+    public static ModelLayerLocation BRIEFCASE_SHELL;
+    public static ModelLayerLocation GROENING_SHELL;
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
     public static ModelLayerLocation FACTORY_DOOR;
@@ -45,6 +48,9 @@ public class ModelRegistry {
     public static ModelLayerLocation MYSTIC_DOOR;
     public static ModelLayerLocation DRIFTER_DOOR;
     public static ModelLayerLocation PRESENT_DOOR;
+    public static ModelLayerLocation VENDING_DOOR;
+    public static ModelLayerLocation BRIEFCASE_DOOR;
+    public static ModelLayerLocation GROENING_DOOR;
 
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
@@ -70,6 +76,9 @@ public class ModelRegistry {
         MYSTIC_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "mystic_shell"), "mystic_shell"), MysticShellModel::createBodyLayer);
         DRIFTER_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "drifter_shell"), "drifter_shell"), DrifterShellModel::createBodyLayer);
         PRESENT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "present_shell"), "present_shell"), PresentShellModel::createBodyLayer);
+        VENDING_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "vending_shell"), "vending_shell"), VendingMachineShellModel::createBodyLayer);
+        BRIEFCASE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "briefcase_shell"), "briefcase_shell"), BriefcaseShellModel::createBodyLayer);
+        GROENING_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_shell"), "groening_shell"), GroeningShellModel::createBodyLayer);
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
         FACTORY_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_door"), "factory_door"), FactoryDoorModel::createBodyLayer);
@@ -78,6 +87,9 @@ public class ModelRegistry {
         MYSTIC_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "mystic_door"), "mystic_door"), MysticDoorModel::createBodyLayer);
         DRIFTER_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "drifter_door"), "drifter_door"), DrifterDoorModel::createBodyLayer);
         PRESENT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "present_door"), "present_door"), PresentDoorModel::createBodyLayer);
+        VENDING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "vending_door"), "vending_door"), VendingMachineDoorModel::createBodyLayer);
+        BRIEFCASE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "briefcase_door"), "briefcase_door"), BriefcaseDoorModel::createBodyLayer);
+        GROENING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_door"), "groening_door"), GroeningDoorModel::createBodyLayer);
 
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);

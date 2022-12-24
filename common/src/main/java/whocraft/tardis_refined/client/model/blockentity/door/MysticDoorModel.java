@@ -2,17 +2,16 @@ package whocraft.tardis_refined.client.model.blockentity.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class MysticDoorModel extends IShellModel {
+public class MysticDoorModel extends ShellModel {
     private final ModelPart right_door;
     private final ModelPart left_door;
     private final ModelPart root;
@@ -58,7 +57,7 @@ public class MysticDoorModel extends IShellModel {
 
         PartDefinition bone5 = bone4.addOrReplaceChild("bone5", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
 
-        IShellModel.splice(partdefinition);
+        ShellModel.splice(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }

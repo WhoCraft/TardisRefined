@@ -3,17 +3,16 @@ package whocraft.tardis_refined.client.model.blockentity.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class FactoryDoorModel extends IShellModel {
+public class FactoryDoorModel extends ShellModel {
 
 	private final ModelPart root;
 	private final ModelPart leftDoor;
@@ -42,7 +41,7 @@ public class FactoryDoorModel extends IShellModel {
 
 		PartDefinition right_door = root.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(95, 81).addBox(-7.0F, -15.0F, -0.6F, 7.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, -20.0F, -5.6F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);

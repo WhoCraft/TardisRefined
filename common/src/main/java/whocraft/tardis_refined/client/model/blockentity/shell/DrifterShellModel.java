@@ -10,11 +10,10 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class DrifterShellModel extends IShellModel {
+public class DrifterShellModel extends ShellModel {
 
 	private final ModelPart root;
 	private final ModelPart door_closed;
@@ -164,7 +163,7 @@ public class DrifterShellModel extends IShellModel {
 
 		PartDefinition bone24 = bone23.addOrReplaceChild("bone24", CubeListBuilder.create().texOffs(79, 11).addBox(-1.0F, 0.0F, 0.0F, 1.0F, 9.0F, 12.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.5F, -13.0F, 1.1781F, 0.0F, 0.0F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}

@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.renderer.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -19,7 +18,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
 
-    private static IShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel;
+    private static ShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel;
 
     public GlobalShellRenderer(Context context) {
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
@@ -28,6 +27,9 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         mysticModel = new MysticShellModel(context.bakeLayer((ModelRegistry.MYSTIC_SHELL)));
         drifterModel = new DrifterShellModel(context.bakeLayer((ModelRegistry.DRIFTER_SHELL)));
         presentModel = new PresentShellModel(context.bakeLayer((ModelRegistry.PRESENT_SHELL)));
+        vendingModel = new VendingMachineShellModel(context.bakeLayer((ModelRegistry.VENDING_SHELL)));
+        briefcaseModel = new BriefcaseShellModel(context.bakeLayer((ModelRegistry.BRIEFCASE_SHELL)));
+        greoningModel = new GroeningShellModel(context.bakeLayer((ModelRegistry.GROENING_SHELL)));
     }
 
     @Override
@@ -73,6 +75,15 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             case PRESENT:
                 currentModel = presentModel;
                 break;
+            case VENDING:
+                currentModel = vendingModel;
+                break;
+            case BRIEFCASE:
+                currentModel = briefcaseModel;
+                break;
+            case GROENING:
+                currentModel = greoningModel;
+                break;
         }
 
 
@@ -84,7 +95,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
         } else {
             if (isRegenerating) {
-                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,sine);
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
             }
         }
 

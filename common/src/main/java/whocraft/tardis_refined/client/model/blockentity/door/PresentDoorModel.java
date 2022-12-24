@@ -10,10 +10,10 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 
-public class PresentDoorModel extends IShellModel {
+public class PresentDoorModel extends ShellModel {
 
 	private final ModelPart root;
 	private final ModelPart bone2;
@@ -45,7 +45,7 @@ public class PresentDoorModel extends IShellModel {
 		.texOffs(0, 0).addBox(-9.0F, -33.0F, 8.025F, 18.0F, 33.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(35, 45).mirror().addBox(8.0F, -33.0F, 7.0F, 1.0F, 33.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
