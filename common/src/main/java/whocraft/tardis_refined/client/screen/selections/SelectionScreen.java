@@ -49,19 +49,28 @@ public class SelectionScreen extends Screen {
             }));
         }
 
-        if(onCancel != null) {
-            this.cancelButton = this.addRenderableWidget(new ImageButton(width / 2 - 11, (height) / 2 + 35, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
-                this.onCancel.onPress();
-            }));
-        }
-
         list = createSelectionList();
 
         this.addRenderableWidget(list);
 
-
-
     }
+
+    public void addSubmitButton(int x, int y){
+        if(onSubmit != null) {
+            this.selectShellButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
+                this.onSubmit.onPress();
+            }));
+        }
+    }
+
+    public void addCancelButton(int x, int y){
+        if(onCancel != null) {
+            this.cancelButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
+                this.onCancel.onPress();
+            }));
+        }
+    }
+
 
     public ObjectSelectionList createSelectionList() {
         return null;

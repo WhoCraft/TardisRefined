@@ -45,6 +45,9 @@ public class DesktopSelectionScreen extends SelectionScreen {
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
 
+        addSubmitButton(width / 2 + 90, (height) / 2 + 35);
+        addCancelButton(width / 2 - 11, (height) / 2 + 35);
+
         super.init();
     }
 
@@ -73,7 +76,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, currentDesktopTheme.getTexture());
         poseStack.pushPose();
-        poseStack.translate(width / 2 + 10, height / 2 - 50, 0);
+        poseStack.translate(width / 2 - 85, height / 2 - 60, 0);
         poseStack.scale(0.2F, 0.2F, 0.2F);
         blit(poseStack, 0, 0, 0, 0, 400, 400, 400, 400);
         poseStack.popPose();
@@ -93,7 +96,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        var selectionList = new GenericMonitorSelectionList(this.minecraft, width / 2 - 100, height / 2 - 60, 50, 80, 12);
+        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 , height / 2 - 60, 150, 80, 12);
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 

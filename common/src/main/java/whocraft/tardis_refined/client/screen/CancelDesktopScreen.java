@@ -61,10 +61,10 @@ public class CancelDesktopScreen extends Screen {
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/chat_tags.png"));
-        blit(poseStack, width / 2 - minecraft.font.width(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE)) + 45, 90, 0, 0, 9, 9, 32, 32);
-        blit(poseStack, width / 2 + minecraft.font.width(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE)) - 55, 90, 0, 0, 9, 9, 32, 32);
+        blit(poseStack, width / 2 - minecraft.font.width(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE)) + 45, height / 2 -30, 0, 0, 9, 9, 32, 32);
+        blit(poseStack, width / 2 + minecraft.font.width(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE)) - 55, height / 2 -30, 0, 0, 9, 9, 32, 32);
 
-        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE).getString(), poseStack, Minecraft.getInstance().font, width / 2, 90, Color.LIGHT_GRAY.getRGB(), 300, true);
+        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE).getString(), poseStack, Minecraft.getInstance().font, width / 2, height / 2 -30, Color.LIGHT_GRAY.getRGB(), 300, true);
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION).getString(), poseStack, Minecraft.getInstance().font, width / 2, this.height / 2 - 20, Color.WHITE.getRGB(), 210, true);
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_DESKTOP).getString(), poseStack, Minecraft.getInstance().font, width / 2, this.height / 2 - 10, Color.WHITE.getRGB(), 210, true);
         super.render(poseStack, i, j, f);

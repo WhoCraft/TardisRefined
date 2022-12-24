@@ -33,7 +33,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     private int leftPos, topPos;
 
 
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/shell.png");
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
@@ -51,6 +51,9 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
+
+        addSubmitButton(width / 2 + 90, (height) / 2 + 35);
+        addCancelButton(width / 2 - 11, (height) / 2 + 35);
 
         super.init();
     }
