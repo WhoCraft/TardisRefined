@@ -28,6 +28,7 @@ import net.minecraft.world.level.storage.WorldData;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.SyncLevelListMessage;
+import whocraft.tardis_refined.mixin.fabric.MinecraftServerStorageAccessor;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -93,10 +94,12 @@ public class DimensionHandlerImpl {
     }
 
     public static Path getWorldSavingDirectory() {
-        MinecraftServer server = getServer();
-        return server.storageSource.getDimensionPath(Level.OVERWORLD);
+        return getStorage().getDimensionPath(Level.OVERWORLD);
     }
 
+    public static LevelStorageSource.LevelStorageAccess getStorage(){
+        return ((MinecraftServerStorageAccessor) getServer()).getStorageSource();
+    }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
@@ -110,7 +113,7 @@ public class DimensionHandlerImpl {
 
         ChunkProgressListener chunkListener = server.progressListenerFactory.create(11);
         Executor executor = server.executor;
-        LevelStorageSource.LevelStorageAccess levelSave = server.storageSource;
+        LevelStorageSource.LevelStorageAccess levelSave = getStorage();
 
 
         WorldData serverConfig = server.getWorldData();

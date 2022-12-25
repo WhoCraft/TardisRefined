@@ -2,17 +2,11 @@ package whocraft.tardis_refined.client.screen;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import whocraft.tardis_refined.ModMessages;
-import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
-import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.common.network.messages.CancelDesktopChangeMessage;
 
 import java.awt.*;

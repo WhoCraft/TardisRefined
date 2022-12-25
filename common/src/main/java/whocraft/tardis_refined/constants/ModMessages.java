@@ -1,4 +1,6 @@
-package whocraft.tardis_refined;
+package whocraft.tardis_refined.constants;
+
+import whocraft.tardis_refined.TardisRefined;
 
 public class ModMessages {
 
