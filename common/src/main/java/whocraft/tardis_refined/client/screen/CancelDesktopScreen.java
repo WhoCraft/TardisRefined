@@ -35,7 +35,7 @@ public class CancelDesktopScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        this.addRenderableWidget(new Button(this.width / 2 - (175/2) , this.height / 2 + 10, 175, 20, CommonComponents.GUI_CANCEL, (button) -> {
+        this.addRenderableWidget(new Button(this.width / 2 - (175/2) , this.height / 2 + 10, 175, 20, Component.translatable(ModMessages.UI_DESKTOP_CANCEL), (button) -> {
             new CancelDesktopChangeMessage(Minecraft.getInstance().player.getLevel().dimension()).send();
             Minecraft.getInstance().setScreen(null);
         }));

@@ -21,15 +21,15 @@ public class DesktopTheme {
         this.uiTexture = new ResourceLocation(location.getNamespace(), "textures/ui/interiors/" + id + ".png");
     }
 
-    public String getTranslationkey(){
+    public String getTranslationKey(){
         return ModMessages.desktop(id);
     }
 
     public Component getDisplayName() {
-        return Component.translatable(getTranslationkey());
+        return Component.translatable(getTranslationKey());
     }
 
-    public ResourceLocation getTexture(){
+    public ResourceLocation getPreviewTexture(){
         return uiTexture;
     }
 

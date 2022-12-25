@@ -74,7 +74,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         /*Render Interior Image*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, currentDesktopTheme.getTexture());
+        RenderSystem.setShaderTexture(0, currentDesktopTheme.getPreviewTexture());
         poseStack.pushPose();
         poseStack.translate(width / 2 - 85, height / 2 - 60, 0);
         poseStack.scale(0.2F, 0.2F, 0.2F);
