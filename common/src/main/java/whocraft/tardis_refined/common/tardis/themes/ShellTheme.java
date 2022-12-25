@@ -13,7 +13,6 @@ public enum ShellTheme implements StringRepresentable, Theme {
     PHONE_BOOTH("phone_booth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/phone_booth_shell_emissive.png")),
     MYSTIC("mystic", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/mystic_shell_emmissive.png"));
 
-
     private final String id;
     private final ResourceLocation externalShellTexture, internalDoorTexture;
     private ResourceLocation emmissiveExternal;

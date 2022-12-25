@@ -193,8 +193,12 @@ public class TardisLevelOperator {
     }
 
     public void setDoorClosed(boolean closeDoor) {
-        getExteriorManager().setDoorClosed(closeDoor);
-        getInternalDoor().setClosed(closeDoor);
+        if (getExteriorManager() != null) {
+            getExteriorManager().setDoorClosed(closeDoor);
+        }
+        if (getInternalDoor() != null) {
+            getInternalDoor().setClosed(closeDoor);
+        }
     }
 
     public void setShellTheme(ShellTheme theme) {
