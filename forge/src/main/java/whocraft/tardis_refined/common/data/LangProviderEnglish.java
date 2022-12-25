@@ -24,9 +24,9 @@ public class LangProviderEnglish extends LanguageProvider {
     protected void addTranslations() {
 
         /*Sounds*/
-        addSound(SoundRegistry.TARDIS_LAND.get(), "Tardis Lands");
-        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "Tardis Flys");
-        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "Tardis Take's off");
+        addSound(SoundRegistry.TARDIS_LAND.get(), "TARDIS Lands");
+        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "TARDIS Flys");
+        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "TARDIS Takes off");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
