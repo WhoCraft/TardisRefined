@@ -82,6 +82,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_DESKTOP_CANCEL_TITLE, "OPERATION IN PROGRESS");
         add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems disabled as a Desktop reconfiguration has been scheduled.");
         add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
+        add(ModMessages.UI_DESKTOP_CANCEL, "Cancel Desktop Reconfiguration");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY, "Factory");
@@ -114,7 +115,7 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addDesktopTheme(DesktopTheme desktopTheme, String translation) {
-        add(desktopTheme.getTranslationkey(), translation);
+        add(desktopTheme.getTranslationKey(), translation);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {

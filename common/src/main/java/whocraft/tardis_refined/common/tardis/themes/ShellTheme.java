@@ -18,7 +18,6 @@ public enum ShellTheme implements StringRepresentable, Theme {
     BRIEFCASE("briefcase", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/briefcase_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/briefcase_shell_door.png")),
     GROENING("groening", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell_door.png"));
 
-
     private final String id;
     private final ResourceLocation externalShellTexture, internalDoorTexture;
     private ResourceLocation emmissiveExternal;
