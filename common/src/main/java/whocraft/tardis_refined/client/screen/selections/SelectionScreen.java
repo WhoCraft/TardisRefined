@@ -6,14 +6,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
+import whocraft.tardis_refined.constants.ModMessages;
 
-import java.awt.Color;
+import java.awt.*;
 
 public class SelectionScreen extends Screen {
 

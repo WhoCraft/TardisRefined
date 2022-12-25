@@ -3,23 +3,19 @@ package whocraft.tardis_refined.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.constants.ModMessages;
 
-import java.awt.Color;
+import java.awt.*;
 
 
 public class MonitorScreen extends SelectionScreen {

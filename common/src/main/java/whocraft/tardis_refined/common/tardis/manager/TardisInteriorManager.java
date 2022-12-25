@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;

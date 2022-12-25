@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.NbtConstants;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;

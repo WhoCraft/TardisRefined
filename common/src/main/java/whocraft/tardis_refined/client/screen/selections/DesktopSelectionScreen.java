@@ -7,12 +7,12 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.List;
 
