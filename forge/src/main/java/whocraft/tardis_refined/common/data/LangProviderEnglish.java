@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
@@ -11,6 +12,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -20,6 +22,11 @@ public class LangProviderEnglish extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+
+        /*Sounds*/
+        addSound(SoundRegistry.TARDIS_LAND.get(), "Tardis Lands");
+        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "Tardis Flys");
+        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "Tardis Take's off");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -105,5 +112,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(desktopTheme.getTranslationkey(), translation);
     }
 
+    public void addSound(SoundEvent soundEvent, String lang) {
+        add("subtitle." + TardisRefined.MODID + "." + soundEvent.getLocation().getPath(), lang);
+    }
 
 }
