@@ -42,6 +42,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         ShellTheme theme = blockstate.getValue(GlobalDoorBlock.SHELL);
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
 
+        // Render slightly off the wall to prevent z-fighting.
         poseStack.translate(0, 0, -0.01);
 
         switch (theme) {
@@ -78,7 +79,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         }
 
         currentModel.setDoorPosition(isOpen);
-        currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getInternalDoorTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.texture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();
     }

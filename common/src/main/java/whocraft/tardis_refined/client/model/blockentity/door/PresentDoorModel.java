@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PresentDoorModel extends ShellModel {
 
@@ -75,7 +76,7 @@ public class PresentDoorModel extends ShellModel {
 
 	@Override
 	public ResourceLocation texture() {
-		return null;
+		return ShellTheme.PRESENT.getInternalDoorTexture();
 	}
 
 	@Override
