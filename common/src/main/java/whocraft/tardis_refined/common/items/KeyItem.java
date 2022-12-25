@@ -19,17 +19,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.ModMessages;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.LanguageProvider;
-import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;

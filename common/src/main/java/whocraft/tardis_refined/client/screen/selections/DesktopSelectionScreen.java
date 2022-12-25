@@ -3,7 +3,7 @@ package whocraft.tardis_refined.client.screen.selections;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;

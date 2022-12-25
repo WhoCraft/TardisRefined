@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 
 import java.awt.Color;

@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.constants.ModMessages;
 
 
 public class DesktopTheme {
