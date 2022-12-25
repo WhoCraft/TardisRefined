@@ -89,6 +89,11 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.POLICE_BOX, "Police Box");
         addShell(ShellTheme.PHONE_BOOTH, "Phone Booth");
         addShell(ShellTheme.MYSTIC, "Mystic");
+        addShell(ShellTheme.DRIFTER, "Drifter");
+        addShell(ShellTheme.PRESENT, "Present");
+        addShell(ShellTheme.BRIEFCASE, "Briefcase");
+        addShell(ShellTheme.GROENING, "Greoning");
+        addShell(ShellTheme.VENDING, "Vending Machine");
 
         /*Desktop Themes*/
         addDesktopTheme(TardisDesktops.CORAL_THEME, "Coral");

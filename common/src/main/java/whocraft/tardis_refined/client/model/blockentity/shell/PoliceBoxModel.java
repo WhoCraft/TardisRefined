@@ -5,16 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PoliceBoxModel extends IShellModel {
+public class PoliceBoxModel extends ShellModel {
 	private final ModelPart root;
 	private final ModelPart left_door;
 	private final ModelPart right_door;
@@ -116,7 +112,7 @@ public class PoliceBoxModel extends IShellModel {
 		.texOffs(32, 64).mirror().addBox(-0.5F, -31.5F, -10.75F, 1.0F, 30.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
 		.texOffs(0, 15).mirror().addBox(1.75F, -30.5F, -10.35F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}

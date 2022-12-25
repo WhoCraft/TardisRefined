@@ -18,13 +18,18 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
 
-    private static IShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel;
+    private static ShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel;
 
     public GlobalShellRenderer(Context context) {
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
         policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_SHELL)));
         phoneBoothModel = new PhoneBoothModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_SHELL)));
         mysticModel = new MysticShellModel(context.bakeLayer((ModelRegistry.MYSTIC_SHELL)));
+        drifterModel = new DrifterShellModel(context.bakeLayer((ModelRegistry.DRIFTER_SHELL)));
+        presentModel = new PresentShellModel(context.bakeLayer((ModelRegistry.PRESENT_SHELL)));
+        vendingModel = new VendingMachineShellModel(context.bakeLayer((ModelRegistry.VENDING_SHELL)));
+        briefcaseModel = new BriefcaseShellModel(context.bakeLayer((ModelRegistry.BRIEFCASE_SHELL)));
+        greoningModel = new GroeningShellModel(context.bakeLayer((ModelRegistry.GROENING_SHELL)));
     }
 
     @Override
@@ -32,7 +37,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         // Get the current factory shell.
 
         poseStack.pushPose();
-        poseStack.translate(0.5F, 1.475F, 0.5F);
+        poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
         BlockState blockstate = blockEntity.getBlockState();
@@ -78,12 +83,17 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         return new GlobalShellRenderer(context);
     }
 
-    public static IShellModel getModelForTheme(ShellTheme theme) {
+    public static ShellModel getModelForTheme(ShellTheme theme) {
         return switch (theme) {
             case PHONE_BOOTH -> phoneBoothModel;
             case POLICE_BOX -> policeBoxModel;
             case FACTORY -> factoryShellModel;
             case MYSTIC -> mysticModel;
+            case PRESENT -> presentModel;
+            case DRIFTER -> drifterModel;
+            case VENDING -> vendingModel;
+            case BRIEFCASE -> briefcaseModel;
+            case GROENING -> greoningModel;
         };
     }
 }
