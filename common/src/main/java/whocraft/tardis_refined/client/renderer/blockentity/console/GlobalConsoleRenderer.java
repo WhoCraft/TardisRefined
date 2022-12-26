@@ -69,10 +69,5 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     public BlockEntityRenderer<GlobalConsoleBlockEntity> create(BlockEntityRendererProvider.Context context) {
         return new GlobalConsoleRenderer(context);
     }
-
-    // This may be beneficial to refactor into a generic function in the model.
-    public void renderCrystalSpecifics(GlobalConsoleBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        BlockState blockstate = blockEntity.getBlockState();
-        //var model = shellModelCollection.getShellModel(theme);
-    }
+    
 }
