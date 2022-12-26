@@ -1,4 +1,6 @@
-package whocraft.tardis_refined;
+package whocraft.tardis_refined.constants;
+
+import whocraft.tardis_refined.TardisRefined;
 
 public class ModMessages {
 
@@ -14,6 +16,7 @@ public class ModMessages {
     /*UI Messages*/
     public static final String UI_DESKTOP_CANCEL_DESKTOP = ui("monitor.cancel_desktop");
     public static final String UI_DESKTOP_CANCEL_TITLE = ui("monitor.desktop_cancel.title");
+    public static final String UI_DESKTOP_CANCEL = ui("monitor.desktop_cancel");
     public static final String UI_DESKTOP_CANCEL_DESCRIPTION = ui("monitor.desktop_cancel_description");
     public static final String UI_EXTERNAL_SHELL = ui("monitor.external_shell");
     public static final String UI_LIST_SELECTION = ui("monitor.list.selection");

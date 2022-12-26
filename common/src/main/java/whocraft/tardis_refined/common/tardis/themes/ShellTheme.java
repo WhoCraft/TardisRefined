@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.tardis.themes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
-import whocraft.tardis_refined.ModMessages;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 
 public enum ShellTheme implements StringRepresentable, Theme {
@@ -17,7 +17,6 @@ public enum ShellTheme implements StringRepresentable, Theme {
     VENDING("vending", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/vending_machine_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/vending_machine_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/vending_machine_shell_emissive.png")),
     BRIEFCASE("briefcase", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/briefcase_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/briefcase_shell_door.png")),
     GROENING("groening", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell_door.png"));
-
 
     private final String id;
     private final ResourceLocation externalShellTexture, internalDoorTexture;

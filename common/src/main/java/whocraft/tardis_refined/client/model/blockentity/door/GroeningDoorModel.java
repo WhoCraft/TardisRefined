@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GroeningDoorModel extends ShellModel {
 
@@ -30,7 +31,7 @@ public class GroeningDoorModel extends ShellModel {
 
     @Override
     public ResourceLocation texture() {
-        return null;
+        return ShellTheme.GROENING.getInternalDoorTexture();
     }
 
     @Override
@@ -81,7 +82,7 @@ public class GroeningDoorModel extends ShellModel {
 
     @Override
     public ModelPart root() {
-        return null;
+        return root;
     }
 
     @Override

@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class VendingMachineDoorModel extends ShellModel {
 
@@ -59,7 +60,7 @@ public class VendingMachineDoorModel extends ShellModel {
 
     @Override
     public ResourceLocation texture() {
-        return null;
+        return ShellTheme.VENDING.getInternalDoorTexture();
     }
 
     @Override

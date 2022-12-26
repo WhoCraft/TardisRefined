@@ -54,37 +54,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             }
         }
 
-        switch (theme) {
-            case PHONE_BOOTH:
-                currentModel = phoneBoothModel;
-                break;
-            case POLICE_BOX:
-                currentModel = policeBoxModel;
-                poseStack.scale(1.05f, 1.05f, 1.05f);
-                poseStack.translate(0, -0.07, 0);
-                break;
-            case FACTORY:
-                currentModel = factoryShellModel;
-                break;
-            case MYSTIC:
-                currentModel = mysticModel;
-                break;
-            case DRIFTER:
-                currentModel = drifterModel;
-                break;
-            case PRESENT:
-                currentModel = presentModel;
-                break;
-            case VENDING:
-                currentModel = vendingModel;
-                break;
-            case BRIEFCASE:
-                currentModel = briefcaseModel;
-                break;
-            case GROENING:
-                currentModel = greoningModel;
-                break;
-        }
+        currentModel = getModelForTheme(theme);
 
 
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
@@ -111,5 +81,19 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
     @Override
     public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
         return new GlobalShellRenderer(context);
+    }
+
+    public static ShellModel getModelForTheme(ShellTheme theme) {
+        return switch (theme) {
+            case PHONE_BOOTH -> phoneBoothModel;
+            case POLICE_BOX -> policeBoxModel;
+            case FACTORY -> factoryShellModel;
+            case MYSTIC -> mysticModel;
+            case PRESENT -> presentModel;
+            case DRIFTER -> drifterModel;
+            case VENDING -> vendingModel;
+            case BRIEFCASE -> briefcaseModel;
+            case GROENING -> greoningModel;
+        };
     }
 }

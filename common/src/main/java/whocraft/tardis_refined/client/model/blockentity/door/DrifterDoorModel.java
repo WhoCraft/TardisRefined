@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class DrifterDoorModel extends ShellModel {
 
@@ -58,12 +59,11 @@ public class DrifterDoorModel extends ShellModel {
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
-		if (isDoorOpen) {
-			door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		} else {
-			door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		}
+		door_open.visible = isDoorOpen;
+		door_closed.visible = !isDoorOpen;
 
+		door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -84,7 +84,7 @@ public class DrifterDoorModel extends ShellModel {
 
 	@Override
 	public ResourceLocation texture() {
-		return null;
+		return ShellTheme.DRIFTER.getInternalDoorTexture();
 	}
 
 	@Override
