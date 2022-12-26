@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
@@ -75,7 +76,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-        ShellModel model = GlobalShellRenderer.getModelForTheme(currentShellTheme);
+        ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
 
 
         model.setDoorPosition(false);

@@ -18,18 +18,8 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
 
-    private static ShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel;
 
     public GlobalShellRenderer(Context context) {
-        factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
-        policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_SHELL)));
-        phoneBoothModel = new PhoneBoothModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_SHELL)));
-        mysticModel = new MysticShellModel(context.bakeLayer((ModelRegistry.MYSTIC_SHELL)));
-        drifterModel = new DrifterShellModel(context.bakeLayer((ModelRegistry.DRIFTER_SHELL)));
-        presentModel = new PresentShellModel(context.bakeLayer((ModelRegistry.PRESENT_SHELL)));
-        vendingModel = new VendingMachineShellModel(context.bakeLayer((ModelRegistry.VENDING_SHELL)));
-        briefcaseModel = new BriefcaseShellModel(context.bakeLayer((ModelRegistry.BRIEFCASE_SHELL)));
-        greoningModel = new GroeningShellModel(context.bakeLayer((ModelRegistry.GROENING_SHELL)));
     }
 
     @Override
@@ -54,7 +44,11 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             }
         }
 
-        currentModel = getModelForTheme(theme);
+        var currentModel = ShellModelCollection.getInstance().getShellModel(theme);
+        if (theme == ShellTheme.POLICE_BOX) {
+            poseStack.scale(1.05f, 1.05f, 1.05f);
+            poseStack.translate(0, -0.07, 0);
+        }
 
 
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
@@ -83,17 +77,5 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         return new GlobalShellRenderer(context);
     }
 
-    public static ShellModel getModelForTheme(ShellTheme theme) {
-        return switch (theme) {
-            case PHONE_BOOTH -> phoneBoothModel;
-            case POLICE_BOX -> policeBoxModel;
-            case FACTORY -> factoryShellModel;
-            case MYSTIC -> mysticModel;
-            case PRESENT -> presentModel;
-            case DRIFTER -> drifterModel;
-            case VENDING -> vendingModel;
-            case BRIEFCASE -> briefcaseModel;
-            case GROENING -> greoningModel;
-        };
-    }
+
 }

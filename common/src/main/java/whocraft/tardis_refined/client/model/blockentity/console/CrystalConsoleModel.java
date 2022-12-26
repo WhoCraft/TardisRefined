@@ -2,6 +2,11 @@ package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -10,22 +15,41 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
 public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
     private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal_console.png");
 
+    public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2f).looping()
+            .addAnimation("rotor",
+                    new AnimationChannel(AnimationChannel.Targets.POSITION,
+                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(1f, KeyframeAnimations.posVec(0f, -6f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM)))
+            .addAnimation("rotor",
+                    new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                            new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.LINEAR),
+                            new Keyframe(2f, KeyframeAnimations.degreeVec(0f, 90f, 0f),
+                                    AnimationChannel.Interpolations.LINEAR))).build();
+
     private final ModelPart base_control;
     private final ModelPart rotor;
     private final ModelPart controls;
     private final ModelPart root;
+    private final ModelPart throttle;
 
     public CrystalConsoleModel(ModelPart root) {
         this.root = root;
         this.base_control = root.getChild("base_control");
         this.rotor = root.getChild("rotor");
         this.controls = root.getChild("controls");
+        this.throttle = controls.getChild("north_left_side").getChild("large_lever_control_throttle");
     }
 
     @Override
@@ -34,6 +58,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
     }
 
     public static LayerDefinition createBodyLayer() {
+
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
@@ -414,8 +439,6 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         PartDefinition exterior_control = west.addOrReplaceChild("exterior_control", CubeListBuilder.create().texOffs(133, 103).addBox(1.0F, -24.0F, -14.4F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(140, 111).addBox(1.0F, -24.75F, -14.4F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 12.0F, 0.0F));
 
-        PartDefinition bone141 = exterior_control.addOrReplaceChild("bone141", CubeListBuilder.create().texOffs(143, 116).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5F, -27.75F, -12.9F, 0.0F, -0.48F, 0.0F));
-
         PartDefinition bone159 = west.addOrReplaceChild("bone159", CubeListBuilder.create().texOffs(76, 44).addBox(-2.0F, -1.0F, 8.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(99, 129).addBox(-7.0F, -0.5F, 1.0F, 2.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(21, 87).addBox(-6.5F, -1.875F, 1.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F))
@@ -569,11 +592,14 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         PartDefinition south = controls.addOrReplaceChild("south", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, 3.1416F, 0.0F));
 
         PartDefinition bone176 = south.addOrReplaceChild("bone176", CubeListBuilder.create().texOffs(105, 95).addBox(-1.0F, -3.25F, -1.0F, 2.0F, 1.0F, 11.0F, new CubeDeformation(0.0F))
-                .texOffs(105, 108).addBox(-1.5F, -3.75F, 0.0F, 3.0F, 2.0F, 7.0F, new CubeDeformation(0.0F))
                 .texOffs(36, 50).addBox(-1.5F, -6.9F, 9.0F, 3.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
 
         PartDefinition large_lever2_control = bone176.addOrReplaceChild("large_lever2_control", CubeListBuilder.create().texOffs(24, 131).addBox(0.15F, -2.5F, -0.5F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 0).addBox(2.35F, -2.5F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.75F, -6.9F, 10.0F, -0.8727F, 0.0F, 0.0F));
+
+        PartDefinition monitor_control = south.addOrReplaceChild("monitor_control", CubeListBuilder.create().texOffs(150, 96).addBox(-1.0F, -4.25F, -9.0F, 2.0F, 2.0F, 10.0F, new CubeDeformation(0.0F))
+                .texOffs(134, 79).addBox(-1.0F, -2.25F, -8.0F, 1.0F, 3.0F, 8.0F, new CubeDeformation(0.0F))
+                .texOffs(143, 91).addBox(-3.0F, -10.75F, -7.5F, 1.0F, 7.0F, 7.0F, new CubeDeformation(2.0F)), PartPose.offset(0.0F, -6.5F, -18.3F));
 
         PartDefinition south_right_side = controls.addOrReplaceChild("south_right_side", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -2.0944F, 0.0F));
 
@@ -622,6 +648,13 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
     @Override
     public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        root().getAllParts().forEach(ModelPart::resetPose);
+        TardisClientData reactions = TardisClientData.getInstance(level.dimension());
+
+        this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+        this.throttle.xRot = (reactions.isThrottleDown()) ? -25f: -32f;
+
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

@@ -63,7 +63,7 @@ public enum ShellTheme implements StringRepresentable, Theme {
 
     public static ShellTheme findOr(String id, ShellTheme shellTheme) {
         for (ShellTheme value : ShellTheme.values()) {
-            if (value.name().toLowerCase().matches(id)) {
+            if (value.name().toLowerCase().matches(id.toLowerCase())) {
                 return value;
             }
         }
