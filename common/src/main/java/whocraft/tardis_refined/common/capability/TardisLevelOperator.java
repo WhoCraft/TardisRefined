@@ -115,11 +115,18 @@ public class TardisLevelOperator {
             shouldSync = true;
         }
 
+        if (controlManager.getCurrentExteriorTheme() != tardisClientData.getShellTheme()) {
+            tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
+            shouldSync = true;
+        }
+
 
         // Synchronize the Tardis's data across the server
         if (shouldSync) {
             tardisClientData.sync(level);
-            tardisClientData.sync(getExteriorManager().getLastKnownLocation().level);
+            if (getExteriorManager().getLastKnownLocation() != null) {
+                tardisClientData.sync(getExteriorManager().getLastKnownLocation().level);
+            }
         }
     }
 

@@ -9,6 +9,7 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Map;
 
@@ -34,6 +35,8 @@ public class TardisClientData {
     private boolean throttleDown = false;
     private boolean isLanding = false;
     private boolean isTakingOff = false;
+    private ShellTheme shellTheme = ShellTheme.FACTORY;
+
     public void setFlying(boolean flying) {
         this.flying = flying;
     }
@@ -56,6 +59,9 @@ public class TardisClientData {
     public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
     public boolean isTakingOff() {return isTakingOff;}
 
+    public void setShellTheme(ShellTheme theme) {this.shellTheme = theme;}
+    public ShellTheme getShellTheme() {return shellTheme;}
+
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -69,6 +75,7 @@ public class TardisClientData {
         compoundTag.putBoolean("throttleDown", throttleDown);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
+        compoundTag.putString("shellTheme", String.valueOf(shellTheme));
         return compoundTag;
     }
 
@@ -83,6 +90,7 @@ public class TardisClientData {
         throttleDown = arg.getBoolean("throttleDown");
         isLanding = arg.getBoolean("isLanding");
         isTakingOff = arg.getBoolean("isTakingOff");
+        shellTheme = ShellTheme.findOr(arg.getString("shellTheme"), ShellTheme.FACTORY);
     }
 
     /**

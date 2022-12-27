@@ -20,6 +20,7 @@ public class TardisDesktops {
     public static final DesktopTheme CORAL_THEME = registerDesktop(new DesktopTheme("coral", new ResourceLocation(TardisRefined.MODID, "desktop/coral"), true));
     public static final DesktopTheme TOYOTA_THEME = registerDesktop(new DesktopTheme("toyota", new ResourceLocation(TardisRefined.MODID, "desktop/toyota"), true));
     public static final DesktopTheme COPPER = registerDesktop(new DesktopTheme("copper", new ResourceLocation(TardisRefined.MODID, "desktop/copper"), true));
+    public static final DesktopTheme CRYSTAL = registerDesktop(new DesktopTheme("crystal", new ResourceLocation(TardisRefined.MODID, "desktop/crystal"), true));
 
 
     public static DesktopTheme registerDesktop(DesktopTheme theme) {

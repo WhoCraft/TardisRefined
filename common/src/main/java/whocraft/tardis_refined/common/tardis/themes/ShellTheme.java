@@ -6,6 +6,8 @@ import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
 
+import java.util.Locale;
+
 public enum ShellTheme implements StringRepresentable, Theme {
 
     FACTORY("factory", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell_door.png")),
@@ -63,7 +65,7 @@ public enum ShellTheme implements StringRepresentable, Theme {
 
     public static ShellTheme findOr(String id, ShellTheme shellTheme) {
         for (ShellTheme value : ShellTheme.values()) {
-            if (value.name().toLowerCase().matches(id)) {
+            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
                 return value;
             }
         }

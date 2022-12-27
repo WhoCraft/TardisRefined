@@ -119,9 +119,11 @@ public class PoliceBoxModel extends ShellModel {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+		poseStack.scale(1.05f, 1.05f, 1.05f);
+		poseStack.translate(0, -0.07, 0);
+		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -141,7 +143,8 @@ public class PoliceBoxModel extends ShellModel {
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-
+		poseStack.scale(1.05f, 1.05f, 1.05f);
+		poseStack.translate(0, -0.07, 0);
 		handleAnimations(entity,frame,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
 		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());

@@ -29,12 +29,18 @@ public class TardisControlManager {
     private int ticksLanding = 0;
     private int ticksTakingOff = 0;
 
-    private int[] coordinateIncrements = new int[] {1,10,100,1000};
+    private int[] coordinateIncrements = new int[]{1, 10, 100, 1000};
     private int cordIncrementIndex = 0;
 
     private ShellTheme currentExteriorTheme;
-    public ShellTheme getCurrentExteriorTheme() {return this.currentExteriorTheme;}
-    public void setCurrentExteriorTheme(ShellTheme theme) {this.currentExteriorTheme = theme;}
+
+    public ShellTheme getCurrentExteriorTheme() {
+        return this.currentExteriorTheme;
+    }
+
+    public void setCurrentExteriorTheme(ShellTheme theme) {
+        this.currentExteriorTheme = theme;
+    }
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -44,6 +50,12 @@ public class TardisControlManager {
     public void loadData(CompoundTag tag) {
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
+
+        if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null) {
+            this.currentExteriorTheme = ShellTheme.valueOf(tag.getString(NbtConstants.CONTROL_CURRENT_EXT));
+        }
+
+
         if (this.targetLocation == null) {
             this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
         }
@@ -54,6 +66,9 @@ public class TardisControlManager {
 
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT, this.isInFlight);
+        if (this.currentExteriorTheme != null) {
+            tag.putString(NbtConstants.CONTROL_CURRENT_EXT, this.currentExteriorTheme.getSerializedName());
+        }
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
         }
@@ -94,7 +109,10 @@ public class TardisControlManager {
     public boolean isInFlight() {
         return this.isInFlight;
     }
-    public boolean isLanding() {return (ticksLanding > 0);}
+
+    public boolean isLanding() {
+        return (ticksLanding > 0);
+    }
 
     public TardisNavLocation getClosestValidPosition(TardisNavLocation location) {
         ServerLevel level = location.level;
@@ -104,7 +122,7 @@ public class TardisControlManager {
 
         // We need to be able to determine whether the position we're aiming for is a valid location.
 
-        boolean isTargetAir= level.getBlockState(currentScanPosition).is(Blocks.AIR);
+        boolean isTargetAir = level.getBlockState(currentScanPosition).is(Blocks.AIR);
 
         if (isTargetAir) {
             currentScanPosition = currentScanPosition.below();
@@ -126,6 +144,7 @@ public class TardisControlManager {
         }
 
     }
+
     private TardisNavLocation startScanUpwards(TardisNavLocation startingLocation) {
         TardisNavLocation solvedLocation = scanUpForPosition(startingLocation);
         if (solvedLocation != null) {
@@ -136,6 +155,7 @@ public class TardisControlManager {
         }
 
     }
+
     private TardisNavLocation scanDownForPosition(TardisNavLocation startingLocation) {
         ServerLevel level = startingLocation.level;
         BlockPos currentPos = startingLocation.position;
@@ -143,12 +163,11 @@ public class TardisControlManager {
         while (currentPos.getY() > level.getMinBuildHeight()) {
             if (level.getBlockState(currentPos).is(Blocks.AIR)) {
                 // Check if the Shell can be physically in the location.
-                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER)  && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
+                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
 
                     // Check that the facing location !!!!!
-                    Direction[] directions = new Direction[]{startingLocation.rotation,startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-                    for (Direction dir:
-                         directions) {
+                    Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+                    for (Direction dir : directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
                         if (level.getBlockState(basePos).is(Blocks.AIR) && level.getBlockState(basePos.above()).is(Blocks.AIR)) {
                             return new TardisNavLocation(currentPos, dir, level);
@@ -164,6 +183,7 @@ public class TardisControlManager {
 
         return null;
     }
+
     private TardisNavLocation scanUpForPosition(TardisNavLocation startingLocation) {
         ServerLevel level = startingLocation.level;
         BlockPos currentPos = startingLocation.position;
@@ -176,9 +196,8 @@ public class TardisControlManager {
 //
 
                     // Check that the facing location !!!!!
-                    Direction[] directions = new Direction[]{startingLocation.rotation,startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-                    for (Direction dir:
-                            directions) {
+                    Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+                    for (Direction dir : directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
                         if (level.getBlockState(basePos).is(Blocks.AIR) && level.getBlockState(basePos.above()).is(Blocks.AIR)) {
                             return new TardisNavLocation(currentPos, dir, level);
@@ -210,8 +229,11 @@ public class TardisControlManager {
         this.operator.getExteriorManager().setIsTakingOff(true);
 
     }
+
     public void endFlight() {
-        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {return;}
+        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {
+            return;
+        }
         this.ticksInFlight = 0;
         this.ticksLanding = 9 * 20;
 
@@ -248,18 +270,18 @@ public class TardisControlManager {
     }
 
     public void offsetTargetPositionX(float x) {
-        this.targetLocation.position = this.targetLocation.position.offset(x, 0,0);
+        this.targetLocation.position = this.targetLocation.position.offset(x, 0, 0);
     }
 
     public void offsetTargetPositionY(float y) {
-        this.targetLocation.position = this.targetLocation.position.offset(0, y,0);
+        this.targetLocation.position = this.targetLocation.position.offset(0, y, 0);
     }
 
     public void offsetTargetPositionZ(float z) {
-        this.targetLocation.position = this.targetLocation.position.offset(0, 0,z);
+        this.targetLocation.position = this.targetLocation.position.offset(0, 0, z);
     }
 
-    public TardisNavLocation getTargetLocation(){
+    public TardisNavLocation getTargetLocation() {
         return this.targetLocation;
     }
 
