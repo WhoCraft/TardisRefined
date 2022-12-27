@@ -65,7 +65,7 @@ public class NbtConstants {
         String dimension_path = tag.getString(prefix + NbtConstants.LOCATION_DIMENSION_PATH);
 
         if (dimension_modid != null && dimension_path != null) {
-            ServerLevel level = Platform.getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension_modid, dimension_path)));
+            ServerLevel level = operator.getLevel().getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension_modid, dimension_path)));
             if (level != null) {
                 return new TardisNavLocation(position, direction, level);
             }

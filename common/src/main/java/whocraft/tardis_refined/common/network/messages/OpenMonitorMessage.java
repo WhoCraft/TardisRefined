@@ -1,10 +1,12 @@
 package whocraft.tardis_refined.common.network.messages;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import org.jetbrains.annotations.NotNull;;
+import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.screen.CancelDesktopScreen;
 import whocraft.tardis_refined.client.screen.MonitorScreen;
 import whocraft.tardis_refined.common.network.MessageContext;
@@ -12,6 +14,8 @@ import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.Platform;
+
 
 public class OpenMonitorMessage extends MessageS2C {
 
@@ -56,15 +60,16 @@ public class OpenMonitorMessage extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
-        // Open the monitor.
+        handleScreens();
+    }
 
+    @Environment(EnvType.CLIENT)
+    private void handleScreens() {
+        // Open the monitor.
         if (this.desktopGenerating) {
             Minecraft.getInstance().setScreen(new CancelDesktopScreen());
         } else {
             Minecraft.getInstance().setScreen(new MonitorScreen(this.currentPos, this.currentDir, this.targetPos, this.targetDir));
         }
-
-
-
     }
 }
