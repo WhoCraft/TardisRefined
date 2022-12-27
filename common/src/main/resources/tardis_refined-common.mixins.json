@@ -3,7 +3,6 @@
   "minVersion": "0.8",
   "package": "whocraft.tardis_refined.mixins",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "tardis_refined.refmap.json",
   "mixins": [
   ],
   "client": [
