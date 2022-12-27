@@ -34,6 +34,8 @@ public class ModEvents {
             ServerLevel world = server.getLevel(Level.OVERWORLD);
             DimensionHandlerImpl.loadLevels(world);
         });
+
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());
     }
 
 }
