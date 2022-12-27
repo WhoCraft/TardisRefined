@@ -1,20 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "tardis_refined",
-  "version": "${version}",
-  "name": "TARDIS Refined",
-  "description": "TARDIS: Refined is a Minecraft mod based on the world of Doctor Who that adds a personal, teleporting base to the game. The mod explores the nature of the TARDIS and how it operates and expresses its personality. ",
-  "authors": [
-    "CommandrMoose",
-    "Suff99"
-  ],
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_authors}"],
   "contact": {
-    "sources": "https://github.com/CommandrMoose/TardisRefined",
-    "issues": "https://github.com/CommandrMoose/TardisRefined/issues",
-    "homepage": "https://github.com/CommandrMoose/TardisRefined"
+    "sources": "${display_url}",
+    "issues": "${issue_tracker_url}",
+    "homepage": "${homepage_url}"
   },
-  "license": "All-Rights-Reserved",
-  "icon": "tardis_refined.png",
+  "license": "${license}",
+  "icon": "${logo_file}",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -28,16 +25,17 @@
     ]
   },
   "mixins": [
-    "tardis_refined.mixins.json",
-    "tardis_refined-common.mixins.json"
+    "${mod_id}.mixins.json",
+    "${mod_id}-common.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.10",
-    "minecraft": ">=1.19.2"
+    "fabricloader": "${fabric_loader_version_range}",
+    "minecraft": "${fabric_minecraft_version_range}",
+    "fabric-api": "${fabric_version_range}"
   },
   "custom": {
     "cardinal-components": [
-      "tardis_refined:tardis_data"
+      "${mod_id}:tardis_data"
     ]
   }
 }

@@ -119,3 +119,6 @@ run/
 
 # Forge generated assets
 forge/src/generated
+/common/bin/
+/fabric/bin/main/
+/forge/bin/main/
