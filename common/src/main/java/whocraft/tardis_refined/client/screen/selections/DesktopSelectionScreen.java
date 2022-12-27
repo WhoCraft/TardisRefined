@@ -53,7 +53,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     private DesktopTheme grabDesktop() {
         for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
-            if(desktop.availableByDefault){
+            if (desktop.availableByDefault) {
                 return desktop;
             }
         }
@@ -96,17 +96,17 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 , height / 2 - 60, 150, 80, 12);
+        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2, height / 2 - 60, 150, 80, 12);
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
         for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
-            if(desktop.availableByDefault){
+            if (desktop.availableByDefault) {
                 selectionList.children().add(new GenericMonitorSelectionList.Entry(desktop.getDisplayName(), (entry) -> {
                     this.currentDesktopTheme = desktop;
 
                     for (Object child : selectionList.children()) {
-                        if(child instanceof GenericMonitorSelectionList.Entry current){
+                        if (child instanceof GenericMonitorSelectionList.Entry current) {
                             current.setChecked(false);
                         }
                     }

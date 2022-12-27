@@ -42,7 +42,7 @@ public class SelectionScreen extends Screen {
     protected void init() {
         super.init();
 
-        if(onSubmit != null) {
+        if (onSubmit != null) {
             this.selectShellButton = this.addRenderableWidget(new ImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
                 this.onSubmit.onPress();
             }));
@@ -54,22 +54,21 @@ public class SelectionScreen extends Screen {
 
     }
 
-    public void addSubmitButton(int x, int y){
-        if(onSubmit != null) {
+    public void addSubmitButton(int x, int y) {
+        if (onSubmit != null) {
             this.selectShellButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
                 this.onSubmit.onPress();
             }));
         }
     }
 
-    public void addCancelButton(int x, int y){
-        if(onCancel != null) {
+    public void addCancelButton(int x, int y) {
+        if (onCancel != null) {
             this.cancelButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
                 this.onCancel.onPress();
             }));
         }
     }
-
 
     public ObjectSelectionList createSelectionList() {
         return null;

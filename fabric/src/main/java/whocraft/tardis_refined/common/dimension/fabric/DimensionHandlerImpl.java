@@ -162,4 +162,7 @@ public class DimensionHandlerImpl {
         return newLevel;
     }
 
+    public static void clear() {
+        LEVELS.clear();
+    }
 }
