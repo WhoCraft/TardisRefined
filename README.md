@@ -14,7 +14,11 @@
          <td>Project lead and Developer</td> </tr>
       <tr>
          <td><a href="https://twitter.com/Suff1999">Suff</a></td>
-         <td>Code</td>
+         <td>Developer</td>
+      </tr>
+            <tr>
+         <td><a href="https://twitter.com/50ap5ud5">50ap5ud5</a></td>
+         <td>Developer</td>
       </tr>
 <tr><td><a href="https://twitter.com/MagicMrmann">MagicMan</a></td>
          <td>Art</td> </tr>
@@ -28,4 +32,4 @@
    </tbody>
 </table>
 
-With special thanks to 50ap5ud5, Commoble, and Lucraft.
+With special thanks to Commoble, and Lucraft.
