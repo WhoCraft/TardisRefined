@@ -45,11 +45,6 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
         var currentModel = ShellModelCollection.getInstance().getShellModel(theme);
-        if (theme == ShellTheme.POLICE_BOX) {
-            poseStack.scale(1.05f, 1.05f, 1.05f);
-            poseStack.translate(0, -0.07, 0);
-        }
-
 
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
