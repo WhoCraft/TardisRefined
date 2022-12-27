@@ -51,7 +51,7 @@ public class TardisControlManager {
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
 
-        if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null) {
+        if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null && !tag.getString(NbtConstants.CONTROL_CURRENT_EXT).isEmpty()) {
             this.currentExteriorTheme = ShellTheme.valueOf(tag.getString(NbtConstants.CONTROL_CURRENT_EXT));
         }
 
