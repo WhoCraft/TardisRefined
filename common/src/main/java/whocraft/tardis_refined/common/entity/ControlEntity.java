@@ -170,6 +170,11 @@ public class ControlEntity extends PathfinderMob {
     }
 
     @Override
+    protected void tickDeath() {
+        super.tickDeath();
+    }
+
+    @Override
     public void tick() {
         setNoAi(true);
 

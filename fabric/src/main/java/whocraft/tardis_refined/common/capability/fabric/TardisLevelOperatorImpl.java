@@ -10,7 +10,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import java.util.Objects;
 import java.util.Optional;
 
-public class TardisLevelOperatorImpl extends TardisLevelOperator implements ComponentV3, AutoSyncedComponent {
+public class TardisLevelOperatorImpl extends TardisLevelOperator implements ComponentV3 {
 
     public TardisLevelOperatorImpl(Level level) {
         super(level);

@@ -44,7 +44,6 @@ public class TardisControlManager {
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
-        this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
     }
 
     public void loadData(CompoundTag tag) {
@@ -56,8 +55,9 @@ public class TardisControlManager {
         }
 
 
+
         if (this.targetLocation == null) {
-            this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
+            this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, operator.getLevel().getServer().getLevel(Level.OVERWORLD));
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
@@ -79,6 +79,11 @@ public class TardisControlManager {
     }
 
     public void tick(Level level) {
+
+        if(targetLocation == null){
+            this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
+        }
+
         if (isInFlight) {
             ticksInFlight++;
 
