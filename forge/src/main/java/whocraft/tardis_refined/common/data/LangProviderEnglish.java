@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
@@ -11,6 +12,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -20,6 +22,11 @@ public class LangProviderEnglish extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
+
+        /*Sounds*/
+        addSound(SoundRegistry.TARDIS_LAND.get(), "TARDIS Lands");
+        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "TARDIS Flys");
+        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "TARDIS Takes off");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -75,12 +82,18 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_DESKTOP_CANCEL_TITLE, "OPERATION IN PROGRESS");
         add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems disabled as a Desktop reconfiguration has been scheduled.");
         add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
+        add(ModMessages.UI_DESKTOP_CANCEL, "Cancel Desktop Reconfiguration");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY, "Factory");
         addShell(ShellTheme.POLICE_BOX, "Police Box");
         addShell(ShellTheme.PHONE_BOOTH, "Phone Booth");
         addShell(ShellTheme.MYSTIC, "Mystic");
+        addShell(ShellTheme.DRIFTER, "Drifter");
+        addShell(ShellTheme.PRESENT, "Present");
+        addShell(ShellTheme.BRIEFCASE, "Briefcase");
+        addShell(ShellTheme.GROENING, "Greoning");
+        addShell(ShellTheme.VENDING, "Vending Machine");
 
         /*Desktop Themes*/
         addDesktopTheme(TardisDesktops.CORAL_THEME, "Coral");
@@ -102,8 +115,11 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addDesktopTheme(DesktopTheme desktopTheme, String translation) {
-        add(desktopTheme.getTranslationkey(), translation);
+        add(desktopTheme.getTranslationKey(), translation);
     }
 
+    public void addSound(SoundEvent soundEvent, String lang) {
+        add("subtitle." + TardisRefined.MODID + "." + soundEvent.getLocation().getPath(), lang);
+    }
 
 }

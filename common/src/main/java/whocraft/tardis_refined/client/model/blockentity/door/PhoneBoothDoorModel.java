@@ -3,17 +3,16 @@ package whocraft.tardis_refined.client.model.blockentity.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.IShellModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class PhoneBoothDoorModel extends IShellModel {
+public class PhoneBoothDoorModel extends ShellModel {
 
 	private final ModelPart Door2;
 	private final ModelPart bone5;
@@ -51,7 +50,7 @@ public class PhoneBoothDoorModel extends IShellModel {
 		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(40, 27).addBox(-8.5F, -40.0F, 7.225F, 17.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 79).addBox(-9.0F, -37.0F, 7.25F, 18.0F, 37.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		IShellModel.splice(partdefinition);
+		ShellModel.splice(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);

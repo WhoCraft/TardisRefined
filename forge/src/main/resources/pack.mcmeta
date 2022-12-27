@@ -1,8 +1,8 @@
 {
   "pack": {
-    "description": "tardis_refined resources",
-    "pack_format": 9,
-    "forge:resource_pack_format": 9,
-    "forge:data_pack_format": 10
+    "description": "${mod_name} resources",
+    "pack_format": ${pack_format},
+    "forge:resource_pack_format": ${forge_resource_pack_format},
+    "forge:data_pack_format": ${forge_data_pack_format}
   }
 }

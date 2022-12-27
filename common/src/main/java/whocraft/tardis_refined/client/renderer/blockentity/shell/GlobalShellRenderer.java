@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.renderer.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -19,13 +18,18 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
 
-    private static IShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel;
+    private static ShellModel currentModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel;
 
     public GlobalShellRenderer(Context context) {
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
         policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_SHELL)));
         phoneBoothModel = new PhoneBoothModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_SHELL)));
         mysticModel = new MysticShellModel(context.bakeLayer((ModelRegistry.MYSTIC_SHELL)));
+        drifterModel = new DrifterShellModel(context.bakeLayer((ModelRegistry.DRIFTER_SHELL)));
+        presentModel = new PresentShellModel(context.bakeLayer((ModelRegistry.PRESENT_SHELL)));
+        vendingModel = new VendingMachineShellModel(context.bakeLayer((ModelRegistry.VENDING_SHELL)));
+        briefcaseModel = new BriefcaseShellModel(context.bakeLayer((ModelRegistry.BRIEFCASE_SHELL)));
+        greoningModel = new GroeningShellModel(context.bakeLayer((ModelRegistry.GROENING_SHELL)));
     }
 
     @Override
@@ -33,7 +37,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         // Get the current factory shell.
 
         poseStack.pushPose();
-        poseStack.translate(0.5F, 1.475F, 0.5F);
+        poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
         BlockState blockstate = blockEntity.getBlockState();
@@ -50,22 +54,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             }
         }
 
-        switch (theme) {
-            case PHONE_BOOTH:
-                currentModel = phoneBoothModel;
-                break;
-            case POLICE_BOX:
-                currentModel = policeBoxModel;
-                poseStack.scale(1.05f, 1.05f, 1.05f);
-                poseStack.translate(0, -0.07, 0);
-                break;
-            case FACTORY:
-                currentModel = factoryShellModel;
-                break;
-            case MYSTIC:
-                currentModel = mysticModel;
-                break;
-        }
+        currentModel = getModelForTheme(theme);
 
 
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
@@ -76,7 +65,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
         } else {
             if (isRegenerating) {
-                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f,sine);
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
             }
         }
 
@@ -92,5 +81,19 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
     @Override
     public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
         return new GlobalShellRenderer(context);
+    }
+
+    public static ShellModel getModelForTheme(ShellTheme theme) {
+        return switch (theme) {
+            case PHONE_BOOTH -> phoneBoothModel;
+            case POLICE_BOX -> policeBoxModel;
+            case FACTORY -> factoryShellModel;
+            case MYSTIC -> mysticModel;
+            case PRESENT -> presentModel;
+            case DRIFTER -> drifterModel;
+            case VENDING -> vendingModel;
+            case BRIEFCASE -> briefcaseModel;
+            case GROENING -> greoningModel;
+        };
     }
 }

@@ -46,19 +46,45 @@ dependencies {
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
 
-    modImplementation "curse.maven:modmenu-308702:3920481"
-    modImplementation "curse.maven:jei-238222:4145220"
+    modImplementation "curse.maven:modmenu-308702:${rootProject.mod_menu_version}"
+    modImplementation "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
 
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }
 
+def resourceTargets = ["fabric.mod.json", "tardis_refined.mixins.json"]
+def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
+def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
+                         mod_authors: mod_authors, credits:credits, mod_description: mod_description,
+                         display_url:display_url, logo_file:logo_file,
+                         issue_tracker_url: issue_tracker_url,
+                         // update_json_url: update_json_url,
+                         homepage_url: homepage_url,
+                         license: license,
+                         fabric_version_range: fabric_version_range, fabric_minecraft_version_range: fabric_minecraft_version_range,
+                         fabric_loader_version_range: fabric_loader_version_range
+                         //,display_test_type: display_test_type
+]
 processResources {
-    inputs.property "version", project.version
+    inputs.properties replaceProperties
+    replaceProperties.put 'project', project
 
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
+
+    intoTargets.each { target ->
+        if (file(target).exists()) {
+            copy {
+                from(sourceSets.main.resources) {
+                    include resourceTargets
+                    expand replaceProperties
+                }
+                into target
+            }
+        }
     }
 }
 
