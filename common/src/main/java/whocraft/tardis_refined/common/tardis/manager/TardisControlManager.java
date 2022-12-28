@@ -246,7 +246,7 @@ public class TardisControlManager {
 
         TardisNavLocation location = null;
         while (location == null) {
-            location = getClosestValidPosition(new TardisNavLocation(landingLocation, targetLocation.rotation, operator.getExteriorManager().getLevel()));
+            location = getClosestValidPosition(new TardisNavLocation(landingLocation, targetLocation.rotation, targetLocation.level));
             if (location != null) {
                 break;
             } else {

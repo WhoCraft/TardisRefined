@@ -99,7 +99,7 @@ public class TardisExteriorManager {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);
+        if (lastKnownLocation != null) { lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);}
     }
 
     public void setDoorClosed(boolean closed) {
