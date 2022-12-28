@@ -201,7 +201,9 @@ public class TardisLevelOperator {
 
     public void setDoorClosed(boolean closeDoor) {
         if (getExteriorManager() != null) {
-            getExteriorManager().setDoorClosed(closeDoor);
+            if (getExteriorManager().getLastKnownLocation() != null) {
+                getExteriorManager().setDoorClosed(closeDoor);
+            }
         }
         if (getInternalDoor() != null) {
             getInternalDoor().setClosed(closeDoor);
