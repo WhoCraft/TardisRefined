@@ -4,9 +4,8 @@ import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistryV3;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.TardisRefined;
 
 public class TRComponents implements WorldComponentInitializer {
@@ -20,13 +19,11 @@ public class TRComponents implements WorldComponentInitializer {
      */
     @Override
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
-        // Register a dummy factory for the client environment
-        registry.register(TARDIS_DATA, TardisLevelOperatorDummy::new);
-
-        // Return immediately if the current environment is the client
-        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) return;
-
-        // Register the actual factory for all other environments
-        registry.register(TARDIS_DATA, TardisLevelOperatorImpl::new);
+        registry.register(TARDIS_DATA, level -> {
+            if (level instanceof ServerLevel serverLevel) {
+                return new TardisLevelOperatorImpl(serverLevel);
+            }
+            return new TardisLevelOperatorDummy(level);
+        });
     }
 }

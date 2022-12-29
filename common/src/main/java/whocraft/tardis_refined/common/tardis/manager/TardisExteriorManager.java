@@ -72,8 +72,9 @@ public class TardisExteriorManager {
 
     public CompoundTag saveData(CompoundTag tag) {
 
-        NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
-
+        if (this.lastKnownLocation != null) {
+            NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
+        }
         if (this.currentTheme != null) {
             tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());
         }
