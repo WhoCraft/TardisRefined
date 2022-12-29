@@ -31,7 +31,7 @@ public abstract class ShellModel extends HierarchicalModel {
     ModelPart fade_value;
 
     float initAlpha = 0;
-    float animationTimeMultiplier = 0.1f;
+    float ANIMATION_SPEED = 1.1f;
 
     public ShellModel(ModelPart root) {
         this.fade_value = root.getChild("fade_value");
@@ -62,11 +62,11 @@ public abstract class ShellModel extends HierarchicalModel {
 
 
         if (reactions.isLanding()) {
-            this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime);
+            this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime * ANIMATION_SPEED);
         }
 
         if (reactions.isTakingOff()) {
-            this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, reactions.takeOffTime);
+            this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, reactions.takeOffTime * ANIMATION_SPEED);
         }
 
         currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : baseAlpha;
