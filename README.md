@@ -38,12 +38,9 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
          <td>Console Builds</td> </tr>
          <tr><td><a href="https://twitter.com/JacobKauffman11">Jacob.K</a></td>
          <td>Console Builds</td> </tr>
-                  <tr><td>starray1000000</td>
-         <td>Additional Builds</td> </tr>
-
    </tbody>
 </table>
 
-With special thanks to Commoble, and Lucraft.<br/><hr/>
+With special thanks to starray1000000, Commoble, and Lucraft.<br/><hr/>
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
