@@ -138,8 +138,10 @@ public class TardisLevelOperator {
     public void enterTardis(IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
 
         if (!setUp) {
+
             this.interiorManager.generateDesktop(shell.getAssociatedTheme());
             this.getExteriorManager().setLastKnownLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
+            this.getControlManager().setTargetLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
             this.setUp = true;
         }
 

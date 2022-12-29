@@ -285,6 +285,7 @@ public class TardisInteriorManager {
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+
         }
     }
 
