@@ -33,7 +33,7 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
          <td>Developer</td>
       </tr>
 <tr><td><a href="https://twitter.com/MagicMrmann">MagicMan</a></td>
-         <td>Art</td> </tr>
+         <td>Art Lead</td> </tr>
 <tr><td><a href="https://twitter.com/ILikePandas18">ILikePandas</a></td>
          <td>Console Builds</td> </tr>
          <tr><td><a href="https://twitter.com/JacobKauffman11">Jacob.K</a></td>
