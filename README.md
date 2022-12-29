@@ -12,7 +12,7 @@ This repository has been set up to utilise Forge's data generation for most comm
 
 ## Contributions
 
-We welcome contributions to TARDIS Refined. If you have an idea for a new feature or have found a bug, please open an issue. If you would like to contribute code, please submit a pull request.
+We welcome contributions to TARDIS Refined. If you have an idea for a new feature or have found a bug, please open an issue. If you would like to contribute code, please submit a pull request. Please understand that the associated development team have set tasks and goals for the project, and PRs that include large additions/changes will be closely examined to determine if they meet the project's design.
 
 <table>
    <thead>
