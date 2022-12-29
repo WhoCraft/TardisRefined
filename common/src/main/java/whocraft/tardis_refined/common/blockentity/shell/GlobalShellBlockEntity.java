@@ -23,6 +23,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, id.toString());
             if (interior != null) {
                 TardisLevelOperator.get(interior).ifPresent(cap -> {
+                    if (cap.getControlManager().isInFlight()) {return;}
                     cap.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
                 });
             }
