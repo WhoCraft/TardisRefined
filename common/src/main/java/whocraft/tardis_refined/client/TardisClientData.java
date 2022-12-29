@@ -37,6 +37,8 @@ public class TardisClientData {
     private boolean isTakingOff = false;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
 
+    public int landingTime = 0, takeOffTime = 0;
+
     public void setFlying(boolean flying) {
         this.flying = flying;
     }
@@ -105,6 +107,19 @@ public class TardisClientData {
         TardisNetwork.NETWORK.sendToDimension(serverLevel, new SyncIntReactionsMessage(getLevelKey(), serializeNBT()));
     }
 
+    public void tickAnimations() {
+        if (isTakingOff()) {
+            takeOffTime++;
+            landingTime = 0;
+            return;
+        }
+
+        if (isLanding()) {
+            landingTime++;
+            takeOffTime = 0;
+        }
+    }
+
     /**
      * Updates the Tardis instance. This method is called manually from the SyncIntReactionsMessage message.
      */
@@ -113,8 +128,6 @@ public class TardisClientData {
         if (!flying && ROTOR_ANIMATION.isStarted()) {
             // If the Tardis is not flying but the rotor animation is started, stop the animation
             ROTOR_ANIMATION.stop();
-            LANDING_ANIMATION.updateTime(0,0);
-            TAKEOFF_ANIMATION.updateTime(0,0);
         }
 
         // Check if the Tardis is flying and the rotor animation is not started
@@ -174,6 +187,10 @@ public class TardisClientData {
         // If the map does not contain information about the Tardis, create a new TardisIntReactions instance and add it to the map
         DATA.put(levelResourceKey, new TardisClientData(levelResourceKey));
         return DATA.get(levelResourceKey);
+    }
+
+    public static Map<ResourceKey<Level>, TardisClientData> getAllEntries() {
+        return DATA;
     }
 
     /**

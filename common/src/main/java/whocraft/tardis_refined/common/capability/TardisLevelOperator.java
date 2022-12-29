@@ -108,6 +108,7 @@ public class TardisLevelOperator {
         if (exteriorManager.isLanding() != tardisClientData.isLanding()) {
             tardisClientData.setIsLanding(exteriorManager.isLanding());
             shouldSync = true;
+            System.out.println(tardisClientData.isLanding() + " " + exteriorManager.isLanding());
         }
 
         if (exteriorManager.isTakingOff() != tardisClientData.isTakingOff()) {

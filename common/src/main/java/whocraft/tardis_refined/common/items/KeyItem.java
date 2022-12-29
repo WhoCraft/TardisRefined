@@ -19,8 +19,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
@@ -121,33 +124,33 @@ public class KeyItem extends Item {
 
     // USED FOR DEVELOPMENT. ENSURE THIS IS NOT IN PRODUCTION.
 
-//    @Override
-//    public InteractionResult useOn(UseOnContext context) {
-//        if (context.getLevel() instanceof ServerLevel) {
-//
-//            if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
-//
-//                var keychain = keychain(context.getItemInHand());
-//                if (keychain.size() > 0) {
-//                    ResourceKey<Level> tardis = keychain.get(0);
-//                    var tardisLevel = Platform.getServer().levels.get(tardis);
-//                    TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-//                        if (cap.getControlManager().isInFlight()) {
-//                            cap.getControlManager().setTargetPosition(context.getClickedPos().above());
-//                            cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
-//                            cap.getControlManager().endFlight();
-//                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS LANDING", true);
-//                        } else {
-//                            cap.getControlManager().beginFlight();
-//                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS TAKING OFF", true);
-//                        }
-//                    });
-//                }
-//            }
-//        }
-//
-//        return super.useOn(context);
-//    }
+    @Override
+    public InteractionResult useOn(UseOnContext context) {
+        if (context.getLevel() instanceof ServerLevel) {
+
+            if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
+
+                var keychain = keychain(context.getItemInHand());
+                if (keychain.size() > 0) {
+                    ResourceKey<Level> tardis = keychain.get(0);
+                    var tardisLevel = Platform.getServer().levels.get(tardis);
+                    TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
+                        if (cap.getControlManager().isInFlight()) {
+                            cap.getControlManager().setTargetPosition(context.getClickedPos().above());
+                            cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
+                            cap.getControlManager().endFlight();
+                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS LANDING", true);
+                        } else {
+                            cap.getControlManager().beginFlight();
+                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS TAKING OFF", true);
+                        }
+                    });
+                }
+            }
+        }
+
+        return super.useOn(context);
+    }
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {

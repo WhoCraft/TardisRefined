@@ -8,7 +8,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -17,6 +16,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.UUID;
@@ -37,17 +37,28 @@ public class TardisExteriorManager {
     }
 
     public void setLocked(boolean locked) {
-        if (operator.getControlManager().isInFlight()) {return;}
+        if (operator.getControlManager().isInFlight()) {
+            return;
+        }
         this.locked = locked;
     }
 
     private boolean locked;
     private boolean isLanding;
-    public boolean isLanding() {return this.isLanding;}
+
+    public boolean isLanding() {
+        return this.isLanding;
+    }
 
     private boolean isTakingOff;
-    public boolean isTakingOff() {return this.isTakingOff;}
-    public void setIsTakingOff(boolean isTakingOff) {this.isTakingOff = isTakingOff; }
+
+    public boolean isTakingOff() {
+        return this.isTakingOff;
+    }
+
+    public void setIsTakingOff(boolean isTakingOff) {
+        this.isTakingOff = isTakingOff;
+    }
 
 
     public TardisExteriorManager(TardisLevelOperator operator) {
@@ -85,8 +96,7 @@ public class TardisExteriorManager {
     }
 
     public void loadData(CompoundTag tag) {
-        TardisNavLocation location = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
-        this.lastKnownLocation = location;
+        this.lastKnownLocation = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
 
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
             this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);
@@ -96,7 +106,9 @@ public class TardisExteriorManager {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        if (lastKnownLocation != null) { lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);}
+        if (lastKnownLocation != null) {
+            lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);
+        }
     }
 
     public void setDoorClosed(boolean closed) {
@@ -144,6 +156,7 @@ public class TardisExteriorManager {
 
     public void removeExteriorBlock() {
         this.isLanding = false;
+        System.out.println(isLanding);
         if (lastKnownLocation != null) {
             if (lastKnownLocation.level.getBlockState(lastKnownLocation.position).getBlock() instanceof GlobalShellBlock shellBlock) {
                 lastKnownLocation.level.setBlockAndUpdate(lastKnownLocation.position, Blocks.AIR.defaultBlockState());

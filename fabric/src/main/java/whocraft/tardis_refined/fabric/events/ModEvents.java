@@ -1,14 +1,13 @@
 package whocraft.tardis_refined.fabric.events;
 
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
@@ -20,7 +19,7 @@ import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.START_
 
 public class ModEvents {
 
-    public static void addEvents() {
+    public static void addCommonEvents() {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
 
@@ -36,6 +35,16 @@ public class ModEvents {
         });
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());
+    }
+
+    public static void addClientEvents() {
+        ClientTickEvents.START_WORLD_TICK.register(world -> {
+            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickAnimations());
+
+            if (Minecraft.getInstance().level == null) {
+                TardisClientData.clearAll();
+            }
+        });
     }
 
 }
