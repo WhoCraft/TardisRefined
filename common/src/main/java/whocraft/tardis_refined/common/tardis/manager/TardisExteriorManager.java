@@ -36,9 +36,9 @@ public class TardisExteriorManager {
         return locked;
     }
 
-    public TardisExteriorManager setLocked(boolean locked) {
+    public void setLocked(boolean locked) {
+        if (operator.getControlManager().isInFlight()) {return;}
         this.locked = locked;
-        return this;
     }
 
     private boolean locked;
@@ -72,9 +72,7 @@ public class TardisExteriorManager {
 
     public CompoundTag saveData(CompoundTag tag) {
 
-        if (this.lastKnownLocation != null) {
-            NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
-        }
+        NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
 
         if (this.currentTheme != null) {
             tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());
@@ -87,9 +85,7 @@ public class TardisExteriorManager {
 
     public void loadData(CompoundTag tag) {
         TardisNavLocation location = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
-        if (location != null) {
-            this.lastKnownLocation = location;
-        }
+        this.lastKnownLocation = location;
 
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
             this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);

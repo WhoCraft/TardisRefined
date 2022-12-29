@@ -81,7 +81,13 @@ public class TardisControlManager {
     public void tick(Level level) {
 
         if(targetLocation == null){
-            this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, Platform.getServer().getLevel(Level.OVERWORLD));
+            var location = this.operator.getExteriorManager().getLastKnownLocation();
+            if (targetLocation != null) {
+                this.targetLocation = location;
+            } else {
+                this.targetLocation = new TardisNavLocation(new BlockPos(0, 100, 0), Direction.NORTH, Platform.getServer().overworld());
+            }
+
         }
 
         if (isInFlight) {
@@ -123,10 +129,7 @@ public class TardisControlManager {
         ServerLevel level = location.level;
         BlockPos currentScanPosition = location.position;
 
-        System.out.println("Starting by checking for flight at: " + location.position.toShortString());
-
         // We need to be able to determine whether the position we're aiming for is a valid location.
-
         boolean isTargetAir = level.getBlockState(currentScanPosition).is(Blocks.AIR);
 
         if (isTargetAir) {
@@ -197,8 +200,6 @@ public class TardisControlManager {
             if (level.getBlockState(currentPos).is(Blocks.AIR)) {
                 // Check if the Shell can be physically in the location.
                 if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
-
-//
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
@@ -288,6 +289,9 @@ public class TardisControlManager {
 
     public TardisNavLocation getTargetLocation() {
         return this.targetLocation;
+    }
+    public void setTargetLocation(TardisNavLocation targetLocation) {
+        this.targetLocation = targetLocation;
     }
 
     public void setTargetPosition(BlockPos pos) {
