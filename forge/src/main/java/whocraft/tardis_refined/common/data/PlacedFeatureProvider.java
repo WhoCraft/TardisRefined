@@ -32,7 +32,7 @@ public class PlacedFeatureProvider {
         //Workaround for not being able to find Configured features since we don't register them by code
         final Holder<ConfiguredFeature<?,?>> rootClusterHolder = Holder.direct(ConfiguredFeatureProvider.FEATURES.get(FeatureKeys.TARDIS_ROOT_CLUSTER_RL));
         final PlacedFeature rootClusterPlacedFeature = new PlacedFeature(rootClusterHolder, List.of(
-                RarityFilter.onAverageOnceEvery(15), //Chance to place
+                RarityFilter.onAverageOnceEvery(8), //Chance to place
                 InSquarePlacement.spread(), //In square
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20)))); //Between y level -50 and 20 (absolute values)
         FEATURES.put(FeatureKeys.TARDIS_ROOT_CLUSTER_RL, rootClusterPlacedFeature);
