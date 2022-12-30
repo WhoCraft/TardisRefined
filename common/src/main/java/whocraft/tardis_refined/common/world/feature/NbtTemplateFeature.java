@@ -1,12 +1,15 @@
 package whocraft.tardis_refined.common.world.feature;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
+import net.minecraft.world.level.levelgen.structure.templatesystem.BlockIgnoreProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -19,7 +22,8 @@ import java.util.Optional;
  * */
 public class NbtTemplateFeature extends Feature<NbtTemplateFeatureConfig> {
 
-    private final StructurePlaceSettings placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setIgnoreEntities(false);
+    private final BlockIgnoreProcessor IGNORE_STRUCTURE_VOID = new BlockIgnoreProcessor(ImmutableList.of(Blocks.STRUCTURE_VOID));
+    private final StructurePlaceSettings placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).addProcessor(IGNORE_STRUCTURE_VOID).setIgnoreEntities(false);
 
     public NbtTemplateFeature() {
         super(NbtTemplateFeatureConfig.CODEC);
