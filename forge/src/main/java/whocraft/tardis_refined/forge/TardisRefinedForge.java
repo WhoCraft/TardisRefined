@@ -43,6 +43,4 @@ public class TardisRefinedForge {
         BiomeModifierProvider.genBiomeModifiers(e);
 
     }
-
-
 }
