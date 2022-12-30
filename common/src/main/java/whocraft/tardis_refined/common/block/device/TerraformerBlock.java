@@ -1,15 +1,11 @@
 package whocraft.tardis_refined.common.block.device;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -17,8 +13,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -27,8 +21,6 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
-import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static net.minecraft.world.phys.shapes.BooleanOp.OR;
@@ -110,11 +102,6 @@ public class TerraformerBlock extends Block {
                 blockState.setValue(ACTIVE, false);
             }
         }
-    }
-
-    @Override
-    public List<ItemStack> getDrops(BlockState blockState, LootContext.Builder builder) {
-        return super.getDrops(blockState, builder);
     }
 
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
