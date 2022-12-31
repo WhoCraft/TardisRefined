@@ -10,10 +10,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -21,6 +19,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -28,17 +28,18 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 
-public abstract class ShellBaseBlock extends BaseEntityBlock {
+public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty REGEN = BooleanProperty.create("regen");
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
 
     public ShellBaseBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false).setValue(REGEN, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false).setValue(REGEN, false).setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -57,13 +58,15 @@ public abstract class ShellBaseBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING, OPEN, REGEN, LOCKED);
+        builder.add(FACING, OPEN, REGEN, LOCKED, WATERLOGGED);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false).setValue(REGEN, false);
+        FluidState fluidState = blockPlaceContext.getLevel().getFluidState(blockPlaceContext.getClickedPos());
+        boolean waterlogged = fluidState.getType() == Fluids.WATER;
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false).setValue(REGEN, false).setValue(WATERLOGGED, waterlogged);
     }
 
     @Override
@@ -99,6 +102,19 @@ public abstract class ShellBaseBlock extends BaseEntityBlock {
                 shellEntity.onAttemptEnter(blockState, level, shellEntity.getBlockPos(), player);
             }
         }
+    }
+
+    @Override
+    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+        if (blockState.getValue(WATERLOGGED)){
+            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+        }
+        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+    }
+
+    @Override
+    public FluidState getFluidState(BlockState blockState) {
+        return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
     }
 
     static {

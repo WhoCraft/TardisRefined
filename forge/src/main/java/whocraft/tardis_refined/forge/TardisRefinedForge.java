@@ -33,5 +33,14 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator, existingFileHelper));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator));
         generator.addProvider(e.includeServer(), new RecipeProvider(generator));
+
+        //Tags
+        generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator, existingFileHelper));
+
+        //World Gen
+        ConfiguredFeatureProvider.genConfiguredFeatures(e);
+        PlacedFeatureProvider.genPlacedFeatures(e);
+        BiomeModifierProvider.genBiomeModifiers(e);
+
     }
 }

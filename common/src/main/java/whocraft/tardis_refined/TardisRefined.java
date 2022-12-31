@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
+import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
@@ -23,6 +24,8 @@ public class TardisRefined {
         BlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
         DimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
+        Features.FEATURES.register();
+        TagKeys.init();
         TardisNetwork.init();
     }
 }
