@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -167,7 +168,7 @@ public class TardisExteriorManager {
 
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
-        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getBlock() == Blocks.WATER);
+        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getFluidState() == Fluids.WATER.defaultFluidState());
 
         var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
