@@ -10,7 +10,7 @@ public class TardisRefinedFabric implements ModInitializer {
     @Override
     public void onInitialize() {
         PlatformImpl.init();
-        ModEvents.addEvents();
+        ModEvents.addCommonEvents();
         TardisRefined.init();
         setupBiomeModifications();
     }

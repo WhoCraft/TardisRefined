@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.constants.NbtConstants;
+import net.minecraft.world.level.material.Fluids;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -17,6 +17,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.UUID;
@@ -37,17 +38,28 @@ public class TardisExteriorManager {
     }
 
     public void setLocked(boolean locked) {
-        if (operator.getControlManager().isInFlight()) {return;}
+        if (operator.getControlManager().isInFlight()) {
+            return;
+        }
         this.locked = locked;
     }
 
     private boolean locked;
     private boolean isLanding;
-    public boolean isLanding() {return this.isLanding;}
+
+    public boolean isLanding() {
+        return this.isLanding;
+    }
 
     private boolean isTakingOff;
-    public boolean isTakingOff() {return this.isTakingOff;}
-    public void setIsTakingOff(boolean isTakingOff) {this.isTakingOff = isTakingOff; }
+
+    public boolean isTakingOff() {
+        return this.isTakingOff;
+    }
+
+    public void setIsTakingOff(boolean isTakingOff) {
+        this.isTakingOff = isTakingOff;
+    }
 
 
     public TardisExteriorManager(TardisLevelOperator operator) {
@@ -85,8 +97,7 @@ public class TardisExteriorManager {
     }
 
     public void loadData(CompoundTag tag) {
-        TardisNavLocation location = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
-        this.lastKnownLocation = location;
+        this.lastKnownLocation = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
 
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
             this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);
@@ -96,7 +107,9 @@ public class TardisExteriorManager {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        if (lastKnownLocation != null) { lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);}
+        if (lastKnownLocation != null) {
+            lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);
+        }
     }
 
     public void setDoorClosed(boolean closed) {
@@ -126,7 +139,7 @@ public class TardisExteriorManager {
 
                 var shellBlockEntity = lastKnownLocation.level.getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
-                    entity.id = UUID.fromString((operator.getLevel().dimension().location().getPath()));
+                    entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     entity.setChanged();
                 }
             }
@@ -155,13 +168,18 @@ public class TardisExteriorManager {
 
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
-        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getBlock() == Blocks.WATER);
+        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getFluidState() == Fluids.WATER.defaultFluidState());
 
-        location.level.setBlockAndUpdate(location.position, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
-                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged));
+        var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
+                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
 
-        GlobalShellBlockEntity shell = (GlobalShellBlockEntity) location.level.getBlockEntity(location.position);
-        shell.id = UUID.fromString(operator.getLevel().dimension().location().getPath());
+        location.level.setBlock(location.position, blockState, 2);
+
+        if (location.level.getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
+            var uuid = UUID.fromString(operator.getLevel().dimension().location().getPath());
+            globalShell.TARDIS_ID = uuid;
+            location.level.sendBlockUpdated(location.position, blockState, blockState, 2);
+        }
 
         this.lastKnownLocation = location;
         this.isLanding = true;

@@ -47,4 +47,5 @@ public class ClientModBus {
         EntityRenderers.register(EntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
     }
 
+
 }

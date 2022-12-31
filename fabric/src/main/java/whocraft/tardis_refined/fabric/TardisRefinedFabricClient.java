@@ -18,6 +18,7 @@ import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
+import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
@@ -30,6 +31,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         establishBlockEntityRenderers();
         registerEntityRenderers();
         ModelRegistry.init();
+        ModEvents.addClientEvents();
     }
 
     private void establishBlockEntityRenderers() {

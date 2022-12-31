@@ -13,6 +13,9 @@ loom {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
+        mixinConfig "tardis_refined-common.mixins.json"
+        mixinConfig "tardis_refined.mixins.json"
+
         dataGen {
             mod "${mod_id}"
         }

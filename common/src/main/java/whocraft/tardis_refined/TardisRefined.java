@@ -10,6 +10,10 @@ import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
+
+    // DEBUG DEV STUFF THAT MUST BE DISABLED FOR PROD
+    public static final boolean KeySummonsItem = false;
+
     public static final String MODID = "tardis_refined";
     public static final String PLATFORM_ERROR = "Something has gone critically wrong with platform definitions. Please contact the mod author.";
 

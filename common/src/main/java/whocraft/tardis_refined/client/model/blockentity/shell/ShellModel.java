@@ -31,7 +31,7 @@ public abstract class ShellModel extends HierarchicalModel {
     ModelPart fade_value;
 
     float initAlpha = 0;
-    float animationTimeMultiplier = 0.1f;
+    float ANIMATION_SPEED = 1.1f;
 
     public ShellModel(ModelPart root) {
         this.fade_value = root.getChild("fade_value");
@@ -46,35 +46,26 @@ public abstract class ShellModel extends HierarchicalModel {
         return fade_value;
     }
 
-    private float landingTime = 0;
-    private float takingOffTime = 0;
     private float currentAlpha = 0;
-    public float getCurrentAlpha() {return currentAlpha;}
 
-    public void handleAnimations(GlobalShellBlockEntity entity,ModelPart root, boolean isBaseModel, boolean isDoorOpen, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
+    public float getCurrentAlpha() {
+        return currentAlpha;
+    }
 
-        if (entity.id == null) return;
+    public void handleAnimations(GlobalShellBlockEntity entity, ModelPart root, boolean isBaseModel, boolean isDoorOpen, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
+
+        if (entity.TARDIS_ID == null) return;
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
+        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
 
         setDoorPosition(isDoorOpen);
 
-
         if (reactions.isLanding()) {
-            this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, landingTime * animationTimeMultiplier);
-            if (isBaseModel) {
-                landingTime++;
-            }
-        } else {
-            landingTime = 0;
+            this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime * ANIMATION_SPEED);
         }
+
         if (reactions.isTakingOff()) {
-            this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, takingOffTime * animationTimeMultiplier);
-            if (isBaseModel) {
-                takingOffTime++;
-            }
-        } else {
-            takingOffTime = 0;
+            this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, reactions.takeOffTime * ANIMATION_SPEED);
         }
 
         currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : baseAlpha;
@@ -106,7 +97,7 @@ public abstract class ShellModel extends HierarchicalModel {
                                     AnimationChannel.Interpolations.CATMULLROM),
                             new Keyframe(8f, KeyframeAnimations.posVec(0f, 2f, 0f),
                                     AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(11f, KeyframeAnimations.posVec(0f, 10f, 0f),
+                            new Keyframe(9.5F, KeyframeAnimations.posVec(0f, 10f, 0f),
                                     AnimationChannel.Interpolations.LINEAR))).build();
 
     public static final AnimationDefinition MODEL_TAKEOFF = AnimationDefinition.Builder.withLength(12f)

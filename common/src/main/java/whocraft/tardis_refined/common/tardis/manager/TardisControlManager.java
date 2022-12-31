@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -27,6 +29,7 @@ public class TardisControlManager {
     private boolean isInFlight = false;
     private int ticksInFlight = 0;
     private int ticksLanding = 0;
+    private int TICKS_LANDING_MAX = 9 * 20;
     private int ticksTakingOff = 0;
 
     private int[] coordinateIncrements = new int[]{1, 10, 100, 1000};
@@ -51,7 +54,7 @@ public class TardisControlManager {
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
 
         if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null && !tag.getString(NbtConstants.CONTROL_CURRENT_EXT).isEmpty()) {
-            this.currentExteriorTheme = ShellTheme.valueOf(tag.getString(NbtConstants.CONTROL_CURRENT_EXT));
+            this.currentExteriorTheme = ShellTheme.findOr(tag.getString(NbtConstants.CONTROL_CURRENT_EXT), ShellTheme.FACTORY);
         }
 
 
@@ -113,7 +116,6 @@ public class TardisControlManager {
                 operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 1000f, 1f);
             }
         }
-
 
     }
 
@@ -241,7 +243,7 @@ public class TardisControlManager {
             return;
         }
         this.ticksInFlight = 0;
-        this.ticksLanding = 9 * 20;
+        this.ticksLanding = TICKS_LANDING_MAX;
 
         BlockPos landingLocation = this.targetLocation.position;
 
