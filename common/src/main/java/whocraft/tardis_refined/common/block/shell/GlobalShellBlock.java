@@ -14,8 +14,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
@@ -69,7 +67,7 @@ public class GlobalShellBlock extends ShellBaseBlock{
                     ItemStack itemStack = player.getItemInHand(interactionHand);
                     if (itemStack.getItem() instanceof KeyItem) {
 
-                        ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString()));
+                        ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString()));
 
                         boolean validKey = KeyItem.keychainContains(itemStack, dimension);
                         if (validKey) {

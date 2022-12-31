@@ -54,12 +54,11 @@ public abstract class ShellModel extends HierarchicalModel {
 
     public void handleAnimations(GlobalShellBlockEntity entity, ModelPart root, boolean isBaseModel, boolean isDoorOpen, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
 
-        if (entity.id == null) return;
+        if (entity.TARDIS_ID == null) return;
         this.root().getAllParts().forEach(ModelPart::resetPose);
-        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.id.toString())));
+        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
 
         setDoorPosition(isDoorOpen);
-
 
         if (reactions.isLanding()) {
             this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime * ANIMATION_SPEED);

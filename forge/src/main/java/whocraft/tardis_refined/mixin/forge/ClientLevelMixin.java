@@ -13,7 +13,7 @@ public class ClientLevelMixin {
 
     @Inject(method = "tickEntities", at = @At("HEAD"))
     private void startWorldTick(CallbackInfo ci) {
-        TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickAnimations());
+        TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
 
         if (Minecraft.getInstance().level == null) {
             TardisClientData.clearAll();

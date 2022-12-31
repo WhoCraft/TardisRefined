@@ -4,7 +4,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -39,7 +38,7 @@ public class ModEvents {
 
     public static void addClientEvents() {
         ClientTickEvents.START_WORLD_TICK.register(world -> {
-            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickAnimations());
+            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
 
             if (Minecraft.getInstance().level == null) {
                 TardisClientData.clearAll();

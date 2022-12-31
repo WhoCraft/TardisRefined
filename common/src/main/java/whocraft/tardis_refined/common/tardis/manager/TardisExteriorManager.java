@@ -138,7 +138,7 @@ public class TardisExteriorManager {
 
                 var shellBlockEntity = lastKnownLocation.level.getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
-                    entity.id = UUID.fromString((operator.getLevel().dimension().location().getPath()));
+                    entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     entity.setChanged();
                 }
             }
@@ -156,7 +156,6 @@ public class TardisExteriorManager {
 
     public void removeExteriorBlock() {
         this.isLanding = false;
-        System.out.println(isLanding);
         if (lastKnownLocation != null) {
             if (lastKnownLocation.level.getBlockState(lastKnownLocation.position).getBlock() instanceof GlobalShellBlock shellBlock) {
                 lastKnownLocation.level.setBlockAndUpdate(lastKnownLocation.position, Blocks.AIR.defaultBlockState());
@@ -167,12 +166,16 @@ public class TardisExteriorManager {
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
 
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
+        var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
+                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked);
 
-        location.level.setBlockAndUpdate(location.position, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
-                .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked));
+        location.level.setBlock(location.position, blockState, 2);
 
-        GlobalShellBlockEntity shell = (GlobalShellBlockEntity) location.level.getBlockEntity(location.position);
-        shell.id = UUID.fromString(operator.getLevel().dimension().location().getPath());
+        if (location.level.getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
+            var uuid = UUID.fromString(operator.getLevel().dimension().location().getPath());
+            globalShell.TARDIS_ID = uuid;
+            location.level.sendBlockUpdated(location.position, blockState, blockState, 2);
+        }
 
         this.lastKnownLocation = location;
         this.isLanding = true;

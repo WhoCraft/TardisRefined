@@ -30,13 +30,12 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
         super(blockEntityType, blockPos, blockState);
     }
 
-    public UUID id = null;
+    public UUID TARDIS_ID = null;
 
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        this.id = UUID.fromString(pTag.getString(NbtConstants.TARDIS_ID));
-
+        this.TARDIS_ID = UUID.fromString(pTag.getString(NbtConstants.TARDIS_ID));
     }
 
     @Override
@@ -49,7 +48,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
-        pTag.putString(NbtConstants.TARDIS_ID, id.toString());
+        pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.toString());
     }
 
     @Override
@@ -58,16 +57,16 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
     }
 
     public void onBlockInit() {
-        if (this.id != null) {
+        if (this.TARDIS_ID != null) {
             return;
         }
         // We need some information on our first creation of this block.
-        this.id = UUID.randomUUID();
+        this.TARDIS_ID = UUID.randomUUID();
     }
 
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos blockPos, Player player) {
         if (level instanceof ServerLevel serverLevel) {
-            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.id.toString()));
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.TARDIS_ID.toString()));
             TardisLevelOperator.get(interior).ifPresent(cap -> {
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));

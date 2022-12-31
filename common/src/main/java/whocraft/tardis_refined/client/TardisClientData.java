@@ -107,7 +107,7 @@ public class TardisClientData {
         TardisNetwork.NETWORK.sendToDimension(serverLevel, new SyncIntReactionsMessage(getLevelKey(), serializeNBT()));
     }
 
-    public void tickAnimations() {
+    public void tickClientside() {
         if (isTakingOff()) {
             takeOffTime++;
             landingTime = 0;
