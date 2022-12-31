@@ -32,9 +32,8 @@ public class GlobalShellBlock extends ShellBaseBlock{
     public static final ShellProperty SHELL = ShellProperty.create("shell");
 
     public GlobalShellBlock(Properties properties) {
-
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(SHELL, ShellTheme.FACTORY));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(SHELL, ShellTheme.FACTORY).setValue(WATERLOGGED, false));
     }
 
     @Override

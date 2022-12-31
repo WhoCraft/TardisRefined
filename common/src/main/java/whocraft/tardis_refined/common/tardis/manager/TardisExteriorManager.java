@@ -168,7 +168,7 @@ public class TardisExteriorManager {
 
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
-        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getFluidState() == Fluids.WATER.defaultFluidState());
+        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getFluidState().getType() == Fluids.WATER);
 
         var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
