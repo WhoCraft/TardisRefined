@@ -125,6 +125,7 @@ public class ControlEntity extends PathfinderMob {
                 }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
