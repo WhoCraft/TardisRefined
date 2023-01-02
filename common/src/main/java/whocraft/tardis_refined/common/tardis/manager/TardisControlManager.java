@@ -225,9 +225,6 @@ public class TardisControlManager {
     public void beginFlight() {
         if (isInFlight || ticksTakingOff > 0) {return;}
 
-        // TEMP: Force the targetLocation's level to be the overworld.
-        this.targetLocation.level = Platform.getServer().overworld();
-
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
