@@ -112,7 +112,7 @@ public class TardisControlManager {
                 this.onFlightEnd();
             }
 
-            if (level.getGameTime() % (20 * 1.75) == 0 && ticksLanding == 0) {
+            if (level.getGameTime() % (20 * 1.75) == 0 && ticksLanding == 0 && ticksTakingOff == 0) {
                 operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 1000f, 1f);
             }
         }
@@ -224,9 +224,6 @@ public class TardisControlManager {
 
     public void beginFlight() {
         if (isInFlight || ticksTakingOff > 0) {return;}
-
-        // TEMP: Force the targetLocation's level to be the overworld.
-        this.targetLocation.level = Platform.getServer().overworld();
 
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
