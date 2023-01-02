@@ -61,10 +61,12 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.RANDOM, "Randomizer");
         addControl(ConsoleControl.THROTTLE, "Throttle");
         addControl(ConsoleControl.MONITOR, "Computer Bank");
+        addControl(ConsoleControl.DIMENSION, "Dimension");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
+        add(ModMessages.MSG_DIMENSION_SELECT, "Dimension set to ");
 
         /*Creative Tab*/
         add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");

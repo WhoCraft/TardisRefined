@@ -23,8 +23,10 @@ public class MonitorScreen extends SelectionScreen {
 
     private BlockPos currentPosition;
     private Direction currentDirection;
+    private String currentDimension;
     private BlockPos targetPosition;
     private Direction targetDirection;
+    private String targetDimension;
 
     protected int imageWidth = 256;
     protected int imageHeight = 173;
@@ -33,12 +35,14 @@ public class MonitorScreen extends SelectionScreen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/monitor.png");
 
 
-    public MonitorScreen(BlockPos exteriorPosition, Direction exteriorDirection, BlockPos targetPosition, Direction targetDirection) {
+    public MonitorScreen(BlockPos exteriorPosition, Direction exteriorDirection, String currentDimension, BlockPos targetPosition, Direction targetDirection, String targetDimension) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
         this.currentPosition = exteriorPosition;
         this.currentDirection = exteriorDirection;
+        this.currentDimension = currentDimension;
         this.targetPosition = targetPosition;
         this.targetDirection = targetDirection;
+        this.targetDimension = targetDimension;
     }
 
     @Override
@@ -86,11 +90,11 @@ public class MonitorScreen extends SelectionScreen {
 
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 50, Color.WHITE.getRGB(), textScale / 2, false);
         ScreenHelper.renderWidthScaledText(currentDirection.getName().toUpperCase() + " @ " + currentPosition.toShortString(), poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 60, Color.LIGHT_GRAY.getRGB(), textScale + 4, false);
-        ScreenHelper.renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
+        ScreenHelper.renderWidthScaledText(this.currentDimension, poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
 
         ScreenHelper.renderWidthScaledText( Component.translatable(ModMessages.UI_MONITOR_DESTINATION).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 40, textOffset + 50, Color.WHITE.getRGB(), textScale, false);
         ScreenHelper.renderWidthScaledText(targetDirection.getName().toUpperCase() + " @ " + targetPosition.toShortString(), poseStack, Minecraft.getInstance().font, width / 2  - 40, textOffset + 60, Color.LIGHT_GRAY.getRGB(), textScale + 4, false);
-        ScreenHelper.renderWidthScaledText("OVERWORLD", poseStack, Minecraft.getInstance().font, width / 2  - 40, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
+        ScreenHelper.renderWidthScaledText(this.targetDimension, poseStack, Minecraft.getInstance().font, width / 2  - 40, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
 
         super.render(poseStack, i, j, f);
     }
