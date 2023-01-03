@@ -173,7 +173,7 @@ public class TardisControlManager {
         while (currentPos.getY() > level.getMinBuildHeight()) {
             if (level.getBlockState(currentPos).is(Blocks.AIR)) {
                 // Check if the Shell can be physically in the location.
-                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
+                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.below()).is(Blocks.LAVA) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
@@ -201,7 +201,7 @@ public class TardisControlManager {
         while (currentPos.getY() < level.getMaxBuildHeight()) {
             if (level.getBlockState(currentPos).is(Blocks.AIR)) {
                 // Check if the Shell can be physically in the location.
-                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
+                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.below()).is(Blocks.LAVA) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
