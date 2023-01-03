@@ -172,14 +172,14 @@ public class TardisControlManager {
             if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
                 // Check if the Shell can be physically in the location.
                 if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
-                        || level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
-                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.above()).is(Blocks.WATER)) {
+                        && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
                     for (Direction dir : directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
-                        if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
+                        if (!level.getBlockState(basePos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
                             return new TardisNavLocation(currentPos, dir, level);
                         }
                     }
@@ -200,14 +200,14 @@ public class TardisControlManager {
             if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
                 // Check if the Shell can be physically in the location.
                 if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
-                        || level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
-                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.above()).is(Blocks.WATER)) {
+                        && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
                     for (Direction dir : directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
-                        if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
+                        if (!level.getBlockState(basePos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
                             return new TardisNavLocation(currentPos, dir, level);
                         }
                     }
