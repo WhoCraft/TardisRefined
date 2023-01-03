@@ -1,7 +1,8 @@
 package whocraft.tardis_refined.common.tardis.control;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 public class ControlSpecification {
     private ConsoleControl control;

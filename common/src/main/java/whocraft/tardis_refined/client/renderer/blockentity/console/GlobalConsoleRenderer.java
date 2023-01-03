@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.client.renderer.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -14,7 +14,6 @@ import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollecti
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Objects;
 
@@ -28,7 +27,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     public void render(GlobalConsoleBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
@@ -44,14 +43,14 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
                 var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
                 model.setDoorPosition(false);
 
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
                 poseStack.scale(0.1f,0.1f,0.1f);
                 poseStack.translate(3.075f, -16.75f, 6.57F);
                 poseStack.translate(0,  blockEntity.getLevel().random.nextFloat() * 0.01, 0);
                 if (reactions.isFlying()) {
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(((blockEntity.getLevel().getGameTime() % 360)) * 25f));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(((blockEntity.getLevel().getGameTime() % 360)) * 25f));
                 } else {
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(270 % 360));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(270 % 360));
                 }
 
                 model.renderToBuffer(poseStack,bufferSource.getBuffer(RenderType.entityTranslucent(reactions.getShellTheme().getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.25f);

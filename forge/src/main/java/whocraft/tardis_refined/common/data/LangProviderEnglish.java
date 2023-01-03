@@ -17,7 +17,7 @@ import whocraft.tardis_refined.registry.SoundRegistry;
 public class LangProviderEnglish extends LanguageProvider {
 
     public LangProviderEnglish(DataGenerator gen) {
-        super(gen, TardisRefined.MODID, "en_us");
+        super(gen.getPackOutput(), TardisRefined.MODID, "en_us");
     }
 
     @Override

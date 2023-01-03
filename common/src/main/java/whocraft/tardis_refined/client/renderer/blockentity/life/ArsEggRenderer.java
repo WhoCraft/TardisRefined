@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.client.renderer.blockentity.life;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -28,7 +28,7 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
     public void render(ArsEggBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         arsEggModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(arsEggTexture)),
                 i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);

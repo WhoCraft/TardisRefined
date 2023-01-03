@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.common.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.BiomeTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -11,13 +13,15 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.TagKeys;
 
+import java.util.concurrent.CompletableFuture;
+
 public class TRBiomeTagsProvider extends BiomeTagsProvider {
-    public TRBiomeTagsProvider(DataGenerator arg, @Nullable ExistingFileHelper existingFileHelper) {
-        super(arg, TardisRefined.MODID, existingFileHelper);
+    public TRBiomeTagsProvider(PackOutput arg, CompletableFuture<HolderLookup.Provider> provider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(arg, provider, TardisRefined.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider provider) {
         //Is mountain or ocean
         tag(TagKeys.IS_MOUNTAIN_OR_OCEAN)
                 .addTags(BiomeTags.IS_OCEAN)

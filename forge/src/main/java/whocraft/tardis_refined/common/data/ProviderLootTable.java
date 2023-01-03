@@ -1,17 +1,15 @@
 package whocraft.tardis_refined.common.data;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.loot.BlockLoot;
-import net.minecraft.data.loot.EntityLoot;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
-import net.minecraft.world.level.storage.loot.LootTables;
-import net.minecraft.world.level.storage.loot.ValidationContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.registry.BlockRegistry;
@@ -20,31 +18,22 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.Set;
+import java.util.stream.Stream;
 
 public class ProviderLootTable extends LootTableProvider {
 
-    public ProviderLootTable(DataGenerator dataGenerator) {
-        super(dataGenerator);
+    public ProviderLootTable(PackOutput arg) {
+        super(arg, Set.of(), List.of(new LootTableProvider.SubProviderEntry(ModBlockLoot::new, LootContextParamSets.BLOCK), new LootTableProvider.SubProviderEntry(ModEntityLoot::new, LootContextParamSets.ENTITY)));
     }
 
-    @Override
-    protected List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-        return List.of(Pair.of(ModEntityLoot::new, LootContextParamSets.ENTITY), Pair.of(ModBlockLoot::new, LootContextParamSets.BLOCK));
-    }
+    public static class ModBlockLoot extends BlockLootSubProvider {
+        protected ModBlockLoot() {
+            super(Set.of(), FeatureFlags.REGISTRY.allFlags());
+        }
 
-    @Override
-    protected void validate(Map<ResourceLocation, LootTable> map, ValidationContext validationContext) {
-        for (Map.Entry<ResourceLocation, LootTable> entry : map.entrySet())
-            LootTables.validate(validationContext, entry.getKey(), entry.getValue());
-    }
-
-    public static class ModBlockLoot extends BlockLoot {
         @Override
-        protected void addTables() {
+        protected void generate() {
             for (Block block : getKnownBlocks()) {
                 dropSelf(block);
             }
@@ -60,19 +49,24 @@ public class ProviderLootTable extends LootTableProvider {
         }
     }
 
-    public static class ModEntityLoot extends EntityLoot {
-        @Override
-        protected void addTables() {
-            add(EntityRegistry.CONTROL_ENTITY.get(), LootTable.lootTable());
+    public static class ModEntityLoot extends EntityLootSubProvider {
+
+        protected ModEntityLoot() {
+            super(FeatureFlags.REGISTRY.allFlags());
         }
 
         @Override
-        protected Iterable<EntityType<?>> getKnownEntities() {
-            ArrayList<EntityType<?>> entityTypes = new ArrayList<>();
+        protected Stream<EntityType<?>> getKnownEntityTypes() {
+            ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
             for (RegistrySupplier<EntityType<?>> entry : EntityRegistry.ENTITY_TYPES.getEntries()) {
-                entityTypes.add(entry.get());
+                entities.add(entry.get());
             }
-            return entityTypes;
+            return entities.stream();
+        }
+
+        @Override
+        public void generate() {
+            add(EntityRegistry.CONTROL_ENTITY.get(), LootTable.lootTable());
         }
     }
 }

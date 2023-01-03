@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -87,7 +88,7 @@ public class KeyItem extends Item {
 
         for (Tag tag : keychain) {
             String string = tag.getAsString();
-            ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(string));
+            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(string));
             levels.add(key);
         }
 

@@ -1,10 +1,8 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 

@@ -24,7 +24,7 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 public class ModelProviderBlock extends BlockStateProvider {
 
     public ModelProviderBlock(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, TardisRefined.MODID, existingFileHelper);
+        super(generator.getPackOutput(), TardisRefined.MODID, existingFileHelper);
     }
 
     @Override

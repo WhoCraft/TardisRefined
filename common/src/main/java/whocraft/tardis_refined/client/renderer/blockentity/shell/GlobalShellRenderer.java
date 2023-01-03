@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.client.renderer.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -28,11 +28,11 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.5F, 0.5F);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         BlockState blockstate = blockEntity.getBlockState();
         float rotation = blockstate.getValue(RootedShellBlock.FACING).toYRot();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
         ShellTheme theme = blockstate.getValue(GlobalShellBlock.SHELL);
         boolean isOpen = blockstate.getValue(GlobalShellBlock.OPEN);
 
