@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
@@ -155,8 +156,6 @@ public class TardisLevelOperator {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-
-
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360 / 4));
             } else {
 
@@ -168,10 +167,10 @@ public class TardisLevelOperator {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }
+        TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(shell, player, externalPos, level, direction);
     }
 
     public boolean isTardisReady() {

@@ -9,6 +9,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import whocraft.tardis_refined.api.event.EventResult;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -228,6 +230,9 @@ public class TardisControlManager {
         // TEMP: Force the targetLocation's level to be the overworld.
         this.targetLocation.level = Platform.getServer().overworld();
 
+        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        EventResult takeOffEvent = TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
+
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
@@ -239,6 +244,9 @@ public class TardisControlManager {
     }
 
     public void endFlight() {
+        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        TardisEvents.LAND.invoker().onLand(operator, lastKnown.level, lastKnown.position);
+
         if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {
             return;
         }
