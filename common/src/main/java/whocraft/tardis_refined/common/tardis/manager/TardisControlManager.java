@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -170,7 +171,9 @@ public class TardisControlManager {
         while (currentPos.getY() > level.getMinBuildHeight()) {
             if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
                 // Check if the Shell can be physically in the location.
-                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking() || level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()) {
+                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
+                        || level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.above()).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
@@ -196,7 +199,9 @@ public class TardisControlManager {
         while (currentPos.getY() < level.getMaxBuildHeight()) {
             if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
                 // Check if the Shell can be physically in the location.
-                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking() || level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()) {
+                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
+                        || level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.above()).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
