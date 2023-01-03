@@ -170,7 +170,7 @@ public class TardisLevelOperator {
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }
-        TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(shell, player, externalPos, level, direction);
+        TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(this, shell, player, externalPos, level, direction);
     }
 
     public boolean isTardisReady() {

@@ -230,9 +230,6 @@ public class TardisControlManager {
         // TEMP: Force the targetLocation's level to be the overworld.
         this.targetLocation.level = Platform.getServer().overworld();
 
-        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
-        EventResult takeOffEvent = TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
-
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
@@ -244,9 +241,6 @@ public class TardisControlManager {
     }
 
     public void endFlight() {
-        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
-        TardisEvents.LAND.invoker().onLand(operator, lastKnown.level, lastKnown.position);
-
         if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {
             return;
         }
@@ -278,11 +272,15 @@ public class TardisControlManager {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
+        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
     }
 
     public void onFlightEnd() {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
+        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        TardisEvents.LAND.invoker().onLand(operator, lastKnown.level, lastKnown.position);
     }
 
     public void offsetTargetPositionX(float x) {
