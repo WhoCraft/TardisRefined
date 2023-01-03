@@ -94,10 +94,9 @@ public class ShellSelectionScreen extends SelectionScreen {
         PoseStack.Pose pose = poseStack.last();
         pose.pose().identity();
         pose.normal().identity();
-        poseStack.translate(-3, -1.0, 1984.0);
-        poseStack.scale(4.5F, 4.5F, 4.5F);
+        poseStack.translate(2, 0.25, 1984.0);
+        poseStack.scale(3F, 3F, 3F);
         poseStack.mulPose(Axis.YP.rotationDegrees(minecraft.level.getGameTime()));
-        poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
 
         MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture()));
