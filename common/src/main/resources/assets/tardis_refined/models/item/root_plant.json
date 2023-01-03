@@ -5,7 +5,7 @@
 		64
 	],
 	"textures": {
-		"1": "tardis_refined:blockentity/root/root_plant/stage_one"
+		"1": "tardis_refined:block/root_plant"
 	},
 	"elements": [
 		{
