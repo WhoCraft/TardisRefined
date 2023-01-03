@@ -27,15 +27,20 @@ public class ItemRegistryImpl {
 
     @SubscribeEvent
     public static void addCreativeTab(CreativeModeTabEvent.Register event) {
-        event.registerCreativeModeTab(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID),
+        TAB = event.registerCreativeModeTab(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID),
                 builder -> builder.icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get()))
-                        .displayItems((featureFlagSet, output, bl) -> {
-                            for (RegistrySupplier<?> itemRegistrySupplier : ItemRegistry.FORGE_CREATIVE_ITEMS) {
-                                output.accept((Item) itemRegistrySupplier.get());
-                            }
-                            for (Item item : ItemRegistry.CREATIVE_ITEMS) {
-                                output.accept(item);
-                            }
-                        }).title(Component.literal("TARDIS Refined")));
+                        .title(Component.literal("TARDIS Refined")));
+    }
+
+    @SubscribeEvent
+    public static void onPopulateTab(CreativeModeTabEvent.BuildContents event) {
+        if(event.getTab() == TAB) {
+            for (RegistrySupplier<?> itemRegistrySupplier : ItemRegistry.FORGE_CREATIVE_ITEMS) {
+                event.accept((Item) itemRegistrySupplier.get());
+            }
+            for (Item item : ItemRegistry.CREATIVE_ITEMS) {
+                event.accept(item);
+            }
+        }
     }
 }
