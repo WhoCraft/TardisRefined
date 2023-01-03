@@ -198,7 +198,11 @@ public class TardisControlManager {
         ServerLevel level = startingLocation.level;
         BlockPos currentPos = startingLocation.position;
 
-        while (currentPos.getY() < level.getMaxBuildHeight()) {
+        int buildHeight = level.getMaxBuildHeight();
+        if(level.dimension() == Level.NETHER) {
+            buildHeight = 128;
+        }
+        while (currentPos.getY() < buildHeight) {
             if (level.getBlockState(currentPos).is(Blocks.AIR)) {
                 // Check if the Shell can be physically in the location.
                 if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && !level.getBlockState(currentPos.below()).is(Blocks.LAVA) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
