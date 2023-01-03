@@ -14,8 +14,8 @@ public class ItemRegistryImpl {
 
     public static final CreativeModeTab TAB = new FabricItemGroupBuilderImpl(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID))
             .icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).displayItems(((featureFlagSet, output, bl) -> {
-                for (Item stack : ItemRegistry.CREATIVE_ITEMS) {
-                    output.accept(stack);
+                for (Item item : ItemRegistry.CREATIVE_ITEMS) {
+                    output.accept((Item) item);
                 }
             })).title(Component.literal("TARDIS Refined")).build();
 

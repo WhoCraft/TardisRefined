@@ -15,6 +15,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.items.KeyItem;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,9 @@ import java.util.function.Supplier;
 public class ItemRegistry {
 
     public static final ArrayList<Item> CREATIVE_ITEMS = new ArrayList<>();
+    // Forge can't use registry suppliers during startup
+    public static final ArrayList<RegistrySupplier<?>> FORGE_CREATIVE_ITEMS = new ArrayList<>();
+
     public static CreativeModeTab MAIN_TAB = null;
 
     static {
@@ -39,6 +43,8 @@ public class ItemRegistry {
         RegistrySupplier<T> registryObject = ITEMS.register(id, itemSupplier);
         if (itemGroup != null) {
             ItemRegistry.CREATIVE_ITEMS.add(registryObject.get());
+        } else if(Platform.isModLoaded("forge")) {
+            ItemRegistry.FORGE_CREATIVE_ITEMS.add(registryObject);
         }
         return registryObject;
     }

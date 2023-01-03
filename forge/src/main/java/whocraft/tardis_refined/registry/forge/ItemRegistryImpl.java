@@ -2,6 +2,7 @@ package whocraft.tardis_refined.registry.forge;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
@@ -24,16 +25,17 @@ public class ItemRegistryImpl {
         return TAB;
     }
 
-
     @SubscribeEvent
     public static void addCreativeTab(CreativeModeTabEvent.Register event) {
-        event.registerCreativeModeTab(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID), builder -> builder.icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).title(Component.literal("TARDIS Refined")));
-    }
-
-    @SubscribeEvent
-    public static void populateCreativeTab(CreativeModeTabEvent.BuildContents event) {
-        for (Item itemLike : ItemRegistry.CREATIVE_ITEMS) {
-            event.accept(itemLike);
-        }
+        event.registerCreativeModeTab(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID),
+                builder -> builder.icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get()))
+                        .displayItems((featureFlagSet, output, bl) -> {
+                            for (RegistrySupplier<?> itemRegistrySupplier : ItemRegistry.FORGE_CREATIVE_ITEMS) {
+                                output.accept((Item) itemRegistrySupplier.get());
+                            }
+                            for (Item item : ItemRegistry.CREATIVE_ITEMS) {
+                                output.accept(item);
+                            }
+                        }).title(Component.literal("TARDIS Refined")));
     }
 }
