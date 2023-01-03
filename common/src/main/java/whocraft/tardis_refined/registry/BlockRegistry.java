@@ -32,13 +32,10 @@ public class BlockRegistry {
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, boolean addToTab, boolean registerItem) {
         RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);
         if (registerItem) {
-            ItemRegistry.ITEMS.register(id, () -> {
-                Item item = new BlockItem(registryObject.get(), new Item.Properties());
-                if (addToTab) {
-                    ItemRegistry.CREATIVE_ITEMS.add(item);
-                }
-                return item;
-            });
+            RegistrySupplier<Item> itemSupplier = ItemRegistry.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties()));
+            if(addToTab) {
+                ItemRegistry.TAB_ITEMS.add(itemSupplier);
+            }
         }
         return registryObject;
     }

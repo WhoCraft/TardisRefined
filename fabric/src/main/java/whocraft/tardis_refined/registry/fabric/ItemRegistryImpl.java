@@ -9,13 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 public class ItemRegistryImpl {
 
     public static final CreativeModeTab TAB = FabricItemGroup.builder(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID))
             .icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).displayItems(((featureFlagSet, output, bl) -> {
-                for (Item item : ItemRegistry.CREATIVE_ITEMS) {
-                    output.accept(item);
+                for (RegistrySupplier<Item> item : ItemRegistry.TAB_ITEMS) {
+                    output.accept(item.get());
                 }
             })).title(Component.literal("TARDIS Refined")).build();
 

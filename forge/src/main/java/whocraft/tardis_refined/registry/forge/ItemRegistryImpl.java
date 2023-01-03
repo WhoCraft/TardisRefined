@@ -2,13 +2,9 @@ package whocraft.tardis_refined.registry.forge;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -35,11 +31,8 @@ public class ItemRegistryImpl {
     @SubscribeEvent
     public static void onPopulateTab(CreativeModeTabEvent.BuildContents event) {
         if(event.getTab() == TAB) {
-            for (RegistrySupplier<?> itemRegistrySupplier : ItemRegistry.FORGE_CREATIVE_ITEMS) {
+            for (RegistrySupplier<?> itemRegistrySupplier : ItemRegistry.TAB_ITEMS) {
                 event.accept((Item) itemRegistrySupplier.get());
-            }
-            for (Item item : ItemRegistry.CREATIVE_ITEMS) {
-                event.accept(item);
             }
         }
     }
