@@ -112,7 +112,7 @@ public class TardisControlManager {
                 this.onFlightEnd();
             }
 
-            if (level.getGameTime() % (20 * 1.75) == 0 && ticksLanding == 0) {
+            if (level.getGameTime() % (20 * 1.75) == 0) {
                 operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 1000f, 1f);
             }
         }
