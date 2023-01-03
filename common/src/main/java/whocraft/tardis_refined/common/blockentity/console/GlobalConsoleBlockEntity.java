@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -8,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -50,7 +50,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
                 controlEntity.assignControlData(control, this.getBlockPos());
 
-                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
+                Vec3 location = new Vec3(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
                 controlEntity.teleportTo(location.x(), location.y(), location.z());
 
                 serverLevel.addFreshEntity(controlEntity);

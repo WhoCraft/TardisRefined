@@ -1,70 +1,65 @@
 package whocraft.tardis_refined.common.data;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.resources.RegistryOps;
+import net.minecraft.data.worldgen.features.FeatureUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.biome.Biome;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.data.JsonCodecProvider;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.util.RegistryHelper;
-import whocraft.tardis_refined.common.world.forge.TRForgeBiomeModifiers;
+import whocraft.tardis_refined.common.world.Features;
+import whocraft.tardis_refined.common.world.feature.NbtTemplateFeature;
+import whocraft.tardis_refined.common.world.feature.config.NbtTemplateFeatureConfig;
 import whocraft.tardis_refined.registry.FeatureKeys;
 import whocraft.tardis_refined.registry.TagKeys;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
 public class BiomeModifierProvider {
+    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    public static final ResourceKey<PlacedFeature> TARDIS_ROOT_CLUSTER_PLACED_FEATUE = ResourceKey.create(Registries.PLACED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    public static final ResourceKey<ConfiguredFeature<?,?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
-    public static Map<ResourceLocation, BiomeModifier> BIOME_MODIFIERS = new HashMap<>();
-
-    /** Define biome modifiers to be generated here*/
-    private static void addBiomeModifiers(RegistryAccess registries, RegistryOps<JsonElement> ops){
-
-        //Root Cluster Biome Modifier
-        //Create a Standalone Reference Holder as we don't want to inline the entire contents of our placed feature
-        Holder<PlacedFeature> rootHolder = Holder.Reference.createStandAlone(registries.registry(Registry.PLACED_FEATURE_REGISTRY).get(), RegistryHelper.makePlacedFeatureKey(FeatureKeys.TARDIS_ROOT_CLUSTER_RL));
-        //Add the placed feature(s) to the HolderSet
-        final HolderSet<PlacedFeature> rootHolderSet = HolderSet.direct(rootHolder);
-        //Use Named HolderSet to reference our Biome Tag
-        final HolderSet.Named<Biome> rootBiomesTag = new HolderSet.Named<>(ops.registry(Registry.BIOME_REGISTRY).get(), TagKeys.TARDIS_ROOT_CLUSTER);
-        final BiomeModifier rootClusterModifier = new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
-                rootBiomesTag, //Valid biomes to spawn in
-                rootHolderSet,
-                GenerationStep.Decoration.LOCAL_MODIFICATIONS //Occurs just before underground structures phase, similar to vanilla Amethyst Geodes
-        );
-
-        BIOME_MODIFIERS.put(TRForgeBiomeModifiers.ADD_TARDIS_CORAL_CLUSTER, rootClusterModifier);
-    }
 
     public static void genBiomeModifiers(GatherDataEvent e) {
         final DataGenerator generator = e.getGenerator();
-        /* Using builtinCopy() averts the need to register json-only objects before we datagen them.
-         * DO NOT CALL THIS MORE THAN ONCE.
-         * Each builtinCopy() makes a copy of the registry which will fail when the TagKey's registry tries to check against the RegistryOps
-         * TODO: 1.19.3: Use RegistrySetBuilder
-         */
-        final RegistryAccess registries = RegistryAccess.builtinCopy();
-        final RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, registries);
-        registries.registry(Registry.PLACED_FEATURE_REGISTRY).get();
+        final RegistrySetBuilder builder = new RegistrySetBuilder();
 
-        addBiomeModifiers(registries, ops);
+        ResourceLocation templateLocation = new ResourceLocation(TardisRefined.MODID, "cave/tardis_root_cluster_deepslate");
+        ConfiguredFeature<NbtTemplateFeatureConfig, NbtTemplateFeature> tardisRootCluster = new ConfiguredFeature<>(Features.NBT_FEATURE.get(), new NbtTemplateFeatureConfig(templateLocation, 0));
 
-        //TODO: 1.19.3: Use DatapackBuiltinEntriesProvider
-        final DataProvider biomeModifierProvider = JsonCodecProvider.forDatapackRegistry(generator, e.getExistingFileHelper(), TardisRefined.MODID, ops, ForgeRegistries.Keys.BIOME_MODIFIERS, BIOME_MODIFIERS);
+        builder.add(Registries.CONFIGURED_FEATURE, context -> context.register(TARDIS_ROOT_CLUSTER_CONF_FEATURE, tardisRootCluster));
+        builder.add(Registries.PLACED_FEATURE, context -> context.register(TARDIS_ROOT_CLUSTER_PLACED_FEATUE, new PlacedFeature
+                (context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(TARDIS_ROOT_CLUSTER_CONF_FEATURE),
+                    List.of(
+                        RarityFilter.onAverageOnceEvery(25),
+                        InSquarePlacement.spread(),
+                        HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20))))
+        ));
+        builder.add(ForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
+            var tardisRoot = context.lookup(Registries.BIOME).getOrThrow(TagKeys.TARDIS_ROOT_CLUSTER);
+
+            context.register(ADD_TARDIS_ROOT_CLUSTER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                    tardisRoot,
+                    HolderSet.direct(context.lookup(Registries.PLACED_FEATURE).getOrThrow(TARDIS_ROOT_CLUSTER_PLACED_FEATUE)),
+                    GenerationStep.Decoration.LOCAL_MODIFICATIONS
+            ));
+        });
+
+        final DataProvider biomeModifierProvider = new DatapackBuiltinEntriesProvider(generator.getPackOutput(), e.getLookupProvider(), builder, Set.of(TardisRefined.MODID));
         generator.addProvider(e.includeServer(), biomeModifierProvider);
     }
 }

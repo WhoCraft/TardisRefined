@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -66,7 +67,7 @@ public class GlobalShellBlock extends ShellBaseBlock{
                     ItemStack itemStack = player.getItemInHand(interactionHand);
                     if (itemStack.getItem() instanceof KeyItem) {
 
-                        ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString()));
+                        ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString()));
 
                         boolean validKey = KeyItem.keychainContains(itemStack, dimension);
                         if (validKey) {

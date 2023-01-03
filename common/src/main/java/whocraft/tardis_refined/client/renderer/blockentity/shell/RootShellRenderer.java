@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.client.renderer.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -33,10 +33,10 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
     public void render(RootedShellBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
         float rotation = blockstate.getValue(RootedShellBlock.FACING).toYRot();
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
 
         boolean isOpen = blockEntity.getBlockState().getValue(ShellBaseBlock.OPEN);
 

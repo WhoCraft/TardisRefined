@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.world.fabric;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -20,7 +21,7 @@ public class TRFabricBiomeModifiers {
     private static void addToBiome(String featureName, String biomeKeyName, GenerationStep.Decoration step) {
         BiomeModifications.create(new ResourceLocation(TardisRefined.MODID, featureName))
                 .add(ModificationPhase.ADDITIONS,
-                        (context) -> context.hasTag(TagKey.create(Registry.BIOME_REGISTRY, new ResourceLocation(TardisRefined.MODID, biomeKeyName))),
-                        (context) -> context.getGenerationSettings().addFeature(step, ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, new ResourceLocation(TardisRefined.MODID, featureName))));
+                        (context) -> context.hasTag(TagKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, biomeKeyName))),
+                        (context) -> context.getGenerationSettings().addFeature(step, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, featureName))));
     }
 }

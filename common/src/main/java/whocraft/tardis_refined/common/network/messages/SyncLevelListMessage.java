@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.network.messages;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -34,7 +35,7 @@ public class SyncLevelListMessage extends MessageS2C {
     }
 
     public SyncLevelListMessage(FriendlyByteBuf buf) {
-        this.level = buf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        this.level = buf.readResourceKey(Registries.DIMENSION);
         this.add = buf.readBoolean();
     }
 

@@ -3,6 +3,7 @@ package whocraft.tardis_refined.constants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
@@ -65,7 +66,7 @@ public class NbtConstants {
         String dimension_path = tag.getString(prefix + NbtConstants.LOCATION_DIMENSION_PATH);
 
         if (dimension_modid != null && dimension_path != null) {
-            ServerLevel level = operator.getLevel().getServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(dimension_modid, dimension_path)));
+            ServerLevel level = operator.getLevel().getServer().getLevel(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(dimension_modid, dimension_path)));
             if (level != null) {
                 return new TardisNavLocation(position, direction, level);
             }

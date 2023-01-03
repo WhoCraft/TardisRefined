@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.network.messages;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -23,7 +24,7 @@ public class SyncIntReactionsMessage extends MessageS2C {
     }
 
     public SyncIntReactionsMessage(FriendlyByteBuf friendlyByteBuf) {
-        this.level = friendlyByteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        this.level = friendlyByteBuf.readResourceKey(Registries.DIMENSION);
         this.compoundTag = friendlyByteBuf.readNbt();
     }
 

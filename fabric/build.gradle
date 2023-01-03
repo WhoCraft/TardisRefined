@@ -46,8 +46,8 @@ dependencies {
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
 
-    modImplementation "curse.maven:modmenu-308702:${rootProject.mod_menu_version}"
-    modImplementation "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
+    modCompileOnly "curse.maven:modmenu-308702:${rootProject.mod_menu_version}"
+    modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
 
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }

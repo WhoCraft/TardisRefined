@@ -7,6 +7,7 @@ import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
@@ -76,7 +77,7 @@ public class DimensionHandlerImpl {
         MinecraftServer server = getServer();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
-        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, id.location());
+        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
 
         LevelStem dimension = dimensionFactory.apply(server, dimensionKey);
 
@@ -86,15 +87,7 @@ public class DimensionHandlerImpl {
 
 
         WorldData serverConfig = server.getWorldData();
-        WorldGenSettings worldGenSettings = serverConfig.worldGenSettings();
         DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
-
-        Registry<LevelStem> dimensionRegistry = worldGenSettings.dimensions();
-        if (dimensionRegistry instanceof WritableRegistry<LevelStem> writableRegistry) {
-            writableRegistry.register(dimensionKey, dimension, Lifecycle.stable()); //set to stable to reduce issues that come with the experimental marker
-        } else {
-            throw new IllegalStateException("Unable to register dimension '" + dimensionKey.location() + "'! Registry not writable!");
-        }
 
         // now we have everything we need to create the world instance
         ServerLevel newLevel = new ServerLevel(
@@ -106,7 +99,7 @@ public class DimensionHandlerImpl {
                 dimension,
                 chunkListener,
                 false, // boolean: is-debug-world
-                BiomeManager.obfuscateSeed(worldGenSettings.seed()),
+                BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed()),
                 ImmutableList.of(), // "special spawn list"
                 // phantoms, raiders, travelling traders, cats are overworld special spawns
                 // the dimension loader is hardcoded to initialize preexisting non-overworld worlds with no special spawn lists

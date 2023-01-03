@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.util;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -27,7 +28,7 @@ import whocraft.tardis_refined.registry.DimensionTypes;
 public class MiscHelper {
 
     @ExpectPlatform
-    public static Packet<?> spawnPacket(Entity entity) {
+    public static Packet<ClientGamePacketListener> spawnPacket(Entity entity) {
         throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
 

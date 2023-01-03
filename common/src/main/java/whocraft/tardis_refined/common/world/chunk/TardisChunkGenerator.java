@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.world.chunk;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -32,17 +34,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class TardisChunkGenerator extends ChunkGenerator {
-    public static final Codec<TardisChunkGenerator> CODEC = RecordCodecBuilder
-            .create(instance -> commonCodec(instance).and(RegistryOps.retrieveRegistry(Registry.BIOME_REGISTRY).forGetter((thing) -> thing.BIOME_REG))
-                    .apply(instance, instance.stable(TardisChunkGenerator::new)));
+    public static final Codec<TardisChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
+            instance.group(RegistryOps.retrieveElement(ChunkGenerators.TARDIS_BIOME)).apply(instance,
+                    instance.stable(TardisChunkGenerator::new)));
 
-    public final Registry<Biome> BIOME_REG;
-    public final Registry<StructureSet> SET_REG;
-
-    public TardisChunkGenerator(Registry<StructureSet> setReg, Registry<Biome> biomeReg) {
-        super(setReg, Optional.empty(), new FixedBiomeSource(biomeReg.getHolderOrThrow(ChunkGenerators.TARDIS_BIOME)));
-        this.BIOME_REG = biomeReg;
-        this.SET_REG = setReg;
+    public TardisChunkGenerator(Holder<Biome> holder) {
+        super(new FixedBiomeSource(holder));
     }
 
     @Override
@@ -50,8 +47,8 @@ public class TardisChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void createStructures(RegistryAccess pRegistryAccess, RandomState pRandom, StructureManager pStructureManager, ChunkAccess pChunk, StructureTemplateManager pStructureTemplateManager, long pSeed) {
-        //super.createStructures(pRegistryAccess, pRandom, pStructureManager, pChunk, pStructureTemplateManager, pSeed);
+    public void createStructures(RegistryAccess registryAccess, ChunkGeneratorStructureState chunkGeneratorStructureState, StructureManager structureManager, ChunkAccess chunkAccess, StructureTemplateManager structureTemplateManager) {
+        // super.createStructures(registryAccess, chunkGeneratorStructureState, structureManager, chunkAccess, structureTemplateManager);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.registry;
 
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -26,17 +26,18 @@ import java.util.function.Supplier;
 
 public class BlockRegistry {
 
-    public static final DeferredRegistry<Block> BLOCKS = DeferredRegistry.create(TardisRefined.MODID, Registry.BLOCK_REGISTRY);
+    public static final DeferredRegistry<Block> BLOCKS = DeferredRegistry.create(TardisRefined.MODID, Registries.BLOCK);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, CreativeModeTab itemGroup, boolean registerItem) {
         RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);
         if (registerItem) {
-            if (itemGroup != null) {
-                ItemRegistry.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties().tab(itemGroup)));
-            } else {
-                ItemRegistry.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties()));
-            }
-
+            ItemRegistry.ITEMS.register(id, () -> {
+                Item item = new BlockItem(registryObject.get(), new Item.Properties());
+                if (itemGroup != null) {
+                    ItemRegistry.CREATIVE_ITEMS.add(item);
+                }
+                return item;
+            });
         }
         return registryObject;
     }

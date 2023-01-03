@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -27,7 +28,7 @@ public class CancelDesktopChangeMessage extends MessageC2S {
     }
 
     public CancelDesktopChangeMessage(FriendlyByteBuf friendlyByteBuf) {
-        resourceKey = friendlyByteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        resourceKey = friendlyByteBuf.readResourceKey(Registries.DIMENSION);
     }
 
     @NotNull

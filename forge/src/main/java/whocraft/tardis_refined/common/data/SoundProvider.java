@@ -14,7 +14,7 @@ import whocraft.tardis_refined.registry.SoundRegistry;
 public class SoundProvider extends SoundDefinitionsProvider {
 
     public SoundProvider(DataGenerator generator, ExistingFileHelper helper) {
-        super(generator, TardisRefined.MODID, helper);
+        super(generator.getPackOutput(), TardisRefined.MODID, helper);
     }
 
     @Override

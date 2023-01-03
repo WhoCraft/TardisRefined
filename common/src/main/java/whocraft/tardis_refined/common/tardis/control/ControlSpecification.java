@@ -1,14 +1,14 @@
 package whocraft.tardis_refined.common.tardis.control;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 public class ControlSpecification {
     private ConsoleControl control;
-    private Vector3f offsetPosition;
+    private Vec3 offsetPosition;
     private BlockPos scale;
 
-    public ControlSpecification(ConsoleControl control, Vector3f offsetPosition, BlockPos scale) {
+    public ControlSpecification(ConsoleControl control, Vec3 offsetPosition, BlockPos scale) {
         this.control = control;
         this.offsetPosition = offsetPosition;
         this.scale = scale;
@@ -23,11 +23,11 @@ public class ControlSpecification {
         return this;
     }
 
-    public Vector3f offsetPosition() {
+    public Vec3 offsetPosition() {
         return offsetPosition;
     }
 
-    public ControlSpecification setOffsetPosition(Vector3f offsetPosition) {
+    public ControlSpecification setOffsetPosition(Vec3 offsetPosition) {
         this.offsetPosition = offsetPosition;
         return this;
     }

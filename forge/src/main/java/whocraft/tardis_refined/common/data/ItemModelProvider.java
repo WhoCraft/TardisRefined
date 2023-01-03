@@ -11,7 +11,7 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
 
     public ItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, TardisRefined.MODID, existingFileHelper);
+        super(generator.getPackOutput(), TardisRefined.MODID, existingFileHelper);
     }
 
     @Override

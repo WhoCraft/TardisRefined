@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.network.messages;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -28,7 +29,7 @@ public class ChangeShellMessage extends MessageC2S {
     }
 
     public ChangeShellMessage(FriendlyByteBuf buffer) {
-        resourceKey = buffer.readResourceKey(Registry.DIMENSION_REGISTRY);
+        resourceKey = buffer.readResourceKey(Registries.DIMENSION);
         this.shellTheme = ShellTheme.valueOf(buffer.readUtf(500));
     }
 
