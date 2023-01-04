@@ -21,7 +21,7 @@ public class DimensionControl implements IControl {
     private void setDimensions(MinecraftServer server) {
         if(dimensions.isEmpty()) {
             for(ServerLevel level : server.getAllLevels()) {
-                if(level.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
+                if(!level.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
                     dimensions.add(level);
                 }
             }
