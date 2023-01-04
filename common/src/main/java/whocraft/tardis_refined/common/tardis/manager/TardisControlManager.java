@@ -179,7 +179,9 @@ public class TardisControlManager {
                 if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
                         && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
                         && !level.getBlockState(currentPos.below()).is(Blocks.LAVA)
-                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)
+                        && !level.getBlockState(currentPos).is(Blocks.LAVA)
+                        && !level.getBlockState(currentPos).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
@@ -212,7 +214,9 @@ public class TardisControlManager {
                 if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
                         && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
                         && !level.getBlockState(currentPos.below()).is(Blocks.LAVA)
-                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)
+                        && !level.getBlockState(currentPos).is(Blocks.LAVA)
+                        && !level.getBlockState(currentPos).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
