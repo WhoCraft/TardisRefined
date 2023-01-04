@@ -173,6 +173,11 @@ public class TardisExteriorManager {
         var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
 
+        BlockState check = location.level.getBlockState(location.position);
+        if(!check.is(Blocks.AIR)) {
+            location.level.destroyBlock(location.position, true);
+        }
+
         location.level.setBlock(location.position, blockState, 2);
 
         if (location.level.getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
