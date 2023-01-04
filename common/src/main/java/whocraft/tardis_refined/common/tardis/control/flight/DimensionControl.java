@@ -11,6 +11,7 @@ import whocraft.tardis_refined.common.tardis.control.IControl;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.ArrayList;
 
@@ -20,7 +21,7 @@ public class DimensionControl implements IControl {
     private void setDimensions(MinecraftServer server) {
         if(dimensions.isEmpty()) {
             for(ServerLevel level : server.getAllLevels()) {
-                if(!level.dimension().location().getNamespace().equals(TardisRefined.MODID)) {
+                if(level.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
                     dimensions.add(level);
                 }
             }
