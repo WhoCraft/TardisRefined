@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -34,7 +35,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             if (interior != null) {
                 TardisLevelOperator.get(interior).ifPresent(cap -> {
                     if (cap.getControlManager().isInFlight()) return;
-                    ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, TARDIS_ID.toString()));
+                    ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, TARDIS_ID.toString()));
 
                     boolean validKey = KeyItem.keychainContains(stack, dimension);
                     if(validKey) {
