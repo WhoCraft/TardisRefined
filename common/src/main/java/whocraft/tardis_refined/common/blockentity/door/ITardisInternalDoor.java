@@ -21,4 +21,8 @@ public interface ITardisInternalDoor {
     Direction getEntryRotation();
 
     void onEntityExit(ServerEntity entity);
+
+    void setLocked(boolean locked);
+
+    boolean locked();
 }
