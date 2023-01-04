@@ -12,7 +12,7 @@ public class ToggleDoorControl implements IControl {
     @Override
     public void onRightClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
         if(operator.getExteriorManager().locked()) {
-            controlEntity.level.playSound(null, operator.getInternalDoor().getDoorPosition(), SoundEvents.ANVIL_PLACE, SoundSource.AMBIENT, 1f, 1f);
+            controlEntity.level.playSound(null, operator.getInternalDoor().getDoorPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (controlEntity.level.getRandom().nextFloat() * 0.5)));
             return;
         }
         operator.setDoorClosed(operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN));
