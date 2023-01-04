@@ -122,7 +122,7 @@ public class TardisExteriorManager {
         BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
         if (state.hasProperty(ShellBaseBlock.OPEN)) {
             lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
-            playSoundAtShell(locked ? SoundEvents.PLAYER_ATTACK_SWEEP : (closed) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
+            playSoundAtShell(locked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
         }
     }
 
@@ -172,6 +172,11 @@ public class TardisExteriorManager {
 
         var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
+
+        BlockState check = location.level.getBlockState(location.position);
+        if(!check.is(Blocks.AIR)) {
+            location.level.destroyBlock(location.position, true);
+        }
 
         location.level.setBlock(location.position, blockState, 2);
 

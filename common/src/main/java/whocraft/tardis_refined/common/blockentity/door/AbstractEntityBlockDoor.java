@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInternalDoor {
-
+    private boolean isLocked = false;
     private String uuid_id;
     private boolean isOpen = false;
     private boolean isMainDoor = false;
@@ -61,7 +61,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     public void setClosed(boolean state) {
         BlockState blockState = getLevel().getBlockState(getDoorPosition());
         getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
-        getLevel().playSound(null, getDoorPosition(), (state) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
+        getLevel().playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
     }
 
     @Override
@@ -97,6 +97,16 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
 
     }
 
+    @Override
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    @Override
+    public boolean locked() {
+        return isLocked;
+    }
+
     public TardisLevelOperator getOperator() {
         return operator;
     }
@@ -118,6 +128,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
 
         compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
         compoundTag.putString(NbtConstants.DOOR_ID, this.uuid_id);
+        compoundTag.putBoolean(NbtConstants.DOOR_IS_LOCKED, this.isLocked);
     }
 
     @Override
@@ -125,6 +136,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
         super.load(compoundTag);
         this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
         this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
+        this.isLocked = compoundTag.getBoolean(NbtConstants.DOOR_IS_LOCKED);
     }
 
 }

@@ -20,10 +20,12 @@ import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
+import whocraft.tardis_refined.common.tardis.IExteriorShell;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.registry.DimensionTypes;
 

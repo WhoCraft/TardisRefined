@@ -1,4 +1,5 @@
-# TARDIS Refined
+![image](https://i.imgur.com/eIfAaYJ.png)
+
 <img src="https://discordapp.com/api/guilds/1054629302152478730/widget.png?style=shield" alt="Discord Shield"/>
  TARDIS Refined is a Minecraft mod for Forge and Fabric which brings the TARDIS from Doctor Who to Minecraft.
  
@@ -41,6 +42,6 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
    </tbody>
 </table>
 
-With special thanks to starray1000000, Commoble, and Lucraft.<br/><hr/>
+With special thanks to Commoble, Lucraft, starray1000000 and Sea Pickle<br/><hr/>
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
