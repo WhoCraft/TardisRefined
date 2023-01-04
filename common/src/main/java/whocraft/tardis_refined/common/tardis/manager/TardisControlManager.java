@@ -17,6 +17,7 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class TardisControlManager {
@@ -134,11 +135,11 @@ public class TardisControlManager {
         BlockPos currentScanPosition = location.position;
 
         // We need to be able to determine whether the position we're aiming for is a valid location.
-        boolean isTargetAir = level.getBlockState(currentScanPosition).is(Blocks.AIR);
+        boolean isTargetLandableBlock = !level.getBlockState(currentScanPosition).getMaterial().isSolidBlocking();
 
-        if (isTargetAir) {
+        if (isTargetLandableBlock) {
             currentScanPosition = currentScanPosition.below();
-            if (level.getBlockState(currentScanPosition).is(Blocks.AIR)) {
+            if (!level.getBlockState(currentScanPosition).getMaterial().isSolidBlocking()) {
                 return startScanDownwards(location);
             }
         }
@@ -173,20 +174,20 @@ public class TardisControlManager {
         BlockPos currentPos = startingLocation.position;
 
         while (currentPos.getY() > level.getMinBuildHeight()) {
-            if (level.getBlockState(currentPos).is(Blocks.AIR)) {
+            if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
                 // Check if the Shell can be physically in the location.
-                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
+                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
                     for (Direction dir : directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
-                        if (level.getBlockState(basePos).is(Blocks.AIR) && level.getBlockState(basePos.above()).is(Blocks.AIR)) {
+                        if (!level.getBlockState(basePos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
                             return new TardisNavLocation(currentPos, dir, level);
                         }
                     }
-
-
                 }
             }
 
@@ -201,20 +202,20 @@ public class TardisControlManager {
         BlockPos currentPos = startingLocation.position;
 
         while (currentPos.getY() < level.getMaxBuildHeight()) {
-            if (level.getBlockState(currentPos).is(Blocks.AIR)) {
+            if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
                 // Check if the Shell can be physically in the location.
-                if (!level.getBlockState(currentPos.below()).is(Blocks.AIR) && !level.getBlockState(currentPos.below()).is(Blocks.WATER) && level.getBlockState(currentPos.above()).is(Blocks.AIR)) {
+                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking()
+                        && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
 
                     // Check that the facing location !!!!!
                     Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
                     for (Direction dir : directions) {
                         BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
-                        if (level.getBlockState(basePos).is(Blocks.AIR) && level.getBlockState(basePos.above()).is(Blocks.AIR)) {
+                        if (!level.getBlockState(basePos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
                             return new TardisNavLocation(currentPos, dir, level);
                         }
                     }
-
-
                 }
             }
 
