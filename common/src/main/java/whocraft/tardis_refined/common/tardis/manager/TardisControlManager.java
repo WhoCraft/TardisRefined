@@ -7,6 +7,11 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.entity.DispenserBlockEntity;
+import whocraft.tardis_refined.api.event.EventResult;
+import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -268,11 +273,15 @@ public class TardisControlManager {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
+        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
     }
 
     public void onFlightEnd() {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
+        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        TardisEvents.LAND.invoker().onLand(operator, lastKnown.level, lastKnown.position);
     }
 
     public void offsetTargetPositionX(float x) {
