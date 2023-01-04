@@ -18,7 +18,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
     }
 
 
-    public void onRightClick(BlockState blockState, ITardisInternalDoor door) {
+    public void onRightClick(BlockState blockState, ITardisInternalDoor door, Player player) {
         if (getLevel() instanceof ServerLevel serverLevel) {
 
             // we know that in this instance the serverlevel has a capability.
@@ -26,7 +26,13 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
                 if (cap.getInternalDoor() != door) {
                     cap.setInternalDoor(door);
                 }
-                if (!cap.getControlManager().isInFlight()) {
+                if(player.isCrouching() && !cap.getControlManager().isInFlight()) {
+                    cap.getExteriorManager().setLocked(!door.locked());
+                    door.setLocked(!door.locked());
+                    cap.setDoorClosed(true);
+                    return;
+                }
+                if (!cap.getControlManager().isInFlight() && !door.locked()) {
                     cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
                 }
             });
