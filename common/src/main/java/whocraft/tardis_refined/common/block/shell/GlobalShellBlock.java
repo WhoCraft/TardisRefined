@@ -2,10 +2,6 @@ package whocraft.tardis_refined.common.block.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,13 +16,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.properties.ShellProperty;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
 
 public class GlobalShellBlock extends ShellBaseBlock{
 
@@ -60,24 +52,8 @@ public class GlobalShellBlock extends ShellBaseBlock{
         if (level instanceof ServerLevel serverLevel) {
             if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
                 if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
-
-
-
-                    /*Locking Logic, would be inside onRightClick but not enough access*/
                     ItemStack itemStack = player.getItemInHand(interactionHand);
-                    if (itemStack.getItem() instanceof KeyItem) {
-
-                        ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString()));
-
-                        boolean validKey = KeyItem.keychainContains(itemStack, dimension);
-                        if (validKey) {
-                            BlockState state = blockState.cycle(LOCKED);
-                            boolean locked = state.getValue(LOCKED);
-                            level.setBlock(blockPos, state, 77);
-                            TardisLevelOperator.get(Platform.getServer().getLevel(dimension)).ifPresent(tardisLevelOperator -> tardisLevelOperator.getExteriorManager().setLocked(locked));
-                        }
-                    }
-                    entity.onRightClick(blockState);
+                    entity.onRightClick(blockState, itemStack);
                     return InteractionResult.SUCCESS;
                 }
 
