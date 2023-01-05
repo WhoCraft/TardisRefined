@@ -122,7 +122,7 @@ public class TardisExteriorManager {
         BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
         if (state.hasProperty(ShellBaseBlock.OPEN)) {
             lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
-            playSoundAtShell(locked ? SoundEvents.PLAYER_ATTACK_SWEEP : (closed) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
+            playSoundAtShell(locked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
         }
     }
 
