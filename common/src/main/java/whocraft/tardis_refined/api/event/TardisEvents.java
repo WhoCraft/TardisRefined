@@ -24,6 +24,18 @@ public class TardisEvents {
         }
     });
 
+    public static final Event<CloseDoor> TARDIS_DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
+        for(CloseDoor listener : listeners) {
+            listener.onDoorClosed(tardisLevelOperator);
+        }
+    });
+
+    public static final Event<OpenDoor> TARDIS_DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
+        for(OpenDoor listener : listeners) {
+            listener.onDoorOpen(tardisLevelOperator);
+        }
+    });
+
     /**
      * An event that is triggered when a TARDIS takes off.
      */
@@ -38,6 +50,32 @@ public class TardisEvents {
          * @return The result of the event.
          */
         EventResult onTakeOff(TardisLevelOperator tardisLevelOperator, LevelAccessor level, BlockPos pos);
+    }
+
+    /**
+     * An event that is triggered when the TARDIS Door is closed.
+     */
+    @FunctionalInterface
+    public interface CloseDoor {
+        /**
+         * Called when the TARDIS door is closed.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDoorClosed(TardisLevelOperator tardisLevelOperator);
+    }
+
+    /**
+     * An event that is triggered when the TARDIS Door is opened.
+     */
+    @FunctionalInterface
+    public interface OpenDoor {
+        /**
+         * Called when the TARDIS door is opened.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDoorOpen(TardisLevelOperator tardisLevelOperator);
     }
 
     /**

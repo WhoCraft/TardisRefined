@@ -64,4 +64,13 @@ public class DimensionHandler {
         @Nullable ServerLevel existingLevel = levelMap.get(levelResourceKey);
         return existingLevel;
     }
+
+    public static boolean hasIP() {
+        try {
+            Class.forName("qouteall.q_misc_util.MiscHelper");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }
