@@ -11,7 +11,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -31,6 +33,7 @@ import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class KeyItem extends Item {
@@ -42,7 +45,7 @@ public class KeyItem extends Item {
     @Override
     public Component getName(ItemStack itemStack) {
 
-        if(keychain(itemStack).size() >= 2){
+        if (getKeychain(itemStack).size() >= 2) {
             return Component.translatable(ModMessages.ITEM_KEYCHAIN);
         }
 
@@ -72,8 +75,28 @@ public class KeyItem extends Item {
         return itemStack;
     }
 
+    public static void setKeychain(ItemStack itemStack, ArrayList<ResourceKey<Level>> levels) {
+        CompoundTag nbt = itemStack.getOrCreateTag();
+        ListTag keychain;
+        if (!nbt.contains("keychain", CompoundTag.TAG_LIST)) {
+            // Create a new keychain tag and add it to the itemtag object
+            keychain = new ListTag();
+            nbt.put("keychain", keychain);
+        } else {
+            // Get the existing keychain tag from the itemtag object
+            keychain = nbt.getList("keychain", Tag.TAG_STRING);
+        };
 
-    public static ArrayList<ResourceKey<Level>> keychain(ItemStack itemStack) {
+        keychain.clear();
+
+        levels.forEach(level -> {
+            keychain.add(StringTag.valueOf(level.location().toString()));
+        });
+
+        itemStack.setTag(nbt);
+    }
+
+    public static ArrayList<ResourceKey<Level>> getKeychain(ItemStack itemStack) {
         CompoundTag nbt = itemStack.getOrCreateTag();
 
 
@@ -96,7 +119,7 @@ public class KeyItem extends Item {
     }
 
     public static boolean keychainContains(ItemStack itemStack, ResourceKey<Level> levelResourceKey) {
-        ArrayList<ResourceKey<Level>> keychain = keychain(itemStack);
+        ArrayList<ResourceKey<Level>> keychain = getKeychain(itemStack);
         return keychain.contains(levelResourceKey);
     }
 
@@ -106,9 +129,8 @@ public class KeyItem extends Item {
         if (livingEntity.level instanceof ServerLevel serverLevel) {
             if (livingEntity instanceof ControlEntity control) {
                 ResourceKey<Level> tardis = serverLevel.dimension();
-                if(control.controlSpecification().control() != null) {
-                    if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis))
-                    {
+                if (control.controlSpecification().control() != null) {
+                    if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis)) {
                         player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                         PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                         player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
@@ -119,20 +141,18 @@ public class KeyItem extends Item {
         }
 
 
-
         return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
     }
 
 
-
     @Override
     public InteractionResult useOn(UseOnContext context) {
-        if (TardisRefined.KeySummonsItem) {
-            if (context.getLevel() instanceof ServerLevel) {
 
+        if (context.getLevel() instanceof ServerLevel) {
+            if (TardisRefined.KeySummonsItem) {
                 if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
 
-                    var keychain = keychain(context.getItemInHand());
+                    var keychain = getKeychain(context.getItemInHand());
                     if (keychain.size() > 0) {
                         ResourceKey<Level> tardis = keychain.get(0);
                         var tardisLevel = Platform.getServer().levels.get(tardis);
@@ -144,8 +164,19 @@ public class KeyItem extends Item {
                         });
                     }
                 }
+            } else {
+                if (context.getPlayer().isCrouching()) {
+                    var keychain = getKeychain(context.getItemInHand());
+                    if (keychain.size() > 0) {
+                        Collections.rotate(keychain.subList(0, keychain.size()), -1);
+                        setKeychain(context.getItemInHand(), keychain);
+                        context.getPlayer().displayClientMessage(Component.translatable(ModMessages.MSG_KEY_CYCLED, keychain.get(0).location().getPath()), true);
+                        context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1,2);
+                    }
+                }
             }
         }
+
 
         return super.useOn(context);
     }
@@ -154,14 +185,14 @@ public class KeyItem extends Item {
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
         super.appendHoverText(itemStack, level, list, tooltipFlag);
 
-        ArrayList<ResourceKey<Level>> keychain = KeyItem.keychain(itemStack);
+        ArrayList<ResourceKey<Level>> keychain = KeyItem.getKeychain(itemStack);
 
-        if(!keychain.isEmpty()) {
+        if (!keychain.isEmpty()) {
             list.add(Component.translatable(ModMessages.TOOLTIP_TARDIS_LIST_TITLE));
 
-            for (ResourceKey<Level> resourceKey : keychain) {
-                MutableComponent hyphen = Component.literal(ChatFormatting.YELLOW + "- ");
-                list.add(hyphen.append(Component.literal(resourceKey.location().getPath().substring(0, 5))));
+            for (int i = 0; i < keychain.size(); i++) {
+                MutableComponent hyphen = Component.literal((i == 0) ? ChatFormatting.YELLOW + "> " : "- ");
+                list.add(hyphen.append(Component.literal(keychain.get(i).location().getPath().substring(0, 5))));
             }
 
         }

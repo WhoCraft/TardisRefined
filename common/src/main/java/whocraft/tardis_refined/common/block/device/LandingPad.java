@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -25,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.Platform;
 
 public class LandingPad extends Block {
@@ -60,9 +58,9 @@ public class LandingPad extends Block {
         if (level instanceof ServerLevel serverLevel) {
             ItemStack itemStack = player.getItemInHand(interactionHand);
             if (itemStack.getItem() instanceof KeyItem) {
-                var keyChain = KeyItem.keychain(itemStack);
+                var keyChain = KeyItem.getKeychain(itemStack);
                 if (keyChain.size() > 0) {
-                    ResourceKey<Level> dimension = KeyItem.keychain(itemStack).get(0);
+                    ResourceKey<Level> dimension = KeyItem.getKeychain(itemStack).get(0);
 
                     if (serverLevel.getBlockState(blockPos.above()) == Blocks.AIR.defaultBlockState()) {
                         var tardisLevel = Platform.getServer().getLevel(dimension);

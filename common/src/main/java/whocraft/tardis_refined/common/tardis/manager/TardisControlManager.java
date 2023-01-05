@@ -56,6 +56,7 @@ public class TardisControlManager {
     }
 
     public void loadData(CompoundTag tag) {
+        this.autoLand = tag.getBoolean(NbtConstants.CONTROL_AUTOLAND);
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
 
@@ -72,6 +73,7 @@ public class TardisControlManager {
 
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT, this.isInFlight);
+        tag.putBoolean(NbtConstants.CONTROL_AUTOLAND, this.autoLand);
         if (this.currentExteriorTheme != null) {
             tag.putString(NbtConstants.CONTROL_CURRENT_EXT, this.currentExteriorTheme.getSerializedName());
         }

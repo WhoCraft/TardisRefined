@@ -50,6 +50,7 @@ public class NbtConstants {
     public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
     public static final String CONTROL_INCREMENT_INDEX = "ctrl_increment_index";
     public static final String CONTROL_CURRENT_EXT = "ctrl_current_ext";
+    public static final String CONTROL_AUTOLAND = "ctrl_autoland";
 
     // Location Constant
     public static final String LOCATION_POSITION = "_location_position";

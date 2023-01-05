@@ -66,6 +66,7 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
+        add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
 
         /*Creative Tab*/
         add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");
