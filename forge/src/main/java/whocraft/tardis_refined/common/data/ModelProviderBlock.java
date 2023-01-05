@@ -43,6 +43,8 @@ public class ModelProviderBlock extends BlockStateProvider {
         emptyBlockState(BlockRegistry.INTERNAL_DOOR_BLOCK.get());
         emptyBlockState(BlockRegistry.ARS_EGG.get());
 
+        threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
+
         terraformer(BlockRegistry.TERRAFORMER_BLOCK.get());
 
         /*Basic Blocks*/
