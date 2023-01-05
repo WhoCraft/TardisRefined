@@ -39,6 +39,7 @@ public class NbtConstants {
     public static final String DOOR_IS_MAIN_DOOR = "is_main_door";
     public static final String DOOR_ID = "door_id";
     public static final String DOOR_IS_OPEN = "is_open";
+    public static final String DOOR_IS_LOCKED = "is_locked";
 
     // External Shell
     public static final String SHELL_THEME_ID = "shell_id";

@@ -103,6 +103,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addDesktopTheme(TardisDesktops.COPPER, "Copper");
         addDesktopTheme(TardisDesktops.TOYOTA_THEME, "Toyota");
         addDesktopTheme(TardisDesktops.CRYSTAL, "Crystal");
+        addDesktopTheme(TardisDesktops.VICTORIAN, "Victorian");
         addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
 
         /*Tool Tips*/
