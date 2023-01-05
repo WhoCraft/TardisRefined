@@ -137,15 +137,10 @@ public class KeyItem extends Item {
                         ResourceKey<Level> tardis = keychain.get(0);
                         var tardisLevel = Platform.getServer().levels.get(tardis);
                         TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-                            if (cap.getControlManager().isInFlight()) {
-                                cap.getControlManager().setTargetPosition(context.getClickedPos().above());
-                                cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
-                                cap.getControlManager().endFlight();
-                                PlayerUtil.sendMessage(context.getPlayer(), "TARDIS LANDING", true);
-                            } else {
-                                cap.getControlManager().beginFlight();
-                                PlayerUtil.sendMessage(context.getPlayer(), "TARDIS TAKING OFF", true);
-                            }
+                            cap.getControlManager().setTargetPosition(context.getClickedPos().above());
+                            cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
+                            cap.getControlManager().beginFlight(true);
+                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS ON ITS WAY", true);
                         });
                     }
                 }

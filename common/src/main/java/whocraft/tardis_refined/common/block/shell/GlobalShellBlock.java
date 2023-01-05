@@ -60,8 +60,6 @@ public class GlobalShellBlock extends ShellBaseBlock{
             if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
                 if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
 
-
-
                     /*Locking Logic, would be inside onRightClick but not enough access*/
                     ItemStack itemStack = player.getItemInHand(interactionHand);
                     if (itemStack.getItem() instanceof KeyItem) {

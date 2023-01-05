@@ -43,6 +43,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ROOT_SHELL_DOOR.get(), "Root Door");
         add(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
         add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), "Console Configurator");
+        add(BlockRegistry.LANDING_PAD.get(), "Landing Pad");
 
         /*Items*/
         add(ItemRegistry.KEY.get(), "Tardis Key");

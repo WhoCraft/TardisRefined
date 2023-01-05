@@ -14,7 +14,7 @@ public class ThrottleControl implements IControl {
         if (operator.getControlManager().isInFlight()) {
             operator.getControlManager().endFlight();
         } else {
-            operator.getControlManager().beginFlight();
+            operator.getControlManager().beginFlight(true);
         }
     }
 
