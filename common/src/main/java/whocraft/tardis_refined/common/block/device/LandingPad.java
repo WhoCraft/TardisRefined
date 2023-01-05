@@ -62,13 +62,19 @@ public class LandingPad extends Block {
                 if (keyChain.size() > 0) {
                     ResourceKey<Level> dimension = KeyItem.getKeychain(itemStack).get(0);
 
-                    if (serverLevel.getBlockState(blockPos.above()) == Blocks.AIR.defaultBlockState()) {
+                    if (serverLevel.isEmptyBlock(blockPos.above())) {
                         var tardisLevel = Platform.getServer().getLevel(dimension);
                         TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-                            cap.getControlManager().beginFlight(true);
-                            cap.getControlManager().setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
-                            serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                            if (cap.getControlManager().beginFlight(true)) {
+                                cap.getControlManager().setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
+                                serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                            } else {
+                                serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                            }
+
                         });
+                    } else {
+                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
                     }
                 }
             }

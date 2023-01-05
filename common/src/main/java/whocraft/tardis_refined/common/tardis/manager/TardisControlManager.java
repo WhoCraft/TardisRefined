@@ -40,6 +40,7 @@ public class TardisControlManager {
 
     private boolean autoLand = false;
     public void setAutoLand(boolean autoLand) {this.autoLand = autoLand;}
+    public boolean isAutoLandSet() {return this.autoLand;}
 
     private ShellTheme currentExteriorTheme;
 
@@ -225,9 +226,9 @@ public class TardisControlManager {
         return null;
     }
 
-    public void beginFlight(boolean autoLand) {
+    public boolean beginFlight(boolean autoLand) {
         if (isInFlight || ticksTakingOff > 0) {
-            return;
+            return false;
         }
 
         this.autoLand = autoLand;
@@ -242,7 +243,7 @@ public class TardisControlManager {
         this.ticksInFlight = 0;
         this.ticksTakingOff = 1;
         this.operator.getExteriorManager().setIsTakingOff(true);
-
+        return true;
     }
 
     public void endFlight() {
