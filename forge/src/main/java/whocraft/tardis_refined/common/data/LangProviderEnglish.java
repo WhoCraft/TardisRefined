@@ -97,6 +97,8 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.GROENING, "Greoning");
         addShell(ShellTheme.VENDING, "Vending Machine");
         addShell(ShellTheme.BIG_BEN, "Big Ben");
+        addShell(ShellTheme.NUKA, "Nuka");
+
 
         /*Desktop Themes*/
         addDesktopTheme(TardisDesktops.CORAL_THEME, "Coral");
