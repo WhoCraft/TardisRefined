@@ -116,6 +116,9 @@ public class DimensionHandlerIP {
             if (level instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
                     UUID tardisID = UUID.fromString(cap.getLevel().dimension().location().getPath());
+                    if(tardisToPortalsMap.get(tardisID) == null) {
+                        return;
+                    }
                     for(Portal portal : tardisToPortalsMap.get(tardisID)) {
                         portal.kill();
                     }
@@ -217,6 +220,7 @@ public class DimensionHandlerIP {
                 2.25 // height
         );
         PortalManipulation.rotatePortalBody(portal, quat.toMcQuaternion());
+
         return portal;
     }
 }
