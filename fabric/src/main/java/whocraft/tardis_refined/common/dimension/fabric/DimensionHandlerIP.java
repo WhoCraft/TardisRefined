@@ -176,6 +176,7 @@ public class DimensionHandlerIP {
 
         Portal exteriorPortal = createPortal(operator.getExteriorManager().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
         Portal interiorPortal = createDestPortal(exteriorPortal, Portal.entityType, interiorQuat);
+        tardisToPortalsMap.put(UUID.fromString(operator.getLevel().dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
 
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);
@@ -191,8 +192,6 @@ public class DimensionHandlerIP {
 
         exteriorPortal.level.addFreshEntity(exteriorPortal);
         interiorPortal.level.addFreshEntity(interiorPortal);
-
-        tardisToPortalsMap.put(UUID.fromString(operator.getLevel().dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
     }
 
     public static void onDoorClosed(TardisLevelOperator operator) {
