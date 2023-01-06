@@ -97,7 +97,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.GROENING, "Greoning");
         addShell(ShellTheme.VENDING, "Vending Machine");
         addShell(ShellTheme.BIG_BEN, "Big Ben");
-
+        addShell(ShellTheme.NUKA, "Nuka");
         /*Desktop Themes*/
         addDesktopTheme(TardisDesktops.CORAL_THEME, "Coral");
         addDesktopTheme(TardisDesktops.FACTORY_THEME, "Factory");
@@ -105,6 +105,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addDesktopTheme(TardisDesktops.TOYOTA_THEME, "Toyota");
         addDesktopTheme(TardisDesktops.CRYSTAL, "Crystal");
         addDesktopTheme(TardisDesktops.VICTORIAN, "Victorian");
+        addDesktopTheme(TardisDesktops.NUKA, "Nuka");
         addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
 
         /*Tool Tips*/
