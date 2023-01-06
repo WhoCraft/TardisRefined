@@ -31,8 +31,8 @@ public class NukaShellModel extends ShellModel {
 	@Override
 	public void setDoorPosition(boolean open) {
 		if (open) {
-			this.left_door.yRot = -250f;
-			this.right_door.yRot = 250f;
+			this.left_door.yRot = 250f;
+			this.right_door.yRot = -250f;
 		} else {
 			this.left_door.yRot = 0;
 			this.right_door.yRot = 0;
@@ -41,8 +41,9 @@ public class NukaShellModel extends ShellModel {
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-
+		handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
+
 
 	@Override
 	public ResourceLocation texture() {
