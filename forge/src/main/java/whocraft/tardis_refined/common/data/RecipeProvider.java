@@ -21,6 +21,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
     protected void buildCraftingRecipes(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(BlockRegistry.TERRAFORMER_BLOCK.get()).pattern("ISI").pattern("GEG").pattern("IRI").define('I', Items.IRON_INGOT).define('S', Items.DAYLIGHT_DETECTOR).define('G', Items.GLASS_PANE).define('E', Blocks.EMERALD_BLOCK.asItem()).define('R', Blocks.REDSTONE_BLOCK.asItem()).unlockedBy("has_crafting_table", has(Blocks.EMERALD_BLOCK)).save(consumer);
         ShapedRecipeBuilder.shaped(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get()).pattern("IOI").pattern("IEI").pattern("IBI").define('I', Items.IRON_INGOT).define('O', Items.OBSERVER).define('E', Items.ENDER_EYE).define('B', Items.STONE_BUTTON).unlockedBy("has_crafting_table", has(Blocks.EMERALD_BLOCK)).save(consumer);
+        ShapedRecipeBuilder.shaped(BlockRegistry.LANDING_PAD.get()).pattern("ITI").pattern("RAR").pattern("SSS").define('I', Items.IRON_INGOT).define('T', Items.IRON_TRAPDOOR).define('R', Items.REDSTONE).define('A', Items.TARGET).define('S', Items.STONE).unlockedBy("has_crafting_table", has(Blocks.TARGET)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(ItemRegistry.KEY.get()).requires(Items.IRON_INGOT).requires(Items.TRIPWIRE_HOOK).unlockedBy("has_crafting_table", has(Blocks.TRIPWIRE_HOOK)).save(consumer);
     }
