@@ -122,6 +122,10 @@ public class DimensionHandlerIP {
                     new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0,  -0.46),
                     new Vec3(-0.3, 0, 0), new Vec3(0, 0, -0.3),
                     new Vec3(0.3, 0, 0), new Vec3(0, 0,  0.3)));
+            themeToOffsetMap.put(ShellTheme.NUKA, List.of(new Vec3(0.65, 0.35, 0),
+                    new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35,  -0.65),
+                    new Vec3(-0.33, 0, 0), new Vec3(0, 0, -0.33),
+                    new Vec3(0.33, 0, 0), new Vec3(0, 0,  0.33)));
         }
     }
 
