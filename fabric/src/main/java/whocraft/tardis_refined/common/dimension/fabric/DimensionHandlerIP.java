@@ -73,6 +73,7 @@ public class DimensionHandlerIP {
         if(DimensionHandler.hasIP()) {
             TardisEvents.TARDIS_DOOR_OPENED_EVENT.register(DimensionHandlerIP::onDoorOpened);
             TardisEvents.TARDIS_DOOR_CLOSED_EVENT.register(DimensionHandlerIP::onDoorClosed);
+            TardisEvents.TARDIS_SHELL_CHANGE_EVENT.register(DimensionHandlerIP::onShellChange);
             PlayerBlockBreakEvents.BEFORE.register(DimensionHandlerIP::onDoorRemoved);
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
 
@@ -108,6 +109,10 @@ public class DimensionHandlerIP {
                     new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0,  -0.5),
                     new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
                     new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
+            themeToOffsetMap.put(ShellTheme.BIG_BEN, List.of(new Vec3(0.46, 0, 0),
+                    new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0,  -0.46),
+                    new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
+                    new Vec3(1.3, 0, 0), new Vec3(0, 0,  1.3)));
         }
     }
 
@@ -127,6 +132,11 @@ public class DimensionHandlerIP {
             }
         }
         return true;
+    }
+
+    // Prevent the portal from persisting
+    public static void onShellChange(TardisLevelOperator operator, ShellTheme ignored) {
+        operator.setDoorClosed(true);
     }
 
     public static void onDoorOpened(TardisLevelOperator operator) {

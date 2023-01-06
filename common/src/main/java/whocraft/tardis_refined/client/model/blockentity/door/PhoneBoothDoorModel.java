@@ -77,7 +77,7 @@ public class PhoneBoothDoorModel extends ShellModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-		this.Door2.yRot = (open) ? -1.75f : 0;
+		this.Door2.yRot = (open) ? 1.75f : 0;
 	}
 
 	@Override
