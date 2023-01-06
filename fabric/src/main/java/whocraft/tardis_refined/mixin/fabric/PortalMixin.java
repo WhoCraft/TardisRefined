@@ -23,31 +23,39 @@ public abstract class PortalMixin implements TARDISPortalData {
     @Unique
     private UUID tardisID;
 
-    @Inject(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER))
+    @Override
+    public void setTardisID(UUID tardisID) {
+        this.tardisID = tardisID;
+    }
+
+    @Inject(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
     private void addTARDISData(CompoundTag compoundTag, CallbackInfo ci) {
-        if(tardisID != null) {
-            compoundTag.putUUID("tardis_id", tardisID);
+        if(!((Portal) (Object) this).level.isClientSide) {
+            if (tardisID != null) {
+                compoundTag.putUUID("tardis_id", tardisID);
+            }
         }
     }
 
-    @Inject(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER))
+    @Inject(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
     private void readTARDISData(CompoundTag compoundTag, CallbackInfo ci) {
         Portal thisPortal = (Portal) (Object) this;
 
-        if(compoundTag.contains("tardis_id")) {
-            tardisID = compoundTag.getUUID("tardis_id");
-            if (DimensionHandlerIP.tardisToPortalsMap.get(tardisID) == null) {
-                thisPortal.kill();
-                reloadAndSyncToClient();
-            } else {
-                for (Portal portal : DimensionHandlerIP.tardisToPortalsMap.get(tardisID)) {
-                    if (portal == null) {
-                        thisPortal.kill();
-                        reloadAndSyncToClient();
+        if(!thisPortal.level.isClientSide) {
+            if (compoundTag.contains("tardis_id")) {
+                tardisID = compoundTag.getUUID("tardis_id");
+                if (DimensionHandlerIP.tardisToPortalsMap.get(tardisID) == null) {
+                    thisPortal.kill();
+                    reloadAndSyncToClient();
+                } else {
+                    for (Portal portal : DimensionHandlerIP.tardisToPortalsMap.get(tardisID)) {
+                        if (portal == null) {
+                            thisPortal.kill();
+                            reloadAndSyncToClient();
+                        }
                     }
                 }
             }
         }
     }
-
 }
