@@ -41,6 +41,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.tardis.themes.Theme;
+import whocraft.tardis_refined.registry.DimensionTypes;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
@@ -121,16 +122,18 @@ public class DimensionHandlerIP {
     private static boolean onDoorRemoved(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
         if (blockEntity instanceof ITardisInternalDoor) {
             if (level instanceof ServerLevel serverLevel) {
-                TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    UUID tardisID = UUID.fromString(cap.getLevel().dimension().location().getPath());
-                    if(tardisToPortalsMap.get(tardisID) == null) {
-                        return;
-                    }
-                    for(Portal portal : tardisToPortalsMap.get(tardisID)) {
-                        portal.kill();
-                    }
-                    tardisToPortalsMap.remove(tardisID);
-                });
+                if(serverLevel.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
+                    TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                        UUID tardisID = UUID.fromString(cap.getLevel().dimension().location().getPath());
+                        if (tardisToPortalsMap.get(tardisID) == null) {
+                            return;
+                        }
+                        for (Portal portal : tardisToPortalsMap.get(tardisID)) {
+                            portal.kill();
+                        }
+                        tardisToPortalsMap.remove(tardisID);
+                    });
+                }
             }
         }
         return true;
