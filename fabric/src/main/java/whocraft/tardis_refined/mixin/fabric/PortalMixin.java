@@ -22,10 +22,20 @@ public abstract class PortalMixin implements TARDISPortalData {
 
     @Unique
     private UUID tardisID;
+    @Unique
+    private boolean killOnNextTick = false;
 
     @Override
     public void setTardisID(UUID tardisID) {
         this.tardisID = tardisID;
+    }
+
+    @Inject(method = "tick", at = @At(value = "HEAD"))
+    private void onTick(CallbackInfo ci) {
+        Portal thisPortal = (Portal) (Object) this;
+        if(killOnNextTick) {
+            thisPortal.kill();
+        }
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
@@ -45,13 +55,12 @@ public abstract class PortalMixin implements TARDISPortalData {
             if (compoundTag.contains("tardis_id")) {
                 tardisID = compoundTag.getUUID("tardis_id");
                 if (DimensionHandlerIP.tardisToPortalsMap.get(tardisID) == null) {
-                    thisPortal.kill();
-                    reloadAndSyncToClient();
+                    killOnNextTick = true;
                 } else {
                     for (Portal portal : DimensionHandlerIP.tardisToPortalsMap.get(tardisID)) {
                         if (portal == null) {
-                            thisPortal.kill();
-                            reloadAndSyncToClient();
+                            killOnNextTick = true;
+                            break;
                         }
                     }
                 }
