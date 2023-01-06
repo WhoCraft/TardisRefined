@@ -217,9 +217,9 @@ public class TardisLevelOperator {
         }
 
         if(closeDoor) {
-            TardisEvents.TARDIS_DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
+            TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
         } else {
-            TardisEvents.TARDIS_DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
+            TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
         }
     }
 
@@ -227,6 +227,7 @@ public class TardisLevelOperator {
         getExteriorManager().setShellTheme(theme);
         getInteriorManager().setShellTheme(theme);
         this.getControlManager().setCurrentExteriorTheme(theme);
+        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
     }
 
     /**

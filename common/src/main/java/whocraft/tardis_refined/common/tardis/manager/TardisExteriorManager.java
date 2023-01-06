@@ -147,7 +147,6 @@ public class TardisExteriorManager {
         }
 
         this.currentTheme = theme;
-        TardisEvents.TARDIS_SHELL_CHANGE_EVENT.invoker().onShellChange(operator, theme);
     }
 
     public void triggerShellRegenState() {

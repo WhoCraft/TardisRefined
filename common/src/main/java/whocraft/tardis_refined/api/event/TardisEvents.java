@@ -25,19 +25,19 @@ public class TardisEvents {
         }
     });
 
-    public static final Event<CloseDoor> TARDIS_DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
+    public static final Event<CloseDoor> DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
         for(CloseDoor listener : listeners) {
             listener.onDoorClosed(tardisLevelOperator);
         }
     });
 
-    public static final Event<OpenDoor> TARDIS_DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
+    public static final Event<OpenDoor> DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
         for(OpenDoor listener : listeners) {
             listener.onDoorOpen(tardisLevelOperator);
         }
     });
 
-    public static final Event<ShellChange> TARDIS_SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
+    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
         for(ShellChange listener : listeners) {
             listener.onShellChange(tardisLevelOperator, theme);
         }
@@ -109,6 +109,7 @@ public class TardisEvents {
          * Called when a TARDIS lands.
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
+         * @param theme The theme the TARDIS changed to.
          */
         void onShellChange(TardisLevelOperator tardisLevelOperator, ShellTheme theme);
     }
