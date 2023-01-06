@@ -1,7 +1,14 @@
 ![image](https://i.imgur.com/eIfAaYJ.png)
 
-<img src="https://discordapp.com/api/guilds/1054629302152478730/widget.png?style=shield" alt="Discord Shield"/>
+<img src="https://discordapp.com/api/guilds/1054629302152478730/widget.png?style=shield" alt="Discord Shield"/>[![Crowdin](https://badges.crowdin.net/tardis-refined/localized.svg)](https://crowdin.com/project/tardis-refined)
+[![CurseForge](https://cf.way2muchnoise.eu/782697.svg?badge_style=flat)](https://www.curseforge.com/minecraft/mc-mods/tardis-refined)
+[![ModRinth](https://modrinth-utils.vercel.app/api/badge/downloads?id=nqVt6aES&logo=true)](https://modrinth.com/mod/tardis-refined)
+
+
+
+
  TARDIS Refined is a Minecraft mod for Forge and Fabric which brings the TARDIS from Doctor Who to Minecraft.
+ 
  
  <a href="https://github.com/CommandrMoose/TardisRefined/wiki">View the wiki.</a>
 
