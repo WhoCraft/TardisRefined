@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.api.PortalAPI;
+import qouteall.imm_ptl.core.commands.PortalCommand;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.imm_ptl.core.render.PortalEntityRenderer;
@@ -77,14 +79,14 @@ public class DimensionHandlerIP {
             PlayerBlockBreakEvents.BEFORE.register(DimensionHandlerIP::onDoorRemoved);
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
 
-            themeToOffsetMap.put(ShellTheme.FACTORY, List.of(new Vec3(0.499, 0.25, 0),
-                    new Vec3(0, 0.25, 0.499), new Vec3(-0.499, 0.25, 0), new Vec3(0, 0.25,  -0.499),
-                    new Vec3(-1.375, 0.125, 0), new Vec3(0, 0.125, -1.375),
-                    new Vec3(1.375, 0.125, 0), new Vec3(0, 0.125,  1.375)));
-            themeToOffsetMap.put(ShellTheme.POLICE_BOX, List.of(new Vec3(0.6, 0, 0),
-                    new Vec3(0, 0, 0.6), new Vec3(-0.6, 0, 0), new Vec3(0, 0,  -0.6),
-                    new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
-                    new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
+            themeToOffsetMap.put(ShellTheme.FACTORY, List.of(new Vec3(0.499, 0, 0),
+                    new Vec3(0, 0, 0.499), new Vec3(-0.499, 0, 0), new Vec3(0, 0,  -0.499),
+                    new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
+                    new Vec3(1.375, 0, 0), new Vec3(0, 0,  1.375)));
+            themeToOffsetMap.put(ShellTheme.POLICE_BOX, List.of(new Vec3(0.6, 0.25, 0),
+                    new Vec3(0, 0.25, 0.6), new Vec3(-0.6, 0.25, 0), new Vec3(0, 0.25,  -0.6),
+                    new Vec3(-1.425, 0.175, 0), new Vec3(0, 0.175, -1.425),
+                    new Vec3(1.425, 0.175, 0), new Vec3(0, 0.175,  1.425)));
             themeToOffsetMap.put(ShellTheme.PHONE_BOOTH, List.of(new Vec3(0.5, 0.145, 0),
                     new Vec3(0, 0.145, 0.5), new Vec3(-0.5, 0.145, 0), new Vec3(0, 0.145,  -0.5),
                     new Vec3(-1.435, 0.145, 0), new Vec3(0, 0.145, -1.435),
@@ -94,9 +96,9 @@ public class DimensionHandlerIP {
                     new Vec3(-1.425, 0.175, 0), new Vec3(0, 0.175, -1.425),
                     new Vec3(1.425, 0.175, 0), new Vec3(0, 0.175,  1.425)));
             themeToOffsetMap.put(ShellTheme.PRESENT, List.of(new Vec3(0.57, 0.175, 0),
-                    new Vec3(0, 0.175, 0.57), new Vec3(-0.57, 0.175, 0), new Vec3(0, 0.175,  -0.57),
-                    new Vec3(-1.425, 0.175, 0), new Vec3(0, 0.175, -1.425),
-                    new Vec3(1.425, 0.175, 0), new Vec3(0, 0.175,  1.425)));
+                    new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0,  -0.57),
+                    new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
+                    new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
             themeToOffsetMap.put(ShellTheme.DRIFTER, List.of(new Vec3(0.61, 0, 0),
                     new Vec3(0, 0, 0.61), new Vec3(-0.61, 0, 0), new Vec3(0, 0,  -0.61),
                     new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
@@ -179,6 +181,14 @@ public class DimensionHandlerIP {
         exteriorPortal.setInteractable(false);
         interiorPortal.setInteractable(false);
 
+        CompoundTag tag = exteriorPortal.writePortalDataToNbt();
+        tag.putBoolean("adjustPositionAfterTeleport", false);
+        exteriorPortal.readPortalDataFromNbt(tag);
+
+        tag = interiorPortal.writePortalDataToNbt();
+        tag.putBoolean("adjustPositionAfterTeleport", false);
+        interiorPortal.readPortalDataFromNbt(tag);
+
         exteriorPortal.level.addFreshEntity(exteriorPortal);
         interiorPortal.level.addFreshEntity(interiorPortal);
 
@@ -210,7 +220,7 @@ public class DimensionHandlerIP {
         newPortal.width = portal.width;
         newPortal.height = portal.height;
         newPortal.axisW = new Vec3(1, 0, 0);
-        newPortal.axisH = new Vec3(0, 2, 0);
+        newPortal.axisH = new Vec3(0, 1, 0);
 
         PortalManipulation.rotatePortalBody(newPortal, quat.toMcQuaternion());
 
