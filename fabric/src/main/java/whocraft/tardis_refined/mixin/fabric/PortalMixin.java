@@ -17,9 +17,6 @@ import java.util.UUID;
 
 @Mixin(value = Portal.class, remap = false)
 public abstract class PortalMixin implements TARDISPortalData {
-    @Shadow
-    public abstract void reloadAndSyncToClient();
-
     @Unique
     private UUID tardisID;
     @Unique
@@ -30,7 +27,7 @@ public abstract class PortalMixin implements TARDISPortalData {
         this.tardisID = tardisID;
     }
 
-    @Inject(method = "tick", at = @At(value = "HEAD"))
+    @Inject(method = "tick", at = @At(value = "HEAD"), remap = true)
     private void onTick(CallbackInfo ci) {
         Portal thisPortal = (Portal) (Object) this;
         if(killOnNextTick) {
