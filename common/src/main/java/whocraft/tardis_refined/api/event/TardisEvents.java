@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class TardisEvents {
 
@@ -24,15 +25,21 @@ public class TardisEvents {
         }
     });
 
-    public static final Event<CloseDoor> TARDIS_DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
+    public static final Event<CloseDoor> DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
         for(CloseDoor listener : listeners) {
             listener.onDoorClosed(tardisLevelOperator);
         }
     });
 
-    public static final Event<OpenDoor> TARDIS_DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
+    public static final Event<OpenDoor> DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
         for(OpenDoor listener : listeners) {
             listener.onDoorOpen(tardisLevelOperator);
+        }
+    });
+
+    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
+        for(ShellChange listener : listeners) {
+            listener.onShellChange(tardisLevelOperator, theme);
         }
     });
 
@@ -91,6 +98,20 @@ public class TardisEvents {
          * @param pos The position of the TARDIS.
          */
         void onLand(TardisLevelOperator tardisLevelOperator, LevelAccessor level, BlockPos pos);
+    }
+
+    /**
+     * An event that is triggered when a TARDIS changes its Shell.
+     */
+    @FunctionalInterface
+    public interface ShellChange {
+        /**
+         * Called when a TARDIS lands.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         * @param theme The theme the TARDIS changed to.
+         */
+        void onShellChange(TardisLevelOperator tardisLevelOperator, ShellTheme theme);
     }
 
     /**
