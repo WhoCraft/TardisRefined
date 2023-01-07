@@ -18,7 +18,7 @@ public class TardisRefinedFabric implements ModInitializer {
         ModEvents.addCommonEvents();
         TardisRefined.init();
         setupBiomeModifications();
-        if (DimensionHandler.hasIP()) {
+        if (DimensionHandler.hasIP() && TRConfig.COMMON.COMPATIBILITY_IP.get()) {
             DimensionHandlerIP.init();
         }
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
