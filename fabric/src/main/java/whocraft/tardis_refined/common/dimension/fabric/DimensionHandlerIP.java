@@ -79,7 +79,7 @@ public class DimensionHandlerIP {
             TardisEvents.DOOR_CLOSED_EVENT.register(DimensionHandlerIP::destroyPortals);
             TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
                 DimensionHandlerIP.destroyPortals(operator);
-                if(operator.getInternalDoor().isOpen() && operator.isTardisReady()) {
+                if(operator.getInternalDoor().isOpen() && operator.isTardisReady() && tardisToPortalsMap.get(UUID.fromString(operator.getLevel().dimension().location().getPath())) == null /* Just in case */) {
                     DimensionHandlerIP.createPortals(operator);
                 }
             });
