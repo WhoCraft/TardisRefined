@@ -24,6 +24,11 @@ repositories {
         name = 'Ladysnake Mods'
         url = 'https://ladysnake.jfrog.io/artifactory/mods'
     }
+
+    maven {
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+    }
 }
 
 sourceSets.main.resources {
@@ -49,6 +54,9 @@ dependencies {
     modImplementation "curse.maven:modmenu-308702:${rootProject.mod_menu_version}"
     modImplementation "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
 
+    // Forge Config API Port
+    modApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
+    include "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
