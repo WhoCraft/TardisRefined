@@ -3,9 +3,11 @@ package whocraft.tardis_refined.common.dimension.fabric;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
@@ -15,6 +17,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -23,7 +28,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.commands.PortalCommand;
 import qouteall.imm_ptl.core.portal.Portal;
@@ -46,10 +54,7 @@ import whocraft.tardis_refined.registry.DimensionTypes;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.BiFunction;
 
 import static whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl.addDimension;
@@ -79,59 +84,60 @@ public class DimensionHandlerIP {
             TardisEvents.DOOR_CLOSED_EVENT.register(DimensionHandlerIP::destroyPortals);
             TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
                 DimensionHandlerIP.destroyPortals(operator);
-                if(operator.getInternalDoor().isOpen() && operator.isTardisReady() && tardisToPortalsMap.get(UUID.fromString(operator.getLevel().dimension().location().getPath())) == null /* Just in case */) {
-                    DimensionHandlerIP.createPortals(operator);
-                }
+                DimensionHandlerIP.createPortals(operator);
             });
             PlayerBlockBreakEvents.BEFORE.register(DimensionHandlerIP::onDoorRemoved);
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
 
             themeToOffsetMap.put(ShellTheme.FACTORY, List.of(new Vec3(0.499, 0, 0),
                     new Vec3(0, 0, 0.499), new Vec3(-0.499, 0, 0), new Vec3(0, 0,  -0.499),
-                    new Vec3(-0.375, 0, 0), new Vec3(0, 0, -0.375),
-                    new Vec3(0.375, 0, 0), new Vec3(0, 0,  0.375)));
+                    new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
+                    new Vec3(1.375, 0, 0), new Vec3(0, 0,  1.375)));
             themeToOffsetMap.put(ShellTheme.POLICE_BOX, List.of(new Vec3(0.6, 0.25, 0),
                     new Vec3(0, 0.25, 0.6), new Vec3(-0.6, 0.25, 0), new Vec3(0, 0.25,  -0.6),
-                    new Vec3(-0.425, 0.125, 0), new Vec3(0, 0.125, -0.425),
-                    new Vec3(0.425, 0.125, 0), new Vec3(0, 0.125,  0.425)));
+                    new Vec3(-1.425, 0.125, 0), new Vec3(0, 0.125, -1.425),
+                    new Vec3(1.425, 0.125, 0), new Vec3(0, 0.125,  1.425)));
             themeToOffsetMap.put(ShellTheme.PHONE_BOOTH, List.of(new Vec3(0.5, 0.145, 0),
                     new Vec3(0, 0.145, 0.5), new Vec3(-0.5, 0.145, 0), new Vec3(0, 0.145,  -0.5),
-                    new Vec3(-0.435, 0.145, 0), new Vec3(0, 0.145, -0.435),
-                    new Vec3(0.435, 0.145, 0), new Vec3(0, 0.145,  0.435)));
+                    new Vec3(-1.435, 0.145, 0), new Vec3(0, 0.145, -1.435),
+                    new Vec3(1.435, 0.145, 0), new Vec3(0, 0.145,  1.435)));
             themeToOffsetMap.put(ShellTheme.MYSTIC, List.of(new Vec3(0.5, 0.15, 0),
                     new Vec3(0, 0.15, 0.5), new Vec3(-0.5, 0.15, 0), new Vec3(0, 0.175,  -0.5),
-                    new Vec3(-0.425, 0.15, 0), new Vec3(0, 0.15, -0.425),
-                    new Vec3(0.425, 0.15, 0), new Vec3(0, 0.15,  0.425)));
+                    new Vec3(-1.425, 0.15, 0), new Vec3(0, 0.15, -1.425),
+                    new Vec3(1.425, 0.15, 0), new Vec3(0, 0.15,  1.425)));
             themeToOffsetMap.put(ShellTheme.PRESENT, List.of(new Vec3(0.57, 0.175, 0),
                     new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0,  -0.57),
-                    new Vec3(-0.425, 0, 0), new Vec3(0, 0, -0.425),
-                    new Vec3(0.425, 0, 0), new Vec3(0, 0,  0.425)));
+                    new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
+                    new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
             themeToOffsetMap.put(ShellTheme.DRIFTER, List.of(new Vec3(0.61, 0, 0),
                     new Vec3(0, 0, 0.61), new Vec3(-0.61, 0, 0), new Vec3(0, 0,  -0.61),
-                    new Vec3(-0.425, 0, 0), new Vec3(0, 0, -0.425),
-                    new Vec3(0.425, 0, 0), new Vec3(0, 0,  0.425)));
+                    new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
+                    new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
             themeToOffsetMap.put(ShellTheme.VENDING, List.of(new Vec3(0.32, 0, 0),
                     new Vec3(0, 0, 0.33), new Vec3(-0.32, 0, 0), new Vec3(0, 0,  -0.32),
-                    new Vec3(-0.48, 0, 0), new Vec3(0, 0, -0.48),
-                    new Vec3(0.48, 0, 0), new Vec3(0, 0,  0.48)));
+                    new Vec3(-1.48, 0, 0), new Vec3(0, 0, -1.48),
+                    new Vec3(1.48, 0, 0), new Vec3(0, 0,  1.48)));
             themeToOffsetMap.put(ShellTheme.GROENING, List.of(new Vec3(0.5, 0, 0),
                     new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0,  -0.5),
-                    new Vec3(-0.33, 0, 0), new Vec3(0, 0, -0.33),
-                    new Vec3(0.33, 0, 0), new Vec3(0, 0,  0.33)));
+                    new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
+                    new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
             themeToOffsetMap.put(ShellTheme.BIG_BEN, List.of(new Vec3(0.46, 0, 0),
                     new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0,  -0.46),
-                    new Vec3(-0.3, 0, 0), new Vec3(0, 0, -0.3),
-                    new Vec3(0.3, 0, 0), new Vec3(0, 0,  0.3)));
+                    new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
+                    new Vec3(1.3, 0, 0), new Vec3(0, 0,  1.3)));
             themeToOffsetMap.put(ShellTheme.NUKA, List.of(new Vec3(0.65, 0.35, 0),
                     new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35,  -0.65),
-                    new Vec3(-0.33, 0, 0), new Vec3(0, 0, -0.33),
-                    new Vec3(0.33, 0, 0), new Vec3(0, 0,  0.33)));
+                    new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
+                    new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
         }
     }
 
     private static boolean onDoorRemoved(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
-        if (blockEntity instanceof ITardisInternalDoor) {
+        if (blockEntity instanceof ITardisInternalDoor door) {
             if (level instanceof ServerLevel serverLevel) {
+                if(!door.isMainDoor()) {
+                    return true;
+                }
                 if(serverLevel.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
                     TardisLevelOperator.get(serverLevel).ifPresent(DimensionHandlerIP::destroyPortals);
                 }
@@ -141,6 +147,16 @@ public class DimensionHandlerIP {
     }
 
     public static void createPortals(TardisLevelOperator operator) {
+        if(!operator.getInternalDoor().isOpen()) {
+            return;
+        }
+        if(!operator.isTardisReady()) {
+            return;
+        }
+        if(tardisToPortalsMap.get(UUID.fromString(operator.getLevel().dimension().location().getPath())) != null) {
+            return;
+        }
+
         if(operator.getExteriorManager().getCurrentTheme().equals(ShellTheme.BRIEFCASE)) {
             return;
         }
@@ -169,17 +185,10 @@ public class DimensionHandlerIP {
             case WEST -> entryPosition = entryPosition.add(themeToOffsetMap.get(theme).get(6));
             case NORTH -> entryPosition = entryPosition.add(themeToOffsetMap.get(theme).get(7));
         }
-
         DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.rotation.toYRot());
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
 
         Portal exteriorPortal = createPortal(operator.getExteriorManager().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
-        switch(door.getEntryRotation()) {
-            case EAST -> entryPosition = entryPosition.add(-1, 0, 0);
-            case SOUTH -> entryPosition = entryPosition.add(0, 0, -1);
-            case WEST -> entryPosition = entryPosition.add(1, 0, 0);
-            case NORTH -> entryPosition = entryPosition.add(0, 0, 1);
-        }
         Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, Portal.entityType, interiorQuat);
         tardisToPortalsMap.put(UUID.fromString(operator.getLevel().dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
 
@@ -222,6 +231,8 @@ public class DimensionHandlerIP {
         newPortal.setPos(doorPos);
         newPortal.setDestination(portal.getOriginPos());
         newPortal.specificPlayerId = portal.specificPlayerId;
+
+        newPortal.initCullableRange(portal.cullableXStart * portal.scaling, portal.cullableXEnd * portal.scaling, -portal.cullableYStart * portal.scaling, -portal.cullableYEnd * portal.scaling);
 
         newPortal.width = portal.width;
         newPortal.height = portal.height;
