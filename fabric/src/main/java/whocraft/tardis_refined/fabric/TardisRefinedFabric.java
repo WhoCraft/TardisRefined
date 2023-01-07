@@ -18,11 +18,13 @@ public class TardisRefinedFabric implements ModInitializer {
         ModEvents.addCommonEvents();
         TardisRefined.init();
         setupBiomeModifications();
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+
         if (DimensionHandler.hasIP() && TRConfig.COMMON.COMPATIBILITY_IP.get()) {
             DimensionHandlerIP.init();
         }
-        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
-        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+
     }
 
     /** For use with Fabric BiomeModification API*/
