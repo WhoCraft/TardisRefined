@@ -79,7 +79,7 @@ public class DimensionHandlerIP {
             TardisEvents.DOOR_CLOSED_EVENT.register(DimensionHandlerIP::destroyPortals);
             TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
                 DimensionHandlerIP.destroyPortals(operator);
-                if(operator.getInternalDoor().isOpen()) {
+                if(operator.getInternalDoor().isOpen() && operator.isTardisReady()) {
                     DimensionHandlerIP.createPortals(operator);
                 }
             });
@@ -208,9 +208,9 @@ public class DimensionHandlerIP {
         for(Portal portal : portals) {
             if (portal != null) {
                 portal.kill();
-                tardisToPortalsMap.remove(tardisID);
             }
         }
+        tardisToPortalsMap.remove(tardisID);
     }
 
     public static Portal createDestPortal(Portal portal, Vec3 doorPos, EntityType<Portal> entityType, DQuaternion quat) {
