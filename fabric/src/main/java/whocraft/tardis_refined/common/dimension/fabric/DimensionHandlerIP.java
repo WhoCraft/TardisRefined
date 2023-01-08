@@ -106,6 +106,12 @@ public class DimensionHandlerIP {
                     new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0,  -0.46),
                     new Vec3(-0.3, 0, 0), new Vec3(0, 0, -0.3),
                     new Vec3(0.3, 0, 0), new Vec3(0, 0,  0.3)));
+
+        for (ShellTheme value : ShellTheme.values()) {
+            if(!themeToOffsetMap.containsKey(value)){
+                TardisRefined.LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
+            }
+        }
     }
 
     private static boolean onDoorRemoved(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
