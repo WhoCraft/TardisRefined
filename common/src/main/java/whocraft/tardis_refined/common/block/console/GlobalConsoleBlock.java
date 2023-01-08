@@ -3,7 +3,9 @@ package whocraft.tardis_refined.common.block.console;
 import net.minecraft.core.BlockPos;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -22,6 +24,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -87,5 +90,20 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         }
 
         super.destroy(levelAccessor, blockPos, blockState);
+    }
+
+    @Override
+    public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
+        super.animateTick(blockState, level, blockPos, randomSource);
+
+        TardisClientData clientData = TardisClientData.getInstance(level.dimension());
+        if (clientData != null) {
+            if (clientData.isFlying() && level.random.nextInt(4) == 0) {
+                var d = (double)blockPos.getX() + randomSource.nextFloat() * 1.25;
+                var e = (double)blockPos.getY() + randomSource.nextDouble() * 1D + 1D;
+                var f = (double)blockPos.getZ()  + randomSource.nextFloat()* 1.25;
+                level.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0D, 0.1D, 0.0D);
+            }
+        }
     }
 }

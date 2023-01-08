@@ -121,7 +121,6 @@ public class TardisLevelOperator {
             shouldSync = true;
         }
 
-
         // Synchronize the Tardis's data across the server
         if (shouldSync) {
             tardisClientData.sync(level);

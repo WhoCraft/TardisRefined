@@ -4,45 +4,72 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.DispenserBlock;
-import net.minecraft.world.level.block.entity.DispenserBlockEntity;
-import whocraft.tardis_refined.api.event.EventResult;
+import net.minecraft.world.phys.Vec3;
+import org.lwjgl.system.windows.DISPLAY_DEVICE;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.util.BlockPosHelper;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class TardisControlManager {
+
+    // CONSTANTS
+    private static final int TICKS_LANDING_MAX = 9 * 20;
+
 
     private TardisLevelOperator operator;
 
     // Location based.
-    private TardisNavLocation believedLocation;
     private TardisNavLocation targetLocation;
 
-    // Inflight coundowns
+    // Inflight timers (ticks)
     private boolean isInFlight = false;
     private int ticksInFlight = 0;
     private int ticksLanding = 0;
-    private int TICKS_LANDING_MAX = 9 * 20;
     private int ticksTakingOff = 0;
 
     private int[] coordinateIncrements = new int[]{1, 10, 100, 1000};
     private int cordIncrementIndex = 0;
 
-    private boolean autoLand = false;
-    public void setAutoLand(boolean autoLand) {this.autoLand = autoLand;}
-    public boolean isAutoLandSet() {return this.autoLand;}
+    private List<ConsoleControl> possibleControls;
+    private ConsoleControl controlPrompt;
+    private int requiredControlRequests;
+    private int controlResponses;
 
+    private final int MIN_DISTANCE_FOR_EVENTS = 50;
+    private int controlRequestCooldown = 0;
+    private boolean isWaitingForControlResponse = false;
+
+    private boolean autoLand = false;
     private ShellTheme currentExteriorTheme;
+
+    public TardisControlManager(TardisLevelOperator operator) {
+        this.operator = operator;
+        this.possibleControls = Arrays.stream(ConsoleControl.values()).filter(x -> x != ConsoleControl.MONITOR && x != ConsoleControl.THROTTLE).toList();
+    }
+
+    public void setAutoLand(boolean autoLand) {
+        this.autoLand = autoLand;
+    }
+
+    public boolean isAutoLandSet() {
+        return this.autoLand;
+    }
 
     public ShellTheme getCurrentExteriorTheme() {
         return this.currentExteriorTheme;
@@ -50,10 +77,6 @@ public class TardisControlManager {
 
     public void setCurrentExteriorTheme(ShellTheme theme) {
         this.currentExteriorTheme = theme;
-    }
-
-    public TardisControlManager(TardisLevelOperator operator) {
-        this.operator = operator;
     }
 
     public void loadData(CompoundTag tag) {
@@ -100,7 +123,10 @@ public class TardisControlManager {
         if (isInFlight) {
             ticksInFlight++;
 
-            if ( ticksInFlight > (20 * 10) && autoLand) {
+            inFlightTick();
+
+            // Automatically trigger the ship to land for things such as landing pads.
+            if (ticksInFlight > (20 * 10) && autoLand) {
                 this.endFlight();
             }
 
@@ -120,8 +146,12 @@ public class TardisControlManager {
                 this.onFlightEnd();
             }
 
-            if (level.getGameTime() % (20 * 1.75) == 0 && (ticksLanding >= 6 * 20 || ticksLanding == 0)) {
-                operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 1000f, 1f);
+
+            if ((ticksLanding >= 6 * 20 || ticksLanding == 0)) {
+                var distanceBetweenWroop = (this.controlResponses < this.requiredControlRequests) ? 20 * 1.6 : 20 * 1.75;
+                if (level.getGameTime() % (distanceBetweenWroop) == 0)
+                operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(),
+                        SoundSource.AMBIENT, 1000f, (this.controlResponses < this.requiredControlRequests) ? 1.02f : 1f);
             }
         }
 
@@ -243,11 +273,13 @@ public class TardisControlManager {
         this.ticksInFlight = 0;
         this.ticksTakingOff = 1;
         this.operator.getExteriorManager().setIsTakingOff(true);
+
+        this.calculateTravelLogic();
         return true;
     }
 
     public void endFlight() {
-        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0) {
+        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (this.requiredControlRequests != this.controlResponses && !this.autoLand)) {
             return;
         }
         this.ticksInFlight = 0;
@@ -328,6 +360,80 @@ public class TardisControlManager {
 
     public boolean shouldThrottleBeDown() {
         return isInFlight && ticksLanding == 0;
+    }
+
+
+
+
+    public boolean isWaitingForControlResponse() {return isWaitingForControlResponse;}
+    public ConsoleControl getWaitingControlPrompt() {return this.controlPrompt;}
+
+
+    private int getControlRequestCooldown() {
+        return 3 * 20; // This will be expanded on when Stats are added.
+    }
+
+
+    // Once the number of pressed controls is == to the number of required presses,
+    // the TARDIS may land.
+
+    private void calculateTravelLogic() {
+
+        // Calculate the distance between two points
+
+        var current = this.operator.getExteriorManager().getLastKnownLocation().position;
+        var target = targetLocation.position;
+        Vec3 currentVec = new Vec3(current.getX(), current.getY(), current.getZ());
+        Vec3 targetVec = new Vec3(target.getX(), target.getY(), target.getZ());
+
+        var distance = currentVec.distanceTo(targetVec);
+
+        // Determine if the distance is worth the prompts
+        if (distance > MIN_DISTANCE_FOR_EVENTS) {
+            this.requiredControlRequests = getBlocksPerRequest(distance);
+            System.out.println("Total requests required: " + this.requiredControlRequests + " // " + distance + " blocks");
+        } else {
+            this.requiredControlRequests = 0;
+        }
+
+        this.controlResponses = 0;
+        this.isWaitingForControlResponse = false;
+        this.controlRequestCooldown = getControlRequestCooldown();
+    }
+
+    private int getBlocksPerRequest(double distance) {
+        return (int) (distance / MIN_DISTANCE_FOR_EVENTS ); // This will be expanded once stats are added.
+    }
+
+    // All the logic related to the in-flight events of the TARDIS.
+    public void inFlightTick() {
+
+        if (controlRequestCooldown > 0) controlRequestCooldown--;
+
+        // Prepare the next control for highlighting.
+        if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !autoLand) {
+
+            // Record what control type needs pressing.
+            this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
+
+            // Set what control needs to be good
+            isWaitingForControlResponse = true;
+        }
+    }
+
+    public void respondToWaitingControl(ControlEntity entity, ConsoleControl control) {
+        // Assign a cooldown between the controls determined by stats.
+        this.controlRequestCooldown = getControlRequestCooldown();
+
+        // Increment the number of control responses
+        this.controlResponses++;
+
+        this.isWaitingForControlResponse = false;
+
+        if (this.controlResponses == this.requiredControlRequests) {
+            operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
+        }
+
     }
 
 
