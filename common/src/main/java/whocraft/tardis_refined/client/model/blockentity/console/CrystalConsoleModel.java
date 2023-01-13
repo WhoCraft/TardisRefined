@@ -20,7 +20,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 
 public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
-    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal_console.png");
+    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
 
     public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2f).looping()
             .addAnimation("rotor",

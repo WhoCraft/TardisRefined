@@ -16,12 +16,17 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+
+import java.util.List;
+import java.util.Set;
 
 public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit{
 
 
-	private static ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral_console.png");
+	private static ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.375f).looping()
 			.addAnimation("rotor_bottom_T_add20",
@@ -728,8 +733,7 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 	}
 
 	@Override
-	public void renderToBuffer(
-			PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
@@ -745,11 +749,6 @@ public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit
 
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone20.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
 	}
 
 	@Override

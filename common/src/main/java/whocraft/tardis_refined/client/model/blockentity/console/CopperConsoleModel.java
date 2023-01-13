@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 
 public class CopperConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
-	private static ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper_console.png");
+	private static ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
 
 	public static final AnimationDefinition COPPER_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.2916765f).looping()
 			.addAnimation("rotor",

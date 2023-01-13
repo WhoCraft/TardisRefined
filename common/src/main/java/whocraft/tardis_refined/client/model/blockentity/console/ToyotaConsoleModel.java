@@ -19,7 +19,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 
 public class ToyotaConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
-	private static ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota_console.png");
+	private static ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2f).looping()
 			.addAnimation("rotor_bottom_translate_2",
@@ -684,11 +684,6 @@ public class ToyotaConsoleModel extends HierarchicalModel implements IConsoleUni
 
 		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
 	}
 
 	@Override
