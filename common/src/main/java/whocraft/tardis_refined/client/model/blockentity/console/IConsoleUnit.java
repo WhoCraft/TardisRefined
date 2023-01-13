@@ -14,13 +14,7 @@ public interface IConsoleUnit {
     void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
     default ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
         ConsoleTheme console = entity.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-
-        if(ConsolePatterns.getPatternsForTheme(console) != null){
-            List<ConsolePatterns.Pattern> patterns = ConsolePatterns.getPatternsForTheme(console);
-            return patterns.get(0).textureLocation();
-        }
-
-        return getDefaultTexture();
+        return entity.pattern().textureLocation();
     }
     ResourceLocation getDefaultTexture();
 }

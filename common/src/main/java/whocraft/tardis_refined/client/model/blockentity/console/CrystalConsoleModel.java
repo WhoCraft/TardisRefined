@@ -11,12 +11,15 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
 public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
@@ -43,6 +46,8 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
     private final ModelPart controls;
     private final ModelPart root;
     private final ModelPart throttle;
+    private EndCrystal crystal;
+
 
     public CrystalConsoleModel(ModelPart root) {
         this.root = root;
@@ -646,6 +651,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         return root;
     }
 
+
     @Override
     public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
@@ -658,11 +664,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
 
-    @Override
-    public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-        return getDefaultTexture();
     }
 
     @Override

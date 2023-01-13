@@ -1018,12 +1018,6 @@ public class CopperConsoleModel extends HierarchicalModel implements IConsoleUni
 		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
 	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
-	}
-
 	@Override
 	public ResourceLocation getDefaultTexture() {
 		return COPPER_TEXTURE;

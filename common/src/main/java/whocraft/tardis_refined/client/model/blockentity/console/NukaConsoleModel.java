@@ -514,11 +514,6 @@ public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
 	}
 
 	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
-	}
-
-	@Override
 	public ResourceLocation getDefaultTexture() {
 		return NUKA_TEXTURE;
 	}

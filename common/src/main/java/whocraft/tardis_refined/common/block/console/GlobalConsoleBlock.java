@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -58,11 +59,12 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     }
 
 
-
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
         if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+            ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(blockState2.getValue(GlobalConsoleBlock.CONSOLE), "default");
+            globalConsoleBlock.setPattern(defaultPattern);
             globalConsoleBlock.markDirty();
         }
 
@@ -78,6 +80,22 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
             }
         };
     }
+
+    @Override
+    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+
+        if(interactionHand == InteractionHand.MAIN_HAND){
+            if(level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock){
+                ConsoleTheme console = globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+                System.out.println(ConsolePatterns.next(console, globalConsoleBlock.pattern()).name());
+                globalConsoleBlock.setPattern(ConsolePatterns.next(console, globalConsoleBlock.pattern()));
+                globalConsoleBlock.sendUpdates();
+            }
+        }
+
+        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+    }
+
 
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
