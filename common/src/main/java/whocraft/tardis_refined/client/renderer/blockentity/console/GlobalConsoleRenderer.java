@@ -21,10 +21,11 @@ import java.util.Objects;
 
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
-    private static final Vec3 crystalHolo = new Vec3(3.075f, -16.75f, 6.57F);
+    private static final Vec3 crystalHolo = new Vec3(0.3f, -1.725, 0.655);
     private static final Vec3 crystalHoloColor = new Vec3(1f, 0.64f, 0f);
 
     private static final Vec3 initiativeHolo = new Vec3(-1.23, -1.225, 1.775F);
+    private static final Vec3 initiativeHoloColor = new Vec3(0, 0.8f, 1f);
 
 
     public GlobalConsoleRenderer(BlockEntityRendererProvider.Context context) {
@@ -44,15 +45,15 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         poseStack.popPose();
 
         if (theme == ConsoleTheme.CRYSTAL) {
-            renderHoloShell(crystalHolo, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
+            renderHoloShell(crystalHolo,270, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
         }
 
         if (theme == ConsoleTheme.INITIATIVE) {
-            renderHoloShell(initiativeHolo, blockEntity, poseStack, bufferSource, packedLight, new Vec3(0, 0.8f, 1f));
+            renderHoloShell(initiativeHolo, -30 + 180, blockEntity, poseStack, bufferSource, packedLight, initiativeHoloColor);
         }
     }
 
-    private void renderHoloShell(Vec3 offset, GlobalConsoleBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Vec3 color) {
+    private void renderHoloShell(Vec3 offset, int rotation, GlobalConsoleBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Vec3 color) {
         if (blockEntity.getLevel().random.nextInt(20) != 0) {
             poseStack.pushPose();
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
@@ -66,7 +67,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             if (reactions.isFlying()) {
                 poseStack.mulPose(Vector3f.YP.rotationDegrees(((blockEntity.getLevel().getGameTime() % 360)) * 25f));
             } else {
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(-30 + 180 % 360));
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation % 360));
             }
 
             model.renderToBuffer(poseStack,bufferSource.getBuffer(RenderType.entityTranslucent(reactions.getShellTheme().getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
