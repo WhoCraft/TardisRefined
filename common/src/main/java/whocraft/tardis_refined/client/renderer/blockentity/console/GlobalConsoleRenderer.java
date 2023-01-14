@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
@@ -20,6 +21,11 @@ import java.util.Objects;
 
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
+    private static final Vec3 crystalHolo = new Vec3(3.075f, -16.75f, 6.57F);
+    private static final Vec3 crystalHoloColor = new Vec3(1f, 0.64f, 0f);
+
+    private static final Vec3 initiativeHolo = new Vec3(-1.23, -1.225, 1.775F);
+
 
     public GlobalConsoleRenderer(BlockEntityRendererProvider.Context context) {
     }
@@ -27,7 +33,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     @Override
     public void render(GlobalConsoleBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
-        poseStack.translate(0.5F, 1.475F, 0.5F);
+        poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
@@ -38,25 +44,33 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         poseStack.popPose();
 
         if (theme == ConsoleTheme.CRYSTAL) {
-            if (blockEntity.getLevel().random.nextInt(20) != 0) {
-                poseStack.pushPose();
-                TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
-                var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
-                model.setDoorPosition(false);
+            renderHoloShell(crystalHolo, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
+        }
 
-                poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
-                poseStack.scale(0.1f,0.1f,0.1f);
-                poseStack.translate(3.075f, -16.75f, 6.57F);
-                poseStack.translate(0,  blockEntity.getLevel().random.nextFloat() * 0.01, 0);
-                if (reactions.isFlying()) {
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(((blockEntity.getLevel().getGameTime() % 360)) * 25f));
-                } else {
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(270 % 360));
-                }
+        if (theme == ConsoleTheme.INITIATIVE) {
+            renderHoloShell(initiativeHolo, blockEntity, poseStack, bufferSource, packedLight, new Vec3(0, 0.8f, 1f));
+        }
+    }
 
-                model.renderToBuffer(poseStack,bufferSource.getBuffer(RenderType.entityTranslucent(reactions.getShellTheme().getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.25f);
-                poseStack.popPose();
+    private void renderHoloShell(Vec3 offset, GlobalConsoleBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Vec3 color) {
+        if (blockEntity.getLevel().random.nextInt(20) != 0) {
+            poseStack.pushPose();
+            TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
+            var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
+            model.setDoorPosition(false);
+
+            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+            poseStack.translate(offset.x, offset.y, offset.z);
+            poseStack.translate(0,  blockEntity.getLevel().random.nextFloat() * 0.01, 0);
+            poseStack.scale(0.1f,0.1f,0.1f);
+            if (reactions.isFlying()) {
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(((blockEntity.getLevel().getGameTime() % 360)) * 25f));
+            } else {
+                poseStack.mulPose(Vector3f.YP.rotationDegrees(-30 + 180 % 360));
             }
+
+            model.renderToBuffer(poseStack,bufferSource.getBuffer(RenderType.entityTranslucent(reactions.getShellTheme().getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
+            poseStack.popPose();
         }
     }
 
