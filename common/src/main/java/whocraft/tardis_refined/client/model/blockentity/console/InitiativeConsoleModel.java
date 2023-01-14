@@ -25,7 +25,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 
 public class InitiativeConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
-	private static ResourceLocation INITIATIVE_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/initiative_console.png");
+	private static ResourceLocation INITIATIVE_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
 
 	public static final AnimationDefinition MODEL_ROTOR_LOOP = AnimationDefinition.Builder.withLength(4f).looping()
 			.addAnimation("rotor_on",
@@ -658,11 +658,6 @@ public class InitiativeConsoleModel extends HierarchicalModel implements IConsol
 		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
 
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
 	}
 
 	@Override

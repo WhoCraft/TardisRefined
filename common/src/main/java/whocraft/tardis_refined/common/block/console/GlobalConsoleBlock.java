@@ -63,9 +63,11 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
         if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-            ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(blockState2.getValue(GlobalConsoleBlock.CONSOLE), "default");
-            globalConsoleBlock.setPattern(defaultPattern);
-            globalConsoleBlock.markDirty();
+            if (blockState2.hasProperty(GlobalConsoleBlock.CONSOLE)) {
+                ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(blockState2.getValue(GlobalConsoleBlock.CONSOLE), "default");
+                globalConsoleBlock.setPattern(defaultPattern);
+                globalConsoleBlock.markDirty();
+            }
         }
 
         super.onPlace(blockState, level, blockPos, blockState2, bl);
@@ -79,21 +81,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
                 globalConsoleBlock.tick(level, blockPos, blockState, globalConsoleBlock);
             }
         };
-    }
-
-    @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-
-        if(interactionHand == InteractionHand.MAIN_HAND){
-            if(level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock){
-                ConsoleTheme console = globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-                System.out.println(ConsolePatterns.next(console, globalConsoleBlock.pattern()).name());
-                globalConsoleBlock.setPattern(ConsolePatterns.next(console, globalConsoleBlock.pattern()));
-                globalConsoleBlock.sendUpdates();
-            }
-        }
-
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
 

@@ -31,6 +31,7 @@ import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlo
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 import java.util.stream.Stream;
 
@@ -47,7 +48,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             Block.box(5, 9, 5, 11, 9, 11),
             Block.box(4, 4, 4, 12, 6, 12),
             Block.box(2, 0, 2, 14, 4, 14)
-    ).reduce( (v1, v2) -> Shapes.join(v1, v2, OR)).get();
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get();
 
     public ConsoleConfigurationBlock(Properties properties) {
         super(properties);
@@ -79,65 +80,88 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if (interactionHand == InteractionHand.MAIN_HAND) {
-            var offset = blockState.getValue(FACING).getNormal();
-            BlockState consoleBlock = level.getBlockState(blockPos.offset(offset));
-            ConsoleTheme nextTheme = blockState.getValue(ConsoleConfigurationBlock.CONSOLE).next();
+        if (player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get() || interactionHand != InteractionHand.MAIN_HAND) {
+            return InteractionResult.PASS;
+        }
 
 
-            if (player.getMainHandItem().getItem() == Items.IRON_BLOCK) {
-                if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
-                    level.setBlockAndUpdate(blockPos.offset(offset), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, blockState.getValue(ConsoleConfigurationBlock.CONSOLE)));
-                    player.getMainHandItem().setCount(player.getMainHandItem().getCount() - 1);
-                    if (Platform.isClient()) {
-                        level.playSound(null, blockPos.offset(offset), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
-                        int i;
-                        double d;
-                        double e;
-                        double f;
-                        for (i = 0; i < 3; ++i) {
-                            d = (double) blockPos.offset(offset).getX() + level.getRandom().nextDouble();
-                            e = (double) blockPos.offset(offset).getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
-                            f = (double) blockPos.offset(offset).getZ() + level.getRandom().nextDouble();
-                            level.addParticle(ParticleTypes.FLASH, d, e, f, 0.0D, 0.0D, 0.0D);
-                            level.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0D, 0.0D, 0.0D);
-                        }
-                    }
-                    return InteractionResult.CONSUME;
-                } else {
-                    return InteractionResult.FAIL;
-                }
+        var offset = blockState.getValue(FACING).getNormal();
+        BlockState consoleBlock = level.getBlockState(blockPos.offset(offset));
+        ConsoleTheme nextTheme = blockState.getValue(ConsoleConfigurationBlock.CONSOLE).next();
+
+        if (player.getMainHandItem().getItem() == Items.IRON_BLOCK) {
+            if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
+                placeGlobalConsoleBlock(blockPos.offset(offset), blockState, level);
+                player.getMainHandItem().shrink(1);
+                return InteractionResult.CONSUME;
             } else {
-
-                if (player.isCrouching()) {
-                    if (level.getBlockEntity(blockPos.offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-                        globalConsoleBlock.killControls();
-                    }
-                    level.destroyBlock(blockPos.offset(offset), true);
-                } else {
-                    level.setBlockAndUpdate(blockPos, blockState.setValue(ConsoleConfigurationBlock.CONSOLE, nextTheme));
-                    if ((consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
-                        level.setBlockAndUpdate(blockPos.offset(offset), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, nextTheme));
-                        if (Platform.isClient()) {
-                            level.playSound(null, blockPos.offset(offset), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
-                            int i;
-                            double d;
-                            double e;
-                            double f;
-                            for (i = 0; i < 3; ++i) {
-                                d = (double) blockPos.offset(offset).getX() + level.getRandom().nextDouble();
-                                e = (double) blockPos.offset(offset).getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
-                                f = (double) blockPos.offset(offset).getZ() + level.getRandom().nextDouble();
-                                level.addParticle(ParticleTypes.FLASH, d, e, f, 0.0D, 0.0D, 0.0D);
-                                level.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0D, 0.0D, 0.0D);
-                            }
-                        }
-                    }
-                }
+                return InteractionResult.FAIL;
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        if (player.isCrouching()) {
+            removeGlobalConsoleBlock(blockPos.offset(offset), level);
+        } else {
+            changeConsoleTheme(blockPos, blockState, nextTheme, level);
+        }
+
+        return InteractionResult.PASS;
+    }
+
+    /**
+     * Places a Global Console block at the specified position, with the same theme as the Console Configuration block.
+     * @param pos The position to place the Global Console block at.
+     * @param state The state of the Console Configuration block that was used to place the Global Console block.
+     * @param level The level the Global Console block will be placed in.
+     */
+    private void placeGlobalConsoleBlock(BlockPos pos, BlockState state, Level level) {
+        level.setBlockAndUpdate(pos, BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, state.getValue(ConsoleConfigurationBlock.CONSOLE)));
+        if (Platform.isClient()) {
+            level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+            playParticles(pos, level);
+        }
+    }
+
+    /**
+     * Removes the Global Console block at the specified position and kills its controls.
+     * @param pos The position of the Global Console block to be removed.
+     * @param level The level the Global Console block is in.
+     */
+    private void removeGlobalConsoleBlock(BlockPos pos, Level level) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (blockEntity instanceof GlobalConsoleBlockEntity) {
+            ((GlobalConsoleBlockEntity) blockEntity).killControls();
+        }
+        level.destroyBlock(pos, true);
+    }
+
+    /**
+     * Changes the theme of the Console Configuration block and its adjacent Global Console block.
+     * @param pos The position of the Console Configuration block.
+     * @param state The state of the Console Configuration block.
+     * @param theme The new theme for the Console Configuration and Global Console blocks.
+     * @param level The level the Console Configuration and Global Console blocks are in.
+     */
+    private void changeConsoleTheme(BlockPos pos, BlockState state, ConsoleTheme theme, Level level) {
+        level.setBlockAndUpdate(pos, state.setValue(ConsoleConfigurationBlock.CONSOLE, theme));
+        BlockState consoleBlock = level.getBlockState(pos.offset(state.getValue(FACING).getNormal()));
+        if (consoleBlock.getBlock() instanceof GlobalConsoleBlock) {
+            level.setBlockAndUpdate(pos.offset(state.getValue(FACING).getNormal()), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, theme));
+            if (Platform.isClient()) {
+                level.playSound(null, pos.offset(state.getValue(FACING).getNormal()), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+                playParticles(pos, level);
+            }
+        }
+    }
+
+    private void playParticles(BlockPos pos, Level level) {
+        for (int i = 0; i < 3; i++) {
+            double xCoord = pos.getX() + level.getRandom().nextDouble();
+            double yCoord = pos.getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
+            double zCoord = pos.getZ() + level.getRandom().nextDouble();
+            level.addParticle(ParticleTypes.FLASH, xCoord, yCoord, zCoord, 0.0D, 0.0D, 0.0D);
+            level.addParticle(ParticleTypes.CLOUD, xCoord, yCoord, zCoord, 0.0D, 0.0D, 0.0D);
+        }
     }
 
     @Nullable

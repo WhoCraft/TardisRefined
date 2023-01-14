@@ -23,7 +23,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 
 public class MystConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
-	private static ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst_console.png");
+	private static ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
 
 	public static final AnimationDefinition MODEL_ROTOR_LOOP = AnimationDefinition.Builder.withLength(4f).looping()
 			.addAnimation("rotor",
@@ -605,11 +605,6 @@ public class MystConsoleModel extends HierarchicalModel implements IConsoleUnit 
 		throttle_control.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
 
 		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
 	}
 
 	@Override
