@@ -72,6 +72,31 @@ public enum ConsoleTheme implements StringRepresentable {
             new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0.35f,1.05f,0.6f), new BlockPos(0.1f, 0.1f, 0.1f))
     }),
 
+    VICTORIAN("victorian", new ControlSpecification[] {
+            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0.9f, 0.50000304f, 0.15f), new BlockPos(0.125f, 0.1875f, 0.1875f)),
+            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(-0.59999996f, 0.55000305f, 0.65f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.X, new Vector3f(-0.54999995f, 0.75000304f, 0.15f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Y, new Vector3f(-0.49999997f, 0.75000304f, 0.3000002f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Z, new Vector3f(-0.39999998f, 0.75000304f, 0.4000002f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.59999996f, 0.50000304f, -0.7f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.24999997f, 0.6500031f, -0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.25000003f, 0.6500031f, -0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.59999996f, 0.6500031f, -0.35f), new BlockPos(0.1f, 0.1f, 0.1f))
+    }),
+
+    MYST("myst", new ControlSpecification[] {
+            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(-0.7f, 0.6500015f, -0.2999999f- 0.5f), new BlockPos(0.125f, 0.1875f, 0.1875f)),
+            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(-0.34999996f, 0.6000061f, 1.5999999f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.X, new Vector3f(-0.84999996f, 0.5500015f, -0.099999905f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Y, new Vector3f(-0.95f, 0.50000155f, -0.049999904f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Z, new Vector3f(-0.95f, 0.55f, -0.44999972f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-1.0999999f, 0.5f, 0.15000018f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(0.6f, 0.75000155f, 0.15f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(1.15f, 0.5500015f, 0.7f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0.75f, 0.6500015f, 0.95f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f))
+    }),
+
+
     NUKA("nuka", new ControlSpecification[] {
             new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(-0.225f,0.6f,1), new BlockPos(0.125f, 0.1875f, 0.1875f)),
             new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.225f,0.6f,-1), new BlockPos(0.1f, 0.1f, 0.1f)),
@@ -82,6 +107,18 @@ public enum ConsoleTheme implements StringRepresentable {
             new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.9f, .55f, 0.55f), new BlockPos(0.1f, 0.1f, 0.1f)),
             new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.15f, 0.85f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
             new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0,1.15f,-0.6f), new BlockPos(0.1f, 0.1f, 0.1f))
+    }),
+
+    INITIATIVE("initiative", new ControlSpecification[] {
+            new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(1.1920929E-8f, 0.6500015f, -0.9999997f), new BlockPos(0.125f, 0.1875f, 0.1875f)),
+            new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(3.576279E-8f, 0.7000061f, 1.0999999f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.X, new Vector3f(-0.59999996f, 0.700003f, -0.5999999f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Y, new Vector3f(-0.75f, 0.7f, -0.44999972f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.Z, new Vector3f(-0.84999996f, 0.700003f, -0.2999998f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.9499999f, 0.6f, 0.5000001f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.29999998f, 0.6000015f, -1.0499997f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.8499999f, 0.75f, 0.4500001f), new BlockPos(0.1f, 0.1f, 0.1f)),
+            new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.55f, 1.4500015f, 0.2999998f), new BlockPos(0.1f, 0.1f, 0.1f))
     });
 
     private final String id;
