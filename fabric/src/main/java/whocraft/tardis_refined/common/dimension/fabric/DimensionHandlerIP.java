@@ -73,57 +73,57 @@ public class DimensionHandlerIP {
     public static void init() {
         if (!DimensionHandler.hasIP()) return;
         TardisRefined.LOGGER.info("Immersive Portals Detected - Setting up Compatibility");
-            TardisEvents.DOOR_OPENED_EVENT.register(DimensionHandlerIP::createPortals);
-            TardisEvents.DOOR_CLOSED_EVENT.register(DimensionHandlerIP::destroyPortals);
-            TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
-                DimensionHandlerIP.destroyPortals(operator);
-                if(operator.getInternalDoor().isOpen()) {
-                    DimensionHandlerIP.createPortals(operator);
-                }
-            });
-            PlayerBlockBreakEvents.BEFORE.register(DimensionHandlerIP::onDoorRemoved);
-            ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
+        TardisEvents.DOOR_OPENED_EVENT.register(DimensionHandlerIP::createPortals);
+        TardisEvents.DOOR_CLOSED_EVENT.register(DimensionHandlerIP::destroyPortals);
+        TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
+            DimensionHandlerIP.destroyPortals(operator);
+            if(operator.getInternalDoor().isOpen()) {
+                DimensionHandlerIP.createPortals(operator);
+            }
+        });
+        PlayerBlockBreakEvents.BEFORE.register(DimensionHandlerIP::onDoorRemoved);
+        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
 
-            themeToOffsetMap.put(ShellTheme.FACTORY, List.of(new Vec3(0.499, 0, 0),
-                    new Vec3(0, 0, 0.499), new Vec3(-0.499, 0, 0), new Vec3(0, 0,  -0.499),
-                    new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
-                    new Vec3(1.375, 0, 0), new Vec3(0, 0,  1.375)));
-            themeToOffsetMap.put(ShellTheme.POLICE_BOX, List.of(new Vec3(0.6, 0.25, 0),
-                    new Vec3(0, 0.25, 0.6), new Vec3(-0.6, 0.25, 0), new Vec3(0, 0.25,  -0.6),
-                    new Vec3(-1.425, 0.125, 0), new Vec3(0, 0.125, -1.425),
-                    new Vec3(1.425, 0.125, 0), new Vec3(0, 0.125,  1.425)));
-            themeToOffsetMap.put(ShellTheme.PHONE_BOOTH, List.of(new Vec3(0.5, 0.145, 0),
-                    new Vec3(0, 0.145, 0.5), new Vec3(-0.5, 0.145, 0), new Vec3(0, 0.145,  -0.5),
-                    new Vec3(-1.435, 0.145, 0), new Vec3(0, 0.145, -1.435),
-                    new Vec3(1.435, 0.145, 0), new Vec3(0, 0.145,  1.435)));
-            themeToOffsetMap.put(ShellTheme.MYSTIC, List.of(new Vec3(0.5, 0.15, 0),
-                    new Vec3(0, 0.15, 0.5), new Vec3(-0.5, 0.15, 0), new Vec3(0, 0.175,  -0.5),
-                    new Vec3(-1.425, 0.15, 0), new Vec3(0, 0.15, -1.425),
-                    new Vec3(1.425, 0.15, 0), new Vec3(0, 0.15,  1.425)));
-            themeToOffsetMap.put(ShellTheme.PRESENT, List.of(new Vec3(0.57, 0.175, 0),
-                    new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0,  -0.57),
-                    new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
-                    new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
-            themeToOffsetMap.put(ShellTheme.DRIFTER, List.of(new Vec3(0.61, 0, 0),
-                    new Vec3(0, 0, 0.61), new Vec3(-0.61, 0, 0), new Vec3(0, 0,  -0.61),
-                    new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
-                    new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
-            themeToOffsetMap.put(ShellTheme.VENDING, List.of(new Vec3(0.32, 0, 0),
-                    new Vec3(0, 0, 0.33), new Vec3(-0.32, 0, 0), new Vec3(0, 0,  -0.32),
-                    new Vec3(-1.48, 0, 0), new Vec3(0, 0, -1.48),
-                    new Vec3(1.48, 0, 0), new Vec3(0, 0,  1.48)));
-            themeToOffsetMap.put(ShellTheme.GROENING, List.of(new Vec3(0.5, 0, 0),
-                    new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0,  -0.5),
-                    new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
-                    new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
-            themeToOffsetMap.put(ShellTheme.BIG_BEN, List.of(new Vec3(0.46, 0, 0),
-                    new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0,  -0.46),
-                    new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
-                    new Vec3(1.3, 0, 0), new Vec3(0, 0,  1.3)));
-            themeToOffsetMap.put(ShellTheme.NUKA, List.of(new Vec3(0.65, 0.35, 0),
-                    new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35,  -0.65),
-                    new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
-                    new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
+        themeToOffsetMap.put(ShellTheme.FACTORY, List.of(new Vec3(0.499, 0, 0),
+                new Vec3(0, 0, 0.499), new Vec3(-0.499, 0, 0), new Vec3(0, 0,  -0.499),
+                new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
+                new Vec3(1.375, 0, 0), new Vec3(0, 0,  1.375)));
+        themeToOffsetMap.put(ShellTheme.POLICE_BOX, List.of(new Vec3(0.6, 0.25, 0),
+                new Vec3(0, 0.25, 0.6), new Vec3(-0.6, 0.25, 0), new Vec3(0, 0.25,  -0.6),
+                new Vec3(-1.425, 0.125, 0), new Vec3(0, 0.125, -1.425),
+                new Vec3(1.425, 0.125, 0), new Vec3(0, 0.125,  1.425)));
+        themeToOffsetMap.put(ShellTheme.PHONE_BOOTH, List.of(new Vec3(0.5, 0.145, 0),
+                new Vec3(0, 0.145, 0.5), new Vec3(-0.5, 0.145, 0), new Vec3(0, 0.145,  -0.5),
+                new Vec3(-1.435, 0.145, 0), new Vec3(0, 0.145, -1.435),
+                new Vec3(1.435, 0.145, 0), new Vec3(0, 0.145,  1.435)));
+        themeToOffsetMap.put(ShellTheme.MYSTIC, List.of(new Vec3(0.5, 0.15, 0),
+                new Vec3(0, 0.15, 0.5), new Vec3(-0.5, 0.15, 0), new Vec3(0, 0.175,  -0.5),
+                new Vec3(-1.425, 0.15, 0), new Vec3(0, 0.15, -1.425),
+                new Vec3(1.425, 0.15, 0), new Vec3(0, 0.15,  1.425)));
+        themeToOffsetMap.put(ShellTheme.PRESENT, List.of(new Vec3(0.57, 0.175, 0),
+                new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0,  -0.57),
+                new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
+                new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
+        themeToOffsetMap.put(ShellTheme.DRIFTER, List.of(new Vec3(0.61, 0, 0),
+                new Vec3(0, 0, 0.61), new Vec3(-0.61, 0, 0), new Vec3(0, 0,  -0.61),
+                new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
+                new Vec3(1.425, 0, 0), new Vec3(0, 0,  1.425)));
+        themeToOffsetMap.put(ShellTheme.VENDING, List.of(new Vec3(0.32, 0, 0),
+                new Vec3(0, 0, 0.33), new Vec3(-0.32, 0, 0), new Vec3(0, 0,  -0.32),
+                new Vec3(-1.48, 0, 0), new Vec3(0, 0, -1.48),
+                new Vec3(1.48, 0, 0), new Vec3(0, 0,  1.48)));
+        themeToOffsetMap.put(ShellTheme.GROENING, List.of(new Vec3(0.5, 0, 0),
+                new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0,  -0.5),
+                new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
+                new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
+        themeToOffsetMap.put(ShellTheme.BIG_BEN, List.of(new Vec3(0.46, 0, 0),
+                new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0,  -0.46),
+                new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
+                new Vec3(1.3, 0, 0), new Vec3(0, 0,  1.3)));
+        themeToOffsetMap.put(ShellTheme.NUKA, List.of(new Vec3(0.65, 0.35, 0),
+                new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35,  -0.65),
+                new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
+                new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
 
         for (ShellTheme value : ShellTheme.values()) {
             if(!themeToOffsetMap.containsKey(value)){
