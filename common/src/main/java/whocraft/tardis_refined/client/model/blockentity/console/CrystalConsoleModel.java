@@ -682,15 +682,15 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         if (globalConsoleBlock.pattern().name().equals("purple")) {
             core.root().getAllParts().forEach(ModelPart::resetPose);
             poseStack.pushPose();
-            poseStack.translate(0.2F, -2F, 0);
+            poseStack.translate(0, -1.5F, 0);
 
             double amplitude = 0.2;
             double frequency = 0.05;
             double y = amplitude * Math.sin(frequency * Minecraft.getInstance().player.tickCount) / 2;
 
             poseStack.translate(0, reactions.isFlying() ? y * 2 : y, 0);
-            core.animate(reactions.ROTOR_ANIMATION, CORE, Minecraft.getInstance().player.tickCount);
-            core.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_core.png"))), 15728640, packedOverlay, red, green, blue, alpha / 2);
+            core.animate(reactions.ROTOR_ANIMATION, CORE, Minecraft.getInstance().player.tickCount, 0.1F);
+            core.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_core.png"))), packedLight, packedOverlay, red, green, blue, alpha / 2);
             poseStack.popPose();
         }
 
