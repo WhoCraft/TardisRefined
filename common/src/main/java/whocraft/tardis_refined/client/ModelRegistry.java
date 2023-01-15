@@ -103,7 +103,7 @@ public class ModelRegistry {
         GROENING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_door"), "groening_door"), GroeningDoorModel::createBodyLayer);
         BIG_BEN_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_door"), "big_ben_door"), BigBenDoorModel::createBodyLayer);
         NUKA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_door"), "nuka_door"), NukaDoorModel::createBodyLayer);
-        GROWTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_door"), "growth_door"), NukaDoorModel::createBodyLayer);
+        GROWTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_door"), "growth_door"), GrowthDoorModel::createBodyLayer);
 
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
