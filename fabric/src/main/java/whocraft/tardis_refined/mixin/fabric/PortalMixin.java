@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.mixin.fabric;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -44,4 +45,17 @@ public abstract class PortalMixin implements TARDISPortalData {
         }
     }
 
+    @Inject(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
+    private void addTARDISData(CompoundTag compoundTag, CallbackInfo ci) {
+        if (tardisID != null) {
+            compoundTag.putUUID("tardis_id", tardisID);
+        }
+    }
+
+    @Inject(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
+    private void readTARDISData(CompoundTag compoundTag, CallbackInfo ci) {
+        if (compoundTag.contains("tardis_id")) {
+            tardisID = compoundTag.getUUID("tardis_id");
+        }
+    }
 }
