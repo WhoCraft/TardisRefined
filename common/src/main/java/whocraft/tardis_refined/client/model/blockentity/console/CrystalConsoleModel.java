@@ -11,15 +11,15 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
 public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUnit {
 
@@ -41,12 +41,21 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
                             new Keyframe(2f, KeyframeAnimations.degreeVec(0f, 90f, 0f),
                                     AnimationChannel.Interpolations.LINEAR))).build();
 
+
+    public static final AnimationDefinition CORE = AnimationDefinition.Builder.withLength(1.5f).looping()
+            .addAnimation("core",
+                    new AnimationChannel(AnimationChannel.Targets.ROTATION,
+                            new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.LINEAR),
+                            new Keyframe(1.5f, KeyframeAnimations.degreeVec(360f, 360f, 0f),
+                                    AnimationChannel.Interpolations.LINEAR))).build();
+
     private final ModelPart base_control;
     private final ModelPart rotor;
     private final ModelPart controls;
     private final ModelPart root;
     private final ModelPart throttle;
-    private EndCrystal crystal;
+    private final CrystalCoreModel core;
 
 
     public CrystalConsoleModel(ModelPart root) {
@@ -55,6 +64,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         this.rotor = root.getChild("rotor");
         this.controls = root.getChild("controls");
         this.throttle = controls.getChild("north_left_side").getChild("large_lever_control_throttle");
+        core = new CrystalCoreModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelRegistry.CRYSTAL_CORE));
     }
 
     @Override
@@ -653,17 +663,36 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
 
     @Override
-    public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
         this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-        this.throttle.xRot = (reactions.isThrottleDown()) ? -25f: -32f;
+        this.throttle.xRot = (reactions.isThrottleDown()) ? -25f : -32f;
+
+        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+
+        if (globalConsoleBlock == null) return;
+
+        if (globalConsoleBlock.pattern().name().equals("purple")) {
+            core.root().getAllParts().forEach(ModelPart::resetPose);
+            poseStack.pushPose();
+            poseStack.translate(0.2F, -2F, 0);
+
+            double amplitude = 0.2;
+            double frequency = 0.05;
+            double y = amplitude * Math.sin(frequency * Minecraft.getInstance().player.tickCount) / 2;
+
+            poseStack.translate(0, reactions.isFlying() ? y * 2 : y, 0);
+            core.animate(reactions.ROTOR_ANIMATION, CORE, Minecraft.getInstance().player.tickCount);
+            core.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_core.png"))), 15728640, packedOverlay, red, green, blue, alpha / 2);
+            poseStack.popPose();
+        }
 
     }
 

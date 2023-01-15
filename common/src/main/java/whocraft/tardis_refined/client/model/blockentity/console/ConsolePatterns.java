@@ -11,7 +11,7 @@ public class ConsolePatterns {
 
     private static final Map<ConsoleTheme, List<Pattern>> PATTERNS = new HashMap<>();
 
-    public static void registerPatterns(){
+    public static void registerPatterns() {
 
         /*Add Base Textures*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
@@ -32,7 +32,7 @@ public class ConsolePatterns {
         addPattern(ConsoleTheme.TOYOTA, new Pattern("blue", "toyota/toyota_texture_blue"));
 
         /*Crystal*/
-      //TODO - Rendering stuff  addPattern(ConsoleTheme.CRYSTAL, new Pattern("purple", "crystal/crystal_console_purple"));
+        addPattern(ConsoleTheme.CRYSTAL, new Pattern("purple", "crystal/crystal_console_purple"));
 
         /*Myst*/
         addPattern(ConsoleTheme.MYST, new Pattern("molten", "myst/myst_console_molten"));
@@ -42,10 +42,10 @@ public class ConsolePatterns {
 
     }
 
-    public static Pattern next(ConsoleTheme consoleTheme, Pattern pattern){
+    public static Pattern next(ConsoleTheme consoleTheme, Pattern pattern) {
         List<Pattern> patterns = getPatternsForTheme(consoleTheme);
         int prevIndex = patterns.indexOf(pattern);
-        if(prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()){
+        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
             return patterns.get(0);
         }
         return patterns.get(prevIndex + 1);
@@ -65,25 +65,25 @@ public class ConsolePatterns {
         return pattern;
     }
 
-    public static List<Pattern> getPatternsForTheme(ConsoleTheme consoleTheme){
+    public static List<Pattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
         return PATTERNS.get(consoleTheme);
     }
 
 
-    public static boolean doesPatternExist(ConsoleTheme consoleTheme, String name){
+    public static boolean doesPatternExist(ConsoleTheme consoleTheme, String name) {
         List<Pattern> patterns = getPatternsForTheme(consoleTheme);
         for (Pattern pattern : patterns) {
-            if(Objects.equals(pattern.name(), name)){
+            if (Objects.equals(pattern.name(), name)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static Pattern getPatternFromString(ConsoleTheme consoleTheme, String name){
+    public static Pattern getPatternFromString(ConsoleTheme consoleTheme, String name) {
         List<Pattern> patterns = getPatternsForTheme(consoleTheme);
         for (Pattern pattern : patterns) {
-            if(Objects.equals(pattern.name(), name)){
+            if (Objects.equals(pattern.name(), name)) {
                 return pattern;
             }
         }
@@ -108,7 +108,7 @@ public class ConsolePatterns {
 
         public Pattern(String name, String texture) {
             this.name = name.trim().toLowerCase(Locale.ENGLISH);
-            this.textureLocation = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/"+texture+".png");
+            this.textureLocation = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + texture + ".png");
         }
 
         public ResourceLocation textureLocation() {

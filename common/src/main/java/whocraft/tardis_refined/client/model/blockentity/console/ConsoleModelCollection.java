@@ -12,6 +12,8 @@ public class ConsoleModelCollection {
 
     IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel;
 
+
+
     public ConsoleModelCollection() {
         factoryConsoleModel = new FactoryConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
         nukaConsoleModel = new NukaConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.NUKA_CONSOLE)));
