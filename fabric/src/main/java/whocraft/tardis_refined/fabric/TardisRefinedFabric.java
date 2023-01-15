@@ -1,6 +1,9 @@
 package whocraft.tardis_refined.fabric;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraftforge.api.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
@@ -13,6 +16,8 @@ public class TardisRefinedFabric implements ModInitializer {
         ModEvents.addCommonEvents();
         TardisRefined.init();
         setupBiomeModifications();
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
     }
 
     /** For use with Fabric BiomeModification API*/

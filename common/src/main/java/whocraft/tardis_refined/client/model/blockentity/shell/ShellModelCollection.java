@@ -8,6 +8,7 @@ public class ShellModelCollection {
 
     private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel, bigBenModel, nukaModel, growthModel;
 
+
     public ShellModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
@@ -22,6 +23,7 @@ public class ShellModelCollection {
         bigBenModel = new BigBenShellModel(context.bakeLayer((ModelRegistry.BIG_BEN_SHELL)));
         nukaModel = new NukaShellModel(context.bakeLayer((ModelRegistry.NUKA_SHELL)));
         growthModel = new GrowthShellModel(context.bakeLayer((ModelRegistry.GROWTH_SHELL)));
+
     }
 
     /**
@@ -43,6 +45,7 @@ public class ShellModelCollection {
             case BIG_BEN -> bigBenModel;
             case NUKA -> nukaModel;
             case GROWTH -> growthModel;
+
         };
     }
 

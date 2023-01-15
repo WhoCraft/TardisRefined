@@ -22,6 +22,7 @@ public enum ShellTheme implements StringRepresentable, Theme {
     BIG_BEN("big_ben", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/big_ben_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/big_ben_shell_door.png")),
     NUKA("nuka", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/nuka_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/nuka_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/nuka_shell_emissive.png")),
     GROWTH("growth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/growth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/growth_shell_door.png"));
+
     private final String id;
     private final ResourceLocation externalShellTexture, internalDoorTexture;
     private ResourceLocation emmissiveExternal;

@@ -19,6 +19,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
     private static ShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor, drifterModel, presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel;
 
+
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
         policeBoxModel = new PoliceBoxDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
@@ -32,6 +33,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         bigBenModel = new BigBenDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)));
         nukaModel = new NukaDoorModel(context.bakeLayer((ModelRegistry.NUKA_DOOR)));
         growthModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
+
     }
 
     @Override
@@ -88,6 +90,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
              case GROWTH:
                 currentModel = growthModel;
                 break;
+
         }
 
         currentModel.setDoorPosition(isOpen);

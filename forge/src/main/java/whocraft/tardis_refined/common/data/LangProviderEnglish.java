@@ -107,10 +107,15 @@ public class LangProviderEnglish extends LanguageProvider {
         addDesktopTheme(TardisDesktops.TOYOTA_THEME, "Toyota");
         addDesktopTheme(TardisDesktops.CRYSTAL, "Crystal");
         addDesktopTheme(TardisDesktops.VICTORIAN, "Victorian");
+        addDesktopTheme(TardisDesktops.NUKA, "Nuka");
         addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
+
+        /*Config*/
+        add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
+        add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
     }
 
     public void addControl(ConsoleControl control, String name) {
