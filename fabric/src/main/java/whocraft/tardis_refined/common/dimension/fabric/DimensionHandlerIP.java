@@ -126,7 +126,7 @@ public class DimensionHandlerIP {
                 new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
 
         for (ShellTheme value : ShellTheme.values()) {
-            if(!themeToOffsetMap.containsKey(value)){
+            if(!themeToOffsetMap.containsKey(value) && !value.equals(ShellTheme.BRIEFCASE)){
                 TardisRefined.LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
             }
         }
