@@ -55,9 +55,9 @@ public class GrowthShellModel extends ShellModel {
 
 		PartDefinition bone50 = partdefinition.addOrReplaceChild("bone50", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition black = bone50.addOrReplaceChild("black", CubeListBuilder.create().texOffs(98, 0).mirror().addBox(-5.45F, -38.0F, -7.85F, 1.0F, 38.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
-		.texOffs(98, 0).addBox(4.45F, -38.0F, -7.85F, 1.0F, 38.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(73, 0).addBox(-5.0F, -38.0F, -6.85F, 10.0F, 38.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition black = bone50.addOrReplaceChild("black", CubeListBuilder.create().texOffs(98, 0).mirror().addBox(-5.45F, -38.0F, -7.75F, 1.0F, 38.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(98, 0).addBox(4.45F, -38.0F, -7.75F, 1.0F, 38.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(73, 0).addBox(-5.0F, -38.0F, -6.85F, 10.0F, 38.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition bone44 = bone50.addOrReplaceChild("bone44", CubeListBuilder.create().texOffs(46, 41).addBox(-6.5F, -0.2F, -10.275F, 13.0F, 1.0F, 11.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 

@@ -98,6 +98,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.VENDING, "Vending Machine");
         addShell(ShellTheme.BIG_BEN, "Big Ben");
         addShell(ShellTheme.NUKA, "Nuka");
+        addShell(ShellTheme.GROWTH, "Growth");
 
 
         /*Desktop Themes*/
