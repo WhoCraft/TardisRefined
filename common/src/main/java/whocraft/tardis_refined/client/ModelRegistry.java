@@ -30,6 +30,9 @@ public class ModelRegistry {
     public static ModelLayerLocation CORAL_CONSOLE;
     public static ModelLayerLocation TOYOTA_CONSOLE;
     public static ModelLayerLocation CRYSTAL_CONSOLE;
+    public static ModelLayerLocation VICTORIAN_CONSOLE;
+    public static ModelLayerLocation MYST_CONSOLE;
+    public static ModelLayerLocation INITIATIVE_CONSOLE;
 
     public static ModelLayerLocation ROOT_SHELL;
     public static ModelLayerLocation FACTORY_SHELL;
@@ -42,6 +45,7 @@ public class ModelRegistry {
     public static ModelLayerLocation BRIEFCASE_SHELL;
     public static ModelLayerLocation GROENING_SHELL;
     public static ModelLayerLocation BIG_BEN_SHELL;
+    public static ModelLayerLocation NUKA_SHELL;
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
     public static ModelLayerLocation FACTORY_DOOR;
@@ -54,6 +58,7 @@ public class ModelRegistry {
     public static ModelLayerLocation BRIEFCASE_DOOR;
     public static ModelLayerLocation GROENING_DOOR;
     public static ModelLayerLocation BIG_BEN_DOOR;
+    public static ModelLayerLocation NUKA_DOOR;
 
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
@@ -72,6 +77,9 @@ public class ModelRegistry {
         CORAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "coral_console"), "coral_console"), CoralConsoleModel::createBodyLayer);
         TOYOTA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "toyota_console"), "toyota_console"), ToyotaConsoleModel::createBodyLayer);
         CRYSTAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "crystal_console"), "crystal_console"), CrystalConsoleModel::createBodyLayer);
+        VICTORIAN_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "victorian_console"), "victorian_console"), VictorianConsoleModel::createBodyLayer);
+        MYST_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "myst_console"), "myst_console"), MystConsoleModel::createBodyLayer);
+        INITIATIVE_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "initiative_console"), "initiative_console"), InitiativeConsoleModel::createBodyLayer);
 
         ROOT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
         FACTORY_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_shell"), "factory_shell"), FactoryShellModel::createBodyLayer);
@@ -84,6 +92,7 @@ public class ModelRegistry {
         BRIEFCASE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "briefcase_shell"), "briefcase_shell"), BriefcaseShellModel::createBodyLayer);
         GROENING_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_shell"), "groening_shell"), GroeningShellModel::createBodyLayer);
         BIG_BEN_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_shell"), "big_ben_shell"), BigBenShellModel::createBodyLayer);
+        NUKA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_shell"), "nuka_shell"), NukaShellModel::createBodyLayer);
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
         FACTORY_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_door"), "factory_door"), FactoryDoorModel::createBodyLayer);
@@ -96,6 +105,7 @@ public class ModelRegistry {
         BRIEFCASE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "briefcase_door"), "briefcase_door"), BriefcaseDoorModel::createBodyLayer);
         GROENING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_door"), "groening_door"), GroeningDoorModel::createBodyLayer);
         BIG_BEN_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_door"), "big_ben_door"), BigBenDoorModel::createBodyLayer);
+        NUKA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_door"), "nuka_door"), NukaDoorModel::createBodyLayer);
 
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
