@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -22,7 +21,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,23 +34,17 @@ import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.commands.PortalCommand;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
-import qouteall.imm_ptl.core.render.PortalEntityRenderer;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.tardis.themes.Theme;
 import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -79,12 +71,15 @@ public class DimensionHandlerIP {
     }
 
     public static void init() {
-        if(DimensionHandler.hasIP()) {
+        if (!DimensionHandler.hasIP()) return;
+        TardisRefined.LOGGER.info("Immersive Portals Detected - Setting up Compatibility");
             TardisEvents.DOOR_OPENED_EVENT.register(DimensionHandlerIP::createPortals);
             TardisEvents.DOOR_CLOSED_EVENT.register(DimensionHandlerIP::destroyPortals);
             TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
                 DimensionHandlerIP.destroyPortals(operator);
-                DimensionHandlerIP.createPortals(operator);
+                if(operator.getInternalDoor().isOpen()) {
+                    DimensionHandlerIP.createPortals(operator);
+                }
             });
             PlayerBlockBreakEvents.BEFORE.register(DimensionHandlerIP::onDoorRemoved);
             ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
@@ -129,6 +124,11 @@ public class DimensionHandlerIP {
                     new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35,  -0.65),
                     new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
                     new Vec3(1.33, 0, 0), new Vec3(0, 0,  1.33)));
+
+        for (ShellTheme value : ShellTheme.values()) {
+            if(!themeToOffsetMap.containsKey(value)){
+                TardisRefined.LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
+            }
         }
     }
 

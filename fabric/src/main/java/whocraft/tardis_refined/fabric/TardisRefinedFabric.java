@@ -1,6 +1,9 @@
 package whocraft.tardis_refined.fabric;
 
 import net.fabricmc.api.ModInitializer;
+import net.minecraftforge.api.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerIP;
@@ -15,9 +18,13 @@ public class TardisRefinedFabric implements ModInitializer {
         ModEvents.addCommonEvents();
         TardisRefined.init();
         setupBiomeModifications();
-        if(DimensionHandler.hasIP()) {
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+
+        if (DimensionHandler.hasIP() && TRConfig.COMMON.COMPATIBILITY_IP.get()) {
             DimensionHandlerIP.init();
         }
+
     }
 
     /** For use with Fabric BiomeModification API*/
