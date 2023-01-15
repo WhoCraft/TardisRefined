@@ -2,6 +2,8 @@ package whocraft.tardis_refined.common.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -16,6 +18,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import static whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock.FACING;
 
@@ -40,7 +43,9 @@ public class PatternManipulatorItem extends Item {
                 ConsoleTheme console = globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
                 globalConsoleBlock.setPattern(ConsolePatterns.next(console, globalConsoleBlock.pattern()));
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.pattern(globalConsoleBlock.pattern())), true);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 globalConsoleBlock.sendUpdates();
+                player.getCooldowns().addCooldown(this, 20);
             }
             return InteractionResult.sidedSuccess(level.isClientSide);
         }

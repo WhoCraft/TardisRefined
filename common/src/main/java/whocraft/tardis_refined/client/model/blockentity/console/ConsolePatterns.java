@@ -35,10 +35,10 @@ public class ConsolePatterns {
       //TODO - Rendering stuff  addPattern(ConsoleTheme.CRYSTAL, new Pattern("purple", "crystal/crystal_console_purple"));
 
         /*Myst*/
-        addPattern(ConsoleTheme.MYST, new Pattern("retro", "myst/myst_console_retro"));
+        addPattern(ConsoleTheme.MYST, new Pattern("molten", "myst/myst_console_molten"));
 
         /*Initiative*/
-        addPattern(ConsoleTheme.INITIATIVE, new Pattern("initiative", "initiative/initiative_console_apeture"));
+        addPattern(ConsoleTheme.INITIATIVE, new Pattern("aperture", "initiative/initiative_console_aperture"));
 
     }
 

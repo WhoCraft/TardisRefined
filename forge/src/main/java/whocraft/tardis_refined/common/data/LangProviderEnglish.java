@@ -50,6 +50,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.LANDING_PAD.get(), "Landing Pad");
 
         /*Items*/
+        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
 
