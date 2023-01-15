@@ -39,7 +39,6 @@ public abstract class PortalMixin implements TARDISPortalData {
                 for (Portal portal : DimensionHandlerIP.tardisToPortalsMap.get(tardisID)) {
                     if (portal == null) {
                         thisPortal.kill();
-                        break;
                     }
                 }
             }
