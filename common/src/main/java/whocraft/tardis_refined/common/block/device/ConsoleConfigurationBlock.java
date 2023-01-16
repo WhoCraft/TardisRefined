@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -24,14 +25,18 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.stream.Stream;
 
@@ -80,7 +85,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if (player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get() || interactionHand != InteractionHand.MAIN_HAND) {
+        if (interactionHand != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
 
@@ -89,10 +94,26 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         BlockState consoleBlock = level.getBlockState(blockPos.offset(offset));
         ConsoleTheme nextTheme = blockState.getValue(ConsoleConfigurationBlock.CONSOLE).next();
 
+        if(player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get()){
+
+            if (level.getBlockEntity(blockPos.offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+                ConsoleTheme console = globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+                globalConsoleBlock.setPattern(ConsolePatterns.next(console, globalConsoleBlock.pattern()));
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.pattern(globalConsoleBlock.pattern())), true);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                globalConsoleBlock.sendUpdates();
+                player.getCooldowns().addCooldown(ItemRegistry.PATTERN_MANIPULATOR.get(), 20);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
         if (player.getMainHandItem().getItem() == Items.IRON_BLOCK) {
             if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
                 placeGlobalConsoleBlock(blockPos.offset(offset), blockState, level);
-                player.getMainHandItem().shrink(1);
+                if(!player.isCreative()) {
+                    player.getMainHandItem().shrink(1);
+                }
                 return InteractionResult.CONSUME;
             } else {
                 return InteractionResult.FAIL;

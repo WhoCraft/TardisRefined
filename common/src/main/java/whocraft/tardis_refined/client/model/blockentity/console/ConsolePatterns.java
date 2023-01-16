@@ -16,29 +16,29 @@ public class ConsolePatterns {
         /*Add Base Textures*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
             String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
-            addPattern(consoleTheme, new Pattern("default", themeName + "/" + themeName + "_console"));
+            addPattern(consoleTheme, new Pattern(new ResourceLocation(TardisRefined.MODID, "default"), themeName + "/" + themeName + "_console"));
         }
 
         /*Coral*/
-        addPattern(ConsoleTheme.CORAL, new Pattern("blue", "coral/coral_console_blue"));
-        addPattern(ConsoleTheme.CORAL, new Pattern("war", "coral/coral_console_war"));
+        addPattern(ConsoleTheme.CORAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "coral/coral_console_blue"));
+        addPattern(ConsoleTheme.CORAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "war"), "coral/coral_console_war"));
 
         /*Factory*/
-        addPattern(ConsoleTheme.FACTORY, new Pattern("vintage", "factory/factory_console_vintage"));
-        addPattern(ConsoleTheme.FACTORY, new Pattern("mint", "factory/factory_console_mint"));
+        addPattern(ConsoleTheme.FACTORY, new Pattern(new ResourceLocation(TardisRefined.MODID, "vintage"), "factory/factory_console_vintage"));
+        addPattern(ConsoleTheme.FACTORY, new Pattern(new ResourceLocation(TardisRefined.MODID, "mint"), "factory/factory_console_mint"));
 
         /*Toyota*/
-        addPattern(ConsoleTheme.TOYOTA, new Pattern("violet", "toyota/toyota_texture_purple"));
-        addPattern(ConsoleTheme.TOYOTA, new Pattern("blue", "toyota/toyota_texture_blue"));
+        addPattern(ConsoleTheme.TOYOTA, new Pattern(new ResourceLocation(TardisRefined.MODID, "violet"), "toyota/toyota_texture_purple"));
+        addPattern(ConsoleTheme.TOYOTA, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "toyota/toyota_texture_blue"));
 
         /*Crystal*/
-        addPattern(ConsoleTheme.CRYSTAL, new Pattern("purple", "crystal/crystal_console_purple"));
+        addPattern(ConsoleTheme.CRYSTAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "purple"), "crystal/crystal_console_purple"));
 
         /*Myst*/
-        addPattern(ConsoleTheme.MYST, new Pattern("molten", "myst/myst_console_molten"));
+        addPattern(ConsoleTheme.MYST, new Pattern(new ResourceLocation(TardisRefined.MODID, "molten"), "myst/myst_console_molten"));
 
         /*Initiative*/
-        addPattern(ConsoleTheme.INITIATIVE, new Pattern("aperture", "initiative/initiative_console_aperture"));
+        addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture"));
 
     }
 
@@ -70,20 +70,20 @@ public class ConsolePatterns {
     }
 
 
-    public static boolean doesPatternExist(ConsoleTheme consoleTheme, String name) {
+    public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation id) {
         List<Pattern> patterns = getPatternsForTheme(consoleTheme);
         for (Pattern pattern : patterns) {
-            if (Objects.equals(pattern.name(), name)) {
+            if (Objects.equals(pattern.id(), id)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static Pattern getPatternFromString(ConsoleTheme consoleTheme, String name) {
+    public static Pattern getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
         List<Pattern> patterns = getPatternsForTheme(consoleTheme);
         for (Pattern pattern : patterns) {
-            if (Objects.equals(pattern.name(), name)) {
+            if (Objects.equals(pattern.id(), id)) {
                 return pattern;
             }
         }
@@ -93,7 +93,7 @@ public class ConsolePatterns {
     public static class Pattern {
 
         private final ResourceLocation textureLocation;
-        private final String name;
+        private final ResourceLocation identifier;
 
         public ConsoleTheme theme() {
             return theme;
@@ -101,13 +101,13 @@ public class ConsolePatterns {
 
         private ConsoleTheme theme;
 
-        public Pattern(String name, ResourceLocation texture) {
-            this.name = name.trim().toLowerCase(Locale.ENGLISH);
+        public Pattern(ResourceLocation identifier, ResourceLocation texture) {
+            this.identifier = identifier;
             this.textureLocation = texture;
         }
 
-        public Pattern(String name, String texture) {
-            this.name = name.trim().toLowerCase(Locale.ENGLISH);
+        public Pattern(ResourceLocation identifier, String texture) {
+            this.identifier = identifier;
             this.textureLocation = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + texture + ".png");
         }
 
@@ -115,8 +115,8 @@ public class ConsolePatterns {
             return textureLocation;
         }
 
-        public String name() {
-            return name;
+        public ResourceLocation id() {
+            return identifier;
         }
 
         @Override
@@ -124,12 +124,12 @@ public class ConsolePatterns {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Pattern pattern = (Pattern) o;
-            return textureLocation.equals(pattern.textureLocation) && name.equals(pattern.name);
+            return Objects.equals(textureLocation, pattern.textureLocation) && Objects.equals(identifier, pattern.identifier) && theme == pattern.theme;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(textureLocation, name);
+            return Objects.hash(textureLocation, identifier, theme);
         }
 
         public void setTheme(ConsoleTheme theme) {

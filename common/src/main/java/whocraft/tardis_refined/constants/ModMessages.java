@@ -49,7 +49,7 @@ public class ModMessages {
     }
 
     public static String pattern(ConsolePatterns.Pattern pattern) {
-        return "pattern." + TardisRefined.MODID + "." + pattern.theme().getSerializedName() + "." + pattern.name();
+        return "pattern." + pattern.id().getNamespace() + "." + pattern.theme().getSerializedName() + "." + pattern.id().getPath();
     }
 
 

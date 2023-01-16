@@ -679,7 +679,12 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         if (globalConsoleBlock == null) return;
 
-        if (globalConsoleBlock.pattern().name().equals("purple")) {
+        renderCrystalRotor(globalConsoleBlock, poseStack, multiBufferSource, packedLight, packedOverlay, red, green, blue, alpha, reactions);
+
+    }
+
+    private void renderCrystalRotor(GlobalConsoleBlockEntity globalConsoleBlock, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, TardisClientData reactions) {
+        if (globalConsoleBlock.pattern().id().equals("purple")) {
             core.root().getAllParts().forEach(ModelPart::resetPose);
             poseStack.pushPose();
             poseStack.translate(0, -1.5F, 0);
@@ -693,7 +698,6 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
             core.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_core.png"))), packedLight, packedOverlay, red, green, blue, alpha / 2);
             poseStack.popPose();
         }
-
     }
 
     @Override

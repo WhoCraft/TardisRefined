@@ -6,17 +6,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -29,7 +32,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private boolean isDirty = true;
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
-    private ConsolePatterns.Pattern pattern = null;
+    private ConsolePatterns.Pattern pattern = ConsolePatterns.getPatternFromString(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "default"));
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
@@ -37,7 +40,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public ConsolePatterns.Pattern pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, "default");
+        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
         return pattern == null ? defaultPattern : pattern;
     }
 
@@ -51,7 +54,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         super.saveAdditional(compoundTag);
 
         if (pattern != null) {
-            compoundTag.putString("pattern", pattern.name());
+            compoundTag.putString(NbtConstants.PATTERN, pattern.id().toString());
         }
     }
 
@@ -60,15 +63,15 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
 
-        if (tag.contains("pattern")) {
-            String currentPattern = tag.getString("pattern");
+        if (tag.contains(NbtConstants.PATTERN)) {
+            ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
             if (ConsolePatterns.doesPatternExist(console, currentPattern)) {
                 pattern = ConsolePatterns.getPatternFromString(console, currentPattern);
             }
         }
 
         if (pattern == null) {
-            pattern = ConsolePatterns.getPatternFromString(console, "default");
+            pattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
         }
 
         super.load(tag);

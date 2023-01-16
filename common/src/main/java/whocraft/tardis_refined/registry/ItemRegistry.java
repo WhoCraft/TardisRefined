@@ -5,7 +5,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.items.PatternManipulatorItem;
 import whocraft.tardis_refined.common.items.KeyItem;
 
 public class ItemRegistry {
@@ -21,7 +20,7 @@ public class ItemRegistry {
     public static final DeferredRegistry<Item> ITEMS = DeferredRegistry.create(TardisRefined.MODID, Registry.ITEM_REGISTRY);
 
     public static final RegistrySupplier<Item> KEY = ITEMS.register("tardis_key", () -> new KeyItem(new Item.Properties().stacksTo(1).tab(MAIN_TAB)));
-    public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = ITEMS.register("pattern_manipulator", () -> new PatternManipulatorItem(new Item.Properties().stacksTo(1).tab(MAIN_TAB)));
+    public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = ITEMS.register("pattern_manipulator", () -> new Item(new Item.Properties().stacksTo(1).tab(MAIN_TAB)));
 
 
 
