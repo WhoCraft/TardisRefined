@@ -39,6 +39,7 @@ public class ConsolePatterns {
 
         /*Initiative*/
         addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture"));
+        addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "initiative/initiative_console_blue"));
 
     }
 
