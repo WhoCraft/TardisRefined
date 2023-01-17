@@ -203,8 +203,8 @@ public class ControlEntity extends PathfinderMob {
 
     // Whilst in flight, the TARDIS will have waiting controls for the player to interact with. If this control is of that type, tell the control manager.
     private boolean interactWaitingControl(TardisLevelOperator operator) {
-        if (operator.getControlManager().isWaitingForControlResponse() && operator.getControlManager().getWaitingControlPrompt() == this.controlSpecification.control()) {
-            operator.getControlManager().respondToWaitingControl(this, this.controlSpecification.control());
+        if (operator.getTardisFlightEventManager().isWaitingForControlResponse() && operator.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control()) {
+            operator.getTardisFlightEventManager().respondToWaitingControl(this, this.controlSpecification.control());
             return true;
         }
 
@@ -250,7 +250,7 @@ public class ControlEntity extends PathfinderMob {
         } else {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                    var shouldShowParticle = x.getControlManager().isWaitingForControlResponse() && x.getControlManager().getWaitingControlPrompt() == this.controlSpecification.control();
+                    var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
                     if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
                         getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
                     }

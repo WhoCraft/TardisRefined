@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
@@ -31,9 +32,13 @@ public class TardisLevelOperator {
     private Level level;
     private boolean setUp = false;
     private ITardisInternalDoor internalDoor = null;
+
+    // Managers
     private TardisExteriorManager exteriorManager;
     private TardisInteriorManager interiorManager;
     private TardisControlManager controlManager;
+    private TardisFlightEventManager tardisFlightEventManager;
+
 
     private TardisClientData tardisClientData;
 
@@ -42,6 +47,7 @@ public class TardisLevelOperator {
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
+        this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
     }
 
@@ -90,6 +96,7 @@ public class TardisLevelOperator {
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         controlManager.tick(level);
+        tardisFlightEventManager.tick();
 
         var shouldSync = false;
 
@@ -118,6 +125,16 @@ public class TardisLevelOperator {
 
         if (controlManager.getCurrentExteriorTheme() != tardisClientData.getShellTheme()) {
             tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
+            shouldSync = true;
+        }
+
+        if (tardisFlightEventManager.isInDangerZone() != tardisClientData.isInDangerZone()) {
+            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
+            shouldSync = true;
+        }
+
+        if (tardisFlightEventManager.dangerZoneShakeScale() != tardisClientData.flightShakeScale()) {
+            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             shouldSync = true;
         }
 
@@ -243,6 +260,10 @@ public class TardisLevelOperator {
 
     public TardisControlManager getControlManager() {
         return this.controlManager;
+    }
+
+    public TardisFlightEventManager getTardisFlightEventManager() {
+        return this.tardisFlightEventManager;
     }
 
 }

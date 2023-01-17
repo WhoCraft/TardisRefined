@@ -2,6 +2,7 @@ package whocraft.tardis_refined.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -35,6 +36,8 @@ public class TardisClientData {
     private boolean throttleDown = false;
     private boolean isLanding = false;
     private boolean isTakingOff = false;
+    private boolean isInDangerZone = false;
+    private float flightShakeScale = 0;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
 
     public int landingTime = 0, takeOffTime = 0;
@@ -61,6 +64,12 @@ public class TardisClientData {
     public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
     public boolean isTakingOff() {return isTakingOff;}
 
+    public void setInDangerZone(boolean isInDangerZone) {this.isInDangerZone = isInDangerZone;}
+    public boolean isInDangerZone() {return isInDangerZone;}
+
+    public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
+    public float flightShakeScale() {return flightShakeScale;}
+
     public void setShellTheme(ShellTheme theme) {this.shellTheme = theme;}
     public ShellTheme getShellTheme() {return shellTheme;}
 
@@ -78,6 +87,8 @@ public class TardisClientData {
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
         compoundTag.putString("shellTheme", String.valueOf(shellTheme));
+        compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
+        compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
         return compoundTag;
     }
 
@@ -93,6 +104,8 @@ public class TardisClientData {
         isLanding = arg.getBoolean("isLanding");
         isTakingOff = arg.getBoolean("isTakingOff");
         shellTheme = ShellTheme.findOr(arg.getString("shellTheme"), ShellTheme.FACTORY);
+        isInDangerZone = arg.getBoolean("isInDangerZone");
+        flightShakeScale = arg.getFloat("flightShakeScale");
     }
 
     /**
@@ -118,6 +131,18 @@ public class TardisClientData {
             landingTime++;
             takeOffTime = 0;
         }
+
+
+        // Responsible for screen-shake. Not sure of a better solution at this point in time.
+        if (isInDangerZone) {
+            if (Minecraft.getInstance().player.level.dimension() == levelKey) {
+                var player = Minecraft.getInstance().player;
+                player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+                player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+            }
+        }
+
+
     }
 
     /**

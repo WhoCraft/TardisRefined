@@ -11,6 +11,7 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> TARDIS_TAKEOFF = setUpSound("tardis_takeoff");
     public static final RegistrySupplier<SoundEvent> TARDIS_LAND = setUpSound("tardis_land");
     public static final RegistrySupplier<SoundEvent> TARDIS_SINGLE_FLY = setUpSound("tardis_single_fly");
+    public static final RegistrySupplier<SoundEvent> TIME_BLAST = setUpSound("time_blast");
 
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
         SoundEvent sound = new SoundEvent(new ResourceLocation(TardisRefined.MODID, soundName));

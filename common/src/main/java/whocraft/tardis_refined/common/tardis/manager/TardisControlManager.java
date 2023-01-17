@@ -46,21 +46,12 @@ public class TardisControlManager {
     private int[] coordinateIncrements = new int[]{1, 10, 100, 1000};
     private int cordIncrementIndex = 0;
 
-    private List<ConsoleControl> possibleControls;
-    private ConsoleControl controlPrompt;
-    private int requiredControlRequests;
-    private int controlResponses;
-
-    private final int MIN_DISTANCE_FOR_EVENTS = 50;
-    private int controlRequestCooldown = 0;
-    private boolean isWaitingForControlResponse = false;
-
     private boolean autoLand = false;
     private ShellTheme currentExteriorTheme;
 
     public TardisControlManager(TardisLevelOperator operator) {
         this.operator = operator;
-        this.possibleControls = Arrays.stream(ConsoleControl.values()).filter(x -> x != ConsoleControl.MONITOR && x != ConsoleControl.THROTTLE).toList();
+
     }
 
     public void setAutoLand(boolean autoLand) {
@@ -123,8 +114,6 @@ public class TardisControlManager {
         if (isInFlight) {
             ticksInFlight++;
 
-            inFlightTick();
-
             // Automatically trigger the ship to land for things such as landing pads.
             if (ticksInFlight > (20 * 10) && autoLand) {
                 this.endFlight();
@@ -148,10 +137,10 @@ public class TardisControlManager {
 
 
             if ((ticksLanding >= 6 * 20 || ticksLanding == 0)) {
-                var distanceBetweenWroop = (this.controlResponses < this.requiredControlRequests) ? 20 * 1.6 : 20 * 1.75;
+                var distanceBetweenWroop = (this.operator.getTardisFlightEventManager().getControlResponses() < this.operator.getTardisFlightEventManager().getRequiredControlRequests()) ? 20 * 1.6 : 20 * 1.75;
                 if (level.getGameTime() % (distanceBetweenWroop) == 0)
                 operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(),
-                        SoundSource.AMBIENT, 1000f, (this.controlResponses < this.requiredControlRequests) ? 1.02f : 1f);
+                        SoundSource.AMBIENT, 10f, (this.operator.getTardisFlightEventManager().getControlResponses() < this.operator.getTardisFlightEventManager().getRequiredControlRequests()) ? 1.02f : 1f);
             }
         }
 
@@ -274,12 +263,12 @@ public class TardisControlManager {
         this.ticksTakingOff = 1;
         this.operator.getExteriorManager().setIsTakingOff(true);
 
-        this.calculateTravelLogic();
+        this.operator.getTardisFlightEventManager().calculateTravelLogic();
         return true;
     }
 
     public void endFlight() {
-        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (this.requiredControlRequests != this.controlResponses && !this.autoLand)) {
+        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (!this.operator.getTardisFlightEventManager().areControlEventsComplete() && !this.autoLand)) {
             return;
         }
         this.ticksInFlight = 0;
@@ -363,78 +352,6 @@ public class TardisControlManager {
     }
 
 
-
-
-    public boolean isWaitingForControlResponse() {return isWaitingForControlResponse;}
-    public ConsoleControl getWaitingControlPrompt() {return this.controlPrompt;}
-
-
-    private int getControlRequestCooldown() {
-        return 3 * 20; // This will be expanded on when Stats are added.
-    }
-
-
-    // Once the number of pressed controls is == to the number of required presses,
-    // the TARDIS may land.
-
-    private void calculateTravelLogic() {
-
-        // Calculate the distance between two points
-
-        var current = this.operator.getExteriorManager().getLastKnownLocation().position;
-        var target = targetLocation.position;
-        Vec3 currentVec = new Vec3(current.getX(), current.getY(), current.getZ());
-        Vec3 targetVec = new Vec3(target.getX(), target.getY(), target.getZ());
-
-        var distance = currentVec.distanceTo(targetVec);
-
-        // Determine if the distance is worth the prompts
-        if (distance > MIN_DISTANCE_FOR_EVENTS) {
-            this.requiredControlRequests = getBlocksPerRequest(distance);
-            System.out.println("Total requests required: " + this.requiredControlRequests + " // " + distance + " blocks");
-        } else {
-            this.requiredControlRequests = 0;
-        }
-
-        this.controlResponses = 0;
-        this.isWaitingForControlResponse = false;
-        this.controlRequestCooldown = getControlRequestCooldown();
-    }
-
-    private int getBlocksPerRequest(double distance) {
-        return (int) (distance / MIN_DISTANCE_FOR_EVENTS ); // This will be expanded once stats are added.
-    }
-
-    // All the logic related to the in-flight events of the TARDIS.
-    public void inFlightTick() {
-
-        if (controlRequestCooldown > 0) controlRequestCooldown--;
-
-        // Prepare the next control for highlighting.
-        if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !autoLand) {
-
-            // Record what control type needs pressing.
-            this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
-
-            // Set what control needs to be good
-            isWaitingForControlResponse = true;
-        }
-    }
-
-    public void respondToWaitingControl(ControlEntity entity, ConsoleControl control) {
-        // Assign a cooldown between the controls determined by stats.
-        this.controlRequestCooldown = getControlRequestCooldown();
-
-        // Increment the number of control responses
-        this.controlResponses++;
-
-        this.isWaitingForControlResponse = false;
-
-        if (this.controlResponses == this.requiredControlRequests) {
-            operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
-        }
-
-    }
 
 
 }
