@@ -94,10 +94,16 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         BlockState consoleBlock = level.getBlockState(blockPos.offset(offset));
         ConsoleTheme nextTheme = blockState.getValue(ConsoleConfigurationBlock.CONSOLE).next();
 
-        if(player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get()){
+        if (player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get()) {
 
             if (level.getBlockEntity(blockPos.offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
                 ConsoleTheme console = globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+
+                if (ConsolePatterns.getPatternsForTheme(console).size() == 1) {
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.PLAYERS, 100, (float) (0.1 + (level.getRandom().nextFloat() * 0.5)));
+                    return InteractionResult.SUCCESS;
+                }
+
                 globalConsoleBlock.setPattern(ConsolePatterns.next(console, globalConsoleBlock.pattern()));
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.pattern(globalConsoleBlock.pattern())), true);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -111,7 +117,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         if (player.getMainHandItem().getItem() == Items.IRON_BLOCK) {
             if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
                 placeGlobalConsoleBlock(blockPos.offset(offset), blockState, level);
-                if(!player.isCreative()) {
+                if (!player.isCreative()) {
                     player.getMainHandItem().shrink(1);
                 }
                 return InteractionResult.CONSUME;
@@ -131,7 +137,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
     /**
      * Places a Global Console block at the specified position, with the same theme as the Console Configuration block.
-     * @param pos The position to place the Global Console block at.
+     *
+     * @param pos   The position to place the Global Console block at.
      * @param state The state of the Console Configuration block that was used to place the Global Console block.
      * @param level The level the Global Console block will be placed in.
      */
@@ -145,7 +152,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
     /**
      * Removes the Global Console block at the specified position and kills its controls.
-     * @param pos The position of the Global Console block to be removed.
+     *
+     * @param pos   The position of the Global Console block to be removed.
      * @param level The level the Global Console block is in.
      */
     private void removeGlobalConsoleBlock(BlockPos pos, Level level) {
@@ -158,7 +166,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
     /**
      * Changes the theme of the Console Configuration block and its adjacent Global Console block.
-     * @param pos The position of the Console Configuration block.
+     *
+     * @param pos   The position of the Console Configuration block.
      * @param state The state of the Console Configuration block.
      * @param theme The new theme for the Console Configuration and Global Console blocks.
      * @param level The level the Console Configuration and Global Console blocks are in.
