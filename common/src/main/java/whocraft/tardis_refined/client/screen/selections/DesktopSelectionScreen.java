@@ -96,7 +96,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2, height / 2 - 60, 150, 80, 12);
+        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 + 45, height / 2 - 60, 60, 80, 12);
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 

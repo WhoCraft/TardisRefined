@@ -7,7 +7,8 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class ShellModelCollection {
 
-    private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel, bigBenModel, nukaModel;
+    private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel, bigBenModel, nukaModel, growthModel;
+
 
     public ShellModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
@@ -22,6 +23,8 @@ public class ShellModelCollection {
         greoningModel = new GroeningShellModel(context.bakeLayer((ModelRegistry.GROENING_SHELL)));
         bigBenModel = new BigBenShellModel(context.bakeLayer((ModelRegistry.BIG_BEN_SHELL)));
         nukaModel = new NukaShellModel(context.bakeLayer((ModelRegistry.NUKA_SHELL)));
+        growthModel = new GrowthShellModel(context.bakeLayer((ModelRegistry.GROWTH_SHELL)));
+
     }
 
     /**
@@ -42,7 +45,7 @@ public class ShellModelCollection {
             case GROENING -> greoningModel;
             case BIG_BEN -> bigBenModel;
             case NUKA -> nukaModel;
-
+            case GROWTH -> growthModel;
 
         };
     }
