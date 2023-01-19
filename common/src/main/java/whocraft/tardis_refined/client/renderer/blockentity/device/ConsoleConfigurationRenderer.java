@@ -42,7 +42,7 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
 
             ConsoleTheme theme = blockstate.getValue(ConsoleConfigurationBlock.CONSOLE);
 
-            ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(ConsoleModelCollection.getInstance().getConsoleModel(theme).getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
+            ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(null, blockEntity.getLevel(), poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
         }
 
         poseStack.popPose();

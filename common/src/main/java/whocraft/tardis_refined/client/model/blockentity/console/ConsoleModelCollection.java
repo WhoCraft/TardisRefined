@@ -10,7 +10,9 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
  */
 public class ConsoleModelCollection {
 
-    IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel;
+    IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel;
+
+
 
     public ConsoleModelCollection() {
         factoryConsoleModel = new FactoryConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.FACTORY_CONSOLE)));
@@ -19,13 +21,17 @@ public class ConsoleModelCollection {
         coralConsoleModel = new CoralConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.CORAL_CONSOLE)));
         toyotaConsoleModel = new ToyotaConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.TOYOTA_CONSOLE)));
         crystalConsoleModel = new CrystalConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.CRYSTAL_CONSOLE)));
+        victorianConsoleModel = new VictorianConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.VICTORIAN_CONSOLE)));
+        mystConsoleModel = new MystConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.MYST_CONSOLE)));
+        initiativeConsoleModel = new InitiativeConsoleModel(Minecraft.getInstance().getEntityModels().bakeLayer((ModelRegistry.INITIATIVE_CONSOLE)));
     }
 
     /**
      * Get the associated console model from a console theme.
+     *
      * @param theme The Console theme.
      * @return Console unit model tied with the console theme.
-     * **/
+     **/
     public IConsoleUnit getConsoleModel(ConsoleTheme theme) {
         switch (theme) {
             case FACTORY:
@@ -40,6 +46,12 @@ public class ConsoleModelCollection {
                 return nukaConsoleModel;
             case CRYSTAL:
                 return crystalConsoleModel;
+            case VICTORIAN:
+                return victorianConsoleModel;
+            case MYST:
+                return mystConsoleModel;
+            case INITIATIVE:
+                return initiativeConsoleModel;
             default:
                 throw new RuntimeException("Renderer has accessed theme that isn't accounted for! - " + theme.getSerializedName());
         }
