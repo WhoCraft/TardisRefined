@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -43,6 +44,35 @@ public class TardisFlightEventManager {
         this.possibleControls = Arrays.stream(ConsoleControl.values()).filter(x -> x != ConsoleControl.MONITOR && x != ConsoleControl.THROTTLE).toList();
     }
 
+    public void loadData(CompoundTag tag) {
+        this.isWaitingForControlResponse = tag.getBoolean("isWaitingForControlResponse");
+        this.isInDangerZone = tag.getBoolean("isInDangerZone");
+        this.ticksInTheDangerZone = tag.getInt("ticksInTheDangerZone");
+        this.requiredControlRequests = tag.getInt("requiredDangerZoneRequests");
+        this.dangerZoneResponses = tag.getInt("dangerZoneResponses");
+        this.controlRequestCooldown = tag.getInt("controlRequestCooldown");
+        this.ticksSincePrompted = tag.getInt("ticksSincePrompted");
+        this.dangerZoneShakeScale = tag.getInt("dangerZoneShakeScale");
+        this.controlPrompt = ConsoleControl.findOr(tag.getString("controlPrompt"), ConsoleControl.THROTTLE);
+    }
+
+    public CompoundTag saveData(CompoundTag tag) {
+        tag.putBoolean("isWaitingForControlResponse", this.isWaitingForControlResponse);
+        tag.putBoolean("isInDangerZone", this.isInDangerZone);
+        tag.putInt("ticksInTheDangerZone", this.ticksInTheDangerZone);
+        tag.putInt("requiredDangerZoneRequests", this.requiredControlRequests);
+        tag.putInt("dangerZoneResponses", this.dangerZoneResponses);
+        tag.putInt("controlRequestCooldown", this.controlRequestCooldown);
+        tag.putInt("ticksSincePrompted", this.ticksSincePrompted);
+        tag.putFloat("dangerZoneShakeScale", this.dangerZoneShakeScale);
+
+        if (this.controlPrompt != null) {
+            tag.putString("controlPrompt", this.controlPrompt.getSerializedName());
+        }
+
+        return tag;
+    }
+
     public boolean isWaitingForControlResponse() {return isWaitingForControlResponse;}
     public ConsoleControl getWaitingControlPrompt() {return this.controlPrompt;}
     public int getControlResponses() {return this.controlResponses;}
@@ -72,10 +102,17 @@ public class TardisFlightEventManager {
         return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
     }
 
+
     public void calculateTravelLogic() {
 
-        // Calculate the distance between two points
+        // Only trigger a responses reset if we haven't started flight yet.
+        if (this.requiredControlRequests == 0) {
+            this.controlResponses = 0;
+            this.isWaitingForControlResponse = false;
+            this.controlRequestCooldown = getControlRequestCooldown();
+        }
 
+        // Calculate the distance between two points
         var current = this.operator.getExteriorManager().getLastKnownLocation().position;
         var target = this.operator.getControlManager().getTargetLocation().position;
         Vec3 currentVec = new Vec3(current.getX(), current.getY(), current.getZ());
@@ -86,14 +123,11 @@ public class TardisFlightEventManager {
         // Determine if the distance is worth the prompts
         if (distance > MIN_DISTANCE_FOR_EVENTS) {
             this.requiredControlRequests = getBlocksPerRequest(distance);
-            System.out.println("Total requests required: " + this.requiredControlRequests + " // " + distance + " blocks");
         } else {
             this.requiredControlRequests = 0;
         }
 
-        this.controlResponses = 0;
-        this.isWaitingForControlResponse = false;
-        this.controlRequestCooldown = getControlRequestCooldown();
+
     }
 
     private int getBlocksPerRequest(double distance) {
@@ -105,47 +139,49 @@ public class TardisFlightEventManager {
     public void tick() {
         if (this.operator.getControlManager().isInFlight() && !this.operator.getControlManager().isAutoLandSet()) {
 
-            ticksSincePrompted++;
+            if (!this.operator.getControlManager().isCrashing()) {
+                ticksSincePrompted++;
 
-            if (controlRequestCooldown > 0) controlRequestCooldown--;
+                if (controlRequestCooldown > 0) controlRequestCooldown--;
 
-            // Prepare the next control for highlighting.
-            if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !operator.getControlManager().isAutoLandSet()) {
+                // Prepare the next control for highlighting.
+                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !operator.getControlManager().isAutoLandSet()) {
 
-                // Record what control type needs pressing.
-                this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
+                    // Record what control type needs pressing.
+                    this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
 
-                // Set what control needs to be good
-                isWaitingForControlResponse = true;
+                    // Set what control needs to be good
+                    isWaitingForControlResponse = true;
 
-                this.ticksSincePrompted = 0;
-            }
+                    this.ticksSincePrompted = 0;
+                }
 
-            if (!this.isInDangerZone && !this.areControlEventsComplete() && ticksSincePrompted > 30 * 20) {
-                if (this.operator.getLevel().getGameTime() % (5 * 20) >= 0 && this.operator.getLevel().random.nextInt(10) == 0) {
-                    this.isInDangerZone = true;
+                if (!this.isInDangerZone && !this.areControlEventsComplete() && ticksSincePrompted > 30 * 20) {
+                    if (this.operator.getLevel().getGameTime() % (5 * 20) >= 0 && this.operator.getLevel().random.nextInt(10) == 0) {
+                        this.isInDangerZone = true;
+                        this.ticksInTheDangerZone = 0;
+                        this.requiredDangerZoneRequests = this.operator.getLevel().random.nextInt(5); // We want to randomly add to this number count.
+                    }
+                }
+
+                // Get us out of the dangerzone.
+                if (this.isInDangerZone() && this.areDangerZoneEventsComplete()) {
+                    this.isInDangerZone = false;
                     this.ticksInTheDangerZone = 0;
-                    this.requiredDangerZoneRequests = this.operator.getLevel().random.nextInt(5); // We want to randomly add to this number count.
+                    this.dangerZoneResponses = 0;
+                    this.dangerZoneShakeScale = 0;
+                    this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
+                    this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
+                    this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
+                }
+
+                if (this.isInDangerZone) {
+                    tickDangerLevels();
                 }
             }
-
-            if (this.isInDangerZone() && this.areDangerZoneEventsComplete()) {
-                this.isInDangerZone = false;
-                this.ticksInTheDangerZone = 0;
-                this.dangerZoneResponses = 0;
-                this.dangerZoneShakeScale = 0;
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
-            }
-
-            if (this.isInDangerZone) {
-                tickDangerLevels();
-            }
-
-
         } else {
             if (ticksSincePrompted != 0) {ticksSincePrompted = 0;}
+            if (requiredControlRequests != 0) {requiredControlRequests = 0;}
         }
     }
 
@@ -156,7 +192,6 @@ public class TardisFlightEventManager {
 
         if (operator.getLevel().getGameTime() % (10 * 20) == 0) {
             this.requiredDangerZoneRequests++;
-            System.out.println("Number of requests to beat: " + this.requiredDangerZoneRequests);
         }
 
         if (dangerZoneSecondsPast(10)) {
@@ -169,11 +204,7 @@ public class TardisFlightEventManager {
 
         if (dangerZoneSecondsPast(30)) {
             if (operator.getLevel().getGameTime() % (3 * 20) == 0) {
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+                playCloisterBell();
             }
 
             scaleForDanger = 1f;
@@ -189,6 +220,16 @@ public class TardisFlightEventManager {
         }
 
         this.dangerZoneShakeScale = scaleForDanger;
+
+
+        // The requests are too great, the TARDIS needs to crash.
+        if (this.requiredDangerZoneRequests >= 10) {
+            this.operator.getControlManager().crash();
+            this.isWaitingForControlResponse = false;
+            this.isInDangerZone = false;
+            this.ticksInTheDangerZone = 0;
+            this.dangerZoneShakeScale = 3f;
+        }
     }
 
     public void respondToWaitingControl(ControlEntity entity, ConsoleControl control) {
@@ -199,7 +240,6 @@ public class TardisFlightEventManager {
         // If we're in the danger zone, we don't want to advance the normal flight. We'd rather force the player to get out of it first.
         if (isInDangerZone()) {
             this.dangerZoneResponses++;
-            System.out.println("Reponses:" + this.dangerZoneResponses + ", Requests: " + this.requiredDangerZoneRequests);
         } else {
             this.controlResponses++;
         }
@@ -210,7 +250,8 @@ public class TardisFlightEventManager {
             operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
         } else {
             if (this.isEventInComboTime()) {
-                operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.AMBIENT, 10, 1);
+                float pitch = 1.25f * getPercentComplete();
+                operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.AMBIENT, 10, pitch);
             }
         }
 
@@ -218,6 +259,18 @@ public class TardisFlightEventManager {
 
     private boolean dangerZoneSecondsPast(int seconds) {
         return (this.ticksInTheDangerZone >= seconds * 20);
+    }
+
+    public float getPercentComplete() {
+        return (float)this.controlResponses / (float)this.requiredControlRequests;
+    }
+
+    private void playCloisterBell() {
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
     }
 
 }

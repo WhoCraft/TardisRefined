@@ -135,7 +135,7 @@ public class ControlEntity extends PathfinderMob {
 
                 if (player.getMainHandItem().getItem() == Items.DEBUG_STICK) {
                     if (player.getOffhandItem().getItem() == Items.DIAMOND) {
-                        setPos(position().add( 0, player.isCrouching() ? -0.05 : 0.05, 0));
+                        setPos(position().add(0, player.isCrouching() ? -0.05 : 0.05, 0));
                     } else {
                         setPos(position().add(player.isCrouching() ? -0.05 : 0.05, 0, 0));
                     }
@@ -169,10 +169,10 @@ public class ControlEntity extends PathfinderMob {
 
                 if (player.getMainHandItem().getItem() == Items.DEBUG_STICK) {
                     if (player.getOffhandItem().getItem() == Items.REDSTONE) {
-                        float x = (float) ( this.position().x - 0.5f);
-                        float y = (float) ( this.position().y - 97.5f);
-                        float z = (float) ( this.position().z - -4.5f);
-                        System.out.println("Output: " + x +"f, "+ y +"f, "+ z +"f");
+                        float x = (float) (this.position().x - 0.5f);
+                        float y = (float) (this.position().y - 97.5f);
+                        float z = (float) (this.position().z - -4.5f);
+                        System.out.println("Output: " + x + "f, " + y + "f, " + z + "f");
                     } else {
                         setPos(position().add(0, 0, player.isCrouching() ? 0.05 : -0.05));
                     }
@@ -181,7 +181,16 @@ public class ControlEntity extends PathfinderMob {
                 }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                    if (!cap.getControlManager().canUseControls()) {
 
+                        if (player.isCreative()) {
+                            serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                        } else {
+                            player.hurt(DamageSource.ON_FIRE, 0.1F);
+                        }
+
+                        return;
+                    }
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
@@ -249,12 +258,15 @@ public class ControlEntity extends PathfinderMob {
             }
         } else {
             if (getLevel() instanceof ServerLevel serverLevel) {
-                TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                    var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
-                    if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
-                        getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
-                    }
-                });
+
+                if (this.controlSpecification != null) {
+                    TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+                        var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
+                        if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
+                            getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
+                        }
+                    });
+                }
             }
         }
 

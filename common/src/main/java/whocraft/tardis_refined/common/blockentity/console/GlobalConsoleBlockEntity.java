@@ -2,10 +2,13 @@ package whocraft.tardis_refined.common.blockentity.console;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -32,9 +35,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
+    protected void saveAdditional(CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+
+    }
+
+    @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-
         spawnControlEntities();
     }
 
@@ -82,10 +90,18 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
         if (this.isDirty) {
             spawnControlEntities();
         }
+
 
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
@@ -93,6 +109,12 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                     System.out.println("Beep beep!");
                     serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
                 }
+
+                // Check if we're crashing and if its okay to explode the TARDIS a little.
+                if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                    level.explode((Entity) null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
+                }
+
             });
         }
     }

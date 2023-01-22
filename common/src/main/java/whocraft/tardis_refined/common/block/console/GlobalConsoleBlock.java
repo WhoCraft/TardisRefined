@@ -2,15 +2,16 @@ package whocraft.tardis_refined.common.block.console;
 
 import net.minecraft.core.BlockPos;
 
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -27,7 +28,10 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GlobalConsoleBlock extends BaseEntityBlock {
 
@@ -104,6 +108,52 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
                 var f = (double)blockPos.getZ()  + randomSource.nextFloat()* 1.25;
                 level.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0D, 0.1D, 0.0D);
             }
+
+            if (clientData.isOnCooldown() || clientData.isCrashing()) {
+
+                var d = (double)blockPos.getX() + level.getRandom().nextFloat() * 1.25;
+                var e = (double)blockPos.getY() + level.getRandom().nextDouble() * 1D + 1D;
+                var f = (double)blockPos.getZ()  + level.getRandom().nextFloat()* 1.25;
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, d, e, f, 0.0D, 0.1D, 0.0D);
+
+                for (int i = 0; i < 5; i++) {
+                     d = (double)blockPos.getX() + level.getRandom().nextFloat() * 1.25;
+                     e = (double)blockPos.getY() + level.getRandom().nextDouble() * 1D + 1D;
+                     f = (double)blockPos.getZ()  + level.getRandom().nextFloat()* 1.25;
+                    level.addParticle(ParticleTypes.LARGE_SMOKE, d, e, f, 0.0D, 0.1D, 0.0D);
+                }
+
+                if (level.random.nextInt(10) == 0) {
+                     d = (double)blockPos.getX() + level.getRandom().nextFloat() * 1.25;
+                     e = (double)blockPos.getY() + level.getRandom().nextDouble() * 1D + 1D;
+                     f = (double)blockPos.getZ()  + level.getRandom().nextFloat()* 1.25;
+                    level.addParticle(ParticleTypes.LAVA, d, e, f, -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+                    level.addParticle(ParticleTypes.LAVA, d, e, f, -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+                    level.addParticle(ParticleTypes.LAVA, d, e, f, -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+                    level.playLocalSound(blockPos.getX(),blockPos.getY(),blockPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1, level.getRandom().nextFloat() + 1f, false);
+                }
+            }
         }
+    }
+
+    @Override
+    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+
+        AtomicBoolean shouldConsume = new AtomicBoolean(false);
+        if (level instanceof ServerLevel serverLevel) {
+            if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
+                TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+                    if (x.getControlManager().isOnCooldown()) {
+                        x.getControlManager().endCoolDown();
+                        shouldConsume.set(true);
+                    }
+                });
+
+                if (shouldConsume.get()) {return InteractionResult.CONSUME_PARTIAL;}
+
+            }
+        }
+
+        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 }

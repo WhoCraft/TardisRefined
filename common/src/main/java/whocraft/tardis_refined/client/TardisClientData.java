@@ -37,6 +37,8 @@ public class TardisClientData {
     private boolean isLanding = false;
     private boolean isTakingOff = false;
     private boolean isInDangerZone = false;
+    private boolean isCrashing = false;
+    private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
 
@@ -67,6 +69,12 @@ public class TardisClientData {
     public void setInDangerZone(boolean isInDangerZone) {this.isInDangerZone = isInDangerZone;}
     public boolean isInDangerZone() {return isInDangerZone;}
 
+    public void setIsCrashing(boolean isCrashing) {this.isCrashing = isCrashing;}
+    public boolean isCrashing() {return isCrashing;}
+
+    public void setIsOnCooldown(boolean isCooldown) {this.isOnCooldown = isCooldown;}
+    public boolean isOnCooldown() {return isOnCooldown;}
+
     public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
     public float flightShakeScale() {return flightShakeScale;}
 
@@ -89,6 +97,7 @@ public class TardisClientData {
         compoundTag.putString("shellTheme", String.valueOf(shellTheme));
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
         compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
+        compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
         return compoundTag;
     }
 
@@ -106,6 +115,7 @@ public class TardisClientData {
         shellTheme = ShellTheme.findOr(arg.getString("shellTheme"), ShellTheme.FACTORY);
         isInDangerZone = arg.getBoolean("isInDangerZone");
         flightShakeScale = arg.getFloat("flightShakeScale");
+        isOnCooldown = arg.getBoolean("isOnCooldown");
     }
 
     /**
@@ -134,7 +144,7 @@ public class TardisClientData {
 
 
         // Responsible for screen-shake. Not sure of a better solution at this point in time.
-        if (isInDangerZone) {
+        if (isInDangerZone || isCrashing) {
             if (Minecraft.getInstance().player.level.dimension() == levelKey) {
                 var player = Minecraft.getInstance().player;
                 player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);

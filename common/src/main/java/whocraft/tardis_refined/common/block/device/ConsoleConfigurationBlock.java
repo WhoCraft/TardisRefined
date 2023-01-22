@@ -112,8 +112,9 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 if (player.isCrouching()) {
                     if (level.getBlockEntity(blockPos.offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
                         globalConsoleBlock.killControls();
+                        level.destroyBlock(blockPos.offset(offset), true);
                     }
-                    level.destroyBlock(blockPos.offset(offset), true);
+
                 } else {
                     level.setBlockAndUpdate(blockPos, blockState.setValue(ConsoleConfigurationBlock.CONSOLE, nextTheme));
                     if ((consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
