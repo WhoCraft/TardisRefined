@@ -93,16 +93,24 @@ public class TardisFlightEventManager {
         return this.requiredDangerZoneRequests <= this.dangerZoneResponses;
     }
 
-    // "Combo Time" refers to the prime time between choosing controls
+    /*
+    * Is a prompt still within the combo time.
+    * */
     private boolean isEventInComboTime() {
         return (this.ticksSincePrompted < 3 * 20);
     }
 
+    /*
+    * Get the current remaining ticks of cooldown between two controls.
+    * */
     private int getControlRequestCooldown() {
         return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
     }
 
 
+    /*
+    * Calculates the number of required control requests based on the distance between the current and target location.
+    * */
     public void calculateTravelLogic() {
 
         // Only trigger a responses reset if we haven't started flight yet.
@@ -118,16 +126,9 @@ public class TardisFlightEventManager {
         Vec3 currentVec = new Vec3(current.getX(), current.getY(), current.getZ());
         Vec3 targetVec = new Vec3(target.getX(), target.getY(), target.getZ());
 
-        var distance = currentVec.distanceTo(targetVec);
-
         // Determine if the distance is worth the prompts
-        if (distance > MIN_DISTANCE_FOR_EVENTS) {
-            this.requiredControlRequests = getBlocksPerRequest(distance);
-        } else {
-            this.requiredControlRequests = 0;
-        }
-
-
+        var distance = currentVec.distanceTo(targetVec);
+        this.requiredControlRequests = (distance > MIN_DISTANCE_FOR_EVENTS) ? getBlocksPerRequest(distance): 0;
     }
 
     private int getBlocksPerRequest(double distance) {

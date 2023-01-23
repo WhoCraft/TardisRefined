@@ -42,8 +42,6 @@ public class ControlEntity extends PathfinderMob {
     private ControlSpecification controlSpecification;
     private BlockPos consoleBlockPos;
 
-    private boolean isPointOfInterest = false;
-
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
 
     public ControlEntity(Level level) {
@@ -84,7 +82,6 @@ public class ControlEntity extends PathfinderMob {
     @Override
     public boolean save(CompoundTag compound) {
         compound.put("CONSOLE_POS", NbtUtils.writeBlockPos(this.consoleBlockPos));
-        compound.putBoolean("is_poi", this.isPointOfInterest);
         return super.save(compound);
     }
 
@@ -92,7 +89,6 @@ public class ControlEntity extends PathfinderMob {
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         var consolePos = (CompoundTag) compound.get("CONSOLE_POS");
-        this.isPointOfInterest = compound.getBoolean("is_poi");
         if (consolePos != null) {
             this.consoleBlockPos = NbtUtils.readBlockPos(consolePos);
         }
@@ -172,7 +168,7 @@ public class ControlEntity extends PathfinderMob {
                         float x = (float) (this.position().x - 0.5f);
                         float y = (float) (this.position().y - 97.5f);
                         float z = (float) (this.position().z - -4.5f);
-                        System.out.println("Output: " + x + "f, " + y + "f, " + z + "f");
+                        TardisRefined.LOGGER.debug("Output: " + x + "f, " + y + "f, " + z + "f");
                     } else {
                         setPos(position().add(0, 0, player.isCrouching() ? 0.05 : -0.05));
                     }

@@ -65,12 +65,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
-
-    }
-
-    @Override
     public void load(CompoundTag tag) {
 
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
@@ -154,23 +148,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveAdditional(tag);
-        return tag;
-    }
-
-    @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
         if (this.isDirty) {
             spawnControlEntities();
         }
 
-
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
                 if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (1 * 20) == 0) {
-                    System.out.println("Beep beep!");
                     serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
                 }
 

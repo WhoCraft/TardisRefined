@@ -376,12 +376,10 @@ public class TardisControlManager {
         var currentLoc = this.operator.getExteriorManager().getLastKnownLocation().position;
         var currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
-
         var x = currentPos.x + ((targetPos.x - currentPos.x) * progress);
         var y = currentPos.y + ((targetPos.y - currentPos.y) * progress);
         var z = currentPos.z + ((targetPos.z - currentPos.z) * progress);
 
-        System.out.println("Progress: " + progress);
         BlockPos landingLocation = new BlockPos(x, y, z);
 
         this.setTargetPosition(landingLocation);
