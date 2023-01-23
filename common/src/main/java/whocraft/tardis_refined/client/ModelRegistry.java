@@ -66,9 +66,11 @@ public class ModelRegistry {
 
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
+    public static ModelLayerLocation CRYSTAL_CORE;
 
 
     public static void init() {
+        CRYSTAL_CORE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "crystal_core"), "crystal_core"), CrystalCoreModel::createBodyLayer);
         ROOT_PLANT_STATE_ONE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_one"), "root_plant_one"), RootPlantStateOneModel::createBodyLayer);
         ROOT_PLANT_STATE_TWO = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_two"), "root_plant_two"), RootPlantStateTwoModel::createBodyLayer);
         ROOT_PLANT_STATE_THREE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_three"), "root_plant_three"), RootPlantStateThreeModel::createBodyLayer);

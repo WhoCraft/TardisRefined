@@ -4,6 +4,10 @@ import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -13,11 +17,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -30,8 +38,30 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private boolean isDirty = true;
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
+    private ConsolePatterns.Pattern pattern = ConsolePatterns.getPatternFromString(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "default"));
+
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
+    }
+
+    public ConsolePatterns.Pattern pattern() {
+        ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
+        return pattern == null ? defaultPattern : pattern;
+    }
+
+    public GlobalConsoleBlockEntity setPattern(ConsolePatterns.Pattern pattern) {
+        this.pattern = pattern;
+        return this;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+
+        if (pattern != null) {
+            compoundTag.putString(NbtConstants.PATTERN, pattern.id().toString());
+        }
     }
 
     @Override
@@ -42,6 +72,20 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     @Override
     public void load(CompoundTag tag) {
+
+        ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+
+        if (tag.contains(NbtConstants.PATTERN)) {
+            ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
+            if (ConsolePatterns.doesPatternExist(console, currentPattern)) {
+                pattern = ConsolePatterns.getPatternFromString(console, currentPattern);
+            }
+        }
+
+        if (pattern == null) {
+            pattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
+        }
+
         super.load(tag);
         spawnControlEntities();
     }
@@ -81,6 +125,26 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         super.setRemoved();
         killControls();
     }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    public void sendUpdates() {
+        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        setChanged();
+    }
+
 
     public void killControls() {
         controlEntityList.forEach(x -> {
