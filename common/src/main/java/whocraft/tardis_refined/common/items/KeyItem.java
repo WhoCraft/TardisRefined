@@ -123,27 +123,6 @@ public class KeyItem extends Item {
         return keychain.contains(levelResourceKey);
     }
 
-    @Override
-    public InteractionResult interactLivingEntity(ItemStack itemStack, Player player, LivingEntity livingEntity, InteractionHand interactionHand) {
-
-        if (livingEntity.level instanceof ServerLevel serverLevel) {
-            if (livingEntity instanceof ControlEntity control) {
-                ResourceKey<Level> tardis = serverLevel.dimension();
-                if (control.controlSpecification().control() != null) {
-                    if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis)) {
-                        player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
-                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
-                        player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
-                        return InteractionResult.SUCCESS;
-                    }
-                }
-            }
-        }
-
-
-        return super.interactLivingEntity(itemStack, player, livingEntity, interactionHand);
-    }
-
 
     @Override
     public InteractionResult useOn(UseOnContext context) {

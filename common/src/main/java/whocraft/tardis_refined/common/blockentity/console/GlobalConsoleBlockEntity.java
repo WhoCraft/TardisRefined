@@ -32,7 +32,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void load(CompoundTag tag) {
         super.load(tag);
 
-        spawnControlEntities();
+//        spawnControlEntities();
     }
 
     public void spawnControlEntities() {
@@ -51,7 +51,10 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 controlEntity.assignControlData(control, this.getBlockPos());
 
                 Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
-                controlEntity.teleportTo(location.x(), location.y(), location.z());
+                controlEntity.setPos(location.x(), location.y(), location.z());
+                controlEntity.assignControlData(control, this.getBlockPos());
+
+//                controlEntity.teleportTo(location.x(), location.y(), location.z());
 
                 serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
@@ -68,14 +71,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
-        killControls();
+
     }
 
     public void killControls() {
         controlEntityList.forEach(x -> {
-            x.teleportTo(0, -1000, 0);
-            x.kill();
+            x.discard();
         });
+        controlEntityList.clear();
     }
 
     @Override
