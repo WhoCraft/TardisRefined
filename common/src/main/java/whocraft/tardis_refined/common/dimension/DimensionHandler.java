@@ -70,6 +70,7 @@ public class DimensionHandler {
             Class.forName("qouteall.q_misc_util.MiscHelper");
             return true;
         } catch (ClassNotFoundException e) {
+            System.out.println("IP WAS NOT DETCTED!!!!!!!!!");
             return false;
         }
     }

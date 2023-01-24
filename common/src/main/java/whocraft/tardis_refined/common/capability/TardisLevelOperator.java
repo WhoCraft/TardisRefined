@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -32,9 +33,13 @@ public class TardisLevelOperator {
     private Level level;
     private boolean setUp = false;
     private ITardisInternalDoor internalDoor = null;
+
+    // Managers
     private TardisExteriorManager exteriorManager;
     private TardisInteriorManager interiorManager;
     private TardisControlManager controlManager;
+    private TardisFlightEventManager tardisFlightEventManager;
+
 
     private TardisClientData tardisClientData;
 
@@ -43,6 +48,7 @@ public class TardisLevelOperator {
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
+        this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
     }
 
@@ -63,6 +69,7 @@ public class TardisLevelOperator {
         compoundTag = this.exteriorManager.saveData(compoundTag);
         compoundTag = this.interiorManager.saveData(compoundTag);
         compoundTag = this.controlManager.saveData(compoundTag);
+        compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
 
         return compoundTag;
     }
@@ -81,7 +88,10 @@ public class TardisLevelOperator {
         this.exteriorManager.loadData(tag);
         this.interiorManager.loadData(tag);
         this.controlManager.loadData(tag);
+        this.tardisFlightEventManager.loadData(tag);
 
+
+        tardisClientData.sync((ServerLevel) this.getLevel());
     }
 
     public Level getLevel() {
@@ -91,6 +101,7 @@ public class TardisLevelOperator {
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         controlManager.tick(level);
+        tardisFlightEventManager.tick();
 
         var shouldSync = false;
 
@@ -121,6 +132,22 @@ public class TardisLevelOperator {
             tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
             shouldSync = true;
         }
+
+        if (tardisFlightEventManager.isInDangerZone() != tardisClientData.isInDangerZone()) {
+            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
+            shouldSync = true;
+        }
+
+        if (tardisFlightEventManager.dangerZoneShakeScale() != tardisClientData.flightShakeScale()) {
+            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
+            shouldSync = true;
+        }
+
+        if (controlManager.isOnCooldown() != tardisClientData.isOnCooldown()) {
+            tardisClientData.setIsOnCooldown(controlManager.isOnCooldown());
+            shouldSync = true;
+        }
+
 
 
         // Synchronize the Tardis's data across the server
@@ -171,6 +198,8 @@ public class TardisLevelOperator {
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }
+
+        tardisClientData.sync((ServerLevel) this.getLevel());
         TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(this, shell, player, externalPos, level, direction);
     }
 
@@ -257,6 +286,10 @@ public class TardisLevelOperator {
 
     public TardisControlManager getControlManager() {
         return this.controlManager;
+    }
+
+    public TardisFlightEventManager getTardisFlightEventManager() {
+        return this.tardisFlightEventManager;
     }
 
 }

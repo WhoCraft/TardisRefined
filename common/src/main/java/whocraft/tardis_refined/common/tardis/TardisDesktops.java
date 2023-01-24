@@ -23,6 +23,7 @@ public class TardisDesktops {
     public static final DesktopTheme CRYSTAL = registerDesktop(new DesktopTheme("crystal", new ResourceLocation(TardisRefined.MODID, "desktop/crystal"), true));
     public static final DesktopTheme VICTORIAN = registerDesktop(new DesktopTheme("victorian", new ResourceLocation(TardisRefined.MODID, "desktop/victorian"), true));
     public static final DesktopTheme NUKA = registerDesktop(new DesktopTheme("nuka", new ResourceLocation(TardisRefined.MODID, "desktop/nuka"), true));
+    public static final DesktopTheme FUTURE_NOSTALGIA = registerDesktop(new DesktopTheme("future_nostalgia", new ResourceLocation(TardisRefined.MODID, "desktop/future_nostalgia"), true));
 
 
     public static DesktopTheme registerDesktop(DesktopTheme theme) {

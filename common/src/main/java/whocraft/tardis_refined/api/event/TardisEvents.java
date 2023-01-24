@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class TardisEvents {
@@ -38,10 +39,16 @@ public class TardisEvents {
     });
 
     public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
-        for(ShellChange listener : listeners) {
+        for (ShellChange listener : listeners) {
             listener.onShellChange(tardisLevelOperator, theme);
         }
     });
+
+    public static final Event<TardisCrash> TARDIS_CRASH_EVENT = new Event<>(TardisCrash.class, listeners -> ((tardisLevelOperator, crashLocation) -> {
+        for (TardisCrash listener : listeners) {
+            listener.onTardisCrash(tardisLevelOperator, crashLocation);
+        }
+    }));
 
     /**
      * An event that is triggered when a TARDIS takes off.
@@ -129,5 +136,19 @@ public class TardisEvents {
          * @param direction The direction the player is facing when entering the TARDIS.
          */
         void onEnterTardis(TardisLevelOperator tardisLevelOperator, IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction);
+    }
+
+    /**
+     * An event that is triggered when a player crashes a TARDIS.
+     */
+    @FunctionalInterface
+    public interface TardisCrash {
+        /**
+         * Called when a player crashes a TARDIS.
+         *
+         * @param tardisLevelOperator The TARDIS Level Operator.
+         * @param crashLocation       The Location of the crash..
+         */
+        void onTardisCrash(TardisLevelOperator tardisLevelOperator, TardisNavLocation crashLocation);
     }
 }
