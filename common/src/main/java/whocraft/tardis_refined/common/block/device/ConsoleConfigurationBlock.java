@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.block.device;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -31,6 +32,7 @@ import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -122,6 +124,31 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 }
                 return InteractionResult.CONSUME;
             } else {
+
+                if (player.isCrouching()) {
+                    if (level.getBlockEntity(blockPos.offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+                        globalConsoleBlock.killControls();
+                        level.destroyBlock(blockPos.offset(offset), true);
+                    }
+
+                } else {
+                    level.setBlockAndUpdate(blockPos, blockState.setValue(ConsoleConfigurationBlock.CONSOLE, nextTheme));
+                    if ((consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
+                        level.setBlockAndUpdate(blockPos.offset(offset), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, nextTheme));
+                        if (Platform.isClient()) {
+                            level.playSound(null, blockPos.offset(offset), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+                            for (int i = 0; i < 3; ++i) {
+                                var posX = (double) blockPos.offset(offset).getX() + level.getRandom().nextDouble();
+                                var posY = (double) blockPos.offset(offset).getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
+                                var posZ = (double) blockPos.offset(offset).getZ() + level.getRandom().nextDouble();
+
+                                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.FLASH, new BlockPos(posX, posY, posZ), 0.0D, 0.0D, 0.0D);
+                                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new BlockPos(posX, posY, posZ), 0.0D, 0.0D, 0.0D);
+                            }
+                        }
+                    }
+                }
+
                 return InteractionResult.FAIL;
             }
         }

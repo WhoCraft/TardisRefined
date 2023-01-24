@@ -114,6 +114,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addDesktopTheme(TardisDesktops.CRYSTAL, "Crystal");
         addDesktopTheme(TardisDesktops.VICTORIAN, "Victorian");
         addDesktopTheme(TardisDesktops.NUKA, "Nuka");
+        addDesktopTheme(TardisDesktops.FUTURE_NOSTALGIA, "Future Nostalgia");
         addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
 
         /*Tool Tips*/

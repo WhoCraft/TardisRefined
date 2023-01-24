@@ -37,6 +37,10 @@ public class CoordinateControl implements IControl {
             case Z -> operator.getControlManager().offsetTargetPositionZ(increment);
         }
 
+        if (operator.getControlManager().isInFlight()) {
+            operator.getTardisFlightEventManager().calculateTravelLogic();
+        }
+
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
     }
 
@@ -54,6 +58,10 @@ public class CoordinateControl implements IControl {
                 }
             }
             case Z -> operator.getControlManager().offsetTargetPositionZ(-increment);
+        }
+
+        if (operator.getControlManager().isInFlight()) {
+            operator.getTardisFlightEventManager().calculateTravelLogic();
         }
 
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
