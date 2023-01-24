@@ -395,6 +395,7 @@ public class TardisControlManager {
         this.ticksSinceCrash = 1;
 
         onFlightEnd();
+        TardisEvents.TARDIS_CRASH_EVENT.invoker().onTardisCrash(this.operator, this.targetLocation);
     }
 
     public void offsetTargetPositionX(float x) {

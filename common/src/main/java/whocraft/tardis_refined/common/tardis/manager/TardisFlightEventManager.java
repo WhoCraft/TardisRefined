@@ -171,9 +171,11 @@ public class TardisFlightEventManager {
                     this.ticksInTheDangerZone = 0;
                     this.dangerZoneResponses = 0;
                     this.dangerZoneShakeScale = 0;
-                    this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
-                    this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
-                    this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
+
+                    for (int i = 0; i < 3; i++) {
+                        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TIME_BLAST.get(), SoundSource.BLOCKS, 1000f, 1f);
+                    }
+
                 }
 
                 if (this.isInDangerZone) {
@@ -267,11 +269,10 @@ public class TardisFlightEventManager {
     }
 
     private void playCloisterBell() {
-        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+        for (int i = 0; i < 3; i++) {
+            this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
+
+        }
     }
 
 }

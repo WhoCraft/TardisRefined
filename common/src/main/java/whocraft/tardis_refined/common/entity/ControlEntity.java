@@ -33,6 +33,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
+import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.EntityRegistry;
@@ -229,9 +230,7 @@ public class ControlEntity extends PathfinderMob {
             if (this.consoleBlockPos != null) {
                 if (level.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
                     kill();
-
                     globalConsoleBlockEntity.markDirty();
-
                 }
             } else {
                 kill();
@@ -242,13 +241,11 @@ public class ControlEntity extends PathfinderMob {
 
             if (getEntityData().get(SHOW_PARTICLE)) {
                 if (clientLevel.random.nextInt(5) == 0) {
-                    int i;
-                    double d, e, f;
-                    for (i = 0; i < 3; ++i) {
-                        d = this.position().x();
-                        e = this.position().y() + 0.15f;
-                        f = this.position().z();
-                        clientLevel.addParticle(ParticleTypes.ELECTRIC_SPARK, d, e, f, 0.0D, 0.25D, 0.0D);
+                    for (int i = 0; i < 3; ++i) {
+                        var xCord = this.position().x();
+                        var yCord = this.position().y() + 0.15f;
+                        var zCord = this.position().z();
+                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.ELECTRIC_SPARK, new BlockPos( xCord, yCord, zCord), 0.0D, 0.25D, 0.0D);
                     }
                 }
             }
