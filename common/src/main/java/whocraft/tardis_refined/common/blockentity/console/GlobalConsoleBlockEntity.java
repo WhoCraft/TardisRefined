@@ -97,7 +97,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
                 ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
-                controlEntity.assignControlData(control, this.getBlockPos());
+                controlEntity.assignControlData(theme, control, this.getBlockPos());
 
                 Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
                 controlEntity.teleportTo(location.x(), location.y(), location.z());

@@ -10,17 +10,18 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.OpenMonitorMessage;
 import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.Platform;
 
 public class MonitorControl implements IControl {
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
+    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(),operator.getExteriorManager().getLastKnownLocation(), operator.getControlManager().getTargetLocation()).send((ServerPlayer) player);
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
+    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
     }
 }

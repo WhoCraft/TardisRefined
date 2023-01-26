@@ -8,8 +8,8 @@ import net.minecraft.world.phys.Vec3;
 
 public class ClientHelper {
 
-    public static void playParticle(ClientLevel level, ParticleOptions type, BlockPos pos, double motionX, double motionY, double motionZ) {
-        level.addParticle(type, pos.getX(), pos.getY(), pos.getZ(), motionX, motionY, motionZ);
+    public static void playParticle(ClientLevel level, ParticleOptions type, Vec3 pos, double motionX, double motionY, double motionZ) {
+        level.addParticle(type, pos.x(), pos.y(), pos.z(), motionX, motionY, motionZ);
     }
 
 }

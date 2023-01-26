@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -8,6 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -20,7 +22,7 @@ public class CoordinateControl implements IControl {
     }
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
+    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         int increment = operator.getControlManager().getCordIncrement();
 
@@ -42,10 +44,11 @@ public class CoordinateControl implements IControl {
         }
 
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        playGenericClick(operator, theme, controlEntity, false, false);
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
+    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         int increment = operator.getControlManager().getCordIncrement();
         switch (button){
             case X -> operator.getControlManager().offsetTargetPositionX(-increment);
@@ -65,6 +68,7 @@ public class CoordinateControl implements IControl {
         }
 
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        playGenericClick(operator, theme, controlEntity, true, false);
     }
 }
 

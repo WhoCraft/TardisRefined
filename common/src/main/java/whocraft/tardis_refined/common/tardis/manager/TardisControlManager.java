@@ -311,9 +311,9 @@ public class TardisControlManager {
         return true;
     }
 
-    public void endFlight() {
+    public boolean endFlight() {
         if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (!this.operator.getTardisFlightEventManager().areControlEventsComplete() && !this.autoLand)) {
-            return;
+            return false;
         }
         this.ticksInFlight = 0;
         this.ticksLanding = TICKS_LANDING_MAX;
@@ -323,6 +323,7 @@ public class TardisControlManager {
 
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
         operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+        return true;
     }
 
     public void calculatePositionToLand(BlockPos landingLocation) {

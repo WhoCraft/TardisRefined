@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -118,20 +119,20 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
             if (clientData.isFlying() && level.random.nextInt(4) == 0) {
 
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new BlockPos( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
             }
 
             if (clientData.isOnCooldown() || clientData.isCrashing()) {
 
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CAMPFIRE_COSY_SMOKE, new BlockPos( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CAMPFIRE_COSY_SMOKE, new Vec3( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
 
                 for (int i = 0; i < 5; i++) {
-                    ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LARGE_SMOKE, new BlockPos( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+                    ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LARGE_SMOKE, new Vec3( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
                 }
 
                 if (level.random.nextInt(10) == 0) {
                     for (int i = 0; i < 3; i++) {
-                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA,new BlockPos( xCord, yCord, zCord), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA,new Vec3( xCord, yCord, zCord), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
                     }
 
                     level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1, level.getRandom().nextFloat() + 1f, false);
