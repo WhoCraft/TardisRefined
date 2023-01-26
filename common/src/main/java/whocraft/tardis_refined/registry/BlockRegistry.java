@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
@@ -19,6 +20,7 @@ import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
+import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -55,6 +57,16 @@ public class BlockRegistry {
     // Interior
     public static final RegistrySupplier<InternalDoorBlock> INTERNAL_DOOR_BLOCK = register("internal_door_block", () -> new InternalDoorBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion()), ItemRegistry.MAIN_TAB, false);
     public static final RegistrySupplier<RootShellDoorBlock> ROOT_SHELL_DOOR = register("root_shell_door", () -> new RootShellDoorBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(1000, 1000)), null, true);
+
+    // Generation Blocks
+    public static final RegistrySupplier<Block> GROWTH_STONE = register("growth_stone", () -> new GrowthStoneBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<Block> HARDENED_GROWTH_STONE = register("hardened_growth_stone", () -> new Block(BlockBehaviour.Properties.of(Material.BARRIER).strength(10000, 10000)), ItemRegistry.MAIN_TAB, true);
+
+//    public static final RegistrySupplier<SlabBlock> GROWTH_STONE_SLAB = register("growth_stone_slab", () -> new SlabBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(3, 3).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
+//    public static final RegistrySupplier<StairBlock> GROWTH_STONE_STAIRS = register("growth_stone_stairs", () -> new StairBlock(BlockRegistry.GROWTH_STONE.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(3, 3).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
+//    public static final RegistrySupplier<WallBlock> GROWTH_STONE_WALL = register("growth_stone_wall", () -> new WallBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(3, 3).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
+//    public static final RegistrySupplier<ButtonBlock> GROWTH_STONE_BUTTON = register("growth_stone_button", () -> new ButtonBlock(true, BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(3, 3).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
+//    public static final RegistrySupplier<PressurePlateBlock> GROWTH_STONE_PRESSURE_PLATE = register("growth_stone_pressure_plate", () -> new PressurePlateBlock(net.minecraft.world.level.block.PressurePlateBlock.Sensitivity.MOBS, BlockBehaviour.Properties.of(Material.STONE).noOcclusion().strength(3, 3).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
 
     // Roots
     public static final RegistrySupplier<RootPlantBlock> ROOT_PLANT_BLOCK = register("root_plant", () -> new RootPlantBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.CORAL_BLOCK)), ItemRegistry.MAIN_TAB, true);

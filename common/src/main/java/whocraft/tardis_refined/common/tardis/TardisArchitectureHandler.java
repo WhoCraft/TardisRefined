@@ -37,7 +37,7 @@ public class TardisArchitectureHandler {
         for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
             BlockPos pos = iterator.next();
 
-            operator.setBlock(pos, Blocks.STONE.defaultBlockState(),1);
+            operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(),0);
         }
 
         // Cheap and easy entity removal. Might want to make this more robust for items!
