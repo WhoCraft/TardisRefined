@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.items.DrillItem;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 public class GrowthStoneBlock extends Block {
     public GrowthStoneBlock(Properties properties) {
@@ -17,20 +18,23 @@ public class GrowthStoneBlock extends Block {
 
     @Override
     public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
-        if (player.isCrouching()) {return;}
+        if (player.isShiftKeyDown()) {
+            return;
+        }
 
-        if (itemStack.getItem() instanceof DrillItem drillItem) {
-            var otherBlocks = new BlockPos[] {blockPos.above(), blockPos.below() };
-
-            for (BlockPos otherBlock : otherBlocks) {
-                if (level.getBlockState(otherBlock).getBlock() instanceof GrowthStoneBlock) {
-                    level.destroyBlock(otherBlock, true);
-                }
-            }
+        if (itemStack.getItem() instanceof DrillItem) {
+            destroyGrowthBlock(level, blockPos.above());
+            destroyGrowthBlock(level, blockPos.below());
         }
 
         super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
     }
 
+
+    private void destroyGrowthBlock(Level level, BlockPos pos) {
+        if (level.getBlockState(pos).getBlock() == BlockRegistry.GROWTH_STONE.get()) {
+            level.destroyBlock(pos, true);
+        }
+    }
 
 }

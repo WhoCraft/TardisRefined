@@ -61,13 +61,6 @@ public class ModelProviderBlock extends BlockStateProvider {
         slabBlock(BlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture);
 
 
-        // To be readded
-//        buttonBlock(BlockRegistry.GROWTH_STONE_BUTTON.get(), growthStoneTexture);
-//        pressurePlateBlock(BlockRegistry.GROWTH_STONE_PRESSURE_PLATE.get(), growthStoneTexture);
-//        wallBlock(BlockRegistry.GROWTH_STONE_WALL.get(), growthStoneTexture);
-//        stairsBlock(BlockRegistry.GROWTH_STONE_STAIRS.get(), growthStoneTexture);
-//        slabBlock(BlockRegistry.GROWTH_STONE_SLAB.get(), growthStoneTexture, growthStoneTexture);
-
         threeDeeRotating(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
     }
 
