@@ -20,7 +20,7 @@ public class ToggleDoorControl extends Control {
         }
 
         var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
-        var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().doorClose.getRightClick() : theme.getSoundProfile().doorOpen.getRightClick();
+        var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().getDoorClose().getRightClick() : theme.getSoundProfile().getDoorOpen().getRightClick();
         if (pitchedSound == null) {return;}
         operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
         operator.setDoorClosed(isDoorOpen);

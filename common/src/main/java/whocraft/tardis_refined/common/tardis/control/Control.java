@@ -18,7 +18,7 @@ public abstract class Control {
     }
 
     public void playGenericClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, boolean left, boolean ignorePitch) {
-        var pitchedSound = (left) ? theme.getSoundProfile().generic.getLeftClick(): theme.getSoundProfile().generic.getRightClick();
+        var pitchedSound = (left) ? theme.getSoundProfile().getGeneric().getLeftClick(): theme.getSoundProfile().getGeneric().getRightClick();
         if (pitchedSound == null) {return;}
         operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, (ignorePitch) ? 1f : pitchedSound.getPitch());
     }

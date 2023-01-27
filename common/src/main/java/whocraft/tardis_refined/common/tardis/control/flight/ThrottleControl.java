@@ -14,14 +14,14 @@ public class ThrottleControl extends Control {
     public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (operator.getControlManager().isInFlight()) {
             if (operator.getControlManager().endFlight()) {
-                var pitchedSound = theme.getSoundProfile().throttleDisable.getRightClick();
+                var pitchedSound = theme.getSoundProfile().getThrottleDisable().getRightClick();
                 if (pitchedSound == null) {return;}
                 operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
             }
         }
 
         if (operator.getControlManager().beginFlight(false)) {
-            var pitchedSound = theme.getSoundProfile().throttleEnable.getRightClick();
+            var pitchedSound = theme.getSoundProfile().getThrottleEnable().getRightClick();
             if (pitchedSound == null) {return;}
             operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
         }
