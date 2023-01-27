@@ -21,7 +21,7 @@ import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
     private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
 

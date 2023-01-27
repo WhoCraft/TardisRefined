@@ -7,10 +7,10 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class ToggleDoorControl implements IControl {
+public class ToggleDoorControl extends Control {
 
     @Override
     public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
@@ -21,6 +21,7 @@ public class ToggleDoorControl implements IControl {
 
         var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
         var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().doorClose.getRightClick() : theme.getSoundProfile().doorOpen.getRightClick();
+        if (pitchedSound == null) {return;}
         operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
         operator.setDoorClosed(isDoorOpen);
     }

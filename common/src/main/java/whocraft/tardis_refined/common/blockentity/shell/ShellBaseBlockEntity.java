@@ -17,14 +17,14 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
 import java.util.UUID;
 
-public abstract class ShellBaseBlockEntity extends BlockEntity implements IExteriorShell {
+public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell {
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);

@@ -1,19 +1,18 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
+
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
-public class CoordinateControl implements IControl {
+
+public class CoordinateControl extends Control {
 
     CoordinateButton button;
 
@@ -44,7 +43,7 @@ public class CoordinateControl implements IControl {
         }
 
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
-        playGenericClick(operator, theme, controlEntity, false, false);
+        super.onRightClick(operator, theme, controlEntity, player);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class CoordinateControl implements IControl {
         }
 
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
-        playGenericClick(operator, theme, controlEntity, true, false);
+        super.onLeftClick(operator, theme, controlEntity, player);
     }
 }
 

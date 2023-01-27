@@ -5,11 +5,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
-public class RandomControl implements IControl {
+public class RandomControl extends Control {
 
     @Override
     public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
@@ -22,11 +22,11 @@ public class RandomControl implements IControl {
                 );
 
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
-        playGenericClick(operator, theme, controlEntity, false, true);
+        super.onRightClick(operator, theme, controlEntity, player);
     }
 
     @Override
     public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        playGenericClick(operator, theme, controlEntity, true, true);
+        super.onLeftClick(operator, theme, controlEntity, player);
     }
 }
