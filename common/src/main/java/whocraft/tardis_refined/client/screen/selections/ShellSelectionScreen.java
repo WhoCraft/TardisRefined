@@ -8,21 +8,24 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
-import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.List;
+import java.util.Random;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
@@ -35,10 +38,24 @@ public class ShellSelectionScreen extends SelectionScreen {
 
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/shell.png");
+    public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/ui/noise.png");
+    private int noiseX, noiseY, age;
+    private double noiseAlpha;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = List.of(ShellTheme.values());
+    }
+
+    @Override
+    public void tick() {
+        Random random = new Random(); //TODO REMOVE
+        super.tick();
+        this.age++;
+        this.noiseX = random.nextInt(736);
+        this.noiseY = random.nextInt(414);
+        if (this.age % 3 == 0)
+            this.noiseAlpha = random.nextDouble();
     }
 
     @Override
@@ -69,6 +86,23 @@ public class ShellSelectionScreen extends SelectionScreen {
     public void render(PoseStack poseStack, int i, int j, float f) {
         renderBackground(poseStack);
 
+
+        ClientLevel lvl = Minecraft.getInstance().level;
+        RandomSource rand = lvl.random;
+
+        boolean isCrashed = TardisClientData.getInstance(lvl.dimension()).isCrashing();
+
+        if (isCrashed) {
+            if (rand.nextInt(10) == 1) {
+                for (int i1 = 0; i1 < 3; i1++) {
+                    poseStack.translate(rand.nextInt(3) / 100F, rand.nextInt(3) / 100.0f, rand.nextInt(3) / 100.0f);
+                }
+            }
+            if (rand.nextInt(20) == 1) {
+                poseStack.scale(1, 1 + rand.nextInt(5) / 100F, 1);
+            }
+        }
+
         /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -95,9 +129,13 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.pose().setIdentity();
         pose.normal().setIdentity();
         poseStack.translate(-3, -1.0, 1984.0);
-        poseStack.scale(4.5F, 4.5F, 4.5F);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(minecraft.level.getGameTime()));
+        poseStack.scale(4F, 4F, 4F);
+
         poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
+
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(135.0F));
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(15.0F));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
 
         MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
         VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture()));
@@ -112,6 +150,14 @@ public class ShellSelectionScreen extends SelectionScreen {
         /*Render Widgets*/
         super.render(poseStack, i, j, f);
 
+        double alpha = (100.0D - this.age * 3.0D) / 100.0D;
+        if (isCrashed) {
+            RenderSystem.enableBlend();
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
+            RenderSystem.setShaderTexture(0, NOISE);
+            blit(poseStack, leftPos, topPos, this.noiseX, this.noiseY, imageWidth, imageHeight);
+            RenderSystem.disableBlend();
+        }
     }
 
     @Override
@@ -135,6 +181,8 @@ public class ShellSelectionScreen extends SelectionScreen {
                         current.setChecked(false);
                     }
                 }
+
+                age = 0;
                 entry.setChecked(true);
 
             }));

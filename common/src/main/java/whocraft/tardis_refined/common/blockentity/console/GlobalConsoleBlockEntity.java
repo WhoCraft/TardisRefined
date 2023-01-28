@@ -161,7 +161,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
                 // Check if we're crashing and if its okay to explode the TARDIS a little.
                 if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                    level.explode((Entity) null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
+                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
                 }
 
             });
