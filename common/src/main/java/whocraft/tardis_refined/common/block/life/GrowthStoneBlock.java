@@ -16,25 +16,4 @@ public class GrowthStoneBlock extends Block {
         super(properties);
     }
 
-    @Override
-    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
-        if (player.isShiftKeyDown()) {
-            return;
-        }
-
-        if (itemStack.getItem() instanceof DrillItem) {
-            destroyGrowthBlock(level, blockPos.above());
-            destroyGrowthBlock(level, blockPos.below());
-        }
-
-        super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
-    }
-
-
-    private void destroyGrowthBlock(Level level, BlockPos pos) {
-        if (level.getBlockState(pos).getBlock() == BlockRegistry.GROWTH_STONE.get()) {
-            level.destroyBlock(pos, true);
-        }
-    }
-
 }
