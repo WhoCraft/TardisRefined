@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -37,7 +38,7 @@ public class TardisArchitectureHandler {
         for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
             BlockPos pos = iterator.next();
 
-            operator.setBlock(pos, Blocks.STONE.defaultBlockState(),1);
+            operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), 1);
         }
 
         // Cheap and easy entity removal. Might want to make this more robust for items!
