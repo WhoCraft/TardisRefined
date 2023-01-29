@@ -10,11 +10,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.Iterator;
@@ -122,7 +121,7 @@ public class TardisArchitectureHandler {
                 );
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-            if (level.getBlockEntity(pos) instanceof ITardisInternalDoor internalDoor) {
+            if (level.getBlockEntity(pos) instanceof TardisInternalDoor internalDoor) {
                 TardisLevelOperator.get(level).ifPresent(cap -> cap.setInternalDoor(internalDoor));
                 return;
             }

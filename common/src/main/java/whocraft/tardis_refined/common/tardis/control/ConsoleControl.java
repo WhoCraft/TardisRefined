@@ -21,10 +21,10 @@ public enum ConsoleControl implements StringRepresentable {
     MONITOR("monitor", new MonitorControl(), "control.tardis_refined.monitor");
 
     private String id;
-    private IControl control;
+    private Control control;
     private String langId;
 
-    ConsoleControl(String id, IControl control, String langId) {
+    ConsoleControl(String id, Control control, String langId) {
         this.id = id;
         this.control = control;
         this.langId = langId;
@@ -35,7 +35,7 @@ public enum ConsoleControl implements StringRepresentable {
         return this.id;
     }
 
-    public IControl getControl() {
+    public Control getControl() {
         return control;
     }
 

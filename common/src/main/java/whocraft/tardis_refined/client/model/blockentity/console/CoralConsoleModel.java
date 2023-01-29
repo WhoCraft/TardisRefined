@@ -18,14 +18,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-import java.util.List;
-import java.util.Set;
-
-public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit{
+public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
 	private static ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
