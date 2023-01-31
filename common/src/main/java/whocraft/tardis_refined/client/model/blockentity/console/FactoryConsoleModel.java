@@ -16,15 +16,11 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-import java.util.List;
-
-public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private final ModelPart bone168;
 	private final ModelPart doorLever;

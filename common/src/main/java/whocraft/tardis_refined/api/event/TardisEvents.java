@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -135,7 +135,7 @@ public class TardisEvents {
          * @param level The level where the TARDIS is located.
          * @param direction The direction the player is facing when entering the TARDIS.
          */
-        void onEnterTardis(TardisLevelOperator tardisLevelOperator, IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction);
+        void onEnterTardis(TardisLevelOperator tardisLevelOperator, ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction);
     }
 
     /**

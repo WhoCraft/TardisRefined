@@ -12,13 +12,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
@@ -32,7 +32,7 @@ public class TardisLevelOperator {
 
     private Level level;
     private boolean setUp = false;
-    private ITardisInternalDoor internalDoor = null;
+    private TardisInternalDoor internalDoor = null;
 
     // Managers
     private TardisExteriorManager exteriorManager;
@@ -79,7 +79,7 @@ public class TardisLevelOperator {
 
         CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
         if (doorPos != null) {
-            if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof ITardisInternalDoor door) {
+            if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof TardisInternalDoor door) {
                 this.internalDoor = door;
             }
         }
@@ -164,7 +164,7 @@ public class TardisLevelOperator {
      *
      * @param player Player Entity.
      **/
-    public void enterTardis(IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
+    public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
 
         if (!setUp) {
 
@@ -226,7 +226,7 @@ public class TardisLevelOperator {
                 ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().level.getChunk(targetPosition);
 
                 if (player instanceof ServerPlayer serverPlayer) {
-                    if (targetLevel.getBlockEntity(targetPosition) instanceof IExteriorShell shellBaseBlockEntity) {
+                    if (targetLevel.getBlockEntity(targetPosition) instanceof ExteriorShell shellBaseBlockEntity) {
                         BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
                         DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().rotation.get2DDataValue() * (360 / 4));
                     }
@@ -264,7 +264,7 @@ public class TardisLevelOperator {
      *
      * @param door Internal door object.
      **/
-    public void setInternalDoor(ITardisInternalDoor door) {
+    public void setInternalDoor(TardisInternalDoor door) {
         if (this.internalDoor != null) {
             this.internalDoor.onSetMainDoor(false);
         }
@@ -276,7 +276,7 @@ public class TardisLevelOperator {
         return this.exteriorManager;
     }
 
-    public ITardisInternalDoor getInternalDoor() {
+    public TardisInternalDoor getInternalDoor() {
         return this.internalDoor;
     }
 

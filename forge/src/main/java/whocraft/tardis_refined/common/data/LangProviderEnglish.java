@@ -48,10 +48,13 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
         add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), "Console Configurator");
         add(BlockRegistry.LANDING_PAD.get(), "Landing Pad");
+        add(BlockRegistry.GROWTH_STONE.get(), "Growth Stone");
+        add(BlockRegistry.HARDENED_GROWTH_STONE.get(), "Hardened Growth Stone");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
+        add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
 
         /*Entity*/

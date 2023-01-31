@@ -20,7 +20,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
+public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private static ResourceLocation NUKA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka/nuka_console.png");
 

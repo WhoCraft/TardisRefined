@@ -19,7 +19,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
     }
 
 
-    public void onRightClick(BlockState blockState, ITardisInternalDoor door, Player player) {
+    public void onRightClick(BlockState blockState, TardisInternalDoor door, Player player) {
         if (getLevel() instanceof ServerLevel serverLevel) {
 
             // we know that in this instance the serverlevel has a capability.
