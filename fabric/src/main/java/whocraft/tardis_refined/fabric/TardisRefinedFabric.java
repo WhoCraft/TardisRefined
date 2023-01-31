@@ -6,9 +6,11 @@ import net.minecraftforge.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerIP;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.fabric.compat.PortalsCompatFabric;
 import whocraft.tardis_refined.fabric.events.ModEvents;
 
 public class TardisRefinedFabric implements ModInitializer {
@@ -21,8 +23,13 @@ public class TardisRefinedFabric implements ModInitializer {
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
 
-        if (DimensionHandler.hasIP() && TRConfig.COMMON.COMPATIBILITY_IP.get()) {
-            DimensionHandlerIP.init();
+        if (ModCompatChecker.immersivePortals()) {
+            if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
+                ImmersivePortals.init();
+                PortalsCompatFabric.init();
+            }
+        } else {
+            TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
 
     }

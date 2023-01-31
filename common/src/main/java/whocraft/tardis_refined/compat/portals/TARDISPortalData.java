@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.dimension.fabric;
+package whocraft.tardis_refined.compat.portals;
 
 import java.util.UUID;
 

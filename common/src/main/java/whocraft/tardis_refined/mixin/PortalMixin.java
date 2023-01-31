@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin.fabric;
+package whocraft.tardis_refined.mixin;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import qouteall.imm_ptl.core.portal.Portal;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerIP;
-import whocraft.tardis_refined.common.dimension.fabric.TARDISPortalData;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals.TARDISPortalData;
 
 import java.util.UUID;
 
@@ -30,13 +30,13 @@ public abstract class PortalMixin implements TARDISPortalData {
         // Just in case the portal persists
         if(this.tardisID != null && !thisPortal.level.isClientSide) {
             ServerLevel serverLevel = (ServerLevel) thisPortal.level;
-            if (DimensionHandlerIP.tardisToPortalsMap.get(tardisID) == null) {
+            if (ImmersivePortals.tardisToPortalsMap.get(tardisID) == null) {
                 thisPortal.kill();
                 if(serverLevel.dimension().location().getPath().equals(tardisID.toString())) {
-                    TardisLevelOperator.get(serverLevel).ifPresent(DimensionHandlerIP::createPortals);
+                    TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::createPortals);
                 }
             } else {
-                for (Portal portal : DimensionHandlerIP.tardisToPortalsMap.get(tardisID)) {
+                for (Portal portal : ImmersivePortals.tardisToPortalsMap.get(tardisID)) {
                     if (portal == null) {
                         thisPortal.kill();
                     }

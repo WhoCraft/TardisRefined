@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.common.dimension;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
@@ -12,12 +14,21 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.level.storage.LevelStorageSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
+import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 import javax.annotation.Nullable;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Map;
+
+import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 /*
 * Majority of this code is sourced from Commoble's Hyberbox with permission.
@@ -25,6 +36,41 @@ import java.util.Map;
 * */
 
 public class DimensionHandler {
+
+    public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
+
+    public static void addDimension(ResourceKey<Level> resourceKey){
+        LEVELS.add(resourceKey);
+        writeLevels();
+    }
+
+    public static Path getWorldSavingDirectory() {
+        return getStorage().getDimensionPath(Level.OVERWORLD);
+    }
+
+    public static LevelStorageSource.LevelStorageAccess getStorage(){
+        return ((MinecraftServerStorageAccessor) getServer()).getStorageSource();
+    }
+    private static void writeLevels() {
+        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
+        JsonObject jsonObject = new JsonObject();
+
+        JsonArray dimensions = new JsonArray();
+        for (ResourceKey<Level> level : LEVELS) {
+            dimensions.add(level.location().toString());
+        }
+
+        jsonObject.add("tardis_dimensions", dimensions);
+
+        TardisRefined.LOGGER.info("Writing {} to: {}", dimensions, file.getAbsolutePath());
+
+        try (FileWriter writer = new FileWriter(file)) {
+            TardisRefined.GSON.toJson(jsonObject, writer);
+            writer.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static ServerLevel getOrCreateInterior(Level interactionLevel, ResourceLocation resourceLocation) {
 
@@ -65,13 +111,4 @@ public class DimensionHandler {
         return existingLevel;
     }
 
-    public static boolean hasIP() {
-        try {
-            Class.forName("qouteall.q_misc_util.MiscHelper");
-            return true;
-        } catch (ClassNotFoundException e) {
-            System.out.println("IP WAS NOT DETCTED!!!!!!!!!");
-            return false;
-        }
-    }
 }

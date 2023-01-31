@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin.fabric;
+package whocraft.tardis_refined.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelStorageSource;

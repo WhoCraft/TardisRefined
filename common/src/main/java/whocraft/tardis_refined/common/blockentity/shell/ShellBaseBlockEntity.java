@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.TardisRefined;
@@ -71,7 +72,8 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements IExter
             TardisLevelOperator.get(interior).ifPresent(cap -> {
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     if(cap.getExteriorManager().getCurrentTheme() != null) {
-                        if(DimensionHandler.hasIP() && !cap.getExteriorManager().getCurrentTheme().equals(ShellTheme.BRIEFCASE)) {
+                        //TODO this needs to be nicer!
+                        if(ModCompatChecker.immersivePortals() && !cap.getExteriorManager().getCurrentTheme().equals(ShellTheme.BRIEFCASE)) {
                             return;
                         }
                     }

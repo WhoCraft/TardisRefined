@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.dimension.fabric;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Lifecycle;
@@ -28,29 +27,20 @@ import net.minecraft.world.level.storage.WorldData;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.SyncLevelListMessage;
-import whocraft.tardis_refined.mixin.fabric.MinecraftServerStorageAccessor;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
+import static whocraft.tardis_refined.common.dimension.DimensionHandler.*;
 import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 public class DimensionHandlerImpl {
-
-
-    public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
-
-    public static void addDimension(ResourceKey<Level> resourceKey){
-        LEVELS.add(resourceKey);
-        writeLevels();
-    }
 
     public static void loadLevels(ServerLevel serverLevel){
         File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
@@ -72,39 +62,10 @@ public class DimensionHandlerImpl {
 
     }
 
-    private static void writeLevels() {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        JsonObject jsonObject = new JsonObject();
-
-        JsonArray dimensions = new JsonArray();
-        for (ResourceKey<Level> level : LEVELS) {
-            dimensions.add(level.location().toString());
-        }
-
-        jsonObject.add("tardis_dimensions", dimensions);
-
-        TardisRefined.LOGGER.info("Writing {} to: {}", dimensions, file.getAbsolutePath());
-
-        try (FileWriter writer = new FileWriter(file)) {
-            TardisRefined.GSON.toJson(jsonObject, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Path getWorldSavingDirectory() {
-        return getStorage().getDimensionPath(Level.OVERWORLD);
-    }
-
-    public static LevelStorageSource.LevelStorageAccess getStorage(){
-        return ((MinecraftServerStorageAccessor) getServer()).getStorageSource();
-    }
-
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
-        if(DimensionHandler.hasIP()) {
-            return DimensionHandlerIP.createDimension(level, id);
+        if(ModCompatChecker.immersivePortals()) {
+            return ImmersivePortals.createDimension(level, id);
         }
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
@@ -118,7 +79,7 @@ public class DimensionHandlerImpl {
 
         ChunkProgressListener chunkListener = server.progressListenerFactory.create(11);
         Executor executor = server.executor;
-        LevelStorageSource.LevelStorageAccess levelSave = getStorage();
+        LevelStorageSource.LevelStorageAccess levelSave = DimensionHandler.getStorage();
 
 
         WorldData serverConfig = server.getWorldData();
