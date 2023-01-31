@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.compat.portals;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -67,7 +66,6 @@ public class ImmersivePortals {
                 ImmersivePortals.createPortals(operator);
             }
         });
-        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> tardisToPortalsMap.clear());
 
         themeToOffsetMap.put(ShellTheme.FACTORY, List.of(new Vec3(0.499, 0, 0),
                 new Vec3(0, 0, 0.499), new Vec3(-0.499, 0, 0), new Vec3(0, 0, -0.499),
