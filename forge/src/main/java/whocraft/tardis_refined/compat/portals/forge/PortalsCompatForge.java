@@ -1,9 +1,8 @@
-package whocraft.tardis_refined.forge.compat;
+package whocraft.tardis_refined.compat.portals.forge;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.server.ServerLifecycleEvent;
 import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;

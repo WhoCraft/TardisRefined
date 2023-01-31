@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.fabric.compat;
+package whocraft.tardis_refined.compat.portals.fabric;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;

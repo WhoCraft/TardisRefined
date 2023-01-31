@@ -14,7 +14,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.data.*;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.forge.compat.PortalsCompatForge;
+import whocraft.tardis_refined.compat.portals.forge.PortalsCompatForge;
 
 @Mod(TardisRefined.MODID)
 public class TardisRefinedForge {

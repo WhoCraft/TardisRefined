@@ -42,9 +42,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId());
         basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId());
         basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
-        basicItem(ItemRegistry.DRILL.getId());
-
-
     }
 
     public ItemModelBuilder basicItem(ResourceLocation item, ResourceLocation texture) {

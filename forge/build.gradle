@@ -49,6 +49,9 @@ dependencies {
 
 //    modImplementation "curse.maven:immersive-portals-for-forge-355440:4352251"
 
+    implementation "curse.maven:immersive-portals-355440:4352251"
+
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
 }

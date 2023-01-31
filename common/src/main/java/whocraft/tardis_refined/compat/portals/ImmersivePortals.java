@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.compat.portals;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +26,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
@@ -42,6 +44,7 @@ public class ImmersivePortals {
     private static final Map<ShellTheme, List<Vec3>> themeToOffsetMap = new HashMap<>();
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
+        if (Platform.isClient()) return null;
         MinecraftServer server = MiscHelper.getServer();
         if (server == null) return null;
         ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
@@ -115,7 +118,7 @@ public class ImmersivePortals {
         }
     }
 
-    public static boolean exteriorHasPortalSupport(ShellTheme shellTheme){
+    public static boolean exteriorHasPortalSupport(ShellTheme shellTheme) {
         return themeToOffsetMap.containsKey(shellTheme);
     }
 
@@ -176,7 +179,7 @@ public class ImmersivePortals {
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
 
         Portal exteriorPortal = createPortal(operator.getExteriorManager().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
-        Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, Portal.entityType, interiorQuat);
+        Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, retrievePortalType(), interiorQuat);
         tardisToPortalsMap.put(UUID.fromString(operator.getLevel().dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
 
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
@@ -193,6 +196,11 @@ public class ImmersivePortals {
 
         exteriorPortal.level.addFreshEntity(exteriorPortal);
         interiorPortal.level.addFreshEntity(interiorPortal);
+    }
+
+    @ExpectPlatform
+    public static EntityType<Portal> retrievePortalType(){
+        throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
 
     public static void destroyPortals(TardisLevelOperator operator) {
@@ -232,7 +240,7 @@ public class ImmersivePortals {
     }
 
     public static Portal createPortal(Level level, Vec3 origin, Vec3 destination, ResourceKey<Level> destinationLvl, DQuaternion quat) {
-        Portal portal = Portal.entityType.create(level);
+        Portal portal = retrievePortalType().create(level);
         ((TARDISPortalData) portal).setTardisID(UUID.fromString(destinationLvl.location().getPath()));
         portal.setOriginPos(origin);
         portal.setDestinationDimension(destinationLvl);
