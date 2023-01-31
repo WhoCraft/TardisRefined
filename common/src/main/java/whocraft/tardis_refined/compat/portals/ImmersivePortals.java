@@ -20,7 +20,7 @@ import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.api.event.TardisEvents;
-import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -120,7 +120,7 @@ public class ImmersivePortals {
     }
 
     public static boolean onDoorRemoved(Level level, Player player, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
-        if (blockEntity instanceof ITardisInternalDoor door) {
+        if (blockEntity instanceof TardisInternalDoor door) {
             if (level instanceof ServerLevel serverLevel) {
                 if (!door.isMainDoor()) {
                     return true;
@@ -148,7 +148,7 @@ public class ImmersivePortals {
             return;
         }
 
-        ITardisInternalDoor door = operator.getInternalDoor();
+        TardisInternalDoor door = operator.getInternalDoor();
         if (door == null) {
             return;
         }
