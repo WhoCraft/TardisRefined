@@ -8,12 +8,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.*;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
@@ -67,6 +69,10 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         return true;
     }
 
+    @Override
+    public boolean shouldRender(GlobalShellBlockEntity blockEntity, Vec3 vec3) {
+        return true;
+    }
     @Override
     public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
         return new GlobalShellRenderer(context);

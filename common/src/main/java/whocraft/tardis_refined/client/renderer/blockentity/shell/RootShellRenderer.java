@@ -7,15 +7,14 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.rootplant.RootShellModel;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
-import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 
 public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEntity>, BlockEntityRendererProvider<RootedShellBlockEntity> {
@@ -54,6 +53,11 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
 
 
         poseStack.popPose();
+    }
+
+    @Override
+    public boolean shouldRender(RootedShellBlockEntity blockEntity, Vec3 vec3) {
+        return true;
     }
 
     @Override

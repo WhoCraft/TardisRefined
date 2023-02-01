@@ -68,7 +68,8 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          forge_loader_version_range: forge_loader_version_range,
                          pack_format: pack_format,
                          forge_resource_pack_format: forge_resource_pack_format,
-                         forge_data_pack_format: forge_data_pack_format
+                         forge_data_pack_format: forge_data_pack_format,
+                         forge_immersive_portals_version_range: forge_immersive_portals_version_range
                          // ,display_test_type: display_test_type
 ]
 processResources {
