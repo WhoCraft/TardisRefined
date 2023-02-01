@@ -11,10 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -22,7 +18,12 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.UUID;
 
@@ -72,9 +73,12 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             TardisLevelOperator.get(interior).ifPresent(cap -> {
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     if(cap.getExteriorManager().getCurrentTheme() != null) {
-                        //TODO this needs to be nicer!
-                        if(ModCompatChecker.immersivePortals() && !cap.getExteriorManager().getCurrentTheme().equals(ShellTheme.BRIEFCASE)) {
-                            return;
+                        ShellTheme theme = cap.getExteriorManager().getCurrentTheme();
+
+                        if (ModCompatChecker.immersivePortals()) {
+                            if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                                return;
+                            }
                         }
                     }
                     cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));

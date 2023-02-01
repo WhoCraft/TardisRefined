@@ -146,7 +146,8 @@ public class ImmersivePortals {
             return;
         }
 
-        if (operator.getExteriorManager().getCurrentTheme().equals(ShellTheme.BRIEFCASE)) {
+        ShellTheme theme = operator.getExteriorManager().getCurrentTheme();
+        if (!exteriorHasPortalSupport(theme)) {
             return;
         }
 
@@ -161,7 +162,7 @@ public class ImmersivePortals {
         BlockPos exteriorEntryBPos = location.position;
         Vec3 exteriorEntryPosition = new Vec3(exteriorEntryBPos.getX() + 0.5, exteriorEntryBPos.getY() + 1, exteriorEntryBPos.getZ() + 0.5);
 
-        ShellTheme theme = operator.getExteriorManager().getCurrentTheme();
+        theme = operator.getExteriorManager().getCurrentTheme();
         switch (location.rotation) {
             case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(themeToOffsetMap.get(theme).get(0));
             case SOUTH -> exteriorEntryPosition = exteriorEntryPosition.add(themeToOffsetMap.get(theme).get(1));
