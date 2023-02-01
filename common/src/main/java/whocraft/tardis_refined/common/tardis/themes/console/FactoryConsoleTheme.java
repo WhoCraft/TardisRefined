@@ -18,6 +18,7 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(.275f, .575f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(1f, 0.525f, 0.215f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.06f, .5f, 1f), new BlockPos(0.1f, 0.1f, 0.1f)),
+                new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.9f, 0.5250015f, 0.46500015f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.6f,0.65f,-0.6f), new BlockPos(0.1f, 0.1f, 0.1f))
         };
     }

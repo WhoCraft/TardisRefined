@@ -173,7 +173,7 @@ public class ControlEntity extends PathfinderMob {
                         float x = (float) (this.position().x - 0.5f);
                         float y = (float) (this.position().y - 97.5f);
                         float z = (float) (this.position().z - -4.5f);
-                        TardisRefined.LOGGER.debug("Output: " + x + "f, " + y + "f, " + z + "f");
+                        TardisRefined.LOGGER.info("Output: " + x + "f, " + y + "f, " + z + "f");
                     } else {
                         setPos(position().add(0, 0, player.isCrouching() ? 0.05 : -0.05));
                     }

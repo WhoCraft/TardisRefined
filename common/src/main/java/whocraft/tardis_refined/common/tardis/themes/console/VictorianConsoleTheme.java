@@ -18,7 +18,8 @@ public class VictorianConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.59999996f, 0.50000304f, -0.7f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.24999997f, 0.6500031f, -0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.25000003f, 0.6500031f, -0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.59999996f, 0.6500031f, -0.35f), new BlockPos(0.1f, 0.1f, 0.1f))
+                new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.59999996f, 0.6500031f, -0.35f), new BlockPos(0.1f, 0.1f, 0.1f)),
+                new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.54999995f, 0.5f, 0.7000001f), new BlockPos(0.1f, 0.1f, 0.1f))
         };
     }
 }
