@@ -44,7 +44,6 @@ public class ImmersivePortals {
     private static final Map<ShellTheme, List<Vec3>> themeToOffsetMap = new HashMap<>();
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
-        if (Platform.isClient()) return null;
         MinecraftServer server = MiscHelper.getServer();
         if (server == null) return null;
         ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
