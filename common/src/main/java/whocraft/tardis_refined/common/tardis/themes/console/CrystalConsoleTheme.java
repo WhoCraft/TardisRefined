@@ -18,7 +18,8 @@ public class CrystalConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(1.1F + 0.05F, 0.4F, -0.3F - 0.05F), BlockPos.ZERO),
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.5F - 0.09F, 0.5F, -1F - 0.02F), BlockPos.ZERO),
                 new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(-0.7F, 1.2F, -0.4F), BlockPos.ZERO),
-                new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(0.3F, 0.4F, 1.2F), BlockPos.ZERO)
+                new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(0.3F, 0.4F, 1.2F), BlockPos.ZERO),
+                new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.65999997f, 0.5f, -1.02f), BlockPos.ZERO)
         };
     }
 }
