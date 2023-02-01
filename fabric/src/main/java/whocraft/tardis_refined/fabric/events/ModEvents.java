@@ -57,31 +57,6 @@ public class ModEvents {
     private static ArrayList<UUID> uuids = new ArrayList<>();
 
     public static void addClientEvents() {
-
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            if (uuids.isEmpty()) {
-                JsonElement response = null;
-                try {
-                    response = getResponse(new URL("https://mc.craig.software/api/skin/beta-players"));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                List<String> remoteUuids = extractUuids(response.toString());
-                for (String uuid : remoteUuids) {
-                    System.out.println(uuid);
-                    uuids.add(UUID.fromString(uuid));
-                }
-            }
-
-
-        /*    if (Minecraft.getInstance().player != null) {
-                if (!uuids.contains(Minecraft.getInstance().player.getUUID())) {
-                    System.out.println("Hahaha! wait.");
-                    System.exit(1);
-                }
-            }*/
-        });
-
         ClientTickEvents.START_WORLD_TICK.register(world -> {
             TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> {
                 if (world.dimension() != levelResourceKey) {
