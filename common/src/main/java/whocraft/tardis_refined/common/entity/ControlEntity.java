@@ -34,6 +34,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.Platform;
@@ -42,6 +43,7 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 public class ControlEntity extends PathfinderMob {
 
     private ControlSpecification controlSpecification;
+    private ConsoleTheme consoleTheme;
     private BlockPos consoleBlockPos;
 
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
@@ -62,9 +64,10 @@ public class ControlEntity extends PathfinderMob {
         return controlSpecification;
     }
 
-    public void assignControlData(ControlSpecification consoleControl, BlockPos entityPosition) {
+    public void assignControlData(ConsoleTheme theme, ControlSpecification consoleControl, BlockPos entityPosition) {
         this.consoleBlockPos = entityPosition;
         this.controlSpecification = consoleControl;
+        this.consoleTheme = theme;
         this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale())));
         this.refreshDimensions();
         this.setCustomName(Component.translatable(consoleControl.control().getTranslationKey()));
@@ -150,7 +153,7 @@ public class ControlEntity extends PathfinderMob {
                     }
 
                     if (!interactWaitingControl(cap)) {
-                        this.controlSpecification.control().getControl().onLeftClick(cap, this, player);
+                        this.controlSpecification.control().getControl().onLeftClick(cap, consoleTheme, this, player);
                     }
                 });
 
@@ -170,7 +173,7 @@ public class ControlEntity extends PathfinderMob {
                         float x = (float) (this.position().x - 0.5f);
                         float y = (float) (this.position().y - 97.5f);
                         float z = (float) (this.position().z - -4.5f);
-                        TardisRefined.LOGGER.debug("Output: " + x + "f, " + y + "f, " + z + "f");
+                        TardisRefined.LOGGER.info("Output: " + x + "f, " + y + "f, " + z + "f");
                     } else {
                         setPos(position().add(0, 0, player.isCrouching() ? 0.05 : -0.05));
                     }
@@ -197,7 +200,7 @@ public class ControlEntity extends PathfinderMob {
                     }
 
                     if (!interactWaitingControl(cap)) {
-                        this.controlSpecification.control().getControl().onRightClick(cap, this, player);
+                        this.controlSpecification.control().getControl().onRightClick(cap,consoleTheme, this, player);
                     }
 
                 });
@@ -243,10 +246,10 @@ public class ControlEntity extends PathfinderMob {
             if (getEntityData().get(SHOW_PARTICLE)) {
                 if (clientLevel.random.nextInt(5) == 0) {
                     for (int i = 0; i < 3; ++i) {
-                        var xCord = this.position().x();
+                        var xCord = this.position().x() ;
                         var yCord = this.position().y() + 0.15f;
                         var zCord = this.position().z();
-                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.ELECTRIC_SPARK, new BlockPos( xCord, yCord, zCord), 0.0D, 0.25D, 0.0D);
+                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.ELECTRIC_SPARK, new Vec3( xCord, yCord, zCord), 0.0D, 0.25D, 0.0D);
                     }
                 }
             }

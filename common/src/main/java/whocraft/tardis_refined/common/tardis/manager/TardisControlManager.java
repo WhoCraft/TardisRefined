@@ -31,6 +31,7 @@ public class TardisControlManager {
 
     // Location based.
     private TardisNavLocation targetLocation;
+    private TardisNavLocation fastReturnLocation;
 
     // Inflight timers (ticks)
     private boolean isInFlight = false;
@@ -86,6 +87,7 @@ public class TardisControlManager {
         this.autoLand = tag.getBoolean(NbtConstants.CONTROL_AUTOLAND);
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
+        this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_fr_loc", operator);
 
         this.ticksCrashing = tag.getInt("ticksCrashing");
         this.ticksSinceCrash = tag.getInt("ticksSinceCrash");
@@ -115,6 +117,10 @@ public class TardisControlManager {
         }
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
+        }
+
+        if (fastReturnLocation != null) {
+            NbtConstants.putTardisNavLocation(tag, "ctrl_fr_loc", this.fastReturnLocation);
         }
 
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
@@ -194,6 +200,20 @@ public class TardisControlManager {
 
     public boolean canUseControls() {
         return canUseControls;
+    }
+
+    /**
+     * Load the fast return into the target location.
+     *
+     * @return if the load was successful
+     **/
+    public boolean preloadFastReturn() {
+        if (this.fastReturnLocation == null) {
+            return false;
+        } else {
+            this.targetLocation = this.fastReturnLocation;
+            return true;
+        }
     }
 
 
@@ -294,6 +314,7 @@ public class TardisControlManager {
         }
 
         this.autoLand = autoLand;
+        this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
 
         // TEMP: Force the targetLocation's level to be the overworld.
         this.targetLocation.level = Platform.getServer().overworld();
@@ -311,9 +332,9 @@ public class TardisControlManager {
         return true;
     }
 
-    public void endFlight() {
+    public boolean endFlight() {
         if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (!this.operator.getTardisFlightEventManager().areControlEventsComplete() && !this.autoLand)) {
-            return;
+            return false;
         }
         this.ticksInFlight = 0;
         this.ticksLanding = TICKS_LANDING_MAX;
@@ -323,6 +344,7 @@ public class TardisControlManager {
 
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
         operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+        return true;
     }
 
     public void calculatePositionToLand(BlockPos landingLocation) {

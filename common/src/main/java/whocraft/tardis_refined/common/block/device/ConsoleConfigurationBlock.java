@@ -10,7 +10,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DebugStickItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -43,7 +43,6 @@ import whocraft.tardis_refined.registry.SoundRegistry;
 import java.util.stream.Stream;
 
 import static net.minecraft.world.phys.shapes.BooleanOp.OR;
-
 
 public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
@@ -142,8 +141,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                                 var posY = (double) blockPos.offset(offset).getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
                                 var posZ = (double) blockPos.offset(offset).getZ() + level.getRandom().nextDouble();
 
-                                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.FLASH, new BlockPos(posX, posY, posZ), 0.0D, 0.0D, 0.0D);
-                                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new BlockPos(posX, posY, posZ), 0.0D, 0.0D, 0.0D);
+                                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.FLASH, new Vec3(posX, posY, posZ), 0.0D, 0.0D, 0.0D);
+                                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(posX, posY, posZ), 0.0D, 0.0D, 0.0D);
                             }
                         }
                     }

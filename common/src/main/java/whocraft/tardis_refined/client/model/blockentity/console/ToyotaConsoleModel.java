@@ -19,7 +19,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class ToyotaConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private static ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
 

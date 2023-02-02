@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
@@ -10,7 +9,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
  */
 public class ConsoleModelCollection {
 
-    IConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel;
+    ConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel;
 
 
 
@@ -32,7 +31,7 @@ public class ConsoleModelCollection {
      * @param theme The Console theme.
      * @return Console unit model tied with the console theme.
      **/
-    public IConsoleUnit getConsoleModel(ConsoleTheme theme) {
+    public ConsoleUnit getConsoleModel(ConsoleTheme theme) {
         switch (theme) {
             case FACTORY:
                 return factoryConsoleModel;

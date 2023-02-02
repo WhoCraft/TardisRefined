@@ -23,7 +23,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class VictorianConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class VictorianConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(4f).looping()

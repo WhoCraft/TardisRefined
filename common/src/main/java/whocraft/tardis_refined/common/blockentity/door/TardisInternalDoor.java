@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerEntity;
 
-public interface ITardisInternalDoor {
+public interface TardisInternalDoor {
 
     boolean isMainDoor();
     void onSetMainDoor(boolean isMainDoor);
