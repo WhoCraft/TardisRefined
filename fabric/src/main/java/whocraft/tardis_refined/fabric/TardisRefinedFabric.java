@@ -13,6 +13,13 @@ import whocraft.tardis_refined.compat.portals.fabric.PortalsCompatFabric;
 import whocraft.tardis_refined.fabric.events.ModEvents;
 
 public class TardisRefinedFabric implements ModInitializer {
+    /**
+     * For use with Fabric BiomeModification API
+     */
+    public static void setupBiomeModifications() {
+        TRFabricBiomeModifiers.addFeatures();
+    }
+
     @Override
     public void onInitialize() {
         PlatformImpl.init();
@@ -23,7 +30,7 @@ public class TardisRefinedFabric implements ModInitializer {
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
 
         if (ModCompatChecker.immersivePortals()) {
-            if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
+            if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();
                 PortalsCompatFabric.init();
             }
@@ -31,10 +38,5 @@ public class TardisRefinedFabric implements ModInitializer {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
 
-    }
-
-    /** For use with Fabric BiomeModification API*/
-    public static void setupBiomeModifications() {
-        TRFabricBiomeModifiers.addFeatures();
     }
 }

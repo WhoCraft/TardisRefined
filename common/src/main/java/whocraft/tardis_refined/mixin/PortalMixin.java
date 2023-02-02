@@ -10,12 +10,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import qouteall.imm_ptl.core.portal.Portal;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.compat.portals.TARDISPortalData;
+import whocraft.tardis_refined.compat.portals.TardisPortalData;
 
 import java.util.UUID;
 
 @Mixin(value = Portal.class, remap = false)
-public abstract class PortalMixin implements TARDISPortalData {
+public abstract class PortalMixin implements TardisPortalData {
     @Unique
     private UUID tardisID;
 

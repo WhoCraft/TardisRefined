@@ -10,6 +10,8 @@ import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
 public class VendingMachineDoorModel extends ShellModel {
 
@@ -50,7 +52,7 @@ public class VendingMachineDoorModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.door.xRot = (open) ? -1.6f : 0;
+        this.door.xRot = (open) ? (ModCompatChecker.immersivePortals() ? -1.6f : 1.6F) : 0;
     }
 
     @Override

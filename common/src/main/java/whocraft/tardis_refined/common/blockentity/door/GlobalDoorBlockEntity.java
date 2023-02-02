@@ -33,7 +33,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
                     cap.setDoorClosed(true);
                     return;
                 }
-                if (!cap.getControlManager().isInFlight() && !door.locked() && serverLevel.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
+                if (!cap.getControlManager().isInFlight() && !door.locked()) {
                     cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
                 }
             });

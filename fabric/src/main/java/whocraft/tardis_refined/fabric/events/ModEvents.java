@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.mojang.realmsclient.util.JsonUtils;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
@@ -35,6 +34,8 @@ import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.START_
 
 public class ModEvents {
 
+    private static ArrayList<UUID> uuids = new ArrayList<>();
+
     public static void addCommonEvents() {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
@@ -52,9 +53,6 @@ public class ModEvents {
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());
     }
-
-
-    private static ArrayList<UUID> uuids = new ArrayList<>();
 
     public static void addClientEvents() {
         ClientTickEvents.START_WORLD_TICK.register(world -> {

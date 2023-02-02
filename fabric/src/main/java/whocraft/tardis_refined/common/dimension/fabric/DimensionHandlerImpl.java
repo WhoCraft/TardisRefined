@@ -42,9 +42,9 @@ import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 public class DimensionHandlerImpl {
 
-    public static void loadLevels(ServerLevel serverLevel){
+    public static void loadLevels(ServerLevel serverLevel) {
         File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        if(!file.exists()) return;
+        if (!file.exists()) return;
 
         Reader reader = null;
         try {
@@ -64,7 +64,7 @@ public class DimensionHandlerImpl {
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
-        if(ModCompatChecker.immersivePortals()) {
+        if (ModCompatChecker.immersivePortals()) {
             return ImmersivePortals.createDimension(level, id);
         }
 

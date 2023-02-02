@@ -6,7 +6,7 @@ import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
 public class PortalsCompatFabric {
 
-    public static void init(){
+    public static void init() {
         PlayerBlockBreakEvents.BEFORE.register(ImmersivePortals::onDoorRemoved);
         ServerLifecycleEvents.SERVER_STOPPING.register((server) -> ImmersivePortals.tardisToPortalsMap.clear());
     }
