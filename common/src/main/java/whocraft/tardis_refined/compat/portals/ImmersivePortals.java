@@ -69,8 +69,8 @@ public class ImmersivePortals {
             }
         });
 
-        themeToOffsetMap.put(ShellTheme.FACTORY, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0, 0),
-                new Vec3(0, 0, 0.499), new Vec3(-0.499, 0, 0), new Vec3(0, 0, -0.499)), new PortalOffets.OffsetData(
+        themeToOffsetMap.replace(ShellTheme.FACTORY, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.2D, 0),
+                new Vec3(0, 0.2D, 0.499), new Vec3(-0.499, 0.2D, 0), new Vec3(0, 0.2D, -0.499)), new PortalOffets.OffsetData(
                 new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
                 new Vec3(1.375, 0, 0), new Vec3(0, 0, 1.375))));
 
@@ -109,6 +109,11 @@ public class ImmersivePortals {
                 new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0, -0.46)), new PortalOffets.OffsetData(
                 new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
                 new Vec3(1.3, 0, 0), new Vec3(0, 0, 1.3))));
+
+        themeToOffsetMap.put(ShellTheme.NUKA, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.65, 0.35, 0),
+                new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35, -0.65)), new PortalOffets.OffsetData(
+                new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
+                new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))));
 
         for (ShellTheme value : ShellTheme.values()) {
             if (!themeToOffsetMap.containsKey(value) && !value.equals(ShellTheme.BRIEFCASE)) {
@@ -164,13 +169,6 @@ public class ImmersivePortals {
 
         theme = operator.getExteriorManager().getCurrentTheme();
         PortalOffets themeData = themeToOffsetMap.get(theme);
-
-        double yOffset = 0.2D;
-
-        themeToOffsetMap.replace(ShellTheme.FACTORY, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, yOffset, 0),
-                new Vec3(0, yOffset, 0.499), new Vec3(-0.499, yOffset, 0), new Vec3(0, yOffset, -0.499)), new PortalOffets.OffsetData(
-                new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
-                new Vec3(1.375, 0, 0), new Vec3(0, 0, 1.375))));
 
         switch (location.rotation) {
             case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().east());
