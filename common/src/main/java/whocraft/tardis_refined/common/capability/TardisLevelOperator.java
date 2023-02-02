@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -213,9 +214,10 @@ public class TardisLevelOperator {
         if (!this.internalDoor.isOpen()) {
             return;
         }
+
         if(getExteriorManager().getCurrentTheme() != null) {
             ShellTheme theme = getExteriorManager().getCurrentTheme();
-            if(ModCompatChecker.immersivePortals()) {
+            if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
                if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
                    return;
                }
@@ -226,6 +228,9 @@ public class TardisLevelOperator {
             if (this.exteriorManager.getLastKnownLocation() != null) {
                 BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
                 ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().level;
+
+                System.out.println(targetPosition);
+                System.out.println(targetLevel);
 
                 ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().level.getChunk(targetPosition);
 

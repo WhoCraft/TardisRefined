@@ -69,7 +69,7 @@ public class ImmersivePortals {
             }
         });
 
-        themeToOffsetMap.replace(ShellTheme.FACTORY, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.2D, 0),
+        themeToOffsetMap.put(ShellTheme.FACTORY, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.2D, 0),
                 new Vec3(0, 0.2D, 0.499), new Vec3(-0.499, 0.2D, 0), new Vec3(0, 0.2D, -0.499)), new PortalOffets.OffsetData(
                 new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
                 new Vec3(1.375, 0, 0), new Vec3(0, 0, 1.375))));
