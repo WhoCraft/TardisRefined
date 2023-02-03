@@ -1,12 +1,17 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -16,6 +21,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import org.joml.Vector3f;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -75,7 +81,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         super.load(tag);
-
         spawnControlEntities();
     }
 
@@ -92,7 +97,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
                 ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
-                controlEntity.assignControlData(control, this.getBlockPos());
+                controlEntity.assignControlData(theme, control, this.getBlockPos());
 
                 Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
                 controlEntity.teleportTo(location.x(), location.y(), location.z());
@@ -146,6 +151,20 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
         if (this.isDirty) {
             spawnControlEntities();
+        }
+
+        if (level instanceof ServerLevel serverLevel) {
+            TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (1 * 20) == 0) {
+                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
+                }
+
+                // Check if we're crashing and if its okay to explode the TARDIS a little.
+                if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                    level.explode((Entity) null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
+                }
+
+            });
         }
     }
 }

@@ -31,6 +31,7 @@ public class ModelProviderBlock extends BlockStateProvider {
     protected void registerStatesAndModels() {
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
+        ResourceLocation growthStoneTexture = new ResourceLocation("tardis_refined:block/growth_stone");
 
         /*Blocks that are rendered in code*/
         emptyBlockState(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
@@ -50,12 +51,15 @@ public class ModelProviderBlock extends BlockStateProvider {
         /*Basic Blocks*/
         simpleBlock(BlockRegistry.ARS_LEAVES.get());
         simpleBlock(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
+        simpleBlock(BlockRegistry.GROWTH_STONE.get());
+        simpleBlock(BlockRegistry.HARDENED_GROWTH_STONE.get());
 
         /*Fences*/
         fenceBlock(BlockRegistry.ARS_LEAVES_FENCE.get(), leavesTexture);
 
         /*Slabs*/
         slabBlock(BlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture);
+
 
         threeDeeRotating(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
     }

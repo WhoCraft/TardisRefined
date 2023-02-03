@@ -4,16 +4,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.Iterator;
@@ -37,7 +37,7 @@ public class TardisArchitectureHandler {
         for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
             BlockPos pos = iterator.next();
 
-            operator.setBlock(pos, Blocks.STONE.defaultBlockState(),1);
+            operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), 1);
         }
 
         // Cheap and easy entity removal. Might want to make this more robust for items!
@@ -121,7 +121,7 @@ public class TardisArchitectureHandler {
                 );
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-            if (level.getBlockEntity(pos) instanceof ITardisInternalDoor internalDoor) {
+            if (level.getBlockEntity(pos) instanceof TardisInternalDoor internalDoor) {
                 TardisLevelOperator.get(level).ifPresent(cap -> cap.setInternalDoor(internalDoor));
                 return;
             }

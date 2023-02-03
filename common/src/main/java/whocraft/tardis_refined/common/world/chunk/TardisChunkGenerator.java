@@ -27,6 +27,7 @@ import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,10 +69,16 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-        BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), chunk.getMinBuildHeight() + 75, chunk.getPos().getMinBlockZ());
+        var bottom = chunk.getMinBuildHeight() + 70;
+        BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), bottom, chunk.getPos().getMinBlockZ());
         BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
         for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
-            chunk.setBlockState(pos, Blocks.STONE.defaultBlockState(), false);
+            if (pos.getY() <= bottom + 5) {
+                chunk.setBlockState(pos, BlockRegistry.HARDENED_GROWTH_STONE.get().defaultBlockState(), false);
+            } else {
+                chunk.setBlockState(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), false);
+            }
+
         }
     }
 
