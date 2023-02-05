@@ -4,17 +4,13 @@ import net.minecraft.core.Registry;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.RootPlantBlock;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
-import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
-import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
-import whocraft.tardis_refined.common.block.device.LandingPad;
-import whocraft.tardis_refined.common.block.device.TerraformerBlock;
+import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
@@ -87,11 +83,13 @@ public class BlockRegistry {
         return 12;
     })), ItemRegistry.MAIN_TAB, true);
 
+
+    public static final RegistrySupplier<FlightDetectorBlock> FLIGHT_DETECTOR = register("flight_detector", () -> new FlightDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), ItemRegistry.MAIN_TAB, true);
+
     // Console
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
         return 15;
     })), ItemRegistry.MAIN_TAB, true);
-
 
 
 }
