@@ -73,18 +73,14 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
     public BlockPos getEntryPosition() {
 
         int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
-        switch (direction) {
-            case 3:
-                return new BlockPos(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ());
-            case 2:
-                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() + 1);
-            case 1:
-                return new BlockPos(getBlockPos().getX() + 1, getBlockPos().getY(), getBlockPos().getZ());
-            case 0:
-                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() - 1);
-        }
+        return switch (direction) {
+            case 3 -> new BlockPos(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ());
+            case 2 -> new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() + 1);
+            case 1 -> new BlockPos(getBlockPos().getX() + 1, getBlockPos().getY(), getBlockPos().getZ());
+            case 0 -> new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() - 1);
+            default -> getBlockPos().above();
+        };
 
-        return getBlockPos().above();
     }
 
     @Override
@@ -114,9 +110,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
     public void onBlockPlaced() {
         if (!getLevel().isClientSide()) {
             Optional<TardisLevelOperator> lvlOper = TardisLevelOperator.get((ServerLevel) this.getLevel());
-            if (lvlOper.isPresent()) {
-                this.operator = lvlOper.get();
-            }
+            lvlOper.ifPresent(tardisLevelOperator -> this.operator = tardisLevelOperator);
         }
     }
 
