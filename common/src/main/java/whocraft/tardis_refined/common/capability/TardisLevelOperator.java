@@ -169,10 +169,10 @@ public class TardisLevelOperator {
     public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
 
         if (!setUp) {
-
             this.interiorManager.generateDesktop(shell.getAssociatedTheme());
-            this.getExteriorManager().setLastKnownLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
-            this.getControlManager().setTargetLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
+            TardisNavLocation navLocation = new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level);
+            this.getExteriorManager().setLastKnownLocation(navLocation);
+            this.getControlManager().setTargetLocation(navLocation);
             this.setUp = true;
         }
 
@@ -228,9 +228,6 @@ public class TardisLevelOperator {
             if (this.exteriorManager.getLastKnownLocation() != null) {
                 BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
                 ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().level;
-
-                System.out.println(targetPosition);
-                System.out.println(targetLevel);
 
                 ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().level.getChunk(targetPosition);
 

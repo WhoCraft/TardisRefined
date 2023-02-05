@@ -81,7 +81,6 @@ public class NbtConstants {
         tag.putInt(prefix + NbtConstants.LOCATION_ROTATION, location.rotation.get2DDataValue());
 
         if(location.level == null) return;
-
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, location.level.dimension().location().getNamespace());
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, location.level.dimension().location().getPath());
     }

@@ -141,23 +141,11 @@ public class ImmersivePortals {
     }
 
     public static void createPortals(TardisLevelOperator operator) {
-        if (!operator.getInternalDoor().isOpen()) {
-            return;
-        }
-        if (!operator.isTardisReady()) {
-            return;
-        }
-        if (tardisToPortalsMap.get(UUID.fromString(operator.getLevel().dimension().location().getPath())) != null) {
-            return;
-        }
-
+        UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
         ShellTheme theme = operator.getExteriorManager().getCurrentTheme();
-        if (!exteriorHasPortalSupport(theme)) {
-            return;
-        }
-
         TardisInternalDoor door = operator.getInternalDoor();
-        if (door == null) {
+
+        if (!operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
             return;
         }
 

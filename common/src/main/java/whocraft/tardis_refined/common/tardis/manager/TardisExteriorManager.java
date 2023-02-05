@@ -181,12 +181,11 @@ public class TardisExteriorManager {
         location.level.setBlock(location.position, blockState, 2);
 
         if (location.level.getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
-            var uuid = UUID.fromString(operator.getLevel().dimension().location().getPath());
-            globalShell.TARDIS_ID = uuid;
+            globalShell.TARDIS_ID = UUID.fromString(operator.getLevel().dimension().location().getPath());
             location.level.sendBlockUpdated(location.position, blockState, blockState, 2);
         }
 
-        this.lastKnownLocation = location;
+        setLastKnownLocation(location);
         this.isLanding = true;
     }
 

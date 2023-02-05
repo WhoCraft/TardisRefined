@@ -2,7 +2,10 @@ package whocraft.tardis_refined.common.util;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -33,6 +36,10 @@ public class MiscHelper {
 
     public static boolean isBlockPosInBox(BlockPos blockPos, AABB aabb) {
         return aabb.contains(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
+    public static ResourceKey<Level> idToKey(ResourceLocation identifier) {
+        return ResourceKey.create(Registry.DIMENSION_REGISTRY, identifier);
     }
 
     public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
