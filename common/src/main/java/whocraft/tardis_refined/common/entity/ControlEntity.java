@@ -241,8 +241,7 @@ public class ControlEntity extends PathfinderMob {
 
             if (getEntityData().get(SHOW_PARTICLE)) {
                 if (clientLevel.random.nextInt(5) == 0) {
-
-                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.2), blockPosition().getY(), this.getRandomZ(0.2), 0.0, 0.0, 0.0);
+                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         } else {

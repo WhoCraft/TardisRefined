@@ -10,9 +10,10 @@ public class ParticleGallifrey extends BaseAshSmokeParticle {
     private final SpriteSet sprites;
 
     protected ParticleGallifrey(ClientLevel arg, double d, double e, double f, double g, double h, double i, float j, SpriteSet arg2) {
-        super(arg, d, e, f, 0.1F, 0.1F, 0.1F, g, h, i, j, arg2, 0.3F, 8, -0.1F, true);
+        super(arg, d, e, f, 0.0F, 0.1F, 0.0F, g, h, i, j, arg2, 0.3F, 8, -0.1F, true);
         this.sprites = arg2;
         setColor(1,1,1);
+        setLifetime(lifetime * 2);
     }
 
 
@@ -30,7 +31,7 @@ public class ParticleGallifrey extends BaseAshSmokeParticle {
     public void tick() {
         super.tick();
         setColor(1, 1, 1);
-        if (age % 20 == 0) {
+        if (age % 40 == 0) {
             this.setSpriteFromAge(this.sprites);
         }
     }
