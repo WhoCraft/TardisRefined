@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.block.device;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -40,7 +41,8 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
         return new FlightDetectorBlockEntity(blockPos, blockState);
     }
 
-    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+    @Override
+    public int getSignal(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, Direction direction) {
         return blockState.getValue(LEVEL);
     }
 
@@ -53,6 +55,7 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
                     TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                         TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
                         int powerLevel = (int) (flightEventManager.getPercentComplete() * 16);
+                        System.out.println(powerLevel);
                         serverLevel.setBlock(blockPos, blockState1.setValue(LEVEL, powerLevel), Block.UPDATE_ALL);
                     });
                 }
@@ -65,12 +68,6 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
         BlockState state = super.getStateForPlacement(context);
         return state.setValue(FACING, context.getHorizontalDirection()).setValue(LEVEL, 0);
     }
-
-    @Override
-    public boolean hasAnalogOutputSignal(BlockState blockState) {
-        return true;
-    }
-
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
