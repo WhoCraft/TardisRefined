@@ -48,10 +48,13 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
         add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), "Console Configurator");
         add(BlockRegistry.LANDING_PAD.get(), "Landing Pad");
+        add(BlockRegistry.GROWTH_STONE.get(), "Growth Stone");
+        add(BlockRegistry.HARDENED_GROWTH_STONE.get(), "Hardened Growth Stone");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
+        add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
 
         /*Entity*/
@@ -67,6 +70,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.RANDOM, "Randomizer");
         addControl(ConsoleControl.THROTTLE, "Throttle");
         addControl(ConsoleControl.MONITOR, "Computer Bank");
+        addControl(ConsoleControl.FAST_RETURN, "Fast Return");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -103,6 +107,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.VENDING, "Vending Machine");
         addShell(ShellTheme.BIG_BEN, "Big Ben");
         addShell(ShellTheme.NUKA, "Nuka");
+        addShell(ShellTheme.GROWTH, "Growth");
 
 
         /*Desktop Themes*/
@@ -113,6 +118,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addDesktopTheme(TardisDesktops.CRYSTAL, "Crystal");
         addDesktopTheme(TardisDesktops.VICTORIAN, "Victorian");
         addDesktopTheme(TardisDesktops.NUKA, "Nuka");
+        addDesktopTheme(TardisDesktops.FUTURE_NOSTALGIA, "Future Nostalgia");
         addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
 
         /*Tool Tips*/

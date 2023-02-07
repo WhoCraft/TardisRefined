@@ -14,7 +14,7 @@ import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -191,7 +191,7 @@ public class TardisExteriorManager {
     }
 
     public boolean isExitLocationSafe() {
-        if (lastKnownLocation.level.getBlockEntity(lastKnownLocation.position) instanceof IExteriorShell shellBaseBlockEntity) {
+        if (lastKnownLocation.level.getBlockEntity(lastKnownLocation.position) instanceof ExteriorShell shellBaseBlockEntity) {
             BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
             if (lastKnownLocation.level.getBlockState(landingArea) == Blocks.AIR.defaultBlockState()) {
                 if (lastKnownLocation.level.getBlockState(landingArea.above()) == Blocks.AIR.defaultBlockState()) {

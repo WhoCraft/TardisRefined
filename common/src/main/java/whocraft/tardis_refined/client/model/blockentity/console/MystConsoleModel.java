@@ -23,7 +23,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class MystConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private static ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
 

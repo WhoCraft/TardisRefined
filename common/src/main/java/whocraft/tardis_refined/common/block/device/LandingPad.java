@@ -64,18 +64,22 @@ public class LandingPad extends Block {
 
                     if (serverLevel.isEmptyBlock(blockPos.above())) {
                         var tardisLevel = Platform.getServer().getLevel(dimension);
-                        TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-                            if (cap.getControlManager().beginFlight(true)) {
-                                cap.getControlManager().setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
-                                serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
-                            } else {
-                                serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
-                            }
 
-                        });
-                    } else {
-                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
+                        var operatorOptional = TardisLevelOperator.get(tardisLevel);
+                        if (operatorOptional.isEmpty()) {
+                            return InteractionResult.PASS;
+                        }
+
+                        var operator = operatorOptional.get();
+
+                        if (operator.getControlManager().beginFlight(true) || !operator.getControlManager().isOnCooldown()) {
+                            operator.getControlManager().setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
+                            serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+                        }
                     }
+
+                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
                 }
             }
         }

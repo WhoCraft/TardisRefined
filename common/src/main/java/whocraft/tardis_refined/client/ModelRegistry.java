@@ -46,6 +46,8 @@ public class ModelRegistry {
     public static ModelLayerLocation GROENING_SHELL;
     public static ModelLayerLocation BIG_BEN_SHELL;
     public static ModelLayerLocation NUKA_SHELL;
+    public static ModelLayerLocation GROWTH_SHELL;
+
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
     public static ModelLayerLocation FACTORY_DOOR;
@@ -59,6 +61,8 @@ public class ModelRegistry {
     public static ModelLayerLocation GROENING_DOOR;
     public static ModelLayerLocation BIG_BEN_DOOR;
     public static ModelLayerLocation NUKA_DOOR;
+    public static ModelLayerLocation GROWTH_DOOR;
+
 
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
@@ -95,6 +99,8 @@ public class ModelRegistry {
         GROENING_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_shell"), "groening_shell"), GroeningShellModel::createBodyLayer);
         BIG_BEN_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_shell"), "big_ben_shell"), BigBenShellModel::createBodyLayer);
         NUKA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_shell"), "nuka_shell"), NukaShellModel::createBodyLayer);
+        GROWTH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_shell"), "growth_shell"), GrowthShellModel::createBodyLayer);
+
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
         FACTORY_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_door"), "factory_door"), FactoryDoorModel::createBodyLayer);
@@ -108,6 +114,8 @@ public class ModelRegistry {
         GROENING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_door"), "groening_door"), GroeningDoorModel::createBodyLayer);
         BIG_BEN_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_door"), "big_ben_door"), BigBenDoorModel::createBodyLayer);
         NUKA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_door"), "nuka_door"), NukaDoorModel::createBodyLayer);
+        GROWTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_door"), "growth_door"), GrowthDoorModel::createBodyLayer);
+
 
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);

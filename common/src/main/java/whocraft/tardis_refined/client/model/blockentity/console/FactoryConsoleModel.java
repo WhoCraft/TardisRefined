@@ -24,7 +24,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.util.List;
 
-public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private final ModelPart bone168;
 	private final ModelPart doorLever;

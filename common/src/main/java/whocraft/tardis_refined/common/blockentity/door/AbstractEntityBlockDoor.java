@@ -19,7 +19,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import java.util.Optional;
 import java.util.UUID;
 
-public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInternalDoor {
+public class AbstractEntityBlockDoor extends BlockEntity implements TardisInternalDoor {
     private boolean isLocked = false;
     private String uuid_id;
     private boolean isOpen = false;
