@@ -45,6 +45,10 @@ allprojects {
 
         maven { url 'https://jitpack.io' }
 
+        flatDir {
+            dirs '../modlibs'
+        }
+
     }
 
     tasks.withType(JavaCompile) {

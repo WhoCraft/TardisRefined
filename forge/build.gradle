@@ -47,10 +47,7 @@ dependencies {
     modImplementation "curse.maven:configured-457570:${configured_version}"
     modImplementation "curse.maven:jei-238222:${jei_version}"
 
-//    modImplementation "curse.maven:immersive-portals-for-forge-355440:4352251"
-
-    implementation "curse.maven:immersive-portals-355440:4352251"
-
+    compileOnly "curse.maven:immersive-portals-355440:4375619"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
