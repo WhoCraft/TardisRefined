@@ -3,16 +3,13 @@ package whocraft.tardis_refined.common.block.console;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -29,8 +26,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -114,7 +111,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         if (clientData != null) {
 
             var xCord = (double) blockPos.getX() + randomSource.nextFloat() * 1.25;
-            var yCord = (double) blockPos.getY() + randomSource.nextDouble() * 1D + 1D;
+            var yCord = (double) blockPos.getY() + randomSource.nextDouble() + 1D;
             var zCord = (double) blockPos.getZ() + randomSource.nextFloat() * 1.25;
 
             if (clientData.isFlying() && level.random.nextInt(4) == 0) {

@@ -145,7 +145,7 @@ public class ImmersivePortals {
         ShellTheme theme = operator.getExteriorManager().getCurrentTheme();
         TardisInternalDoor door = operator.getInternalDoor();
 
-        if (!operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
+        if (operator.getInteriorManager().isCave() || !operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
             return;
         }
 

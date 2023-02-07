@@ -4,7 +4,6 @@ import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.common.tardis.control.flight.*;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Locale;
 
@@ -21,9 +20,9 @@ public enum ConsoleControl implements StringRepresentable {
     MONITOR("monitor", new MonitorControl(), "control.tardis_refined.monitor"),
     FAST_RETURN("fast_return", new FastReturnControl(), "control.tardis_refined.fast_return");
 
-    private String id;
-    private Control control;
-    private String langId;
+    private final String id;
+    private final Control control;
+    private final String langId;
 
     ConsoleControl(String id, Control control, String langId) {
         this.id = id;

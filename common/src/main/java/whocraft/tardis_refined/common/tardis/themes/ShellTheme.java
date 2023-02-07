@@ -3,8 +3,8 @@ package whocraft.tardis_refined.common.tardis.themes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
-import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.Locale;
 
@@ -25,7 +25,7 @@ public enum ShellTheme implements StringRepresentable, Theme {
 
     private final String id;
     private final ResourceLocation externalShellTexture, internalDoorTexture;
-    private ResourceLocation emmissiveExternal;
+    private final ResourceLocation emmissiveExternal;
 
     ShellTheme(String id, ResourceLocation externalShellTexture, ResourceLocation internalDoorTexture) {
         this.id = id;

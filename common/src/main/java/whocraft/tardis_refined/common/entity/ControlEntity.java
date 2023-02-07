@@ -28,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -36,7 +35,6 @@ import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
 public class ControlEntity extends PathfinderMob {
@@ -219,11 +217,6 @@ public class ControlEntity extends PathfinderMob {
         }
 
         return false;
-    }
-
-    @Override
-    protected void tickDeath() {
-        super.tickDeath();
     }
 
     @Override

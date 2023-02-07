@@ -14,7 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -25,6 +25,7 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
+import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 public class MiscHelper {
@@ -99,12 +100,21 @@ public class MiscHelper {
         }
     }
 
-    public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos){
-            if (level.dimensionTypeId() == DimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
-                TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
-                for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
-                    boolean shouldCancel = !protectedZone.isAllowPlacement() && isBlockPosInBox(blockPos, protectedZone.getArea());
-                    if(shouldCancel) return true;
+    public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
+        if (level.dimensionTypeId() == DimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
+            TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
+
+            // Consoles
+            Item consoleItem = BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().asItem();
+            Item consoleConfigItem = BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem();
+            if (data.getInteriorManager().isCave() && (itemInHand.getItem() == consoleConfigItem || itemInHand.getItem() == consoleItem)) {
+                return true;
+            }
+
+            // Protected Zones
+            for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
+                boolean shouldCancel = !protectedZone.isAllowPlacement() && isBlockPosInBox(blockPos, protectedZone.getArea());
+                if (shouldCancel) return true;
             }
         }
         return false;

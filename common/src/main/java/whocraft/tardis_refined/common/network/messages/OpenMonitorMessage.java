@@ -14,16 +14,15 @@ import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.util.Platform;
 
 
 public class OpenMonitorMessage extends MessageS2C {
 
-    private boolean desktopGenerating;
-    private BlockPos currentPos;
-    private Direction currentDir;
-    private BlockPos targetPos;
-    private Direction targetDir;
+    private final boolean desktopGenerating;
+    private final BlockPos currentPos;
+    private final Direction currentDir;
+    private final BlockPos targetPos;
+    private final Direction targetDir;
 
     public OpenMonitorMessage(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation) {
         this.desktopGenerating = desktopGenerating;

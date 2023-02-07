@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.Optional;
 

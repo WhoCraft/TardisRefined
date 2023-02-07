@@ -85,7 +85,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 } else {
                     if (!cap.isTardisReady()) {
                         PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_EXTERIOR_COOLDOWN, cap.getInteriorManager().getInteriorGenerationCooldown()), true);
-                        return;
                     }
                 }
             });

@@ -1,10 +1,6 @@
 package whocraft.tardis_refined.registry;
 
-import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.level.biome.Biome;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 
 public class TagKeys {

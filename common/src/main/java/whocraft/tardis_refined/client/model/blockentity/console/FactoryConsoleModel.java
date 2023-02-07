@@ -15,10 +15,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
 public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -27,7 +27,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 	private final ModelPart root;
 	private final ModelPart throttleLever;
 
-	private static ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
+	private static final ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
 
 
 	public static final AnimationDefinition ROTOR_LOOP = AnimationDefinition.Builder.withLength(6.367666f).looping()

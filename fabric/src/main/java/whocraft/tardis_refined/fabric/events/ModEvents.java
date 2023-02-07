@@ -34,7 +34,7 @@ import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.START_
 
 public class ModEvents {
 
-    private static ArrayList<UUID> uuids = new ArrayList<>();
+    private static final ArrayList<UUID> uuids = new ArrayList<>();
 
     public static void addCommonEvents() {
 

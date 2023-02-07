@@ -3,7 +3,6 @@ package whocraft.tardis_refined.registry;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.desktop.InternalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;

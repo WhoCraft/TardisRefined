@@ -23,7 +23,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
-	private static ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
+	private static final ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2.375f).looping()
 			.addAnimation("rotor_bottom_T_add20",

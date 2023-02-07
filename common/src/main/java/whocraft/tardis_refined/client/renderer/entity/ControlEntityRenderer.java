@@ -6,15 +6,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 
@@ -52,7 +47,6 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
             Matrix4f textMatrix = poseStack.last().pose();
             float textBackgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.5F);
-            ;
             int textColor = (int) (textBackgroundOpacity * 255.0F) << 24;
             Font font = this.getFont();
             float textHorizontalPosition = (float) (-font.width(component) / 2);

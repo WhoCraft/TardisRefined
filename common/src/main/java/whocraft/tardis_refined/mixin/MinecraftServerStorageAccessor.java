@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface MinecraftServerStorageAccessor {
 
     @Accessor("storageSource")
-    public LevelStorageSource.LevelStorageAccess getStorageSource();
+    LevelStorageSource.LevelStorageAccess getStorageSource();
 }

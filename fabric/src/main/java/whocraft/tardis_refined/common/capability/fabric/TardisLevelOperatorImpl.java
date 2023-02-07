@@ -20,9 +20,7 @@ public class TardisLevelOperatorImpl extends TardisLevelOperator implements Comp
         try {
             return Optional.of(TRComponents.TARDIS_DATA.get(level));
         } catch (Exception e) {
-            TardisRefined.LOGGER.info("WHAT THE FUCK");
             TardisRefined.LOGGER.info(e.getMessage());
-            TardisRefined.LOGGER.info(e.getStackTrace().toString());
             return Optional.empty();
         }
     }

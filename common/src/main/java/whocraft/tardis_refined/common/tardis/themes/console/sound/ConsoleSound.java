@@ -1,17 +1,15 @@
 package whocraft.tardis_refined.common.tardis.themes.console.sound;
 
-import net.minecraft.sounds.SoundEvent;
-
 import javax.annotation.Nullable;
 
 
 /**
  * Sound for a specific action, featuring left, right and failure presses.
- * **/
+ **/
 public class ConsoleSound {
 
-    private PitchedSound leftClick;
-    private PitchedSound rightClick;
+    private final PitchedSound leftClick;
+    private final PitchedSound rightClick;
 
     /**
      * Datatype for referencing a sound event for how a player would interact with a control.

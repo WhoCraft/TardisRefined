@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import net.minecraft.client.Minecraft;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class ShellModelCollection {

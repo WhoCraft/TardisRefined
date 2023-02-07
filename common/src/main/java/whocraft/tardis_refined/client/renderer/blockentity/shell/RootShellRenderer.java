@@ -21,8 +21,8 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
 
     private static RootShellModel rootShellModel;
 
-    private static ResourceLocation rootShellTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root_shell.png");
-    private static ResourceLocation rootShellClosed = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root_shell_closed.png");
+    private static final ResourceLocation rootShellTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root_shell.png");
+    private static final ResourceLocation rootShellClosed = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root_shell_closed.png");
 
     public RootShellRenderer(BlockEntityRendererProvider.Context context) {
         rootShellModel = new RootShellModel(context.bakeLayer((ModelRegistry.ROOT_SHELL)));
