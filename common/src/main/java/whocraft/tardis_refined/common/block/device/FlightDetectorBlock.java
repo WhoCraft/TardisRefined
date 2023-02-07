@@ -55,7 +55,6 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
                     TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                         TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
                         int powerLevel = (int) (flightEventManager.getPercentComplete() * 16);
-                        System.out.println(powerLevel);
                         serverLevel.setBlock(blockPos, blockState1.setValue(LEVEL, powerLevel), Block.UPDATE_ALL);
                     });
                 }
