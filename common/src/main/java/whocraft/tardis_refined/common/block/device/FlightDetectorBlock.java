@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -54,7 +55,7 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
                 if (level1 instanceof ServerLevel serverLevel) {
                     TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                         TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
-                        int powerLevel = (int) (flightEventManager.getPercentComplete() * 16);
+                        int powerLevel = tardisLevelOperator.getControlManager().isInFlight() ? Mth.clamp((int) (flightEventManager.getPercentComplete() * 16), 1, 16) : 0;
                         serverLevel.setBlock(blockPos, blockState1.setValue(LEVEL, powerLevel), Block.UPDATE_ALL);
                     });
                 }
