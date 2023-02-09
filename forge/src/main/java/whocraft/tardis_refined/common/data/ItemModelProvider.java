@@ -7,6 +7,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
 
@@ -21,6 +22,9 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         blockItem(BlockRegistry.ARS_LEAVES.getId());
         blockItem(BlockRegistry.ARS_LEAVES_SLAB.getId());
         blockItem(BlockRegistry.LANDING_PAD.getId());
+        blockItem(BlockRegistry.HARDENED_GROWTH_STONE.getId());
+        blockItem(BlockRegistry.GROWTH_STONE.getId());
+        blockItem(BlockRegistry.FLIGHT_DETECTOR.getId());
 
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");

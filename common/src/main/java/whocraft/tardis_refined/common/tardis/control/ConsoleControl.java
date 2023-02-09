@@ -4,6 +4,9 @@ import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.common.tardis.control.flight.*;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+
+import java.util.Locale;
 
 public enum ConsoleControl implements StringRepresentable {
 
@@ -15,13 +18,14 @@ public enum ConsoleControl implements StringRepresentable {
     ROTATE("rotate", new RotationControl(), "control.tardis_refined.rotate"),
     RANDOM("random", new RandomControl(), "control.tardis_refined.random"),
     THROTTLE("throttle", new ThrottleControl(), "control.tardis_refined.throttle"),
-    MONITOR("monitor", new MonitorControl(), "control.tardis_refined.monitor");
+    MONITOR("monitor", new MonitorControl(), "control.tardis_refined.monitor"),
+    FAST_RETURN("fast_return", new FastReturnControl(), "control.tardis_refined.fast_return");
 
     private String id;
-    private IControl control;
+    private Control control;
     private String langId;
 
-    ConsoleControl(String id, IControl control, String langId) {
+    ConsoleControl(String id, Control control, String langId) {
         this.id = id;
         this.control = control;
         this.langId = langId;
@@ -32,9 +36,18 @@ public enum ConsoleControl implements StringRepresentable {
         return this.id;
     }
 
-    public IControl getControl() {
+    public Control getControl() {
         return control;
     }
 
     public String getTranslationKey() {return langId;}
+
+    public static ConsoleControl findOr(String id, ConsoleControl control) {
+        for (ConsoleControl value : ConsoleControl.values()) {
+            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
+                return value;
+            }
+        }
+        return control;
+    }
 }

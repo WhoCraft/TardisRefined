@@ -52,7 +52,6 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
             Matrix4f textMatrix = poseStack.last().pose();
             float textBackgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.5F);
-
             int textColor = (int) (textBackgroundOpacity * 255.0F) << 24;
             Font font = this.getFont();
             float textHorizontalPosition = (float) (-font.width(component) / 2);

@@ -25,7 +25,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import java.util.List;
 import java.util.Set;
 
-public class CoralConsoleModel extends HierarchicalModel implements IConsoleUnit{
+public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
 	private static ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
