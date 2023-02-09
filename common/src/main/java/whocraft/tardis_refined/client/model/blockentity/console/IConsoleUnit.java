@@ -1,13 +1,22 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public interface IConsoleUnit {
-    void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
-    ResourceLocation getTexture(GlobalConsoleBlockEntity entity);
+    void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+
+    default ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
+
+        if (entity == null) return getDefaultTexture();
+
+        ConsoleTheme console = entity.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+        return entity.pattern().textureLocation();
+    }
     ResourceLocation getDefaultTexture();
 }

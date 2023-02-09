@@ -11,21 +11,27 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUnit {
+import java.util.List;
+
+public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private final ModelPart bone168;
 	private final ModelPart doorLever;
 	private final ModelPart root;
 	private final ModelPart throttleLever;
 
-	private static ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory_console.png");
+	private static ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
 
 
 	public static final AnimationDefinition ROTOR_LOOP = AnimationDefinition.Builder.withLength(6.367666f).looping()
@@ -606,11 +612,12 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 
 
 	@Override
-	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, ROTOR_LOOP, Minecraft.getInstance().player.tickCount);
 		this.throttleLever.xRot = (reactions.isThrottleDown()) ? -155: -125;
+		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 		bone168.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -623,11 +630,6 @@ public class FactoryConsoleModel extends HierarchicalModel implements IConsoleUn
 	@Override
 	public void setupAnim(Entity entity, float f, float g, float h, float i, float j) {
 
-	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
 	}
 
 	@Override

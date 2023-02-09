@@ -39,8 +39,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         BlockState blockstate = blockEntity.getBlockState();
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
-        ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(ConsoleModelCollection.getInstance().getConsoleModel(theme).getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-
+        ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();
 

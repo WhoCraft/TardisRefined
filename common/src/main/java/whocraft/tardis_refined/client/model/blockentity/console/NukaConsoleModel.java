@@ -11,6 +11,8 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -18,9 +20,9 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
+public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-	private static ResourceLocation NUKA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka_console.png");
+	private static ResourceLocation NUKA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka/nuka_console.png");
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(6f).looping()
 			.addAnimation("rotor_zminus3_yplus5_rotateY",
@@ -494,7 +496,7 @@ public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
 	}
 
 	@Override
-	public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		panels.getAllParts().forEach(ModelPart::resetPose);
 		console.getAllParts().forEach(ModelPart::resetPose);
@@ -504,6 +506,9 @@ public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
 
 		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
 
+		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
+
+
 		rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -511,11 +516,6 @@ public class NukaConsoleModel extends HierarchicalModel implements IConsoleUnit{
 		bone43.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone67.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		bone61.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-		return getDefaultTexture();
 	}
 
 	@Override

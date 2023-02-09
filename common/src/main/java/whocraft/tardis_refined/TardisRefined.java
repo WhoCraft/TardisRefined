@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
+import whocraft.tardis_refined.client.TRParticles;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
@@ -29,7 +31,9 @@ public class TardisRefined {
         DimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();
+        TRParticles.TYPES.register();
         TagKeys.init();
         TardisNetwork.init();
+        ConsolePatterns.registerPatterns();
     }
 }
