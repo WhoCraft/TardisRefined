@@ -240,19 +240,18 @@ public class TardisLevelOperator {
     }
 
     public void setDoorClosed(boolean closeDoor) {
-        if (getExteriorManager() != null) {
-            if (getExteriorManager().getLastKnownLocation() != null) {
-                getExteriorManager().setDoorClosed(closeDoor);
-            }
-        }
         if (getInternalDoor() != null) {
             getInternalDoor().setClosed(closeDoor);
         }
-
         if(closeDoor) {
             TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
         } else {
             TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
+        }
+        if (getExteriorManager() != null) {
+            if (getExteriorManager().getLastKnownLocation() != null) {
+                getExteriorManager().setDoorClosed(closeDoor);
+            }
         }
     }
 

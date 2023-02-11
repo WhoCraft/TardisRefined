@@ -58,8 +58,8 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
             }
         }
 
-        poseStack.popPose();
 
+        poseStack.popPose();
     }
 
     @Override
