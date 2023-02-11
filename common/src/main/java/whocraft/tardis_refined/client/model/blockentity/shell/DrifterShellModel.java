@@ -193,7 +193,7 @@ public class DrifterShellModel extends ShellModel {
 		door_closed.visible = !open;
 		door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 		door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-		handleAnimations(entity,bone32,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		handleAllAnimations(entity,bone32,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

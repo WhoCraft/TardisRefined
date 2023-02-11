@@ -15,7 +15,6 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -91,16 +90,13 @@ public class NukaShellModel extends ShellModel {
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-
-	//	if(!entity.liveliness.isStarted()){
-			entity.liveliness.start(12);
-	//	}
-
-		handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		this.animate(entity.liveliness, NUKAANIM, Minecraft.getInstance().player.tickCount);
-
+		handleAllAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
+	@Override
+	public void handleSpecialAnimation(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
+		this.animate(entity.liveliness, NUKAANIM, Minecraft.getInstance().player.tickCount);
+	}
 
 	@Override
 	public ResourceLocation texture() {
