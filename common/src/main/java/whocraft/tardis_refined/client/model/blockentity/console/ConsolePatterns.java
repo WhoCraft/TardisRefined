@@ -38,6 +38,10 @@ public class ConsolePatterns {
         /*Myst*/
         addPattern(ConsoleTheme.MYST, new Pattern(new ResourceLocation(TardisRefined.MODID, "molten"), "myst/myst_console_molten"));
 
+        /*Victorian*/
+        addPattern(ConsoleTheme.VICTORIAN, new Pattern(new ResourceLocation(TardisRefined.MODID, "smissmass"), "victorian/victorian_console_smissmass"));
+        addPattern(ConsoleTheme.VICTORIAN, new Pattern(new ResourceLocation(TardisRefined.MODID, "grant"), "victorian/victorian_console_grant"));
+
         /*Initiative*/
         addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture"));
         addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "initiative/initiative_console_blue"));

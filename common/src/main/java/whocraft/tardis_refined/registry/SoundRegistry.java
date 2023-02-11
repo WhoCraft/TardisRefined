@@ -15,7 +15,6 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> TARDIS_CRASH_LAND = setUpSound("tardis_crash_land");
     public static final RegistrySupplier<SoundEvent> PATTERN_MANIPULATOR = setUpSound("pattern_manipulator");
 
-
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
         SoundEvent sound = new SoundEvent(new ResourceLocation(TardisRefined.MODID, soundName));
         return SOUNDS.register(soundName, () -> sound);

@@ -45,6 +45,7 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeClient(), new ItemModelProvider(generator, existingFileHelper));
         generator.addProvider(e.includeClient(), new ModelProviderBlock(generator, existingFileHelper));
         generator.addProvider(e.includeClient(), new SoundProvider(generator, existingFileHelper));
+        generator.addProvider(e.includeClient(), new ParticleProvider(generator));
 
         /*Data Pack*/
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator, existingFileHelper));

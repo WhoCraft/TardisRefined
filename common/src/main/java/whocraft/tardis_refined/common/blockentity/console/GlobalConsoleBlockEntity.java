@@ -80,6 +80,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         super.load(tag);
+
         spawnControlEntities();
     }
 

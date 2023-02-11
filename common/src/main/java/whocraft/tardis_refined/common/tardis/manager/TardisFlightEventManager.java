@@ -262,7 +262,7 @@ public class TardisFlightEventManager {
     }
 
     public float getPercentComplete() {
-        return (float)this.controlResponses / (float)this.requiredControlRequests;
+        return (float)this.controlResponses /  (float)this.requiredControlRequests;
     }
 
     private void playCloisterBell() {
