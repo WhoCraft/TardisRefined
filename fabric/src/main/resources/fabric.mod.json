@@ -38,6 +38,9 @@
     "minecraft": "${fabric_minecraft_version_range}",
     "fabric-api": "${fabric_version_range}"
   },
+  "suggests": {
+    "imm_ptl_core": "${fabric_immersive_portals_version_range}"
+  },
   "custom": {
     "cardinal-components": [
       "${mod_id}:tardis_data"
