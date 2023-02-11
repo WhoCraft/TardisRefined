@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -38,6 +39,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     private ConsolePatterns.Pattern pattern = ConsolePatterns.getPatternFromString(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "default"));
+    public AnimationState liveliness = new AnimationState();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
@@ -152,16 +154,20 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (this.isDirty) {
             spawnControlEntities();
         }
+        
+        if(!liveliness.isStarted()){
+            liveliness.start(12);
+        }
 
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (1 * 20) == 0) {
+                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
                     serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
                 }
 
                 // Check if we're crashing and if its okay to explode the TARDIS a little.
                 if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                    level.explode((Entity) null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
+                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
                 }
 
             });

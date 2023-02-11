@@ -5,6 +5,11 @@ package whocraft.tardis_refined.client.model.blockentity.shell;// Made with Bloc
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -28,6 +33,51 @@ public class NukaShellModel extends ShellModel {
 	private final ModelPart wheel_4;
 	private final ModelPart bb_main;
 
+
+	public static final AnimationDefinition NUKAANIM = AnimationDefinition.Builder.withLength(1.5f).looping()
+			.addAnimation("sign",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.5f, KeyframeAnimations.degreeVec(0f, 360f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_1",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.6766666f, KeyframeAnimations.degreeVec(90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.5f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_2",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.8343334f, KeyframeAnimations.degreeVec(-90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.5f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_3",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0.16766666f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.5f, KeyframeAnimations.degreeVec(90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.degreeVec(-90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.4167667f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_4",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0.16766666f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.5f, KeyframeAnimations.degreeVec(-90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.degreeVec(90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.4167667f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
+
 	@Override
 	public void setDoorPosition(boolean open) {
 		if (open) {
@@ -41,7 +91,14 @@ public class NukaShellModel extends ShellModel {
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+
+	//	if(!entity.liveliness.isStarted()){
+			entity.liveliness.start(12);
+	//	}
+
 		handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.animate(entity.liveliness, NUKAANIM, Minecraft.getInstance().player.tickCount);
+
 	}
 
 
