@@ -34,8 +34,6 @@ import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.START_
 
 public class ModEvents {
 
-    private static final ArrayList<UUID> uuids = new ArrayList<>();
-
     public static void addCommonEvents() {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
@@ -69,30 +67,5 @@ public class ModEvents {
         });
     }
 
-
-    public static List<String> extractUuids(String json) {
-        ArrayList<String> uuids = new ArrayList<>();
-        JsonArray jsonArray = new JsonParser().parse(json).getAsJsonArray();
-        for (int i = 0; i < jsonArray.size(); i++) {
-            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-            String uuid = jsonObject.get("uuid").getAsString();
-            uuids.add(uuid);
-        }
-        return uuids;
-    }
-
-    public static JsonElement getResponse(URL url) throws IOException {
-        System.out.println(url);
-        HttpsURLConnection uc = (HttpsURLConnection) url.openConnection();
-        uc.connect();
-        uc.setConnectTimeout(120000);
-        uc = (HttpsURLConnection) url.openConnection();
-        uc.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36");
-        InputStream inputStream = uc.getInputStream();
-        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-        JsonElement finalData = GsonHelper.fromJson(TardisRefined.GSON, br, JsonElement.class, false);
-        uc.disconnect();
-        return finalData;
-    }
 
 }
