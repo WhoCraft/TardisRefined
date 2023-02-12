@@ -60,14 +60,18 @@ dependencies {
     modApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
     include "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
 
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
+    // Immersive Portals Start
+
+    // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
+    // Immersive Portals End
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
