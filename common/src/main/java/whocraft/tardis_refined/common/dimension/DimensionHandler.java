@@ -14,6 +14,8 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
@@ -71,8 +73,14 @@ public class DimensionHandler {
 
     public static ServerLevel getOrCreateInterior(Level interactionLevel, ResourceLocation resourceLocation) {
 
+        ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourceLocation);
+
+
+        if (ModCompatChecker.immersivePortals()) {
+            return ImmersivePortals.createDimension(interactionLevel, levelResourceKey);
+        }
+
         if (interactionLevel instanceof ServerLevel serverLevel) {
-           ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourceLocation);
            ServerLevel existingLevel = getExistingLevel(serverLevel, levelResourceKey);
 
            if (existingLevel != null) {
