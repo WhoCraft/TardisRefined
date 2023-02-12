@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -18,5 +20,7 @@ public interface ConsoleUnit {
         ConsoleTheme console = entity.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
         return entity.pattern().textureLocation();
     }
+
     ResourceLocation getDefaultTexture();
+
 }
