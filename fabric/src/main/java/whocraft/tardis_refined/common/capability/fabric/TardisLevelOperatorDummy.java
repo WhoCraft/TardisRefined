@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.capability.fabric;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
-public class TardisLevelOperatorDummy extends TardisLevelOperatorImpl{
+public class TardisLevelOperatorDummy extends TardisLevelOperatorImpl {
 
     public TardisLevelOperatorDummy(Level level) {
         super(level);

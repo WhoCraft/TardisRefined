@@ -111,7 +111,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         if (clientData != null) {
 
             var xCord = (double) blockPos.getX() + randomSource.nextFloat() * 1.25;
-            var yCord = (double) blockPos.getY() + randomSource.nextDouble() * 1D + 1D;
+            var yCord = (double) blockPos.getY() + randomSource.nextDouble() + 1D;
             var zCord = (double) blockPos.getZ() + randomSource.nextFloat() * 1.25;
 
             if (clientData.isFlying() && level.random.nextInt(4) == 0) {

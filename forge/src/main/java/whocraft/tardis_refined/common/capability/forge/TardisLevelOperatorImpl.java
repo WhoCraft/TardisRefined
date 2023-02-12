@@ -59,6 +59,9 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     }
 
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
+        if(level == null) {
+            return Optional.empty();
+        }
         return level.getCapability(TARDIS_DATA).resolve();
     }
 

@@ -5,11 +5,11 @@ import net.minecraft.sounds.SoundEvent;
 
 /**
  * A small link between a SoundEvent and intended pitch to play.
-* **/
+ **/
 public class PitchedSound {
 
-    private SoundEvent soundEvent;
-    private float pitch;
+    private final SoundEvent soundEvent;
+    private final float pitch;
 
     public PitchedSound(SoundEvent event, float pitch) {
         this.soundEvent = event;

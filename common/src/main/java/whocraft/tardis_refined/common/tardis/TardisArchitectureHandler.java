@@ -4,8 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
@@ -16,7 +14,6 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,9 +31,7 @@ public class TardisArchitectureHandler {
         BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);
         BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + INTERIOR_SIZE, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + INTERIOR_SIZE);
 
-        for (Iterator<BlockPos> iterator = BlockPos.betweenClosed(corner, farCorner).iterator(); iterator.hasNext();) {
-            BlockPos pos = iterator.next();
-
+        for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
             operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), 1);
         }
 
@@ -77,9 +72,6 @@ public class TardisArchitectureHandler {
 
                     });
                 });
-
-
-
                 return;
             }
         }
