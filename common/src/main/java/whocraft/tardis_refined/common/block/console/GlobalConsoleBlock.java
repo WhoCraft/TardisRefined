@@ -3,16 +3,13 @@ package whocraft.tardis_refined.common.block.console;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-
 import net.minecraft.resources.ResourceLocation;
-
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -29,8 +26,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -119,20 +116,20 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
             if (clientData.isFlying() && level.random.nextInt(4) == 0) {
 
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
             }
 
             if (clientData.isOnCooldown() || clientData.isCrashing()) {
 
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CAMPFIRE_COSY_SMOKE, new Vec3( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CAMPFIRE_COSY_SMOKE, new Vec3(xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
 
                 for (int i = 0; i < 5; i++) {
-                    ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LARGE_SMOKE, new Vec3( xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+                    ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LARGE_SMOKE, new Vec3(xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
                 }
 
                 if (level.random.nextInt(10) == 0) {
                     for (int i = 0; i < 3; i++) {
-                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA,new Vec3( xCord, yCord, zCord), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA, new Vec3(xCord, yCord, zCord), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
                     }
 
                     level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1, level.getRandom().nextFloat() + 1f, false);

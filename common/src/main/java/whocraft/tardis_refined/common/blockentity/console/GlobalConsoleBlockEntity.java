@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.blockentity.console;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -81,6 +80,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         super.load(tag);
+
         spawnControlEntities();
     }
 

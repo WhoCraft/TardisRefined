@@ -24,6 +24,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         blockItem(BlockRegistry.LANDING_PAD.getId());
         blockItem(BlockRegistry.HARDENED_GROWTH_STONE.getId());
         blockItem(BlockRegistry.GROWTH_STONE.getId());
+        blockItem(BlockRegistry.FLIGHT_DETECTOR.getId());
 
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
@@ -42,7 +43,6 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId());
         basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId());
         basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
-        basicItem(ItemRegistry.DRILL.getId());
 
 
     }
