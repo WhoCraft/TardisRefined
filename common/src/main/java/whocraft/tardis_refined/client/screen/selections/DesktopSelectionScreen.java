@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -16,9 +17,10 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.List;
 
+import static whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen.NOISE;
+
 public class DesktopSelectionScreen extends SelectionScreen {
 
-    private List<DesktopTheme> themeList;
     private DesktopTheme currentDesktopTheme;
 
 
@@ -27,10 +29,10 @@ public class DesktopSelectionScreen extends SelectionScreen {
     private int leftPos, topPos;
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
+    public static ResourceLocation MONITOR_TEXTURE_OVERLAY = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop_overlay.png");
 
     public DesktopSelectionScreen() {
         super(Component.translatable(ModMessages.UI_DESKTOP_SELECTION));
-        this.themeList = TardisDesktops.DESKTOPS.stream().toList();
     }
 
     @Override
@@ -71,15 +73,34 @@ public class DesktopSelectionScreen extends SelectionScreen {
         RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
+
         /*Render Interior Image*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, currentDesktopTheme.getPreviewTexture());
         poseStack.pushPose();
-        poseStack.translate(width / 2 - 85, height / 2 - 60, 0);
-        poseStack.scale(0.2F, 0.2F, 0.2F);
+        poseStack.translate(width / 2 - 110, height / 2 - 72, 0);
+        poseStack.scale(0.31333333F, 0.31333333F, 0.313333330F);
+
         blit(poseStack, 0, 0, 0, 0, 400, 400, 400, 400);
+
+
+        double alpha = (100.0D - this.age * 3.0D) / 100.0D;
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
+        RenderSystem.setShaderTexture(0, NOISE);
+        blit(poseStack, 0, 0, this.noiseX, this.noiseY, 400, 400);
+        RenderSystem.disableBlend();
+
+
         poseStack.popPose();
+
+
+        /*Render Back drop*/
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, MONITOR_TEXTURE_OVERLAY);
+        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         super.render(poseStack, i, j, f);
     }
@@ -111,6 +132,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
                         }
                     }
                     entry.setChecked(true);
+                    age = 0;
                 }));
             }
         }

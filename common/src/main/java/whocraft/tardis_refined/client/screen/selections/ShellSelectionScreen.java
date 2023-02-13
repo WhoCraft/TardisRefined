@@ -39,8 +39,6 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/shell.png");
     public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/ui/noise.png");
-    private int noiseX, noiseY, age;
-    private double noiseAlpha;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
@@ -49,13 +47,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public void tick() {
-        Random random = new Random(); //TODO REMOVE
         super.tick();
-        this.age++;
-        this.noiseX = random.nextInt(736);
-        this.noiseY = random.nextInt(414);
-        if (this.age % 3 == 0)
-            this.noiseAlpha = random.nextDouble();
     }
 
     @Override
@@ -158,6 +150,7 @@ public class ShellSelectionScreen extends SelectionScreen {
             blit(poseStack, leftPos, topPos, this.noiseX, this.noiseY, imageWidth, imageHeight);
             RenderSystem.disableBlend();
         }
+
     }
 
     @Override

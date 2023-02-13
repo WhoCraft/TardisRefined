@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -23,6 +24,9 @@ public class SelectionScreen extends Screen {
     private Button selectShellButton;
     private Button cancelButton;
     private ObjectSelectionList list;
+
+    public int noiseX, noiseY, age;
+    public double noiseAlpha;
 
     private static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/save.png");
     private static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/back.png");
@@ -90,6 +94,16 @@ public class SelectionScreen extends Screen {
         ScreenHelper.renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, height / 2 - 100, Color.LIGHT_GRAY.getRGB(), 300, true);
     }
 
+    @Override
+    public void tick() {
+        RandomSource random = Minecraft.getInstance().level.random;
+        super.tick();
+        this.age++;
+        this.noiseX = random.nextInt(736);
+        this.noiseY = random.nextInt(414);
+        if (this.age % 3 == 0)
+            this.noiseAlpha = random.nextDouble();
+    }
 
     public interface SelectionScreenRun {
         void onPress();
