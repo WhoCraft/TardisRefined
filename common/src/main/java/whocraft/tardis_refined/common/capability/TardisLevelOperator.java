@@ -12,35 +12,36 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
-import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
-import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
 
 public class TardisLevelOperator {
 
-    private Level level;
+    private final Level level;
     private boolean setUp = false;
     private TardisInternalDoor internalDoor = null;
 
     // Managers
-    private TardisExteriorManager exteriorManager;
-    private TardisInteriorManager interiorManager;
-    private TardisControlManager controlManager;
-    private TardisFlightEventManager tardisFlightEventManager;
-
-
-    private TardisClientData tardisClientData;
+    private final TardisExteriorManager exteriorManager;
+    private final TardisInteriorManager interiorManager;
+    private final TardisControlManager controlManager;
+    private final TardisFlightEventManager tardisFlightEventManager;
+    private final TardisClientData tardisClientData;
 
     public TardisLevelOperator(Level level) {
         this.level = level;
@@ -166,10 +167,10 @@ public class TardisLevelOperator {
     public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
 
         if (!setUp) {
-
             this.interiorManager.generateDesktop(shell.getAssociatedTheme());
-            this.getExteriorManager().setLastKnownLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
-            this.getControlManager().setTargetLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
+            TardisNavLocation navLocation = new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level);
+            this.getExteriorManager().setLastKnownLocation(navLocation);
+            this.getControlManager().setTargetLocation(navLocation);
             this.setUp = true;
         }
 
@@ -212,6 +213,15 @@ public class TardisLevelOperator {
             return;
         }
 
+        if(getExteriorManager().getCurrentTheme() != null) {
+            ShellTheme theme = getExteriorManager().getCurrentTheme();
+            if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
+               if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                   return;
+               }
+            }
+        }
+
         if (this.exteriorManager != null) {
             if (this.exteriorManager.getLastKnownLocation() != null) {
                 BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
@@ -230,13 +240,18 @@ public class TardisLevelOperator {
     }
 
     public void setDoorClosed(boolean closeDoor) {
+        if (getInternalDoor() != null) {
+            getInternalDoor().setClosed(closeDoor);
+        }
+        if(closeDoor) {
+            TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
+        } else {
+            TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
+        }
         if (getExteriorManager() != null) {
             if (getExteriorManager().getLastKnownLocation() != null) {
                 getExteriorManager().setDoorClosed(closeDoor);
             }
-        }
-        if (getInternalDoor() != null) {
-            getInternalDoor().setClosed(closeDoor);
         }
     }
 
@@ -244,6 +259,7 @@ public class TardisLevelOperator {
         getExteriorManager().setShellTheme(theme);
         getInteriorManager().setShellTheme(theme);
         this.getControlManager().setCurrentExteriorTheme(theme);
+        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
     }
 
     /**

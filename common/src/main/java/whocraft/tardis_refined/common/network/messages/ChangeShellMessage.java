@@ -1,11 +1,9 @@
 package whocraft.tardis_refined.common.network.messages;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -19,8 +17,8 @@ import java.util.Optional;
 
 public class ChangeShellMessage extends MessageC2S {
 
-    private ResourceKey<Level> resourceKey;
-    private ShellTheme shellTheme;
+    private final ResourceKey<Level> resourceKey;
+    private final ShellTheme shellTheme;
 
     public ChangeShellMessage(ResourceKey<Level> tardisLevel, ShellTheme theme) {
         this.resourceKey = tardisLevel;

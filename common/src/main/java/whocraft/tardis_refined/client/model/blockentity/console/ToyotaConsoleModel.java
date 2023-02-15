@@ -23,7 +23,7 @@ import java.util.Calendar;
 
 public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-	private static ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
+	private static final ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
 
 
 

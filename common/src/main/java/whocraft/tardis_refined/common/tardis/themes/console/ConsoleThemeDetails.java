@@ -10,7 +10,7 @@ public abstract class ConsoleThemeDetails {
 
     public ControlSpecification[] getControlSpecification() {
         return null;
-    };
+    }
 
     public ConsoleSoundProfile getSoundProfile() {
         return soundProfile;

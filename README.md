@@ -52,3 +52,7 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
 With special thanks to Commoble, Lucraft, starray1000000 and Sea Pickle<br/><hr/>
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
+## Immersive Portals Support
+This mod has dedicated support for being compatible and integrating with Immersive Portals when Immersive Portals is present.
+By default, Immersive Portals is not enabled in dev and fabrics build.gradle file must be edited to allow for this.
+Instructions on how to do this can be found in the relevant build.gradle

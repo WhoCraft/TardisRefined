@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,6 +23,7 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
@@ -151,25 +151,34 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
+
         if (this.isDirty) {
             spawnControlEntities();
         }
-        
-        if(!liveliness.isStarted()){
+
+        if (!liveliness.isStarted()) {
             liveliness.start(12);
         }
 
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
                 if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
-                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
-                }
 
-                // Check if we're crashing and if its okay to explode the TARDIS a little.
-                if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
-                }
+                    TardisInteriorManager intManager = x.getInteriorManager();
+                    if (intManager.isCave()) {
+                        intManager.setCurrentTheme(intManager.preparedTheme());
+                    }
 
+                    if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
+                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
+                    }
+
+                    // Check if we're crashing and if its okay to explode the TARDIS a little.
+                    if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                        level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
+                    }
+
+                }
             });
         }
     }

@@ -8,7 +8,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -82,41 +83,33 @@ public class TerraformerBlock extends Block {
         }
 
         if (level instanceof ServerLevel serverLevel) {
-
             if (checkIfStructure(serverLevel, blockPos)) {
-
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-
                     if (cap.getInteriorManager().isWaitingToGenerate()) {
                         level.destroyBlock(blockPos, true);
                     } else {
-                        cap.getInteriorManager().prepareDesktop(TardisDesktops.FACTORY_THEME);
-                        destroyStructure(serverLevel, blockPos);
-                        serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
+                        if (cap.getInteriorManager().isCave()) {
+                            cap.getInteriorManager().prepareDesktop(TardisDesktops.FACTORY_THEME);
+                            destroyStructure(serverLevel, blockPos);
+                            serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
+                        }
                     }
-
-
                 });
-
             } else {
                 blockState.setValue(ACTIVE, false);
             }
         }
     }
 
+    @Override
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
-
         if (blockState.getValue(ACTIVE)) {
-            int i;
-            double d;
-            double e;
-            double f;
-            for(i = 0; i < 3; ++i) {
-                d = (double)blockPos.getX() + randomSource.nextDouble();
-                e = (double)blockPos.getY() + randomSource.nextDouble() * 0.5D + 0.5D;
-                f = (double)blockPos.getZ() + randomSource.nextDouble();
-                level.addParticle(ParticleTypes.FLASH, d, e, f, 0.0D, 0.0D, 0.0D);
-                level.addParticle(ParticleTypes.CLOUD, d, e, f, 0.0D, 0.0D, 0.0D);
+            for (int particleCount = 0; particleCount < 3; ++particleCount) {
+                double particleX = (double) blockPos.getX() + randomSource.nextDouble();
+                double particleY = (double) blockPos.getY() + randomSource.nextDouble() * 0.5D + 0.5D;
+                double particleZ = (double) blockPos.getZ() + randomSource.nextDouble();
+                level.addParticle(ParticleTypes.FLASH, particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
+                level.addParticle(ParticleTypes.CLOUD, particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
             }
         }
     }
@@ -173,11 +166,8 @@ public class TerraformerBlock extends Block {
                     serverLevel.destroyBlock(new BlockPos(x, startingCorner.getY(), z), false);
                 }
             }
-
             serverLevel.setBlockAndUpdate(blockPos.below(), Blocks.STONE.defaultBlockState());
             serverLevel.playSound(null, blockPos, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.BLOCKS, 10, 1.75f);
-
-
         }
     }
 
