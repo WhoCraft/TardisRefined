@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+    "CubeMapMixin"
   ],
   "injectors": {
     "defaultRequire": 1
