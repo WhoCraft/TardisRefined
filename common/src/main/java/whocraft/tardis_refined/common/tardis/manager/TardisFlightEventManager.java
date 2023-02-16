@@ -1,13 +1,10 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -21,8 +18,8 @@ import java.util.List;
 
 public class TardisFlightEventManager {
 
-    private TardisLevelOperator operator;
-    private List<ConsoleControl> possibleControls;
+    private final TardisLevelOperator operator;
+    private final List<ConsoleControl> possibleControls;
     private ConsoleControl controlPrompt;
     private int requiredControlRequests;
     private int controlResponses;
@@ -133,7 +130,7 @@ public class TardisFlightEventManager {
 
     private int getBlocksPerRequest(double distance) {
         var bpd = (int) (distance / MIN_DISTANCE_FOR_EVENTS);
-        return (bpd < 25) ? bpd : 25; // This will be expanded once stats are added.
+        return Math.min(bpd, 25); // This will be expanded once stats are added.
     }
 
     // All the logic related to the in-flight events of the TARDIS.

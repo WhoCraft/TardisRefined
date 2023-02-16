@@ -1,11 +1,7 @@
 package whocraft.tardis_refined.common.block.life;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.BeaconBeamBlock;
-import net.minecraft.world.level.block.BeaconBlock;
-import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;

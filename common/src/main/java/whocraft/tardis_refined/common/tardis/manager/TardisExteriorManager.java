@@ -29,7 +29,7 @@ import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
  **/
 public class TardisExteriorManager {
 
-    private TardisLevelOperator operator;
+    private final TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation;
     private ShellTheme currentTheme;
 
@@ -181,12 +181,11 @@ public class TardisExteriorManager {
         location.level.setBlock(location.position, blockState, 2);
 
         if (location.level.getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
-            var uuid = UUID.fromString(operator.getLevel().dimension().location().getPath());
-            globalShell.TARDIS_ID = uuid;
+            globalShell.TARDIS_ID = UUID.fromString(operator.getLevel().dimension().location().getPath());
             location.level.sendBlockUpdated(location.position, blockState, blockState, 2);
         }
 
-        this.lastKnownLocation = location;
+        setLastKnownLocation(location);
         this.isLanding = true;
     }
 
@@ -194,9 +193,7 @@ public class TardisExteriorManager {
         if (lastKnownLocation.level.getBlockEntity(lastKnownLocation.position) instanceof ExteriorShell shellBaseBlockEntity) {
             BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
             if (lastKnownLocation.level.getBlockState(landingArea) == Blocks.AIR.defaultBlockState()) {
-                if (lastKnownLocation.level.getBlockState(landingArea.above()) == Blocks.AIR.defaultBlockState()) {
-                    return true;
-                }
+                return lastKnownLocation.level.getBlockState(landingArea.above()) == Blocks.AIR.defaultBlockState();
             }
         }
 

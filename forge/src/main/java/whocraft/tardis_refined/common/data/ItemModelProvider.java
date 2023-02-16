@@ -7,7 +7,6 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
 

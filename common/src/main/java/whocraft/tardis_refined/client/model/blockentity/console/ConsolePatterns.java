@@ -10,6 +10,7 @@ public class ConsolePatterns {
 
 
     private static final Map<ConsoleTheme, List<Pattern>> PATTERNS = new HashMap<>();
+    public static Pattern CRYSTAL_PURPLE;
 
     public static void registerPatterns() {
 
@@ -32,7 +33,7 @@ public class ConsolePatterns {
         addPattern(ConsoleTheme.TOYOTA, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "toyota/toyota_texture_blue"));
 
         /*Crystal*/
-        addPattern(ConsoleTheme.CRYSTAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "purple"), "crystal/crystal_console_purple"));
+        CRYSTAL_PURPLE = addPattern(ConsoleTheme.CRYSTAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "purple"), "crystal/crystal_console_purple"));
 
         /*Myst*/
         addPattern(ConsoleTheme.MYST, new Pattern(new ResourceLocation(TardisRefined.MODID, "molten"), "myst/myst_console_molten"));

@@ -71,6 +71,7 @@ public class DimensionHandlerImpl {
 
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
+
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
 
         MinecraftServer server = getServer();

@@ -57,7 +57,7 @@ public class Event<T> {
         HIGH,
         NORMAL,
         LOW,
-        LOWEST;
+        LOWEST
 
     }
 
