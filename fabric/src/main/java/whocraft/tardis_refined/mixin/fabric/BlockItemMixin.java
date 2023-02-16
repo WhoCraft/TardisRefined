@@ -16,7 +16,7 @@ public class BlockItemMixin {
 
     @Inject(method = "useOn(Lnet/minecraft/world/item/context/UseOnContext;)Lnet/minecraft/world/InteractionResult;", at = @At("HEAD"), cancellable = true)
     private void restrict(UseOnContext useOnContext, CallbackInfoReturnable<InteractionResult> cir) {
-        if (MiscHelper.shouldStopItem(useOnContext.getLevel(), useOnContext.getPlayer(), useOnContext.getClickedPos())) {
+        if (MiscHelper.shouldStopItem(useOnContext.getLevel(), useOnContext.getPlayer(), useOnContext.getClickedPos(), useOnContext.getItemInHand())) {
             if (useOnContext.getPlayer() instanceof ServerPlayer serverPlayer) {
                 serverPlayer.inventoryMenu.sendAllDataToRemote();
             }

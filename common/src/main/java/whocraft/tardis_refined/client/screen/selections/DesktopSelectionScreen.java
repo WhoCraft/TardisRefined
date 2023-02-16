@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DesktopSelectionScreen extends SelectionScreen {
 
-    private List<DesktopTheme> themeList;
+    private final List<DesktopTheme> themeList;
     private DesktopTheme currentDesktopTheme;
 
 

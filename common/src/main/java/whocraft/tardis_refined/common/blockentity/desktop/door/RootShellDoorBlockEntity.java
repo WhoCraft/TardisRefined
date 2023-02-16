@@ -26,4 +26,9 @@ public class RootShellDoorBlockEntity extends AbstractEntityBlockDoor {
           });
       }
     }
+
+    @Override
+    public boolean isOpen() {
+        return true;
+    }
 }

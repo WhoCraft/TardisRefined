@@ -15,9 +15,9 @@ import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 
 public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, BlockEntityRendererProvider<ArsEggBlockEntity> {
 
-    private ArsEggModel arsEggModel;
-    private ResourceLocation arsEggTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg.png");
-    private ResourceLocation arsEggTextureEmissive = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg_emissive.png");
+    private final ArsEggModel arsEggModel;
+    private final ResourceLocation arsEggTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg.png");
+    private final ResourceLocation arsEggTextureEmissive = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg_emissive.png");
 
     public ArsEggRenderer(BlockEntityRendererProvider.Context context) {
         this.arsEggModel = new ArsEggModel(context.bakeLayer(ModelRegistry.ARS_EGG));

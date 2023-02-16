@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.block.properties;
 import com.google.common.collect.Lists;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Arrays;
 import java.util.Collection;

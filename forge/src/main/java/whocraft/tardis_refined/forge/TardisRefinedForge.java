@@ -12,6 +12,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.data.*;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals.forge.PortalsCompatForge;
 
 @Mod(TardisRefined.MODID)
 public class TardisRefinedForge {
@@ -22,6 +25,15 @@ public class TardisRefinedForge {
         modEventBus.addListener(this::onGatherData);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+
+        if (ModCompatChecker.immersivePortals()) {
+            if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
+                ImmersivePortals.init();
+                PortalsCompatForge.init();
+            }
+        } else {
+            TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
+        }
     }
 
     public void onGatherData(GatherDataEvent e) {

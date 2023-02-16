@@ -52,7 +52,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 							new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
 
-	private static ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
+	private static final ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
 
 	private final ModelPart root;
 	private final ModelPart upper_rotor;

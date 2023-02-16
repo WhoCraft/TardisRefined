@@ -6,7 +6,6 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;

@@ -684,7 +684,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
     }
 
     private void renderCrystalRotor(GlobalConsoleBlockEntity globalConsoleBlock, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha, TardisClientData reactions) {
-        if (globalConsoleBlock.pattern().id().equals("purple")) {
+        if (globalConsoleBlock.pattern().id().equals(ConsolePatterns.CRYSTAL_PURPLE)) {
             core.root().getAllParts().forEach(ModelPart::resetPose);
             poseStack.pushPose();
             poseStack.translate(0, -1.5F, 0);
