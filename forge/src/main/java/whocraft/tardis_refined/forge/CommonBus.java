@@ -3,11 +3,13 @@ package whocraft.tardis_refined.forge;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
@@ -22,6 +24,11 @@ public class CommonBus {
                 DelayedTeleportData.tick(serverLevel);
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onCommandRegister(RegisterCommandsEvent event) {
+        TardisRefinedCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent

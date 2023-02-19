@@ -32,6 +32,8 @@ public class ModMessages {
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
 
+    public static final String CMD_DIM_NOT_A_TARDIS = cmdException("dim_not_a_tardis");
+
     public static String message(String translationKey){
         return "message." + TardisRefined.MODID + "." + translationKey;
     }
@@ -55,6 +57,10 @@ public class ModMessages {
 
     public static String tooltip(String translationKey) {
         return "tooltip." + TardisRefined.MODID + "." + translationKey;
+    }
+
+    public static String cmdException(String translationKey) {
+        return "command." + TardisRefined.MODID + "." + translationKey;
     }
 
     public static String config(String translationKey) {
