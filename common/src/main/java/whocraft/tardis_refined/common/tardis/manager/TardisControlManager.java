@@ -368,7 +368,7 @@ public class TardisControlManager {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
-        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
+        TardisNavLocation lastKnown = operator.getExteriorManager().getLastKnownLocation();
         TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
     }
 
