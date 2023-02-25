@@ -78,7 +78,7 @@ public class ConsolePatternProvider implements DataProvider {
                 JsonObject currentPattern = new JsonObject();
                 currentPattern.addProperty("id", pattern.id().toString());
                 currentPattern.addProperty("texture", pattern.textureLocation().toString());
-                currentPattern.addProperty("name", TardisRefined.GSON.toJson(Component.literal(pattern.name()).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
+                currentPattern.addProperty("name_component", TardisRefined.GSON.toJson(Component.literal(pattern.name()).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
                 patternArray.add(currentPattern);
             }
 

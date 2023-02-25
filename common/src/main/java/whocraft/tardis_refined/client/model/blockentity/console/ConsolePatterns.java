@@ -84,7 +84,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
                 ResourceLocation textureLocation = new ResourceLocation(texture);
                 Pattern pattern = new Pattern(theme, new ResourceLocation(id), textureLocation);
-                pattern.setName(patternObject.get("name").getAsString());
+                pattern.setName(patternObject.get("name_component").getAsString());
                 addPattern(theme, pattern);
             }
         });
