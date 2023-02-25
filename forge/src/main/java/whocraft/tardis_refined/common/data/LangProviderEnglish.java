@@ -72,6 +72,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.THROTTLE, "Throttle");
         addControl(ConsoleControl.MONITOR, "Computer Bank");
         addControl(ConsoleControl.FAST_RETURN, "Fast Return");
+        addControl(ConsoleControl.DIMENSION, "Dimension");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -124,10 +125,12 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
+        add(ModMessages.CONTROL_DIMENSION_SELECTED, "Selected: %s");
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
+        add("config.tardis_refined.banned_dimensions", "Banned Dimensions");
 
         /*Variants*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
