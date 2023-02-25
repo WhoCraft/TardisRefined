@@ -3,7 +3,6 @@ package whocraft.tardis_refined.fabric;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -34,6 +33,25 @@ public class TardisRefinedFabric implements ModInitializer {
         TRFabricBiomeModifiers.addFeatures();
     }
 
+    public static void register(PackType packType, ResourceLocation id, PreparableReloadListener listener) {
+        ResourceManagerHelper.get(packType).registerReloadListener(new IdentifiableResourceReloadListener() {
+            @Override
+            public ResourceLocation getFabricId() {
+                return id;
+            }
+
+            @Override
+            public String getName() {
+                return listener.getName();
+            }
+
+            @Override
+            public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) {
+                return listener.reload(preparationBarrier, resourceManager, profilerFiller, profilerFiller2, executor, executor2);
+            }
+        });
+    }
+
     @Override
     public void onInitialize() {
         PlatformImpl.init();
@@ -53,24 +71,5 @@ public class TardisRefinedFabric implements ModInitializer {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
 
-    }
-
-    public static void register(PackType packType, ResourceLocation id, PreparableReloadListener listener) {
-        ResourceManagerHelper.get(packType).registerReloadListener(new IdentifiableResourceReloadListener() {
-            @Override
-            public ResourceLocation getFabricId() {
-                return id;
-            }
-
-            @Override
-            public String getName() {
-                return listener.getName();
-            }
-
-            @Override
-            public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller profilerFiller, ProfilerFiller profilerFiller2, Executor executor, Executor executor2) {
-                return listener.reload(preparationBarrier, resourceManager, profilerFiller, profilerFiller2, executor, executor2);
-            }
-        });
     }
 }

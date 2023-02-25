@@ -3,9 +3,12 @@ package whocraft.tardis_refined.common.data;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.ChatFormatting;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
@@ -75,6 +78,7 @@ public class ConsolePatternProvider implements DataProvider {
                 JsonObject currentPattern = new JsonObject();
                 currentPattern.addProperty("id", pattern.id().toString());
                 currentPattern.addProperty("texture", pattern.textureLocation().toString());
+                currentPattern.addProperty("name", TardisRefined.GSON.toJson(Component.literal(pattern.name()).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
                 patternArray.add(currentPattern);
             }
 

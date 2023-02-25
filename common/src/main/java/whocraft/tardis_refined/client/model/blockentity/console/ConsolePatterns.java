@@ -3,7 +3,6 @@ package whocraft.tardis_refined.client.model.blockentity.console;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.SystemReport;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -72,18 +71,20 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+
+        ConsolePatterns.PATTERNS.clear();
         object.forEach((resourceLocation, jsonElement) -> {
 
             JsonArray patternsArray = jsonElement.getAsJsonArray();
             for (JsonElement patternElement : patternsArray) {
                 JsonObject patternObject = patternElement.getAsJsonObject();
-                System.out.println(resourceLocation.getPath());
                 ConsoleTheme theme = ConsoleTheme.valueOf(findConsoleTheme(resourceLocation));
                 String id = patternObject.get("id").getAsString();
                 String texture = patternObject.get("texture").getAsString();
 
                 ResourceLocation textureLocation = new ResourceLocation(texture);
                 Pattern pattern = new Pattern(theme, new ResourceLocation(id), textureLocation);
+                pattern.setName(patternObject.get("name").getAsString());
                 addPattern(theme, pattern);
             }
         });
@@ -106,6 +107,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
         private final ResourceLocation textureLocation;
         private final ResourceLocation identifier;
+        private String name;
 
         public ConsoleTheme theme() {
             return theme;
@@ -117,12 +119,23 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
             this.identifier = identifier;
             this.textureLocation = texture;
             this.theme = consoleTheme;
+            this.name = identifier.getPath().substring(0, 1).toUpperCase() + identifier.getPath().substring(1).replace("_", "");
         }
 
         public Pattern(ConsoleTheme consoleTheme, ResourceLocation identifier, String texture) {
             this.identifier = new ResourceLocation(identifier.getNamespace(), consoleTheme.getSerializedName() + "/" + identifier.getPath());
             this.textureLocation = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + texture + ".png");
             this.theme = consoleTheme;
+            this.name = identifier.getPath().substring(0, 1).toUpperCase() + identifier.getPath().substring(1).replace("_", "");
+        }
+
+        public String name() {
+            return name;
+        }
+
+        public Pattern setName(String name) {
+            this.name = name;
+            return this;
         }
 
         public ResourceLocation textureLocation() {

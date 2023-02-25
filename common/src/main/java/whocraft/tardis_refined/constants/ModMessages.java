@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.constants;
 
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 
 public class ModMessages {
 
@@ -46,10 +45,6 @@ public class ModMessages {
 
     public static String shell(String translationKey) {
         return "shell." + TardisRefined.MODID + "." + translationKey;
-    }
-
-    public static String pattern(ConsolePatterns.Pattern pattern) {
-        return "pattern." + pattern.id().getNamespace() + "." + pattern.theme().getSerializedName() + "." + pattern.id().getPath();
     }
 
 
