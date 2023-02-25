@@ -132,6 +132,7 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Variants*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
             List<ConsolePatterns.Pattern> patterns = ConsolePatterns.getPatternsForTheme(consoleTheme);
+            if(patterns == null) continue;
             for (ConsolePatterns.Pattern pattern : patterns) {
                 String niceName = pattern.id().getPath().substring(0, 1).toUpperCase() + pattern.id().getPath().substring(1).replace("_", "");
                 addPattern(pattern, niceName);

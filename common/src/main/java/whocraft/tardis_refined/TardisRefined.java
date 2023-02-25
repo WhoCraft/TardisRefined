@@ -34,6 +34,5 @@ public class TardisRefined {
         TRParticles.TYPES.register();
         TagKeys.init();
         TardisNetwork.init();
-        ConsolePatterns.registerPatterns();
     }
 }
