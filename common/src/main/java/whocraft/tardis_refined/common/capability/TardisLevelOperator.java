@@ -154,7 +154,7 @@ public class TardisLevelOperator {
         if (shouldSync) {
             tardisClientData.sync(level);
             if (getExteriorManager().getLastKnownLocation() != null) {
-                tardisClientData.sync(getExteriorManager().getLastKnownLocation().level);
+                tardisClientData.sync(getExteriorManager().getLastKnownLocation().getLevel());
             }
         }
     }
@@ -225,9 +225,9 @@ public class TardisLevelOperator {
         if (this.exteriorManager != null) {
             if (this.exteriorManager.getLastKnownLocation() != null) {
                 BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
-                ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().level;
+                ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().getLevel();
 
-                ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().level.getChunk(targetPosition);
+                ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().getLevel().getChunk(targetPosition);
 
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (targetLevel.getBlockEntity(targetPosition) instanceof ExteriorShell shellBaseBlockEntity) {

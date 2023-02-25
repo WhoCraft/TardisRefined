@@ -5,8 +5,11 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -125,7 +128,11 @@ public class TardisFlightEventManager {
 
         // Determine if the distance is worth the prompts
         var distance = currentVec.distanceTo(targetVec);
-        this.requiredControlRequests = (distance > MIN_DISTANCE_FOR_EVENTS) ? getBlocksPerRequest(distance): 0;
+        var dimensionalDistance = (this.operator.getExteriorManager().getLastKnownLocation().getDimensionKey() != this.operator.getControlManager().getTargetLocation().getDimensionKey()) ? 10 : 0;
+        this.requiredControlRequests = 3 + dimensionalDistance;
+        if ((distance > MIN_DISTANCE_FOR_EVENTS)) {this.requiredControlRequests += getBlocksPerRequest(distance);}
+
+
     }
 
     private int getBlocksPerRequest(double distance) {
@@ -247,13 +254,44 @@ public class TardisFlightEventManager {
         this.isWaitingForControlResponse = false;
 
         if (this.controlResponses == this.requiredControlRequests) {
-            operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
+            onTargetReached(entity);
         } else {
             if (this.isEventInComboTime()) {
                 float pitch = 1.25f * getPercentComplete();
                 operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.AMBIENT, 10, pitch);
             }
         }
+
+    }
+
+    private void onTargetReached(ControlEntity entity) {
+
+        // Is the target acceptable?
+        var targetPosition = operator.getControlManager().getTargetLocation();
+
+        if (!targetPosition.getDimensionKey().location().getPath().contains("the_end")) {
+            operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
+            return;
+        }
+
+        // Check has the dragon been beaten?
+        if (targetPosition.getLevel().dragonFight() != null) {
+            if ((long) targetPosition.getLevel().getDragons().size() == 0) {
+                operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
+                return;
+            }
+        }
+
+        for (Player player : this.operator.getLevel().players()) {
+            MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DARKNESS, 20, 20, false, false);
+            player.addEffect(mobEffectInstance);
+        }
+
+        this.requiredControlRequests += 5;
+        operator.getControlManager().getTargetLocation().setLevel(targetPosition.getLevel().getServer().overworld());
+        operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.AMBIENT, 1, 1);
+        operator.getLevel().playSound(null, entity.blockPosition(), SoundRegistry.TARDIS_MISC_SPARKLE.get(), SoundSource.AMBIENT, 10, 1);
+        operator.getLevel().explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Explosion.BlockInteraction.NONE);
 
     }
 

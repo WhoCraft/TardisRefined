@@ -8,24 +8,21 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.DimensionUtil;
+import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DimensionalControl extends Control {
 
-    private boolean isBlockedDimension(ServerLevel level) {
-        return level.dimensionTypeId().equals(DimensionTypes.TARDIS) || level.dimensionTypeId().location().getPath().contains("the_end");
-    }
-
     private List<ServerLevel> getAllowedDimensions(MinecraftServer server) {
         var filteredDimensions = new ArrayList<ServerLevel>();
         var filteredLevels = server.getAllLevels();
 
         filteredLevels.forEach(x -> {
-            if (!isBlockedDimension(x)) {
+            if (DimensionUtil.isAllowedDimension(x.dimension())) {
                 filteredDimensions.add(x);
             }
         });
@@ -39,13 +36,13 @@ public class DimensionalControl extends Control {
         var server = operator.getLevel().getServer();
         if (server == null) {return;}
         var dimensions = getAllowedDimensions(server);
-        var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().level);
+        var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().getLevel());
         var nextIndex = (currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1;
 
-        operator.getControlManager().getTargetLocation().level = dimensions.get(nextIndex);
+        operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
 
         PlayerUtil.sendMessage(player,
-                Component.translatable("Selected: ").append(operator.getControlManager().getTargetLocation().level.dimension().location().getPath().toUpperCase()), true);
+                Component.translatable("Selected: ").append(MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
 
         operator.getTardisFlightEventManager().calculateTravelLogic();
 
@@ -58,13 +55,13 @@ public class DimensionalControl extends Control {
         var server = operator.getLevel().getServer();
         if (server == null) {return;}
         var dimensions = getAllowedDimensions(server);
-        var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().level);
+        var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().getLevel());
         var nextIndex = (currentIndex >= dimensions.size()-1) ? 0 : currentIndex + 1;
 
-        operator.getControlManager().getTargetLocation().level = dimensions.get(nextIndex);
+        operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
 
         PlayerUtil.sendMessage(player,
-                Component.translatable("Selected: ").append(operator.getControlManager().getTargetLocation().level.dimension().location().getPath().toUpperCase()), true);
+                Component.translatable("Selected: ").append(MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
 
         operator.getTardisFlightEventManager().calculateTravelLogic();
 

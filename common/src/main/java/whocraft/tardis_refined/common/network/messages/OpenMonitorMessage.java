@@ -36,8 +36,8 @@ public class OpenMonitorMessage extends MessageS2C {
         this.currentDir = currentLocation.rotation;
         this.targetPos = targetLocation.position;
         this.targetDir = targetLocation.rotation;
-        this.currentKey = currentLocation.level.dimension();
-        this.targetKey = targetLocation.level.dimension();
+        this.currentKey = currentLocation.getLevel().dimension();
+        this.targetKey = targetLocation.getLevel().dimension();
     }
 
     public OpenMonitorMessage(FriendlyByteBuf friendlyByteBuf) {

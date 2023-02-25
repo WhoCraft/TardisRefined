@@ -218,7 +218,7 @@ public class TardisControlManager {
 
 
     public TardisNavLocation findClosestValidPosition(TardisNavLocation location) {
-        ServerLevel level = location.level;
+        ServerLevel level = location.getLevel();
 
         var height = level.getMaxBuildHeight();
         var minHeight = level.getMinBuildHeight();
@@ -245,20 +245,20 @@ public class TardisControlManager {
 
         var attemptNumber = 0;
         while (attemptNumber > -1) {
-            location.position = getLegalPosition(location.level, location.position, originalY);
+            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
             var result = scanUpwardsFromCord(location, height);
             if (result != null && location.position.getY() < height && location.position.getY() > minHeight ) {
                 return result;
             }
 
-            location.position = getLegalPosition(location.level, location.position, originalY);
+            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
             result = scanDownwardsFromCord(location, minHeight);
             if (result != null && location.position.getY() < height && location.position.getY() > minHeight ) {
                 return result;
             }
 
             // Try the next interval in the rotation.
-            location.position = getLegalPosition(location.level, location.position, originalY);
+            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
             location.position = location.position.offset(location.rotation.getNormal().multiply((int) (failOffset * (1 + ((float) attemptNumber * 0.1f)))));
             attemptNumber++;
         }
@@ -279,8 +279,8 @@ public class TardisControlManager {
 
     private boolean isSafeToLand(TardisNavLocation location)
     {
-        if (!isSolidBlock(location.level, location.position) && isSolidBlock(location.level, location.position.below()) && !isSolidBlock(location.level, location.position.above())) {
-            return location.level.getBlockState(location.position.below()).getBlock() != Blocks.LAVA && location.level.getBlockState(location.position.below()).getBlock() != Blocks.WATER;
+        if (!isSolidBlock(location.getLevel(), location.position) && isSolidBlock(location.getLevel(), location.position.below()) && !isSolidBlock(location.getLevel(), location.position.above())) {
+            return location.getLevel().getBlockState(location.position.below()).getBlock() != Blocks.LAVA && location.getLevel().getBlockState(location.position.below()).getBlock() != Blocks.WATER;
         }
         return false;
     }
@@ -326,8 +326,8 @@ public class TardisControlManager {
         Direction[] directions = new Direction[]{location.rotation, location.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
         for (Direction dir : directions) {
             BlockPos basePos = BlockPos.of(BlockPos.offset(location.position.asLong(), dir));
-            if (!isSolidBlock(location.level, basePos) && !isSolidBlock(location.level, basePos.above())) {
-                return new TardisNavLocation(location.position, dir, location.level);
+            if (!isSolidBlock(location.getLevel(), basePos) && !isSolidBlock(location.getLevel(), basePos.above())) {
+                return new TardisNavLocation(location.position, dir, location.getLevel());
             }
         }
 
@@ -386,14 +386,14 @@ public class TardisControlManager {
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
         TardisNavLocation lastKnown = operator.getExteriorManager().getLastKnownLocation();
-        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
+        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.position);
     }
 
     public void onFlightEnd() {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
         this.autoLand = false;
-        TardisEvents.LAND.invoker().onLand(operator, getTargetLocation().level, getTargetLocation().position);
+        TardisEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().position);
     }
 
     // Triggers the crash event.

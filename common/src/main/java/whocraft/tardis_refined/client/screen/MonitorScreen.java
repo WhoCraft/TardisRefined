@@ -14,6 +14,7 @@ import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
@@ -84,11 +85,11 @@ public class MonitorScreen extends SelectionScreen {
 
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 50, Color.WHITE.getRGB(), textScale / 2, false);
         ScreenHelper.renderWidthScaledText(currentLocation.rotation.getName().toUpperCase() + " @ " + currentLocation.position.toShortString(), poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 60, Color.LIGHT_GRAY.getRGB(), textScale + 4, false);
-        ScreenHelper.renderWidthScaledText(currentLocation.dimensionKey.location().getPath(), poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
+        ScreenHelper.renderWidthScaledText(MiscHelper.getCleanDimensionName(currentLocation.getDimensionKey()), poseStack, Minecraft.getInstance().font, width / 2 - 96, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
 
         ScreenHelper.renderWidthScaledText( Component.translatable(ModMessages.UI_MONITOR_DESTINATION).getString() + ":", poseStack, Minecraft.getInstance().font, width / 2 - 40, textOffset + 50, Color.WHITE.getRGB(), textScale, false);
         ScreenHelper.renderWidthScaledText(targetLocation.rotation.getName().toUpperCase() + " @ " + targetLocation.position.toShortString(), poseStack, Minecraft.getInstance().font, width / 2  - 40, textOffset + 60, Color.LIGHT_GRAY.getRGB(), textScale + 4, false);
-        ScreenHelper.renderWidthScaledText(targetLocation.dimensionKey.location().getPath(), poseStack, Minecraft.getInstance().font, width / 2  - 40, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
+        ScreenHelper.renderWidthScaledText(MiscHelper.getCleanDimensionName(targetLocation.getDimensionKey()), poseStack, Minecraft.getInstance().font, width / 2  - 40, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, false);
 
         super.render(poseStack, i, j, f);
     }

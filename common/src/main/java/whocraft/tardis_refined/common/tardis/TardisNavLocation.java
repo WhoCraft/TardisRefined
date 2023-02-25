@@ -13,9 +13,9 @@ import net.minecraft.world.level.Level;
 public class TardisNavLocation {
     public BlockPos position;
     public Direction rotation;
-    public ServerLevel level;
+    private ServerLevel level;
 
-    public ResourceKey<Level> dimensionKey;
+    private ResourceKey<Level> dimensionKey;
 
     /**
      * @param position World co-ordinate
@@ -26,7 +26,10 @@ public class TardisNavLocation {
         this.position = position;
         this.rotation = rotation;
         this.level = level;
-        this.dimensionKey = level.dimension();
+        if (level != null) {
+            this.dimensionKey = level.dimension();
+        }
+
     }
 
     public TardisNavLocation(BlockPos position, Direction rotation, ResourceKey<Level> level) {
@@ -34,4 +37,19 @@ public class TardisNavLocation {
         this.rotation = rotation;
         this.dimensionKey = level;
     }
+
+    public ServerLevel getLevel() {
+        if (this.level != null) {
+            this.dimensionKey = this.level.dimension();
+        }
+
+        return this.level;
+    }
+
+    public void setLevel(ServerLevel level) {
+        this.dimensionKey = level.dimension();
+        this.level = level;
+    }
+
+    public ResourceKey<Level> getDimensionKey() {return dimensionKey;}
 }
