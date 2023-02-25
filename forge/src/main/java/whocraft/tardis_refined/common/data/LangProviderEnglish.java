@@ -125,6 +125,7 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
+        add(ModMessages.CONTROL_DIMENSION_SELECTED, "Selected: %s");
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");

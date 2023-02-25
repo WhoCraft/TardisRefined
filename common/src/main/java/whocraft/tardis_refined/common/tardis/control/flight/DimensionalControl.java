@@ -11,6 +11,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class DimensionalControl extends Control {
         operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
 
         PlayerUtil.sendMessage(player,
-                Component.translatable("Selected: ").append(MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
+                Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
 
         operator.getTardisFlightEventManager().calculateTravelLogic();
 
@@ -61,7 +62,7 @@ public class DimensionalControl extends Control {
         operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
 
         PlayerUtil.sendMessage(player,
-                Component.translatable("Selected: ").append(MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
+                Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
 
         operator.getTardisFlightEventManager().calculateTravelLogic();
 

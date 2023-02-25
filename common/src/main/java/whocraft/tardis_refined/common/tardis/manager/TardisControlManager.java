@@ -229,7 +229,7 @@ public class TardisControlManager {
         var originalY = location.position.getY();
 
         // Do any specific dimension checks
-        if (level.dimension().location().getPath().contains("nether")) {
+        if (level.dimension() == Level.NETHER) {
             if (location.position.getY() > 127) {
                 height = 125;
                 failOffset = 10;
@@ -267,7 +267,7 @@ public class TardisControlManager {
     }
 
     private BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
-        if (level.dimension().location().getPath().contains("nether")) {
+        if (level.dimension() == Level.NETHER) {
 
             if (pos.getY() > 125 || originalY > 125) {
                 return new BlockPos(pos.getX(), 60, pos.getZ());
@@ -286,38 +286,27 @@ public class TardisControlManager {
     }
 
     private TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
-        int scannedUpTimes = 0;
         while (location.position.getY() <= maxHeight) {
-            scannedUpTimes++;
-            System.out.println("The current y is: " + location.position.getY());
-
             if (isSafeToLand(location)) {
-                System.out.println("Scanned up " + scannedUpTimes + " times.");
                 return findSafeDirection(location);
             }
 
             location.position = location.position.above(1);
         }
-
-        System.out.println("Scanned up " + scannedUpTimes + " times.");
         return null;
     }
 
     private TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
-        int scanDownTimes = 0;
         while (location.position.getY() >= minHeight) {
-            scanDownTimes++;
-            System.out.println("Scanning down: " + location.position.toShortString());
 
             if (isSafeToLand(location)) {
-                System.out.println("Scanned down " + scanDownTimes + " times.");
+
                 return findSafeDirection(location);
             }
 
             location.position = location.position.below(1);
         }
 
-        System.out.println("Scanned down " + scanDownTimes + " times.");
         return null;
     }
 

@@ -5,11 +5,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -269,7 +268,7 @@ public class TardisFlightEventManager {
         // Is the target acceptable?
         var targetPosition = operator.getControlManager().getTargetLocation();
 
-        if (!targetPosition.getDimensionKey().location().getPath().contains("the_end")) {
+        if (targetPosition.getLevel().dimension() == Level.END) {
             operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
             return;
         }
@@ -288,10 +287,11 @@ public class TardisFlightEventManager {
         }
 
         this.requiredControlRequests += 5;
+        var level = operator.getLevel();
         operator.getControlManager().getTargetLocation().setLevel(targetPosition.getLevel().getServer().overworld());
-        operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.AMBIENT, 1, 1);
-        operator.getLevel().playSound(null, entity.blockPosition(), SoundRegistry.TARDIS_MISC_SPARKLE.get(), SoundSource.AMBIENT, 10, 1);
-        operator.getLevel().explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Explosion.BlockInteraction.NONE);
+        level.playSound(null, entity.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.AMBIENT, 1, 1);
+        level.playSound(null, entity.blockPosition(), SoundRegistry.TARDIS_MISC_SPARKLE.get(), SoundSource.AMBIENT, 10, 1);
+        level.explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Explosion.BlockInteraction.NONE);
 
     }
 
