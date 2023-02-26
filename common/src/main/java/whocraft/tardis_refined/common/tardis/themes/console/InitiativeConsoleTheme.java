@@ -19,6 +19,7 @@ public class InitiativeConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.29999998f, 0.6000015f, -1.0499997f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.8499999f, 0.75f, 0.4500001f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.55f, 1.4500015f, 0.2999998f), new BlockPos(0.1f, 0.1f, 0.1f)),
+                new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(-0.5f, 0.94999695f, -0.2999998f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.05f, 0.8500015f, -0.59999955f), new BlockPos(0.1f, 0.1f, 0.1f))
         };
     }

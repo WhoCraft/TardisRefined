@@ -37,7 +37,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private boolean isDirty = true;
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
-    private ConsolePatterns.Pattern pattern = ConsolePatterns.getPatternFromString(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "default"));
+    private ConsolePatterns.Pattern pattern = pattern();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
@@ -45,7 +45,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public ConsolePatterns.Pattern pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
+        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
         return pattern == null ? defaultPattern : pattern;
     }
 
@@ -76,7 +76,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         if (pattern == null) {
-            pattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
+            pattern = pattern();
         }
 
         super.load(tag);
