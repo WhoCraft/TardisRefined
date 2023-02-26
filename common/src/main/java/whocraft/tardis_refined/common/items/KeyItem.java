@@ -11,7 +11,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -26,11 +25,11 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +84,7 @@ public class KeyItem extends Item {
         } else {
             // Get the existing keychain tag from the itemtag object
             keychain = nbt.getList("keychain", Tag.TAG_STRING);
-        };
+        }
 
         keychain.clear();
 

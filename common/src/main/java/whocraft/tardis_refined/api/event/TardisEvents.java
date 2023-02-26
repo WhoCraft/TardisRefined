@@ -8,6 +8,7 @@ import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class TardisEvents {
 
@@ -22,6 +23,24 @@ public class TardisEvents {
     public static final Event<TardisEntry> TARDIS_ENTRY_EVENT = new Event<>(TardisEntry.class, listeners -> (tardisLevelOperator, shell, player, externalPos, level, direction) -> {
         for (TardisEntry listener : listeners) {
             listener.onEnterTardis(tardisLevelOperator, shell, player, externalPos, level, direction);
+        }
+    });
+
+    public static final Event<CloseDoor> DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
+        for(CloseDoor listener : listeners) {
+            listener.onDoorClosed(tardisLevelOperator);
+        }
+    });
+
+    public static final Event<OpenDoor> DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
+        for(OpenDoor listener : listeners) {
+            listener.onDoorOpen(tardisLevelOperator);
+        }
+    });
+
+    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
+        for (ShellChange listener : listeners) {
+            listener.onShellChange(tardisLevelOperator, theme);
         }
     });
 
@@ -48,6 +67,32 @@ public class TardisEvents {
     }
 
     /**
+     * An event that is triggered when the TARDIS Door is closed.
+     */
+    @FunctionalInterface
+    public interface CloseDoor {
+        /**
+         * Called when the TARDIS door is closed.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDoorClosed(TardisLevelOperator tardisLevelOperator);
+    }
+
+    /**
+     * An event that is triggered when the TARDIS Door is opened.
+     */
+    @FunctionalInterface
+    public interface OpenDoor {
+        /**
+         * Called when the TARDIS door is opened.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDoorOpen(TardisLevelOperator tardisLevelOperator);
+    }
+
+    /**
      * An event that is triggered when a TARDIS lands.
      */
     @FunctionalInterface
@@ -60,6 +105,20 @@ public class TardisEvents {
          * @param pos The position of the TARDIS.
          */
         void onLand(TardisLevelOperator tardisLevelOperator, LevelAccessor level, BlockPos pos);
+    }
+
+    /**
+     * An event that is triggered when a TARDIS changes its Shell.
+     */
+    @FunctionalInterface
+    public interface ShellChange {
+        /**
+         * Called when a TARDIS lands.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         * @param theme The theme the TARDIS changed to.
+         */
+        void onShellChange(TardisLevelOperator tardisLevelOperator, ShellTheme theme);
     }
 
     /**
@@ -88,7 +147,7 @@ public class TardisEvents {
          * Called when a player crashes a TARDIS.
          *
          * @param tardisLevelOperator The TARDIS Level Operator.
-         * @param crashLocation The Location of the crash..
+         * @param crashLocation       The Location of the crash..
          */
         void onTardisCrash(TardisLevelOperator tardisLevelOperator, TardisNavLocation crashLocation);
     }

@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
-    private List<ShellTheme> themeList;
+    private final List<ShellTheme> themeList;
     private ShellTheme currentShellTheme;
 
     protected int imageWidth = 256;
@@ -124,9 +124,6 @@ public class ShellSelectionScreen extends SelectionScreen {
         poseStack.scale(4F, 4F, 4F);
 
         poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(135.0F));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(15.0F));
         poseStack.mulPose(Vector3f.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
 
         MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());

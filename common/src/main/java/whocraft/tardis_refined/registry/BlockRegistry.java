@@ -47,8 +47,8 @@ public class BlockRegistry {
 
     // Shell Blocks
     public static final RegistrySupplier<ShellBaseBlock> ROOT_SHELL_BLOCK = register("root_shell", () -> new RootedShellBlock(BlockBehaviour.Properties.of(Material.BARRIER).noOcclusion().strength(1000, 1000).sound(SoundType.CORAL_BLOCK)), ItemRegistry.MAIN_TAB, true);
-    public static final RegistrySupplier<ShellBaseBlock> GLOBAL_SHELL_BLOCK = register("tardis_shell", () -> new GlobalShellBlock(BlockBehaviour.Properties.of(Material.BARRIER).noOcclusion().strength(1000, 1000).sound(SoundType.STONE)), null, false);
-    public static final RegistrySupplier<GlobalDoorBlock> GLOBAL_DOOR_BLOCK = register("tardis_door", () -> new GlobalDoorBlock(BlockBehaviour.Properties.of(Material.BARRIER).noOcclusion().strength(10, 10).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
+    public static final RegistrySupplier<ShellBaseBlock> GLOBAL_SHELL_BLOCK = register("tardis_shell", () -> new GlobalShellBlock(BlockBehaviour.Properties.of(Material.BARRIER).noCollission().noOcclusion().strength(1000, 1000).sound(SoundType.STONE)), null, false);
+    public static final RegistrySupplier<GlobalDoorBlock> GLOBAL_DOOR_BLOCK = register("tardis_door", () -> new GlobalDoorBlock(BlockBehaviour.Properties.of(Material.BARRIER).noCollission().noOcclusion().noCollission().strength(10, 10).sound(SoundType.STONE)), ItemRegistry.MAIN_TAB, true);
 
     // Interior
     public static final RegistrySupplier<InternalDoorBlock> INTERNAL_DOOR_BLOCK = register("internal_door_block", () -> new InternalDoorBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion()), ItemRegistry.MAIN_TAB, false);

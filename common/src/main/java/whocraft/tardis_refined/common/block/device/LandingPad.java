@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
 
 public class LandingPad extends Block {
@@ -62,7 +62,7 @@ public class LandingPad extends Block {
                 if (keyChain.size() > 0) {
                     ResourceKey<Level> dimension = KeyItem.getKeychain(itemStack).get(0);
 
-                    if (serverLevel.isEmptyBlock(blockPos.above())) {
+                    if (serverLevel.isEmptyBlock(blockPos.above()) && DimensionUtil.isAllowedDimension(level.dimension())) {
                         var tardisLevel = Platform.getServer().getLevel(dimension);
 
                         var operatorOptional = TardisLevelOperator.get(tardisLevel);
