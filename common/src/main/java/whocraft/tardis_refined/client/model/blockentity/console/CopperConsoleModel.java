@@ -23,7 +23,6 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 
 public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-	private static final ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
 
 	public static final AnimationDefinition LOOP = AnimationDefinition.Builder.withLength(6f).looping()
 			.addAnimation("pulley_control5",
@@ -284,7 +283,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 			.addAnimation("bone162",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
 							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(6f, KeyframeAnimations.degreeVec(360f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("bone168",
@@ -377,7 +376,8 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
 							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 1f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1f, KeyframeAnimations.degreeVec(0f, 72.5f, 0f),
+							new Keyframe(1f, KeyframeAnimations.degreeVec(
+									0f, 72.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(1.64f, KeyframeAnimations.degreeVec(0f, 129.29f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
@@ -385,13 +385,16 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(2.72f, KeyframeAnimations.degreeVec(0f, 44.19f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(3.08f, KeyframeAnimations.degreeVec(0f, 53.21f, 0f),
+							new Keyframe(3.08f, KeyframeAnimations.degreeVec(
+									0f, 53.21f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
 							new Keyframe(3.48f, KeyframeAnimations.degreeVec(0f, 60.83f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(4.32f, KeyframeAnimations.degreeVec(0f, -4.92f, 0f),
+							new Keyframe(4.32f, KeyframeAnimations.degreeVec(
+									0f, -4.92f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(5.04f, KeyframeAnimations.degreeVec(0f, 55.99f, 0f),
+							new Keyframe(5.04f, KeyframeAnimations.degreeVec(
+									0f, 55.99f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
 							new Keyframe(5.76f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -870,7 +873,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 			.addAnimation("bone162",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
 							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(6f, KeyframeAnimations.degreeVec(360f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("bone168",
@@ -1180,19 +1183,19 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 			.addAnimation("valve_control4",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
 							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(1.56f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(2.44f, KeyframeAnimations.degreeVec(0f, -2f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(3.12f, KeyframeAnimations.degreeVec(0f, 2f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(3.64f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(4.48f, KeyframeAnimations.degreeVec(0f, -1f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
+									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(5.76f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR)))
+									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("valve_control7",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
 							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
@@ -1260,6 +1263,9 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(2.76f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
+	
+	private static final ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
+
 	private final ModelPart root;
 	private final ModelPart rotor;
 	private final ModelPart misc;
@@ -1799,13 +1805,13 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		PartDefinition bone192 = bone191.addOrReplaceChild("bone192", CubeListBuilder.create().texOffs(79, 0).addBox(-9.0F, -13.0F, -5.5F, 10.0F, 1.0F, 11.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-		PartDefinition rotor = partdefinition.addOrReplaceChild("rotor", CubeListBuilder.create().texOffs(17, 75).addBox(-5.0F, -69.0F, -5.0F, 10.0F, 5.0F, 10.0F, new CubeDeformation(0.0F))
-				.texOffs(17, 75).addBox(-5.0F, -31.5F, -5.0F, 10.0F, 5.0F, 10.0F, new CubeDeformation(0.0F))
-				.texOffs(17, 91).addBox(-4.0F, -43.5F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-				.texOffs(17, 91).addBox(-4.0F, -58.0F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
-				.texOffs(109, 122).addBox(-2.0F, -49.5F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(1.0F))
-				.texOffs(76, 126).addBox(-2.0F, -61.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(1.0F))
-				.texOffs(76, 126).addBox(-2.0F, -35.5F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(1.0F)), PartPose.offset(0.0F, 21.0F, 0.0F));
+		PartDefinition rotor = partdefinition.addOrReplaceChild("rotor", CubeListBuilder.create().texOffs(17, 75).addBox(-5.0F, 0.0F, -5.0F, 10.0F, 5.0F, 10.0F, new CubeDeformation(0.0F))
+				.texOffs(17, 75).addBox(-5.0F, 37.5F, -5.0F, 10.0F, 5.0F, 10.0F, new CubeDeformation(0.0F))
+				.texOffs(17, 91).addBox(-4.0F, 25.5F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
+				.texOffs(17, 91).addBox(-4.0F, 11.0F, -4.0F, 8.0F, 6.0F, 8.0F, new CubeDeformation(0.0F))
+				.texOffs(109, 122).addBox(-2.0F, 19.5F, -2.0F, 4.0F, 4.0F, 4.0F, new CubeDeformation(1.0F))
+				.texOffs(76, 126).addBox(-2.0F, 8.0F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(1.0F))
+				.texOffs(76, 126).addBox(-2.0F, 33.5F, -2.0F, 4.0F, 1.0F, 4.0F, new CubeDeformation(1.0F)), PartPose.offset(0.0F, -48.0F, 0.0F));
 
 		PartDefinition misc = partdefinition.addOrReplaceChild("misc", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 14.0F, 0.0F, 0.0F, -2.618F, 0.0F));
 

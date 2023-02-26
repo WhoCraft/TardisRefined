@@ -29,10 +29,6 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 
 
 	public static final AnimationDefinition IDLE = AnimationDefinition.Builder.withLength(10f).looping()
-			.addAnimation("bone62",
-					new AnimationChannel(AnimationChannel.Targets.ROTATION,
-							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR)))
 			.addAnimation("dialspin",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
 							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
@@ -83,7 +79,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(0.4f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1f, KeyframeAnimations.degreeVec(0f, 32.5f, 0f),
+							new Keyframe(1.24f, KeyframeAnimations.degreeVec(0f, 11.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(2.2f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
@@ -91,19 +87,15 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(3.48f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4f, KeyframeAnimations.degreeVec(0f, -25f, 0f),
+							new Keyframe(4.08f, KeyframeAnimations.degreeVec(0f, -9f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(4.92f, KeyframeAnimations.degreeVec(0f, 10.96f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(6.36f, KeyframeAnimations.degreeVec(0f, 77.5f, 0f),
+							new Keyframe(6.12f, KeyframeAnimations.degreeVec(0f, 11.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.04f, KeyframeAnimations.degreeVec(0f, 87.5f, 0f),
+							new Keyframe(7.64f, KeyframeAnimations.degreeVec(0f, 8f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.36f, KeyframeAnimations.degreeVec(0f, 45f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(8.68f, KeyframeAnimations.degreeVec(0f, -15f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(9.32f, KeyframeAnimations.degreeVec(0f, -22.5f, 0f),
+							new Keyframe(8.88f, KeyframeAnimations.degreeVec(0f, -6f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(9.92f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -113,23 +105,21 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(0.68f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.72f, KeyframeAnimations.degreeVec(0f, 32.5f, 0f),
+							new Keyframe(1.72f, KeyframeAnimations.degreeVec(0f, 13.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(2.48f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(3.4f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.44f, KeyframeAnimations.degreeVec(0f, -25f, 0f),
+							new Keyframe(4.36f, KeyframeAnimations.degreeVec(0f, -14f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(5.36f, KeyframeAnimations.degreeVec(0f, 10.96f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(6.36f, KeyframeAnimations.degreeVec(0f, -77.5f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.36f, KeyframeAnimations.degreeVec(0f, -50f, 0f),
+							new Keyframe(6.56f, KeyframeAnimations.degreeVec(0f, -21.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(8.16f, KeyframeAnimations.degreeVec(0f, -15f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(9.32f, KeyframeAnimations.degreeVec(0f, -22.5f, 0f),
+							new Keyframe(9.32f, KeyframeAnimations.degreeVec(0f, -14.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(9.92f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -818,27 +808,25 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(0.4f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1f, KeyframeAnimations.degreeVec(0f, 32.5f, 0f),
+							new Keyframe(1.04f, KeyframeAnimations.degreeVec(0f, 16.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.2f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
+							new Keyframe(2.16f, KeyframeAnimations.degreeVec(0f, -4.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.88f, KeyframeAnimations.degreeVec(0f, 10.5f, 0f),
+							new Keyframe(2.84f, KeyframeAnimations.degreeVec(0f, 10f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(3.48f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
+							new Keyframe(3.44f, KeyframeAnimations.degreeVec(0f, 4.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4f, KeyframeAnimations.degreeVec(0f, -25f, 0f),
+							new Keyframe(4f, KeyframeAnimations.degreeVec(0f, -33.25f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(4.92f, KeyframeAnimations.degreeVec(0f, 10.96f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(6.36f, KeyframeAnimations.degreeVec(0f, 77.5f, 0f),
+							new Keyframe(6.56f, KeyframeAnimations.degreeVec(0f, 69.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.04f, KeyframeAnimations.degreeVec(0f, 87.5f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.36f, KeyframeAnimations.degreeVec(0f, 45f, 0f),
+							new Keyframe(7.68f, KeyframeAnimations.degreeVec(0f, -1.25f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(8.68f, KeyframeAnimations.degreeVec(0f, -15f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(9.32f, KeyframeAnimations.degreeVec(0f, -22.5f, 0f),
+							new Keyframe(9.28f, KeyframeAnimations.degreeVec(0f, 9.25f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(9.92f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -848,7 +836,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(0.68f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.72f, KeyframeAnimations.degreeVec(0f, 32.5f, 0f),
+							new Keyframe(1.64f, KeyframeAnimations.degreeVec(0f, -63.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(2.48f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
@@ -856,15 +844,13 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(4.44f, KeyframeAnimations.degreeVec(0f, -25f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(5.36f, KeyframeAnimations.degreeVec(0f, 10.96f, 0f),
+							new Keyframe(5.36f, KeyframeAnimations.degreeVec(0f, 23.46f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(6.36f, KeyframeAnimations.degreeVec(0f, -77.5f, 0f),
+							new Keyframe(6.56f, KeyframeAnimations.degreeVec(0f, -28.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.36f, KeyframeAnimations.degreeVec(0f, -50f, 0f),
+							new Keyframe(8.16f, KeyframeAnimations.degreeVec(0f, -7f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(8.16f, KeyframeAnimations.degreeVec(0f, -15f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(9.32f, KeyframeAnimations.degreeVec(0f, -22.5f, 0f),
+							new Keyframe(9.28f, KeyframeAnimations.degreeVec(0f, -14.5f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(9.92f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -1530,23 +1516,23 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 									AnimationChannel.Interpolations.LINEAR)))
 			.addAnimation("rotorhead",
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
-							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0.85f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(0.44f, KeyframeAnimations.posVec(0f, 0f, 0f),
+							new Keyframe(0.4f, KeyframeAnimations.posVec(0f, 0.75f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(2.48f, KeyframeAnimations.posVec(0f, -5f, 0f),
+							new Keyframe(2.48f, KeyframeAnimations.posVec(0f, -4f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.48f, KeyframeAnimations.posVec(0f, 0f, 0f),
+							new Keyframe(4.56f, KeyframeAnimations.posVec(0f, 1f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(5f, KeyframeAnimations.posVec(0f, 0.345f, 0f),
+							new Keyframe(5.08f, KeyframeAnimations.posVec(0f, 1.345f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(5.56f, KeyframeAnimations.posVec(0f, 0f, 0f),
+							new Keyframe(5.64f, KeyframeAnimations.posVec(0f, 1f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(7.96f, KeyframeAnimations.posVec(0f, -5f, 0f),
+							new Keyframe(7.96f, KeyframeAnimations.posVec(0f, -4f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(9.56f, KeyframeAnimations.posVec(0f, 0f, 0f),
+							new Keyframe(9.52f, KeyframeAnimations.posVec(0f, 0.75f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(10f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+							new Keyframe(9.96f, KeyframeAnimations.posVec(0f, 0.85f, 0f),
 									AnimationChannel.Interpolations.LINEAR)))
 			.addAnimation("rotorhead",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
@@ -1667,21 +1653,21 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 							new Keyframe(10f, KeyframeAnimations.degreeVec(0f, 360f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM))).build();
 
-	private final ModelPart console;
+	private final ModelPart console_factory;
 
 	public FactoryConsoleModel(ModelPart root) {
-		this.console = root.getChild("console");
+		this.console_factory = root.getChild("console_factory");
 		this.root = root;
-		this.throttleLever = console.getChild("controls").getChild("north_right").getChild("bone169").getChild("lever2");
+		this.throttleLever = findPart(this, "lever2");
 	}
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition console = partdefinition.addOrReplaceChild("console", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+		PartDefinition console_factory = partdefinition.addOrReplaceChild("console_factory", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition bone69 = console.addOrReplaceChild("bone69", CubeListBuilder.create().texOffs(0, 13).addBox(-7.0F, -18.5F, -7.0F, 14.0F, 1.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.5F, 0.0F));
+		PartDefinition bone69 = console_factory.addOrReplaceChild("bone69", CubeListBuilder.create().texOffs(0, 13).addBox(-7.0F, -18.5F, -7.0F, 14.0F, 1.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.5F, 0.0F));
 
 		PartDefinition bone57 = bone69.addOrReplaceChild("bone57", CubeListBuilder.create(), PartPose.offset(0.0F, -15.5F, 0.0F));
 
@@ -1941,7 +1927,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 
 		PartDefinition bone93 = bone92.addOrReplaceChild("bone93", CubeListBuilder.create().texOffs(0, 29).addBox(-9.5F, -1.0F, 0.0F, 19.0F, 1.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -16.5F, -0.1309F, 0.0F, 0.0F));
 
-		PartDefinition rotorhead = console.addOrReplaceChild("rotorhead", CubeListBuilder.create(), PartPose.offset(0.0F, -23.0F, 0.0F));
+		PartDefinition rotorhead = console_factory.addOrReplaceChild("rotorhead", CubeListBuilder.create(), PartPose.offset(0.0F, -23.0F, 0.0F));
 
 		PartDefinition bone227 = rotorhead.addOrReplaceChild("bone227", CubeListBuilder.create().texOffs(38, 65).addBox(-0.5F, -6.0F, -0.5F, 1.0F, 12.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -6.0F, 0.0F));
 
@@ -2024,7 +2010,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 
 		PartDefinition bone219 = bone134.addOrReplaceChild("bone219", CubeListBuilder.create().texOffs(0, 79).addBox(-0.5F, -3.5F, -0.5F, 1.0F, 7.0F, 1.0F, new CubeDeformation(0.225F)), PartPose.offset(0.0F, -23.5F, 4.75F));
 
-		PartDefinition controls = console.addOrReplaceChild("controls", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition controls = console_factory.addOrReplaceChild("controls", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition north = controls.addOrReplaceChild("north", CubeListBuilder.create(), PartPose.offset(0.0F, -15.0F, 0.0F));
 
@@ -2257,11 +2243,10 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
-
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
-		console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 
@@ -2277,7 +2262,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 
 		this.throttleLever.xRot = (reactions.isThrottleDown()) ? -155: -125;
 		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
-		console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 

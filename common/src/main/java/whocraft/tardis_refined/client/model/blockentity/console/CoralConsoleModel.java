@@ -2671,6 +2671,7 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 									AnimationChannel.Interpolations.LINEAR),
 							new Keyframe(10f, KeyframeAnimations.degreeVec(1080f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
+
 	private final ModelPart throttle;
 	private final ModelPart base_console;
 	private final ModelPart anim_parts;
