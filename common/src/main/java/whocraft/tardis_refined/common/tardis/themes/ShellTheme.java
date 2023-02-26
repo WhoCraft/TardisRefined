@@ -21,7 +21,8 @@ public enum ShellTheme implements StringRepresentable, Theme {
     GROENING("groening", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/groening_shell_door.png")),
     BIG_BEN("big_ben", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/big_ben_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/big_ben_shell_door.png")),
     NUKA("nuka", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/nuka_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/nuka_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/nuka_shell_emissive.png")),
-    GROWTH("growth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/growth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/growth_shell_door.png"));
+    GROWTH("growth", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/growth_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/growth_shell_door.png")),
+    PORTALOO("portaloo", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/portaloo_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/portaloo_shell_door.png"));
 
     private final String id;
     private final ResourceLocation externalShellTexture, internalDoorTexture;
