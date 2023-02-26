@@ -2485,10 +2485,12 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 	private final ModelPart root;
 	private final ModelPart throttle;
+	private final ModelPart rotor_on;
 
 	public InitiativeConsoleModel(ModelPart root) {
 		this.root = root;
-		this.throttle =findPart(this, "bone178");
+		this.throttle = findPart(this, "bone178");
+		this.rotor_on = findPart(this, "rotor_on");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -3225,7 +3227,7 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -3242,17 +3244,15 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
-
 		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 
-		if(globalConsoleBlock != null){
+		if(globalConsoleBlock != null && !reactions.isFlying()){
 			this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
 		}
 
 		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
-
-		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityCutout(getTexture(globalConsoleBlock)));
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
