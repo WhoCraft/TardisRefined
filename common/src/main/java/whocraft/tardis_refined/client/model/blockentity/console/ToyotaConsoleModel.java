@@ -25,6 +25,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 	private static final ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
 
+
 	public static final AnimationDefinition LOOP = AnimationDefinition.Builder.withLength(6f).looping()
 			.addAnimation("bone",
 					new AnimationChannel(AnimationChannel.Targets.ROTATION,
@@ -51,54 +52,6 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 							new Keyframe(5.16f, KeyframeAnimations.scaleVec(1f, 0.91f, 1f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
-									AnimationChannel.Interpolations.CATMULLROM)))
-			.addAnimation("rotor_bottom_translate_2",
-					new AnimationChannel(AnimationChannel.Targets.POSITION,
-							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.04f, KeyframeAnimations.posVec(0f, -0.15f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.6f, KeyframeAnimations.posVec(0f, 0.05f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.32f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(5.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM)))
-			.addAnimation("rotor_bottom_translate_2",
-					new AnimationChannel(AnimationChannel.Targets.ROTATION,
-							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.04f, KeyframeAnimations.degreeVec(0f, 5f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(3.56f, KeyframeAnimations.degreeVec(0f, -2.54f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM)))
-			.addAnimation("rotor_top_translate_2",
-					new AnimationChannel(AnimationChannel.Targets.POSITION,
-							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.6f, KeyframeAnimations.posVec(0f, -0.05f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.32f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(5.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM)))
-			.addAnimation("rotor_top_translate_2",
-					new AnimationChannel(AnimationChannel.Targets.ROTATION,
-							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(0.44f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.76f, KeyframeAnimations.degreeVec(0f, -2f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(3.72f, KeyframeAnimations.degreeVec(0f, 1.54f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(5.16f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(5.96f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("bone230",
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
@@ -884,13 +837,11 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM))).build();
 	private final ModelPart bone181;
-	private final ModelPart bb_main;
 	private final ModelPart throttle;
 
 	public ToyotaConsoleModel(ModelPart root) {
 		this.bone181 = root.getChild("bone181");
-		this.bb_main = root.getChild("bb_main");
-		this.throttle = root.getChild("bone181").getChild("components").getChild("south").getChild("bone197").getChild("bone198");
+		this.throttle = findPart(this, "bone198");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -1515,32 +1466,11 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		PartDefinition bone156 = bone155.addOrReplaceChild("bone156", CubeListBuilder.create().texOffs(9, 0).addBox(-0.5F, -1.975F, 5.875F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(13, 83).addBox(-6.5F, -20.0F, 13.75F, 3.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 86).addBox(3.75F, -18.5F, 14.25F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(32, 44).addBox(-15.0F, -20.0F, 2.75F, 7.0F, 4.0F, 8.0F, new CubeDeformation(0.0F))
-				.texOffs(64, 44).addBox(-14.5F, -20.0F, -9.5F, 6.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(64, 44).addBox(8.5F, -19.25F, -9.5F, 6.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(16, 49).addBox(-6.75F, -17.75F, -18.25F, 3.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 34).addBox(10.25F, -20.5F, 1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(30, 79).addBox(8.25F, -18.25F, -14.5F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(33, 85).addBox(14.75F, -17.75F, -4.0F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(90, 62).addBox(10.5F, -18.5F, 8.25F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(51, 0).addBox(1.5F, -21.0F, 9.25F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(51, 0).addBox(-0.5F, -21.0F, 9.25F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(51, 0).addBox(-2.5F, -21.0F, 9.25F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(48, 63).addBox(9.0F, -18.25F, 10.75F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 51).addBox(-12.25F, -18.25F, -13.5F, 4.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 8).addBox(14.5F, -18.25F, 1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(50, 81).addBox(-2.5F, -19.75F, -14.0F, 5.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(16, 43).addBox(3.75F, -17.75F, -18.25F, 3.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
-
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		throttle.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -1569,8 +1499,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
-		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

@@ -25,6 +25,7 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 	private static final ResourceLocation INITIATIVE_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
 
 
+
 	public static final AnimationDefinition IDLE = AnimationDefinition.Builder.withLength(10f).looping()
 			.addAnimation("rotor_on",
 					new AnimationChannel(AnimationChannel.Targets.SCALE,
@@ -405,30 +406,6 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 							new Keyframe(7.52f, KeyframeAnimations.degreeVec(0f, 8f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(10f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM)))
-			.addAnimation("bone198",
-					new AnimationChannel(AnimationChannel.Targets.ROTATION,
-							new Keyframe(0f, KeyframeAnimations.degreeVec(-21.5f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(0.68f, KeyframeAnimations.degreeVec(-12.18f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.28f, KeyframeAnimations.degreeVec(1.15f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1.56f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(3.6f, KeyframeAnimations.degreeVec(-0.28f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.4f, KeyframeAnimations.degreeVec(3.375f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.76f, KeyframeAnimations.degreeVec(-5.495f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(5.12f, KeyframeAnimations.degreeVec(0.385f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.32f, KeyframeAnimations.degreeVec(0.39f, 0f, 0f),
-									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(8.76f, KeyframeAnimations.degreeVec(-21.5f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("bone213",
 					new AnimationChannel(AnimationChannel.Targets.SCALE,
@@ -2507,24 +2484,20 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 									AnimationChannel.Interpolations.LINEAR))).build();
 
 	private final ModelPart root;
-	private final ModelPart modelRoot;
-	private final ModelPart rotor;
 	private final ModelPart throttle;
 
 	public InitiativeConsoleModel(ModelPart root) {
 		this.root = root;
-		this.modelRoot = root.getChild("console");
-		this.rotor = this.modelRoot.getChild("rotor_on");
-		this.throttle = this.modelRoot.getChild("controls").getChild("south").getChild("bone179").getChild("bone180").getChild("bone178");
+		this.throttle =findPart(this, "bone178");
 	}
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition console = partdefinition.addOrReplaceChild("console", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
+		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition baseconsole = console.addOrReplaceChild("baseconsole", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition baseconsole = root.addOrReplaceChild("baseconsole", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition bone73 = baseconsole.addOrReplaceChild("bone73", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -13.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
 
@@ -3054,7 +3027,7 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 		PartDefinition bone6 = bone5.addOrReplaceChild("bone6", CubeListBuilder.create().texOffs(73, 31).addBox(-3.5F, -3.0F, -9.06F, 7.0F, 3.0F, 9.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-		PartDefinition rotor_on = console.addOrReplaceChild("rotor_on", CubeListBuilder.create(), PartPose.offset(0.0F, -39.4F, 0.0F));
+		PartDefinition rotor_on = root.addOrReplaceChild("rotor_on", CubeListBuilder.create(), PartPose.offset(0.0F, -39.4F, 0.0F));
 
 		PartDefinition bone244 = rotor_on.addOrReplaceChild("bone244", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
@@ -3066,7 +3039,7 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 		PartDefinition rotor_r2 = bone237.addOrReplaceChild("rotor_r2", CubeListBuilder.create().texOffs(0, 48).addBox(-2.0F, -16.0F, -2.0F, 4.0F, 32.0F, 4.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
 
-		PartDefinition controls = console.addOrReplaceChild("controls", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition controls = root.addOrReplaceChild("controls", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
 		PartDefinition monitor = controls.addOrReplaceChild("monitor", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -32.0F, 0.0F, 0.0F, -2.0944F, 0.0F));
 
@@ -3250,10 +3223,9 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}
 
-
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -3277,11 +3249,10 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 			this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
 		}
 
-		this.rotor.visible = reactions.isFlying();
 		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
 		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
-		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

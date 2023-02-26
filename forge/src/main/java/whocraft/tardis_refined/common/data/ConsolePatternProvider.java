@@ -44,6 +44,7 @@ public class ConsolePatternProvider implements DataProvider {
         /*Factory*/
         addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "vintage"), "factory/factory_console_vintage"));
         addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "mint"), "factory/factory_console_mint"));
+        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "wood"), "factory/factory_console_wood"));
 
         /*Toyota*/
         addPattern(ConsoleTheme.TOYOTA, new ConsolePatterns.Pattern(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "violet"), "toyota/toyota_texture_purple"));
