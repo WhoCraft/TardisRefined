@@ -11,6 +11,7 @@ public class ModMessages {
     public static String MSG_EXTERIOR_COOLDOWN = message("exterior_cooldown");
     public static String MSG_KEY_BOUND = message("key_bound");
     public static String MSG_KEY_CYCLED = message("key_cycled");
+    public static String CONTROL_DIMENSION_SELECTED = message("selected");
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
 
