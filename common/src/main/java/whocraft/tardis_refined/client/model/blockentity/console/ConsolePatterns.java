@@ -1,51 +1,26 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.util.*;
 
-public class ConsolePatterns {
+public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
 
+    public static final ResourceLocation CRYSTAL_CORRUPTED = new ResourceLocation(TardisRefined.MODID, "crystal/corrupted");
     private static final Map<ConsoleTheme, List<Pattern>> PATTERNS = new HashMap<>();
-    public static Pattern CRYSTAL_PURPLE;
 
-    public static void registerPatterns() {
-
-        /*Add Base Textures*/
-        for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
-            String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
-            addPattern(consoleTheme, new Pattern(new ResourceLocation(TardisRefined.MODID, "default"), themeName + "/" + themeName + "_console"));
-        }
-
-        /*Coral*/
-        addPattern(ConsoleTheme.CORAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "coral/coral_console_blue"));
-        addPattern(ConsoleTheme.CORAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "war"), "coral/coral_console_war"));
-
-        /*Factory*/
-        addPattern(ConsoleTheme.FACTORY, new Pattern(new ResourceLocation(TardisRefined.MODID, "vintage"), "factory/factory_console_vintage"));
-        addPattern(ConsoleTheme.FACTORY, new Pattern(new ResourceLocation(TardisRefined.MODID, "mint"), "factory/factory_console_mint"));
-
-        /*Toyota*/
-        addPattern(ConsoleTheme.TOYOTA, new Pattern(new ResourceLocation(TardisRefined.MODID, "violet"), "toyota/toyota_texture_purple"));
-        addPattern(ConsoleTheme.TOYOTA, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "toyota/toyota_texture_blue"));
-
-        /*Crystal*/
-        CRYSTAL_PURPLE = addPattern(ConsoleTheme.CRYSTAL, new Pattern(new ResourceLocation(TardisRefined.MODID, "purple"), "crystal/crystal_console_purple"));
-
-        /*Myst*/
-        addPattern(ConsoleTheme.MYST, new Pattern(new ResourceLocation(TardisRefined.MODID, "molten"), "myst/myst_console_molten"));
-
-        /*Victorian*/
-        addPattern(ConsoleTheme.VICTORIAN, new Pattern(new ResourceLocation(TardisRefined.MODID, "smissmass"), "victorian/victorian_console_smissmass"));
-        addPattern(ConsoleTheme.VICTORIAN, new Pattern(new ResourceLocation(TardisRefined.MODID, "grant"), "victorian/victorian_console_grant"));
-
-        /*Initiative*/
-        addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture"));
-        addPattern(ConsoleTheme.INITIATIVE, new Pattern(new ResourceLocation(TardisRefined.MODID, "blue"), "initiative/initiative_console_blue"));
-
+    public ConsolePatterns() {
+        super(TardisRefined.GSON, "patterns/console");
     }
 
     public static Pattern next(ConsoleTheme consoleTheme, Pattern pattern) {
@@ -58,9 +33,7 @@ public class ConsolePatterns {
     }
 
     public static Pattern addPattern(ConsoleTheme theme, Pattern pattern) {
-
-        pattern.setTheme(theme);
-
+        TardisRefined.LOGGER.info("Adding Console Pattern {} for {}", pattern.identifier, pattern.theme);
         if (PATTERNS.containsKey(theme)) {
             List<Pattern> patternLiat = new ArrayList<>(PATTERNS.get(theme));
             patternLiat.add(pattern);
@@ -96,25 +69,73 @@ public class ConsolePatterns {
         return patterns.get(0);
     }
 
+    @Override
+    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+
+        ConsolePatterns.PATTERNS.clear();
+        object.forEach((resourceLocation, jsonElement) -> {
+
+            JsonArray patternsArray = jsonElement.getAsJsonArray();
+            for (JsonElement patternElement : patternsArray) {
+                JsonObject patternObject = patternElement.getAsJsonObject();
+                ConsoleTheme theme = ConsoleTheme.valueOf(findConsoleTheme(resourceLocation));
+                String id = patternObject.get("id").getAsString();
+                String texture = patternObject.get("texture").getAsString();
+
+                ResourceLocation textureLocation = new ResourceLocation(texture);
+                Pattern pattern = new Pattern(theme, new ResourceLocation(id), textureLocation);
+                pattern.setName(patternObject.get("name_component").getAsString());
+                addPattern(theme, pattern);
+            }
+        });
+    }
+
+    @NotNull
+    private String findConsoleTheme(ResourceLocation resourceLocation) {
+        String path = resourceLocation.getPath();
+        int index = path.lastIndexOf("/");
+        if (index == -1) {
+            return path.toUpperCase(Locale.ENGLISH);
+        } else {
+            return path.substring(index + 1).toUpperCase(Locale.ENGLISH);
+        }
+    }
+
+
+
     public static class Pattern {
 
         private final ResourceLocation textureLocation;
         private final ResourceLocation identifier;
+        private String name;
 
         public ConsoleTheme theme() {
             return theme;
         }
 
-        private ConsoleTheme theme;
+        private final ConsoleTheme theme;
 
-        public Pattern(ResourceLocation identifier, ResourceLocation texture) {
+        public Pattern(ConsoleTheme consoleTheme, ResourceLocation identifier, ResourceLocation texture) {
             this.identifier = identifier;
             this.textureLocation = texture;
+            this.theme = consoleTheme;
+            this.name = identifier.getPath().substring(0, 1).toUpperCase() + identifier.getPath().substring(1).replace("_", "");
         }
 
-        public Pattern(ResourceLocation identifier, String texture) {
-            this.identifier = identifier;
+        public Pattern(ConsoleTheme consoleTheme, ResourceLocation identifier, String texture) {
+            this.identifier = new ResourceLocation(identifier.getNamespace(), consoleTheme.getSerializedName() + "/" + identifier.getPath());
             this.textureLocation = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + texture + ".png");
+            this.theme = consoleTheme;
+            this.name = identifier.getPath().substring(0, 1).toUpperCase() + identifier.getPath().substring(1).replace("_", "");
+        }
+
+        public String name() {
+            return name;
+        }
+
+        public Pattern setName(String name) {
+            this.name = name;
+            return this;
         }
 
         public ResourceLocation textureLocation() {
@@ -123,6 +144,10 @@ public class ConsolePatterns {
 
         public ResourceLocation id() {
             return identifier;
+        }
+
+        public ConsoleTheme getTheme() {
+            return theme;
         }
 
         @Override
@@ -136,10 +161,6 @@ public class ConsolePatterns {
         @Override
         public int hashCode() {
             return Objects.hash(textureLocation, identifier, theme);
-        }
-
-        public void setTheme(ConsoleTheme theme) {
-            this.theme = theme;
         }
     }
 

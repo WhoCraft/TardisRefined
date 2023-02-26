@@ -47,6 +47,7 @@ public class ModelRegistry {
     public static ModelLayerLocation BIG_BEN_SHELL;
     public static ModelLayerLocation NUKA_SHELL;
     public static ModelLayerLocation GROWTH_SHELL;
+    public static ModelLayerLocation PORTALOO_SHELL;
 
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -62,6 +63,7 @@ public class ModelRegistry {
     public static ModelLayerLocation BIG_BEN_DOOR;
     public static ModelLayerLocation NUKA_DOOR;
     public static ModelLayerLocation GROWTH_DOOR;
+    public static ModelLayerLocation PORTALOO_DOOR;
 
 
     public static ModelLayerLocation ARS_EGG;
@@ -97,6 +99,7 @@ public class ModelRegistry {
         BIG_BEN_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_shell"), "big_ben_shell"), BigBenShellModel::createBodyLayer);
         NUKA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_shell"), "nuka_shell"), NukaShellModel::createBodyLayer);
         GROWTH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_shell"), "growth_shell"), GrowthShellModel::createBodyLayer);
+        PORTALOO_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_shell"), "portaloo_shell"), PortalooShellModel::createBodyLayer);
 
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
@@ -112,6 +115,7 @@ public class ModelRegistry {
         BIG_BEN_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_door"), "big_ben_door"), BigBenDoorModel::createBodyLayer);
         NUKA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_door"), "nuka_door"), NukaDoorModel::createBodyLayer);
         GROWTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_door"), "growth_door"), GrowthDoorModel::createBodyLayer);
+        PORTALOO_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_door"), "portaloo_door"), PortalooDoorModel::createBodyLayer);
 
 
 

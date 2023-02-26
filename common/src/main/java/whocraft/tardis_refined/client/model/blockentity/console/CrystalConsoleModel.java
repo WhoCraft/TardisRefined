@@ -1711,7 +1711,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
                             new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
                                     AnimationChannel.Interpolations.LINEAR),
                             new Keyframe(0.44f, KeyframeAnimations.degreeVec(0f,
-                                   0f, 50f),
+                                    0f, 50f),
                                     AnimationChannel.Interpolations.LINEAR),
                             new Keyframe(0.64f, KeyframeAnimations.degreeVec(0f, 0f, 40f),
                                     AnimationChannel.Interpolations.LINEAR),
@@ -3798,7 +3798,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        
+
     }
 
     @Override
