@@ -19,6 +19,7 @@ public class NukaConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-0.9f, .55f, 0.55f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.15f, 0.85f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0,1.15f,-0.6f), new BlockPos(0.1f, 0.1f, 0.1f)),
+                new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(0.22500001f, 0.5999985f, 1.0f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.65f, 0.6499985f, 0.6f), new BlockPos(0.1f, 0.1f, 0.1f))
         };
     }
