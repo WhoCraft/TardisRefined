@@ -164,6 +164,10 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
                 if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
 
+                // Check if we're crashing and if its okay to explode the TARDIS a little.
+                if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
+                }
                     TardisInteriorManager intManager = x.getInteriorManager();
                     if (intManager.isCave()) {
                         intManager.setCurrentTheme(intManager.preparedTheme());
@@ -173,10 +177,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                         serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
                     }
 
-                    // Check if we're crashing and if its okay to explode the TARDIS a little.
-                    if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                        level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
-                    }
                 }
             });
         }

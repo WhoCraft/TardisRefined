@@ -30,6 +30,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -179,16 +180,16 @@ public class ControlEntity extends PathfinderMob {
                 }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (!cap.getControlManager().canUseControls()) {
 
+                    if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
                         if (player.isCreative()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                         } else {
                             player.hurt(DamageSource.ON_FIRE, 0.1F);
                         }
-
                         return;
                     }
+
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
