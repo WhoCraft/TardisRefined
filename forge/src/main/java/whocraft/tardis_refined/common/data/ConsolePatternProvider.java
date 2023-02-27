@@ -34,7 +34,8 @@ public class ConsolePatternProvider implements DataProvider {
         /*Add Base Textures*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
             String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
-            addPattern(consoleTheme, new ConsolePatterns.Pattern(consoleTheme, new ResourceLocation(TardisRefined.MODID, "default"), themeName + "/" + themeName + "_console"));
+            boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL;
+            addPattern(consoleTheme, new ConsolePatterns.Pattern(consoleTheme, new ResourceLocation(TardisRefined.MODID, "default"), themeName + "/" + themeName + "_console")).setEmissive(hasDefaultEmission);
         }
 
         /*Coral*/
@@ -75,10 +76,11 @@ public class ConsolePatternProvider implements DataProvider {
 
             JsonArray patternArray = new JsonArray();
 
-            for (ConsolePatterns.Pattern pattern : ConsolePatterns.getPatternsForTheme(consoleTheme)) {
+            for (ConsolePatterns.Pattern pattern : ConsolePatterns.getPatterns().get(consoleTheme)) {
                 JsonObject currentPattern = new JsonObject();
                 currentPattern.addProperty("id", pattern.id().toString());
-                currentPattern.addProperty("texture", pattern.textureLocation().toString());
+                currentPattern.addProperty("emissive", pattern.emissive());
+                currentPattern.addProperty("texture", pattern.texture().toString());
                 currentPattern.addProperty("name_component", TardisRefined.GSON.toJson(Component.literal(pattern.name()).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
                 patternArray.add(currentPattern);
             }

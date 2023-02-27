@@ -1,32 +1,27 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public interface ConsoleUnit {
-    void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+    void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+
+    default ResourceLocation getTexture(GlobalConsoleBlockEntity entity, boolean emissiveTexture) {
+        if (entity == null || entity.pattern() == null) return getDefaultTexture();
+        return emissiveTexture ? entity.pattern().emissiveTexture() : entity.pattern().texture();
+    }
 
     default ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-
-        if (entity == null) return getDefaultTexture();
-
-        ConsoleTheme console = entity.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        return entity.pattern().textureLocation();
+        return getTexture(entity, false);
     }
 
     default ModelPart findPart(HierarchicalModel hierarchicalModel, String string) {
-        return hierarchicalModel.root().getAllParts().filter((modelPart) -> {
-            return modelPart.hasChild(string);
-        }).findFirst().map((modelPart) -> {
-            return modelPart.getChild(string);
-        }).get();
+        return hierarchicalModel.root().getAllParts().filter((modelPart) -> modelPart.hasChild(string)).findFirst().map((modelPart) -> modelPart.getChild(string)).get();
     }
 
     ResourceLocation getDefaultTexture();
