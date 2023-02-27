@@ -9,7 +9,9 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.*;
 
@@ -33,11 +35,13 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
     }
 
     public static Pattern addPattern(ConsoleTheme theme, Pattern pattern) {
-        TardisRefined.LOGGER.info("Adding Console Pattern {} for {}", pattern.identifier, pattern.theme);
+        TardisRefined.LOGGER.debug("Adding Console Pattern {} for {}", pattern.identifier, pattern.theme);
         if (PATTERNS.containsKey(theme)) {
             List<Pattern> patternLiat = new ArrayList<>(PATTERNS.get(theme));
-            patternLiat.add(pattern);
             PATTERNS.replace(theme, patternLiat);
+            if(Platform.getServer() != null) {
+                new SyncConsolePatternsMessage(PATTERNS).sendToAll();
+            }
             return pattern;
         }
         PATTERNS.put(theme, List.of(pattern));
@@ -48,6 +52,9 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
         return PATTERNS.get(consoleTheme);
     }
 
+    public static Map<ConsoleTheme, List<Pattern>> getPatterns() {
+        return PATTERNS;
+    }
 
     public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation id) {
         List<Pattern> patterns = getPatternsForTheme(consoleTheme);
@@ -67,6 +74,10 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
             }
         }
         return patterns.get(0);
+    }
+
+    public static void clearPatterns() {
+        PATTERNS.clear();
     }
 
     @Override
@@ -144,10 +155,6 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
         public ResourceLocation id() {
             return identifier;
-        }
-
-        public ConsoleTheme getTheme() {
-            return theme;
         }
 
         @Override
