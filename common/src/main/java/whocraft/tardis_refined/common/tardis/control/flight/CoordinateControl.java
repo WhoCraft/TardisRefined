@@ -29,7 +29,7 @@ public class CoordinateControl extends Control {
             case X -> operator.getControlManager().offsetTargetPositionX(increment);
             case Y -> {
                 int potentialY = operator.getControlManager().getTargetLocation().position.getY() + increment;
-                if (potentialY < operator.getControlManager().getTargetLocation().level.getMaxBuildHeight()) {
+                if (potentialY < operator.getControlManager().getTargetLocation().getLevel().getMaxBuildHeight()) {
                     operator.getControlManager().offsetTargetPositionY(increment);
                 }else {
                     operator.getLevel().playSound(null, controlEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1, 1);
@@ -53,7 +53,7 @@ public class CoordinateControl extends Control {
             case X -> operator.getControlManager().offsetTargetPositionX(-increment);
             case Y -> {
                 int potentialY = operator.getControlManager().getTargetLocation().position.getY() - increment;
-                if (potentialY > operator.getControlManager().getTargetLocation().level.getMinBuildHeight()) {
+                if (potentialY > operator.getControlManager().getTargetLocation().getLevel().getMinBuildHeight()) {
                     operator.getControlManager().offsetTargetPositionY(-increment);
                 }else {
                     operator.getLevel().playSound(null, controlEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1, 1);

@@ -19,6 +19,7 @@ public class CoralConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(-.35f, 0.5f, -1.25f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.45f, 0.6f, 0.9f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0.9f, 1f, -0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+                new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(1.1f, 0.39999694f, 0.75f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(-1.1f, 0.4f, -0.75f), new BlockPos(0.1f, 0.1f, 0.1f))
         };
     }

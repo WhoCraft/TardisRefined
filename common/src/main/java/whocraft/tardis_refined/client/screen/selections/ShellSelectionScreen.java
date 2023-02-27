@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
-    private List<ShellTheme> themeList;
+    private final List<ShellTheme> themeList;
     private ShellTheme currentShellTheme;
 
     protected int imageWidth = 256;

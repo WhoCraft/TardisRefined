@@ -38,12 +38,18 @@ public class ModEvents {
 
     public static void addClientEvents() {
         ClientTickEvents.START_WORLD_TICK.register(world -> {
-            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
+            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> {
+                if (world.dimension() != levelResourceKey) {
+                    return;
+                }
+                tardisClientData.tickClientside();
+            });
 
             if (Minecraft.getInstance().level == null) {
                 TardisClientData.clearAll();
             }
         });
     }
+
 
 }

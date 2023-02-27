@@ -1,6 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.shell;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package whocraft.tardis_refined.client.model.blockentity.shell;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -193,7 +191,7 @@ public class DrifterShellModel extends ShellModel {
 		door_closed.visible = !open;
 		door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 		door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-		handleAnimations(entity,bone32,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		handleAllAnimations(entity,bone32,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

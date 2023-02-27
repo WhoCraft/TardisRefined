@@ -6,7 +6,9 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class ShellModelCollection {
 
-    private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel, bigBenModel, nukaModel, growthModel;
+    private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
+            presentModel, vendingModel, briefcaseModel, greoningModel, bigBenModel, nukaModel, growthModel,
+            portalooModel;
 
 
     public ShellModelCollection() {
@@ -23,6 +25,7 @@ public class ShellModelCollection {
         bigBenModel = new BigBenShellModel(context.bakeLayer((ModelRegistry.BIG_BEN_SHELL)));
         nukaModel = new NukaShellModel(context.bakeLayer((ModelRegistry.NUKA_SHELL)));
         growthModel = new GrowthShellModel(context.bakeLayer((ModelRegistry.GROWTH_SHELL)));
+        portalooModel = new PortalooShellModel(context.bakeLayer((ModelRegistry.PORTALOO_SHELL)));
 
     }
 
@@ -45,6 +48,7 @@ public class ShellModelCollection {
             case BIG_BEN -> bigBenModel;
             case NUKA -> nukaModel;
             case GROWTH -> growthModel;
+            case PORTALOO -> portalooModel;
 
         };
     }

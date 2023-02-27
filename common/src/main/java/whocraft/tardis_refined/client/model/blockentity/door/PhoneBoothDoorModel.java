@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
 
 public class PhoneBoothDoorModel extends ShellModel {
 
@@ -77,7 +78,7 @@ public class PhoneBoothDoorModel extends ShellModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-		this.Door2.yRot = (open) ? -1.75f : 0;
+		this.Door2.yRot = (open) ? (ModCompatChecker.immersivePortals() ?  1.75f :  -1.75f) : 0;
 	}
 
 	@Override
