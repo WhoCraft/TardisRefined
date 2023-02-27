@@ -19,36 +19,829 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
+import java.util.Calendar;
+
 public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private static final ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
 
-	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2f).looping()
-			.addAnimation("rotor_bottom_translate_2",
+
+	public static final AnimationDefinition LOOP = AnimationDefinition.Builder.withLength(6f).looping()
+			.addAnimation("bone",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 360f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone195",
+					new AnimationChannel(AnimationChannel.Targets.SCALE,
+							new Keyframe(0f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(0.92f, KeyframeAnimations.scaleVec(1f, 1.2f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.24f, KeyframeAnimations.scaleVec(1f, 1.11f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.92f, KeyframeAnimations.scaleVec(1f, 0.92f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.68f, KeyframeAnimations.scaleVec(1f, 1.09f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.44f, KeyframeAnimations.scaleVec(1f, 0.94f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.28f, KeyframeAnimations.scaleVec(1f, 1.25f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.16f, KeyframeAnimations.scaleVec(1f, 0.91f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone230",
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
 							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.04f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.08f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.84f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.48f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.36f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.92f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.6f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.72f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone229",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(2.6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1f, KeyframeAnimations.posVec(0f, -6f, 0f),
+							new Keyframe(2.64f, KeyframeAnimations.degreeVec(6f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+							new Keyframe(3.04f, KeyframeAnimations.degreeVec(6f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.08f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone231",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.56f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.36f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.6f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.36f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.44f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.84f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.16f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.72f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone232",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0.48f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.52f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.96f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.72f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.76f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.12f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.16f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.04f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.4f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.44f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.44f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.72f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone239",
+					new AnimationChannel(AnimationChannel.Targets.SCALE,
+							new Keyframe(0.72f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.84f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.04f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.12f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.36f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.48f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.72f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.72f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.96f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.08f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.44f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.56f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.68f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.16f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.28f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.52f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.64f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.2f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.32f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.64f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.68f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone240",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.48f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.2f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.24f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.8f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.92f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.24f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone241",
+					new AnimationChannel(AnimationChannel.Targets.SCALE,
+							new Keyframe(0f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.04f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.8f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.04f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.08f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.56f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.92f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.96f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.44f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.48f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR))).build();
+	public static final AnimationDefinition FLIGHT = AnimationDefinition.Builder.withLength(6f).looping()
+			.addAnimation("bone",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3f, KeyframeAnimations.degreeVec(0f, 180f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 360f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone185",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0.92f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.28f, KeyframeAnimations.degreeVec(0f, 9.26f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.68f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.76f, KeyframeAnimations.degreeVec(0f, 29.5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.12f, KeyframeAnimations.degreeVec(0f, -34f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.48f, KeyframeAnimations.degreeVec(0f, 3.18f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.56f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.68f, KeyframeAnimations.degreeVec(0f, -7.99f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.88f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone195",
+					new AnimationChannel(AnimationChannel.Targets.SCALE,
+							new Keyframe(0f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(0.92f, KeyframeAnimations.scaleVec(1f, 1.23f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.24f, KeyframeAnimations.scaleVec(1f, 1.14f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.92f, KeyframeAnimations.scaleVec(1f, 0.92f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.68f, KeyframeAnimations.scaleVec(1f, 1.14f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.44f, KeyframeAnimations.scaleVec(1f, 0.94f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.28f, KeyframeAnimations.scaleVec(1f, 1.31f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.16f, KeyframeAnimations.scaleVec(1f, 0.91f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("rotor_bottom_translate_2",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0.08f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.32f, KeyframeAnimations.posVec(0f, -4.65f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.64f, KeyframeAnimations.posVec(0f, 0.22f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.68f, KeyframeAnimations.posVec(0f, 0.57f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.76f, KeyframeAnimations.posVec(0f, 0.17f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.64f, KeyframeAnimations.posVec(0f, -0.13f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.16f, KeyframeAnimations.posVec(0f, -2.05f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.28f, KeyframeAnimations.posVec(0f, 0.17f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("rotor_bottom_translate_2",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0.04f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.08f, KeyframeAnimations.degreeVec(0f, -0.5f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.68f, KeyframeAnimations.degreeVec(0f, 11f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.24f, KeyframeAnimations.degreeVec(0f, -1f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.44f, KeyframeAnimations.degreeVec(0f, 0.05f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.64f, KeyframeAnimations.degreeVec(0f, 0.86f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.76f, KeyframeAnimations.degreeVec(0f, -6.54f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.88f, KeyframeAnimations.degreeVec(0f, 0.46f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.28f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.68f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.84f, KeyframeAnimations.degreeVec(0f, 2.02f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.96f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
 			.addAnimation("rotor_top_translate_2",
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
 							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(1f, KeyframeAnimations.posVec(0f, 6f, 0f),
+							new Keyframe(0.16f, KeyframeAnimations.posVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.36f, KeyframeAnimations.posVec(0f, 4.45f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.68f, KeyframeAnimations.posVec(0f, -0.17f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.72f, KeyframeAnimations.posVec(0f, 0.08f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.76f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.88f, KeyframeAnimations.posVec(0f, -0.44f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.52f, KeyframeAnimations.posVec(0f, 0.48f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.76f, KeyframeAnimations.posVec(0f, 1.65f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.08f, KeyframeAnimations.posVec(0f, 2.25f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.44f, KeyframeAnimations.posVec(0f, 1.57f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.28f, KeyframeAnimations.posVec(0f, 0.17f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.6f, KeyframeAnimations.posVec(0f, -0.25f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("rotor_top_translate_2",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.44f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.76f, KeyframeAnimations.degreeVec(0f, -20f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.64f, KeyframeAnimations.degreeVec(0f, -3.67f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.88f, KeyframeAnimations.degreeVec(0f, -7.69f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.72f, KeyframeAnimations.degreeVec(0f, 1.54f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.16f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.96f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone205",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.04f, KeyframeAnimations.degreeVec(-2.5f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.28f, KeyframeAnimations.degreeVec(1.13f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone226",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(1.84f, KeyframeAnimations.posVec(0f, 0f, -0.95f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.72f, KeyframeAnimations.posVec(0f, 0f, 0.4f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone227",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(0.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.56f, KeyframeAnimations.posVec(0f, 0f, 0.55f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.64f, KeyframeAnimations.posVec(0f, 0f, 0.4f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone228",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.12f, KeyframeAnimations.posVec(0f, 0f, -0.95f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(4.36f, KeyframeAnimations.posVec(0f, 0f, -0.35f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone230",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.04f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.12f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.16f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.68f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.72f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.84f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.4f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.48f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.08f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.12f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.36f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.8f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.92f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.24f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.36f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone229",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(2.6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(2.64f, KeyframeAnimations.degreeVec(6f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.04f, KeyframeAnimations.degreeVec(6f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(3.08f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("bone231",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.04f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.48f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.68f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.72f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.32f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.36f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.04f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.08f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.24f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.88f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.96f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.08f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.12f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.84f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.36f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.16f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.68f, KeyframeAnimations.posVec(0f, -0.2f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.72f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone232",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0.48f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.52f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.96f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.64f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.68f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.72f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.36f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.4f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.76f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.8f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.04f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.4f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.44f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.44f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.72f, KeyframeAnimations.posVec(0f, -0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone239",
+					new AnimationChannel(AnimationChannel.Targets.SCALE,
+							new Keyframe(0.72f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.76f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.08f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.12f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.44f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.48f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.8f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.04f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.36f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.4f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.64f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.24f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.28f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.64f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.96f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.16f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.2f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.6f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.64f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.2f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.24f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.64f, KeyframeAnimations.scaleVec(1f, 1.12f, 1.12f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.68f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone240",
+					new AnimationChannel(AnimationChannel.Targets.POSITION,
+							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.32f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.48f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.48f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
 							new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.2f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.24f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.48f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.52f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.68f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.72f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.88f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.92f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.08f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.12f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.32f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.36f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.52f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.56f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.8f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.92f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.96f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.04f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.24f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.28f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.64f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.68f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.84f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.88f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.08f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.12f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.28f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.32f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.52f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.56f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.72f, KeyframeAnimations.posVec(0f, 0.1f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.76f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("bone241",
+					new AnimationChannel(AnimationChannel.Targets.SCALE,
+							new Keyframe(0f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.04f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.28f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.32f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.52f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.56f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.8f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(0.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.56f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.6f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.76f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.8f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.04f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.2f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.24f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.4f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.44f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.04f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.08f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.56f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.6f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.92f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.96f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.44f, KeyframeAnimations.scaleVec(1.01f, 1.01f, 1.01f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.48f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("Monitor_1",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(5.24f, KeyframeAnimations.degreeVec(0.21f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(5.52f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.72f, KeyframeAnimations.degreeVec(-0.2f, 0f, -0.1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM)))
+			.addAnimation("monitor_2",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(5.52f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.72f, KeyframeAnimations.degreeVec(-0.5f, 0f, -0.2f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM))).build();
-
 	private final ModelPart bone181;
-	private final ModelPart bb_main;
 	private final ModelPart throttle;
 
 	public ToyotaConsoleModel(ModelPart root) {
 		this.bone181 = root.getChild("bone181");
-		this.bb_main = root.getChild("bb_main");
-		this.throttle = root.getChild("bone181").getChild("components").getChild("south").getChild("bone197").getChild("bone198");
+		this.throttle = findPart(this, "bone198");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -82,11 +875,15 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 				.texOffs(92, 69).addBox(-7.5F, -0.625F, -1.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(51, 4).mirror().addBox(-4.875F, -0.975F, -2.125F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 3.0F, 15.875F, -0.4974F, 0.0F, 0.0F));
 
+		PartDefinition bone239 = bone182.addOrReplaceChild("bone239", CubeListBuilder.create().texOffs(28, 69).addBox(-3.0F, -0.5F, -0.5F, 6.0F, 1.0F, 1.0F, new CubeDeformation(-0.275F)), PartPose.offset(0.0F, -0.075F, -1.875F));
+
 		PartDefinition bone180 = bone182.addOrReplaceChild("bone180", CubeListBuilder.create().texOffs(68, 86).addBox(-2.5F, 0.0F, -0.5F, 5.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -0.05F, -4.625F, 0.5236F, 0.0F, 0.0F));
 
-		PartDefinition bone178 = bone182.addOrReplaceChild("bone178", CubeListBuilder.create().texOffs(26, 51).addBox(0.1935F, -0.5F, -1.4809F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(26, 51).addBox(-0.75F, -0.5F, -2.25F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(26, 51).addBox(-7.2091F, -0.5F, 1.2322F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.25F, -0.55F, -4.375F, 0.0F, -0.48F, 0.0F));
+		PartDefinition bone178 = bone182.addOrReplaceChild("bone178", CubeListBuilder.create().texOffs(26, 51).addBox(0.1935F, -0.5F, -1.4809F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.25F, -0.55F, -4.375F, 0.0F, -0.48F, 0.0F));
+
+		PartDefinition bone214 = bone182.addOrReplaceChild("bone214", CubeListBuilder.create().texOffs(26, 51).addBox(-0.75F, -0.5F, -2.25F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.25F, -0.55F, -4.375F, 0.0F, -0.48F, 0.0F));
+
+		PartDefinition bone217 = bone182.addOrReplaceChild("bone217", CubeListBuilder.create().texOffs(26, 51).addBox(-0.75F, -0.5F, -0.75F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.5575F, -0.55F, -5.6714F, 0.0F, -0.48F, 0.0F));
 
 		PartDefinition bone175 = bone182.addOrReplaceChild("bone175", CubeListBuilder.create().texOffs(92, 13).addBox(0.0F, -1.0F, -2.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.0F, 0.45F, -1.875F, 0.0F, 0.7854F, 0.0F));
 
@@ -100,7 +897,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		PartDefinition bone183 = north_left.addOrReplaceChild("bone183", CubeListBuilder.create().texOffs(62, 32).addBox(-3.25F, 0.45F, -6.125F, 7.0F, 1.0F, 7.0F, new CubeDeformation(0.5F))
 				.texOffs(0, 59).addBox(-3.5F, -0.2F, -6.375F, 7.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
-				.texOffs(91, 82).addBox(0.5F, -0.8F, -5.875F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.0F, 15.875F, -0.4974F, 0.0F, 0.0F));
+				.texOffs(91, 82).addBox(0.5F, -0.55F, -5.875F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.0F, 15.875F, -0.4974F, 0.0F, 0.0F));
 
 		PartDefinition bone187 = bone183.addOrReplaceChild("bone187", CubeListBuilder.create().texOffs(79, 77).addBox(-2.25F, -0.5F, -2.0F, 5.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.25F, 0.4F, -1.375F, 0.0F, 0.2618F, 0.0F));
 
@@ -123,7 +920,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		PartDefinition bone = bone183.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(64, 48).addBox(-2.0F, -0.5F, -0.25F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.75F, -0.3F, -4.125F, 0.0F, 0.829F, 0.0F));
 
-		PartDefinition bone184 = bone183.addOrReplaceChild("bone184", CubeListBuilder.create().texOffs(64, 46).addBox(-2.0F, -0.75F, -0.25F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(2.25F, -0.3F, -5.625F));
+		PartDefinition bone184 = bone183.addOrReplaceChild("bone184", CubeListBuilder.create().texOffs(64, 46).addBox(-1.25F, -0.5F, -0.75F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(1.5F, -0.8F, -4.875F));
 
 		PartDefinition bone185 = bone183.addOrReplaceChild("bone185", CubeListBuilder.create().texOffs(64, 46).addBox(-1.25F, -0.5F, -1.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.25F, -0.55F, -1.625F, 0.0F, -0.6981F, 0.0F));
 
@@ -133,7 +930,6 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 				.texOffs(50, 86).addBox(-2.0F, -0.475F, -2.375F, 4.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 38).addBox(2.0F, -0.075F, -2.375F, 1.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(34, 34).addBox(-3.0F, -0.075F, -2.375F, 1.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(86, 9).addBox(-2.25F, -0.575F, -2.625F, 4.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(86, 59).addBox(-2.5F, -0.475F, -4.875F, 5.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(9, 90).addBox(-6.0F, -0.075F, -5.125F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(69, 89).addBox(2.75F, -0.075F, -5.375F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
@@ -146,6 +942,14 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 		PartDefinition bone199 = bone202.addOrReplaceChild("bone199", CubeListBuilder.create().texOffs(18, 67).addBox(-0.75F, -0.25F, -5.25F, 1.0F, 1.0F, 5.0F, new CubeDeformation(-0.25F))
 				.texOffs(54, 47).addBox(-1.0F, -0.25F, -5.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(-0.25F))
 				.texOffs(26, 49).addBox(-0.5F, 0.0F, -1.0F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.75F, 0.5F, -0.1309F, 0.0F, 0.0F));
+
+		PartDefinition bone229 = bone197.addOrReplaceChild("bone229", CubeListBuilder.create().texOffs(86, 9).addBox(-2.0F, 0.0F, -3.0F, 4.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.25F, -0.575F, 0.375F));
+
+		PartDefinition bone230 = bone197.addOrReplaceChild("bone230", CubeListBuilder.create().texOffs(80, 11).addBox(-0.5F, -0.5F, -1.5F, 1.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.75F, -0.1F, -1.125F));
+
+		PartDefinition bone231 = bone197.addOrReplaceChild("bone231", CubeListBuilder.create().texOffs(80, 9).addBox(-1.5F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.25F, -0.1F, -2.125F));
+
+		PartDefinition bone240 = bone197.addOrReplaceChild("bone240", CubeListBuilder.create().texOffs(96, 40).addBox(-1.5F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.25F, 0.4F, -7.075F));
 
 		PartDefinition bone201 = bone197.addOrReplaceChild("bone201", CubeListBuilder.create().texOffs(64, 53).addBox(-4.5F, 0.0F, -2.0F, 5.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.75F, -0.125F, -6.075F, -0.4363F, 0.0F, 0.0F));
 
@@ -160,14 +964,11 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 		PartDefinition south_left = components.addOrReplaceChild("south_left", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -13.5F, 0.0F, 0.0F, 1.0472F, 0.0F));
 
 		PartDefinition bone203 = south_left.addOrReplaceChild("bone203", CubeListBuilder.create().texOffs(83, 31).addBox(-0.25F, -0.475F, -3.375F, 3.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(83, 16).addBox(-0.25F, -0.725F, -3.375F, 3.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(16, 55).addBox(-0.75F, -0.475F, -4.275F, 6.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
 				.texOffs(89, 0).addBox(-1.25F, -0.225F, -7.375F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(87, 39).addBox(-1.5F, -0.325F, -7.125F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(62, 40).addBox(-1.25F, -0.425F, -6.625F, 3.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(89, 0).addBox(-4.75F, -0.225F, -6.625F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(32, 47).addBox(-4.25F, -1.225F, -6.125F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(32, 44).addBox(-4.25F, -1.225F, -6.125F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.25F))
 				.texOffs(82, 44).addBox(3.5F, -0.075F, -3.125F, 4.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
 				.texOffs(42, 69).addBox(3.75F, -0.175F, -2.875F, 3.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(6, 14).addBox(5.25F, -0.575F, -0.375F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
@@ -177,6 +978,16 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 				.texOffs(6, 14).mirror().addBox(-7.0F, -0.475F, -0.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
 				.texOffs(34, 38).addBox(-2.5F, -0.725F, -2.875F, 1.0F, 1.0F, 3.0F, new CubeDeformation(0.25F))
 				.texOffs(60, 86).addBox(-3.0F, -0.225F, -3.375F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.0F, 15.875F, -0.4974F, 0.0F, 0.0F));
+
+		PartDefinition bone232 = bone203.addOrReplaceChild("bone232", CubeListBuilder.create().texOffs(83, 16).addBox(-1.5F, -0.5F, -2.0F, 3.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(1.25F, -0.025F, -1.375F));
+
+		PartDefinition bone226 = bone203.addOrReplaceChild("bone226", CubeListBuilder.create().texOffs(62, 40).addBox(-0.5F, -0.5F, -1.25F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(1.25F, 0.075F, -5.375F));
+
+		PartDefinition bone227 = bone203.addOrReplaceChild("bone227", CubeListBuilder.create().texOffs(62, 40).addBox(-0.5F, -0.5F, -1.3F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.25F, 0.075F, -6.325F));
+
+		PartDefinition bone228 = bone203.addOrReplaceChild("bone228", CubeListBuilder.create().texOffs(62, 40).addBox(-0.5F, -0.5F, -1.25F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.75F, 0.075F, -5.125F));
+
+		PartDefinition bone238 = bone203.addOrReplaceChild("bone238", CubeListBuilder.create().texOffs(32, 44).addBox(-1.0F, -0.5F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.25F)), PartPose.offset(-3.25F, -0.725F, -5.125F));
 
 		PartDefinition bone206 = bone203.addOrReplaceChild("bone206", CubeListBuilder.create().texOffs(54, 44).addBox(-1.0F, -0.5F, -1.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(44, 18).addBox(-1.25F, -0.75F, -0.75F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.5F, -0.475F, -5.875F, 0.0F, 0.48F, 0.0F));
@@ -598,6 +1409,25 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		PartDefinition bone137 = bone136.addOrReplaceChild("bone137", CubeListBuilder.create().texOffs(16, 43).addBox(-0.5F, -3.5F, 19.875F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
+		PartDefinition bone241 = base_console2.addOrReplaceChild("bone241", CubeListBuilder.create().texOffs(11, 77).addBox(-0.5F, -2.5F, 19.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 79).addBox(-0.5F, -9.775F, 7.89F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 81).addBox(-0.5F, -11.475F, 5.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, -12.5F, 0.0F, 0.0F, -0.5236F, 0.0F));
+
+		PartDefinition bone242 = bone241.addOrReplaceChild("bone242", CubeListBuilder.create().texOffs(11, 77).addBox(-0.5F, -2.5F, 19.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 81).addBox(-0.5F, -11.475F, 5.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+
+		PartDefinition bone243 = bone242.addOrReplaceChild("bone243", CubeListBuilder.create().texOffs(11, 77).addBox(-0.5F, -2.5F, 19.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 81).addBox(-0.5F, -11.475F, 5.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+
+		PartDefinition bone244 = bone243.addOrReplaceChild("bone244", CubeListBuilder.create().texOffs(11, 77).addBox(-0.5F, -2.5F, 19.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 79).addBox(-0.5F, -9.775F, 7.89F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+
+		PartDefinition bone245 = bone244.addOrReplaceChild("bone245", CubeListBuilder.create().texOffs(11, 77).addBox(-0.5F, -2.5F, 19.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 81).addBox(-0.5F, -11.475F, 5.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+
+		PartDefinition bone246 = bone245.addOrReplaceChild("bone246", CubeListBuilder.create().texOffs(11, 77).addBox(-0.5F, -2.5F, 19.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F))
+				.texOffs(11, 79).addBox(-0.5F, -9.775F, 7.89F, 1.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+
 		PartDefinition bone138 = base_console2.addOrReplaceChild("bone138", CubeListBuilder.create().texOffs(34, 25).addBox(-10.0F, -3.5F, 9.33F, 20.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -12.5F, 7.0F));
 
 		PartDefinition bone139 = bone138.addOrReplaceChild("bone139", CubeListBuilder.create().texOffs(34, 25).addBox(-10.0F, -3.5F, 16.33F, 20.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, -7.0F, 0.0F, -1.0472F, 0.0F));
@@ -636,33 +1466,11 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		PartDefinition bone156 = bone155.addOrReplaceChild("bone156", CubeListBuilder.create().texOffs(9, 0).addBox(-0.5F, -1.975F, 5.875F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(13, 83).addBox(-6.5F, -20.0F, 13.75F, 3.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 86).addBox(3.75F, -18.5F, 14.25F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(32, 44).addBox(-15.0F, -20.0F, 2.75F, 7.0F, 4.0F, 8.0F, new CubeDeformation(0.0F))
-				.texOffs(64, 44).addBox(-14.5F, -20.0F, -9.5F, 6.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(64, 44).addBox(8.5F, -19.25F, -9.5F, 6.0F, 3.0F, 6.0F, new CubeDeformation(0.0F))
-				.texOffs(16, 49).addBox(-6.75F, -17.75F, -18.25F, 3.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 34).addBox(10.25F, -20.5F, 1.5F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(30, 79).addBox(8.25F, -18.25F, -14.5F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-				.texOffs(33, 85).addBox(14.75F, -17.75F, -4.0F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(90, 62).addBox(10.5F, -18.5F, 8.25F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(51, 0).addBox(1.5F, -21.0F, 9.25F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(51, 0).addBox(-0.5F, -21.0F, 9.25F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(51, 0).addBox(-2.5F, -21.0F, 9.25F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(48, 63).addBox(9.0F, -18.25F, 10.75F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 51).addBox(-12.25F, -18.25F, -13.5F, 4.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 8).addBox(14.5F, -18.25F, 1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(50, 81).addBox(-2.5F, -19.75F, -14.0F, 5.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(16, 43).addBox(3.75F, -17.75F, -18.25F, 3.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
-
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
-
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		throttle.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
@@ -680,14 +1488,18 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 		root().getAllParts().forEach(ModelPart::resetPose);
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
-		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
+
+		if(globalConsoleBlock != null) {
+			this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
+		}
+
+		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 
 		this.throttle.xRot = (reactions.isThrottleDown()) ? -1f : 1f;
 
 		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
-		bone181.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override

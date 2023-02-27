@@ -5,12 +5,20 @@ package whocraft.tardis_refined.client.model.blockentity.shell;// Made with Bloc
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -28,6 +36,52 @@ public class NukaShellModel extends ShellModel {
 	private final ModelPart wheel_4;
 	private final ModelPart bb_main;
 
+
+
+	public static final AnimationDefinition NUKAANIM = AnimationDefinition.Builder.withLength(4.541677f).looping()
+			.addAnimation("sign",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.541677f, KeyframeAnimations.degreeVec(0f, 360f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_1",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2f, KeyframeAnimations.degreeVec(90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.541677f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_2",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(2.5f, KeyframeAnimations.degreeVec(-90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.541677f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_3",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0.16766666f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.3433333f, KeyframeAnimations.degreeVec(90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.0834335f, KeyframeAnimations.degreeVec(-90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.541677f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR)))
+			.addAnimation("wheel_4",
+					new AnimationChannel(AnimationChannel.Targets.ROTATION,
+							new Keyframe(0.16766666f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(1.3433333f, KeyframeAnimations.degreeVec(-90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(3.0834335f, KeyframeAnimations.degreeVec(90f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(4.541677f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
+									AnimationChannel.Interpolations.LINEAR))).build();
+
 	@Override
 	public void setDoorPosition(boolean open) {
 		if (open) {
@@ -41,9 +95,14 @@ public class NukaShellModel extends ShellModel {
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		handleAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		handleAllAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
+	@Override
+	public void handleSpecialAnimation(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
+		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
+		this.animate(entity.liveliness, NUKAANIM, Minecraft.getInstance().player.tickCount, reactions.isFlying() ? 5 : 1);
+	}
 
 	@Override
 	public ResourceLocation texture() {

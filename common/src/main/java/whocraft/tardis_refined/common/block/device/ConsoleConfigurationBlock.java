@@ -203,6 +203,13 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         BlockState consoleBlock = level.getBlockState(pos.offset(state.getValue(FACING).getNormal()));
         if (consoleBlock.getBlock() instanceof GlobalConsoleBlock) {
             level.setBlockAndUpdate(pos.offset(state.getValue(FACING).getNormal()), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, theme));
+
+            if(level.getBlockEntity(pos.offset(state.getValue(FACING).getNormal())) instanceof GlobalConsoleBlockEntity globalConsoleBlock){
+                globalConsoleBlock.setPattern(null);
+                globalConsoleBlock.setPattern(globalConsoleBlock.pattern());
+                globalConsoleBlock.sendUpdates();
+            }
+
             if (Platform.isClient()) {
                 level.playSound(null, pos.offset(state.getValue(FACING).getNormal()), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
                 playParticles(pos, level);
