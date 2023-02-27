@@ -9,6 +9,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.util.*;
@@ -38,6 +39,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
             List<Pattern> patternLiat = new ArrayList<>(PATTERNS.get(theme));
             patternLiat.add(pattern);
             PATTERNS.replace(theme, patternLiat);
+            new SyncConsolePatternsMessage(PATTERNS).sendToAll();
             return pattern;
         }
         PATTERNS.put(theme, List.of(pattern));
@@ -67,6 +69,10 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
             }
         }
         return patterns.get(0);
+    }
+
+    public static void clearPatterns() {
+        PATTERNS.clear();
     }
 
     @Override
@@ -144,10 +150,6 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
         public ResourceLocation id() {
             return identifier;
-        }
-
-        public ConsoleTheme getTheme() {
-            return theme;
         }
 
         @Override
