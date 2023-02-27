@@ -35,10 +35,9 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
     }
 
     public static Pattern addPattern(ConsoleTheme theme, Pattern pattern) {
-        TardisRefined.LOGGER.info("Adding Console Pattern {} for {}", pattern.identifier, pattern.theme);
+        TardisRefined.LOGGER.debug("Adding Console Pattern {} for {}", pattern.identifier, pattern.theme);
         if (PATTERNS.containsKey(theme)) {
             List<Pattern> patternLiat = new ArrayList<>(PATTERNS.get(theme));
-            patternLiat.add(pattern);
             PATTERNS.replace(theme, patternLiat);
             if(Platform.getServer() != null) {
                 new SyncConsolePatternsMessage(PATTERNS).sendToAll();
