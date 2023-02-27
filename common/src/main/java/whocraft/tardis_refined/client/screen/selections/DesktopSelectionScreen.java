@@ -6,14 +6,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.List;
 
@@ -30,6 +33,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
     public static ResourceLocation MONITOR_TEXTURE_OVERLAY = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop_overlay.png");
+    public static ResourceLocation previousImage = TardisDesktops.FACTORY_THEME.getPreviewTexture();
 
     public DesktopSelectionScreen() {
         super(Component.translatable(ModMessages.UI_DESKTOP_SELECTION));
@@ -75,7 +79,6 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
 
         /*Render Interior Image*/
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, currentDesktopTheme.getPreviewTexture());
         poseStack.pushPose();
@@ -84,20 +87,21 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
         blit(poseStack, 0, 0, 0, 0, 400, 400, 400, 400);
 
-
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
         RenderSystem.enableBlend();
+
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
+        RenderSystem.setShaderTexture(0, previousImage);
+        blit(poseStack, (int) ((Math.random() * 14) - 2), (int) ((Math.random() * 14) - 2), 400, 400, 400, 400);
+
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
         RenderSystem.setShaderTexture(0, NOISE);
         blit(poseStack, 0, 0, this.noiseX, this.noiseY, 400, 400);
         RenderSystem.disableBlend();
-
-
         poseStack.popPose();
 
 
         /*Render Back drop*/
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, MONITOR_TEXTURE_OVERLAY);
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
@@ -124,6 +128,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
             if (desktop.availableByDefault) {
                 selectionList.children().add(new GenericMonitorSelectionList.Entry(desktop.getDisplayName(), (entry) -> {
+                    previousImage = currentDesktopTheme.getPreviewTexture();
                     this.currentDesktopTheme = desktop;
 
                     for (Object child : selectionList.children()) {
@@ -133,6 +138,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
                     }
                     entry.setChecked(true);
                     age = 0;
+                    Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.STATIC.get(), (float) Math.random()));
                 }));
             }
         }
