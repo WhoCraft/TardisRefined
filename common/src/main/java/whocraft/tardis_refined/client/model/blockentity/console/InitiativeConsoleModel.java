@@ -3241,7 +3241,7 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
@@ -3251,7 +3251,6 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 		}
 
 		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityCutout(getTexture(globalConsoleBlock)));
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

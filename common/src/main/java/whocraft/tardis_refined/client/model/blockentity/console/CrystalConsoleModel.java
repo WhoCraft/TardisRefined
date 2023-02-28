@@ -3779,7 +3779,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
 
 
     @Override
-    public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
@@ -3791,7 +3791,6 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
 
         this.throttle.xRot = (reactions.isThrottleDown()) ? -25f : -32f;
 
-        VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
