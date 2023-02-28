@@ -107,6 +107,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.NUKA, "Nuka");
         addShell(ShellTheme.GROWTH, "Growth");
         addShell(ShellTheme.PORTALOO, "Portaloo");
+        addShell(ShellTheme.PAGODA, "Pagoda");
 
 
         /*Desktop Themes*/
