@@ -34,25 +34,25 @@ public class ConsolePatternProvider implements DataProvider {
         /*Add Base Textures*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
             String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
-            boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL;
+            boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL|| consoleTheme == ConsoleTheme.CORAL || consoleTheme == ConsoleTheme.FACTORY || consoleTheme == ConsoleTheme.INITIATIVE || consoleTheme == ConsoleTheme.TOYOTA || consoleTheme == ConsoleTheme.VICTORIAN;
             addPattern(consoleTheme, new ConsolePatterns.Pattern(consoleTheme, new ResourceLocation(TardisRefined.MODID, "default"), themeName + "/" + themeName + "_console")).setEmissive(hasDefaultEmission);
         }
 
         /*Coral*/
-        addPattern(ConsoleTheme.CORAL, new ConsolePatterns.Pattern(ConsoleTheme.CORAL, new ResourceLocation(TardisRefined.MODID, "blue"), "coral/coral_console_blue"));
-        addPattern(ConsoleTheme.CORAL, new ConsolePatterns.Pattern(ConsoleTheme.CORAL, new ResourceLocation(TardisRefined.MODID, "war"), "coral/coral_console_war"));
+        addPattern(ConsoleTheme.CORAL, new ConsolePatterns.Pattern(ConsoleTheme.CORAL, new ResourceLocation(TardisRefined.MODID, "blue"), "coral/coral_console_blue")).setEmissive(true);
+        addPattern(ConsoleTheme.CORAL, new ConsolePatterns.Pattern(ConsoleTheme.CORAL, new ResourceLocation(TardisRefined.MODID, "war"), "coral/coral_console_war")).setEmissive(true);
 
         /*Factory*/
-        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "vintage"), "factory/factory_console_vintage"));
-        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "mint"), "factory/factory_console_mint"));
-        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "wood"), "factory/factory_console_wood"));
+        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "vintage"), "factory/factory_console_vintage")).setEmissive(true);
+        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "mint"), "factory/factory_console_mint")).setEmissive(true);
+        addPattern(ConsoleTheme.FACTORY, new ConsolePatterns.Pattern(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "wood"), "factory/factory_console_wood")).setEmissive(true);
 
         /*Toyota*/
-        addPattern(ConsoleTheme.TOYOTA, new ConsolePatterns.Pattern(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "violet"), "toyota/toyota_texture_purple"));
-        addPattern(ConsoleTheme.TOYOTA, new ConsolePatterns.Pattern(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "blue"), "toyota/toyota_texture_blue"));
+        addPattern(ConsoleTheme.TOYOTA, new ConsolePatterns.Pattern(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "violet"), "toyota/toyota_texture_purple")).setEmissive(true);
+        addPattern(ConsoleTheme.TOYOTA, new ConsolePatterns.Pattern(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "blue"), "toyota/toyota_texture_blue")).setEmissive(true);
 
         /*Crystal*/
-        addPattern(ConsoleTheme.CRYSTAL, new ConsolePatterns.Pattern(ConsoleTheme.CRYSTAL, new ResourceLocation(TardisRefined.MODID, "corrupted"), "crystal/crystal_console_corrupted"));
+        addPattern(ConsoleTheme.CRYSTAL, new ConsolePatterns.Pattern(ConsoleTheme.CRYSTAL, new ResourceLocation(TardisRefined.MODID, "corrupted"), "crystal/crystal_console_corrupted")).setEmissive(true);
 
         /*Myst*/
         addPattern(ConsoleTheme.MYST, new ConsolePatterns.Pattern(ConsoleTheme.MYST, new ResourceLocation(TardisRefined.MODID, "molten"), "myst/myst_console_molten"));
@@ -62,8 +62,8 @@ public class ConsolePatternProvider implements DataProvider {
         addPattern(ConsoleTheme.VICTORIAN, new ConsolePatterns.Pattern(ConsoleTheme.VICTORIAN, new ResourceLocation(TardisRefined.MODID, "grant"), "victorian/victorian_console_grant"));
 
         /*Initiative*/
-        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture"));
-        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "blue"), "initiative/initiative_console_blue"));
+        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture")).setEmissive(true);
+        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "blue"), "initiative/initiative_console_blue")).setEmissive(true);
 
     }
 
