@@ -46,7 +46,6 @@ public class ParticleGallifrey extends BaseAshSmokeParticle {
 
 
         public Particle createParticle(SimpleParticleType arg, ClientLevel arg2, double d, double e, double f, double g, double h, double i) {
-
             ParticleGallifrey particleGallifrey = new ParticleGallifrey(arg2, d, e, f, g, h, i, 1.0F, this.sprite);
             particleGallifrey.pickSprite(this.sprite);
             return particleGallifrey;

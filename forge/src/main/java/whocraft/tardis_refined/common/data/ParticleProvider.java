@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class ParticleProvider implements DataProvider {
 
@@ -80,18 +81,18 @@ public class ParticleProvider implements DataProvider {
 
              try {
                  makeParticle(TRParticles.GALLIFREY.get(), createParticle(resourceLocations), arg, base);
-             } catch (IOException e) {
+             } catch (IOException | ExecutionException | InterruptedException e) {
                  throw new RuntimeException(e);
              }
          });
     }
 
-    private void makeParticle(SimpleParticleType simpleParticleType, JsonObject particle, CachedOutput arg, Path base) throws IOException {
-        DataProvider.saveStable(arg, particle, getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(simpleParticleType)));
+    private void makeParticle(SimpleParticleType simpleParticleType, JsonObject particle, CachedOutput arg, Path base) throws IOException, ExecutionException, InterruptedException {
+        DataProvider.saveStable(arg, particle, getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(simpleParticleType))).get();
     }
 
-    public void makeParticle(ParticleType<?> type, ResourceLocation textureName, int count, CachedOutput cache, Path base) throws IOException {
-        DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(type)));
+    public void makeParticle(ParticleType<?> type, ResourceLocation textureName, int count, CachedOutput cache, Path base) throws IOException, ExecutionException, InterruptedException {
+        DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(type))).get();
     }
 
     public static Path getPath(Path base, ResourceLocation name) {

@@ -3527,7 +3527,7 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
@@ -3538,8 +3538,6 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 		}
 
 		this.throttle.xRot = (reactions.isThrottleDown()) ? 2f : 0f;
-
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
 		base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

@@ -2251,7 +2251,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
@@ -2261,7 +2261,6 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 		}
 
 		this.throttleLever.xRot = (reactions.isThrottleDown()) ? -155: -125;
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
