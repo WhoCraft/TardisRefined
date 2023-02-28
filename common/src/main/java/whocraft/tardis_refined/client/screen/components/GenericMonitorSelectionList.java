@@ -1,20 +1,13 @@
 package whocraft.tardis_refined.client.screen.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
-import whocraft.tardis_refined.common.util.MiscHelper;
-
-import java.awt.*;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
     public GenericMonitorSelectionList(Minecraft minecraft, int x, int y, int width, int height, int itemHeight) {
@@ -39,8 +32,8 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
     @Environment(EnvType.CLIENT)
     public static class Entry extends ObjectSelectionList.Entry<Entry> {
 
-        private Component itemDisplayName;
-        private GenericListSelection press;
+        private final Component itemDisplayName;
+        private final GenericListSelection press;
         private boolean checked = false;
 
         public Entry(Component name, GenericListSelection onSelection) {

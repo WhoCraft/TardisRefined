@@ -8,8 +8,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.shell.*;
+import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -59,7 +59,6 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
         poseStack.popPose();
-
     }
 
     @Override
@@ -67,6 +66,10 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         return true;
     }
 
+    @Override
+    public boolean shouldRender(GlobalShellBlockEntity blockEntity, Vec3 vec3) {
+        return true;
+    }
     @Override
     public BlockEntityRenderer<GlobalShellBlockEntity> create(Context context) {
         return new GlobalShellRenderer(context);

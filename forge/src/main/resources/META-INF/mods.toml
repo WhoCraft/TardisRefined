@@ -26,3 +26,11 @@ mandatory = true
 versionRange = "${forge_minecraft_version_range}"
 ordering = "NONE"
 side = "BOTH"
+
+# Immersive Portals
+[[dependencies."${mod_id}"]]
+modId="immersive_portals"
+mandatory=false
+versionRange = "${forge_immersive_portals_version_range}"
+ordering="NONE"
+side="BOTH"

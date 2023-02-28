@@ -19,6 +19,7 @@ public class MystConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(0.6f, 0.75000155f, 0.15f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(1.15f, 0.5500015f, 0.7f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(0.75f, 0.6500015f, 0.95f- 0.5f), new BlockPos(0.1f, 0.1f, 0.1f)),
+                new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(2.3841856E-8f, 0.7f, -1.05f), new BlockPos(0.1f, 0.1f, 0.1f)),
                 new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.45000005f, 0.5500061f, 1.05f), new BlockPos(0.1f, 0.1f, 0.1f))
         };
     }

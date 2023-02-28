@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -10,20 +9,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
-import org.joml.Vector3f;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
@@ -38,7 +38,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private boolean isDirty = true;
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
-    private ConsolePatterns.Pattern pattern = ConsolePatterns.getPatternFromString(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "default"));
+    public AnimationState liveliness = new AnimationState();
+    private ConsolePatterns.Pattern pattern = pattern();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
@@ -46,7 +47,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public ConsolePatterns.Pattern pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
+        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
         return pattern == null ? defaultPattern : pattern;
     }
 
@@ -77,7 +78,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         if (pattern == null) {
-            pattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
+            pattern = pattern();
         }
 
         super.load(tag);
@@ -149,13 +150,18 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
+
         if (this.isDirty) {
             spawnControlEntities();
         }
 
+        if (!liveliness.isStarted()) {
+            liveliness.start(12);
+        }
+
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (1 * 20) == 0) {
+                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
                     serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
                 }
 
@@ -163,7 +169,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
                     level.explode((Entity) null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
                 }
+                TardisInteriorManager intManager = x.getInteriorManager();
+                if (intManager.isCave()) {
+                    intManager.setCurrentTheme(intManager.preparedTheme());
+                }
 
+                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
+                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
+                }
             });
         }
     }

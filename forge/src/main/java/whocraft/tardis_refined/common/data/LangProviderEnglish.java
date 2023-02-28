@@ -4,10 +4,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -15,8 +13,6 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
-
-import java.util.List;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -50,6 +46,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.LANDING_PAD.get(), "Landing Pad");
         add(BlockRegistry.GROWTH_STONE.get(), "Growth Stone");
         add(BlockRegistry.HARDENED_GROWTH_STONE.get(), "Hardened Growth Stone");
+        add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -71,6 +68,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.THROTTLE, "Throttle");
         addControl(ConsoleControl.MONITOR, "Computer Bank");
         addControl(ConsoleControl.FAST_RETURN, "Fast Return");
+        addControl(ConsoleControl.DIMENSION, "Dimension");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -108,6 +106,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.BIG_BEN, "Big Ben");
         addShell(ShellTheme.NUKA, "Nuka");
         addShell(ShellTheme.GROWTH, "Growth");
+        addShell(ShellTheme.PORTALOO, "Portaloo");
 
 
         /*Desktop Themes*/
@@ -123,19 +122,12 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
+        add(ModMessages.CONTROL_DIMENSION_SELECTED, "Selected: %s");
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
-
-        /*Variants*/
-        for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
-            List<ConsolePatterns.Pattern> patterns = ConsolePatterns.getPatternsForTheme(consoleTheme);
-            for (ConsolePatterns.Pattern pattern : patterns) {
-                String niceName = pattern.id().getPath().substring(0, 1).toUpperCase() + pattern.id().getPath().substring(1).replace("_", "");
-                addPattern(pattern, niceName);
-            }
-        }
+        add("config.tardis_refined.banned_dimensions", "Banned Dimensions");
     }
 
     public void addControl(ConsoleControl control, String name) {
@@ -150,9 +142,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(desktopTheme.getTranslationKey(), translation);
     }
 
-    public void addPattern(ConsolePatterns.Pattern pattern, String translation) {
-        add(ModMessages.pattern(pattern), translation);
-    }
 
     public void addSound(SoundEvent soundEvent, String lang) {
         add("subtitle." + TardisRefined.MODID + "." + soundEvent.getLocation().getPath(), lang);

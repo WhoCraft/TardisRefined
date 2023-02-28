@@ -3,8 +3,11 @@ package whocraft.tardis_refined;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
+import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
@@ -19,7 +22,11 @@ public class TardisRefined {
     public static final String PLATFORM_ERROR = "Something has gone critically wrong with platform definitions. Please contact the mod author.";
 
     public static final Logger LOGGER = LogUtils.getLogger();
-    public static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    public static Gson GSON = new GsonBuilder()
+            .disableHtmlEscaping()
+            .registerTypeHierarchyAdapter(Component.class, new Component.Serializer()).
+            registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
+            .registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory()).create();
 
     public static void init() {
         BlockRegistry.BLOCKS.register();
@@ -30,8 +37,8 @@ public class TardisRefined {
         DimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();
+        TRParticles.TYPES.register();
         TagKeys.init();
         TardisNetwork.init();
-        ConsolePatterns.registerPatterns();
     }
 }

@@ -35,7 +35,10 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     public static final BooleanProperty REGEN = BooleanProperty.create("regen");
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
+    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 20.0D, 13.0D);
+    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 3.0D, 16.0D, 20.0D, 16.0D);
+    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 13.0D, 20.0D, 16.0D);
+    protected static final VoxelShape EAST_AABB = Block.box(3.0D, 0.0D, 0.0D, 16.0D, 20.0D, 16.0D);
 
     public ShellBaseBlock(Properties properties) {
         super(properties);
@@ -81,14 +84,20 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         switch (blockState.getValue(FACING)) {
             case SOUTH -> {
                 return SOUTH_AABB;
             }
-            case NORTH -> {return NORTH_AABB;}
-            case WEST -> {return WEST_AABB;}
-            case EAST -> {return EAST_AABB;}
+            case NORTH -> {
+                return NORTH_AABB;
+            }
+            case WEST -> {
+                return WEST_AABB;
+            }
+            case EAST -> {
+                return EAST_AABB;
+            }
         }
 
         return SOUTH_AABB;
@@ -96,7 +105,6 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-
         if (level.getBlockEntity(blockPos) instanceof ShellBaseBlockEntity shellEntity) {
             if (entity instanceof Player player) {
                 shellEntity.onAttemptEnter(blockState, level, shellEntity.getBlockPos(), player);
@@ -117,10 +125,4 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
     }
 
-    static {
-        NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 13.0D);
-        SOUTH_AABB = Block.box(0.0D, 0.0D, 3.0D, 16.0D, 16.0D, 16.0D);
-        WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 13.0D, 16.0D, 16.0D);
-        EAST_AABB = Block.box(3.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    }
 }

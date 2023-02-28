@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.entity;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -29,15 +28,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
 public class ControlEntity extends PathfinderMob {
@@ -146,6 +144,7 @@ public class ControlEntity extends PathfinderMob {
                 }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
@@ -183,16 +182,16 @@ public class ControlEntity extends PathfinderMob {
                 }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (!cap.getControlManager().canUseControls()) {
 
+                    if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
                         if (player.isCreative()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                         } else {
                             player.hurt(DamageSource.ON_FIRE, 0.1F);
                         }
-
                         return;
                     }
+
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float)(0.1 + (serverLevel.getRandom().nextFloat() * 0.5)) );
@@ -223,11 +222,6 @@ public class ControlEntity extends PathfinderMob {
     }
 
     @Override
-    protected void tickDeath() {
-        super.tickDeath();
-    }
-
-    @Override
     public void tick() {
         setNoAi(true);
 
@@ -244,28 +238,21 @@ public class ControlEntity extends PathfinderMob {
             }
         }
 
-        if (this.getLevel() instanceof ClientLevel clientLevel) {
 
-            if (getEntityData().get(SHOW_PARTICLE)) {
-                if (clientLevel.random.nextInt(5) == 0) {
-                    for (int i = 0; i < 3; ++i) {
-                        var xCord = this.position().x() ;
-                        var yCord = this.position().y() + 0.15f;
-                        var zCord = this.position().z();
-                        ClientHelper.playParticle((ClientLevel) level, ParticleTypes.ELECTRIC_SPARK, new Vec3( xCord, yCord, zCord), 0.0D, 0.25D, 0.0D);
+        if (getLevel() instanceof ServerLevel serverLevel) {
+
+            if (this.controlSpecification != null) {
+                TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+                    var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
+                    if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
+                        getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
                     }
-                }
+                });
             }
         } else {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-
-                if (this.controlSpecification != null) {
-                    TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                        var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
-                        if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
-                            getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
-                        }
-                    });
+            if (getEntityData().get(SHOW_PARTICLE)) {
+                if (getLevel().random.nextInt(5) == 0) {
+                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         }
