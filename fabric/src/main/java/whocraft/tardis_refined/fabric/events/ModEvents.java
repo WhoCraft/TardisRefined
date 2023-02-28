@@ -47,9 +47,9 @@ public class ModEvents {
     public static void addClientEvents() {
         ClientTickEvents.START_WORLD_TICK.register(world -> {
             TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> {
-                if (world.dimension() != levelResourceKey) {
+             /*   if (world.dimension() != levelResourceKey) {
                     return;
-                }
+                }*/
                 tardisClientData.tickClientside();
             });
 
