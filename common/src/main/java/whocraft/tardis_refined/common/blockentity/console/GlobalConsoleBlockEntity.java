@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.Pattern;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -39,19 +40,19 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
-    private ConsolePatterns.Pattern pattern = pattern();
+    private Pattern<ConsoleTheme> pattern = pattern();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
     }
 
-    public ConsolePatterns.Pattern pattern() {
+    public Pattern<ConsoleTheme> pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
+        Pattern<ConsoleTheme> defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
         return pattern == null ? defaultPattern : pattern;
     }
 
-    public GlobalConsoleBlockEntity setPattern(ConsolePatterns.Pattern pattern) {
+    public GlobalConsoleBlockEntity setPattern(Pattern<ConsoleTheme> pattern) {
         this.pattern = pattern;
         return this;
     }

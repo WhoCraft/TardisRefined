@@ -6,29 +6,29 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.patterns.Pattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SyncConsolePatternsMessage extends MessageS2C {
+public class SyncShellPatternsMessage extends MessageS2C {
 
-    private final Map<ConsoleTheme, List<Pattern<ConsoleTheme>>> patterns;
+    private final Map<ShellTheme, List<Pattern<ShellTheme>>> patterns;
 
-    public SyncConsolePatternsMessage(Map<ConsoleTheme, List<Pattern<ConsoleTheme>>> patterns) {
+    public SyncShellPatternsMessage(Map<ShellTheme, List<Pattern<ShellTheme>>> patterns) {
         this.patterns = patterns;
     }
 
-    public SyncConsolePatternsMessage(FriendlyByteBuf buf) {
+    public SyncShellPatternsMessage(FriendlyByteBuf buf) {
         int size = buf.readInt();
         patterns = new HashMap<>();
         for (int i = 0; i < size; i++) {
-            ConsoleTheme theme = ConsoleTheme.valueOf(buf.readUtf());
-            List<Pattern<ConsoleTheme>> patternList = new ArrayList<>();
+            ShellTheme theme = ShellTheme.valueOf(buf.readUtf());
+            List<Pattern<ShellTheme>> patternList = new ArrayList<>();
             int patternSize = buf.readInt();
             for (int j = 0; j < patternSize; j++) {
                 patternList.add(getPattern(buf));
@@ -37,14 +37,14 @@ public class SyncConsolePatternsMessage extends MessageS2C {
         }
     }
 
-    private static Pattern<ConsoleTheme> getPattern(FriendlyByteBuf buf) {
+    private static Pattern<ShellTheme> getPattern(FriendlyByteBuf buf) {
         ResourceLocation id = buf.readResourceLocation(); // ID
         ResourceLocation texture = buf.readResourceLocation(); // texture
         String name = buf.readUtf(); // name
-        ConsoleTheme theme = ConsoleTheme.valueOf(buf.readUtf()); // theme
+        ShellTheme theme = ShellTheme.valueOf(buf.readUtf()); // theme
         boolean glow = buf.readBoolean(); // name
 
-        Pattern<ConsoleTheme> consolePattern = new Pattern<ConsoleTheme>(theme, id, texture);
+        Pattern<ShellTheme> consolePattern = new Pattern<>(theme, id, texture);
         consolePattern.setName(name);
         consolePattern.setEmissive(glow);
         return consolePattern;
@@ -52,22 +52,22 @@ public class SyncConsolePatternsMessage extends MessageS2C {
 
     @Override
     public MessageType getType() {
-        return TardisNetwork.SYNC_CONSOLE_PATTERNS;
+        return TardisNetwork.SYNC_SHELL_PATTERNS;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(patterns.size());
-        patterns.forEach((consoleTheme, patterns) -> {
-            buf.writeUtf(consoleTheme.name());
+        patterns.forEach((ShellTheme, patterns) -> {
+            buf.writeUtf(ShellTheme.name());
             buf.writeInt(patterns.size());
-            for (Pattern<ConsoleTheme> pattern : patterns) {
+            for (Pattern<ShellTheme> pattern : patterns) {
                 writePattern(pattern, buf);
             }
         });
     }
 
-    private void writePattern(Pattern<ConsoleTheme> pattern, FriendlyByteBuf buf) {
+    private void writePattern(Pattern<ShellTheme> pattern, FriendlyByteBuf buf) {
         buf.writeResourceLocation(pattern.id()); // ID
         buf.writeResourceLocation(pattern.texture()); // texture
         buf.writeUtf(pattern.name()); // name
@@ -77,9 +77,9 @@ public class SyncConsolePatternsMessage extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
-        patterns.forEach((consoleTheme, patterns) -> {
-            for (Pattern<ConsoleTheme> pattern : patterns) {
-                ConsolePatterns.addPattern(consoleTheme, pattern);
+        patterns.forEach((ShellTheme, patterns) -> {
+            for (Pattern<ShellTheme> pattern : patterns) {
+                ShellPatterns.addPattern(ShellTheme, pattern);
             }
         });
     }
