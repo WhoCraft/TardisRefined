@@ -10,9 +10,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 
@@ -25,7 +23,7 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
         super(TardisRefined.GSON, "patterns/shell");
     }
 
-    public static Pattern<ShellTheme> next(ShellTheme ShellTheme, Pattern pattern) {
+    public static Pattern<ShellTheme> next(ShellTheme ShellTheme, Pattern<ShellTheme> pattern) {
         List<Pattern<ShellTheme>> patterns = getPatternsForTheme(ShellTheme);
         int prevIndex = patterns.indexOf(pattern);
         if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {

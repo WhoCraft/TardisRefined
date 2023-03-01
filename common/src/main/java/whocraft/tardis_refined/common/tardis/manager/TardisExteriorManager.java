@@ -18,6 +18,7 @@ import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.Pattern;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.UUID;
@@ -32,6 +33,8 @@ public class TardisExteriorManager {
     private final TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation;
     private ShellTheme currentTheme;
+
+    private Pattern<ShellTheme> pattern = null;
 
     public boolean locked() {
         return locked;
@@ -97,6 +100,7 @@ public class TardisExteriorManager {
     }
 
     public void loadData(CompoundTag tag) {
+
         this.lastKnownLocation = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
 
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {

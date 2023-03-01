@@ -17,7 +17,7 @@ import whocraft.tardis_refined.common.util.Platform;
 import java.util.*;
 
 public class ConsolePatterns extends SimpleJsonResourceReloadListener {
-    private static Map<ConsoleTheme, List<Pattern<ConsoleTheme>>> PATTERNS = new HashMap<>();
+    private static final Map<ConsoleTheme, List<Pattern<ConsoleTheme>>> PATTERNS = new HashMap<>();
 
     public ConsolePatterns() {
         super(TardisRefined.GSON, "patterns/console");

@@ -12,13 +12,13 @@ import net.minecraftforge.api.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.fabric.PortalsCompatFabric;
 import whocraft.tardis_refined.fabric.events.ModEvents;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.concurrent.CompletableFuture;
