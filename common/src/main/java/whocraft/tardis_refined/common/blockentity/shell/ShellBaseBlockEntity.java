@@ -67,9 +67,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         }
         // We need some information on our first creation of this block.
         this.TARDIS_ID = UUID.randomUUID();
-        if(!liveliness.isStarted()){
-            liveliness.start(12);
-        }
     }
 
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos blockPos, Player player) {

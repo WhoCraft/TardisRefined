@@ -91,7 +91,7 @@ public class TardisLevelOperator {
         this.tardisFlightEventManager.loadData(tag);
 
 
-        tardisClientData.sync((ServerLevel) this.getLevel());
+        tardisClientData.sync();
     }
 
     public Level getLevel() {
@@ -103,59 +103,17 @@ public class TardisLevelOperator {
         controlManager.tick(level);
         tardisFlightEventManager.tick();
 
-        var shouldSync = false;
-
-        // If the Tardis's flying status does not match the control manager's in-flight status
-        if (controlManager.isInFlight() != tardisClientData.isFlying()) {
-            // If the current level is a ServerLevel instance
-            // Set the Tardis's flying status to match the control manager's in-flight status
-            tardisClientData.setFlying(controlManager.isInFlight());
-            shouldSync = true;
-        }
-
-        if (controlManager.shouldThrottleBeDown() != tardisClientData.isThrottleDown()) {
-            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
-            shouldSync = true;
-        }
-
-        if (exteriorManager.isLanding() != tardisClientData.isLanding()) {
-            tardisClientData.setIsLanding(exteriorManager.isLanding());
-            shouldSync = true;
-        }
-
-        if (exteriorManager.isTakingOff() != tardisClientData.isTakingOff()) {
-            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            shouldSync = true;
-        }
-
-        if (controlManager.getCurrentExteriorTheme() != tardisClientData.getShellTheme()) {
-            tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
-            shouldSync = true;
-        }
-
-        if (tardisFlightEventManager.isInDangerZone() != tardisClientData.isInDangerZone()) {
-            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
-            shouldSync = true;
-        }
-
-        if (tardisFlightEventManager.dangerZoneShakeScale() != tardisClientData.flightShakeScale()) {
-            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
-            shouldSync = true;
-        }
-
-        if (controlManager.isOnCooldown() != tardisClientData.isOnCooldown()) {
-            tardisClientData.setIsOnCooldown(controlManager.isOnCooldown());
-            shouldSync = true;
-        }
-
-
-
-        // Synchronize the Tardis's data across the server
+        var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
-            tardisClientData.sync(level);
-            if (getExteriorManager().getLastKnownLocation() != null) {
-                tardisClientData.sync(getExteriorManager().getLastKnownLocation().getLevel());
-            }
+            tardisClientData.setFlying(controlManager.isInFlight());
+            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
+            tardisClientData.setIsLanding(exteriorManager.isLanding());
+            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+            tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
+            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
+            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
+            tardisClientData.setIsOnCooldown(controlManager.isOnCooldown());
+            tardisClientData.sync();
         }
     }
 
@@ -199,7 +157,7 @@ public class TardisLevelOperator {
             }
         }
 
-        tardisClientData.sync((ServerLevel) this.getLevel());
+        tardisClientData.sync();
         TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(this, shell, player, externalPos, level, direction);
     }
 
