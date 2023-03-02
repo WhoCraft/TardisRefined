@@ -26,7 +26,7 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.Pattern;
+import whocraft.tardis_refined.patterns.BasePattern;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
@@ -40,20 +40,20 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
-    private Pattern<ConsoleTheme> pattern = pattern();
+    private BasePattern<ConsoleTheme> basePattern = pattern();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
     }
 
-    public Pattern<ConsoleTheme> pattern() {
+    public BasePattern<ConsoleTheme> pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        Pattern<ConsoleTheme> defaultPattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
-        return pattern == null ? defaultPattern : pattern;
+        BasePattern<ConsoleTheme> defaultBasePattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
+        return basePattern == null ? defaultBasePattern : basePattern;
     }
 
-    public GlobalConsoleBlockEntity setPattern(Pattern<ConsoleTheme> pattern) {
-        this.pattern = pattern;
+    public GlobalConsoleBlockEntity setPattern(BasePattern<ConsoleTheme> basePattern) {
+        this.basePattern = basePattern;
         return this;
     }
 
@@ -61,8 +61,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
 
-        if (pattern != null) {
-            compoundTag.putString(NbtConstants.PATTERN, pattern.id().toString());
+        if (basePattern != null) {
+            compoundTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
         }
     }
 
@@ -74,12 +74,12 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (tag.contains(NbtConstants.PATTERN)) {
             ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
             if (ConsolePatterns.doesPatternExist(console, currentPattern)) {
-                pattern = ConsolePatterns.getPatternFromString(console, currentPattern);
+                basePattern = ConsolePatterns.getPatternFromString(console, currentPattern);
             }
         }
 
-        if (pattern == null) {
-            pattern = pattern();
+        if (basePattern == null) {
+            basePattern = pattern();
         }
 
         super.load(tag);

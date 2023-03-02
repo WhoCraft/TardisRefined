@@ -4,10 +4,10 @@ import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.*;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
-import whocraft.tardis_refined.patterns.Pattern;
+import whocraft.tardis_refined.patterns.BasePattern;
 
 
-public enum ConsoleTheme implements StringRepresentable, Pattern.DataDrivenPattern {
+public enum ConsoleTheme implements StringRepresentable, BasePattern.DataDrivenPattern {
 
     FACTORY("factory", new FactoryConsoleTheme()),
     CRYSTAL("crystal", new CrystalConsoleTheme()),

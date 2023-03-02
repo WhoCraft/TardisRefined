@@ -18,7 +18,9 @@ import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.Pattern;
+import whocraft.tardis_refined.patterns.BasePattern;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.UUID;
@@ -34,7 +36,7 @@ public class TardisExteriorManager {
     private TardisNavLocation lastKnownLocation;
     private ShellTheme currentTheme;
 
-    private Pattern<ShellTheme> pattern = null;
+    private ShellPattern basePattern = null;
 
     public boolean locked() {
         return locked;
@@ -144,6 +146,7 @@ public class TardisExteriorManager {
                 var shellBlockEntity = lastKnownLocation.getLevel().getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
+                    entity.setPattern(basePattern.theme() != theme ? basePattern : ShellPatterns.getPatternsForTheme(theme).get(0));
                     entity.setChanged();
                 }
             }

@@ -15,6 +15,8 @@ import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.patterns.BasePattern;
+import whocraft.tardis_refined.patterns.ShellPattern;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
 
@@ -46,12 +48,14 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         var currentModel = ShellModelCollection.getInstance().getShellModel(theme);
 
-        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(theme.getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        ShellPattern pattern = blockEntity.pattern();
+        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.texture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+
 
         /*Emmissive*/
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
-        if (currentModel.lightTexture() != null) {
-            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.lightTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
+        if (pattern.emissive()) {
+            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(pattern.emissiveTexture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
         } else {
             if (isRegenerating) {
                 currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture())), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);

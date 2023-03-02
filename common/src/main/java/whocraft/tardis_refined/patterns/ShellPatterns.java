@@ -17,60 +17,60 @@ import whocraft.tardis_refined.common.util.Platform;
 import java.util.*;
 
 public class ShellPatterns extends SimpleJsonResourceReloadListener {
-    private static Map<ShellTheme, List<Pattern<ShellTheme>>> PATTERNS = new HashMap<>();
+    private static Map<ShellTheme, List<ShellPattern>> PATTERNS = new HashMap<>();
 
     public ShellPatterns() {
         super(TardisRefined.GSON, "patterns/shell");
     }
 
-    public static Pattern<ShellTheme> next(ShellTheme ShellTheme, Pattern<ShellTheme> pattern) {
-        List<Pattern<ShellTheme>> patterns = getPatternsForTheme(ShellTheme);
-        int prevIndex = patterns.indexOf(pattern);
-        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
-            return patterns.get(0);
+    public static ShellPattern next(ShellTheme ShellTheme, ShellPattern basePattern) {
+        List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
+        int prevIndex = basePatterns.indexOf(basePattern);
+        if (prevIndex > basePatterns.size() || prevIndex + 1 >= basePatterns.size()) {
+            return basePatterns.get(0);
         }
-        return patterns.get(prevIndex + 1);
+        return basePatterns.get(prevIndex + 1);
     }
 
-    public static Pattern<ShellTheme> addPattern(ShellTheme theme, Pattern<ShellTheme> pattern) {
-        TardisRefined.LOGGER.info("Adding Shell Pattern {} for {}", pattern.id(), pattern.theme());
+    public static ShellPattern addPattern(ShellTheme theme, ShellPattern basePattern) {
+        TardisRefined.LOGGER.info("Adding Shell BasePattern {} for {}", basePattern.id(), basePattern.theme());
         if (PATTERNS.containsKey(theme)) {
-            List<Pattern<ShellTheme>> patternList = new ArrayList<>(PATTERNS.get(theme));
-            patternList.add(pattern);
-            PATTERNS.replace(theme, patternList);
+            List<ShellPattern> basePatternList = new ArrayList<>(PATTERNS.get(theme));
+            basePatternList.add(basePattern);
+            PATTERNS.replace(theme, basePatternList);
         } else {
-            PATTERNS.put(theme, new ArrayList<>(List.of(pattern)));
+            PATTERNS.put(theme, new ArrayList<>(List.of(basePattern)));
         }
-        return pattern;
+        return basePattern;
     }
 
 
-    public static List<Pattern<ShellTheme>> getPatternsForTheme(ShellTheme ShellTheme) {
+    public static List<ShellPattern> getPatternsForTheme(ShellTheme ShellTheme) {
         return PATTERNS.get(ShellTheme);
     }
 
-    public static Map<ShellTheme, List<Pattern<ShellTheme>>> getPatterns() {
+    public static Map<ShellTheme, List<ShellPattern>> getPatterns() {
         return PATTERNS;
     }
 
     public static boolean doesPatternExist(ShellTheme ShellTheme, ResourceLocation id) {
-        List<Pattern<ShellTheme> > patterns = getPatternsForTheme(ShellTheme);
-        for (Pattern<ShellTheme>  pattern : patterns) {
-            if (Objects.equals(pattern.id(), id)) {
+        List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
+        for (ShellPattern basePattern : basePatterns) {
+            if (Objects.equals(basePattern.id(), id)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static Pattern<ShellTheme>  getPatternFromString(ShellTheme ShellTheme, ResourceLocation id) {
-        List<Pattern<ShellTheme> > patterns = getPatternsForTheme(ShellTheme);
-        for (Pattern<ShellTheme>  pattern : patterns) {
-            if (Objects.equals(pattern.id(), id)) {
-                return pattern;
+    public static ShellPattern getPatternFromString(ShellTheme ShellTheme, ResourceLocation id) {
+        List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
+        for (ShellPattern basePattern : basePatterns) {
+            if (Objects.equals(basePattern.id(), id)) {
+                return basePattern;
             }
         }
-        return patterns.get(0);
+        return basePatterns.get(0);
     }
 
     @Override
@@ -85,15 +85,22 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
                     JsonObject patternObject = patternElement.getAsJsonObject();
                     ShellTheme theme = ShellTheme.valueOf(findShellTheme(resourceLocation));
                     String id = patternObject.get("id").getAsString();
-                    String texture = patternObject.get("texture").getAsString();
 
-                    boolean emissive = patternObject.get("emissive").getAsBoolean();
+                    JsonObject interior = patternObject.get("interior").getAsJsonObject();
+                    String interiorTexture = interior.get("texture").getAsString();
 
-                    ResourceLocation textureLocation = new ResourceLocation(texture);
-                    Pattern<ShellTheme> pattern = new Pattern<>(theme, new ResourceLocation(id), textureLocation);
-                    pattern.setName(patternObject.get("name_component").getAsString());
-                    pattern.setEmissive(emissive);
-                    addPattern(theme, pattern);
+                    JsonObject exterior = patternObject.get("exterior").getAsJsonObject();
+                    String exteriorTexture = exterior.get("texture").getAsString();
+                    boolean emissive = exterior.get("emissive").getAsBoolean();
+
+
+                    ResourceLocation textureLocation = new ResourceLocation(exteriorTexture);
+                    ResourceLocation interiorTextureLocation = new ResourceLocation(interiorTexture);
+
+                    ShellPattern basePattern = new ShellPattern(theme, new ResourceLocation(id), textureLocation, interiorTextureLocation);
+                    basePattern.setName(patternObject.get("name_component").getAsString());
+                    basePattern.setEmissive(emissive);
+                    addPattern(theme, basePattern);
                 }
             } catch (JsonParseException jsonParseException){
                 TardisRefined.LOGGER.debug("Issue parsing {}! Error: {}", resourceLocation, jsonParseException.getMessage());

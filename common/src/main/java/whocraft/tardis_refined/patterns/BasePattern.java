@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
 
-public class Pattern<T extends Pattern.DataDrivenPattern> {
+public class BasePattern<T extends BasePattern.DataDrivenPattern> {
 
     public interface DataDrivenPattern {
         String getObjectName();
@@ -21,7 +21,7 @@ public class Pattern<T extends Pattern.DataDrivenPattern> {
 
     private final T theme;
 
-    public Pattern(T consoleTheme, ResourceLocation identifier, ResourceLocation texture) {
+    public BasePattern(T consoleTheme, ResourceLocation identifier, ResourceLocation texture) {
         this.identifier = identifier;
         this.textureLocation = texture;
         this.emissiveTexture = new ResourceLocation(texture.getNamespace(), texture.getPath().replace(".png", "_emissive.png"));
@@ -37,12 +37,12 @@ public class Pattern<T extends Pattern.DataDrivenPattern> {
         return hasEmissiveTexture;
     }
 
-    public Pattern<? extends DataDrivenPattern> setEmissive(boolean hasEmissiveTexture) {
+    public BasePattern<? extends DataDrivenPattern> setEmissive(boolean hasEmissiveTexture) {
         this.hasEmissiveTexture = hasEmissiveTexture;
         return this;
     }
 
-    public Pattern<? extends DataDrivenPattern> setName(String name) {
+    public BasePattern<? extends DataDrivenPattern> setName(String name) {
         this.name = name;
         return this;
     }
@@ -63,8 +63,8 @@ public class Pattern<T extends Pattern.DataDrivenPattern> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Pattern<T> pattern = (Pattern<T>) o;
-        return Objects.equals(textureLocation, pattern.textureLocation) && Objects.equals(identifier, pattern.identifier) && theme == pattern.theme;
+        BasePattern<T> basePattern = (BasePattern<T>) o;
+        return Objects.equals(textureLocation, basePattern.textureLocation) && Objects.equals(identifier, basePattern.identifier) && theme == basePattern.theme;
     }
 
     @Override

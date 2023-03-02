@@ -4,12 +4,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.patterns.Pattern;
+import whocraft.tardis_refined.patterns.BasePattern;
 
 import java.util.Locale;
 
-public enum ShellTheme implements StringRepresentable, Theme, Pattern.DataDrivenPattern {
+public enum ShellTheme implements StringRepresentable, Theme, BasePattern.DataDrivenPattern {
 
     FACTORY("factory", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/factory_shell_door.png")),
     POLICE_BOX("police_box", new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_door.png"), new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/tdis_shell_emissive.png")),

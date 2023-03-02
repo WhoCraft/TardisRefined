@@ -17,60 +17,60 @@ import whocraft.tardis_refined.common.util.Platform;
 import java.util.*;
 
 public class ConsolePatterns extends SimpleJsonResourceReloadListener {
-    private static final Map<ConsoleTheme, List<Pattern<ConsoleTheme>>> PATTERNS = new HashMap<>();
+    private static final Map<ConsoleTheme, List<BasePattern<ConsoleTheme>>> PATTERNS = new HashMap<>();
 
     public ConsolePatterns() {
         super(TardisRefined.GSON, "patterns/console");
     }
 
-    public static Pattern<ConsoleTheme> next(ConsoleTheme consoleTheme, Pattern pattern) {
-        List<Pattern<ConsoleTheme>> patterns = getPatternsForTheme(consoleTheme);
-        int prevIndex = patterns.indexOf(pattern);
-        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
-            return patterns.get(0);
+    public static BasePattern<ConsoleTheme> next(ConsoleTheme consoleTheme, BasePattern basePattern) {
+        List<BasePattern<ConsoleTheme>> basePatterns = getPatternsForTheme(consoleTheme);
+        int prevIndex = basePatterns.indexOf(basePattern);
+        if (prevIndex > basePatterns.size() || prevIndex + 1 >= basePatterns.size()) {
+            return basePatterns.get(0);
         }
-        return patterns.get(prevIndex + 1);
+        return basePatterns.get(prevIndex + 1);
     }
 
-    public static Pattern<ConsoleTheme> addPattern(ConsoleTheme theme, Pattern<ConsoleTheme> pattern) {
-        TardisRefined.LOGGER.info("Adding Console Pattern {} for {}", pattern.id(), pattern.theme());
+    public static BasePattern<ConsoleTheme> addPattern(ConsoleTheme theme, BasePattern<ConsoleTheme> basePattern) {
+        TardisRefined.LOGGER.info("Adding Console BasePattern {} for {}", basePattern.id(), basePattern.theme());
         if (PATTERNS.containsKey(theme)) {
-            List<Pattern<ConsoleTheme>> patternList = new ArrayList<>(PATTERNS.get(theme));
-            patternList.add(pattern);
-            PATTERNS.replace(theme, patternList);
+            List<BasePattern<ConsoleTheme>> basePatternList = new ArrayList<>(PATTERNS.get(theme));
+            basePatternList.add(basePattern);
+            PATTERNS.replace(theme, basePatternList);
         } else {
-            PATTERNS.put(theme, new ArrayList<>(List.of(pattern)));
+            PATTERNS.put(theme, new ArrayList<>(List.of(basePattern)));
         }
-        return pattern;
+        return basePattern;
     }
 
 
-    public static List<Pattern<ConsoleTheme>> getPatternsForTheme(ConsoleTheme consoleTheme) {
+    public static List<BasePattern<ConsoleTheme>> getPatternsForTheme(ConsoleTheme consoleTheme) {
         return PATTERNS.get(consoleTheme);
     }
 
-    public static Map<ConsoleTheme, List<Pattern<ConsoleTheme>>> getPatterns() {
+    public static Map<ConsoleTheme, List<BasePattern<ConsoleTheme>>> getPatterns() {
         return PATTERNS;
     }
 
     public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation id) {
-        List<Pattern<ConsoleTheme> > patterns = getPatternsForTheme(consoleTheme);
-        for (Pattern<ConsoleTheme>  pattern : patterns) {
-            if (Objects.equals(pattern.id(), id)) {
+        List<BasePattern<ConsoleTheme>> basePatterns = getPatternsForTheme(consoleTheme);
+        for (BasePattern<ConsoleTheme> basePattern : basePatterns) {
+            if (Objects.equals(basePattern.id(), id)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static Pattern<ConsoleTheme>  getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
-        List<Pattern<ConsoleTheme> > patterns = getPatternsForTheme(consoleTheme);
-        for (Pattern<ConsoleTheme>  pattern : patterns) {
-            if (Objects.equals(pattern.id(), id)) {
-                return pattern;
+    public static BasePattern<ConsoleTheme> getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
+        List<BasePattern<ConsoleTheme>> basePatterns = getPatternsForTheme(consoleTheme);
+        for (BasePattern<ConsoleTheme> basePattern : basePatterns) {
+            if (Objects.equals(basePattern.id(), id)) {
+                return basePattern;
             }
         }
-        return patterns.get(0);
+        return basePatterns.get(0);
     }
 
     @Override
@@ -90,10 +90,10 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
                     boolean emissive = patternObject.get("emissive").getAsBoolean();
 
                     ResourceLocation textureLocation = new ResourceLocation(texture);
-                    Pattern<ConsoleTheme> pattern = new Pattern<>(theme, new ResourceLocation(id), textureLocation);
-                    pattern.setName(patternObject.get("name_component").getAsString());
-                    pattern.setEmissive(emissive);
-                    addPattern(theme, pattern);
+                    BasePattern<ConsoleTheme> basePattern = new BasePattern<>(theme, new ResourceLocation(id), textureLocation);
+                    basePattern.setName(patternObject.get("name_component").getAsString());
+                    basePattern.setEmissive(emissive);
+                    addPattern(theme, basePattern);
                 }
             } catch (JsonParseException jsonParseException){
                 TardisRefined.LOGGER.debug("Issue parsing {}! Error: {}", resourceLocation, jsonParseException.getMessage());

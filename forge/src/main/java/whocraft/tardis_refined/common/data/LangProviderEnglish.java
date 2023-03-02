@@ -49,7 +49,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
 
         /*Items*/
-        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
+        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "BasePattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
