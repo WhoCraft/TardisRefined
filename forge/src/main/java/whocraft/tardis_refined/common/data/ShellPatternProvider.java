@@ -51,6 +51,7 @@ public class ShellPatternProvider implements DataProvider {
         create(ShellTheme.PRESENT, false, "cardboard");
 
         create(ShellTheme.BRIEFCASE, false, "intel");
+        create(ShellTheme.BRIEFCASE, false, "metal");
 
         create(ShellTheme.MYSTIC, false, "dwarven");
 
