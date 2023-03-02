@@ -12,6 +12,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.patterns.BasePattern;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -33,8 +34,11 @@ public class ShellPatternProvider implements DataProvider {
         /*Add Base Textures*/
         for (ShellTheme shellTheme : ShellTheme.values()) {
             String themeName = shellTheme.name().toLowerCase(Locale.ENGLISH);
-            boolean hasDefaultEmission = shellTheme == ShellTheme.FACTORY;
-            ShellPatterns.addPattern(shellTheme, new ShellPattern(shellTheme, new ResourceLocation(TardisRefined.MODID, shellTheme.getSerializedName() + "_default"), createBasePatternLocation("textures/blockentity/shell/" + themeName + "/" + themeName + ".png"), createBasePatternLocation("textures/blockentity/shell/" + themeName + "/" + themeName + "_interior.png"))).setEmissive(hasDefaultEmission);
+            boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC || shellTheme == ShellTheme.NUKA || shellTheme == ShellTheme.PAGODA || shellTheme == ShellTheme.PHONE_BOOTH || shellTheme == ShellTheme.POLICE_BOX || shellTheme == ShellTheme.VENDING;
+
+            ShellPattern pattern = (ShellPattern) new ShellPattern(shellTheme, new ResourceLocation(TardisRefined.MODID, shellTheme.getSerializedName()), createBasePatternLocation("textures/blockentity/shell/" + themeName + "/" + themeName + ".png"), createBasePatternLocation("textures/blockentity/shell/" + themeName + "/" + themeName + "_interior.png")).setEmissive(hasDefaultEmission);
+            pattern.setName("Default");
+            ShellPatterns.addPattern(shellTheme, (ShellPattern) pattern.setEmissive(hasDefaultEmission));
         }
 
         create(ShellTheme.POLICE_BOX, false, "marble");

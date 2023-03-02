@@ -5,9 +5,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.brigadier.StringReader;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,6 +42,8 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/shell.png");
     public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/ui/noise.png");
+    private ShellPattern pattern;
+    private Button patternButton;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
@@ -54,11 +58,12 @@ public class ShellSelectionScreen extends SelectionScreen {
     @Override
     protected void init() {
         this.setEvents(() -> {
-            ShellSelectionScreen.selectShell(currentShellTheme);
+            selectShell(currentShellTheme);
         }, () -> {
             Minecraft.getInstance().setScreen(null);
         });
         this.currentShellTheme = this.themeList.get(0);
+        pattern = ShellPatterns.getPatternsForTheme(currentShellTheme).get(0);
 
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
@@ -66,11 +71,16 @@ public class ShellSelectionScreen extends SelectionScreen {
         addSubmitButton(width / 2 + 90, (height) / 2 + 35);
         addCancelButton(width / 2 - 11, (height) / 2 + 35);
 
+        patternButton = addRenderableWidget(new Button(width / 2 + 14, (height) / 2 + 34, 70, 20, Component.literal("Bob"), button -> {
+            pattern = ShellPatterns.next(currentShellTheme, pattern);
+            button.setMessage(Component.Serializer.fromJson(new StringReader(pattern.name())));
+        }));
+
         super.init();
     }
 
-    public static void selectShell(ShellTheme theme) {
-        new ChangeShellMessage(Minecraft.getInstance().player.getLevel().dimension(), theme).send();
+    public void selectShell(ShellTheme theme) {
+        new ChangeShellMessage(Minecraft.getInstance().player.getLevel().dimension(), theme, pattern).send();
         Minecraft.getInstance().setScreen(null);
     }
 
@@ -79,6 +89,8 @@ public class ShellSelectionScreen extends SelectionScreen {
     public void render(PoseStack poseStack, int i, int j, float f) {
         renderBackground(poseStack);
 
+        boolean themeHasNoPatterns = ShellPatterns.getPatternsForTheme(currentShellTheme).size() == 2;
+        patternButton.visible = !themeHasNoPatterns;
 
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;
@@ -121,17 +133,15 @@ public class ShellSelectionScreen extends SelectionScreen {
         PoseStack.Pose pose = poseStack.last();
         pose.pose().setIdentity();
         pose.normal().setIdentity();
-        poseStack.translate(-3, -1.0, 1984.0);
-        poseStack.scale(4F, 4F, 4F);
+        poseStack.translate(-3, -2, 1984.0);
+        poseStack.scale(3F, 3F, 3F);
 
         poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
         poseStack.mulPose(Vector3f.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
 
         MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
-        ShellPattern shellPattern = ShellPatterns.getPatternsForTheme(currentShellTheme).get(0);
-
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(shellPattern, false)));
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(pattern, false)));
         model.renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         bufferSource.endBatch();
         poseStack.popPose();
@@ -175,10 +185,10 @@ public class ShellSelectionScreen extends SelectionScreen {
                         current.setChecked(false);
                     }
                 }
-
+                pattern = ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+                patternButton.setMessage(Component.Serializer.fromJson(new StringReader(pattern.name())));
                 age = 0;
                 entry.setChecked(true);
-
             }));
         }
 

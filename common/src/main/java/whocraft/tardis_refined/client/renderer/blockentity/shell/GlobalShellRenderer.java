@@ -30,7 +30,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
     @Override
     public void render(GlobalShellBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        // Get the current factory shell.
+        if(blockEntity.TARDIS_ID == null) return;
 
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.5F, 0.5F);
@@ -51,7 +51,6 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
         var currentModel = ShellModelCollection.getInstance().getShellModel(theme);
-
         TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, blockEntity.TARDIS_ID.toString())));
         ShellPattern pattern = reactions.shellPattern();
 
