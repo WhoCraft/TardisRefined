@@ -165,8 +165,10 @@ public class TardisExteriorManager {
                 var shellBlockEntity = lastKnownLocation.getLevel().getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
-                    entity.setPattern(shellPattern.theme() != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
-                    entity.setChanged();
+                    if(shellPattern != null) {
+                        entity.setPattern(shellPattern.theme() != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
+                        entity.setChanged();
+                    }
                 }
             }
         }
