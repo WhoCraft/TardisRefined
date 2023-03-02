@@ -6,11 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PoliceBoxDoorModel extends ShellModel {
 
@@ -85,12 +83,8 @@ public class PoliceBoxDoorModel extends ShellModel {
 	}
 
 	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.POLICE_BOX.getInternalDoorTexture();
+	public boolean isDoorModel() {
+		return true;
 	}
 
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
-	}
 }

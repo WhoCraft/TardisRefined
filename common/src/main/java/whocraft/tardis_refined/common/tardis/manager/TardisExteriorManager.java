@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -18,7 +19,6 @@ import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.BasePattern;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
@@ -36,7 +36,7 @@ public class TardisExteriorManager {
     private TardisNavLocation lastKnownLocation;
     private ShellTheme currentTheme;
 
-    private ShellPattern basePattern = null;
+    private ShellPattern shellPattern = null;
 
     public boolean locked() {
         return locked;
@@ -87,6 +87,15 @@ public class TardisExteriorManager {
         return this.lastKnownLocation.getLevel();
     }
 
+    public ShellPattern shellPattern() {
+        return shellPattern;
+    }
+
+    public TardisExteriorManager setShellPattern(ShellPattern shellPattern) {
+        this.shellPattern = shellPattern;
+        return this;
+    }
+
     public CompoundTag saveData(CompoundTag tag) {
 
         if (this.lastKnownLocation != null) {
@@ -94,6 +103,10 @@ public class TardisExteriorManager {
         }
         if (this.currentTheme != null) {
             tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());
+        }
+
+        if (this.shellPattern != null) {
+            tag.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
         }
 
         tag.putBoolean(NbtConstants.LOCKED, locked);
@@ -109,7 +122,13 @@ public class TardisExteriorManager {
             this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);
         }
 
+        if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
+            this.shellPattern = ShellPatterns.getPatternFromString(currentTheme, new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
+        }
+
         locked = tag.getBoolean(NbtConstants.LOCKED);
+
+
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
@@ -146,7 +165,7 @@ public class TardisExteriorManager {
                 var shellBlockEntity = lastKnownLocation.getLevel().getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
-                    entity.setPattern(basePattern.theme() != theme ? basePattern : ShellPatterns.getPatternsForTheme(theme).get(0));
+                    entity.setPattern(shellPattern.theme() != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
                     entity.setChanged();
                 }
             }

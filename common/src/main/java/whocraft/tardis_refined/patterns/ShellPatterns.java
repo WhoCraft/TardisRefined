@@ -25,6 +25,11 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
 
     public static ShellPattern next(ShellTheme ShellTheme, ShellPattern basePattern) {
         List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
+
+        if(basePattern == null){
+            return basePatterns.get(0);
+        }
+
         int prevIndex = basePatterns.indexOf(basePattern);
         if (prevIndex > basePatterns.size() || prevIndex + 1 >= basePatterns.size()) {
             return basePatterns.get(0);

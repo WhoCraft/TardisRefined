@@ -23,9 +23,10 @@ import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionL
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.List;
-import java.util.Random;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
@@ -127,7 +128,10 @@ public class ShellSelectionScreen extends SelectionScreen {
         poseStack.mulPose(Vector3f.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
 
         MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture()));
+
+        ShellPattern shellPattern = ShellPatterns.getPatternsForTheme(currentShellTheme).get(0);
+
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(shellPattern, false)));
         model.renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         bufferSource.endBatch();
         poseStack.popPose();

@@ -5,10 +5,14 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.Map;
 
@@ -39,6 +43,16 @@ public class TardisClientData {
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
+    private ShellPattern shellPattern = ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+
+    public TardisClientData setShellPattern(ShellPattern shellPattern) {
+        this.shellPattern = shellPattern;
+        return this;
+    }
+
+    public ShellPattern shellPattern() {
+        return shellPattern;
+    }
 
     public int landingTime = 0, takeOffTime = 0;
 
@@ -87,7 +101,6 @@ public class TardisClientData {
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
 
-        // Set the "flying" tag in the compound tag to the current flying state of the Tardis
         compoundTag.putBoolean("flying", flying);
         compoundTag.putBoolean("throttleDown", throttleDown);
         compoundTag.putBoolean("isLanding", isLanding);
@@ -96,6 +109,11 @@ public class TardisClientData {
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
         compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
         compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
+
+        if (this.shellPattern != null) {
+            compoundTag.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
+        }
+
         return compoundTag;
     }
 
@@ -105,7 +123,6 @@ public class TardisClientData {
      * @param arg A CompoundTag containing the serialized Tardis data.
      */
     public void deserializeNBT(CompoundTag arg) {
-        // Set the flying state of the Tardis to the value of the "flying" tag in the compound tag
         flying = arg.getBoolean("flying");
         throttleDown = arg.getBoolean("throttleDown");
         isLanding = arg.getBoolean("isLanding");
@@ -114,6 +131,11 @@ public class TardisClientData {
         isInDangerZone = arg.getBoolean("isInDangerZone");
         flightShakeScale = arg.getFloat("flightShakeScale");
         isOnCooldown = arg.getBoolean("isOnCooldown");
+
+        if (arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
+            this.shellPattern = ShellPatterns.getPatternFromString(shellTheme, new ResourceLocation(arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
+        }
+
     }
 
     /**
