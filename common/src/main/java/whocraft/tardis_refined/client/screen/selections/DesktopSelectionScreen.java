@@ -2,6 +2,7 @@ package whocraft.tardis_refined.client.screen.selections;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.brigadier.StringReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
@@ -127,7 +128,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
         for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
             if (desktop.availableByDefault) {
-                selectionList.children().add(new GenericMonitorSelectionList.Entry(desktop.getDisplayName(), (entry) -> {
+                selectionList.children().add(new GenericMonitorSelectionList.Entry(Component.Serializer.fromJson(new StringReader(desktop.getName())), (entry) -> {
                     previousImage = currentDesktopTheme.getPreviewTexture();
                     this.currentDesktopTheme = desktop;
 

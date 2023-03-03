@@ -32,6 +32,10 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
         return patterns.get(prevIndex + 1);
     }
 
+    public static void clearPatterns() {
+        PATTERNS = new HashMap<>();
+    }
+
     public static Pattern addPattern(ConsoleTheme theme, Pattern pattern) {
         TardisRefined.LOGGER.info("Adding Console Pattern {} for {}", pattern.identifier, pattern.theme);
         if (PATTERNS.containsKey(theme)) {
@@ -46,6 +50,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
 
     public static List<Pattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
+        if (PATTERNS.isEmpty()) {return null;}
         return PATTERNS.get(consoleTheme);
     }
 
@@ -96,7 +101,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
                     addPattern(theme, pattern);
                 }
             } catch (JsonParseException jsonParseException){
-                TardisRefined.LOGGER.debug("Issue parsing {}! Error: {}", resourceLocation, jsonParseException.getMessage());
+                TardisRefined.LOGGER.debug("Issue parsing ConsolePattern {}! Error: {}", resourceLocation, jsonParseException.getMessage());
             }
         });
 

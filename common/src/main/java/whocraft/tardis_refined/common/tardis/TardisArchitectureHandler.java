@@ -25,7 +25,7 @@ public class TardisArchitectureHandler {
     public static final int INTERIOR_SIZE = 150;
 
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
-        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.id));
+        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.identifier));
 
         // Fill the area out.
         BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);

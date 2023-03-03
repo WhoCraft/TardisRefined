@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.network.messages;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
@@ -30,7 +31,7 @@ public class ChangeDesktopMessage extends MessageC2S {
 
     public ChangeDesktopMessage(FriendlyByteBuf buffer) {
         resourceKey = buffer.readResourceKey(Registry.DIMENSION_REGISTRY);
-        this.desktopTheme = TardisDesktops.getDesktopThemeById(buffer.readUtf(500));
+        this.desktopTheme = TardisDesktops.getDesktopById(buffer.readResourceLocation());
     }
 
     @NotNull
@@ -42,7 +43,7 @@ public class ChangeDesktopMessage extends MessageC2S {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.resourceKey);
-        buf.writeUtf(this.desktopTheme.id);
+        buf.writeResourceLocation(this.desktopTheme.identifier);
     }
 
     @Override

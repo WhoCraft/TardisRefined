@@ -135,8 +135,13 @@ public class MiscHelper {
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
-        var noUnderscores = dimensionKey.location().getPath().replace("_", " ");
-        return WordUtils.capitalizeFully(noUnderscores);
+        return getCleanName(dimensionKey.location().getPath());
+    }
+
+    public static String getCleanName(String name) {
+       var noUnderscores = name.replace("_", " ");
+       return WordUtils.capitalizeFully(noUnderscores);
     }
 
 }
+
