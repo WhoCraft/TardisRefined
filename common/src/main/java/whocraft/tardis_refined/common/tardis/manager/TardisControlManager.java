@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -216,95 +217,114 @@ public class TardisControlManager {
     }
 
 
-    public TardisNavLocation getClosestValidPosition(TardisNavLocation location) {
-        ServerLevel level = location.level;
-        BlockPos currentScanPosition = location.position;
+    public TardisNavLocation findClosestValidPosition(TardisNavLocation location) {
+        ServerLevel level = location.getLevel();
 
-        // We need to be able to determine whether the position we're aiming for is a valid location.
-        boolean isTargetLandableBlock = !level.getBlockState(currentScanPosition).getMaterial().isSolidBlocking();
+        var height = level.getMaxBuildHeight();
+        var minHeight = level.getMinBuildHeight();
 
-        if (isTargetLandableBlock) {
-            currentScanPosition = currentScanPosition.below();
-            if (!level.getBlockState(currentScanPosition).getMaterial().isSolidBlocking()) {
-                return startScanDownwards(location);
+        var failOffset = 1;
+        var attempts = 20;
+
+        var originalY = location.position.getY();
+
+        // Do any specific dimension checks
+        if (level.dimension() == Level.NETHER) {
+            if (location.position.getY() > 127) {
+                height = 125;
+                failOffset = 10;
+                location.position = new BlockPos(location.position.getX(), 80, location.position.getZ());
             }
         }
 
-        return startScanUpwards(location);
-    }
-
-    private TardisNavLocation startScanDownwards(TardisNavLocation startingLocation) {
-        TardisNavLocation solvedLocation = scanDownForPosition(startingLocation);
-        if (solvedLocation != null) {
-            return solvedLocation;
-        } else {
-            // Below wasn't an option. Scan up for a location.
-            return scanUpForPosition(startingLocation);
+        boolean isTargetFine = !isSolidBlock(level, location.position) && !isSolidBlock(level, location.position.above()) && isSolidBlock(level, location.position.below());
+        if (isTargetFine) {
+            var safeDir = findSafeDirection(location);
+            if (safeDir != null) {return safeDir;}
         }
 
-    }
-
-    private TardisNavLocation startScanUpwards(TardisNavLocation startingLocation) {
-        TardisNavLocation solvedLocation = scanUpForPosition(startingLocation);
-        if (solvedLocation != null) {
-            return solvedLocation;
-        } else {
-            // Below wasn't an option. Scan up for a location.
-            return scanDownForPosition(startingLocation);
-        }
-
-    }
-
-    private TardisNavLocation scanDownForPosition(TardisNavLocation startingLocation) {
-        ServerLevel level = startingLocation.level;
-        BlockPos currentPos = startingLocation.position;
-
-        while (currentPos.getY() > level.getMinBuildHeight()) {
-            if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
-                // Check if the Shell can be physically in the location.
-                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking() && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking() && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
-
-                    // Check that the facing location !!!!!
-                    Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-                    for (Direction dir : directions) {
-                        BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
-                        if (!level.getBlockState(basePos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
-                            return new TardisNavLocation(currentPos, dir, level);
-                        }
-                    }
-                }
+        var attemptNumber = 0;
+        while (attemptNumber > -1) {
+            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
+            var result = scanUpwardsFromCord(location, height);
+            if (result != null && location.position.getY() < height && location.position.getY() > minHeight ) {
+                return result;
             }
 
-            currentPos = currentPos.below();
+            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
+            result = scanDownwardsFromCord(location, minHeight);
+            if (result != null && location.position.getY() < height && location.position.getY() > minHeight ) {
+                return result;
+            }
+
+            // Try the next interval in the rotation.
+            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
+            location.position = location.position.offset(location.rotation.getNormal().multiply((int) (failOffset * (1 + ((float) attemptNumber * 0.1f)))));
+            attemptNumber++;
+        }
+
+        return location;
+    }
+
+    private BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
+        if (level.dimension() == Level.NETHER) {
+
+            if (pos.getY() > 125 || originalY > 125) {
+                return new BlockPos(pos.getX(), 60, pos.getZ());
+            }
+        }
+
+        return new BlockPos(pos.getX(), originalY, pos.getZ());
+    }
+
+    private boolean isSafeToLand(TardisNavLocation location)
+    {
+        if (!isSolidBlock(location.getLevel(), location.position) && isSolidBlock(location.getLevel(), location.position.below()) && !isSolidBlock(location.getLevel(), location.position.above())) {
+            return location.getLevel().getBlockState(location.position.below()).getBlock() != Blocks.LAVA && location.getLevel().getBlockState(location.position.below()).getBlock() != Blocks.WATER;
+        }
+        return false;
+    }
+
+    private TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
+        while (location.position.getY() <= maxHeight) {
+            if (isSafeToLand(location)) {
+                return findSafeDirection(location);
+            }
+
+            location.position = location.position.above(1);
+        }
+        return null;
+    }
+
+    private TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
+        while (location.position.getY() >= minHeight) {
+
+            if (isSafeToLand(location)) {
+
+                return findSafeDirection(location);
+            }
+
+            location.position = location.position.below(1);
         }
 
         return null;
     }
 
-    private TardisNavLocation scanUpForPosition(TardisNavLocation startingLocation) {
-        ServerLevel level = startingLocation.level;
-        BlockPos currentPos = startingLocation.position;
+    private TardisNavLocation findSafeDirection(TardisNavLocation location) {
 
-        while (currentPos.getY() < level.getMaxBuildHeight()) {
-            if (!level.getBlockState(currentPos).getMaterial().isSolidBlocking()) {
-                // Check if the Shell can be physically in the location.
-                if (level.getBlockState(currentPos.below()).getMaterial().isSolidBlocking() && !level.getBlockState(currentPos.above()).getMaterial().isSolidBlocking() && !level.getBlockState(currentPos.below()).is(Blocks.WATER)) {
-
-                    // Check that the facing location !!!!!
-                    Direction[] directions = new Direction[]{startingLocation.rotation, startingLocation.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-                    for (Direction dir : directions) {
-                        BlockPos basePos = BlockPos.of(BlockPos.offset(currentPos.asLong(), dir));
-                        if (!level.getBlockState(basePos).getMaterial().isSolidBlocking() && !level.getBlockState(basePos.above()).getMaterial().isSolidBlocking()) {
-                            return new TardisNavLocation(currentPos, dir, level);
-                        }
-                    }
-                }
+        Direction[] directions = new Direction[]{location.rotation, location.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+        for (Direction dir : directions) {
+            BlockPos basePos = BlockPos.of(BlockPos.offset(location.position.asLong(), dir));
+            if (!isSolidBlock(location.getLevel(), basePos) && !isSolidBlock(location.getLevel(), basePos.above())) {
+                return new TardisNavLocation(location.position, dir, location.getLevel());
             }
-
-            currentPos = currentPos.above();
         }
 
         return null;
+    }
+
+    private boolean isSolidBlock(ServerLevel level, BlockPos pos) {
+        return level.getBlockState(pos).getMaterial().isSolidBlocking() || level.getBlockState(pos).getBlock() == Blocks.WATER || level.getBlockState(pos).getBlock() == Blocks.LAVA;
     }
 
     public boolean beginFlight(boolean autoLand) {
@@ -314,9 +334,6 @@ public class TardisControlManager {
 
         this.autoLand = autoLand;
         this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
-
-        // TEMP: Force the targetLocation's level to be the overworld.
-        this.targetLocation.level = Platform.getServer().overworld();
 
         operator.setDoorClosed(true);
         operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
@@ -328,6 +345,8 @@ public class TardisControlManager {
 
         this.operator.getTardisFlightEventManager().calculateTravelLogic();
 
+
+
         return true;
     }
 
@@ -338,46 +357,32 @@ public class TardisControlManager {
         this.ticksInFlight = 0;
         this.ticksLanding = TICKS_LANDING_MAX;
 
-        BlockPos landingLocation = this.targetLocation.position;
-        calculatePositionToLand(landingLocation);
+        TardisNavLocation landingLocation = this.targetLocation;
+        var location =  findClosestValidPosition(landingLocation);
+
+        operator.getExteriorManager().placeExteriorBlock(operator, location);
+        if (currentExteriorTheme != null) {
+            operator.getInteriorManager().setShellTheme(currentExteriorTheme);
+        }
 
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
         operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
         return true;
     }
 
-    public void calculatePositionToLand(BlockPos landingLocation) {
-
-        TardisNavLocation location = null;
-        while (location == null) {
-            location = getClosestValidPosition(new TardisNavLocation(landingLocation, targetLocation.rotation, targetLocation.level));
-            if (location != null) {
-                break;
-            } else {
-                landingLocation = landingLocation.north(1); // Make a more sophisticated version of this!
-            }
-        }
-
-        operator.getExteriorManager().placeExteriorBlock(operator, location);
-        if (currentExteriorTheme != null) {
-            operator.getInteriorManager().setShellTheme(currentExteriorTheme);
-        }
-    }
-
     public void enterTimeVortex() {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
-        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
-        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.level, lastKnown.position);
+        TardisNavLocation lastKnown = operator.getExteriorManager().getLastKnownLocation();
+        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.position);
     }
 
     public void onFlightEnd() {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
         this.autoLand = false;
-        TardisNavLocation lastKnown = operator.getControlManager().getTargetLocation();
-        TardisEvents.LAND.invoker().onLand(operator, lastKnown.level, lastKnown.position);
+        TardisEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().position);
     }
 
     // Triggers the crash event.
@@ -404,7 +409,13 @@ public class TardisControlManager {
         BlockPos landingLocation = new BlockPos(x, y, z);
 
         this.setTargetPosition(landingLocation);
-        calculatePositionToLand(landingLocation);
+        TardisNavLocation landing = this.targetLocation;
+        var location =  findClosestValidPosition(landing);
+
+        operator.getExteriorManager().placeExteriorBlock(operator, location);
+        if (currentExteriorTheme != null) {
+            operator.getInteriorManager().setShellTheme(currentExteriorTheme);
+        }
 
         operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
         this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1000f, 1f);

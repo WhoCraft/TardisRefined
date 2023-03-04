@@ -147,7 +147,7 @@ public class PoliceBoxModel extends ShellModel {
 			poseStack.scale(1.05f, 1.05f, 1.05f);
 			poseStack.translate(0, -0.07, 0);
 		}
-		handleAnimations(entity,frame,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		handleAllAnimations(entity,frame,isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
 		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());

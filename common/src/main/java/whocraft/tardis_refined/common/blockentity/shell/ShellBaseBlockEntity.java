@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,6 +35,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     public UUID TARDIS_ID = null;
+    public AnimationState liveliness = new AnimationState();
 
     @Override
     public void load(CompoundTag pTag) {

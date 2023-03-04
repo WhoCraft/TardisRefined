@@ -5,10 +5,8 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -121,13 +119,9 @@ public class TardisClientData {
     /**
      * Syncs the Tardis instance with the specified server level. This method should only be called
      * server-side, as calling it client-side may cause the game to crash.
-     *
-     * @param serverLevel The server level to sync the Tardis with.
      */
-    public void sync(ServerLevel serverLevel) {
-        // Send a SyncIntReactionsMessage to the specified server level, using the Tardis's current level key
-        // and serialized NBT data
-        TardisNetwork.NETWORK.sendToDimension(serverLevel, new SyncIntReactionsMessage(getLevelKey(), serializeNBT()));
+    public void sync() {
+        new SyncIntReactionsMessage(getLevelKey(), serializeNBT()).sendToAll();
     }
 
     public void tickClientside() {
@@ -161,29 +155,28 @@ public class TardisClientData {
     public void update() {
         // Check if the Tardis is not currently flying and the rotor animation is started
         if (!flying && ROTOR_ANIMATION.isStarted()) {
-            // If the Tardis is not flying but the rotor animation is started, stop the animation
             ROTOR_ANIMATION.stop();
         }
-
         // Check if the Tardis is flying and the rotor animation is not started
-        if (flying && !ROTOR_ANIMATION.isStarted()) {
-            // If the Tardis is flying but the rotor animation is not started, start the animation
+        else if (flying && !ROTOR_ANIMATION.isStarted()) {
             ROTOR_ANIMATION.start(0);
         }
 
-        if (isLanding && !LANDING_ANIMATION.isStarted()) {
-            TAKEOFF_ANIMATION.stop();
-            LANDING_ANIMATION.start(0);
-        }
-        if (!isLanding && LANDING_ANIMATION.isStarted()) {
+        if (isLanding) {
+            if (!LANDING_ANIMATION.isStarted()) {
+                TAKEOFF_ANIMATION.stop();
+                LANDING_ANIMATION.start(0);
+            }
+        } else if (LANDING_ANIMATION.isStarted()) {
             LANDING_ANIMATION.stop();
         }
 
-        if (isTakingOff && !TAKEOFF_ANIMATION.isStarted()) {
-            LANDING_ANIMATION.stop();
-            TAKEOFF_ANIMATION.start(0);
-        }
-        if (!isTakingOff && TAKEOFF_ANIMATION.isStarted()) {
+        if (isTakingOff) {
+            if (!TAKEOFF_ANIMATION.isStarted()) {
+                LANDING_ANIMATION.stop();
+                TAKEOFF_ANIMATION.start(0);
+            }
+        } else if (TAKEOFF_ANIMATION.isStarted()) {
             TAKEOFF_ANIMATION.stop();
         }
     }

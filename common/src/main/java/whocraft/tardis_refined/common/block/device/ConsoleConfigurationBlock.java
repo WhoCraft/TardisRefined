@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.block.device;
 
+import com.mojang.brigadier.StringReader;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,7 +36,6 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
@@ -106,7 +106,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 }
 
                 globalConsoleBlock.setPattern(ConsolePatterns.next(console, globalConsoleBlock.pattern()));
-                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.pattern(globalConsoleBlock.pattern())), true);
+                PlayerUtil.sendMessage(player, Component.Serializer.fromJson(new StringReader(globalConsoleBlock.pattern().name())), true);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 globalConsoleBlock.sendUpdates();
                 player.getCooldowns().addCooldown(ItemRegistry.PATTERN_MANIPULATOR.get(), 20);
@@ -203,6 +203,13 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         BlockState consoleBlock = level.getBlockState(pos.offset(state.getValue(FACING).getNormal()));
         if (consoleBlock.getBlock() instanceof GlobalConsoleBlock) {
             level.setBlockAndUpdate(pos.offset(state.getValue(FACING).getNormal()), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState().setValue(GlobalConsoleBlock.CONSOLE, theme));
+
+            if(level.getBlockEntity(pos.offset(state.getValue(FACING).getNormal())) instanceof GlobalConsoleBlockEntity globalConsoleBlock){
+                globalConsoleBlock.setPattern(null);
+                globalConsoleBlock.setPattern(globalConsoleBlock.pattern());
+                globalConsoleBlock.sendUpdates();
+            }
+
             if (Platform.isClient()) {
                 level.playSound(null, pos.offset(state.getValue(FACING).getNormal()), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
                 playParticles(pos, level);

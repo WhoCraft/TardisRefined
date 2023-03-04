@@ -11,6 +11,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.data.*;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -51,6 +52,7 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator, existingFileHelper));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator));
         generator.addProvider(e.includeServer(), new RecipeProvider(generator));
+        generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
 
         //Tags
         generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator, existingFileHelper));
