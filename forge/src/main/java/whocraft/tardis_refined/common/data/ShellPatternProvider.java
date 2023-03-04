@@ -45,6 +45,7 @@ public class ShellPatternProvider implements DataProvider {
         create(ShellTheme.POLICE_BOX, false, "gaudy");
         create(ShellTheme.POLICE_BOX, false, "metal");
         create(ShellTheme.POLICE_BOX, false, "stone");
+        create(ShellTheme.POLICE_BOX, false, "red");
 
         create(ShellTheme.PHONE_BOOTH, false, "metal");
 
@@ -52,6 +53,7 @@ public class ShellPatternProvider implements DataProvider {
 
         create(ShellTheme.BRIEFCASE, false, "intel");
         create(ShellTheme.BRIEFCASE, false, "metal");
+        create(ShellTheme.BRIEFCASE, false, "mesa");
 
         create(ShellTheme.MYSTIC, false, "dwarven");
 
