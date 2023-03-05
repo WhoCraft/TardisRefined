@@ -35,12 +35,13 @@ public class DesktopProvider implements DataProvider {
         addDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
         addDesktop(TardisDesktops.FACTORY_THEME);
         addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "coral"), new ResourceLocation(TardisRefined.MODID, "desktop/coral"), true));
-        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "toyota"), new ResourceLocation(TardisRefined.MODID, "desktop/toyota"), true));
-        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "copper"), new ResourceLocation(TardisRefined.MODID, "desktop/copper"), true));
-        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "crystal"), new ResourceLocation(TardisRefined.MODID, "desktop/crystal"), true));
         addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "victorian"), new ResourceLocation(TardisRefined.MODID, "desktop/victorian"), true));
+        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "copper"), new ResourceLocation(TardisRefined.MODID, "desktop/copper"), true));
+        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "toyota"), new ResourceLocation(TardisRefined.MODID, "desktop/toyota"), true));
+        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "crystal"), new ResourceLocation(TardisRefined.MODID, "desktop/crystal"), true));
         addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "nuka"), new ResourceLocation(TardisRefined.MODID, "desktop/nuka"), true));
         addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "future_nostalgia"), new ResourceLocation(TardisRefined.MODID, "desktop/future_nostalgia"), true));
+        addDesktop(new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "violet_eye"), new ResourceLocation(TardisRefined.MODID, "desktop/violet_eye"), true));
 
     }
 
