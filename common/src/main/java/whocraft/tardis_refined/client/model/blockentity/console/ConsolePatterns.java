@@ -50,7 +50,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
 
 
     public static List<Pattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
-        if (PATTERNS.isEmpty()) {return null;}
+        if (PATTERNS.isEmpty()) {return new ArrayList<Pattern>();}
         return PATTERNS.get(consoleTheme);
     }
 

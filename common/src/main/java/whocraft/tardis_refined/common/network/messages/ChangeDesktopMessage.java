@@ -43,7 +43,7 @@ public class ChangeDesktopMessage extends MessageC2S {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.resourceKey);
-        buf.writeResourceLocation(this.desktopTheme.identifier);
+        buf.writeResourceLocation(this.desktopTheme.getIdentifier());
     }
 
     @Override

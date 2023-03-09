@@ -107,8 +107,8 @@ public class TardisInteriorManager {
         }
 
 
-        tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.identifier.toString() : "");
-        tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.identifier.toString());
+        tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
+        tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         return tag;
     }
 

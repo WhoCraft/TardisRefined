@@ -128,7 +128,7 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addDesktopTheme(DesktopTheme desktopTheme, String translation) {
-        add(desktopTheme.identifier.getPath(), translation);
+        add(desktopTheme.getIdentifier().getPath(), translation);
     }
 
 
