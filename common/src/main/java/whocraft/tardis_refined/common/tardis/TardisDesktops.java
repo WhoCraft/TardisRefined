@@ -19,8 +19,8 @@ public class TardisDesktops extends SimpleJsonResourceReloadListener {
 
     public static List<DesktopTheme> DESKTOPS = new ArrayList<>();
 
-    public static final DesktopTheme DEFAULT_OVERGROWN_THEME = new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "default_overgrown"), new ResourceLocation(TardisRefined.MODID, "cave/cave_generation_one"), false);
-    public static final DesktopTheme FACTORY_THEME = new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "factory"), new ResourceLocation(TardisRefined.MODID, "desktop/factory"), true);
+    public static final DesktopTheme DEFAULT_OVERGROWN_THEME = new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "default_overgrown"), new ResourceLocation(TardisRefined.MODID, "cave/cave_generation_one"));
+    public static final DesktopTheme FACTORY_THEME = new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "factory"), new ResourceLocation(TardisRefined.MODID, "desktop/factory"));
 
     public TardisDesktops() {
         super(TardisRefined.GSON, "desktop");
@@ -28,7 +28,7 @@ public class TardisDesktops extends SimpleJsonResourceReloadListener {
 
 
     public static DesktopTheme getDesktopById(ResourceLocation location) {
-        return DESKTOPS.stream().filter(theme -> Objects.equals(theme.identifier, location)).findAny().or(() -> Optional.of(FACTORY_THEME)).get();
+        return DESKTOPS.stream().filter(theme -> Objects.equals(theme.getIdentifier(), location)).findAny().or(() -> Optional.of(FACTORY_THEME)).get();
     }
 
     public static void clear() {
@@ -49,8 +49,8 @@ public class TardisDesktops extends SimpleJsonResourceReloadListener {
                 String name = desktopObject.get("name_component").getAsString();
                 ResourceLocation resourceLocationId = new ResourceLocation(id);
 
-                if (!resourceLocationId.equals(TardisDesktops.DEFAULT_OVERGROWN_THEME.identifier)) {
-                    DesktopTheme theme = new DesktopTheme(resourceLocationId, new ResourceLocation(structure), true);
+                if (!resourceLocationId.equals(TardisDesktops.DEFAULT_OVERGROWN_THEME.getIdentifier())) {
+                    DesktopTheme theme = new DesktopTheme(resourceLocationId, new ResourceLocation(structure));
                     theme.setName(name);
                     addDesktop(theme);
                 }
@@ -68,7 +68,7 @@ public class TardisDesktops extends SimpleJsonResourceReloadListener {
     }
 
     public static DesktopTheme addDesktop(DesktopTheme theme) {
-        TardisRefined.LOGGER.info("Adding Desktop {}", theme.identifier);
+        TardisRefined.LOGGER.info("Adding Desktop {}", theme.getIdentifier());
         DESKTOPS.add(theme);
         return theme;
     }

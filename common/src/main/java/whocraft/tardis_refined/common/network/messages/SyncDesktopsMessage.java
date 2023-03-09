@@ -33,8 +33,7 @@ public class SyncDesktopsMessage extends MessageS2C {
         ResourceLocation id = buf.readResourceLocation(); // ID
         ResourceLocation structure = buf.readResourceLocation(); // structure
         String name = buf.readUtf(); // name
-        boolean avaliableByDefault = buf.readBoolean(); // availableByDefault
-        DesktopTheme theme = new DesktopTheme(id, structure, avaliableByDefault);
+        DesktopTheme theme = new DesktopTheme(id, structure);
         theme.setName(name);
 
         return theme;
@@ -57,10 +56,9 @@ public class SyncDesktopsMessage extends MessageS2C {
 
 
     private void writeDesktop(DesktopTheme desktopTheme, FriendlyByteBuf buf) {
-        buf.writeResourceLocation(desktopTheme.identifier); // ID
-        buf.writeResourceLocation(desktopTheme.location); // texture
-        buf.writeUtf(desktopTheme.name); // name
-        buf.writeBoolean(desktopTheme.availableByDefault); // glow
+        buf.writeResourceLocation(desktopTheme.getIdentifier()); // ID
+        buf.writeResourceLocation(desktopTheme.getStructureLocation()); // texture
+        buf.writeUtf(desktopTheme.getName()); // name
     }
 
 
