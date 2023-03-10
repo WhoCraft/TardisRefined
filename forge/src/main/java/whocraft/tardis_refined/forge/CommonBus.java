@@ -14,6 +14,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -32,6 +33,7 @@ public class CommonBus {
     @SubscribeEvent
     public static void onDatapack(AddReloadListenerEvent addReloadListenerEvent) {
         addReloadListenerEvent.addListener(new ConsolePatterns());
+        addReloadListenerEvent.addListener(new TardisDesktops());
     }
 
     @SubscribeEvent
