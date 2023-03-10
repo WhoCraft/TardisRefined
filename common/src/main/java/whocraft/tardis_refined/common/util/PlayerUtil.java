@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
@@ -47,7 +46,7 @@ public class PlayerUtil {
         }
     }
 
-    public static void sendMessage(LivingEntity livingEntity, MutableComponent translation, boolean hotBar) {
+    public static void sendMessage(LivingEntity livingEntity, Component translation, boolean hotBar) {
         if (!(livingEntity instanceof Player player)) return;
         if (!player.level.isClientSide) {
             player.displayClientMessage(translation, hotBar);

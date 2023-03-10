@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
 import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
@@ -42,7 +43,8 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
 
             ConsoleTheme theme = blockstate.getValue(ConsoleConfigurationBlock.CONSOLE);
 
-            ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(null, blockEntity.getLevel(), poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
+            ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);
+            consoleModel.renderConsole(null, blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);
         }
 
         poseStack.popPose();

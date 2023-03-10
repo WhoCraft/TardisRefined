@@ -1,6 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package whocraft.tardis_refined.client.model.blockentity.console;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,7 +21,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class VictorianConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class VictorianConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
 	public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(4f).looping()
@@ -52,7 +50,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements IConsole
 							new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
 
-	private static ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
+	private static final ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
 
 	private final ModelPart root;
 	private final ModelPart upper_rotor;
@@ -713,13 +711,12 @@ public class VictorianConsoleModel extends HierarchicalModel implements IConsole
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
 		throttle_control.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
 		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

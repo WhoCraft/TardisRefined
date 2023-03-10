@@ -10,19 +10,19 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInternalDoor {
+public class AbstractEntityBlockDoor extends BlockEntity implements TardisInternalDoor {
     private boolean isLocked = false;
     private String uuid_id;
-    private boolean isOpen = false;
+    private final boolean isOpen = false;
     private boolean isMainDoor = false;
 
     private TardisLevelOperator operator;
@@ -114,9 +114,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     public void onBlockPlaced() {
         if (!getLevel().isClientSide()) {
             Optional<TardisLevelOperator> lvlOper = TardisLevelOperator.get((ServerLevel) this.getLevel());
-            if (lvlOper.isPresent()) {
-                this.operator = lvlOper.get();
-            }
+            lvlOper.ifPresent(tardisLevelOperator -> this.operator = tardisLevelOperator);
         }
     }
 

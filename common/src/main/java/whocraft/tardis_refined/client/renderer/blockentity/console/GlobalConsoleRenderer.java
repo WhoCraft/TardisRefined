@@ -11,11 +11,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Objects;
 
@@ -39,8 +39,11 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         BlockState blockstate = blockEntity.getBlockState();
         ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
 
-        ConsoleModelCollection.getInstance().getConsoleModel(theme).renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource, packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-
+        ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);
+        consoleModel.renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        if(blockEntity.pattern() != null && blockEntity.pattern().emissive()) {
+            consoleModel.renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(consoleModel.getTexture(blockEntity, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        }
         poseStack.popPose();
 
         if (theme == ConsoleTheme.CRYSTAL) {

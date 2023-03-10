@@ -5,6 +5,17 @@ dependencies {
 
     // Forge Config API Port
     modCompileOnlyApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
+
+
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+        transitive(false)
+    }
+
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+        transitive(false)
+    }
 }
 
 loom {

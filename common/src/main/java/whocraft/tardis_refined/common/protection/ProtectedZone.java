@@ -4,7 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.AABB;
 
 public class ProtectedZone {
-    private BlockPos topCorner, bottomCorner;
+    private final BlockPos topCorner;
+    private final BlockPos bottomCorner;
     private boolean allowPlacement = false;
     private boolean allowBreaking = false;
 

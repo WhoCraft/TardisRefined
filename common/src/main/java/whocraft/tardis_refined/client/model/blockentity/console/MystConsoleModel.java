@@ -1,7 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -23,9 +20,9 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class MystConsoleModel extends HierarchicalModel implements IConsoleUnit {
+public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-	private static ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
+	private static final ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
 
 	public static final AnimationDefinition MODEL_ROTOR_LOOP = AnimationDefinition.Builder.withLength(4f).looping()
 			.addAnimation("rotor",
@@ -599,13 +596,12 @@ public class MystConsoleModel extends HierarchicalModel implements IConsoleUnit 
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_ROTOR_LOOP, Minecraft.getInstance().player.tickCount);
 
 		throttle_control.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
-		VertexConsumer vertexConsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(getTexture(globalConsoleBlock)));
 
 		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

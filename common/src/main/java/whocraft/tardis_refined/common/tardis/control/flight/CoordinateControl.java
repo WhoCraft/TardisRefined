@@ -1,17 +1,18 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
+
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.control.IControl;
+import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
-public class CoordinateControl implements IControl {
+
+public class CoordinateControl extends Control {
 
     CoordinateButton button;
 
@@ -20,7 +21,7 @@ public class CoordinateControl implements IControl {
     }
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
+    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         int increment = operator.getControlManager().getCordIncrement();
 
@@ -28,7 +29,7 @@ public class CoordinateControl implements IControl {
             case X -> operator.getControlManager().offsetTargetPositionX(increment);
             case Y -> {
                 int potentialY = operator.getControlManager().getTargetLocation().position.getY() + increment;
-                if (potentialY < operator.getControlManager().getTargetLocation().level.getMaxBuildHeight()) {
+                if (potentialY < operator.getControlManager().getTargetLocation().getLevel().getMaxBuildHeight()) {
                     operator.getControlManager().offsetTargetPositionY(increment);
                 }else {
                     operator.getLevel().playSound(null, controlEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1, 1);
@@ -37,17 +38,22 @@ public class CoordinateControl implements IControl {
             case Z -> operator.getControlManager().offsetTargetPositionZ(increment);
         }
 
+        if (operator.getControlManager().isInFlight()) {
+            operator.getTardisFlightEventManager().calculateTravelLogic();
+        }
+
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        super.onRightClick(operator, theme, controlEntity, player);
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ControlEntity controlEntity, Player player) {
+    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         int increment = operator.getControlManager().getCordIncrement();
         switch (button){
             case X -> operator.getControlManager().offsetTargetPositionX(-increment);
             case Y -> {
                 int potentialY = operator.getControlManager().getTargetLocation().position.getY() - increment;
-                if (potentialY > operator.getControlManager().getTargetLocation().level.getMinBuildHeight()) {
+                if (potentialY > operator.getControlManager().getTargetLocation().getLevel().getMinBuildHeight()) {
                     operator.getControlManager().offsetTargetPositionY(-increment);
                 }else {
                     operator.getLevel().playSound(null, controlEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundSource.BLOCKS, 1, 1);
@@ -56,7 +62,12 @@ public class CoordinateControl implements IControl {
             case Z -> operator.getControlManager().offsetTargetPositionZ(-increment);
         }
 
+        if (operator.getControlManager().isInFlight()) {
+            operator.getTardisFlightEventManager().calculateTravelLogic();
+        }
+
         PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
+        super.onLeftClick(operator, theme, controlEntity, player);
     }
 }
 

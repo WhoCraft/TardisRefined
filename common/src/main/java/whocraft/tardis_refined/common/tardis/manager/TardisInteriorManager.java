@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
@@ -29,6 +29,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.ArrayList;
@@ -36,12 +37,13 @@ import java.util.List;
 
 public class TardisInteriorManager {
 
-    private TardisLevelOperator operator;
+    private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
     private boolean hasGeneratedCorridors = false;
     private int interiorGenerationCooldown = 0;
     private BlockPos corridorAirlockCenter;
+    private DesktopTheme preparedTheme, currentTheme = TardisDesktops.DEFAULT_OVERGROWN_THEME;
 
     // Airlock systems.
     private boolean processingWarping = false;
@@ -51,7 +53,9 @@ public class TardisInteriorManager {
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
     public static final ProtectedZone CORRIDOR_HUB = new ProtectedZone(new BlockPos(978, 146, 34), new BlockPos(1046, 69, -18));
 
-    private DesktopTheme preparedTheme;
+    public DesktopTheme preparedTheme() {
+        return preparedTheme;
+    }
 
     public TardisInteriorManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -79,6 +83,19 @@ public class TardisInteriorManager {
         return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, CORRIDOR_HUB};
     }
 
+    public DesktopTheme currentTheme() {
+        return currentTheme;
+    }
+
+    public TardisInteriorManager setCurrentTheme(DesktopTheme currentTheme) {
+        this.currentTheme = currentTheme;
+        return this;
+    }
+
+    public boolean isCave() {
+        return currentTheme == TardisDesktops.DEFAULT_OVERGROWN_THEME;
+    }
+
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE, this.isWaitingToGenerate);
         tag.putBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP, this.isGeneratingDesktop);
@@ -89,12 +106,9 @@ public class TardisInteriorManager {
             tag.put(NbtConstants.TARDIS_IM_AIRLOCK_CENTER, NbtUtils.writeBlockPos(this.corridorAirlockCenter));
         }
 
-        if (this.preparedTheme != null) {
-            tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme.id);
-        } else {
-            tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, "");
-        }
 
+        tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
+        tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         return tag;
     }
 
@@ -103,7 +117,8 @@ public class TardisInteriorManager {
         this.isGeneratingDesktop = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP);
         this.interiorGenerationCooldown = tag.getInt(NbtConstants.TARDIS_IM_GENERATION_COOLDOWN);
         this.hasGeneratedCorridors = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS);
-        this.preparedTheme = TardisDesktops.getDesktopThemeById(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME));
+        this.preparedTheme = TardisDesktops.getDesktopById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME)));
+        this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
     }
 
@@ -141,7 +156,7 @@ public class TardisInteriorManager {
             }
 
             if (level.getGameTime() % 60 == 0) {
-                operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getExteriorManager().getLastKnownLocation().level.getRandom().nextFloat(), 0.1f);
+                operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getExteriorManager().getLastKnownLocation().getLevel().getRandom().nextFloat(), 0.1f);
             }
         }
 
@@ -270,7 +285,7 @@ public class TardisInteriorManager {
     }
 
     public void generateDesktop(DesktopTheme theme) {
-
+        setCurrentTheme(theme);
         // Has generated before.
         if (this.operator.getInternalDoor() != null) {
             this.operator.getLevel().setBlockAndUpdate(this.operator.getInternalDoor().getDoorPosition(), Blocks.AIR.defaultBlockState()); // Remove the already existing door.
@@ -285,7 +300,6 @@ public class TardisInteriorManager {
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
-
         }
     }
 

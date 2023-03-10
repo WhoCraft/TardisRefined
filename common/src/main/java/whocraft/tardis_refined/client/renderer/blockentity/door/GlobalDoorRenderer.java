@@ -17,7 +17,8 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
-    private static ShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor, drifterModel, presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel;
+    private static ShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor, drifterModel, presentModel, vendingModel, briefcaseModel,
+            groeningModel, bigBenModel, nukaModel, growthModel, portalooModel, pagodaModel;
 
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
@@ -33,6 +34,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         bigBenModel = new BigBenDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)));
         nukaModel = new NukaDoorModel(context.bakeLayer((ModelRegistry.NUKA_DOOR)));
         growthModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
+        portalooModel = new PortalooDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)));
+        pagodaModel = new PagodaDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)));
 
     }
 
@@ -89,6 +92,12 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
                 break;
              case GROWTH:
                 currentModel = growthModel;
+                break;
+            case PORTALOO:
+                currentModel = portalooModel;
+                break;
+            case PAGODA:
+                currentModel = pagodaModel;
                 break;
 
         }
