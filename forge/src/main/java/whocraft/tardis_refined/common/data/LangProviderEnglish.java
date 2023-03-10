@@ -127,11 +127,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(theme.getTranslationKey(), name);
     }
 
-    public void addDesktopTheme(DesktopTheme desktopTheme, String translation) {
-        add(desktopTheme.getIdentifier().getPath(), translation);
-    }
-
-
     public void addSound(SoundEvent soundEvent, String lang) {
         add("subtitle." + TardisRefined.MODID + "." + soundEvent.getLocation().getPath(), lang);
     }

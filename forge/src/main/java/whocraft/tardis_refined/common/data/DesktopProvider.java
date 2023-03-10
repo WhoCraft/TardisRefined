@@ -32,7 +32,6 @@ public class DesktopProvider implements DataProvider {
     public static void registerDesktops() {
 
         addDesktop(TardisDesktops.FACTORY_THEME);
-
         addDesktop(new DesktopTheme("coral", new ResourceLocation(TardisRefined.MODID, "desktop/coral")));
         addDesktop(new DesktopTheme("victorian", new ResourceLocation(TardisRefined.MODID, "desktop/victorian")));
         addDesktop(new DesktopTheme("copper", new ResourceLocation(TardisRefined.MODID, "desktop/copper")));
@@ -41,8 +40,6 @@ public class DesktopProvider implements DataProvider {
         addDesktop(new DesktopTheme("nuka", new ResourceLocation(TardisRefined.MODID, "desktop/nuka")));
         addDesktop(new DesktopTheme("future_nostalgia", new ResourceLocation(TardisRefined.MODID, "desktop/future_nostalgia")));
         addDesktop(new DesktopTheme("violet_eye", new ResourceLocation(TardisRefined.MODID, "desktop/violet_eye")));
-
-
     }
 
     @Override
