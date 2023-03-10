@@ -39,8 +39,7 @@ public class DesktopProvider implements DataProvider {
         addDesktop(new DesktopTheme("crystal", new ResourceLocation(TardisRefined.MODID, "desktop/crystal")));
         addDesktop(new DesktopTheme("nuka", new ResourceLocation(TardisRefined.MODID, "desktop/nuka")));
         addDesktop(new DesktopTheme("future_nostalgia", new ResourceLocation(TardisRefined.MODID, "desktop/future_nostalgia")));
-
-
+        addDesktop(new DesktopTheme("violet_eye", new ResourceLocation(TardisRefined.MODID, "desktop/violet_eye")));
     }
 
     @Override
