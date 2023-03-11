@@ -1,75 +1,78 @@
 package whocraft.tardis_refined.common.tardis;
 
-import com.google.gson.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
-import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
-import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TardisDesktops extends SimpleJsonResourceReloadListener {
 
-    public static List<DesktopTheme> DESKTOPS = new ArrayList<>();
+/**
+ * Data manager for all DesktopTheme(s)
+ */
+public class TardisDesktops {
 
-    public static final DesktopTheme DEFAULT_OVERGROWN_THEME = new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "default_overgrown"), new ResourceLocation(TardisRefined.MODID, "cave/cave_generation_one"));
-    public static final DesktopTheme FACTORY_THEME = new DesktopTheme(new ResourceLocation(TardisRefined.MODID, "factory"), new ResourceLocation(TardisRefined.MODID, "desktop/factory"));
+    private static final CodecJsonReloadListener<DesktopTheme> RELOAD_LISTENER = createReloadListener();
 
-    public TardisDesktops() {
-        super(TardisRefined.GSON, "desktop");
+    private static Map<ResourceLocation,DesktopTheme> DEFAULT_DESKTOPS = new HashMap<>();
+
+    /** Static reference to the overgrown cave theme. <br> DO NOT REGISTER THIS, we don't want it to show in the selection screen. <br> It is only intended to be used once for the root shell.*/
+    public static final DesktopTheme DEFAULT_OVERGROWN_THEME = new DesktopTheme("default_overgrown", "cave/cave_generation_one");
+
+    /** A reference to the default Factory theme, intended for convenience. <br> DO NOT REGISTER THIS, it has already been included in the default list of desktops.*/
+    public static final DesktopTheme FACTORY_THEME = new DesktopTheme("factory", "desktop/factory");
+
+    /**
+     * A factory method to create the instance of our reload listener.
+     * <br> The TardisDesktops class itself is not a reload listener because the CodecJsonReloadListener needs platform specific implementations.
+     * <br> That introduces side effects associated with generic types and the ExpectPlatform annotation, so we manually call this factory method to create an instance.
+     * @return
+     */
+    private static CodecJsonReloadListener<DesktopTheme> createReloadListener() {
+        CodecJsonReloadListener<DesktopTheme> instance = CodecJsonReloadListener.create(TardisRefined.MODID + "/" + "desktops", DesktopTheme.getCodec());
+        return instance;
     }
 
+    public static CodecJsonReloadListener<DesktopTheme> getReloadListener(){
+        return RELOAD_LISTENER;
+    }
+
+    public static Map<ResourceLocation,DesktopTheme> getRegistry() {
+        return RELOAD_LISTENER.getData();
+    }
 
     public static DesktopTheme getDesktopById(ResourceLocation location) {
-        return DESKTOPS.stream().filter(theme -> Objects.equals(theme.getIdentifier(), location)).findAny().or(() -> Optional.of(FACTORY_THEME)).get();
+        return RELOAD_LISTENER.getData().getOrDefault(location, TardisDesktops.FACTORY_THEME);
     }
 
-    public static void clear() {
-        DESKTOPS.clear();
+    /**
+     * Creates and adds the Tardis Refined default list of DesktopThemes to a standalone map.
+     * Can be used for datagenerators or as a fallback registry
+     * @return
+     */
+    public static Map<ResourceLocation,DesktopTheme> registerDefaultDesktops() {
+        addDefaultDesktop(TardisDesktops.FACTORY_THEME);
+        addDefaultDesktop(new DesktopTheme("coral", "desktop/coral"));
+        addDefaultDesktop(new DesktopTheme("victorian","desktop/victorian"));
+        addDefaultDesktop(new DesktopTheme("copper", "desktop/copper"));
+        addDefaultDesktop(new DesktopTheme("toyota", "desktop/toyota"));
+        addDefaultDesktop(new DesktopTheme("crystal", "desktop/crystal"));
+        addDefaultDesktop(new DesktopTheme("nuka", "desktop/nuka"));
+        addDefaultDesktop(new DesktopTheme("future_nostalgia", "desktop/future_nostalgia"));
+        addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
+        return DEFAULT_DESKTOPS;
     }
 
-    @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        DESKTOPS.clear();
-        object.forEach((resourceLocation, jsonElement) -> {
-            try {
-
-                JsonObject desktopObject = jsonElement.getAsJsonObject();
-
-                // Build the DesktopTheme
-                String id = desktopObject.get("id").getAsString();
-                String structure = desktopObject.get("structure").getAsString();
-                String name = desktopObject.get("name_component").getAsString();
-                ResourceLocation resourceLocationId = new ResourceLocation(id);
-
-                if (!resourceLocationId.equals(TardisDesktops.DEFAULT_OVERGROWN_THEME.getIdentifier())) {
-                    DesktopTheme theme = new DesktopTheme(resourceLocationId, new ResourceLocation(structure));
-                    theme.setName(name);
-                    addDesktop(theme);
-                }
-
-
-            } catch (JsonParseException jsonParseException) {
-                TardisRefined.LOGGER.debug("Issue parsing Desktop {}! Error: {}", resourceLocation, jsonParseException.getMessage());
-            }
-        });
-
-        if (Platform.getServer() != null) {
-            new SyncDesktopsMessage(DESKTOPS).sendToAll();
-        }
-
+    private static void addDefaultDesktop(DesktopTheme theme) {
+        TardisRefined.LOGGER.info("Adding default Desktop {}", theme.getIdentifier());
+        DEFAULT_DESKTOPS.put(theme.getIdentifier(), theme);
     }
 
-    public static DesktopTheme addDesktop(DesktopTheme theme) {
-        TardisRefined.LOGGER.info("Adding Desktop {}", theme.getIdentifier());
-        DESKTOPS.add(theme);
-        return theme;
+    /** Gets a default list of Desktops added by Tardis Refined. Useful as a fallback list.*/
+    public static Map<ResourceLocation, DesktopTheme> getDefaultDesktops(){
+        return DEFAULT_DESKTOPS;
     }
+
 }
