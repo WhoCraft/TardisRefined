@@ -54,7 +54,7 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
 
         @Override
         public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            int color = isMouseOver ? ChatFormatting.YELLOW.getColor() : (checked ? ChatFormatting.YELLOW.getColor() : ChatFormatting.GOLD.getColor());
+            int color = isMouseOver ? ChatFormatting.YELLOW.getColor() : (checked ? ChatFormatting.YELLOW.getColor() :  itemDisplayName.getStyle().getColor() != null ? itemDisplayName.getStyle().getColor().getValue() : ChatFormatting.GOLD.getColor());
             ScreenHelper.renderWidthScaledText((checked ? "> " : "") + itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, color, width, false);
         }
 

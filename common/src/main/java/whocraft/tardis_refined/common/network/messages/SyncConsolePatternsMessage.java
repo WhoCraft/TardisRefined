@@ -76,6 +76,9 @@ public class SyncConsolePatternsMessage extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
+
+        ConsolePatterns.clearPatterns();
+
         patterns.forEach((consoleTheme, patterns) -> {
             for (ConsolePatterns.Pattern pattern : patterns) {
                 System.out.println(pattern.name());
