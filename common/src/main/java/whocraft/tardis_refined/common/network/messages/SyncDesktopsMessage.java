@@ -1,5 +1,8 @@
 package whocraft.tardis_refined.common.network.messages;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.common.network.MessageContext;
@@ -10,35 +13,26 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SyncDesktopsMessage extends MessageS2C {
 
-    private final List<DesktopTheme> desktops;
+    private Map<ResourceLocation, DesktopTheme> desktops = new HashMap<>();
+    //We use an unboundedMapCodec. However it is limited in that it can only parse objects whose keys can be serialised to a string, such as ResourceLocation
+    //E.g. If you used an int as a key, the unboundedMapCodec will not parse it and will error.
+    private static final Codec<Map<ResourceLocation, DesktopTheme>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, DesktopTheme.getCodec());
 
-    public SyncDesktopsMessage(List<DesktopTheme> desktops) {
+
+    public SyncDesktopsMessage(Map<ResourceLocation, DesktopTheme> desktops) {
         this.desktops = desktops;
     }
 
     public SyncDesktopsMessage(FriendlyByteBuf buf) {
-        int size = buf.readInt();
-        desktops = new ArrayList<>();
-
-        for (int i = 0; i < size; i++) {
-            desktops.add(getDesktopTheme(buf));
-        }
+        //Parse our Map Codec and send the nbt data over. If there's any errors, populate with default Tardis Refined console rooms
+        this.desktops = MAPPER.parse(NbtOps.INSTANCE, buf.readNbt()).result().orElse(TardisDesktops.registerDefaultDesktops());
     }
-
-    private static DesktopTheme getDesktopTheme(FriendlyByteBuf buf) {
-        ResourceLocation id = buf.readResourceLocation(); // ID
-        ResourceLocation structure = buf.readResourceLocation(); // structure
-        String name = buf.readUtf(); // name
-        DesktopTheme theme = new DesktopTheme(id, structure);
-        theme.setName(name);
-
-        return theme;
-    }
-
 
     @Override
     public MessageType getType() {
@@ -47,26 +41,14 @@ public class SyncDesktopsMessage extends MessageS2C {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(desktops.size());
-
-        desktops.forEach(desktopTheme -> {
-            writeDesktop(desktopTheme, buf);
-        });
+        buf.writeNbt((CompoundTag)(MAPPER.encodeStart(NbtOps.INSTANCE, this.desktops).result().orElse(new CompoundTag())));
     }
-
-
-    private void writeDesktop(DesktopTheme desktopTheme, FriendlyByteBuf buf) {
-        buf.writeResourceLocation(desktopTheme.getIdentifier()); // ID
-        buf.writeResourceLocation(desktopTheme.getStructureLocation()); // texture
-        buf.writeUtf(desktopTheme.getName()); // name
-    }
-
 
     @Override
     public void handle(MessageContext context) {
-        TardisDesktops.clear();
-        for (DesktopTheme desktop : desktops) {
-            TardisDesktops.addDesktop(desktop);
+        TardisDesktops.getRegistry().clear();
+        for (Map.Entry<ResourceLocation, DesktopTheme> entry : this.desktops.entrySet()) {
+            TardisDesktops.getRegistry().put(entry.getKey(), entry.getValue());
         }
     }
 }

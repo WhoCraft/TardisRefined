@@ -30,7 +30,7 @@ public class ModEvents {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> new SyncConsolePatternsMessage(ConsolePatterns.getPatterns()).send(handler.getPlayer()));
+        ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> new SyncConsolePatternsMessage(ConsolePatterns.getPatterns()).send(player));
 
         END_WORLD_TICK.register(DelayedTeleportData::tick);
         START_WORLD_TICK.register(world -> {

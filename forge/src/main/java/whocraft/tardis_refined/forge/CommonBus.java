@@ -35,7 +35,7 @@ public class CommonBus {
     @SubscribeEvent
     public static void onDatapack(AddReloadListenerEvent addReloadListenerEvent) {
         addReloadListenerEvent.addListener(new ConsolePatterns());
-        addReloadListenerEvent.addListener(new TardisDesktops());
+        addReloadListenerEvent.addListener(TardisDesktops.getReloadListener());
     }
 
     @SubscribeEvent

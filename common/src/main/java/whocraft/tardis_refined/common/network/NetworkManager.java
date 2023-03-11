@@ -4,11 +4,14 @@ package whocraft.tardis_refined.common.network;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class NetworkManager {
@@ -48,6 +51,12 @@ public abstract class NetworkManager {
                 this.sendToPlayer((ServerPlayer) player, message);
             }
         }
+    }
+
+    public void sendToAllPlayers(MessageS2C message){
+        MinecraftServer server = Platform.getServer();
+        List<ServerPlayer> players = server.getPlayerList().getPlayers();
+        players.forEach(entry -> sendToPlayer(entry, message));
     }
 
     @FunctionalInterface
