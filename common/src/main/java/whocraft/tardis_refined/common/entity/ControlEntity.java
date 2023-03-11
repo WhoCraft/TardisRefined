@@ -21,11 +21,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
@@ -76,8 +80,7 @@ public class ControlEntity extends Entity {
         this.consoleBlockPos = entityPosition;
         this.controlSpecification = consoleControl;
         this.consoleTheme = theme;
-        // this.setBoundingBox(consoleControl.scale().makeBoundingBox());
-
+       // this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale().width, consoleControl.scale().height, consoleControl.scale().width)));
         this.setCustomName(Component.translatable(consoleControl.control().getTranslationKey()));
     }
 
@@ -242,36 +245,34 @@ public class ControlEntity extends Entity {
 
     @Override
     public void tick() {
-        if (level instanceof ServerLevel) {
+
+
+
+        if (level instanceof ServerLevel serverLevel) {
             if (this.controlSpecification == null) {
                 if (this.consoleBlockPos != null) {
-                    if (level.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+                    if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
 
                         globalConsoleBlockEntity.markDirty();
                     }
                     discard();
                 }
-            }
-
-            if (getLevel() instanceof ServerLevel serverLevel) {
-
-                if (this.controlSpecification != null) {
-                    TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                        var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
-                        if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
-                            getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
-                        }
-                    });
-                }
             } else {
-                if (getEntityData().get(SHOW_PARTICLE)) {
-                    if (getLevel().random.nextInt(5) == 0) {
-                        this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
+                TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+                    var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
+                    if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
+                        getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
                     }
+                });
+            }
+        } else {
+            if (getEntityData().get(SHOW_PARTICLE)) {
+                if (getLevel().random.nextInt(5) == 0) {
+                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
-
         }
+
     }
 
     @Override

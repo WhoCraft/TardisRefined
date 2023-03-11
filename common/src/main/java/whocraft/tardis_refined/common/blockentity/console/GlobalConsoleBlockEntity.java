@@ -103,7 +103,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
                 Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
                 controlEntity.setPos(location.x(), location.y(), location.z());
-                controlEntity.assignControlData(control, this.getBlockPos());
+                controlEntity.assignControlData(theme, control, this.getBlockPos());
 
 //                controlEntity.teleportTo(location.x(), location.y(), location.z());
 
