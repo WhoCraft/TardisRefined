@@ -25,7 +25,7 @@ public class TardisArchitectureHandler {
     public static final int INTERIOR_SIZE = 150;
 
     public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
-        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.id));
+        TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.getIdentifier()));
 
         // Fill the area out.
         BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);
@@ -39,7 +39,7 @@ public class TardisArchitectureHandler {
         List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
         desktopEntities.forEach(x -> x.teleportTo(0,-1000,0));
         
-        Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.location);
+        Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.getStructureLocation());
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
             structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);

@@ -30,6 +30,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -179,16 +180,16 @@ public class ControlEntity extends PathfinderMob {
                 }
 
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (!cap.getControlManager().canUseControls()) {
 
+                    if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
                         if (player.isCreative()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                         } else {
                             player.hurt(DamageSource.ON_FIRE, 0.1F);
                         }
-
                         return;
                     }
+
                     if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
                         if (cap.getInteriorManager().isWaitingToGenerate()) {
                             serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
@@ -233,23 +234,21 @@ public class ControlEntity extends PathfinderMob {
             }
         }
 
-        if (this.getLevel() instanceof ClientLevel clientLevel) {
 
-            if (getEntityData().get(SHOW_PARTICLE)) {
-                if (clientLevel.random.nextInt(5) == 0) {
-                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
-                }
+        if (getLevel() instanceof ServerLevel serverLevel) {
+
+            if (this.controlSpecification != null) {
+                TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+                    var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
+                    if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
+                        getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
+                    }
+                });
             }
         } else {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-
-                if (this.controlSpecification != null) {
-                    TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                        var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
-                        if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
-                            getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
-                        }
-                    });
+            if (getEntityData().get(SHOW_PARTICLE)) {
+                if (getLevel().random.nextInt(5) == 0) {
+                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         }

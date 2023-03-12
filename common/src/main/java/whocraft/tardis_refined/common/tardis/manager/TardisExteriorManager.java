@@ -79,7 +79,7 @@ public class TardisExteriorManager {
     }
 
     public ServerLevel getLevel() {
-        return this.lastKnownLocation.level;
+        return this.lastKnownLocation.getLevel();
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -108,7 +108,7 @@ public class TardisExteriorManager {
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
         if (lastKnownLocation != null) {
-            lastKnownLocation.level.playSound(null, lastKnownLocation.position, event, source, volume, pitch);
+            lastKnownLocation.getLevel().playSound(null, lastKnownLocation.position, event, source, volume, pitch);
         }
     }
 
@@ -119,25 +119,25 @@ public class TardisExteriorManager {
         }
 
         // Get the exterior block.
-        BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
+        BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.position);
         if (state.hasProperty(ShellBaseBlock.OPEN)) {
-            lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
+            lastKnownLocation.getLevel().setBlock(lastKnownLocation.position, state.setValue(ShellBaseBlock.OPEN, !closed), 2);
             playSoundAtShell(locked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
         }
     }
 
     public void setShellTheme(ShellTheme theme) {
-        BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
+        BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.position);
 
         // Check if its our default global shell.
         if (state.getBlock() instanceof GlobalShellBlock) {
-            lastKnownLocation.level.setBlock(lastKnownLocation.position, state.setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
+            lastKnownLocation.getLevel().setBlock(lastKnownLocation.position, state.setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
         } else {
             if (state.getBlock() instanceof RootedShellBlock) {
-                lastKnownLocation.level.setBlock(lastKnownLocation.position,
+                lastKnownLocation.getLevel().setBlock(lastKnownLocation.position,
                         BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
 
-                var shellBlockEntity = lastKnownLocation.level.getBlockEntity(lastKnownLocation.position);
+                var shellBlockEntity = lastKnownLocation.getLevel().getBlockEntity(lastKnownLocation.position);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     entity.setChanged();
@@ -149,17 +149,17 @@ public class TardisExteriorManager {
     }
 
     public void triggerShellRegenState() {
-        BlockState state = lastKnownLocation.level.getBlockState(lastKnownLocation.position);
+        BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.position);
 
-        lastKnownLocation.level.setBlock(lastKnownLocation.position,
+        lastKnownLocation.getLevel().setBlock(lastKnownLocation.position,
                 state.setValue(ShellBaseBlock.REGEN, true), 2);
     }
 
     public void removeExteriorBlock() {
         this.isLanding = false;
         if (lastKnownLocation != null) {
-            if (lastKnownLocation.level.getBlockState(lastKnownLocation.position).getBlock() instanceof GlobalShellBlock shellBlock) {
-                lastKnownLocation.level.setBlockAndUpdate(lastKnownLocation.position, Blocks.AIR.defaultBlockState());
+            if (lastKnownLocation.getLevel().getBlockState(lastKnownLocation.position).getBlock() instanceof GlobalShellBlock shellBlock) {
+                lastKnownLocation.getLevel().setBlockAndUpdate(lastKnownLocation.position, Blocks.AIR.defaultBlockState());
             }
         }
     }
@@ -168,21 +168,21 @@ public class TardisExteriorManager {
 
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
 
-        var shouldBeWaterlogged = (location.level.getBlockState(location.position).getFluidState().getType() == Fluids.WATER);
+        var shouldBeWaterlogged = (location.getLevel().getBlockState(location.position).getFluidState().getType() == Fluids.WATER);
 
         var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.rotation.getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
 
-        BlockState check = location.level.getBlockState(location.position);
+        BlockState check = location.getLevel().getBlockState(location.position);
         if(!check.is(Blocks.AIR)) {
-            location.level.destroyBlock(location.position, true);
+            location.getLevel().destroyBlock(location.position, true);
         }
 
-        location.level.setBlock(location.position, blockState, 2);
+        location.getLevel().setBlock(location.position, blockState, 2);
 
-        if (location.level.getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
+        if (location.getLevel().getBlockEntity(location.position) instanceof GlobalShellBlockEntity globalShell) {
             globalShell.TARDIS_ID = UUID.fromString(operator.getLevel().dimension().location().getPath());
-            location.level.sendBlockUpdated(location.position, blockState, blockState, 2);
+            location.getLevel().sendBlockUpdated(location.position, blockState, blockState, 2);
         }
 
         setLastKnownLocation(location);
@@ -190,10 +190,10 @@ public class TardisExteriorManager {
     }
 
     public boolean isExitLocationSafe() {
-        if (lastKnownLocation.level.getBlockEntity(lastKnownLocation.position) instanceof ExteriorShell shellBaseBlockEntity) {
+        if (lastKnownLocation.getLevel().getBlockEntity(lastKnownLocation.position) instanceof ExteriorShell shellBaseBlockEntity) {
             BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
-            if (lastKnownLocation.level.getBlockState(landingArea) == Blocks.AIR.defaultBlockState()) {
-                return lastKnownLocation.level.getBlockState(landingArea.above()) == Blocks.AIR.defaultBlockState();
+            if (lastKnownLocation.getLevel().getBlockState(landingArea) == Blocks.AIR.defaultBlockState()) {
+                return lastKnownLocation.getLevel().getBlockState(landingArea.above()) == Blocks.AIR.defaultBlockState();
             }
         }
 
