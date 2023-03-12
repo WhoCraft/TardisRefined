@@ -109,18 +109,6 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.PORTALOO, "Portaloo");
         addShell(ShellTheme.PAGODA, "Pagoda");
 
-
-        /*Desktop Themes*/
-        addDesktopTheme(TardisDesktops.CORAL_THEME, "Coral");
-        addDesktopTheme(TardisDesktops.FACTORY_THEME, "Factory");
-        addDesktopTheme(TardisDesktops.COPPER, "Copper");
-        addDesktopTheme(TardisDesktops.TOYOTA_THEME, "Toyota");
-        addDesktopTheme(TardisDesktops.CRYSTAL, "Crystal");
-        addDesktopTheme(TardisDesktops.VICTORIAN, "Victorian");
-        addDesktopTheme(TardisDesktops.NUKA, "Nuka");
-        addDesktopTheme(TardisDesktops.FUTURE_NOSTALGIA, "Future Nostalgia");
-        addDesktopTheme(TardisDesktops.DEFAULT_OVERGROWN_THEME, "Overgrown Cave");
-
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
         add(ModMessages.CONTROL_DIMENSION_SELECTED, "Selected: %s");
@@ -138,11 +126,6 @@ public class LangProviderEnglish extends LanguageProvider {
     public void addShell(ShellTheme theme, String name) {
         add(theme.getTranslationKey(), name);
     }
-
-    public void addDesktopTheme(DesktopTheme desktopTheme, String translation) {
-        add(desktopTheme.getTranslationKey(), translation);
-    }
-
 
     public void addSound(SoundEvent soundEvent, String lang) {
         add("subtitle." + TardisRefined.MODID + "." + soundEvent.getLocation().getPath(), lang);
