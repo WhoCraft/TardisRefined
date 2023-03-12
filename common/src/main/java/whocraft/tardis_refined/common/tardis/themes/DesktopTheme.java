@@ -33,7 +33,7 @@ public class DesktopTheme {
      * <br> The display name is set to the identifier using a standard String Text Component.
      * @param id
      * @param structureLocation
-     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/ui/interiors/
+     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/ui/desktops/
      */
     public DesktopTheme(String id, String structureLocation) {
         this(new ResourceLocation(TardisRefined.MODID, id), new ResourceLocation(TardisRefined.MODID, structureLocation), TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(id)).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
@@ -44,7 +44,7 @@ public class DesktopTheme {
      * @param id
      * @param structureLocation
      * @param name - The display name that is shown on the Desktop Selection Screen. Supports Tellraw style JSON strings, but they must be validated beforehand.
-     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/ui/interiors/
+     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/ui/desktops/
      */
     public DesktopTheme(String id, String structureLocation, String name) {
         this(new ResourceLocation(TardisRefined.MODID, id), new ResourceLocation(TardisRefined.MODID, structureLocation), name);
@@ -55,12 +55,12 @@ public class DesktopTheme {
      * @param id - the unique identifier for the DesktopTheme. Do not use the Tardis Refined ModId for the namespace if the DesktopTheme is not for the base mod.
      * @param structureLocation - the ResourceLocation for the structure's .nbt file. The nbt file should be located under data/[namespace]/structures.
      * @param name - The display name that is shown on the Desktop Selection Screen. Supports Tellraw style JSON strings, but they must be validated beforehand.
-     * @implNote NOTE: Users must also add a PNG display image under assets/[namespace]/textures/ui/interiors/
+     * @implNote NOTE: Users must also add a PNG display image under assets/[namespace]/textures/ui/desktops/
      */
     public DesktopTheme(ResourceLocation id, ResourceLocation structureLocation, String name) {
         this.identifier = id;
         this.structureLocation = structureLocation;
-        this.uiTexture = new ResourceLocation(id.getNamespace(), "textures/ui/interiors/" + id.getPath().toString() + ".png");
+        this.uiTexture = new ResourceLocation(id.getNamespace(), "textures/ui/desktops/" + id.getPath().toString() + ".png");
         this.name = name;
     }
 
