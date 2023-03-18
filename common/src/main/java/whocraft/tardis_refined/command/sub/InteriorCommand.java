@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
@@ -16,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.util.CommandHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -29,7 +29,7 @@ public class InteriorCommand implements Command<CommandSourceStack> {
 
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("interior")
-                .then(Commands.argument("tardis", DimensionArgument.dimension()).executes(context -> teleportToInterior(context, List.of(Objects.requireNonNull(context.getSource().getPlayer())), DimensionArgument.getDimension(context, "tardis")))
+                .then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(context -> teleportToInterior(context, List.of(Objects.requireNonNull(context.getSource().getPlayer())), DimensionArgument.getDimension(context, "tardis")))
                         .then(Commands.argument("entities", EntityArgument.entities())
                                         .executes(context -> teleportToInterior(context, EntityArgument.getEntities(context, "entities"), DimensionArgument.getDimension(context, "tardis")))));
     }
