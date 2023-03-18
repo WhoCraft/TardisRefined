@@ -32,7 +32,10 @@ public class ModMessages {
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
 
-    public static final String CMD_DIM_NOT_A_TARDIS = cmdException("dim_not_a_tardis");
+    public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
+    public static final String CMD_EXPORT_DESKTOP_IN_PROGRESS = cmdOutput("export_desktop.in_progress");
+    public static final String CMD_EXPORT_DESKTOP_SUCCESS = cmdOutput("export_desktop.success");
+    public static final String CMD_EXPORT_DESKTOP_FAIL = cmdOutput("export_desktop.fail");
 
     public static String message(String translationKey){
         return "message." + TardisRefined.MODID + "." + translationKey;
@@ -55,7 +58,7 @@ public class ModMessages {
         return "tooltip." + TardisRefined.MODID + "." + translationKey;
     }
 
-    public static String cmdException(String translationKey) {
+    public static String cmdOutput(String translationKey) {
         return "command." + TardisRefined.MODID + "." + translationKey;
     }
 

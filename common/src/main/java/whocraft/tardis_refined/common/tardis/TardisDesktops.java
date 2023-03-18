@@ -66,7 +66,7 @@ public class TardisDesktops {
     }
 
     private static void addDefaultDesktop(DesktopTheme theme) {
-        TardisRefined.LOGGER.info("Adding default Desktop {}", theme.getIdentifier());
+//        TardisRefined.LOGGER.info("Adding default Desktop {}", theme.getIdentifier());
         DEFAULT_DESKTOPS.put(theme.getIdentifier(), theme);
     }
 
