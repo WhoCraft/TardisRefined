@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.data;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.LanguageProvider;
@@ -74,6 +75,9 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
+
+        /*Command*/
+        add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
 
         /*Creative Tab*/
         add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");
