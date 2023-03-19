@@ -16,7 +16,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
+import whocraft.tardis_refined.common.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 import javax.annotation.Nullable;
