@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.registry.SoundRegistry;
@@ -268,14 +269,14 @@ public class TardisFlightEventManager {
         // Is the target acceptable?
         var targetPosition = operator.getControlManager().getTargetLocation();
 
-        if (targetPosition.getLevel().dimension() == Level.END) {
+        if (targetPosition.getLevel().dimension() != Level.END) {
             operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
             return;
         }
 
         // Check has the dragon been beaten?
         if (targetPosition.getLevel().dragonFight() != null) {
-            if ((long) targetPosition.getLevel().getDragons().size() == 0) {
+            if (((EndDragonFightAccessor) targetPosition.getLevel().dragonFight()).isDragonKilled()) {
                 operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
                 return;
             }
