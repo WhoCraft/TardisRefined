@@ -27,7 +27,6 @@ import java.util.Set;
 
 public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-
 	private static final ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
 
 
@@ -2265,19 +2264,35 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
 							new Keyframe(0f, KeyframeAnimations.posVec(0f, -0.57f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.88f, KeyframeAnimations.posVec(0f, -6.5f, 0f),
+							new Keyframe(1.44f, KeyframeAnimations.posVec(0f, -5.4f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.88f, KeyframeAnimations.posVec(0f, -10f, 0f),
+							new Keyframe(2.44f, KeyframeAnimations.posVec(0f, -10f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.64f, KeyframeAnimations.posVec(0f, 1.755f, 0f),
+							new Keyframe(3.84f, KeyframeAnimations.posVec(0f, 1.755f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(8.24f, KeyframeAnimations.posVec(0f, 3.325f, 0f),
+							new Keyframe(4.12f, KeyframeAnimations.posVec(0f, 3.325f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(8.4f, KeyframeAnimations.posVec(0f, 3.015f, 0f),
+							new Keyframe(4.2f, KeyframeAnimations.posVec(0f, 3.015f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(9.2f, KeyframeAnimations.posVec(0f, 1.76f, 0f),
+							new Keyframe(4.6f, KeyframeAnimations.posVec(0f, 1.76f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(9.68f, KeyframeAnimations.posVec(0f, 0.24f, 0f),
+							new Keyframe(4.84f, KeyframeAnimations.posVec(0f, 0.24f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5.6f, KeyframeAnimations.posVec(0f, -2.07f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6.44f, KeyframeAnimations.posVec(0f, -6.5f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(7.44f, KeyframeAnimations.posVec(0f, -10f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(8.84f, KeyframeAnimations.posVec(0f, 1.755f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(9.12f, KeyframeAnimations.posVec(0f, 3.325f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(9.2f, KeyframeAnimations.posVec(0f, 3.015f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(9.6f, KeyframeAnimations.posVec(0f, 1.76f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(9.84f, KeyframeAnimations.posVec(0f, 0.24f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(10f, KeyframeAnimations.posVec(0f, -0.57f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -2285,25 +2300,45 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 					new AnimationChannel(AnimationChannel.Targets.SCALE,
 							new Keyframe(0f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.88f, KeyframeAnimations.scaleVec(1.07f, 1.07f, 1.07f),
+							new Keyframe(2.44f, KeyframeAnimations.scaleVec(1.07f, 1.07f, 1.07f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.64f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+							new Keyframe(3.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(7.44f, KeyframeAnimations.scaleVec(1.07f, 1.07f, 1.07f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(8.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
 									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("rotor_top_t_minus20",
 					new AnimationChannel(AnimationChannel.Targets.POSITION,
 							new Keyframe(0f, KeyframeAnimations.posVec(0f, 0.57f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(2.92f, KeyframeAnimations.posVec(0f, 5.4f, 0f),
+							new Keyframe(1.4f, KeyframeAnimations.posVec(0f, 4.4f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.88f, KeyframeAnimations.posVec(0f, 10f, 0f),
+							new Keyframe(2.44f, KeyframeAnimations.posVec(0f, 9f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.64f, KeyframeAnimations.posVec(0f, -1.755f, 0f),
+							new Keyframe(3.84f, KeyframeAnimations.posVec(0f, -1.755f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(8.24f, KeyframeAnimations.posVec(0f, -3.325f, 0f),
+							new Keyframe(4.12f, KeyframeAnimations.posVec(0f, -3.325f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(8.4f, KeyframeAnimations.posVec(0f, -3.015f, 0f),
+							new Keyframe(4.2f, KeyframeAnimations.posVec(0f, -3.015f, 0f),
 									AnimationChannel.Interpolations.LINEAR),
-							new Keyframe(9.08f, KeyframeAnimations.posVec(0f, -2.16f, 0f),
+							new Keyframe(4.56f, KeyframeAnimations.posVec(0f, -2.16f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5f, KeyframeAnimations.posVec(0f, 0.57f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(6.48f, KeyframeAnimations.posVec(0f, 4.4f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(7.52f, KeyframeAnimations.posVec(0f, 8f, 0f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(8.84f, KeyframeAnimations.posVec(0f, -1.755f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(9.12f, KeyframeAnimations.posVec(0f, -3.325f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(9.2f, KeyframeAnimations.posVec(0f, -3.015f, 0f),
+									AnimationChannel.Interpolations.LINEAR),
+							new Keyframe(9.56f, KeyframeAnimations.posVec(0f, -2.16f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM),
 							new Keyframe(10f, KeyframeAnimations.posVec(0f, 0.57f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM)))
@@ -2311,9 +2346,15 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 					new AnimationChannel(AnimationChannel.Targets.SCALE,
 							new Keyframe(0f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(4.88f, KeyframeAnimations.scaleVec(1.07f, 1.07f, 1.07f),
+							new Keyframe(2.44f, KeyframeAnimations.scaleVec(1.07f, 1.07f, 1.07f),
 									AnimationChannel.Interpolations.CATMULLROM),
-							new Keyframe(7.64f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+							new Keyframe(3.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(5f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(7.44f, KeyframeAnimations.scaleVec(1.07f, 1.07f, 1.07f),
+									AnimationChannel.Interpolations.CATMULLROM),
+							new Keyframe(8.84f, KeyframeAnimations.scaleVec(1f, 1f, 1f),
 									AnimationChannel.Interpolations.CATMULLROM)))
 			.addAnimation("bone323",
 					new AnimationChannel(AnimationChannel.Targets.SCALE,
@@ -2671,6 +2712,8 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 									AnimationChannel.Interpolations.LINEAR),
 							new Keyframe(10f, KeyframeAnimations.degreeVec(1080f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
+
+
 
 	private final ModelPart throttle;
 	private final ModelPart base_console;
@@ -3531,11 +3574,18 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 		root().getAllParts().forEach(ModelPart::resetPose);
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
-		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 
-		if(globalConsoleBlock != null){
-			animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+		if (reactions.isFlying()) {
+			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+		} else {
+
+			if(globalConsoleBlock != null) {
+				animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+			}
 		}
+
+
+
 
 		this.throttle.xRot = (reactions.isThrottleDown()) ? 2f : 0f;
 
