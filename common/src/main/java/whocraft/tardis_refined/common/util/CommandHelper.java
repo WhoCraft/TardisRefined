@@ -40,6 +40,16 @@ public class CommandHelper {
         return component;
     }
 
+    public static MutableComponent createComponentSuggestCommand(String text, String tooltipText) {
+        MutableComponent component = Component.literal("[" + text + "]");
+        component.withStyle(style -> {
+            return style.withColor(ChatFormatting.YELLOW)
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, tooltipText));
+        });
+        return component;
+    }
+
     /** Creates a Text Component but doesn't allow copying of the tooltip text. Instead, will copy the text in the text component*/
     public static MutableComponent createTextWithoutTooltipCopying(String text, String tooltipText) {
         MutableComponent component = Component.literal("[" + text + "]");

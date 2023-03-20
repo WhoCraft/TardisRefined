@@ -59,7 +59,8 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
 
         if (exported) {
             Component path = CommandHelper.createComponentOpenFile(datapackName, datapackRoot.toString());
-            PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_SUCCESS, loc, path), false);
+            Component reloadCommandSuggestion = CommandHelper.createComponentSuggestCommand("/reload", "/reload");
+            PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_SUCCESS, loc, path, reloadCommandSuggestion), false);
             return Command.SINGLE_SUCCESS;
         }
         PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_FAIL, loc), false);
