@@ -3,8 +3,10 @@ package whocraft.tardis_refined.common.entity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -24,6 +26,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.decoration.ItemFrame;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -58,10 +61,20 @@ public class ControlEntity extends Entity {
     }
 
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<BlockPos > SCALE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BLOCK_POS);
 
 
-    public ControlEntity(Level level) {
+    public ControlEntity(Level level, ConsoleTheme theme, ControlSpecification specification, BlockPos consoleBlockPos) {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
+
+        this.consoleBlockPos = consoleBlockPos;
+        this.controlSpecification = specification;
+        this.consoleTheme = theme;
+
+        this.setCustomName(Component.translatable(specification.control().getTranslationKey()));
+
+        entityData.set(SCALE, new BlockPos(specification.scale().width, specification.scale().height, specification.scale().width));
+
     }
 
     @Override
@@ -76,14 +89,6 @@ public class ControlEntity extends Entity {
         return controlSpecification;
     }
 
-    public void assignControlData(ConsoleTheme theme, ControlSpecification consoleControl, BlockPos entityPosition) {
-        this.consoleBlockPos = entityPosition;
-        this.controlSpecification = consoleControl;
-        this.consoleTheme = theme;
-       // this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale().width, consoleControl.scale().height, consoleControl.scale().width)));
-        this.setCustomName(Component.translatable(consoleControl.control().getTranslationKey()));
-    }
-
 
     public static AttributeSupplier.Builder createAttributes() {
         return Monster.createMonsterAttributes().add(Attributes.FOLLOW_RANGE, 35D).add(Attributes.MOVEMENT_SPEED, 0.23F).add(Attributes.ATTACK_DAMAGE, 3F).add(Attributes.MAX_HEALTH, 20000000000D).add(Attributes.ARMOR, 2000000000.0D);
@@ -92,6 +97,16 @@ public class ControlEntity extends Entity {
     @Override
     protected void defineSynchedData() {
         getEntityData().define(SHOW_PARTICLE, false);
+        getEntityData().define(SCALE, new BlockPos(1,1,1));
+
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+        super.onSyncedDataUpdated(entityDataAccessor);
+        this.setBoundingBox(new AABB(new BlockPos(getEntityData().get(SCALE))));
+        this.refreshDimensions();
+
     }
 
     @Override
@@ -107,6 +122,11 @@ public class ControlEntity extends Entity {
         if (consolePos != null) {
             this.consoleBlockPos = NbtUtils.readBlockPos(consolePos);
         }
+    }
+
+    @Override
+    public boolean shouldShowName() {
+        return true;
     }
 
     @Override
@@ -248,7 +268,6 @@ public class ControlEntity extends Entity {
     public void tick() {
 
 
-
         if (level instanceof ServerLevel serverLevel) {
             if (this.controlSpecification == null) {
                 if (this.consoleBlockPos != null) {
@@ -296,12 +315,4 @@ public class ControlEntity extends Entity {
         return false;
     }
 
-    @Override
-    public EntityDimensions getDimensions(Pose pose) {
-        if (this.controlSpecification != null) {
-            System.out.println(controlSpecification.control().toString() + " " + controlSpecification.scale().toString());
-            return controlSpecification.scale();
-        }
-        return super.getDimensions(pose);
-    }
 }

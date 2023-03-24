@@ -46,7 +46,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
     protected void renderNameTag(ControlEntity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int textRenderingLayer) {
         MutableComponent textComponent = Component.literal(component.getString());
         textComponent.withStyle(style -> style
-                .applyFormats(ChatFormatting.BOLD, ChatFormatting.YELLOW)
+                .applyFormats(ChatFormatting.BOLD, (entity.level.random.nextInt(50) == 0) ?  ChatFormatting.GOLD : ChatFormatting.YELLOW)
         );
 
         double distanceSquared = this.entityRenderDispatcher.distanceToSqr(entity);
@@ -56,6 +56,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             int verticalTextOffset = 35;
             poseStack.pushPose();
             poseStack.translate(0.0, boundingBoxHeight, 0.0);
+
             poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
 
 
@@ -63,12 +64,11 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             poseStack.scale(-scale, -scale, scale);
 
             Matrix4f textMatrix = poseStack.last().pose();
-            float textBackgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.5F);
+            float textBackgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.75F);
 
             int textColor = (int) (textBackgroundOpacity * 255.0F) << 24;
             Font font = this.getFont();
             float textHorizontalPosition = (float) (-font.width(component) / 2);
-
 
             font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, 553648127, false, textMatrix, multiBufferSource, isSolid, textColor, textRenderingLayer);
             if (isSolid) {
