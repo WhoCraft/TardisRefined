@@ -66,6 +66,9 @@ public class ConsolePatternProvider implements DataProvider {
         addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "aperture"), createBasePatternLocation("initiative/initiative_console_aperture"))).setEmissive(true);
         addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "blue"), createBasePatternLocation("initiative/initiative_console_blue"))).setEmissive(true);
 
+        /*Copper*/
+        addPattern(ConsoleTheme.COPPER, new BasePattern<>(ConsoleTheme.COPPER, new ResourceLocation(TardisRefined.MODID, "sculk"), createBasePatternLocation("copper/copper_console_sculk"))).setEmissive(false);
+
     }
 
     public static ResourceLocation createBasePatternLocation(String path){

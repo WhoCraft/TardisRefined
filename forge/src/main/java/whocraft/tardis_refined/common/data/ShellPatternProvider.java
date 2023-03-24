@@ -57,6 +57,8 @@ public class ShellPatternProvider implements DataProvider {
 
         create(ShellTheme.MYSTIC, false, "dwarven");
 
+        create(ShellTheme.BIG_BEN, false, "gothic");
+
     }
 
     private static void create(ShellTheme shellTheme, boolean emmsive, String name) {
