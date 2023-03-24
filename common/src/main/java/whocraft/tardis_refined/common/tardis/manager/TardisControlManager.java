@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.tardis.manager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -17,6 +18,7 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -243,25 +245,25 @@ public class TardisControlManager {
             if (safeDir != null) {return safeDir;}
         }
 
-        var attemptNumber = 0;
-        while (attemptNumber > -1) {
+        for (int i = 0; i < attempts; i++) {
             location.position = getLegalPosition(location.getLevel(), location.position, originalY);
             var result = scanUpwardsFromCord(location, height);
-            if (result != null && location.position.getY() < height && location.position.getY() > minHeight ) {
+            if (result != null && location.position.getY() < height && location.position.getY() > minHeight) {
                 return result;
             }
 
             location.position = getLegalPosition(location.getLevel(), location.position, originalY);
             result = scanDownwardsFromCord(location, minHeight);
-            if (result != null && location.position.getY() < height && location.position.getY() > minHeight ) {
+            if (result != null && location.position.getY() < height && location.position.getY() > minHeight) {
                 return result;
             }
 
             // Try the next interval in the rotation.
             location.position = getLegalPosition(location.getLevel(), location.position, originalY);
-            location.position = location.position.offset(location.rotation.getNormal().multiply((int) (failOffset * (1 + ((float) attemptNumber * 0.1f)))));
-            attemptNumber++;
+            location.position = location.position.offset(location.rotation.getNormal().multiply((int) (failOffset * (1 + ((float) i * 0.1f)))));
+            PlayerUtil.globalMessage(Component.literal(String.valueOf(i)), level.getServer());
         }
+
 
         return location;
     }
@@ -356,7 +358,6 @@ public class TardisControlManager {
             return false;
         }
 
-        Platform.getServer().executor.execute(() -> {
             this.ticksInFlight = 0;
             this.ticksLanding = TICKS_LANDING_MAX;
 
@@ -370,7 +371,7 @@ public class TardisControlManager {
 
             operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
             operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
-        });
+
         return true;
     }
 
