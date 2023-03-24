@@ -7,7 +7,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.animal.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -137,6 +136,7 @@ public class TardisControlManager {
                 this.targetLocation = new TardisNavLocation(new BlockPos(0, 100, 0), Direction.NORTH, Platform.getServer().overworld());
             }
         }
+
 
         if (isInFlight) {
             ticksInFlight++;
@@ -296,6 +296,7 @@ public class TardisControlManager {
         return null;
     }
 
+
     private TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
         while (location.position.getY() >= minHeight) {
 
@@ -354,19 +355,22 @@ public class TardisControlManager {
         if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (!this.operator.getTardisFlightEventManager().areControlEventsComplete() && !this.autoLand)) {
             return false;
         }
-        this.ticksInFlight = 0;
-        this.ticksLanding = TICKS_LANDING_MAX;
 
-        TardisNavLocation landingLocation = this.targetLocation;
-        var location =  findClosestValidPosition(landingLocation);
+        Platform.getServer().executor.execute(() -> {
+            this.ticksInFlight = 0;
+            this.ticksLanding = TICKS_LANDING_MAX;
 
-        operator.getExteriorManager().placeExteriorBlock(operator, location);
-        if (currentExteriorTheme != null) {
-            operator.getInteriorManager().setShellTheme(currentExteriorTheme);
-        }
+            TardisNavLocation landingLocation = this.targetLocation;
+            var location = findClosestValidPosition(landingLocation);
 
-        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
-        operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+            operator.getExteriorManager().placeExteriorBlock(operator, location);
+            if (currentExteriorTheme != null) {
+                operator.getInteriorManager().setShellTheme(currentExteriorTheme);
+            }
+
+            operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
+            operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+        });
         return true;
     }
 
