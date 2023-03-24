@@ -401,6 +401,11 @@ public class TardisControlManager {
         }
 
         // Calculate the random position from what we've gotten.
+
+        if (this.targetLocation.getLevel().dimension() == Level.END) {
+            this.targetLocation.setLevel(this.operator.getLevel().getServer().overworld());
+        }
+
         var progress = this.operator.getTardisFlightEventManager().getPercentComplete();
         var targetPos = new Vec3(this.targetLocation.position.getX(), this.targetLocation.position.getY(), this.targetLocation.position.getZ());
         var currentLoc = this.operator.getExteriorManager().getLastKnownLocation().position;
