@@ -2254,9 +2254,11 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		if (globalConsoleBlock != null && !reactions.isFlying()) {
 			this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
+		} else {
+			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 		}
 
-		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+
 
 		this.throttle.zRot = (reactions.isThrottleDown()) ? -1f : 1f;
 		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
