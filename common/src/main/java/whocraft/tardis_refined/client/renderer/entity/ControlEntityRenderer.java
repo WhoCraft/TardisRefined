@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 
@@ -21,7 +23,16 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
     @Override
     protected boolean shouldShowName(ControlEntity entity) {
-        return (TRConfig.CLIENT.CONTROL_NAMES.get() && Minecraft.renderNames() && this.entityRenderDispatcher.crosshairPickEntity == entity);
+        return (TRConfig.CLIENT.CONTROL_NAMES.get() && Minecraft.renderNames() && isMouseOverEntity(entity));
+    }
+
+    private boolean isMouseOverEntity(ControlEntity entity) {
+        HitResult hitResult = Minecraft.getInstance().hitResult;
+        if (hitResult == null) return false;
+        if (hitResult instanceof EntityHitResult entityHitResult) {
+            return entityHitResult.getEntity() == entity;
+        }
+        return false;
     }
 
     @Override

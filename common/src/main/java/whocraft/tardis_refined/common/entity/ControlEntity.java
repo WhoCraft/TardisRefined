@@ -96,7 +96,8 @@ public class ControlEntity extends Entity {
 
     @Override
     public boolean save(CompoundTag compound) {
-        compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
+        if(consoleBlockPos != null){
+        compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));}
         return super.save(compound);
     }
 
