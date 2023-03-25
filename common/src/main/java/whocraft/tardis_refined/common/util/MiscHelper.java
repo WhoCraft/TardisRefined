@@ -20,6 +20,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import org.apache.commons.lang3.text.WordUtils;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -133,4 +134,14 @@ public class MiscHelper {
         return state.getBlock() instanceof GlobalConsoleBlock || state.getBlock() instanceof ShellBaseBlock;
     }
 
+    public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
+        return getCleanName(dimensionKey.location().getPath());
+    }
+
+    public static String getCleanName(String name) {
+       var noUnderscores = name.replace("_", " ");
+       return WordUtils.capitalizeFully(noUnderscores);
+    }
+
 }
+

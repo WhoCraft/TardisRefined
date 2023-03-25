@@ -63,7 +63,7 @@ public class ProviderLootTable extends LootTableProvider {
     public static class ModEntityLoot extends EntityLoot {
         @Override
         protected void addTables() {
-            add(EntityRegistry.CONTROL_ENTITY.get(), LootTable.lootTable());
+            //add(EntityRegistry.CONTROL_ENTITY.get(), LootTable.lootTable());
         }
 
         @Override

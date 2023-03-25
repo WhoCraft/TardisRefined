@@ -52,9 +52,10 @@ public abstract class ShellModel extends HierarchicalModel {
         return currentAlpha;
     }
 
-    public void handleAnimations(GlobalShellBlockEntity entity, ModelPart root, boolean isBaseModel, boolean isDoorOpen, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
-
+    public void handleAllAnimations(GlobalShellBlockEntity entity, ModelPart root, boolean isBaseModel, boolean isDoorOpen, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
         if (entity.TARDIS_ID == null) return;
+        entity.liveliness.start(12);
+
         this.root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
 
@@ -65,12 +66,19 @@ public abstract class ShellModel extends HierarchicalModel {
         }
 
         if (reactions.isTakingOff()) {
-            this.animate(reactions.TAKEOFF_ANIMATION, MODEL_TAKEOFF, reactions.takeOffTime * ANIMATION_SPEED);
+            this.animate(reactions.ROTOR_ANIMATION, MODEL_TAKEOFF, reactions.takeOffTime * ANIMATION_SPEED);
         }
 
         currentAlpha = (reactions.isFlying()) ? (this.initAlpha() - this.fadeValue().y) * 0.1f : baseAlpha;
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? this.getCurrentAlpha() : baseAlpha);
+
+        handleSpecialAnimation(entity, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, baseAlpha);
+        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, reactions.isFlying() ? this.getCurrentAlpha() : baseAlpha);
     }
+
+    public void handleSpecialAnimation(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
+
+    }
+
 
     public static void splice(PartDefinition partDefinition) {
         partDefinition.addOrReplaceChild("fade_value", CubeListBuilder.create().texOffs(128, 128), PartPose.offset(-24.0F, 24.0F, 0.0F));

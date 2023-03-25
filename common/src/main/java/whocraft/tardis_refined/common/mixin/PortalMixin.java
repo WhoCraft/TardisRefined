@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin;
+package whocraft.tardis_refined.common.mixin;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
