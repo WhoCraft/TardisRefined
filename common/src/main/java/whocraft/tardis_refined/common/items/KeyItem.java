@@ -122,13 +122,30 @@ public class KeyItem extends Item {
         return keychain.contains(levelResourceKey);
     }
 
+    public InteractionResult interactMonitor(ItemStack itemStack, Player player, ControlEntity control, InteractionHand interactionHand) {
+
+        if (control.level instanceof ServerLevel serverLevel) {
+            ResourceKey<Level> tardis = serverLevel.dimension();
+            if (control.controlSpecification().control() != null) {
+                if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis)) {
+                    player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
+                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
+                    player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
+
+        return InteractionResult.SUCCESS;
+    }
+
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
 
         if (context.getLevel() instanceof ServerLevel) {
             if (TardisRefined.KeySummonsItem) {
-                if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isCrouching()) {
+                if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isShiftKeyDown()) {
 
                     var keychain = getKeychain(context.getItemInHand());
                     if (keychain.size() > 0) {
@@ -143,7 +160,7 @@ public class KeyItem extends Item {
                     }
                 }
             } else {
-                if (context.getPlayer().isCrouching()) {
+                if (context.getPlayer().isShiftKeyDown()) {
                     var keychain = getKeychain(context.getItemInHand());
                     if (keychain.size() > 0) {
                         Collections.rotate(keychain.subList(0, keychain.size()), -1);

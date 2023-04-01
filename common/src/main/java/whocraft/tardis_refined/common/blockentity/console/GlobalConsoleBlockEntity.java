@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
@@ -26,6 +27,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
@@ -84,7 +86,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
         super.load(tag);
 
-//        spawnControlEntities();
+        spawnControlEntities();
     }
 
     public void spawnControlEntities() {
@@ -100,10 +102,13 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
 
-                ControlEntity controlEntity = new ControlEntity(getLevel(), theme, control, this.getBlockPos());
+                ControlEntity controlEntity = new ControlEntity(getLevel());
 
-                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
+
+                Vec3 location = LevelHelper.centerPos(currentBlockPos, false).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
                 controlEntity.setPos(location.x(), location.y(), location.z());
+
+                controlEntity.assignControlData(theme, control, this.getBlockPos());
 
                 serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
