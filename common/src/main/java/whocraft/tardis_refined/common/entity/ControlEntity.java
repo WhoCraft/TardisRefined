@@ -234,6 +234,7 @@ public class ControlEntity extends Entity {
         float width = this.getEntityData().get(SCALE_WIDTH);
         float height = this.getEntityData().get(SCALE_HEIGHT);
         float incrementAmount = 0.05F;
+        float posIncrementAmount = 0.025F;
 
         if (player.getOffhandItem().getItem() == Items.REDSTONE) { //Print position output to console
             Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, false);
@@ -248,13 +249,13 @@ public class ControlEntity extends Entity {
             TardisRefined.LOGGER.info("Size (Width, Height): " + finalWidth + "F, " + finalHeight + "F");
         }
         if (player.getOffhandItem().getItem() == Items.DIAMOND) { //Increase Y
-            this.setPos(this.position().add(0, player.isShiftKeyDown() ? -0.05 : 0.05, 0));
+            this.setPos(this.position().add(0, player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0));
         }
         if (player.getOffhandItem().getItem() == Items.EMERALD){ //Increase X
-            this.setPos(this.position().add(player.isShiftKeyDown() ? -0.05 : 0.05, 0, 0));
+            this.setPos(this.position().add(player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0, 0));
         }
         if (player.getOffhandItem().getItem() == Items.GOLD_INGOT){ //Increase Z
-            this.setPos(this.position().add(0, 0, player.isShiftKeyDown() ? 0.05 : -0.05));
+            this.setPos(this.position().add(0, 0, player.isShiftKeyDown() ? posIncrementAmount : -posIncrementAmount));
         }
         if (player.getOffhandItem().getItem() == Items.IRON_INGOT){ //Adjust Size Width
             float newWidth = player.isShiftKeyDown() ? width - incrementAmount : width + incrementAmount;
