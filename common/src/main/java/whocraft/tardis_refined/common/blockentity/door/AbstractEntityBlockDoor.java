@@ -60,8 +60,10 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
     @Override
     public void setClosed(boolean state) {
         BlockState blockState = getLevel().getBlockState(getDoorPosition());
-        getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
-        getLevel().playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
+        if (!blockState.isAir()){
+            getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
+            getLevel().playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
+        }
     }
 
     @Override
