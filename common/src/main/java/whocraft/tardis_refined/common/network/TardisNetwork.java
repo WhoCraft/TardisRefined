@@ -19,7 +19,7 @@ public class TardisNetwork {
         CHANGE_SHELL = NETWORK.registerC2S("change_shell", ChangeShellMessage::new);
         CHANGE_DESKTOP = NETWORK.registerC2S("change_desktop", ChangeDesktopMessage::new);
         CANCEL_CHANGE_DESKTOP = NETWORK.registerC2S("cancel_change_desktop", CancelDesktopChangeMessage::new);
-        SYNC_CONTROL_SIZE = NETWORK.registerC2S("sync_control_size", CancelDesktopChangeMessage::new);
+        SYNC_CONTROL_SIZE = NETWORK.registerS2C("sync_control_size", ControlSizeSyncMessage::new);
     }
 
 }
