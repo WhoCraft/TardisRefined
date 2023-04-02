@@ -1,12 +1,9 @@
 package whocraft.tardis_refined.common.network.handler;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.network.messages.ControlSizeSyncMessage;
 
 import java.util.Set;
 
@@ -35,7 +32,7 @@ public class ClientPacketHandler {
         Level level = Minecraft.getInstance().level;
         if(level != null){
             if(level.getEntity(entityId) instanceof ControlEntity control){
-                control.setSize(width, height);
+                control.setSizeAndUpdate(width, height);
             }
         }
     }

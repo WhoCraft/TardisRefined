@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -19,9 +20,10 @@ public class MonitorControl extends Control {
         if (!player.level.isClientSide()){
             if (PlayerUtil.isInMainHand(player, ItemRegistry.KEY.get())){
                 KeyItem key = (KeyItem)player.getMainHandItem().getItem();
-                key.interactMonitor(player.getMainHandItem(),player, controlEntity, player.getUsedItemHand());
+                if (!key.interactMonitor(player.getMainHandItem(),player, controlEntity, player.getUsedItemHand()))
+                    new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(),operator.getExteriorManager().getLastKnownLocation(), operator.getControlManager().getTargetLocation()).send((ServerPlayer) player);
             }
-            new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(),operator.getExteriorManager().getLastKnownLocation(), operator.getControlManager().getTargetLocation()).send((ServerPlayer) player);
+
         }
 
     }

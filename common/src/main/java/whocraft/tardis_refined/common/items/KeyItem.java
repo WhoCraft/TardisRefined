@@ -122,7 +122,7 @@ public class KeyItem extends Item {
         return keychain.contains(levelResourceKey);
     }
 
-    public InteractionResult interactMonitor(ItemStack itemStack, Player player, ControlEntity control, InteractionHand interactionHand) {
+    public boolean interactMonitor(ItemStack itemStack, Player player, ControlEntity control, InteractionHand interactionHand) {
 
         if (control.level instanceof ServerLevel serverLevel) {
             ResourceKey<Level> tardis = serverLevel.dimension();
@@ -131,12 +131,12 @@ public class KeyItem extends Item {
                     player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                     player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
-                    return InteractionResult.SUCCESS;
+                    return true;
                 }
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return false;
     }
 
 

@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -20,7 +19,7 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -28,7 +27,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.network.messages.ControlSizeSyncMessage;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -36,11 +34,8 @@ import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
-import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class ControlEntity extends Entity {
 
@@ -74,15 +69,16 @@ public class ControlEntity extends Entity {
         }
     }
 
+    /** Sets the Entity size to an EntityDataAccessor which gets synced to the client next time it updates*/
     protected void setSizeData(float width, float height){
         this.getEntityData().set(SCALE_WIDTH, width);
         this.getEntityData().set(SCALE_HEIGHT, height);
     }
 
-    public void setSize(float width, float height){
+    /** Sets the Entity Size and makes an immediate size update*/
+    public void setSizeAndUpdate(float width, float height){
         this.setSizeData(width, height);
         this.refreshDimensions();
-        this.reapplyPosition(); //DO NOT delete, or else the entity's hitbox becomes stuck at 0,0
     }
 
     public ControlSpecification controlSpecification() {
@@ -117,7 +113,7 @@ public class ControlEntity extends Entity {
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
-        this.setSize(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
+        this.setSizeAndUpdate(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
     }
 
 
@@ -162,7 +158,7 @@ public class ControlEntity extends Entity {
 
     @Override
     public boolean hurt(DamageSource damageSource, float f) {
-        if (damageSource.getDirectEntity() instanceof Player player) {
+        if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
             if (this.level instanceof ServerLevel serverLevel) {
                 handleLeftClick(player, serverLevel);
                 return true;
@@ -235,35 +231,40 @@ public class ControlEntity extends Entity {
         float height = this.getEntityData().get(SCALE_HEIGHT);
         float incrementAmount = 0.05F;
         float posIncrementAmount = 0.025F;
+        Item offhandItem = player.getOffhandItem().getItem();
 
-        if (player.getOffhandItem().getItem() == Items.REDSTONE) { //Print position output to console
-            Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, false);
-            double x = this.position().x() - centre.x;
-            double y = this.position().y() - centre.y;
-            double z = this.position().z() - centre.z;
-            if (controlSpecification != null)
+        if (offhandItem == Items.REDSTONE) { //Print position output to console
+            if (this.controlSpecification != null)
                 TardisRefined.LOGGER.info("Control Info for: " + this.controlSpecification.control().getSerializedName());
-            TardisRefined.LOGGER.info("Offset: " + x + "F, " + y + "F, " + z + "F");
+            if (this.consoleBlockPos != null){
+                Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, false);
+                double x = this.position().x() - centre.x;
+                double y = this.position().y() - centre.y;
+                double z = this.position().z() - centre.z;
+                TardisRefined.LOGGER.info("Offset: " + x + "F, " + y + "F, " + z + "F");
+            }
             float finalWidth = this.getEntityData().get(SCALE_WIDTH);
             float finalHeight = this.getEntityData().get(SCALE_HEIGHT);
             TardisRefined.LOGGER.info("Size (Width, Height): " + finalWidth + "F, " + finalHeight + "F");
         }
-        if (player.getOffhandItem().getItem() == Items.DIAMOND) { //Increase Y
-            this.setPos(this.position().add(0, player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0));
-        }
-        if (player.getOffhandItem().getItem() == Items.EMERALD){ //Increase X
-            this.setPos(this.position().add(player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0, 0));
-        }
-        if (player.getOffhandItem().getItem() == Items.GOLD_INGOT){ //Increase Z
-            this.setPos(this.position().add(0, 0, player.isShiftKeyDown() ? posIncrementAmount : -posIncrementAmount));
-        }
-        if (player.getOffhandItem().getItem() == Items.IRON_INGOT){ //Adjust Size Width
-            float newWidth = player.isShiftKeyDown() ? width - incrementAmount : width + incrementAmount;
-            this.setSize(newWidth, height);
-        }
-        if (player.getOffhandItem().getItem() == Items.COPPER_INGOT){ //Adjust Size Height
-            float newHeight = player.isShiftKeyDown() ? height - incrementAmount : height + incrementAmount;
-            this.setSize(width, newHeight);
+        else {
+            if (offhandItem == Items.EMERALD){ //Adjust X
+                this.setPos(this.position().add(player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0, 0));
+            }
+            if (offhandItem == Items.DIAMOND) { //Adjust Y
+                this.setPos(this.position().add(0, player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0));
+            }
+            if (offhandItem == Items.GOLD_INGOT){ //Adjust Z
+                this.setPos(this.position().add(0, 0, player.isShiftKeyDown() ? posIncrementAmount : -posIncrementAmount));
+            }
+            if (offhandItem == Items.IRON_INGOT){ //Adjust Size Width
+                float newWidth = player.isShiftKeyDown() ? width - incrementAmount : width + incrementAmount;
+                this.setSizeAndUpdate(newWidth, height);
+            }
+            if (offhandItem == Items.COPPER_INGOT){ //Adjust Size Height
+                float newHeight = player.isShiftKeyDown() ? height - incrementAmount : height + incrementAmount;
+                this.setSizeAndUpdate(width, newHeight);
+            }
         }
     }
 
@@ -292,37 +293,16 @@ public class ControlEntity extends Entity {
     private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand){
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
-            if (this.controlSpecification.control().getControl() instanceof MonitorControl) {
-                if (PlayerUtil.isInMainHand(player, ItemRegistry.KEY.get())) {
-                    ItemStack itemStack = player.getMainHandItem();
-                    if (itemStack.getItem() instanceof KeyItem keyItem) {
-                        ResourceKey<Level> tardis = serverLevel.dimension();
-                        if (controlSpecification.control() != null) {
-                            if (controlSpecification.control() == ConsoleControl.MONITOR && !KeyItem.keychainContains(itemStack, tardis)) {
-                                player.setItemInHand(interactionHand, KeyItem.addTardis(itemStack, tardis));
-                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
-                                player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
-                                return;
-                            }
-                        }
-                    }
+            if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
+                if (player.isCreative()) {
+                    serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                } else {
+                    player.hurt(DamageSource.ON_FIRE, 0.1F);
                 }
+                return;
             }
-            else {
-
-                if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
-                    if (player.isCreative()) {
-                        serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
-                    } else {
-                        player.hurt(DamageSource.ON_FIRE, 0.1F);
-                    }
-                    return;
-                }
-
-                if (isDesktopWaitingToGenerate(cap, serverLevel))
-                    return;
-
-            }
+            if (isDesktopWaitingToGenerate(cap, serverLevel))
+                return;
 
             if (!interactWaitingControl(cap)) {
                 this.controlSpecification.control().getControl().onRightClick(cap, consoleTheme, this, player);
