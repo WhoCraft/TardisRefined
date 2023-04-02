@@ -27,7 +27,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.network.messages.ControlSizeSyncMessage;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
@@ -64,8 +63,6 @@ public class ControlEntity extends Entity {
             float height = controlSpecification.scale().height;
             this.setSizeData(width, height);
             this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
-            if (!this.level.isClientSide)
-                new ControlSizeSyncMessage(this.getId(), width, height).sendToTracking(this);
         }
     }
 

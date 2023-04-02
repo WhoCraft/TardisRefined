@@ -18,12 +18,14 @@ public class MonitorControl extends Control {
     @Override
     public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!player.level.isClientSide()){
+            boolean isSyncingKey = false;
             if (PlayerUtil.isInMainHand(player, ItemRegistry.KEY.get())){
                 KeyItem key = (KeyItem)player.getMainHandItem().getItem();
-                if (!key.interactMonitor(player.getMainHandItem(),player, controlEntity, player.getUsedItemHand()))
-                    new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(),operator.getExteriorManager().getLastKnownLocation(), operator.getControlManager().getTargetLocation()).send((ServerPlayer) player);
+                if (key.interactMonitor(player.getMainHandItem(),player, controlEntity, player.getUsedItemHand()))
+                    isSyncingKey = true;
             }
-
+            if (!isSyncingKey)
+                new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(),operator.getExteriorManager().getLastKnownLocation(), operator.getControlManager().getTargetLocation()).send((ServerPlayer) player);
         }
 
     }
