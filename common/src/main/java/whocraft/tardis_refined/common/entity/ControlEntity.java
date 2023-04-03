@@ -234,7 +234,7 @@ public class ControlEntity extends Entity {
             if (this.controlSpecification != null)
                 TardisRefined.LOGGER.info("Control Info for: " + this.controlSpecification.control().getSerializedName());
             if (this.consoleBlockPos != null){
-                Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, false);
+                Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, true);
                 double x = this.position().x() - centre.x;
                 double y = this.position().y() - centre.y;
                 double z = this.position().z() - centre.z;

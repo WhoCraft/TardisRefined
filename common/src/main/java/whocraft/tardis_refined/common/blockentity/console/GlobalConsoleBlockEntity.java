@@ -105,7 +105,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 ControlEntity controlEntity = new ControlEntity(getLevel());
 
 
-                Vec3 location = LevelHelper.centerPos(currentBlockPos, false).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
+                Vec3 location = LevelHelper.centerPos(currentBlockPos, true).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
                 controlEntity.setPos(location.x(), location.y(), location.z());
 
                 controlEntity.assignControlData(theme, control, this.getBlockPos());
