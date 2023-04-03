@@ -8,7 +8,7 @@ public class TardisNetwork {
 
     public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
 
-    public static MessageType SYNC_PATTERNS,SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, SYNC_DESKTOPS, SYNC_CONTROL_SIZE;
+    public static MessageType SYNC_PATTERNS,SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, SYNC_DESKTOPS;
 
     public static void init() {
         SYNC_LEVELS = NETWORK.registerS2C("sync_levels", SyncLevelListMessage::new);
