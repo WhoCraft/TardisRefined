@@ -323,21 +323,23 @@ public class TardisInteriorManager {
     }
 
     public void setShellTheme(ShellTheme theme) {
-        BlockState state = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition());
-        // Check if its our default global shell.
+        if (operator.getInternalDoor() != null){
+            BlockState state = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition());
+            // Check if its our default global shell.
 
-        if (state.getBlock() instanceof GlobalDoorBlock) {
-            operator.getLevel().setBlock(operator.getInternalDoor().getDoorPosition(),
-                    state.setValue(GlobalDoorBlock.SHELL, theme), 2);
-        } else {
-            if (state.getBlock() instanceof RootShellDoorBlock) {
+            if (state.getBlock() instanceof GlobalDoorBlock) {
                 operator.getLevel().setBlock(operator.getInternalDoor().getDoorPosition(),
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
-                                .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme), 2);
+                        state.setValue(GlobalDoorBlock.SHELL, theme), 2);
+            } else {
+                if (state.getBlock() instanceof RootShellDoorBlock) {
+                    operator.getLevel().setBlock(operator.getInternalDoor().getDoorPosition(),
+                            BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
+                                    .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme), 2);
 
-                var shellBlockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
-                if (shellBlockEntity instanceof GlobalDoorBlockEntity entity) {
-                    operator.setInternalDoor(entity);
+                    var shellBlockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
+                    if (shellBlockEntity instanceof GlobalDoorBlockEntity entity) {
+                        operator.setInternalDoor(entity);
+                    }
                 }
             }
         }

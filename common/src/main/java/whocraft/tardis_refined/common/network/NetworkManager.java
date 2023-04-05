@@ -5,8 +5,10 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +43,10 @@ public abstract class NetworkManager {
     public abstract void sendToServer(MessageC2S message);
 
     public abstract void sendToPlayer(ServerPlayer player, MessageS2C message);
+
+    public abstract void sendToTracking(Entity entity, MessageS2C message);
+
+    public abstract void sendToTracking(BlockEntity entity, MessageS2C message);
 
     public void sendToDimension(Level level, MessageS2C message) {
         if(!level.isClientSide) {

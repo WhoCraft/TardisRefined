@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathFinder;
 import net.minecraft.world.phys.BlockHitResult;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.blockentity.door.AbstractEntityBlockDoor;
@@ -21,13 +22,13 @@ public class InternalDoorBlockEntity extends AbstractEntityBlockDoor {
 
 
     public void onRightClick(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-
         if (!level.isClientSide()) {
             Optional<TardisLevelOperator> operator = TardisLevelOperator.get((ServerLevel) level);
             operator.ifPresent(x -> {
                 x.setInternalDoor(this);
                 x.exitTardis(player);
             });
+
         }
 
 

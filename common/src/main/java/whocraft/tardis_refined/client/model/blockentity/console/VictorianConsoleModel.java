@@ -2298,7 +2298,10 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 		if (reactions.isFlying()) {
 			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 		} else {
-			animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+			if (globalConsoleBlock != null) {
+				animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+			}
+
 		}
 
 		throttle_control.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
