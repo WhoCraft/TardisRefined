@@ -26,7 +26,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
                 if (cap.getInternalDoor() != door) {
                     cap.setInternalDoor(door);
                 }
-                if(player.isCrouching() && !cap.getControlManager().isInFlight()) {
+                if(player.isShiftKeyDown() && !cap.getControlManager().isInFlight()) {
                     cap.getExteriorManager().setLocked(!door.locked());
                     door.setLocked(!door.locked());
                     cap.setDoorClosed(true);

@@ -48,6 +48,9 @@ public class NbtConstants {
 
     // Controls
     public static final String CONTROL_ID = "control_id";
+    public static final String CONSOLE_POS = "console_pos";
+    public static final String CONTROL_SIZE_WIDTH = "console_size_width";
+    public static final String CONTROL_SIZE_HEIGHT = "console_size_height";
 
     public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
     public static final String CONTROL_INCREMENT_INDEX = "ctrl_increment_index";

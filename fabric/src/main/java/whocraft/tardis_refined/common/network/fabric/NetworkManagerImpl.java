@@ -4,10 +4,15 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -81,4 +86,20 @@ public class NetworkManagerImpl extends NetworkManager {
         message.toBytes(buf);
         ServerPlayNetworking.send(player, this.channelName, buf);
     }
+
+    @Override
+    public void sendToTracking(Entity entity, MessageS2C message) {
+        PlayerLookup.tracking(entity).stream().forEach(player -> {
+            this.sendToPlayer(player, message);
+        });
+    }
+
+    @Override
+    public void sendToTracking(BlockEntity blockEntity, MessageS2C message) {
+        PlayerLookup.tracking(blockEntity).stream().forEach(player -> {
+            this.sendToPlayer(player, message);
+        });
+    }
+
+
 }
