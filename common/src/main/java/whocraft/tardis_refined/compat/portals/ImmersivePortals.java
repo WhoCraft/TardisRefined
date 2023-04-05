@@ -64,8 +64,10 @@ public class ImmersivePortals {
         TardisEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
         TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
             ImmersivePortals.destroyPortals(operator);
-            if (operator.getInternalDoor().isOpen()) {
-                ImmersivePortals.createPortals(operator);
+            if (operator.getInternalDoor() != null){
+                if (operator.getInternalDoor().isOpen()) {
+                    ImmersivePortals.createPortals(operator);
+                }
             }
         });
 
