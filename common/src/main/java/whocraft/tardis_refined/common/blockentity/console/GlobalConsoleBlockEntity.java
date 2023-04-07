@@ -16,6 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
@@ -25,6 +27,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
@@ -98,11 +101,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             ControlSpecification[] controls = theme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
-                ControlEntity controlEntity = EntityRegistry.CONTROL_ENTITY.get().create(getLevel());
-                controlEntity.assignControlData(theme, control, this.getBlockPos());
 
-                Vector3f location = new Vector3f(((float) currentBlockPos.getX() + control.offsetPosition().x() + 0.5f), (float) getBlockPos().getY() + control.offsetPosition().y() + 0.5f, (float) getBlockPos().getZ() + control.offsetPosition().z() + 0.5f);
-                controlEntity.teleportTo(location.x(), location.y(), location.z());
+                ControlEntity controlEntity = new ControlEntity(getLevel());
+
+
+                Vec3 location = LevelHelper.centerPos(currentBlockPos, true).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
+                controlEntity.setPos(location.x(), location.y(), location.z());
+
+                controlEntity.assignControlData(theme, control, this.getBlockPos());
 
                 serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
@@ -119,7 +125,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void setRemoved() {
         super.setRemoved();
-        killControls();
+
     }
 
     @Override
@@ -144,9 +150,9 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public void killControls() {
         controlEntityList.forEach(x -> {
-            x.teleportTo(0, -1000, 0);
-            x.kill();
+            x.discard();
         });
+        controlEntityList.clear();
     }
 
     @Override

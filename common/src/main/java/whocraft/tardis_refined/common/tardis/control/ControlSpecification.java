@@ -1,14 +1,14 @@
 package whocraft.tardis_refined.common.tardis.control;
 
 import com.mojang.math.Vector3f;
-import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntityDimensions;
 
 public class ControlSpecification {
     private ConsoleControl control;
     private Vector3f offsetPosition;
-    private BlockPos scale;
+    private EntityDimensions scale;
 
-    public ControlSpecification(ConsoleControl control, Vector3f offsetPosition, BlockPos scale) {
+    public ControlSpecification(ConsoleControl control, Vector3f offsetPosition, EntityDimensions scale) {
         this.control = control;
         this.offsetPosition = offsetPosition;
         this.scale = scale;
@@ -32,11 +32,11 @@ public class ControlSpecification {
         return this;
     }
 
-    public BlockPos scale() {
+    public EntityDimensions scale() {
         return scale;
     }
 
-    public ControlSpecification setScale(BlockPos scale) {
+    public ControlSpecification setScale(EntityDimensions scale) {
         this.scale = scale;
         return this;
     }
