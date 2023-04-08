@@ -20,7 +20,7 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
     private static Map<ShellTheme, List<ShellPattern>> PATTERNS = new HashMap<>();
 
     public ShellPatterns() {
-        super(TardisRefined.GSON, "patterns/shell");
+        super(TardisRefined.GSON, TardisRefined.MODID + "/patterns/shell");
     }
 
     public static ShellPattern next(ShellTheme ShellTheme, ShellPattern basePattern) {
