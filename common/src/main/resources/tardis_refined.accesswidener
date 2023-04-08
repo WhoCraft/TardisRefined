@@ -7,3 +7,4 @@ transitive-accessible class net/minecraft/world/level/block/entity/BlockEntityTy
 extendable	method	net/minecraft/world/entity/Entity	getBoundingBox	()Lnet/minecraft/world/phys/AABB;
 accessible class net/minecraft/core/particles/SimpleParticleType
 accessible class net/minecraft/core/particles/SimpleParticleType$1
+accessible method net/minecraft/server/MinecraftServer wrapRunnable (Ljava/lang/Runnable;)Lnet/minecraft/server/TickTask;

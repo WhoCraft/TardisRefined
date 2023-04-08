@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -105,8 +106,9 @@ public class TardisInteriorManager {
             tag.put(NbtConstants.TARDIS_IM_AIRLOCK_CENTER, NbtUtils.writeBlockPos(this.corridorAirlockCenter));
         }
 
-        tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.id : "");
-        tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.id);
+
+        tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
+        tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         return tag;
     }
 
@@ -115,8 +117,8 @@ public class TardisInteriorManager {
         this.isGeneratingDesktop = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP);
         this.interiorGenerationCooldown = tag.getInt(NbtConstants.TARDIS_IM_GENERATION_COOLDOWN);
         this.hasGeneratedCorridors = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS);
-        this.preparedTheme = TardisDesktops.getDesktopThemeById(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME));
-        this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopThemeById(tag.getString(NbtConstants.TARDIS_IM_CURRENT_THEME)) : preparedTheme;
+        this.preparedTheme = TardisDesktops.getDesktopById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME)));
+        this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
     }
 
@@ -321,21 +323,23 @@ public class TardisInteriorManager {
     }
 
     public void setShellTheme(ShellTheme theme) {
-        BlockState state = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition());
-        // Check if its our default global shell.
+        if (operator.getInternalDoor() != null){
+            BlockState state = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition());
+            // Check if its our default global shell.
 
-        if (state.getBlock() instanceof GlobalDoorBlock) {
-            operator.getLevel().setBlock(operator.getInternalDoor().getDoorPosition(),
-                    state.setValue(GlobalDoorBlock.SHELL, theme), 2);
-        } else {
-            if (state.getBlock() instanceof RootShellDoorBlock) {
+            if (state.getBlock() instanceof GlobalDoorBlock) {
                 operator.getLevel().setBlock(operator.getInternalDoor().getDoorPosition(),
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
-                                .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme), 2);
+                        state.setValue(GlobalDoorBlock.SHELL, theme), 2);
+            } else {
+                if (state.getBlock() instanceof RootShellDoorBlock) {
+                    operator.getLevel().setBlock(operator.getInternalDoor().getDoorPosition(),
+                            BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
+                                    .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme), 2);
 
-                var shellBlockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
-                if (shellBlockEntity instanceof GlobalDoorBlockEntity entity) {
-                    operator.setInternalDoor(entity);
+                    var shellBlockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
+                    if (shellBlockEntity instanceof GlobalDoorBlockEntity entity) {
+                        operator.setInternalDoor(entity);
+                    }
                 }
             }
         }

@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -45,6 +46,7 @@ public class MiscHelper {
     }
 
     public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
+
         TardisRefined.LOGGER.debug("Teleported {} to {} {} {}", pEntity.getDisplayName().getString(), pX, pY, pZ);
         BlockPos blockpos = new BlockPos(pX, pY, pZ);
 
@@ -135,8 +137,13 @@ public class MiscHelper {
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
-        var noUnderscores = dimensionKey.location().getPath().replace("_", " ");
-        return WordUtils.capitalizeFully(noUnderscores);
+        return getCleanName(dimensionKey.location().getPath());
+    }
+
+    public static String getCleanName(String name) {
+       var noUnderscores = name.replace("_", " ");
+       return WordUtils.capitalizeFully(noUnderscores);
     }
 
 }
+

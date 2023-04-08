@@ -1,7 +1,5 @@
 package whocraft.tardis_refined.common.entity;
 
-
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -16,15 +14,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
@@ -34,87 +31,122 @@ import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
-public class ControlEntity extends PathfinderMob {
+public class ControlEntity extends Entity {
 
     private ControlSpecification controlSpecification;
     private ConsoleTheme consoleTheme;
     private BlockPos consoleBlockPos;
 
+    public ControlEntity(EntityType<?> entityTypeIn, Level level) {
+        super(entityTypeIn, level);
+    }
+
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Float> SCALE_WIDTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SCALE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
 
     public ControlEntity(Level level) {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
     }
 
-    @Override
-    public Component getName() {
-        if (controlSpecification == null) {
-            return super.getName();
+    public void assignControlData(ConsoleTheme theme, ControlSpecification specification, BlockPos consoleBlockPos){
+        this.consoleBlockPos = consoleBlockPos;
+        this.controlSpecification = specification;
+        this.consoleTheme = theme;
+        if(this.controlSpecification != null) {
+            float width = controlSpecification.scale().width;
+            float height = controlSpecification.scale().height;
+            this.setSizeData(width, height);
+            this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
         }
-        return Component.translatable(controlSpecification.control().getTranslationKey());
+    }
+
+    /** Sets the Entity size to an EntityDataAccessor which gets synced to the client next time it updates*/
+    protected void setSizeData(float width, float height){
+        this.getEntityData().set(SCALE_WIDTH, width);
+        this.getEntityData().set(SCALE_HEIGHT, height);
+    }
+
+    /** Sets the Entity Size and makes an immediate size update*/
+    public void setSizeAndUpdate(float width, float height){
+        this.setSizeData(width, height);
+        this.refreshDimensions();
     }
 
     public ControlSpecification controlSpecification() {
-        return controlSpecification;
+        return this.controlSpecification;
     }
 
-    public void assignControlData(ConsoleTheme theme, ControlSpecification consoleControl, BlockPos entityPosition) {
-        this.consoleBlockPos = entityPosition;
-        this.controlSpecification = consoleControl;
-        this.consoleTheme = theme;
-        this.setBoundingBox(new AABB(new BlockPos(consoleControl.scale())));
-        this.refreshDimensions();
-        this.setCustomName(Component.translatable(consoleControl.control().getTranslationKey()));
-        this.setPersistenceRequired();
+    public ConsoleTheme consoleTheme() {return this.consoleTheme;}
+
+    @Override
+    public EntityDimensions getDimensions(Pose pose) {
+        if (this.getEntityData().get(SCALE_WIDTH) != null && this.getEntityData().get(SCALE_HEIGHT) != null){
+            return EntityDimensions.scalable(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
+        }
+        return super.getDimensions(pose);
     }
 
-    public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.FOLLOW_RANGE, 35D).add(Attributes.MOVEMENT_SPEED, 0.23F).add(Attributes.ATTACK_DAMAGE, 3F).add(Attributes.MAX_HEALTH, 20000000000D).add(Attributes.ARMOR, 2000000000.0D);
+    @Override
+    public Component getName() {
+        if (this.controlSpecification == null) {
+            return super.getName();
+        }
+        return Component.translatable(this.controlSpecification.control().getTranslationKey());
     }
 
     @Override
     protected void defineSynchedData() {
-        super.defineSynchedData();
         getEntityData().define(SHOW_PARTICLE, false);
+        getEntityData().define(SCALE_WIDTH, 1F);
+        getEntityData().define(SCALE_HEIGHT, 1F);
+
     }
 
     @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
+        this.setSizeAndUpdate(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
+    }
+
+
+    @Override
     public boolean save(CompoundTag compound) {
-        compound.put("CONSOLE_POS", NbtUtils.writeBlockPos(this.consoleBlockPos));
+        if(consoleBlockPos != null){
+            compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
+        }
+        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SCALE_WIDTH));
+        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SCALE_HEIGHT));
         return super.save(compound);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        super.readAdditionalSaveData(compound);
-        var consolePos = (CompoundTag) compound.get("CONSOLE_POS");
+        var consolePos = (CompoundTag) compound.get(NbtConstants.CONSOLE_POS);
         if (consolePos != null) {
             this.consoleBlockPos = NbtUtils.readBlockPos(consolePos);
         }
+
+        float width = compound.getFloat(NbtConstants.CONTROL_SIZE_WIDTH);
+        float height = compound.getFloat(NbtConstants.CONTROL_SIZE_HEIGHT);
+
+        this.setSizeData(width, height);
     }
 
-
     @Override
-    protected AABB makeBoundingBox() {
-        if (controlSpecification != null) {
-            return new AABB(new BlockPos(controlSpecification.scale()));
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        if(consoleBlockPos != null){
+            compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
         }
-        return super.makeBoundingBox();
-    }
 
-    @Override
-    public AttributeMap getAttributes() {
-        return new AttributeMap(createAttributes().build());
-    }
+        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SCALE_WIDTH));
+        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SCALE_HEIGHT));
 
-    @Override
-    public boolean canBeCollidedWith() {
-        return true;
     }
-
 
     @Override
     public Packet<?> getAddEntityPacket() {
@@ -122,39 +154,10 @@ public class ControlEntity extends PathfinderMob {
     }
 
     @Override
-    public boolean mayInteract(Level level, BlockPos blockPos) {
-        return true;
-    }
-
-    @Override
     public boolean hurt(DamageSource damageSource, float f) {
-        if (damageSource.getDirectEntity() instanceof Player player) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-
-                if (player.getMainHandItem().getItem() == Items.DEBUG_STICK) {
-                    if (player.getOffhandItem().getItem() == Items.DIAMOND) {
-                        setPos(position().add(0, player.isCrouching() ? -0.05 : 0.05, 0));
-                    } else {
-                        setPos(position().add(player.isCrouching() ? -0.05 : 0.05, 0, 0));
-                    }
-
-                    return false;
-                }
-
-                TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-
-                    if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
-                        if (cap.getInteriorManager().isWaitingToGenerate()) {
-                            serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
-                            return;
-                        }
-                    }
-
-                    if (!interactWaitingControl(cap)) {
-                        this.controlSpecification.control().getControl().onLeftClick(cap, consoleTheme, this, player);
-                    }
-                });
-
+        if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
+            if (this.level instanceof ServerLevel serverLevel) {
+                handleLeftClick(player, serverLevel);
                 return true;
             }
         }
@@ -162,46 +165,17 @@ public class ControlEntity extends PathfinderMob {
     }
 
     @Override
-    public InteractionResult interactAt(Player player, Vec3 vec3, InteractionHand interactionHand) {
+    public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (getLevel() instanceof ServerLevel serverLevel) {
 
-                if (player.getMainHandItem().getItem() == Items.DEBUG_STICK) {
-                    if (player.getOffhandItem().getItem() == Items.REDSTONE) {
-                        float x = (float) (this.position().x - 0.5f);
-                        float y = (float) (this.position().y - 97.5f);
-                        float z = (float) (this.position().z - -4.5f);
-                        TardisRefined.LOGGER.info("Output: " + x + "f, " + y + "f, " + z + "f");
-                    } else {
-                        setPos(position().add(0, 0, player.isCrouching() ? 0.05 : -0.05));
-                    }
-
+                if (player.getMainHandItem().getItem() == Items.ENCHANTED_BOOK) {
+                    this.handleControlSizeAndPositionAdjustment(player);
                     return InteractionResult.SUCCESS;
                 }
 
-                TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                this.handleRightClick(player, serverLevel, interactionHand);
 
-                    if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
-                        if (player.isCreative()) {
-                            serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
-                        } else {
-                            player.hurt(DamageSource.ON_FIRE, 0.1F);
-                        }
-                        return;
-                    }
-
-                    if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
-                        if (cap.getInteriorManager().isWaitingToGenerate()) {
-                            serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
-                            return;
-                        }
-                    }
-
-                    if (!interactWaitingControl(cap)) {
-                        this.controlSpecification.control().getControl().onRightClick(cap,consoleTheme, this, player);
-                    }
-
-                });
                 return InteractionResult.SUCCESS;
             }
         }
@@ -209,35 +183,20 @@ public class ControlEntity extends PathfinderMob {
         return InteractionResult.FAIL;
     }
 
-    // Whilst in flight, the TARDIS will have waiting controls for the player to interact with. If this control is of that type, tell the control manager.
-    private boolean interactWaitingControl(TardisLevelOperator operator) {
-        if (operator.getTardisFlightEventManager().isWaitingForControlResponse() && operator.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control()) {
-            operator.getTardisFlightEventManager().respondToWaitingControl(this, this.controlSpecification.control());
-            return true;
-        }
-
-        return false;
-    }
-
     @Override
     public void tick() {
-        setNoAi(true);
 
-        if (this.controlSpecification == null) {
-            if (this.consoleBlockPos != null) {
-                if (level.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
-                    kill();
-                    globalConsoleBlockEntity.markDirty();
+
+        if (level instanceof ServerLevel serverLevel) {
+            if (this.controlSpecification == null) {
+                if (this.consoleBlockPos != null) {
+                    if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+
+                        globalConsoleBlockEntity.markDirty();
+                    }
+                    discard();
                 }
             } else {
-                kill();
-            }
-        }
-
-
-        if (getLevel() instanceof ServerLevel serverLevel) {
-
-            if (this.controlSpecification != null) {
                 TardisLevelOperator.get(serverLevel).ifPresent(x -> {
                     var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
                     if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
@@ -253,7 +212,135 @@ public class ControlEntity extends PathfinderMob {
             }
         }
 
-        super.tick();
+    }
+
+    // Whilst in flight, the TARDIS will have waiting controls for the player to interact with. If this control is of that type, tell the control manager.
+    private boolean interactWaitingControl(TardisLevelOperator operator) {
+        if (operator.getTardisFlightEventManager().isWaitingForControlResponse() && operator.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control()) {
+            operator.getTardisFlightEventManager().respondToWaitingControl(this, this.controlSpecification.control());
+            return true;
+        }
+        return false;
+    }
+
+    private void handleControlSizeAndPositionAdjustment(Player player){
+        float width = this.getEntityData().get(SCALE_WIDTH);
+        float height = this.getEntityData().get(SCALE_HEIGHT);
+        float incrementAmount = 0.05F;
+        float posIncrementAmount = 0.025F;
+        Item offhandItem = player.getOffhandItem().getItem();
+
+        if (offhandItem == Items.REDSTONE) { //Print position output to console
+            if (this.controlSpecification != null)
+                TardisRefined.LOGGER.info("Control Info for: " + this.controlSpecification.control().getSerializedName());
+            if (this.consoleBlockPos != null){
+                Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, true);
+                double x = this.position().x() - centre.x;
+                double y = this.position().y() - centre.y;
+                double z = this.position().z() - centre.z;
+                TardisRefined.LOGGER.info("Offset: " + x + "F, " + y + "F, " + z + "F");
+            }
+            float finalWidth = this.getEntityData().get(SCALE_WIDTH);
+            float finalHeight = this.getEntityData().get(SCALE_HEIGHT);
+            TardisRefined.LOGGER.info("Size (Width, Height): " + finalWidth + "F, " + finalHeight + "F");
+        }
+        else {
+            if (offhandItem == Items.EMERALD){ //Adjust X
+                this.setPos(this.position().add(player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0, 0));
+            }
+            if (offhandItem == Items.DIAMOND) { //Adjust Y
+                this.setPos(this.position().add(0, player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0));
+            }
+            if (offhandItem == Items.GOLD_INGOT){ //Adjust Z
+                this.setPos(this.position().add(0, 0, player.isShiftKeyDown() ? posIncrementAmount : -posIncrementAmount));
+            }
+            if (offhandItem == Items.IRON_INGOT){ //Adjust Size Width
+                float newWidth = player.isShiftKeyDown() ? width - incrementAmount : width + incrementAmount;
+                this.setSizeAndUpdate(newWidth, height);
+            }
+            if (offhandItem == Items.COPPER_INGOT){ //Adjust Size Height
+                float newHeight = player.isShiftKeyDown() ? height - incrementAmount : height + incrementAmount;
+                this.setSizeAndUpdate(width, newHeight);
+            }
+        }
+    }
+
+    private boolean isDesktopWaitingToGenerate(TardisLevelOperator operator, ServerLevel serverLevel){
+        if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
+            if (operator.getInteriorManager().isWaitingToGenerate()) {
+                serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void handleLeftClick(Player player, ServerLevel serverLevel){
+        TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+
+            if (isDesktopWaitingToGenerate(cap, serverLevel))
+                return;
+
+            if (!interactWaitingControl(cap)) {
+                this.controlSpecification.control().getControl().onLeftClick(cap, consoleTheme, this, player);
+            }
+        });
+    }
+
+    private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand){
+        TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+
+            if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
+                if (player.isCreative()) {
+                    serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                } else {
+                    player.hurt(DamageSource.ON_FIRE, 0.1F);
+                }
+                return;
+            }
+            if (isDesktopWaitingToGenerate(cap, serverLevel))
+                return;
+
+            if (!interactWaitingControl(cap)) {
+                this.controlSpecification.control().getControl().onRightClick(cap, consoleTheme, this, player);
+            }
+        });
+    }
+
+
+    @Override
+    public boolean mayInteract(Level level, BlockPos blockPos) {
+        return true;
+    }
+
+    @Override
+    public boolean shouldShowName() {
+        return true;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
+        return true;
+    }
+
+    @Override
+    public boolean isAttackable() {
+        return true;
+    }
+
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
+
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean displayFireAnimation() {
+        return false;
     }
 
 }

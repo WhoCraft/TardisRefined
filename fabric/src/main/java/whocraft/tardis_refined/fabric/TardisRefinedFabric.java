@@ -12,6 +12,8 @@ import net.minecraftforge.api.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -63,6 +65,7 @@ public class TardisRefinedFabric implements ModInitializer {
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "console_patterns"), new ConsolePatterns());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "desktops"), new TardisDesktops());
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "shell_patterns"), new ShellPatterns());
         if (ModCompatChecker.immersivePortals()) {
             if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {

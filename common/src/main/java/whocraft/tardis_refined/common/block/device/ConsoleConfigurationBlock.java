@@ -124,7 +124,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 return InteractionResult.CONSUME;
             } else {
 
-                if (player.isCrouching()) {
+                if (player.isShiftKeyDown()) {
                     if (level.getBlockEntity(blockPos.offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
                         globalConsoleBlock.killControls();
                         level.destroyBlock(blockPos.offset(offset), true);
@@ -152,13 +152,13 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             }
         }
 
-        if (player.isCrouching()) {
+        if (player.isShiftKeyDown()) {
             removeGlobalConsoleBlock(blockPos.offset(offset), level);
         } else {
             changeConsoleTheme(blockPos, blockState, nextTheme, level);
         }
 
-        return InteractionResult.PASS;
+        return InteractionResult.SUCCESS;
     }
 
     /**

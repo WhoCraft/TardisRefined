@@ -5,16 +5,20 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
+import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -35,6 +39,12 @@ public class CommonBus {
     public static void onDatapack(AddReloadListenerEvent addReloadListenerEvent) {
         addReloadListenerEvent.addListener(new ConsolePatterns());
         addReloadListenerEvent.addListener(new ShellPatterns());
+        addReloadListenerEvent.addListener(new TardisDesktops());
+    }
+
+    @SubscribeEvent
+    public static void onCommandRegister(RegisterCommandsEvent event) {
+        TardisRefinedCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent

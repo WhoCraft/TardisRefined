@@ -1,36 +1,44 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.TardisRefined;
 
 
 public class DesktopTheme {
 
     private final ResourceLocation uiTexture;
-    public boolean availableByDefault = false;
-    public String id = "";
-    public ResourceLocation location;
+    private ResourceLocation identifier;
+    private String name = "";
+    private ResourceLocation structureLocation;
 
 
-
-    public DesktopTheme(String id, ResourceLocation location, boolean availableByDefault) {
-        this.id = id;
-        this.availableByDefault = availableByDefault;
-        this.location = location;
-        this.uiTexture = new ResourceLocation(location.getNamespace(), "textures/ui/interiors/" + id + ".png");
+    public DesktopTheme(String id, ResourceLocation structureLocation) {
+        this(new ResourceLocation(TardisRefined.MODID, id), structureLocation);
     }
 
-    public String getTranslationKey(){
-        return ModMessages.desktop(id);
+
+    public DesktopTheme(ResourceLocation id, ResourceLocation structureLocation) {
+        this.identifier = id;
+        this.structureLocation = structureLocation;
+        this.uiTexture = new ResourceLocation(id.getNamespace(), "textures/ui/interiors/" + id.getPath().toString() + ".png");
     }
 
-    public Component getDisplayName() {
-        return Component.translatable(getTranslationKey());
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public ResourceLocation getPreviewTexture(){
         return uiTexture;
     }
 
+    public ResourceLocation getIdentifier() {
+        return identifier;
+    }
+    public ResourceLocation getStructureLocation() {
+        return structureLocation;
+    }
 }

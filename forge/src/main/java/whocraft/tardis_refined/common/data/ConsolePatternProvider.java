@@ -63,6 +63,13 @@ public class ConsolePatternProvider implements DataProvider {
         addPattern(ConsoleTheme.VICTORIAN, new BasePattern<>(ConsoleTheme.VICTORIAN, new ResourceLocation(TardisRefined.MODID, "grant"), createBasePatternLocation("victorian/victorian_console_grant")));
 
         /*Initiative*/
+        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "aperture"), "initiative/initiative_console_aperture")).setEmissive(true);
+        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "blue"), "initiative/initiative_console_blue")).setEmissive(true);
+        addPattern(ConsoleTheme.INITIATIVE, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "construction"), "initiative/initiative_console_construction")).setEmissive(false);
+
+        // Nuka
+        addPattern(ConsoleTheme.NUKA, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "industrial"), "nuka/nuka_industrial")).setEmissive(false);
+        addPattern(ConsoleTheme.NUKA, new ConsolePatterns.Pattern(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "cool"), "nuka/nuka_cool")).setEmissive(false);
         addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "aperture"), createBasePatternLocation("initiative/initiative_console_aperture"))).setEmissive(true);
         addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "blue"), createBasePatternLocation("initiative/initiative_console_blue"))).setEmissive(true);
 

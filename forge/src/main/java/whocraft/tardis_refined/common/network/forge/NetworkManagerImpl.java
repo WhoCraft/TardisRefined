@@ -3,6 +3,8 @@ package whocraft.tardis_refined.common.network.forge;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -50,6 +52,25 @@ public class NetworkManagerImpl extends NetworkManager {
 
         this.channel.send(PacketDistributor.PLAYER.with(() -> player), new ToClient(message));
     }
+
+    @Override
+    public void sendToTracking(Entity entity, MessageS2C message) {
+        if (!this.toClient.containsValue(message.getType())) {
+            System.out.println("Message type not registered: " + message.getType().getId());
+            return;
+        }
+        this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
+    }
+
+    @Override
+    public void sendToTracking(BlockEntity blockEntity, MessageS2C message) {
+        if (!this.toClient.containsValue(message.getType())) {
+            System.out.println("Message type not registered: " + message.getType().getId());
+            return;
+        }
+        this.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos())), message);
+    }
+
 
     public class ToServer {
 
