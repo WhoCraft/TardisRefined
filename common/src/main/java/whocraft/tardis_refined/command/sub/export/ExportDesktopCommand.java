@@ -29,27 +29,29 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("desktop")
                 .then(Commands.argument("pos1", BlockPosArgument.blockPos())
-                    .then(Commands.argument("pos2", BlockPosArgument.blockPos())
-                        .then(Commands.argument("ignore_entities", BoolArgumentType.bool())
-                            .then(Commands.argument("desktop_display_name", ComponentArgument.textComponent())
-                                .then(Commands.argument("namespace", StringArgumentType.word())
-                                    .then(Commands.argument("desktop_id", StringArgumentType.word())
-                                        .then(Commands.argument("datapack_name", StringArgumentType.string())
-                                            .executes(context -> exportDesktop(context, BlockPosArgument.getSpawnablePos(context, "pos1"),
-                                                BlockPosArgument.getSpawnablePos(context, "pos2"),
-                                                BoolArgumentType.getBool(context, "ignore_entities"),
-                                                ComponentArgument.getComponent(context, "desktop_display_name"),
-                                                StringArgumentType.getString(context, "namespace"),
-                                                StringArgumentType.getString(context, "desktop_id"),
-                                                StringArgumentType.getString(context, "datapack_name"))))))))));
+                        .then(Commands.argument("pos2", BlockPosArgument.blockPos())
+                                .then(Commands.argument("ignore_entities", BoolArgumentType.bool())
+                                        .then(Commands.argument("namespace", StringArgumentType.word())
+                                                .then(Commands.argument("desktop_id", StringArgumentType.word())
+                                                        .then(Commands.argument("datapack_name", StringArgumentType.string())
+                                                                .then(Commands.argument("desktop_display_name", ComponentArgument.textComponent())
+                                                                        .executes(context -> exportDesktop(context, BlockPosArgument.getSpawnablePos(context, "pos1"),
+                                                                                BlockPosArgument.getSpawnablePos(context, "pos2"),
+                                                                                BoolArgumentType.getBool(context, "ignore_entities"),
+                                                                                StringArgumentType.getString(context, "namespace"),
+                                                                                StringArgumentType.getString(context, "desktop_id"),
+                                                                                StringArgumentType.getString(context, "datapack_name"),
+                                                                                ComponentArgument.getComponent(context, "desktop_display_name")
+                                                                        )))))))));
+
     }
 
-    private static int exportDesktop(CommandContext<CommandSourceStack> context, BlockPos bottomCorner, BlockPos topCorner, boolean ignoreEntities, Component displayName, String namespace, String desktopId, String datapackName) {
+    private static int exportDesktop(CommandContext<CommandSourceStack> context, BlockPos bottomCorner, BlockPos topCorner, boolean ignoreEntities, String namespace, String desktopId, String datapackName, Component displayName) {
         ResourceLocation loc = new ResourceLocation(namespace, desktopId);
-        DesktopTheme theme = new DesktopTheme(loc,loc,Component.Serializer.toJson(displayName));
+        DesktopTheme theme = new DesktopTheme(loc, loc, Component.Serializer.toJson(displayName));
         ServerPlayer sender = context.getSource().getPlayer();
 
-        MinecraftServerStorageAccessor accessor = (MinecraftServerStorageAccessor)context.getSource().getServer();
+        MinecraftServerStorageAccessor accessor = (MinecraftServerStorageAccessor) context.getSource().getServer();
         Path rootDir = accessor.getStorageSource().getLevelPath(LevelResource.DATAPACK_DIR).normalize();
         Path datapackRoot = rootDir.resolve(datapackName);
 
@@ -60,6 +62,7 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
         if (exported) {
             Component path = CommandHelper.createComponentOpenFile(datapackName, datapackRoot.toString());
             Component reloadCommandSuggestion = CommandHelper.createComponentSuggestCommand("/reload", "/reload");
+            
             PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_SUCCESS, loc, path, reloadCommandSuggestion), false);
             return Command.SINGLE_SUCCESS;
         }

@@ -121,7 +121,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
-        for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
+        for (DesktopTheme desktop :  TardisDesktops.getRegistry().values()) {
 
             Component name = Component.literal(MiscHelper.getCleanName(desktop.getIdentifier().getPath()));
 
