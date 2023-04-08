@@ -5,10 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class PhoneBoothModel extends ShellModel {
 
@@ -95,22 +93,17 @@ public class PhoneBoothModel extends ShellModel {
 	}
 
 	@Override
+	public boolean isDoorModel() {
+		return false;
+	}
+
+	@Override
 	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? 1.75f : 0;
 	}
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		handleAllAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.PHONE_BOOTH.getExternalShellTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return ShellTheme.PHONE_BOOTH.emmissiveExternal();
+		handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

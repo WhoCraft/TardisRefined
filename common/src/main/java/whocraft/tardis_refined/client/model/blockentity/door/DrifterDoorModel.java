@@ -8,11 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class DrifterDoorModel extends ShellModel {
 
@@ -29,16 +27,15 @@ public class DrifterDoorModel extends ShellModel {
 		this.main = root.getChild("main");
 	}
 
-
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition door_closed = partdefinition.addOrReplaceChild("door_closed", CubeListBuilder.create().texOffs(33, 77).addBox(-7.0F, -32.0F, 6.25F, 14.0F, 30.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 77).addBox(-7.5F, -32.5F, 6.75F, 15.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -0.5F));
+				.texOffs(0, 77).addBox(-7.5F, -32.5F, 6.75F, 15.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -0.5F));
 
 		PartDefinition door_open = partdefinition.addOrReplaceChild("door_open", CubeListBuilder.create().texOffs(33, 36).addBox(-7.0F, -32.0F, 6.25F, 14.0F, 30.0F, 1.0F, new CubeDeformation(0.0F))
-		.texOffs(0, 36).addBox(-7.5F, -32.5F, 6.75F, 15.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -0.5F));
+				.texOffs(0, 36).addBox(-7.5F, -32.5F, 6.75F, 15.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, -0.5F));
 
 		PartDefinition main = partdefinition.addOrReplaceChild("main", CubeListBuilder.create().texOffs(41, 9).addBox(-7.4F, -2.5F, 4.0F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(-9.5F, -34.025F, 7.025F, 19.0F, 34.0F, 1.0F, new CubeDeformation(0.0F))
@@ -53,6 +50,11 @@ public class DrifterDoorModel extends ShellModel {
 		ShellModel.splice(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
+	}
+
+	@Override
+	public boolean isDoorModel() {
+		return true;
 	}
 
 	boolean isDoorOpen = false;
@@ -80,16 +82,6 @@ public class DrifterDoorModel extends ShellModel {
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
-	}
-
-	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.DRIFTER.getInternalDoorTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
 	}
 
 	@Override
