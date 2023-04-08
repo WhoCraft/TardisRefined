@@ -73,6 +73,10 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
         return basePatterns.get(0);
     }
 
+    public static void clearPatterns() {
+        ConsolePatterns.PATTERNS.clear();
+    }
+
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
 
