@@ -12,12 +12,14 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
+import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class CommonBus {
@@ -35,7 +37,10 @@ public class CommonBus {
     @SubscribeEvent
     public static void onDatapack(AddReloadListenerEvent addReloadListenerEvent) {
         addReloadListenerEvent.addListener(new ConsolePatterns());
+
         addReloadListenerEvent.addListener(TardisDesktops.getReloadListener());
+        addReloadListenerEvent.addListener(new ShellPatterns());
+
     }
 
     @SubscribeEvent
@@ -56,6 +61,7 @@ public class CommonBus {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent playerLoggedInEvent){
         if(playerLoggedInEvent.getEntity() instanceof ServerPlayer serverPlayer){
             new SyncConsolePatternsMessage(ConsolePatterns.getPatterns()).send(serverPlayer);
+            new SyncShellPatternsMessage(ShellPatterns.getPatterns()).send(serverPlayer);
         }
     }
 

@@ -28,7 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
+import whocraft.tardis_refined.patterns.BasePattern;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -73,8 +74,8 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
         if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
             if (blockState2.hasProperty(GlobalConsoleBlock.CONSOLE)) {
-                ConsolePatterns.Pattern defaultPattern = ConsolePatterns.getPatternFromString(blockState2.getValue(GlobalConsoleBlock.CONSOLE), new ResourceLocation(TardisRefined.MODID, "default"));
-                globalConsoleBlock.setPattern(defaultPattern);
+                BasePattern<ConsoleTheme> defaultBasePattern = ConsolePatterns.getPatternFromString(blockState2.getValue(GlobalConsoleBlock.CONSOLE), new ResourceLocation(TardisRefined.MODID, "default"));
+                globalConsoleBlock.setPattern(defaultBasePattern);
                 globalConsoleBlock.markDirty();
             }
         }
