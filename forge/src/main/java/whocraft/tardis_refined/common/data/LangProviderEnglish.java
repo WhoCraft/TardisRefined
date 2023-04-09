@@ -48,7 +48,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
 
         /*Items*/
-        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "BasePattern Manipulator");
+        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Base Pattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
@@ -76,8 +76,10 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
+        add(ModMessages.CMD_NO_INTERNAL_DOOR, ChatFormatting.RED + "No Interal Door found in dimension %s! Consider using the default teleport command %s");
         add(ModMessages.CMD_EXPORT_DESKTOP_IN_PROGRESS, "Generating datapack for desktop %s, this may take some time depending on the structure's size...");
         add(ModMessages.CMD_EXPORT_DESKTOP_SUCCESS, ChatFormatting.GREEN + "Successfully exported desktop %s to datapack %s! Use the %s command to see changes.");
+        add(ModMessages.CMD_EXPORT_DESKTOP_RESOURCE_PACK, ChatFormatting.BLUE + "To define the Desktop's preview image, please create a Resource Pack. See some example Resource Packs at: %s");
         add(ModMessages.CMD_EXPORT_DESKTOP_FAIL, ChatFormatting.RED + "Failed to export desktop %s!");
 
         /*Creative Tab*/
@@ -94,7 +96,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_DESKTOP_SELECTION, "DESKTOP CONFIGURATION");
         add(ModMessages.UI_DESKTOP_CONFIGURATION, "DESKTOP CONFIGURATION");
         add(ModMessages.UI_DESKTOP_CANCEL_TITLE, "OPERATION IN PROGRESS");
-        add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems disabled as a Desktop reconfiguration has been scheduled.");
+        add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems have been disabled as a Desktop reconfiguration has been scheduled.");
         add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
         add(ModMessages.UI_DESKTOP_CANCEL, "Cancel Desktop Reconfiguration");
 

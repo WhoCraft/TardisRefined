@@ -4,6 +4,10 @@ import whocraft.tardis_refined.TardisRefined;
 
 public class ModMessages {
 
+    /* Related Links*/
+
+    public static String GITHUB_RELEASE_PAGE = "https://github.com/CommandrMoose/TardisRefined/releases";
+
     /*Item Special cases*/
     public static String ITEM_KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";
 
@@ -33,8 +37,10 @@ public class ModMessages {
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
 
     public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
+    public static final String CMD_NO_INTERNAL_DOOR = cmdOutput("no_internal_door");
     public static final String CMD_EXPORT_DESKTOP_IN_PROGRESS = cmdOutput("export_desktop.in_progress");
     public static final String CMD_EXPORT_DESKTOP_SUCCESS = cmdOutput("export_desktop.success");
+    public static final String CMD_EXPORT_DESKTOP_RESOURCE_PACK = cmdOutput("export_desktop.resource_pack");
     public static final String CMD_EXPORT_DESKTOP_FAIL = cmdOutput("export_desktop.fail");
 
     public static String message(String translationKey){

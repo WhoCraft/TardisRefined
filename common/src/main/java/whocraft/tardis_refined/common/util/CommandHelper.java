@@ -40,6 +40,16 @@ public class CommandHelper {
         return component;
     }
 
+    public static MutableComponent createComponentOpenUrl(String text, String tooltipText) {
+        MutableComponent component = Component.literal("[" + text + "]");
+        component.withStyle(style -> {
+            return style.withColor(ChatFormatting.YELLOW)
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, tooltipText));
+        });
+        return component;
+    }
+
     public static MutableComponent createComponentSuggestCommand(String text, String tooltipText) {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {

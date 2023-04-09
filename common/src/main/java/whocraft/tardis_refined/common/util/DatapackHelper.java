@@ -106,7 +106,7 @@ public class DatapackHelper {
         ////===Size Calculation Start===
         // This mimics using the Structure Block's Detect Size feature with CORNER mode, where the start and end corners need to be placed one block diagonally outside the structure area.
 
-        //Minus one so we get the right size dimensions. If we didn't the size will be oversize by one on all sides, when we call StructureTemplate#fillFromWorld
+        //Add two to account for the corner blocks so we get the right size dimensions. If we didn't the size will be oversize by one on all sides, when we call StructureTemplate#fillFromWorld
         int xSize = (int)boundingBox.getXsize() + 2;
         int ySize = (int)boundingBox.getYsize() + 2;
         int zSize = (int)boundingBox.getZsize() + 2;

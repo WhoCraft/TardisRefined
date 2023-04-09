@@ -32,18 +32,21 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
     protected Map<ResourceLocation, T> data = new HashMap<>();
 
     /**
-     * Creates a reload listener with a standard gson parser
+     * DO NOT USE THIS CONSTRUCTOR, use the factory method because this needs to use platform-specific logic.
+     * <br> The default implementation does not send the sync packet, hence the need for a factory method.
+     * <br> Creates a reload listener with a standard gson parser.
      * @param folderName The name of the data folder that we will load from, vanilla folderNames are "recipes", "loot_tables", etc.
      * <br> Jsons will be read from data/all_modids/folderName/all_jsons
      * <br> folderName can include subfolders, e.g. "modid/folder"
      * @param codec A codec to deserialize the json into your T, see javadocs above class
      */
-    public CodecJsonReloadListener(String folderName, Codec<T> codec)
+    protected CodecJsonReloadListener(String folderName, Codec<T> codec)
     {
         this(folderName, codec, TardisRefined.GSON);
     }
-
-    public CodecJsonReloadListener(String folderName, Codec<T> codec, Gson gson)
+    /** DO NOT USE THIS CONSTRUCTOR, use the factory method because this needs to use platform-specific logic.
+     * <br> The default implementation does not send the sync packet, hence the need for a factory method.*/
+    protected CodecJsonReloadListener(String folderName, Codec<T> codec, Gson gson)
     {
         super(gson, folderName);
         this.folderName = folderName;
