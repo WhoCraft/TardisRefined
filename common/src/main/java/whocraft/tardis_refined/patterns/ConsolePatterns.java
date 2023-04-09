@@ -1,113 +1,67 @@
 package whocraft.tardis_refined.patterns;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.Platform;
 
+import java.io.Console;
 import java.util.*;
+/**
+ * Data manager for all ConsolePattern(s)
+ */
+public class ConsolePatterns{
 
-public class ConsolePatterns extends SimpleJsonResourceReloadListener {
-    private static final Map<ConsoleTheme, List<BasePattern<ConsoleTheme>>> PATTERNS = new HashMap<>();
+    private static PatternReloadListener<ConsolePatternCollection> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/console", ConsolePatternCollection.CODEC);
 
-    public ConsolePatterns() {
-        super(TardisRefined.GSON, TardisRefined.MODID + "/patterns/console");
-    }
+    private static Map<ResourceLocation, ConsolePatternCollection> DEFAULT_PATTERNS = new HashMap();
 
-    public static BasePattern<ConsoleTheme> next(ConsoleTheme consoleTheme, BasePattern basePattern) {
-        List<BasePattern<ConsoleTheme>> basePatterns = getPatternsForTheme(consoleTheme);
-        int prevIndex = basePatterns.indexOf(basePattern);
-        if (prevIndex > basePatterns.size() || prevIndex + 1 >= basePatterns.size()) {
-            return basePatterns.get(0);
+    public static ConsolePattern next(ConsoleTheme consoleTheme, ConsolePattern ConsolePattern) {
+        List<ConsolePattern> ConsolePatterns = getPatternsForTheme(consoleTheme);
+        int prevIndex = ConsolePatterns.indexOf(ConsolePattern);
+        if (prevIndex > ConsolePatterns.size() || prevIndex + 1 >= ConsolePatterns.size()) {
+            return ConsolePatterns.get(0);
         }
-        return basePatterns.get(prevIndex + 1);
+        return ConsolePatterns.get(prevIndex + 1);
     }
 
-    public static BasePattern<ConsoleTheme> addPattern(ConsoleTheme theme, BasePattern<ConsoleTheme> basePattern) {
-        TardisRefined.LOGGER.info("Adding Console BasePattern {} for {}", basePattern.id(), basePattern.theme());
-        if (PATTERNS.containsKey(theme)) {
-            List<BasePattern<ConsoleTheme>> basePatternList = new ArrayList<>(PATTERNS.get(theme));
-            basePatternList.add(basePattern);
-            PATTERNS.replace(theme, basePatternList);
-        } else {
-            PATTERNS.put(theme, new ArrayList<>(List.of(basePattern)));
-        }
-        return basePattern;
-    }
-
-
-    public static List<BasePattern<ConsoleTheme>> getPatternsForTheme(ConsoleTheme consoleTheme) {
-        return PATTERNS.get(consoleTheme);
-    }
-
-    public static Map<ConsoleTheme, List<BasePattern<ConsoleTheme>>> getPatterns() {
+    public static PatternReloadListener<ConsolePatternCollection> getReloadListener(){
         return PATTERNS;
     }
 
-    public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation id) {
-        List<BasePattern<ConsoleTheme>> basePatterns = getPatternsForTheme(consoleTheme);
-        for (BasePattern<ConsoleTheme> basePattern : basePatterns) {
-            if (Objects.equals(basePattern.id(), id)) {
+    public static Map<ResourceLocation, ConsolePatternCollection> getRegistry() {
+        return PATTERNS.getData();
+    }
+
+    public static void clearPatterns() {
+        ConsolePatterns.PATTERNS.getData().clear();
+    }
+
+
+    public static List<ConsolePattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
+        return PATTERNS.getData().get(new ResourceLocation(consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
+    }
+
+    public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation patternId) {
+        List<ConsolePattern> ConsolePatterns = getPatternsForTheme(consoleTheme);
+        for (ConsolePattern ConsolePattern : ConsolePatterns) {
+            if (Objects.equals(ConsolePattern.id(), patternId)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static BasePattern<ConsoleTheme> getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
-        List<BasePattern<ConsoleTheme>> basePatterns = getPatternsForTheme(consoleTheme);
-        for (BasePattern<ConsoleTheme> basePattern : basePatterns) {
-            if (Objects.equals(basePattern.id(), id)) {
-                return basePattern;
+    public static ConsolePattern getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
+        List<ConsolePattern> ConsolePatterns = getPatternsForTheme(consoleTheme);
+        for (ConsolePattern ConsolePattern : ConsolePatterns) {
+            if (Objects.equals(ConsolePattern.id(), id)) {
+                return ConsolePattern;
             }
         }
-        return basePatterns.get(0);
+        return ConsolePatterns.get(0);
     }
 
-    public static void clearPatterns() {
-        ConsolePatterns.PATTERNS.clear();
-    }
-
-    @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-
-        ConsolePatterns.PATTERNS.clear();
-        object.forEach((resourceLocation, jsonElement) -> {
-
-            try {
-                JsonArray patternsArray = jsonElement.getAsJsonArray();
-                for (JsonElement patternElement : patternsArray) {
-                    JsonObject patternObject = patternElement.getAsJsonObject();
-                    ConsoleTheme theme = ConsoleTheme.valueOf(findConsoleTheme(resourceLocation));
-                    String id = patternObject.get("id").getAsString();
-                    String texture = patternObject.get("texture").getAsString();
-
-                    boolean emissive = patternObject.get("emissive").getAsBoolean();
-
-                    ResourceLocation textureLocation = new ResourceLocation(texture);
-                    BasePattern<ConsoleTheme> basePattern = new BasePattern<>(theme, new ResourceLocation(id), textureLocation);
-                    basePattern.setName(patternObject.get("name_component").getAsString());
-                    basePattern.setEmissive(emissive);
-                    addPattern(theme, basePattern);
-                }
-            } catch (JsonParseException jsonParseException){
-                TardisRefined.LOGGER.debug("Issue parsing {}! Error: {}", resourceLocation, jsonParseException.getMessage());
-            }
-        });
-
-        if(Platform.getServer() != null) {
-            new SyncConsolePatternsMessage(PATTERNS).sendToAll();
-        }
-    }
 
     @NotNull
     private String findConsoleTheme(ResourceLocation resourceLocation) {
@@ -120,5 +74,75 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
         }
     }
 
+    private static ConsolePattern addDefaultPattern(ConsoleTheme theme, String patternId, String textureName, boolean hasEmissiveTexture) {
+        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
+        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+        ConsolePatternCollection collection;
+        ConsolePattern pattern = (ConsolePattern) new ConsolePattern("war", new PatternTexture(createConsolePatternTextureLocation(theme,textureName), true)).setThemeId(themeId);
+        if (DEFAULT_PATTERNS.containsKey(themeId)) {
+            collection = DEFAULT_PATTERNS.get(themeId);
+            collection.patterns().add(pattern);
+            DEFAULT_PATTERNS.replace(themeId, collection);
+        } else {
+            collection = new ConsolePatternCollection(List.of(pattern));
+            DEFAULT_PATTERNS.put(themeId, collection);
+        }
+        TardisRefined.LOGGER.debug("Adding Pattern ConsolePattern {} for {}", pattern.id(), themeId);
+        return pattern;
+    }
 
+    private static ResourceLocation createConsolePatternTextureLocation(ConsoleTheme theme, String textureName){
+        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + theme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
+    }
+
+    /** Gets a default list of Console Patterns added by Tardis Refined. Useful as a fallback list.*/
+    public static Map<ResourceLocation, ConsolePatternCollection> getDefaultPatterns(){
+        return DEFAULT_PATTERNS;
+    }
+
+    public static Map<ResourceLocation, ConsolePatternCollection> registerDefaultPatterns() {
+
+        /*Add Base Textures*/
+        for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
+            String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
+            boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL|| consoleTheme == ConsoleTheme.CORAL || consoleTheme == ConsoleTheme.FACTORY || consoleTheme == ConsoleTheme.INITIATIVE || consoleTheme == ConsoleTheme.TOYOTA || consoleTheme == ConsoleTheme.VICTORIAN;
+            addDefaultPattern(consoleTheme, "default", themeName + "/" + themeName + "_console", hasDefaultEmission);
+        }
+
+        /*Coral*/
+        addDefaultPattern(ConsoleTheme.CORAL, "war", "coral_console_war", true);
+        addDefaultPattern(ConsoleTheme.CORAL, "blue", "coral_console_blue", true);
+
+        /*Factory*/
+        addDefaultPattern(ConsoleTheme.FACTORY, "vintage", "factory_console_vintage", true);
+        addDefaultPattern(ConsoleTheme.FACTORY, "mint", "factory_console_mint", true);
+        addDefaultPattern(ConsoleTheme.FACTORY, "wood", "factory_console_wood", true);
+
+        /*Toyota*/
+        addDefaultPattern(ConsoleTheme.TOYOTA, "violet", "toyota_texture_purple", true);
+        addDefaultPattern(ConsoleTheme.TOYOTA, "blue", "toyota_texture_blue", true);
+
+        /*Crystal*/
+        addDefaultPattern(ConsoleTheme.CRYSTAL, "corrupted", "rystal_console_corrupted", true);
+
+        /*Myst*/
+        addDefaultPattern(ConsoleTheme.MYST, "molten", "myst_console_molten", true);
+
+        /*Victorian*/
+        addDefaultPattern(ConsoleTheme.VICTORIAN, "smissmass", "victorian_console_smissmass", false);
+        addDefaultPattern(ConsoleTheme.VICTORIAN, "grant", "victorian_console_grant", false);
+
+        /*Initiative*/
+        addDefaultPattern(ConsoleTheme.INITIATIVE, "aperture", "initiative_console_aperture", true);
+        addDefaultPattern(ConsoleTheme.INITIATIVE, "blue", "initiative_console_blue", true);
+        addDefaultPattern(ConsoleTheme.INITIATIVE, "construction", "initiative_console_construction", false);
+
+        // Nuka
+        addDefaultPattern(ConsoleTheme.NUKA, "industrial", "nuka_industrial", false);
+        addDefaultPattern(ConsoleTheme.NUKA, "cool", "nuka_cool", false);
+
+        /*Copper*/
+        addDefaultPattern(ConsoleTheme.COPPER, "sculk", "copper_console_sculk", false);
+        return DEFAULT_PATTERNS;
+    }
 }

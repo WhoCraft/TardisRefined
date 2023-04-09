@@ -9,10 +9,15 @@ import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.network.TardisNetwork;
+import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
+import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
+import whocraft.tardis_refined.patterns.ConsolePatternCollection;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
@@ -43,5 +48,7 @@ public class TardisRefined {
         TagKeys.init();
         TardisNetwork.init();
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
+        ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
+        ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -23,6 +24,7 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
+import java.util.Locale;
 import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
@@ -166,7 +168,7 @@ public class TardisExteriorManager {
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     if(shellPattern != null) {
-                        entity.setPattern(shellPattern.theme() != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
+                        entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
                         entity.setChanged();
                     }
                 }

@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -16,10 +15,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -31,7 +30,6 @@ import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.BasePattern;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,19 +41,19 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
-    private BasePattern<ConsoleTheme> basePattern = pattern();
+    private ConsolePattern basePattern = pattern();
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
     }
 
-    public BasePattern<ConsoleTheme> pattern() {
+    public ConsolePattern pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        BasePattern<ConsoleTheme> defaultBasePattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
+        ConsolePattern defaultBasePattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
         return basePattern == null ? defaultBasePattern : basePattern;
     }
 
-    public GlobalConsoleBlockEntity setPattern(BasePattern<ConsoleTheme> basePattern) {
+    public GlobalConsoleBlockEntity setPattern(ConsolePattern basePattern) {
         this.basePattern = basePattern;
         return this;
     }

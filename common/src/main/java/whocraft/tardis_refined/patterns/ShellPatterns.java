@@ -1,28 +1,18 @@
 package whocraft.tardis_refined.patterns;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
-import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.util.*;
 
-public class ShellPatterns extends SimpleJsonResourceReloadListener {
-    private static Map<ShellTheme, List<ShellPattern>> PATTERNS = new HashMap<>();
+public class ShellPatterns {
+    public static PatternReloadListener<ShellPatternCollection> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC);
 
-    public ShellPatterns() {
-        super(TardisRefined.GSON, TardisRefined.MODID + "/patterns/shell");
-    }
-
+    private static Map<ResourceLocation, ShellPatternCollection> DEFAULT_PATTERNS = new HashMap();
+    
     public static ShellPattern next(ShellTheme ShellTheme, ShellPattern basePattern) {
         List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
 
@@ -37,25 +27,27 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
         return basePatterns.get(prevIndex + 1);
     }
 
-    public static ShellPattern addPattern(ShellTheme theme, ShellPattern basePattern) {
-        TardisRefined.LOGGER.info("Adding Shell BasePattern {} for {}", basePattern.id(), basePattern.theme());
-        if (PATTERNS.containsKey(theme)) {
-            List<ShellPattern> basePatternList = new ArrayList<>(PATTERNS.get(theme));
-            basePatternList.add(basePattern);
-            PATTERNS.replace(theme, basePatternList);
-        } else {
-            PATTERNS.put(theme, new ArrayList<>(List.of(basePattern)));
+
+    public static List<ShellPattern> getPatternsForTheme(ShellTheme shellTheme) {
+        return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
+    }
+
+    public static ShellTheme getThemeForPattern(ShellPattern pattern) {
+        Map<ResourceLocation, ShellPatternCollection> entries = getRegistry();
+        for (Map.Entry<ResourceLocation, ShellPatternCollection> entry : entries.entrySet()){
+            if (pattern.getThemeId() == entry.getKey()){
+                return ShellTheme.findOr(entry.getValue().themeId().getPath(), ShellTheme.FACTORY);
+            }
         }
-        return basePattern;
+        return ShellTheme.FACTORY;
     }
 
-
-    public static List<ShellPattern> getPatternsForTheme(ShellTheme ShellTheme) {
-        return PATTERNS.get(ShellTheme);
-    }
-
-    public static Map<ShellTheme, List<ShellPattern>> getPatterns() {
+    public static PatternReloadListener<ShellPatternCollection> getReloadListener(){
         return PATTERNS;
+    }
+
+    public static Map<ResourceLocation, ShellPatternCollection> getRegistry() {
+        return PATTERNS.getData();
     }
 
     public static boolean doesPatternExist(ShellTheme ShellTheme, ResourceLocation id) {
@@ -78,45 +70,6 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
         return basePatterns.get(0);
     }
 
-    @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-
-        ShellPatterns.PATTERNS.clear();
-        object.forEach((resourceLocation, jsonElement) -> {
-
-            try {
-                JsonArray patternsArray = jsonElement.getAsJsonArray();
-                for (JsonElement patternElement : patternsArray) {
-                    JsonObject patternObject = patternElement.getAsJsonObject();
-                    ShellTheme theme = ShellTheme.valueOf(findShellTheme(resourceLocation));
-                    String id = patternObject.get("id").getAsString();
-
-                    JsonObject interior = patternObject.get("interior").getAsJsonObject();
-                    String interiorTexture = interior.get("texture").getAsString();
-
-                    JsonObject exterior = patternObject.get("exterior").getAsJsonObject();
-                    String exteriorTexture = exterior.get("texture").getAsString();
-                    boolean emissive = exterior.get("emissive").getAsBoolean();
-
-
-                    ResourceLocation textureLocation = new ResourceLocation(exteriorTexture);
-                    ResourceLocation interiorTextureLocation = new ResourceLocation(interiorTexture);
-
-                    ShellPattern basePattern = new ShellPattern(theme, new ResourceLocation(id), textureLocation, interiorTextureLocation);
-                    basePattern.setName(patternObject.get("name_component").getAsString());
-                    basePattern.setEmissive(emissive);
-                    addPattern(theme, basePattern);
-                }
-            } catch (JsonParseException jsonParseException){
-                TardisRefined.LOGGER.debug("Issue parsing {}! Error: {}", resourceLocation, jsonParseException.getMessage());
-            }
-        });
-
-        if(Platform.getServer() != null) {
-            new SyncShellPatternsMessage(PATTERNS).sendToAll();
-        }
-    }
-
     @NotNull
     private String findShellTheme(ResourceLocation resourceLocation) {
         String path = resourceLocation.getPath();
@@ -128,5 +81,64 @@ public class ShellPatterns extends SimpleJsonResourceReloadListener {
         }
     }
 
+    public static ShellPattern addDefaultPattern(ShellTheme theme, String patternId, boolean hasEmissiveTexture) {
+        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
+        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+        ShellPatternCollection collection;
+        ShellPattern pattern = (ShellPattern) new ShellPattern("war", new PatternTexture(exteriorTextureLocation(theme, patternId), hasEmissiveTexture)
+                , new PatternTexture(interiorTextureLocation(theme, patternId), hasEmissiveTexture)).setThemeId(themeId);
+        if (DEFAULT_PATTERNS.containsKey(themeId)) {
+            collection = DEFAULT_PATTERNS.get(themeId);
+            collection.patterns().add(pattern);
+            DEFAULT_PATTERNS.replace(themeId, collection);
+        } else {
+            collection = new ShellPatternCollection(List.of(pattern));
+            DEFAULT_PATTERNS.put(themeId, collection);
+        }
+        TardisRefined.LOGGER.debug("Adding Shell Pattern {} for {}", pattern.id(), themeId);
+        return pattern;
+    }
+
+    private static ResourceLocation exteriorTextureLocation(ShellTheme shellTheme, String textureName){
+        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
+    }
+
+    private static ResourceLocation interiorTextureLocation(ShellTheme shellTheme, String textureName){
+        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + textureName + "_interior.png");
+    }
+
+    /** Gets a default list of Shell Patterns added by Tardis Refined. Useful as a fallback list.*/
+    public static Map<ResourceLocation, ShellPatternCollection> getDefaultPatterns(){
+        return DEFAULT_PATTERNS;
+    }
+
+    public static Map<ResourceLocation, ShellPatternCollection> registerDefaultPatterns() {
+
+        /*Add Base Textures*/
+        for (ShellTheme shellTheme : ShellTheme.values()) {
+            boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC || shellTheme == ShellTheme.NUKA || shellTheme == ShellTheme.PAGODA || shellTheme == ShellTheme.PHONE_BOOTH || shellTheme == ShellTheme.POLICE_BOX || shellTheme == ShellTheme.VENDING;
+            addDefaultPattern(shellTheme, "default", hasDefaultEmission);
+        }
+
+        addDefaultPattern(ShellTheme.POLICE_BOX, "marble", false);
+        addDefaultPattern(ShellTheme.POLICE_BOX, "gaudy", false);
+        addDefaultPattern(ShellTheme.POLICE_BOX, "metal", false);
+        addDefaultPattern(ShellTheme.POLICE_BOX, "stone", false);
+        addDefaultPattern(ShellTheme.POLICE_BOX, "red", false);
+
+        addDefaultPattern(ShellTheme.PHONE_BOOTH, "metal", false);
+
+        addDefaultPattern(ShellTheme.PRESENT, "cardboard", false);
+
+        addDefaultPattern(ShellTheme.BRIEFCASE, "intel", false);
+        addDefaultPattern(ShellTheme.BRIEFCASE, "metal", false);
+        addDefaultPattern(ShellTheme.BRIEFCASE, "mesa", false);
+
+        addDefaultPattern(ShellTheme.MYSTIC, "dwarven", false);
+
+        addDefaultPattern(ShellTheme.BIG_BEN, "gothic", false);
+
+        return DEFAULT_PATTERNS;
+    }
 
 }

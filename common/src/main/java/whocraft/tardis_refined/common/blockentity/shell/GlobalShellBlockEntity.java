@@ -17,7 +17,6 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.BasePattern;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;

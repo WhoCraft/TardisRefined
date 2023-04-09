@@ -1,74 +1,68 @@
 package whocraft.tardis_refined.patterns;
 
+import com.mojang.serialization.Codec;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.util.Objects;
+/** Template for patterns*/
+public abstract class BasePattern {
 
-public class BasePattern<T extends BasePattern.DataDrivenPattern> {
-
-    public interface DataDrivenPattern {
-        String getObjectName();
-    }
-
-    private final ResourceLocation textureLocation, emissiveTexture;
     private final ResourceLocation identifier;
     private String name;
-    private boolean hasEmissiveTexture = false;
 
-    public T theme() {
-        return theme;
+    protected ResourceLocation themeId;
+
+    public BasePattern(String id) {
+        this(new ResourceLocation(TardisRefined.MODID, id));
     }
 
-    private final T theme;
+    public BasePattern(ResourceLocation identifier) {
+        this(identifier, TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
+    }
 
-    public BasePattern(T consoleTheme, ResourceLocation identifier, ResourceLocation texture) {
+    public BasePattern(ResourceLocation identifier, String name) {
         this.identifier = identifier;
-        this.textureLocation = texture;
-        this.emissiveTexture = new ResourceLocation(texture.getNamespace(), texture.getPath().replace(".png", "_emissive.png"));
-        this.theme = consoleTheme;
-        this.name = identifier.getPath().substring(0, 1).toUpperCase() + identifier.getPath().substring(1).replace("_", "");
+        this.name = name;
     }
+
+    public abstract Codec<? extends BasePattern> getCodec();
 
     public String name() {
         return name;
     }
 
-    public boolean emissive() {
-        return hasEmissiveTexture;
-    }
-
-    public BasePattern<? extends DataDrivenPattern> setEmissive(boolean hasEmissiveTexture) {
-        this.hasEmissiveTexture = hasEmissiveTexture;
-        return this;
-    }
-
-    public BasePattern<? extends DataDrivenPattern> setName(String name) {
+    public BasePattern setName(String name) {
         this.name = name;
         return this;
     }
 
-    public ResourceLocation emissiveTexture() {
-        return emissiveTexture;
-    }
-
-    public ResourceLocation texture() {
-        return textureLocation;
-    }
-
     public ResourceLocation id() {
-        return identifier;
+        return this.identifier;
+    }
+
+    public ResourceLocation getThemeId() {return this.themeId;}
+
+    public BasePattern setThemeId(ResourceLocation themeId){
+        this.themeId = themeId;
+        return this;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BasePattern<T> basePattern = (BasePattern<T>) o;
-        return Objects.equals(textureLocation, basePattern.textureLocation) && Objects.equals(identifier, basePattern.identifier) && theme == basePattern.theme;
+        BasePattern basePattern = (BasePattern) o;
+        return Objects.equals(identifier, basePattern.identifier) && this.themeId == basePattern.themeId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(textureLocation, identifier, theme);
+        return Objects.hash(identifier, themeId);
     }
+
 }
