@@ -2,14 +2,11 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.Calendar;
 
@@ -37,26 +34,20 @@ public class BigBenShellModel extends ShellModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-			this.door.yRot = (open) ? -275f : 0;
+		this.door.yRot = (open) ? -275f : 0;
 
+	}
+
+	@Override
+	public boolean isDoorModel() {
+		return false;
 	}
 
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		handleAllAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
-
-
-	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.BIG_BEN.getExternalShellTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
-	}
 
 	public BigBenShellModel(ModelPart root) {
 		super(root);

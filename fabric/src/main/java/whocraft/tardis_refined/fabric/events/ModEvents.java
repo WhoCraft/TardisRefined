@@ -4,21 +4,20 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
+import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_WORLD_TICK;
@@ -30,7 +29,10 @@ public class ModEvents {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
 
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> new SyncConsolePatternsMessage(ConsolePatterns.getPatterns()).send(handler.getPlayer()));
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            new SyncConsolePatternsMessage(ConsolePatterns.getPatterns()).send(handler.getPlayer());
+            new SyncShellPatternsMessage(ShellPatterns.getPatterns()).send(handler.getPlayer());
+        });
 
         END_WORLD_TICK.register(DelayedTeleportData::tick);
         START_WORLD_TICK.register(world -> {

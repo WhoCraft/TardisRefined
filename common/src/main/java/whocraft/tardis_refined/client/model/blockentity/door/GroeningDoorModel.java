@@ -5,11 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GroeningDoorModel extends ShellModel {
 
@@ -29,16 +27,6 @@ public class GroeningDoorModel extends ShellModel {
 
     }
 
-    @Override
-    public ResourceLocation texture() {
-        return ShellTheme.GROENING.getInternalDoorTexture();
-    }
-
-    @Override
-    public ResourceLocation lightTexture() {
-        return null;
-    }
-
     public GroeningDoorModel(ModelPart root) {
         super(root);
         this.root = root;
@@ -46,6 +34,11 @@ public class GroeningDoorModel extends ShellModel {
         this.bone = root.getChild("bone");
         this.bone2 = root.getChild("bone2");
         this.bb_main = root.getChild("bb_main");
+    }
+
+    @Override
+    public boolean isDoorModel() {
+        return true;
     }
 
     public static LayerDefinition createBodyLayer() {

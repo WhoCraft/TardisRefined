@@ -8,11 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GrowthDoorModel extends ShellModel {
 	private final ModelPart root;
@@ -77,13 +75,8 @@ public class GrowthDoorModel extends ShellModel {
 	}
 
 	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.GROWTH.getInternalDoorTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
+	public boolean isDoorModel() {
+		return true;
 	}
 
 	@Override

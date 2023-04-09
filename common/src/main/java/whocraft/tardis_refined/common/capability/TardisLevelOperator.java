@@ -52,6 +52,10 @@ public class TardisLevelOperator {
         this.tardisClientData = new TardisClientData(level.dimension());
     }
 
+    public TardisClientData tardisClientData() {
+        return tardisClientData;
+    }
+
     @ExpectPlatform
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
         throw new AssertionError();
@@ -113,6 +117,7 @@ public class TardisLevelOperator {
             tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
             tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(controlManager.isOnCooldown());
+            tardisClientData.setShellPattern(getExteriorManager().shellPattern());
             tardisClientData.sync();
         }
     }

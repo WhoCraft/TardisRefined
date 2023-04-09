@@ -1,15 +1,14 @@
 package whocraft.tardis_refined.common.tardis;
 
-import com.google.gson.*;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.profiling.ProfilerFiller;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
-import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.Platform;
 
