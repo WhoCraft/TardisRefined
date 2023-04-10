@@ -59,6 +59,8 @@ public class ProviderLootTable extends LootTableProvider {
         protected Stream<EntityType<?>> getKnownEntityTypes() {
             ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
             for (RegistrySupplier<EntityType<?>> entry : EntityRegistry.ENTITY_TYPES.getEntries()) {
+                if (entry.get() != EntityRegistry.CONTROL_ENTITY.get())
+                    break;
                 entities.add(entry.get());
             }
             return entities.stream();

@@ -10,19 +10,19 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInternalDoor {
-
+public class AbstractEntityBlockDoor extends BlockEntity implements TardisInternalDoor {
+    private boolean isLocked = false;
     private String uuid_id;
-    private boolean isOpen = false;
+    private final boolean isOpen = false;
     private boolean isMainDoor = false;
 
     private TardisLevelOperator operator;
@@ -60,8 +60,10 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     @Override
     public void setClosed(boolean state) {
         BlockState blockState = getLevel().getBlockState(getDoorPosition());
-        getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
-        getLevel().playSound(null, getDoorPosition(), (state) ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, 1);
+        if (!blockState.isAir()){
+            getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
+            getLevel().playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
+        }
     }
 
     @Override
@@ -97,6 +99,16 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
 
     }
 
+    @Override
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
+    @Override
+    public boolean locked() {
+        return isLocked;
+    }
+
     public TardisLevelOperator getOperator() {
         return operator;
     }
@@ -104,9 +116,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
     public void onBlockPlaced() {
         if (!getLevel().isClientSide()) {
             Optional<TardisLevelOperator> lvlOper = TardisLevelOperator.get((ServerLevel) this.getLevel());
-            if (lvlOper.isPresent()) {
-                this.operator = lvlOper.get();
-            }
+            lvlOper.ifPresent(tardisLevelOperator -> this.operator = tardisLevelOperator);
         }
     }
 
@@ -118,6 +128,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
 
         compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
         compoundTag.putString(NbtConstants.DOOR_ID, this.uuid_id);
+        compoundTag.putBoolean(NbtConstants.DOOR_IS_LOCKED, this.isLocked);
     }
 
     @Override
@@ -125,6 +136,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements ITardisInter
         super.load(compoundTag);
         this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
         this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
+        this.isLocked = compoundTag.getBoolean(NbtConstants.DOOR_IS_LOCKED);
     }
 
 }

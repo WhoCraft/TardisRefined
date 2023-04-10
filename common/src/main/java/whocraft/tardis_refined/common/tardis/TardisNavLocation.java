@@ -2,11 +2,9 @@ package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Rotation;
 
 /**
  * TardisNavLocation
@@ -15,7 +13,9 @@ import net.minecraft.world.level.block.Rotation;
 public class TardisNavLocation {
     public BlockPos position;
     public Direction rotation;
-    public ServerLevel level;
+    private ServerLevel level;
+
+    private ResourceKey<Level> dimensionKey;
 
     /**
      * @param position World co-ordinate
@@ -26,5 +26,30 @@ public class TardisNavLocation {
         this.position = position;
         this.rotation = rotation;
         this.level = level;
+        if (level != null) {
+            this.dimensionKey = level.dimension();
+        }
+
     }
+
+    public TardisNavLocation(BlockPos position, Direction rotation, ResourceKey<Level> level) {
+        this.position = position;
+        this.rotation = rotation;
+        this.dimensionKey = level;
+    }
+
+    public ServerLevel getLevel() {
+        if (this.level != null) {
+            this.dimensionKey = this.level.dimension();
+        }
+
+        return this.level;
+    }
+
+    public void setLevel(ServerLevel level) {
+        this.dimensionKey = level.dimension();
+        this.level = level;
+    }
+
+    public ResourceKey<Level> getDimensionKey() {return dimensionKey;}
 }

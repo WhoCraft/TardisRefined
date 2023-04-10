@@ -1,7 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.door;// Made with Blockbench 4.5.2
-// Exported for Minecraft version 1.17 - 1.18 with Mojang mappings
-// Paste this class into your mod and generate all required imports
-
+package whocraft.tardis_refined.client.model.blockentity.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -13,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
 
 public class PresentDoorModel extends ShellModel {
 
@@ -66,7 +64,7 @@ public class PresentDoorModel extends ShellModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-		this.door.xRot = (open) ? 1.5f:0;
+		this.door.xRot = (open) ? (ModCompatChecker.immersivePortals() ? -1.5f : 1.5F) : 0;
 	}
 
 	@Override

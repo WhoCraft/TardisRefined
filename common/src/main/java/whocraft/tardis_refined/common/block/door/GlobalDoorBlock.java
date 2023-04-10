@@ -58,7 +58,7 @@ public class GlobalDoorBlock extends InternalDoorBlock{
 
                 if (TardisLevelOperator.get(serverLevel).isPresent()) {
                     if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
-                        entity.onRightClick(blockState, entity);
+                        entity.onRightClick(blockState, entity, player);
                         return InteractionResult.SUCCESS;
                     }
                 }
@@ -66,20 +66,6 @@ public class GlobalDoorBlock extends InternalDoorBlock{
         }
 
         return InteractionResult.FAIL;
-    }
-
-    @Override
-    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        switch (blockState.getValue(FACING)) {
-            case SOUTH -> {
-                return SOUTH_AABB;
-            }
-            case NORTH -> {return NORTH_AABB;}
-            case WEST -> {return WEST_AABB;}
-            case EAST -> {return EAST_AABB;}
-        }
-
-        return SOUTH_AABB;
     }
 
     @Override

@@ -20,9 +20,16 @@ configurations {
 }
 
 repositories {
+    maven { url 'https://jitpack.io' }
+
     maven {
         name = 'Ladysnake Mods'
         url = 'https://ladysnake.jfrog.io/artifactory/mods'
+    }
+
+    maven {
+        name = "Fuzs Mod Resources"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
     }
 }
 
@@ -49,6 +56,22 @@ dependencies {
     modCompileOnly "curse.maven:modmenu-308702:${rootProject.mod_menu_version}"
     modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
 
+    // Forge Config API Port
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
+    include "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
+
+    // Immersive Portals Start
+
+    // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+        transitive(false)
+    }
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+        transitive(false)
+    }
+    // Immersive Portals End
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -63,8 +86,9 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          // update_json_url: update_json_url,
                          homepage_url: homepage_url,
                          license: license,
-                         fabric_version_range: fabric_version_range, fabric_minecraft_version_range: fabric_minecraft_version_range,
-                         fabric_loader_version_range: fabric_loader_version_range
+                         fabric_api_version_range: fabric_api_version_range, fabric_minecraft_version_range: fabric_minecraft_version_range,
+                         fabric_loader_version_range: fabric_loader_version_range,
+                         fabric_immersive_portals_version_range: fabric_immersive_portals_version_range
                          //,display_test_type: display_test_type
 ]
 processResources {

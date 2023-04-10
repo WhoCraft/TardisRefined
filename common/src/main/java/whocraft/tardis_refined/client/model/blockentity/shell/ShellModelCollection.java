@@ -2,12 +2,14 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import net.minecraft.client.Minecraft;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class ShellModelCollection {
 
-    private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel, presentModel, vendingModel, briefcaseModel, greoningModel;
+    private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
+            presentModel, vendingModel, briefcaseModel, greoningModel, bigBenModel, nukaModel, growthModel,
+            portalooModel, pagodaModel;
+
 
     public ShellModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
@@ -20,6 +22,12 @@ public class ShellModelCollection {
         vendingModel = new VendingMachineShellModel(context.bakeLayer((ModelRegistry.VENDING_SHELL)));
         briefcaseModel = new BriefcaseShellModel(context.bakeLayer((ModelRegistry.BRIEFCASE_SHELL)));
         greoningModel = new GroeningShellModel(context.bakeLayer((ModelRegistry.GROENING_SHELL)));
+        bigBenModel = new BigBenShellModel(context.bakeLayer((ModelRegistry.BIG_BEN_SHELL)));
+        nukaModel = new NukaShellModel(context.bakeLayer((ModelRegistry.NUKA_SHELL)));
+        growthModel = new GrowthShellModel(context.bakeLayer((ModelRegistry.GROWTH_SHELL)));
+        portalooModel = new PortalooShellModel(context.bakeLayer((ModelRegistry.PORTALOO_SHELL)));
+        pagodaModel = new PagodaShellModel(context.bakeLayer((ModelRegistry.PAGODA_SHELL)));
+
     }
 
     /**
@@ -38,6 +46,12 @@ public class ShellModelCollection {
             case VENDING -> vendingModel;
             case BRIEFCASE -> briefcaseModel;
             case GROENING -> greoningModel;
+            case BIG_BEN -> bigBenModel;
+            case NUKA -> nukaModel;
+            case GROWTH -> growthModel;
+            case PORTALOO -> portalooModel;
+            case PAGODA -> pagodaModel;
+
         };
     }
 

@@ -20,6 +20,10 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         blockItem(BlockRegistry.ARS_EGG.getId());
         blockItem(BlockRegistry.ARS_LEAVES.getId());
         blockItem(BlockRegistry.ARS_LEAVES_SLAB.getId());
+        blockItem(BlockRegistry.LANDING_PAD.getId());
+        blockItem(BlockRegistry.HARDENED_GROWTH_STONE.getId());
+        blockItem(BlockRegistry.GROWTH_STONE.getId());
+        blockItem(BlockRegistry.FLIGHT_DETECTOR.getId());
 
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");

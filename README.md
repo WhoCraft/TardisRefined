@@ -1,7 +1,14 @@
 ![image](https://i.imgur.com/eIfAaYJ.png)
 
-<img src="https://discordapp.com/api/guilds/1054629302152478730/widget.png?style=shield" alt="Discord Shield"/>
+<img src="https://discordapp.com/api/guilds/1054629302152478730/widget.png?style=shield" alt="Discord Shield"/>[![Crowdin](https://badges.crowdin.net/tardis-refined/localized.svg)](https://crowdin.com/project/tardis-refined)
+[![CurseForge](https://cf.way2muchnoise.eu/782697.svg?badge_style=flat)](https://www.curseforge.com/minecraft/mc-mods/tardis-refined)
+[![ModRinth](https://modrinth-utils.vercel.app/api/badge/downloads?id=nqVt6aES&logo=true)](https://modrinth.com/mod/tardis-refined)
+
+
+
+
  TARDIS Refined is a Minecraft mod for Forge and Fabric which brings the TARDIS from Doctor Who to Minecraft.
+ 
  
  <a href="https://github.com/CommandrMoose/TardisRefined/wiki">View the wiki.</a>
 
@@ -45,3 +52,7 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
 With special thanks to Commoble, Lucraft, starray1000000 and Sea Pickle<br/><hr/>
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
+## Immersive Portals Support
+This mod has dedicated support for being compatible and integrating with Immersive Portals when Immersive Portals is present.
+By default, Immersive Portals is not enabled in dev and fabrics build.gradle file must be edited to allow for this.
+Instructions on how to do this can be found in the relevant build.gradle

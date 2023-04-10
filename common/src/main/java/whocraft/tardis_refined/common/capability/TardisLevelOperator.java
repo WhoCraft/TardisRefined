@@ -11,36 +11,44 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.blockentity.door.ITardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
-import whocraft.tardis_refined.common.tardis.IExteriorShell;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
 
 public class TardisLevelOperator {
 
-    private Level level;
+    private final Level level;
     private boolean setUp = false;
-    private ITardisInternalDoor internalDoor = null;
-    private TardisExteriorManager exteriorManager;
-    private TardisInteriorManager interiorManager;
-    private TardisControlManager controlManager;
+    private TardisInternalDoor internalDoor = null;
 
-    private TardisClientData tardisClientData;
+    // Managers
+    private final TardisExteriorManager exteriorManager;
+    private final TardisInteriorManager interiorManager;
+    private final TardisControlManager controlManager;
+    private final TardisFlightEventManager tardisFlightEventManager;
+    private final TardisClientData tardisClientData;
 
     public TardisLevelOperator(Level level) {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
+        this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
     }
 
@@ -61,6 +69,7 @@ public class TardisLevelOperator {
         compoundTag = this.exteriorManager.saveData(compoundTag);
         compoundTag = this.interiorManager.saveData(compoundTag);
         compoundTag = this.controlManager.saveData(compoundTag);
+        compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
 
         return compoundTag;
     }
@@ -70,7 +79,7 @@ public class TardisLevelOperator {
 
         CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
         if (doorPos != null) {
-            if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof ITardisInternalDoor door) {
+            if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof TardisInternalDoor door) {
                 this.internalDoor = door;
             }
         }
@@ -79,7 +88,10 @@ public class TardisLevelOperator {
         this.exteriorManager.loadData(tag);
         this.interiorManager.loadData(tag);
         this.controlManager.loadData(tag);
+        this.tardisFlightEventManager.loadData(tag);
 
+
+        tardisClientData.sync();
     }
 
     public Level getLevel() {
@@ -89,44 +101,19 @@ public class TardisLevelOperator {
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         controlManager.tick(level);
+        tardisFlightEventManager.tick();
 
-        var shouldSync = false;
-
-        // If the Tardis's flying status does not match the control manager's in-flight status
-        if (controlManager.isInFlight() != tardisClientData.isFlying()) {
-            // If the current level is a ServerLevel instance
-            // Set the Tardis's flying status to match the control manager's in-flight status
-            tardisClientData.setFlying(controlManager.isInFlight());
-            shouldSync = true;
-        }
-
-        if (controlManager.shouldThrottleBeDown() != tardisClientData.isThrottleDown()) {
-            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
-            shouldSync = true;
-        }
-
-        if (exteriorManager.isLanding() != tardisClientData.isLanding()) {
-            tardisClientData.setIsLanding(exteriorManager.isLanding());
-            shouldSync = true;
-        }
-
-        if (exteriorManager.isTakingOff() != tardisClientData.isTakingOff()) {
-            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            shouldSync = true;
-        }
-
-        if (controlManager.getCurrentExteriorTheme() != tardisClientData.getShellTheme()) {
-            tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
-            shouldSync = true;
-        }
-
-
-        // Synchronize the Tardis's data across the server
+        var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
-            tardisClientData.sync(level);
-            if (getExteriorManager().getLastKnownLocation() != null) {
-                tardisClientData.sync(getExteriorManager().getLastKnownLocation().level);
-            }
+            tardisClientData.setFlying(controlManager.isInFlight());
+            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
+            tardisClientData.setIsLanding(exteriorManager.isLanding());
+            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+            tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
+            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
+            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
+            tardisClientData.setIsOnCooldown(controlManager.isOnCooldown());
+            tardisClientData.sync();
         }
     }
 
@@ -135,13 +122,13 @@ public class TardisLevelOperator {
      *
      * @param player Player Entity.
      **/
-    public void enterTardis(IExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
+    public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
 
         if (!setUp) {
-
             this.interiorManager.generateDesktop(shell.getAssociatedTheme());
-            this.getExteriorManager().setLastKnownLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
-            this.getControlManager().setTargetLocation(new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level));
+            TardisNavLocation navLocation = new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level);
+            this.getExteriorManager().setLastKnownLocation(navLocation);
+            this.getControlManager().setTargetLocation(navLocation);
             this.setUp = true;
         }
 
@@ -155,8 +142,6 @@ public class TardisLevelOperator {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-
-
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360 / 4));
             } else {
 
@@ -168,10 +153,12 @@ public class TardisLevelOperator {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-
                 DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }
+
+        tardisClientData.sync();
+        TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(this, shell, player, externalPos, level, direction);
     }
 
     public boolean isTardisReady() {
@@ -184,15 +171,24 @@ public class TardisLevelOperator {
             return;
         }
 
+        if(getExteriorManager().getCurrentTheme() != null) {
+            ShellTheme theme = getExteriorManager().getCurrentTheme();
+            if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
+               if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                   return;
+               }
+            }
+        }
+
         if (this.exteriorManager != null) {
             if (this.exteriorManager.getLastKnownLocation() != null) {
                 BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
-                ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().level;
+                ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().getLevel();
 
-                ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().level.getChunk(targetPosition);
+                ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().getLevel().getChunk(targetPosition);
 
                 if (player instanceof ServerPlayer serverPlayer) {
-                    if (targetLevel.getBlockEntity(targetPosition) instanceof IExteriorShell shellBaseBlockEntity) {
+                    if (targetLevel.getBlockEntity(targetPosition) instanceof ExteriorShell shellBaseBlockEntity) {
                         BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
                         DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().rotation.get2DDataValue() * (360 / 4));
                     }
@@ -202,13 +198,18 @@ public class TardisLevelOperator {
     }
 
     public void setDoorClosed(boolean closeDoor) {
+        if (getInternalDoor() != null) {
+            getInternalDoor().setClosed(closeDoor);
+        }
+        if(closeDoor) {
+            TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
+        } else {
+            TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
+        }
         if (getExteriorManager() != null) {
             if (getExteriorManager().getLastKnownLocation() != null) {
                 getExteriorManager().setDoorClosed(closeDoor);
             }
-        }
-        if (getInternalDoor() != null) {
-            getInternalDoor().setClosed(closeDoor);
         }
     }
 
@@ -216,6 +217,7 @@ public class TardisLevelOperator {
         getExteriorManager().setShellTheme(theme);
         getInteriorManager().setShellTheme(theme);
         this.getControlManager().setCurrentExteriorTheme(theme);
+        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
     }
 
     /**
@@ -223,7 +225,7 @@ public class TardisLevelOperator {
      *
      * @param door Internal door object.
      **/
-    public void setInternalDoor(ITardisInternalDoor door) {
+    public void setInternalDoor(TardisInternalDoor door) {
         if (this.internalDoor != null) {
             this.internalDoor.onSetMainDoor(false);
         }
@@ -235,7 +237,7 @@ public class TardisLevelOperator {
         return this.exteriorManager;
     }
 
-    public ITardisInternalDoor getInternalDoor() {
+    public TardisInternalDoor getInternalDoor() {
         return this.internalDoor;
     }
 
@@ -245,6 +247,10 @@ public class TardisLevelOperator {
 
     public TardisControlManager getControlManager() {
         return this.controlManager;
+    }
+
+    public TardisFlightEventManager getTardisFlightEventManager() {
+        return this.tardisFlightEventManager;
     }
 
 }

@@ -1,23 +1,15 @@
 package whocraft.tardis_refined.common.data;
 
 import com.google.gson.JsonObject;
-import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.client.model.generators.BlockStateProvider;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
@@ -31,6 +23,7 @@ public class ModelProviderBlock extends BlockStateProvider {
     protected void registerStatesAndModels() {
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
+        ResourceLocation growthStoneTexture = new ResourceLocation("tardis_refined:block/growth_stone");
 
         /*Blocks that are rendered in code*/
         emptyBlockState(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
@@ -43,17 +36,23 @@ public class ModelProviderBlock extends BlockStateProvider {
         emptyBlockState(BlockRegistry.INTERNAL_DOOR_BLOCK.get());
         emptyBlockState(BlockRegistry.ARS_EGG.get());
 
+        threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
+        threeDeeRotating(BlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
+
         terraformer(BlockRegistry.TERRAFORMER_BLOCK.get());
 
         /*Basic Blocks*/
         simpleBlock(BlockRegistry.ARS_LEAVES.get());
         simpleBlock(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
+        simpleBlock(BlockRegistry.GROWTH_STONE.get());
+        simpleBlock(BlockRegistry.HARDENED_GROWTH_STONE.get());
 
         /*Fences*/
         fenceBlock(BlockRegistry.ARS_LEAVES_FENCE.get(), leavesTexture);
 
         /*Slabs*/
         slabBlock(BlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture);
+
 
         threeDeeRotating(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
     }

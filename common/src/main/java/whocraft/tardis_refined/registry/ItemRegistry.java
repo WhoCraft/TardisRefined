@@ -5,6 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.items.DrillItem;
 import whocraft.tardis_refined.common.items.KeyItem;
 
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class ItemRegistry {
     public static final DeferredRegistry<Item> ITEMS = DeferredRegistry.create(TardisRefined.MODID, Registries.ITEM);
 
     public static final RegistrySupplier<Item> KEY = register("tardis_key", () -> new KeyItem(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = ITEMS.register("pattern_manipulator", () -> new Item(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> DRILL = ITEMS.register("drill", () -> new DrillItem(new Item.Properties().stacksTo(1)), true);
 
     private static <T extends Item> RegistrySupplier<T> register(String id, Supplier<T> itemSupplier, boolean addToTab) {
         RegistrySupplier<T> item = ITEMS.register(id, itemSupplier);

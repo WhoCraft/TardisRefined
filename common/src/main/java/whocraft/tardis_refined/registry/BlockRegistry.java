@@ -7,17 +7,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.RootPlantBlock;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
-import whocraft.tardis_refined.common.block.device.AirLockGenerationBlock;
-import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
-import whocraft.tardis_refined.common.block.device.TerraformerBlock;
+import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
+import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -54,6 +52,11 @@ public class BlockRegistry {
     public static final RegistrySupplier<InternalDoorBlock> INTERNAL_DOOR_BLOCK = register("internal_door_block", () -> new InternalDoorBlock(BlockBehaviour.Properties.of(Material.STONE).noOcclusion()), true, false);
     public static final RegistrySupplier<RootShellDoorBlock> ROOT_SHELL_DOOR = register("root_shell_door", () -> new RootShellDoorBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(1000, 1000)), false, true);
 
+    // Generation Blocks
+    public static final RegistrySupplier<Block> GROWTH_STONE = register("growth_stone", () -> new GrowthStoneBlock(BlockBehaviour.Properties.of(Material.STONE).strength(3)), true, true);
+    public static final RegistrySupplier<Block> HARDENED_GROWTH_STONE = register("hardened_growth_stone", () -> new Block(BlockBehaviour.Properties.of(Material.BARRIER).strength(10000, 10000)), true, true);
+
+
     // Roots
     public static final RegistrySupplier<RootPlantBlock> ROOT_PLANT_BLOCK = register("root_plant", () -> new RootPlantBlock(BlockBehaviour.Properties.of(Material.LEAVES).noOcclusion().strength(3, 3).sound(SoundType.CORAL_BLOCK)), true, true);
 
@@ -75,6 +78,14 @@ public class BlockRegistry {
     public static final RegistrySupplier<TerraformerBlock> TERRAFORMER_BLOCK = register("terraformer", () -> new TerraformerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
     public static final RegistrySupplier<AirLockGenerationBlock> AIR_LOCK_GENERATION_BLOCK = register("air_lock_generator", () -> new AirLockGenerationBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), false, true);
     public static final RegistrySupplier<ConsoleConfigurationBlock> CONSOLE_CONFIGURATION_BLOCK = register("console_configuration", () -> new ConsoleConfigurationBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+
+    public static final RegistrySupplier<LandingPad> LANDING_PAD = register("landing_pad", () -> new LandingPad(BlockBehaviour.Properties.of(Material.METAL).strength(3, 3).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
+        return 12;
+    })), true, true);
+
+
+    public static final RegistrySupplier<FlightDetectorBlock> FLIGHT_DETECTOR = register("flight_detector", () -> new FlightDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+
 
     // Console
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of(Material.METAL).strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {

@@ -1,13 +1,14 @@
 package whocraft.tardis_refined.client.model.blockentity.console;
 
+// Made with Blockbench 4.6.4
+// Exported for Minecraft version 1.17 or later with Mojang mappings
+// Paste this class into your mod and generate all required imports
+
+
+import net.minecraft.client.model.HierarchicalModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.animation.AnimationChannel;
-import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.animation.Keyframe;
-import net.minecraft.client.animation.KeyframeAnimations;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -18,53 +19,35 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 
-public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUnit {
-
-    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal_console.png");
-
-    public static final AnimationDefinition MODEL_FLIGHT_LOOP = AnimationDefinition.Builder.withLength(2f).looping()
-            .addAnimation("rotor",
-                    new AnimationChannel(AnimationChannel.Targets.POSITION,
-                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(1f, KeyframeAnimations.posVec(0f, -6f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM)))
-            .addAnimation("rotor",
-                    new AnimationChannel(AnimationChannel.Targets.ROTATION,
-                            new Keyframe(0f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR),
-                            new Keyframe(2f, KeyframeAnimations.degreeVec(0f, 90f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR))).build();
+public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
     private final ModelPart base_control;
     private final ModelPart rotor;
+    private final ModelPart rotor_purple;
     private final ModelPart controls;
+    private final ModelPart spinninglight;
+    private final ModelPart bb_main;
     private final ModelPart root;
     private final ModelPart throttle;
+
+    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
 
     public CrystalConsoleModel(ModelPart root) {
         this.root = root;
         this.base_control = root.getChild("base_control");
         this.rotor = root.getChild("rotor");
+        this.rotor_purple = root.getChild("rotor_purple");
         this.controls = root.getChild("controls");
-        this.throttle = controls.getChild("north_left_side").getChild("large_lever_control_throttle");
-    }
-
-    @Override
-    public void setupAnim(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+        this.spinninglight = root.getChild("spinninglight");
+        this.bb_main = root.getChild("bb_main");
+        this.throttle = findPart(this, "large_lever_control_throttle");
     }
 
     public static LayerDefinition createBodyLayer() {
-
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
         PartDefinition base_control = partdefinition.addOrReplaceChild("base_control", CubeListBuilder.create(), PartPose.offset(0.0F, 27.0F, 0.0F));
-
-        PartDefinition root_r1 = base_control.addOrReplaceChild("root_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -9.0F, -8.0F, 16.0F, 17.0F, 16.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.0F, -10.5F, 0.0F, 0.0F, -0.7854F, 0.0F));
 
         PartDefinition bone = base_control.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(105, 85).addBox(-5.0F, -2.0F, -22.3F, 11.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -16.0F, 0.0F, 0.0F, -0.2618F, 0.0F));
 
@@ -150,6 +133,80 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         PartDefinition bone65 = bone63.addOrReplaceChild("bone65", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
         PartDefinition bone66 = bone65.addOrReplaceChild("bone66", CubeListBuilder.create().texOffs(23, 34).addBox(-9.5F, 0.0F, 0.0F, 19.0F, 1.0F, 14.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
+
+        PartDefinition bone196 = base_control.addOrReplaceChild("bone196", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
+
+        PartDefinition bone198 = bone196.addOrReplaceChild("bone198", CubeListBuilder.create(), PartPose.offset(0.0F, 12.0F, 0.0F));
+
+        PartDefinition bone57_r1 = bone198.addOrReplaceChild("bone57_r1", CubeListBuilder.create().texOffs(80, 152).addBox(-9.5F, -0.5F, -2.0F, 19.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -18.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone199 = bone198.addOrReplaceChild("bone199", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone58_r1 = bone199.addOrReplaceChild("bone58_r1", CubeListBuilder.create().texOffs(83, 157).addBox(-8.0F, -0.5F, -2.0F, 16.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -14.3F, 0.2182F, 0.0F, 0.0F));
+
+        PartDefinition bone200 = bone199.addOrReplaceChild("bone200", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone59_r1 = bone200.addOrReplaceChild("bone59_r1", CubeListBuilder.create().texOffs(85, 162).addBox(-7.0F, -0.5F, -2.0F, 14.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone201 = bone196.addOrReplaceChild("bone201", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+
+        PartDefinition bone58_r2 = bone201.addOrReplaceChild("bone58_r2", CubeListBuilder.create().texOffs(80, 152).addBox(-9.5F, -0.5F, -2.0F, 19.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -18.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone202 = bone201.addOrReplaceChild("bone202", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone59_r2 = bone202.addOrReplaceChild("bone59_r2", CubeListBuilder.create().texOffs(83, 157).addBox(-8.0F, -0.5F, -2.0F, 16.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -14.3F, 0.2182F, 0.0F, 0.0F));
+
+        PartDefinition bone203 = bone202.addOrReplaceChild("bone203", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone60_r1 = bone203.addOrReplaceChild("bone60_r1", CubeListBuilder.create().texOffs(85, 162).addBox(-7.0F, -0.5F, -2.0F, 14.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone204 = bone196.addOrReplaceChild("bone204", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 0.0F, 0.0F, -2.0944F, 0.0F));
+
+        PartDefinition bone59_r3 = bone204.addOrReplaceChild("bone59_r3", CubeListBuilder.create().texOffs(80, 152).addBox(-9.5F, -0.5F, -2.0F, 19.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -18.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone205 = bone204.addOrReplaceChild("bone205", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone60_r2 = bone205.addOrReplaceChild("bone60_r2", CubeListBuilder.create().texOffs(83, 157).addBox(-8.0F, -0.5F, -2.0F, 16.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -14.3F, 0.2182F, 0.0F, 0.0F));
+
+        PartDefinition bone206 = bone205.addOrReplaceChild("bone206", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone61_r1 = bone206.addOrReplaceChild("bone61_r1", CubeListBuilder.create().texOffs(85, 162).addBox(-7.0F, -0.5F, -2.0F, 14.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone207 = bone196.addOrReplaceChild("bone207", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 0.0F, 0.0F, 3.1416F, 0.0F));
+
+        PartDefinition bone60_r3 = bone207.addOrReplaceChild("bone60_r3", CubeListBuilder.create().texOffs(80, 152).addBox(-9.5F, -0.5F, -2.0F, 19.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -18.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone208 = bone207.addOrReplaceChild("bone208", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone61_r2 = bone208.addOrReplaceChild("bone61_r2", CubeListBuilder.create().texOffs(83, 157).addBox(-8.0F, -0.5F, -2.0F, 16.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -14.3F, 0.2182F, 0.0F, 0.0F));
+
+        PartDefinition bone209 = bone208.addOrReplaceChild("bone209", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone62_r1 = bone209.addOrReplaceChild("bone62_r1", CubeListBuilder.create().texOffs(85, 162).addBox(-7.0F, -0.5F, -2.0F, 14.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone210 = bone196.addOrReplaceChild("bone210", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 0.0F, 0.0F, 2.0944F, 0.0F));
+
+        PartDefinition bone61_r3 = bone210.addOrReplaceChild("bone61_r3", CubeListBuilder.create().texOffs(80, 152).addBox(-9.5F, -0.5F, -2.0F, 19.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -18.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone211 = bone210.addOrReplaceChild("bone211", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone62_r2 = bone211.addOrReplaceChild("bone62_r2", CubeListBuilder.create().texOffs(83, 157).addBox(-8.0F, -0.5F, -2.0F, 16.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -14.3F, 0.2182F, 0.0F, 0.0F));
+
+        PartDefinition bone212 = bone211.addOrReplaceChild("bone212", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone63_r1 = bone212.addOrReplaceChild("bone63_r1", CubeListBuilder.create().texOffs(85, 162).addBox(-7.0F, -0.5F, -2.0F, 14.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone213 = bone196.addOrReplaceChild("bone213", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 12.0F, 0.0F, 0.0F, 1.0472F, 0.0F));
+
+        PartDefinition bone62_r3 = bone213.addOrReplaceChild("bone62_r3", CubeListBuilder.create().texOffs(80, 152).addBox(-9.5F, -0.5F, -2.0F, 19.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -18.3F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition bone214 = bone213.addOrReplaceChild("bone214", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone63_r2 = bone214.addOrReplaceChild("bone63_r2", CubeListBuilder.create().texOffs(83, 157).addBox(-8.0F, -0.5F, -2.0F, 16.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -14.3F, 0.2182F, 0.0F, 0.0F));
+
+        PartDefinition bone215 = bone214.addOrReplaceChild("bone215", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition bone64_r1 = bone215.addOrReplaceChild("bone64_r1", CubeListBuilder.create().texOffs(85, 162).addBox(-7.0F, -0.5F, -2.0F, 14.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.3F, 0.2618F, 0.0F, 0.0F));
 
         PartDefinition bone19 = base_control.addOrReplaceChild("bone19", CubeListBuilder.create(), PartPose.offset(0.0F, -16.0F, 0.0F));
 
@@ -303,38 +360,72 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition bone114 = bone113.addOrReplaceChild("bone114", CubeListBuilder.create().texOffs(0, 34).addBox(-2.5F, -3.0F, -11.75F, 5.0F, 15.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-        PartDefinition bone121 = base_control.addOrReplaceChild("bone121", CubeListBuilder.create().texOffs(0, 105).addBox(-3.5F, -3.0F, -10.75F, 7.0F, 16.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(38, 119).addBox(-5.5F, -1.0F, -16.75F, 3.0F, 11.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(126, 0).addBox(-6.0F, -1.0F, -17.25F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(126, 0).mirror().addBox(-6.0F, 10.0F, -17.25F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
+        PartDefinition bone121 = base_control.addOrReplaceChild("bone121", CubeListBuilder.create().texOffs(0, 105).addBox(-3.5F, -3.0F, -10.75F, 7.0F, 16.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
+
+        PartDefinition bone142 = bone121.addOrReplaceChild("bone142", CubeListBuilder.create().texOffs(38, 119).addBox(-1.5F, -5.5F, -1.5F, 3.0F, 11.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-4.0F, 4.5F, -15.25F));
+
+        PartDefinition bone143 = bone142.addOrReplaceChild("bone143", CubeListBuilder.create().texOffs(38, 145).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.0F, 0.0F));
+
+        PartDefinition bone145 = bone142.addOrReplaceChild("bone145", CubeListBuilder.create().texOffs(38, 139).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.0F, -0.0175F, 0.0F));
+
+        PartDefinition bone149 = bone142.addOrReplaceChild("bone149", CubeListBuilder.create().texOffs(38, 133).addBox(-1.5F, -1.5F, -1.5F, 3.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -2.0F, 0.0F));
+
+        PartDefinition bone155 = bone142.addOrReplaceChild("bone155", CubeListBuilder.create().texOffs(126, 0).addBox(-2.0F, -1.0F, -2.0F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -4.5F, 0.0F));
+
+        PartDefinition bone153 = bone142.addOrReplaceChild("bone153", CubeListBuilder.create().texOffs(126, 0).mirror().addBox(-2.0F, -1.0F, -2.0F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 6.5F, 0.0F));
 
         PartDefinition bone122 = bone121.addOrReplaceChild("bone122", CubeListBuilder.create().texOffs(0, 105).addBox(-3.5F, -3.0F, -10.75F, 7.0F, 16.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-        PartDefinition bone123 = bone122.addOrReplaceChild("bone123", CubeListBuilder.create().texOffs(0, 105).addBox(-3.5F, -3.0F, -10.75F, 7.0F, 16.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(109, 125).addBox(-2.0F, 4.0F, -18.5F, 5.0F, 3.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(76, 31).addBox(-7.0F, -0.5F, -18.0F, 2.0F, 7.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(13, 131).addBox(-5.0F, 4.5F, -18.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(13, 131).mirror().addBox(3.0F, 4.5F, -18.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
-                .texOffs(128, 73).addBox(-7.5F, -1.5F, -18.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(128, 73).addBox(5.5F, -1.5F, -18.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(76, 31).mirror().addBox(6.0F, -0.5F, -18.0F, 2.0F, 7.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+        PartDefinition bone123 = bone122.addOrReplaceChild("bone123", CubeListBuilder.create().texOffs(0, 105).addBox(-3.5F, -3.0F, -10.75F, 7.0F, 16.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-        PartDefinition bone123_r1 = bone123.addOrReplaceChild("bone123_r1", CubeListBuilder.create().texOffs(0, 132).addBox(-1.5F, -1.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 5.5F, -18.25F, 0.0F, 0.0F, -0.48F));
+        PartDefinition bone225 = bone123.addOrReplaceChild("bone225", CubeListBuilder.create().texOffs(0, 132).addBox(-1.5F, -1.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 5.5F, -18.25F, 0.0F, 0.0F, -0.48F));
+
+        PartDefinition bone216 = bone123.addOrReplaceChild("bone216", CubeListBuilder.create().texOffs(128, 73).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-6.0F, -0.5F, -17.0F));
+
+        PartDefinition bone217 = bone123.addOrReplaceChild("bone217", CubeListBuilder.create().texOffs(135, 7).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-6.0F, 2.0F, -17.0F));
+
+        PartDefinition bone218 = bone123.addOrReplaceChild("bone218", CubeListBuilder.create().texOffs(135, 12).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-6.0F, 5.0F, -17.0F));
+
+        PartDefinition bone219 = bone123.addOrReplaceChild("bone219", CubeListBuilder.create().texOffs(13, 131).addBox(-1.5F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-3.5F, 5.5F, -17.0F));
+
+        PartDefinition bone220 = bone123.addOrReplaceChild("bone220", CubeListBuilder.create().texOffs(109, 125).addBox(-2.5F, -1.5F, -1.5F, 5.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.5F, 5.5F, -17.0F));
+
+        PartDefinition bone221 = bone123.addOrReplaceChild("bone221", CubeListBuilder.create().texOffs(13, 131).mirror().addBox(-1.5F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(4.5F, 5.5F, -17.0F));
+
+        PartDefinition bone223 = bone123.addOrReplaceChild("bone223", CubeListBuilder.create().texOffs(135, 12).mirror().addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(7.0F, 5.0F, -17.0F));
+
+        PartDefinition bone222 = bone123.addOrReplaceChild("bone222", CubeListBuilder.create().texOffs(135, 7).mirror().addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(7.0F, 2.0F, -17.0F));
+
+        PartDefinition bone224 = bone123.addOrReplaceChild("bone224", CubeListBuilder.create().texOffs(128, 73).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, -0.5F, -17.0F));
 
         PartDefinition bone124 = bone123.addOrReplaceChild("bone124", CubeListBuilder.create().texOffs(0, 105).addBox(-3.5F, -3.0F, -10.75F, 7.0F, 16.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(105, 73).addBox(-4.0F, -1.0F, -15.75F, 8.0F, 5.0F, 6.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
         PartDefinition bone125 = bone124.addOrReplaceChild("bone125", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-        PartDefinition bone126 = bone125.addOrReplaceChild("bone126", CubeListBuilder.create().texOffs(23, 34).addBox(-2.5F, 6.0F, -14.75F, 3.0F, 6.0F, 3.0F, new CubeDeformation(0.0F))
-                .texOffs(108, 15).addBox(-4.5F, 2.0F, -15.25F, 7.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(70, 118).addBox(2.5F, 2.5F, -14.75F, 5.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
+        PartDefinition bone126 = bone125.addOrReplaceChild("bone126", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-        PartDefinition bone126_r1 = bone126.addOrReplaceChild("bone126_r1", CubeListBuilder.create().texOffs(0, 132).addBox(-1.5F, -1.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.0F, 3.5F, -15.0F, 0.0F, 0.0F, -0.48F));
+        PartDefinition bone165 = bone126.addOrReplaceChild("bone165", CubeListBuilder.create().texOffs(25, 147).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, 11.0F, -13.25F));
 
-        PartDefinition bone132 = bone126.addOrReplaceChild("bone132", CubeListBuilder.create().texOffs(113, 54).addBox(-8.0F, -1.5F, 0.0F, 8.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-4.5F, 4.0F, -14.75F, 0.0F, 0.3927F, 0.0F));
+        PartDefinition bone161 = bone126.addOrReplaceChild("bone161", CubeListBuilder.create().texOffs(25, 142).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, 9.0F, -13.25F));
 
-        PartDefinition bone132_r1 = bone132.addOrReplaceChild("bone132_r1", CubeListBuilder.create().texOffs(17, 119).addBox(-7.0F, -1.525F, 0.0F, 7.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-8.0F, 0.0F, 0.0F, 0.0F, 1.5272F, 0.0F));
+        PartDefinition bone160 = bone126.addOrReplaceChild("bone160", CubeListBuilder.create().texOffs(25, 137).addBox(-1.5F, -1.0F, -1.5F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, 7.0F, -13.25F));
+
+        PartDefinition bone169 = bone126.addOrReplaceChild("bone169", CubeListBuilder.create().texOffs(108, 15).addBox(-3.5F, -2.0F, -2.0F, 7.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, 4.0F, -13.25F));
+
+        PartDefinition bone171 = bone169.addOrReplaceChild("bone171", CubeListBuilder.create().texOffs(0, 132).addBox(-1.5F, -1.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.5F, -1.75F, 0.0F, 0.0F, -0.48F));
+
+        PartDefinition bone177 = bone126.addOrReplaceChild("bone177", CubeListBuilder.create().texOffs(66, 133).addBox(-1.5F, -1.5F, -1.0F, 3.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(4.0F, 4.0F, -13.75F));
+
+        PartDefinition bone181 = bone126.addOrReplaceChild("bone181", CubeListBuilder.create().texOffs(67, 138).addBox(-1.0F, -1.5F, -1.0F, 2.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(6.5F, 4.0F, -13.75F));
+
+        PartDefinition bone186 = bone126.addOrReplaceChild("bone186", CubeListBuilder.create().texOffs(66, 143).addBox(-1.0F, -1.5F, -1.5F, 2.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(6.5F, 4.0F, -11.25F));
+
+        PartDefinition bone174 = bone126.addOrReplaceChild("bone174", CubeListBuilder.create(), PartPose.offset(-11.5575F, 4.0F, -11.0429F));
+
+        PartDefinition bone132_r1 = bone174.addOrReplaceChild("bone132_r1", CubeListBuilder.create().texOffs(17, 119).addBox(-7.0F, -1.525F, 0.0F, 7.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.0386F, 0.025F, -0.0132F, 0.0F, 2.0071F, 0.0F));
+
+        PartDefinition bone132 = bone126.addOrReplaceChild("bone132", CubeListBuilder.create().texOffs(113, 54).addBox(-4.45F, -2.3F, -2.975F, 8.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.2752F, 4.8F, -10.4719F, 0.0F, 0.48F, 0.0F));
 
         PartDefinition bone127 = bone121.addOrReplaceChild("bone127", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
 
@@ -372,7 +463,11 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition bone120 = bone119.addOrReplaceChild("bone120", CubeListBuilder.create().texOffs(49, 0).addBox(-9.5F, -1.05F, -20.15F, 19.0F, 1.0F, 13.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.0472F, 0.0F));
 
-        PartDefinition rotor = partdefinition.addOrReplaceChild("rotor", CubeListBuilder.create().texOffs(65, 15).addBox(-7.0F, -24.475F, -7.0F, 14.0F, 1.0F, 14.0F, new CubeDeformation(0.0F))
+        PartDefinition bone187 = base_control.addOrReplaceChild("bone187", CubeListBuilder.create(), PartPose.offset(0.0F, -11.0F, 0.0F));
+
+        PartDefinition root_r1 = bone187.addOrReplaceChild("root_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-8.0F, -9.0F, -8.0F, 16.0F, 17.0F, 16.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 0.0F, -0.7854F, 0.0F));
+
+        PartDefinition rotor = partdefinition.addOrReplaceChild("rotor", CubeListBuilder.create().texOffs(65, 15).addBox(-7.0F, -23.475F, -7.0F, 14.0F, 1.0F, 14.0F, new CubeDeformation(1.0F))
                 .texOffs(31, 75).addBox(-6.0F, -41.0F, -6.0F, 12.0F, 15.0F, 12.0F, new CubeDeformation(-0.25F))
                 .texOffs(80, 95).addBox(-3.0F, -47.0F, -3.0F, 6.0F, 16.0F, 6.0F, new CubeDeformation(0.25F))
                 .texOffs(43, 50).addBox(-7.0F, -34.0F, -7.0F, 14.0F, 10.0F, 14.0F, new CubeDeformation(-0.5F)), PartPose.offset(0.0F, 25.0F, 0.0F));
@@ -380,6 +475,19 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         PartDefinition root_r2 = rotor.addOrReplaceChild("root_r2", CubeListBuilder.create().texOffs(0, 34).addBox(0.0F, -50.0F, -10.0F, 1.0F, 26.0F, 20.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.7854F, 0.0F));
 
         PartDefinition root_r3 = rotor.addOrReplaceChild("root_r3", CubeListBuilder.create().texOffs(0, 34).addBox(0.0F, -50.0F, -10.0F, 1.0F, 26.0F, 20.0F, new CubeDeformation(0.25F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
+
+        PartDefinition rotor_purple = partdefinition.addOrReplaceChild("rotor_purple", CubeListBuilder.create(), PartPose.offset(0.0F, -14.0F, 0.0F));
+
+        PartDefinition cube_r1 = rotor_purple.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 224).addBox(-8.0F, -8.0F, -8.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(0.0F))
+                .texOffs(64, 224).addBox(-8.0F, -8.0F, -8.0F, 16.0F, 16.0F, 16.0F, new CubeDeformation(-0.01F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 2.1817F));
+
+        PartDefinition bone239 = rotor_purple.addOrReplaceChild("bone239", CubeListBuilder.create().texOffs(130, 240).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.5F)), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition cube_r2 = bone239.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(130, 240).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.7854F, 0.0F, 0.0F));
+
+        PartDefinition cube_r3 = bone239.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(130, 240).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.7854F));
+
+        PartDefinition cube_r4 = bone239.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(130, 240).addBox(-4.0F, -4.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.5F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -0.7854F, 0.0F));
 
         PartDefinition controls = partdefinition.addOrReplaceChild("controls", CubeListBuilder.create(), PartPose.offset(0.0F, 27.0F, 0.0F));
 
@@ -403,8 +511,12 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition bone139 = north_right.addOrReplaceChild("bone139", CubeListBuilder.create().texOffs(21, 87).addBox(0.5F, -1.375F, -5.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F))
                 .texOffs(21, 87).addBox(0.5F, -1.375F, -7.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F))
-                .texOffs(86, 118).addBox(-2.0F, -0.85F, -8.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(-0.25F))
-                .texOffs(86, 118).addBox(-2.0F, -0.85F, -6.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.0F, -6.0F, -12.3F, 0.1745F, 0.0F, 0.0F));
+                .texOffs(86, 118).addBox(-2.0F, -0.5F, -8.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(86, 118).addBox(-2.0F, -0.5F, -6.0F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.0F, -12.3F, 0.1745F, 0.0F, 0.0F));
+
+        PartDefinition bone235 = bone139.addOrReplaceChild("bone235", CubeListBuilder.create().texOffs(86, 132).addBox(-0.25F, -0.5F, -0.25F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, -0.1F, -5.5F));
+
+        PartDefinition bone236 = bone139.addOrReplaceChild("bone236", CubeListBuilder.create().texOffs(86, 132).addBox(-0.25F, -0.5F, -0.25F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-1.0F, -0.1F, -7.75F));
 
         PartDefinition bone140 = bone139.addOrReplaceChild("bone140", CubeListBuilder.create().texOffs(101, 0).addBox(-4.0F, -0.5F, -4.0F, 8.0F, 1.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, -5.75F, 0.0F, -0.7854F, 0.0F));
 
@@ -415,16 +527,19 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         PartDefinition north_left = controls.addOrReplaceChild("north_left", CubeListBuilder.create().texOffs(114, 10).addBox(-5.5F, -14.5F, -10.3F, 9.0F, 3.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(121, 97).addBox(-2.75F, -11.5F, -15.3F, 5.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -0.5236F, 0.0F));
 
+        PartDefinition bone230 = north_left.addOrReplaceChild("bone230", CubeListBuilder.create().texOffs(123, 103).addBox(-1.5045F, -0.9097F, -0.7637F, 3.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offset(-0.2455F, -10.5903F, -14.5363F));
+
         PartDefinition bone135 = north_left.addOrReplaceChild("bone135", CubeListBuilder.create().texOffs(119, 108).addBox(-2.0F, -0.5F, 5.0F, 4.0F, 1.0F, 5.0F, new CubeDeformation(0.0F))
                 .texOffs(112, 118).addBox(-2.75F, -0.6F, 5.25F, 5.0F, 1.0F, 5.0F, new CubeDeformation(0.0F))
                 .texOffs(89, 44).addBox(0.75F, -2.1F, 6.75F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
 
-        PartDefinition bone150 = bone135.addOrReplaceChild("bone150", CubeListBuilder.create().texOffs(100, 64).addBox(-11.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
-                .texOffs(64, 127).addBox(-8.0F, -1.0F, -1.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
+        PartDefinition bone150 = bone135.addOrReplaceChild("bone150", CubeListBuilder.create().texOffs(100, 64).addBox(-11.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
 
-        PartDefinition switch_control = bone150.addOrReplaceChild("switch_control", CubeListBuilder.create(), PartPose.offset(-7.0F, -1.0F, 0.75F));
+        PartDefinition bone192 = bone135.addOrReplaceChild("bone192", CubeListBuilder.create().texOffs(64, 127).addBox(-8.0F, -1.0F, -1.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
 
-        PartDefinition bone150_r1 = switch_control.addOrReplaceChild("bone150_r1", CubeListBuilder.create().texOffs(77, 128).addBox(0.0F, -0.75F, -2.0F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
+        PartDefinition switch_control2 = bone192.addOrReplaceChild("switch_control2", CubeListBuilder.create(), PartPose.offset(-7.0F, -1.0F, 0.75F));
+
+        PartDefinition bone151_r1 = switch_control2.addOrReplaceChild("bone151_r1", CubeListBuilder.create().texOffs(77, 128).addBox(0.0F, -0.75F, -2.0F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
 
         PartDefinition bone151 = bone135.addOrReplaceChild("bone151", CubeListBuilder.create().texOffs(100, 64).mirror().addBox(1.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, 0.7854F, 0.0F));
 
@@ -438,6 +553,8 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition exterior_control = west.addOrReplaceChild("exterior_control", CubeListBuilder.create().texOffs(133, 103).addBox(1.0F, -24.0F, -14.4F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(140, 111).addBox(1.0F, -24.75F, -14.4F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 12.0F, 0.0F));
+
+        PartDefinition bone141 = exterior_control.addOrReplaceChild("bone141", CubeListBuilder.create().texOffs(143, 116).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5F, -27.75F, -12.9F, 0.0F, -0.48F, 0.0F));
 
         PartDefinition bone159 = west.addOrReplaceChild("bone159", CubeListBuilder.create().texOffs(76, 44).addBox(-2.0F, -1.0F, 8.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(99, 129).addBox(-7.0F, -0.5F, 1.0F, 2.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
@@ -460,20 +577,23 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
                 .texOffs(57, 0).mirror().addBox(-3.75F, -0.85F, -5.25F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(43, 60).addBox(-2.0F, -1.1F, -8.25F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.0F, -12.3F, 0.1745F, 0.0F, 0.0F));
 
-        PartDefinition bone166 = bone164.addOrReplaceChild("bone166", CubeListBuilder.create().texOffs(121, 33).addBox(-1.5F, 0.0F, -5.0F, 3.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -0.6F, -8.25F, 0.48F, 0.0F, 0.0F));
+        PartDefinition bone166 = bone164.addOrReplaceChild("bone166", CubeListBuilder.create().texOffs(121, 33).addBox(-1.5F, -2.994F, -2.1669F, 3.0F, 3.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 3.3639F, -9.3805F, 0.48F, 0.0F, 0.0F));
 
-        PartDefinition switch2_control = bone166.addOrReplaceChild("switch2_control", CubeListBuilder.create().texOffs(101, 10).addBox(-2.0F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.25F, -1.0F));
+        PartDefinition switch2_control = bone166.addOrReplaceChild("switch2_control", CubeListBuilder.create().texOffs(101, 10).addBox(-2.0F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -2.744F, 1.8331F));
 
         PartDefinition south_right = controls.addOrReplaceChild("south_right", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -2.618F, 0.0F));
 
         PartDefinition bone168 = south_right.addOrReplaceChild("bone168", CubeListBuilder.create().texOffs(65, 23).addBox(-2.5F, -4.0F, 8.5F, 5.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
 
-        PartDefinition bone170 = bone168.addOrReplaceChild("bone170", CubeListBuilder.create().texOffs(100, 64).addBox(-11.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
-                .texOffs(64, 127).addBox(-8.0F, -1.0F, -1.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
+        PartDefinition bone231 = bone168.addOrReplaceChild("bone231", CubeListBuilder.create().texOffs(123, 103).addBox(-1.5F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offset(0.0F, -3.5F, 9.0F));
 
-        PartDefinition switch3_control = bone170.addOrReplaceChild("switch3_control", CubeListBuilder.create(), PartPose.offset(-7.0F, -1.0F, 0.75F));
+        PartDefinition bone170 = bone168.addOrReplaceChild("bone170", CubeListBuilder.create().texOffs(100, 64).addBox(-11.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
 
-        PartDefinition bone170_r1 = switch3_control.addOrReplaceChild("bone170_r1", CubeListBuilder.create().texOffs(77, 128).addBox(0.0F, -0.75F, -2.0F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
+        PartDefinition bone189 = bone168.addOrReplaceChild("bone189", CubeListBuilder.create().texOffs(64, 127).addBox(-8.0F, -1.0F, -1.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
+
+        PartDefinition switch3_control2 = bone189.addOrReplaceChild("switch3_control2", CubeListBuilder.create(), PartPose.offset(-7.0F, -1.0F, 0.75F));
+
+        PartDefinition bone171_r1 = switch3_control2.addOrReplaceChild("bone171_r1", CubeListBuilder.create().texOffs(77, 128).addBox(0.0F, -0.75F, -2.0F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
 
         PartDefinition bone172 = bone168.addOrReplaceChild("bone172", CubeListBuilder.create().texOffs(100, 64).mirror().addBox(1.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, 0.7854F, 0.0F));
 
@@ -490,30 +610,32 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition south_left = controls.addOrReplaceChild("south_left", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, 2.618F, 0.0F));
 
-        PartDefinition bone191 = south_left.addOrReplaceChild("bone191", CubeListBuilder.create().texOffs(17, 105).addBox(-2.0F, -4.0F, 6.5F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(91, 82).addBox(-0.5F, -6.0F, 8.0F, 1.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
+        PartDefinition bone191 = south_left.addOrReplaceChild("bone191", CubeListBuilder.create().texOffs(17, 105).addBox(-2.0F, -4.0F, 6.5F, 4.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
 
-        PartDefinition bone193 = bone191.addOrReplaceChild("bone193", CubeListBuilder.create().texOffs(100, 64).addBox(-11.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F))
-                .texOffs(64, 127).addBox(-8.0F, -1.0F, -1.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
+        PartDefinition bone229 = bone191.addOrReplaceChild("bone229", CubeListBuilder.create().texOffs(91, 82).addBox(-0.5F, -2.0F, -0.5F, 1.0F, 4.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -3.5F, 8.5F));
 
-        PartDefinition switch4_control_increment = bone193.addOrReplaceChild("switch4_control_increment", CubeListBuilder.create(), PartPose.offset(-7.0F, -1.0F, 0.75F));
+        PartDefinition bone193 = bone191.addOrReplaceChild("bone193", CubeListBuilder.create().texOffs(100, 64).addBox(-11.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
 
-        PartDefinition bone193_r1 = switch4_control_increment.addOrReplaceChild("bone193_r1", CubeListBuilder.create().texOffs(77, 128).addBox(0.0F, -0.75F, -2.0F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
+        PartDefinition bone190 = bone191.addOrReplaceChild("bone190", CubeListBuilder.create().texOffs(64, 127).addBox(-8.0F, -1.0F, -1.0F, 2.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, -0.7854F, 0.0F));
+
+        PartDefinition switch4_control_increment2 = bone190.addOrReplaceChild("switch4_control_increment2", CubeListBuilder.create(), PartPose.offset(-7.0F, -1.0F, 0.75F));
+
+        PartDefinition bone194_r1 = switch4_control_increment2.addOrReplaceChild("bone194_r1", CubeListBuilder.create().texOffs(77, 128).addBox(0.0F, -0.75F, -2.0F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.6981F));
 
         PartDefinition bone194 = bone191.addOrReplaceChild("bone194", CubeListBuilder.create().texOffs(100, 64).mirror().addBox(1.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, 0.7854F, 0.0F));
 
         PartDefinition bone195 = south_left.addOrReplaceChild("bone195", CubeListBuilder.create().texOffs(128, 67).addBox(-1.0F, -1.1F, -6.75F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(91, 118).addBox(-3.0F, 0.5F, -11.75F, 6.0F, 3.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(29, 81).addBox(-2.0F, 0.4F, -10.75F, 4.0F, 3.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(21, 87).addBox(-2.75F, -0.875F, -10.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F))
-                .texOffs(21, 87).addBox(-0.5F, -0.875F, -10.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F))
-                .texOffs(21, 87).mirror().addBox(1.75F, -0.875F, -10.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.0F, -6.0F, -12.3F, 0.1745F, 0.0F, 0.0F));
+                .texOffs(29, 81).addBox(-2.0F, 0.4F, -10.75F, 4.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.0F, -12.3F, 0.1745F, 0.0F, 0.0F));
 
-        PartDefinition small_valve5_control_x = bone195.addOrReplaceChild("small_valve5_control_x", CubeListBuilder.create().texOffs(127, 15).addBox(-1.25F, 0.0F, -1.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.25F, -0.65F, -10.0F, 0.0F, -0.3491F, 0.0F));
+        PartDefinition small_valve5_control_x = bone195.addOrReplaceChild("small_valve5_control_x", CubeListBuilder.create().texOffs(127, 15).addBox(-1.25F, 0.0F, -1.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(21, 87).addBox(-0.5F, -0.225F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(-2.25F, -0.55F, -10.0F, 0.0F, -0.3491F, 0.0F));
 
-        PartDefinition small_valve6_control_z = bone195.addOrReplaceChild("small_valve6_control_z", CubeListBuilder.create().texOffs(127, 15).mirror().addBox(-0.75F, 0.0F, -1.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(2.25F, -0.65F, -10.0F, 0.0F, 0.3491F, 0.0F));
+        PartDefinition small_valve6_control_z = bone195.addOrReplaceChild("small_valve6_control_z", CubeListBuilder.create().texOffs(127, 15).mirror().addBox(-0.75F, 0.0F, -1.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(21, 87).mirror().addBox(-0.5F, -0.225F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(2.25F, -0.55F, -10.0F, 0.0F, 0.3491F, 0.0F));
 
-        PartDefinition small_valve7_control_y = bone195.addOrReplaceChild("small_valve7_control_y", CubeListBuilder.create().texOffs(127, 15).mirror().addBox(-0.75F, 0.0F, -1.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -0.65F, -10.0F, 0.0F, 0.3491F, 0.0F));
+        PartDefinition small_valve7_control_y = bone195.addOrReplaceChild("small_valve7_control_y", CubeListBuilder.create().texOffs(127, 15).mirror().addBox(-0.75F, 0.0F, -1.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(21, 87).addBox(-0.5F, -0.225F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.0F, -0.55F, -10.0F, 0.0F, 0.3491F, 0.0F));
 
         PartDefinition lever2_control = bone195.addOrReplaceChild("lever2_control", CubeListBuilder.create().texOffs(65, 31).addBox(-0.5F, -0.5F, -0.5F, 4.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.1F, -5.75F, 0.0F, -0.8727F, 0.0F));
 
@@ -528,13 +650,15 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
                 .texOffs(105, 111).addBox(-0.75F, -1.35F, 5.0F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(108, 118).mirror().addBox(1.5F, -1.0F, 5.5F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
 
+        PartDefinition bone232 = bone180.addOrReplaceChild("bone232", CubeListBuilder.create().texOffs(123, 103).addBox(-1.5F, -0.5F, -0.5F, 3.0F, 1.0F, 1.0F, new CubeDeformation(-0.025F)), PartPose.offset(0.0F, -3.5F, 9.0F));
+
         PartDefinition large_lever4_control_door_toggle = bone180.addOrReplaceChild("large_lever4_control_door_toggle", CubeListBuilder.create().texOffs(65, 15).addBox(-0.25F, -1.5F, -4.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F))
                 .texOffs(65, 15).mirror().addBox(-0.75F, -1.5F, -4.5F, 1.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(30, 105).addBox(-0.5F, -2.5F, 0.5F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(5.5F, -0.5F, 2.25F, -0.6981F, 0.0F, 0.0F));
 
         PartDefinition large_valve3_control = bone180.addOrReplaceChild("large_valve3_control", CubeListBuilder.create(), PartPose.offsetAndRotation(-10.0F, -1.0F, -0.7F, -0.1745F, -1.1345F, 0.0F));
 
-        PartDefinition bone189_r1 = large_valve3_control.addOrReplaceChild("bone189_r1", CubeListBuilder.create().texOffs(0, 132).addBox(-1.5F, -1.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 0.0F, 0.25F, 0.0F, 0.0F, -0.6545F));
+        PartDefinition bone226 = large_valve3_control.addOrReplaceChild("bone226", CubeListBuilder.create().texOffs(0, 132).addBox(-1.5F, -1.5F, -0.5F, 3.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, 0.0F, 0.25F));
 
         PartDefinition switch5_control = bone180.addOrReplaceChild("switch5_control", CubeListBuilder.create().texOffs(73, 15).addBox(-0.5F, -1.5F, 0.0F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5F, -1.0F, 6.5F, -0.48F, 0.0F, 0.0F));
 
@@ -544,10 +668,14 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition bone183 = bone180.addOrReplaceChild("bone183", CubeListBuilder.create().texOffs(100, 64).mirror().addBox(1.0F, -0.5F, -1.0F, 10.0F, 1.0F, 7.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.4F, 5.75F, 0.0F, 0.7854F, 0.0F));
 
-        PartDefinition bone184 = east.addOrReplaceChild("bone184", CubeListBuilder.create().texOffs(86, 118).addBox(-3.25F, -0.85F, -5.75F, 2.0F, 1.0F, 2.0F, new CubeDeformation(-0.25F))
+        PartDefinition bone184 = east.addOrReplaceChild("bone184", CubeListBuilder.create().texOffs(86, 118).addBox(-3.25F, -0.5F, -6.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 92).addBox(-3.75F, -0.1F, -12.25F, 7.0F, 1.0F, 11.0F, new CubeDeformation(0.0F))
-                .texOffs(86, 118).mirror().addBox(1.25F, -0.85F, -5.75F, 2.0F, 1.0F, 2.0F, new CubeDeformation(-0.25F)).mirror(false)
+                .texOffs(86, 118).mirror().addBox(1.25F, -0.5F, -6.25F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(91, 118).addBox(-3.0F, 0.5F, -11.75F, 6.0F, 3.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -6.0F, -12.3F, 0.1745F, 0.0F, 0.0F));
+
+        PartDefinition bone233 = bone184.addOrReplaceChild("bone233", CubeListBuilder.create().texOffs(86, 132).addBox(-0.25F, -0.5F, -0.25F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-2.25F, -0.1F, -5.75F));
+
+        PartDefinition bone234 = bone184.addOrReplaceChild("bone234", CubeListBuilder.create().texOffs(86, 132).addBox(-0.25F, -0.5F, -0.25F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(2.25F, -0.1F, -5.75F));
 
         PartDefinition bone185 = east.addOrReplaceChild("bone185", CubeListBuilder.create().texOffs(70, 108).addBox(-1.5F, -2.5F, -0.5F, 3.0F, 5.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, -14.5F, -9.3F, 0.0F, -0.48F, 0.0F));
 
@@ -572,16 +700,21 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
 
         PartDefinition binocular_control = bone137.addOrReplaceChild("binocular_control", CubeListBuilder.create().texOffs(105, 101).addBox(-1.5F, -1.0F, -1.0F, 3.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -7.0F, 10.0F, 0.0F, -0.5672F, 0.0F));
 
-        PartDefinition bone138 = binocular_control.addOrReplaceChild("bone138", CubeListBuilder.create().texOffs(23, 44).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -1.0F, 0.0F, -0.5236F, 0.0F, 0.0F));
+        PartDefinition bone227 = binocular_control.addOrReplaceChild("bone227", CubeListBuilder.create(), PartPose.offset(0.0F, 22.0F, 10.3F));
 
-        PartDefinition bone138_r1 = bone138.addOrReplaceChild("bone138_r1", CubeListBuilder.create().texOffs(100, 64).addBox(-0.5F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 0.0F, -0.5F, -0.7854F, 0.0F, 0.0F));
+        PartDefinition bone138 = binocular_control.addOrReplaceChild("bone138", CubeListBuilder.create(), PartPose.offset(0.0F, -1.0F, 0.0F));
+
+        PartDefinition bone228 = bone138.addOrReplaceChild("bone228", CubeListBuilder.create().texOffs(23, 44).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5236F, 0.0F, 0.0F));
+
+        PartDefinition bone138_r1 = bone228.addOrReplaceChild("bone138_r1", CubeListBuilder.create().texOffs(100, 64).addBox(-0.5F, -1.0F, -1.0F, 1.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 0.0F, -0.5F, -0.7854F, 0.0F, 0.0F));
 
         PartDefinition south_left_side = controls.addOrReplaceChild("south_left_side", CubeListBuilder.create().texOffs(121, 91).addBox(-2.5F, -13.5F, -13.05F, 5.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
                 .texOffs(105, 108).addBox(-2.25F, -14.5F, -10.8F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(105, 108).addBox(0.25F, -14.5F, -10.8F, 2.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, 2.0944F, 0.0F));
 
-        PartDefinition bone167 = south_left_side.addOrReplaceChild("bone167", CubeListBuilder.create().texOffs(105, 95).addBox(-1.0F, -3.25F, -1.0F, 2.0F, 1.0F, 11.0F, new CubeDeformation(0.0F))
-                .texOffs(105, 108).addBox(-1.5F, -3.75F, 0.0F, 3.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
+        PartDefinition bone167 = south_left_side.addOrReplaceChild("bone167", CubeListBuilder.create().texOffs(105, 95).addBox(-1.0F, -3.25F, -1.0F, 2.0F, 1.0F, 11.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -3.0F, -20.3F, 0.3927F, 0.0F, 0.0F));
+
+        PartDefinition bone188 = bone167.addOrReplaceChild("bone188", CubeListBuilder.create().texOffs(105, 108).addBox(-1.5F, -1.0F, -3.5F, 3.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -2.75F, 3.5F));
 
         PartDefinition large_lever3_control = south_left_side.addOrReplaceChild("large_lever3_control", CubeListBuilder.create().texOffs(0, 123).addBox(-2.75F, -1.0F, -5.0F, 1.0F, 2.0F, 6.0F, new CubeDeformation(0.0F))
                 .texOffs(0, 123).addBox(0.75F, -1.0F, -5.0F, 1.0F, 2.0F, 6.0F, new CubeDeformation(0.0F))
@@ -598,8 +731,9 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
                 .texOffs(0, 0).addBox(2.35F, -2.5F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-1.75F, -6.9F, 10.0F, -0.8727F, 0.0F, 0.0F));
 
         PartDefinition monitor_control = south.addOrReplaceChild("monitor_control", CubeListBuilder.create().texOffs(150, 96).addBox(-1.0F, -4.25F, -9.0F, 2.0F, 2.0F, 10.0F, new CubeDeformation(0.0F))
-                .texOffs(134, 79).addBox(-1.0F, -2.25F, -8.0F, 1.0F, 3.0F, 8.0F, new CubeDeformation(0.0F))
-                .texOffs(143, 91).addBox(-3.0F, -10.75F, -7.5F, 1.0F, 7.0F, 7.0F, new CubeDeformation(2.0F)), PartPose.offset(0.0F, -6.5F, -18.3F));
+                .texOffs(134, 79).addBox(-1.0F, -2.25F, -8.0F, 1.0F, 3.0F, 8.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -6.5F, -18.3F));
+
+        PartDefinition bone237 = monitor_control.addOrReplaceChild("bone237", CubeListBuilder.create().texOffs(143, 91).addBox(-0.5F, -6.0F, -3.5F, 1.0F, 7.0F, 7.0F, new CubeDeformation(2.0F)), PartPose.offset(-2.5F, -4.75F, -4.0F));
 
         PartDefinition south_right_side = controls.addOrReplaceChild("south_right_side", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, -15.0F, 0.0F, 0.0F, -2.0944F, 0.0F));
 
@@ -631,14 +765,22 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
                 .texOffs(90, 44).addBox(1.25F, -1.0F, -5.75F, 1.0F, 1.0F, 4.0F, new CubeDeformation(0.0F))
                 .texOffs(100, 31).addBox(-1.5F, -1.0F, -5.75F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -14.5F, -10.8F, -0.6109F, 0.0F, 0.0F));
 
+        PartDefinition spinninglight = partdefinition.addOrReplaceChild("spinninglight", CubeListBuilder.create().texOffs(88, 147).addBox(-1.0F, -0.5F, -22.75F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(84, 147).mirror().addBox(-1.0F, -0.5F, 20.75F, 2.0F, 2.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 10.25F, 0.0F));
+
+        PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 209).addBox(-7.0F, -21.475F, -7.0F, 14.0F, 1.0F, 14.0F, new CubeDeformation(1.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
+
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        base_control.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        controls.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
     @Override
@@ -646,27 +788,39 @@ public class CrystalConsoleModel extends HierarchicalModel implements IConsoleUn
         return root;
     }
 
+
     @Override
-    public void renderConsole(Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-        this.animate(reactions.ROTOR_ANIMATION, MODEL_FLIGHT_LOOP, Minecraft.getInstance().player.tickCount);
 
-        this.throttle.xRot = (reactions.isThrottleDown()) ? -25f: -32f;
+        if (reactions.isFlying()) {
+            this.animate(reactions.ROTOR_ANIMATION, CrystalConsoleAnimations.FLIGHT, Minecraft.getInstance().player.tickCount);
+        } else {
+            if(globalConsoleBlock != null) {
+                this.animate(globalConsoleBlock.liveliness, CrystalConsoleAnimations.IDLE, Minecraft.getInstance().player.tickCount);
+            }
+        }
+
+        this.throttle.xRot = (reactions.isThrottleDown()) ? -25f : -32f;
 
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
+        spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
-    @Override
-    public ResourceLocation getTexture(GlobalConsoleBlockEntity entity) {
-        return getDefaultTexture();
     }
 
     @Override
     public ResourceLocation getDefaultTexture() {
         return CRYSTAL_TEXTURE;
+    }
+
+    @Override
+    public void setupAnim(Entity entity, float f, float g, float h, float i, float j) {
+
     }
 }

@@ -1,11 +1,10 @@
 package whocraft.tardis_refined.common.network.messages;
 
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -16,15 +15,14 @@ import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.Optional;
 
 public class ChangeDesktopMessage extends MessageC2S {
 
-    private ResourceKey<Level> resourceKey;
-    private DesktopTheme desktopTheme;
+    private final ResourceKey<Level> resourceKey;
+    private final DesktopTheme desktopTheme;
 
     public ChangeDesktopMessage(ResourceKey<Level> tardisLevel, DesktopTheme theme) {
         this.resourceKey = tardisLevel;
@@ -32,8 +30,8 @@ public class ChangeDesktopMessage extends MessageC2S {
     }
 
     public ChangeDesktopMessage(FriendlyByteBuf buffer) {
-        resourceKey = buffer.readResourceKey(Registries.DIMENSION);
-        this.desktopTheme = TardisDesktops.getDesktopThemeById(buffer.readUtf(500));
+        resourceKey = buffer.readResourceKey(Registry.DIMENSION_REGISTRY);
+        this.desktopTheme = TardisDesktops.getDesktopById(buffer.readResourceLocation());
     }
 
     @NotNull
@@ -45,7 +43,7 @@ public class ChangeDesktopMessage extends MessageC2S {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.resourceKey);
-        buf.writeUtf(this.desktopTheme.id);
+        buf.writeResourceLocation(this.desktopTheme.getIdentifier());
     }
 
     @Override

@@ -1,15 +1,23 @@
 package whocraft.tardis_refined.fabric.events;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.model.blockentity.console.ConsolePatterns;
+import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
+import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
@@ -21,6 +29,8 @@ public class ModEvents {
     public static void addCommonEvents() {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
+
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> new SyncConsolePatternsMessage(ConsolePatterns.getPatterns()).send(handler.getPlayer()));
 
         END_WORLD_TICK.register(DelayedTeleportData::tick);
         START_WORLD_TICK.register(world -> {
@@ -34,16 +44,23 @@ public class ModEvents {
         });
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());
+        CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));
     }
 
     public static void addClientEvents() {
         ClientTickEvents.START_WORLD_TICK.register(world -> {
-            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
+            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> {
+             /*   if (world.dimension() != levelResourceKey) {
+                    return;
+                }*/
+                tardisClientData.tickClientside();
+            });
 
             if (Minecraft.getInstance().level == null) {
                 TardisClientData.clearAll();
             }
         });
     }
+
 
 }

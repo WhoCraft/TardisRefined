@@ -2,12 +2,11 @@ package whocraft.tardis_refined.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -35,6 +34,10 @@ public class TardisClientData {
     private boolean throttleDown = false;
     private boolean isLanding = false;
     private boolean isTakingOff = false;
+    private boolean isInDangerZone = false;
+    private boolean isCrashing = false;
+    private boolean isOnCooldown = false;
+    private float flightShakeScale = 0;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
 
     public int landingTime = 0, takeOffTime = 0;
@@ -61,6 +64,18 @@ public class TardisClientData {
     public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
     public boolean isTakingOff() {return isTakingOff;}
 
+    public void setInDangerZone(boolean isInDangerZone) {this.isInDangerZone = isInDangerZone;}
+    public boolean isInDangerZone() {return isInDangerZone;}
+
+    public void setIsCrashing(boolean isCrashing) {this.isCrashing = isCrashing;}
+    public boolean isCrashing() {return isCrashing;}
+
+    public void setIsOnCooldown(boolean isCooldown) {this.isOnCooldown = isCooldown;}
+    public boolean isOnCooldown() {return isOnCooldown;}
+
+    public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
+    public float flightShakeScale() {return flightShakeScale;}
+
     public void setShellTheme(ShellTheme theme) {this.shellTheme = theme;}
     public ShellTheme getShellTheme() {return shellTheme;}
 
@@ -78,6 +93,9 @@ public class TardisClientData {
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
         compoundTag.putString("shellTheme", String.valueOf(shellTheme));
+        compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
+        compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
+        compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
         return compoundTag;
     }
 
@@ -93,18 +111,17 @@ public class TardisClientData {
         isLanding = arg.getBoolean("isLanding");
         isTakingOff = arg.getBoolean("isTakingOff");
         shellTheme = ShellTheme.findOr(arg.getString("shellTheme"), ShellTheme.FACTORY);
+        isInDangerZone = arg.getBoolean("isInDangerZone");
+        flightShakeScale = arg.getFloat("flightShakeScale");
+        isOnCooldown = arg.getBoolean("isOnCooldown");
     }
 
     /**
      * Syncs the Tardis instance with the specified server level. This method should only be called
      * server-side, as calling it client-side may cause the game to crash.
-     *
-     * @param serverLevel The server level to sync the Tardis with.
      */
-    public void sync(ServerLevel serverLevel) {
-        // Send a SyncIntReactionsMessage to the specified server level, using the Tardis's current level key
-        // and serialized NBT data
-        TardisNetwork.NETWORK.sendToDimension(serverLevel, new SyncIntReactionsMessage(getLevelKey(), serializeNBT()));
+    public void sync() {
+        new SyncIntReactionsMessage(getLevelKey(), serializeNBT()).sendToAll();
     }
 
     public void tickClientside() {
@@ -118,6 +135,18 @@ public class TardisClientData {
             landingTime++;
             takeOffTime = 0;
         }
+
+
+        // Responsible for screen-shake. Not sure of a better solution at this point in time.
+        if (isInDangerZone || isCrashing) {
+            if (Minecraft.getInstance().player.level.dimension() == levelKey) {
+                var player = Minecraft.getInstance().player;
+                player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+                player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+            }
+        }
+
+
     }
 
     /**
@@ -126,29 +155,28 @@ public class TardisClientData {
     public void update() {
         // Check if the Tardis is not currently flying and the rotor animation is started
         if (!flying && ROTOR_ANIMATION.isStarted()) {
-            // If the Tardis is not flying but the rotor animation is started, stop the animation
             ROTOR_ANIMATION.stop();
         }
-
         // Check if the Tardis is flying and the rotor animation is not started
-        if (flying && !ROTOR_ANIMATION.isStarted()) {
-            // If the Tardis is flying but the rotor animation is not started, start the animation
+        else if (flying && !ROTOR_ANIMATION.isStarted()) {
             ROTOR_ANIMATION.start(0);
         }
 
-        if (isLanding && !LANDING_ANIMATION.isStarted()) {
-            TAKEOFF_ANIMATION.stop();
-            LANDING_ANIMATION.start(0);
-        }
-        if (!isLanding && LANDING_ANIMATION.isStarted()) {
+        if (isLanding) {
+            if (!LANDING_ANIMATION.isStarted()) {
+                TAKEOFF_ANIMATION.stop();
+                LANDING_ANIMATION.start(0);
+            }
+        } else if (LANDING_ANIMATION.isStarted()) {
             LANDING_ANIMATION.stop();
         }
 
-        if (isTakingOff && !TAKEOFF_ANIMATION.isStarted()) {
-            LANDING_ANIMATION.stop();
-            TAKEOFF_ANIMATION.start(0);
-        }
-        if (!isTakingOff && TAKEOFF_ANIMATION.isStarted()) {
+        if (isTakingOff) {
+            if (!TAKEOFF_ANIMATION.isStarted()) {
+                LANDING_ANIMATION.stop();
+                TAKEOFF_ANIMATION.start(0);
+            }
+        } else if (TAKEOFF_ANIMATION.isStarted()) {
             TAKEOFF_ANIMATION.stop();
         }
     }

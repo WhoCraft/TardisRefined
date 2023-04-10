@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
@@ -19,7 +18,7 @@ import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBloc
 public class RootShellDoorRenderer implements BlockEntityRenderer<RootShellDoorBlockEntity>, BlockEntityRendererProvider<RootShellDoorBlockEntity> {
 
     private static RootShellDoorModel rootShellDoorModel;
-    private static ResourceLocation rootShellDoorTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/internal_door.png");
+    private static final ResourceLocation rootShellDoorTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/internal_door.png");
 
     public RootShellDoorRenderer(BlockEntityRendererProvider.Context context) {
         rootShellDoorModel = new RootShellDoorModel(context.bakeLayer((ModelRegistry.ROOT_SHELL_DOOR)));

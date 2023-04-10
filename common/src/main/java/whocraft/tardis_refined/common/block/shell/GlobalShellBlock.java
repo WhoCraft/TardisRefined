@@ -2,31 +2,26 @@ package whocraft.tardis_refined.common.block.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.properties.ShellProperty;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
 
 public class GlobalShellBlock extends ShellBaseBlock{
 
@@ -48,11 +43,27 @@ public class GlobalShellBlock extends ShellBaseBlock{
         return super.getStateForPlacement(blockPlaceContext).setValue(SHELL, ShellTheme.FACTORY);
     }
 
+    protected static final VoxelShape COLLISION = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
+
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return COLLISION;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        if(blockState.getValue(SHELL) == ShellTheme.BRIEFCASE)
+            return COLLISION;
+        return super.getShape(blockState, blockGetter, blockPos, collisionContext);
+    }
+
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new GlobalShellBlockEntity(blockPos, blockState);
     }
+
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
@@ -60,24 +71,8 @@ public class GlobalShellBlock extends ShellBaseBlock{
         if (level instanceof ServerLevel serverLevel) {
             if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
                 if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
-
-
-
-                    /*Locking Logic, would be inside onRightClick but not enough access*/
                     ItemStack itemStack = player.getItemInHand(interactionHand);
-                    if (itemStack.getItem() instanceof KeyItem) {
-
-                        ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString()));
-
-                        boolean validKey = KeyItem.keychainContains(itemStack, dimension);
-                        if (validKey) {
-                            BlockState state = blockState.cycle(LOCKED);
-                            boolean locked = state.getValue(LOCKED);
-                            level.setBlock(blockPos, state, 77);
-                            TardisLevelOperator.get(Platform.getServer().getLevel(dimension)).ifPresent(tardisLevelOperator -> tardisLevelOperator.getExteriorManager().setLocked(locked));
-                        }
-                    }
-                    entity.onRightClick(blockState);
+                    entity.onRightClick(blockState, itemStack);
                     return InteractionResult.SUCCESS;
                 }
 
