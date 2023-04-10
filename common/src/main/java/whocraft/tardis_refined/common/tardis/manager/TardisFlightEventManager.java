@@ -6,7 +6,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -292,7 +291,7 @@ public class TardisFlightEventManager {
         operator.getControlManager().getTargetLocation().setLevel(targetPosition.getLevel().getServer().overworld());
         level.playSound(null, entity.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.AMBIENT, 1, 1);
         level.playSound(null, entity.blockPosition(), SoundRegistry.TARDIS_MISC_SPARKLE.get(), SoundSource.AMBIENT, 10, 1);
-        level.explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Explosion.BlockInteraction.NONE);
+        level.explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Level.ExplosionInteraction.NONE);
 
     }
 
