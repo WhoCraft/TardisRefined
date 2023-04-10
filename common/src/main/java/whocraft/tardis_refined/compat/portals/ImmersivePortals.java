@@ -3,6 +3,7 @@ package whocraft.tardis_refined.compat.portals;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -24,6 +25,8 @@ import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.mixin.PortalAccessorMixin;
+import whocraft.tardis_refined.common.mixin.PortalMixin;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -46,7 +49,7 @@ public class ImmersivePortals {
         ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
         if (world != null) return world;
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
-        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registry.LEVEL_STEM_REGISTRY, id.location());
+        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
         DimensionAPI.addDimensionDynamically(id.location(), dimensionFactory.apply(server, dimensionKey));
         DimensionAPI.saveDimensionConfiguration(id);
         world = server.getLevel(id);
@@ -177,19 +180,27 @@ public class ImmersivePortals {
 
         Portal exteriorPortal = createPortal(operator.getExteriorManager().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
         Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, retrievePortalType(), interiorQuat);
+
+
         tardisToPortalsMap.put(UUID.fromString(operator.getLevel().dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
 
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);
         interiorPortal.setInteractable(false);
 
+
         CompoundTag tag = exteriorPortal.writePortalDataToNbt();
         tag.putBoolean("adjustPositionAfterTeleport", false);
-        exteriorPortal.readPortalDataFromNbt(tag);
+        PortalAccessorMixin exteriorPortalMixin = (PortalAccessorMixin)exteriorPortal;
+
+//        exteriorPortal.readPortalDataFromNbt(tag);
+        exteriorPortalMixin.readPortalDataFromNbt(tag);
 
         tag = interiorPortal.writePortalDataToNbt();
         tag.putBoolean("adjustPositionAfterTeleport", false);
-        interiorPortal.readPortalDataFromNbt(tag);
+        PortalAccessorMixin interiorPortalMixin = (PortalAccessorMixin)interiorPortal;
+//        interiorPortal.readPortalDataFromNbt(tag);
+        interiorPortalMixin.readPortalDataFromNbt(tag);
 
         exteriorPortal.level.addFreshEntity(exteriorPortal);
         interiorPortal.level.addFreshEntity(interiorPortal);
@@ -231,7 +242,7 @@ public class ImmersivePortals {
         newPortal.axisW = new Vec3(1, 0, 0);
         newPortal.axisH = new Vec3(0, 1, 0);
 
-        PortalManipulation.rotatePortalBody(newPortal, quat.toMcQuaternion());
+        PortalManipulation.rotatePortalBody(newPortal, DQuaternion.fromMcQuaternion(quat.toMcQuaternion()));
 
         return newPortal;
     }
@@ -248,7 +259,7 @@ public class ImmersivePortals {
                 1, // width
                 2.175 // height
         );
-        PortalManipulation.rotatePortalBody(portal, quat.toMcQuaternion());
+        PortalManipulation.rotatePortalBody(portal, DQuaternion.fromMcQuaternion(quat.toMcQuaternion()));
 
         return portal;
     }
