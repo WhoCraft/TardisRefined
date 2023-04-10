@@ -17,7 +17,10 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 import static whocraft.tardis_refined.patterns.ConsolePatterns.addPattern;
 
@@ -81,8 +84,10 @@ public class ConsolePatternProvider implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput arg) throws IOException {
+    public CompletableFuture<?> run(CachedOutput arg) {
         registerPatterns();
+
+        final List<CompletableFuture<?>> futures = new ArrayList<>();
 
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
 
@@ -97,15 +102,16 @@ public class ConsolePatternProvider implements DataProvider {
                 patternArray.add(currentPattern);
             }
 
-            DataProvider.saveStable(arg, patternArray, getPath(consoleTheme));
+            futures.add(DataProvider.saveStable(arg, patternArray, getPath(consoleTheme)));
 
         }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 
     }
 
     private Path getPath(ConsoleTheme theme) {
         String themeName = theme.getSerializedName();
-        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/console/" + themeName + ".json");
+        return generator.getPackOutput().getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/console/" + themeName + ".json");
     }
 
     @Override

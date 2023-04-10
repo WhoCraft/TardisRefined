@@ -18,11 +18,15 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 
 public class ShellPatternProvider implements DataProvider {
 
     protected final DataGenerator generator;
+    protected List<CompletableFuture<?>> futures = new ArrayList<>();
 
     public ShellPatternProvider(DataGenerator generator) {
         Preconditions.checkNotNull(generator);
@@ -70,7 +74,7 @@ public class ShellPatternProvider implements DataProvider {
     }
 
     @Override
-    public void run(CachedOutput arg) throws IOException {
+    public CompletableFuture<?> run(CachedOutput arg) {
         registerPatterns();
 
         for (ShellTheme consoleTheme : ShellTheme.values()) {
@@ -95,15 +99,16 @@ public class ShellPatternProvider implements DataProvider {
                 patternArray.add(currentPattern);
             }
 
-            DataProvider.saveStable(arg, patternArray, getPath(consoleTheme));
+            futures.add(DataProvider.saveStable(arg, patternArray, getPath(consoleTheme)));
 
         }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 
     }
 
     private Path getPath(ShellTheme theme) {
         String themeName = theme.getSerializedName();
-        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/shell/" + themeName + ".json");
+        return generator.getPackOutput().getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/shell/" + themeName + ".json");
     }
 
     @Override

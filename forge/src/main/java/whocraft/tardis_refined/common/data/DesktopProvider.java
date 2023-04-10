@@ -12,8 +12,11 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class DesktopProvider implements DataProvider {
 
@@ -36,8 +39,10 @@ public class DesktopProvider implements DataProvider {
     protected void addDesktops(){}
 
     @Override
-    public void run(CachedOutput arg) throws IOException {
+    public CompletableFuture<?> run(CachedOutput arg) {
         this.data.clear();
+
+        final List<CompletableFuture<?>> futures = new ArrayList<>();
 
         if(this.addDefaults){
             TardisDesktops.registerDefaultDesktops();
@@ -55,12 +60,13 @@ public class DesktopProvider implements DataProvider {
                                 TardisRefined.LOGGER.error(right.message());
                             }).orThrow().getAsJsonObject();
                     String outputPath = "data/" + desktop.getIdentifier().getNamespace() + "/" + TardisDesktops.getReloadListener().getFolderName() + "/" +  desktop.getIdentifier().getPath().replace("/", "_") + ".json";
-                    DataProvider.saveStable(arg, currentDesktop, generator.getOutputFolder().resolve(outputPath));
+                    futures.add(DataProvider.saveStable(arg, currentDesktop, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
                     TardisRefined.LOGGER.debug("Issue writing Desktop {}! Error: {}", entry.getValue().getIdentifier(), exception.getMessage());
                 }
             });
         }
+        return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
     @Override

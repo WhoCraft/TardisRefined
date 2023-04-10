@@ -16,18 +16,20 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class ParticleProvider implements DataProvider {
 
     private DataGenerator gen;
+    protected List<CompletableFuture<?>> futures = new ArrayList<>();
 
     public ParticleProvider(DataGenerator gen) {
         this.gen = gen;
     }
 
     @Override
-    public void run(CachedOutput arg) throws IOException {
-        Path base = gen.getOutputFolder();
+    public CompletableFuture<?> run(CachedOutput arg) {
+        Path base = gen.getPackOutput().getOutputFolder();
 
         ArrayList<ResourceLocation> resourceLocations = new ArrayList<>();
         resourceLocations.add(new ResourceLocation("tardis_refined:gold/l_gold_sym_01"));
@@ -79,14 +81,16 @@ public class ParticleProvider implements DataProvider {
 
         makeParticle(TRParticles.GALLIFREY.get(), createParticle(resourceLocations), arg, base);
 
+        return CompletableFuture.allOf(this.futures.toArray(CompletableFuture[]::new));
+
     }
 
-    private void makeParticle(SimpleParticleType simpleParticleType, JsonObject particle, CachedOutput arg, Path base) throws IOException {
-        DataProvider.saveStable(arg, particle, getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(simpleParticleType)));
+    private void makeParticle(SimpleParticleType simpleParticleType, JsonObject particle, CachedOutput arg, Path base) {
+        futures.add(DataProvider.saveStable(arg, particle, getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(simpleParticleType))));
     }
 
-    public void makeParticle(ParticleType<?> type, ResourceLocation textureName, int count, CachedOutput cache, Path base) throws IOException {
-        DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(type)));
+    public void makeParticle(ParticleType<?> type, ResourceLocation textureName, int count, CachedOutput cache, Path base) {
+        futures.add(DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(type))));
     }
 
     public static Path getPath(Path base, ResourceLocation name) {
