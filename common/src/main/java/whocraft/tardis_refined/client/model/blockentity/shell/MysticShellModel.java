@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -721,7 +722,7 @@ public class MysticShellModel extends ShellModel {
 
     @Override
     public void handleSpecialAnimation(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
-        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
+        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
         this.animate(entity.liveliness, LOOP, Minecraft.getInstance().player.tickCount, reactions.isFlying() ? 5 : 1);
     }
 

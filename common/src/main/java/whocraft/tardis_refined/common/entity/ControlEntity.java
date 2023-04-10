@@ -1,10 +1,13 @@
 package whocraft.tardis_refined.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -14,6 +17,9 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -149,7 +155,7 @@ public class ControlEntity extends Entity {
     }
 
     @Override
-    public Packet<?> getAddEntityPacket() {
+    public Packet<ClientGamePacketListener> getAddEntityPacket() {
         return MiscHelper.spawnPacket(this);
     }
 
@@ -268,7 +274,7 @@ public class ControlEntity extends Entity {
     private boolean isDesktopWaitingToGenerate(TardisLevelOperator operator, ServerLevel serverLevel){
         if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
             if (operator.getInteriorManager().isWaitingToGenerate()) {
-                serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100F, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                 return true;
             }
         }
@@ -294,7 +300,8 @@ public class ControlEntity extends Entity {
                 if (player.isCreative()) {
                     serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                 } else {
-                    player.hurt(DamageSource.ON_FIRE, 0.1F);
+                    DamageSource source = MiscHelper.getDamageSource(serverLevel, DamageTypes.ON_FIRE);
+                    player.hurt(source, 0.1F);
                 }
                 return;
             }

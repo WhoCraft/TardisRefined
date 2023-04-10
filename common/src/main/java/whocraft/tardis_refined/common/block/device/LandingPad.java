@@ -79,7 +79,7 @@ public class LandingPad extends Block {
                         }
                     }
 
-                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
+                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
                 }
             }
         }

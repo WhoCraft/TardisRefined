@@ -16,13 +16,13 @@ public class ToggleDoorControl extends Control {
     public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (operator.getInternalDoor() != null) {
             if(operator.getExteriorManager().locked() || operator.getControlManager().isInFlight()) {
-                controlEntity.level.playSound(null, operator.getInternalDoor().getDoorPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float) (0.1 + (controlEntity.level.getRandom().nextFloat() * 0.5)));
+                controlEntity.level.playSound(null, operator.getInternalDoor().getDoorPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (controlEntity.level.getRandom().nextFloat() * 0.5)));
                 return;
             }
             var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
             var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().getDoorClose().getRightClick() : theme.getSoundProfile().getDoorOpen().getRightClick();
             if (pitchedSound == null) {return;}
-            operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
+            operator.getLevel().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
             operator.setDoorClosed(isDoorOpen);
         }
     }

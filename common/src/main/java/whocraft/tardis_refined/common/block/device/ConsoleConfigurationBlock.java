@@ -101,7 +101,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 ConsoleTheme console = globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
 
                 if (ConsolePatterns.getPatternsForTheme(console).size() == 1) {
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.PLAYERS, 100, (float) (0.1 + (level.getRandom().nextFloat() * 0.5)));
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 100, (float) (0.1 + (level.getRandom().nextFloat() * 0.5)));
                     return InteractionResult.SUCCESS;
                 }
 

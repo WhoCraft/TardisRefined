@@ -14,11 +14,11 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 public class ItemRegistryImpl {
 
     public static final CreativeModeTab TAB = FabricItemGroup.builder(new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID))
-            .icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).displayItems(((featureFlagSet, output, bl) -> {
+            .icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).displayItems((itemDisplayParameters, output) -> {
                 for (RegistrySupplier<Item> item : ItemRegistry.TAB_ITEMS) {
                     output.accept(item.get());
                 }
-            })).title(Component.literal("TARDIS Refined")).build();
+            }).title(Component.literal("TARDIS Refined")).build();
 
     public static CreativeModeTab getCreativeTab() {
         return TAB;

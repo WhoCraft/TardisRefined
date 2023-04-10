@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
@@ -46,8 +47,8 @@ public class OpenMonitorMessage extends MessageS2C {
         this.currentDir = Direction.from2DDataValue(friendlyByteBuf.readInt());
         this.targetPos = friendlyByteBuf.readBlockPos();
         this.targetDir = Direction.from2DDataValue(friendlyByteBuf.readInt());
-        this.currentKey = friendlyByteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
-        this.targetKey = friendlyByteBuf.readResourceKey(Registry.DIMENSION_REGISTRY);
+        this.currentKey = friendlyByteBuf.readResourceKey(Registries.DIMENSION);
+        this.targetKey = friendlyByteBuf.readResourceKey(Registries.DIMENSION);
 
     }
 

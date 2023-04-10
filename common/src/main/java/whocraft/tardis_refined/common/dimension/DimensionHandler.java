@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -73,7 +75,7 @@ public class DimensionHandler {
 
     public static ServerLevel getOrCreateInterior(Level interactionLevel, ResourceLocation resourceLocation) {
 
-        ResourceKey<Level> levelResourceKey = ResourceKey.create(Registry.DIMENSION_REGISTRY, resourceLocation);
+        ResourceKey<Level> levelResourceKey = ResourceKey.create(Registries.DIMENSION, resourceLocation);
 
 
         if (ModCompatChecker.immersivePortals()) {
@@ -102,12 +104,12 @@ public class DimensionHandler {
     public static LevelStem formLevelStem(MinecraftServer server, ResourceKey<LevelStem> stem) {
         RegistryAccess access = server.registryAccess();
 
-        return new LevelStem(access.registryOrThrow(Registry.DIMENSION_TYPE).getHolderOrThrow(DimensionTypes.TARDIS), new TardisChunkGenerator(access.registryOrThrow(Registry.STRUCTURE_SET_REGISTRY), access.registryOrThrow(Registry.BIOME_REGISTRY)));
+        return new LevelStem(access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(DimensionTypes.TARDIS), new TardisChunkGenerator(access.registryOrThrow(Registries.BIOME).getHolderOrThrow(ChunkGenerators.TARDIS_BIOME)));
     }
 
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, String id) {
-        return getExistingLevel(serverLevel, ResourceKey.create(Registry.DIMENSION, new ResourceLocation(TardisRefined.MODID, id)));
+        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, id)));
     }
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, ResourceKey<Level> levelResourceKey) {

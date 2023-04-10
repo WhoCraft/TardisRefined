@@ -20,7 +20,7 @@ public class FastReturnControl extends Control {
         if (operator.getControlManager().preloadFastReturn()) {
             super.onRightClick(operator, theme, controlEntity, player);
         } else {
-            controlEntity.level.playSound(null, controlEntity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT, SoundSource.BLOCKS, 100, (float)(0.1 + (controlEntity.level.getRandom().nextFloat() * 0.5)));
+            controlEntity.level.playSound(null, controlEntity.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float)(0.1 + (controlEntity.level.getRandom().nextFloat() * 0.5)));
         }
 
     }

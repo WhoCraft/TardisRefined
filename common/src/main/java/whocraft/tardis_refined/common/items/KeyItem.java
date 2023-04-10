@@ -167,7 +167,7 @@ public class KeyItem extends Item {
                         Collections.rotate(keychain.subList(0, keychain.size()), -1);
                         setKeychain(context.getItemInHand(), keychain);
                         context.getPlayer().displayClientMessage(Component.translatable(ModMessages.MSG_KEY_CYCLED, keychain.get(0).location().getPath()), true);
-                        context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.BLOCKS, 1,2);
+                        context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 1,2);
                     }
                 }
             }

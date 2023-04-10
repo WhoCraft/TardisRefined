@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
-import com.mojang.math.Vector3f;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
@@ -30,7 +29,6 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -172,7 +170,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
                 // Check if we're crashing and if its okay to explode the TARDIS a little.
                 if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
+                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
                 }
                     TardisInteriorManager intManager = x.getInteriorManager();
                     if (intManager.isCave()) {
@@ -180,7 +178,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                     }
 
                     if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
-                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL, SoundSource.BLOCKS, 10f, 2f);
+                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
                     }
 
                 }

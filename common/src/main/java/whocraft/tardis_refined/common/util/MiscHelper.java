@@ -2,14 +2,20 @@ package whocraft.tardis_refined.common.util;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -32,7 +38,7 @@ import whocraft.tardis_refined.registry.DimensionTypes;
 public class MiscHelper {
 
     @ExpectPlatform
-    public static Packet<?> spawnPacket(Entity entity) {
+    public static Packet<ClientGamePacketListener> spawnPacket(Entity entity) {
         throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
 
@@ -41,12 +47,16 @@ public class MiscHelper {
     }
 
     public static ResourceKey<Level> idToKey(ResourceLocation identifier) {
-        return ResourceKey.create(Registry.DIMENSION_REGISTRY, identifier);
+        return ResourceKey.create(Registries.DIMENSION, identifier);
     }
 
     public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
         TardisRefined.LOGGER.debug("Teleported {} to {} {} {}", pEntity.getDisplayName().getString(), pX, pY, pZ);
-        BlockPos blockpos = new BlockPos(pX, pY, pZ);
+        int xRound = (int)pX;
+        int yRound = (int)pY;
+        int zRound = (int)pZ;
+
+        BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
 
         if (!Level.isInSpawnableBounds(blockpos)) {
             return false;
@@ -54,7 +64,7 @@ public class MiscHelper {
             float f = Mth.wrapDegrees(pYaw);
             float f1 = Mth.wrapDegrees(pPitch);
             if (pEntity instanceof ServerPlayer serverPlayer) {
-                ChunkPos chunkpos = new ChunkPos(new BlockPos(pX, pY, pZ));
+                ChunkPos chunkpos = new ChunkPos(blockpos);
                 pLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, pEntity.getId());
                 pEntity.stopRiding();
                 if (serverPlayer.isSleeping()) {
@@ -141,6 +151,14 @@ public class MiscHelper {
     public static String getCleanName(String name) {
        var noUnderscores = name.replace("_", " ");
        return WordUtils.capitalizeFully(noUnderscores);
+    }
+
+    public static DamageSource getDamageSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey){
+        Holder.Reference<DamageType> damageType = level.registryAccess()
+                .registryOrThrow(Registries.DAMAGE_TYPE)
+                .getHolderOrThrow(damageTypeResourceKey);
+        DamageSource source = new DamageSource(damageType);
+        return source;
     }
 
 }

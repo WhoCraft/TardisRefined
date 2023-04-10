@@ -407,9 +407,9 @@ public class TardisControlManager {
         var currentLoc = this.operator.getExteriorManager().getLastKnownLocation().position;
         var currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
-        var x = currentPos.x + ((targetPos.x - currentPos.x) * progress);
-        var y = currentPos.y + ((targetPos.y - currentPos.y) * progress);
-        var z = currentPos.z + ((targetPos.z - currentPos.z) * progress);
+        int x = (int) (currentPos.x + ((targetPos.x - currentPos.x) * progress));
+        int y = (int) (currentPos.y + ((targetPos.y - currentPos.y) * progress));
+        int z = (int) (currentPos.z + ((targetPos.z - currentPos.z) * progress));
 
         BlockPos landingLocation = new BlockPos(x, y, z);
 
@@ -435,15 +435,15 @@ public class TardisControlManager {
         TardisEvents.TARDIS_CRASH_EVENT.invoker().onTardisCrash(this.operator, this.targetLocation);
     }
 
-    public void offsetTargetPositionX(float x) {
+    public void offsetTargetPositionX(int x) {
         this.targetLocation.position = this.targetLocation.position.offset(x, 0, 0);
     }
 
-    public void offsetTargetPositionY(float y) {
+    public void offsetTargetPositionY(int y) {
         this.targetLocation.position = this.targetLocation.position.offset(0, y, 0);
     }
 
-    public void offsetTargetPositionZ(float z) {
+    public void offsetTargetPositionZ(int z) {
         this.targetLocation.position = this.targetLocation.position.offset(0, 0, z);
     }
 

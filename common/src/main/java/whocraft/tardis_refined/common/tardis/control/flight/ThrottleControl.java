@@ -16,14 +16,14 @@ public class ThrottleControl extends Control {
             if (operator.getControlManager().endFlight()) {
                 var pitchedSound = theme.getSoundProfile().getThrottleDisable().getRightClick();
                 if (pitchedSound == null) {return;}
-                operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
+                operator.getLevel().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
             }
         }
 
         if (operator.getControlManager().beginFlight(false)) {
             var pitchedSound = theme.getSoundProfile().getThrottleEnable().getRightClick();
             if (pitchedSound == null) {return;}
-            operator.getLevel().playSound(null, new BlockPos(controlEntity.position().x, controlEntity.position().y, controlEntity.position().z), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
+            operator.getLevel().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1f, pitchedSound.getPitch());
         }
     }
 

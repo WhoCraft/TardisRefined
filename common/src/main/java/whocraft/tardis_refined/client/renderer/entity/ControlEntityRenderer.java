@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -12,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.joml.Matrix4f;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 
@@ -70,9 +70,9 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             Font font = this.getFont();
             float textHorizontalPosition = (float) (-font.width(component) / 2);
 
-            font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, 553648127, false, textMatrix, multiBufferSource, isSolid, textColor, textRenderingLayer);
+            font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, 553648127, false, textMatrix, multiBufferSource, Font.DisplayMode.NORMAL, textColor, textRenderingLayer);
             if (isSolid) {
-                font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, -1, false, textMatrix, multiBufferSource, false, 0, textRenderingLayer);
+                font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, -1, false, textMatrix, multiBufferSource, Font.DisplayMode.SEE_THROUGH, 0, textRenderingLayer);
             }
 
             poseStack.popPose();

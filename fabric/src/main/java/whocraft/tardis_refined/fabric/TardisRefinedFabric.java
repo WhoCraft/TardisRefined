@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.fabric;
 
+import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
@@ -59,8 +60,8 @@ public class TardisRefinedFabric implements ModInitializer {
         ModEvents.addCommonEvents();
         TardisRefined.init();
         setupBiomeModifications();
-        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
-        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+        ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
+        ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "console_patterns"), new ConsolePatterns());
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "desktops"), new TardisDesktops());
