@@ -21,9 +21,7 @@ public abstract class MessageS2C extends Message {
     }
 
     public void sendToAll() {
-        MinecraftServer server = Platform.getServer();
-        List<ServerPlayer> players = server.getPlayerList().getPlayers();
-        players.forEach(this::send);
+        this.getType().getNetworkManager().sendToAllPlayers(this);
     }
 
     public void sendToTracking(Entity entity){

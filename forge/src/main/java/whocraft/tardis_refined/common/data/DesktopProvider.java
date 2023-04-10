@@ -2,63 +2,65 @@ package whocraft.tardis_refined.common.data;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import net.minecraft.ChatFormatting;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.io.IOException;
-
-import static whocraft.tardis_refined.common.tardis.TardisDesktops.DESKTOPS;
-import static whocraft.tardis_refined.common.tardis.TardisDesktops.addDesktop;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DesktopProvider implements DataProvider {
 
     protected final DataGenerator generator;
 
+    protected Map<ResourceLocation,DesktopTheme> data = new HashMap<>();
+
+    private final boolean addDefaults;
 
     public DesktopProvider(DataGenerator generator) {
+        this(generator, true);
+    }
+
+    public DesktopProvider(DataGenerator generator, boolean addDefaults) {
         Preconditions.checkNotNull(generator);
         this.generator = generator;
+        this.addDefaults = addDefaults;
     }
 
-    public static void registerDesktops() {
-
-        addDesktop(TardisDesktops.FACTORY_THEME);
-        addDesktop(new DesktopTheme("coral", new ResourceLocation(TardisRefined.MODID, "desktop/coral")));
-        addDesktop(new DesktopTheme("victorian", new ResourceLocation(TardisRefined.MODID, "desktop/victorian")));
-        addDesktop(new DesktopTheme("copper", new ResourceLocation(TardisRefined.MODID, "desktop/copper")));
-        addDesktop(new DesktopTheme("toyota", new ResourceLocation(TardisRefined.MODID, "desktop/toyota")));
-        addDesktop(new DesktopTheme("crystal", new ResourceLocation(TardisRefined.MODID, "desktop/crystal")));
-        addDesktop(new DesktopTheme("nuka", new ResourceLocation(TardisRefined.MODID, "desktop/nuka")));
-        addDesktop(new DesktopTheme("future_nostalgia", new ResourceLocation(TardisRefined.MODID, "desktop/future_nostalgia")));
-        addDesktop(new DesktopTheme("violet_eye", new ResourceLocation(TardisRefined.MODID, "desktop/violet_eye")));
-    }
+    protected void addDesktops(){}
 
     @Override
     public void run(CachedOutput arg) throws IOException {
-        registerDesktops();
+        this.data.clear();
 
-        DESKTOPS.forEach(desktop -> {
-            try {
-                JsonObject currentDesktop = new JsonObject();
-                currentDesktop.addProperty("id", desktop.getIdentifier().toString());
-                currentDesktop.addProperty("structure", desktop.getStructureLocation().toString());
-                currentDesktop.addProperty("name_component", TardisRefined.GSON.toJson(Component.literal(formatName(desktop.getIdentifier().getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
+        if(this.addDefaults){
+            TardisDesktops.registerDefaultDesktops();
+            data.putAll(TardisDesktops.getDefaultDesktops());
+        }
 
+        this.addDesktops();
 
-                DataProvider.saveStable(arg, currentDesktop, generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/desktop/" +  desktop.getIdentifier().getPath().replace("/", "_") + ".json"));
-            }catch (Exception exception) {
-                TardisRefined.LOGGER.debug("Issue writing Desktop {}! Error: {}", desktop.getIdentifier(), exception.getMessage());
-            }
-        });
+        if (!data.isEmpty()){
+            data.entrySet().forEach(entry -> {
+                try {
+                    DesktopTheme desktop = entry.getValue();
+                    JsonObject currentDesktop = DesktopTheme.getCodec().encodeStart(JsonOps.INSTANCE, desktop).get()
+                            .ifRight(right -> {
+                                TardisRefined.LOGGER.error(right.message());
+                            }).orThrow().getAsJsonObject();
+                    String outputPath = "data/" + desktop.getIdentifier().getNamespace() + "/" + TardisDesktops.getReloadListener().getFolderName() + "/" +  desktop.getIdentifier().getPath().replace("/", "_") + ".json";
+                    DataProvider.saveStable(arg, currentDesktop, generator.getOutputFolder().resolve(outputPath));
+                } catch (Exception exception) {
+                    TardisRefined.LOGGER.debug("Issue writing Desktop {}! Error: {}", entry.getValue().getIdentifier(), exception.getMessage());
+                }
+            });
+        }
     }
 
     @Override
@@ -66,7 +68,9 @@ public class DesktopProvider implements DataProvider {
         return "Desktops";
     }
 
-    private String formatName(String name) {
-        return MiscHelper.getCleanName(name);
+    protected void addDesktop(DesktopTheme theme) {
+        TardisRefined.LOGGER.info("Adding Desktop to datagen {}", theme.getIdentifier());
+        data.put(theme.getIdentifier(), theme);
     }
+
 }

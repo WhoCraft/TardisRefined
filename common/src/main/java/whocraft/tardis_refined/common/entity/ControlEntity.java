@@ -169,7 +169,7 @@ public class ControlEntity extends Entity {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (getLevel() instanceof ServerLevel serverLevel) {
 
-                if (player.getMainHandItem().getItem() == Items.ENCHANTED_BOOK) {
+                if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
                     this.handleControlSizeAndPositionAdjustment(player);
                     return InteractionResult.SUCCESS;
                 }

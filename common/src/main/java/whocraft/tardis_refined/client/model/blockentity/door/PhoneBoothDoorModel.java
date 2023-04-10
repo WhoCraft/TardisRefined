@@ -6,11 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 
 public class PhoneBoothDoorModel extends ShellModel {
@@ -78,21 +76,16 @@ public class PhoneBoothDoorModel extends ShellModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-		this.Door2.yRot = (open) ? (ModCompatChecker.immersivePortals() ?  1.75f :  -1.75f) : 0;
+		this.Door2.yRot = (open) ? (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f) : 0;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open,boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-
+	public boolean isDoorModel() {
+		return true;
 	}
 
 	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.PHONE_BOOTH.getInternalDoorTexture();
-	}
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
 	}
 }

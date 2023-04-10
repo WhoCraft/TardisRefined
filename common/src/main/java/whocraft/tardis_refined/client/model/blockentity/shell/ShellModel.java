@@ -17,16 +17,27 @@ import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.patterns.ShellPattern;
 
 public abstract class ShellModel extends HierarchicalModel {
 
     public abstract void setDoorPosition(boolean open);
 
+    public abstract boolean isDoorModel();
+
     public abstract void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
 
-    public abstract ResourceLocation texture();
+    public ResourceLocation texture(GlobalShellBlockEntity entity, boolean isEmmissive) {
+        ShellPattern pattern = entity.pattern();
+        return texture(pattern, isEmmissive);
+    }
 
-    public abstract ResourceLocation lightTexture();
+    public ResourceLocation texture(ShellPattern pattern, boolean isEmmissive) {
+        if (isDoorModel()) {
+            return pattern.interiorDoorTexture();
+        }
+        return isEmmissive ? pattern.emissiveTexture() : pattern.texture();
+    }
 
     ModelPart fade_value;
 

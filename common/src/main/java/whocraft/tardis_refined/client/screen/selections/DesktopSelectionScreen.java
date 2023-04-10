@@ -5,12 +5,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
@@ -19,8 +17,6 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.SoundRegistry;
-
-import java.util.List;
 
 import static whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen.NOISE;
 
@@ -60,7 +56,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
     }
 
     private DesktopTheme grabDesktop() {
-        for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
+        for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
             return desktop;
         }
         return null;
@@ -125,7 +121,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
-        for (DesktopTheme desktop : TardisDesktops.DESKTOPS) {
+        for (DesktopTheme desktop :  TardisDesktops.getRegistry().values()) {
 
             Component name = Component.literal(MiscHelper.getCleanName(desktop.getIdentifier().getPath()));
 
