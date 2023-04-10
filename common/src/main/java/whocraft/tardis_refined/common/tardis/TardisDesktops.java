@@ -10,6 +10,7 @@ import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
 
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,8 @@ public class TardisDesktops {
     }
 
     private static void addDefaultDesktop(DesktopTheme theme) {
-//        TardisRefined.LOGGER.info("Adding default Desktop {}", theme.getIdentifier());
+        if (!Platform.isProduction()) //Enable Logging in development environment
+            TardisRefined.LOGGER.info("Adding default Desktop {}", theme.getIdentifier());
         DEFAULT_DESKTOPS.put(theme.getIdentifier(), theme);
     }
 
