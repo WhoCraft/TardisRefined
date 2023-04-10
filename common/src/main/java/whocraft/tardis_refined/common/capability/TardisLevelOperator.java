@@ -170,17 +170,17 @@ public class TardisLevelOperator {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
 
-    public void exitTardis(Player player) {
+    public boolean exitTardis(Player player) {
 
         if (!this.internalDoor.isOpen()) {
-            return;
+            return false;
         }
 
         if(getExteriorManager().getCurrentTheme() != null) {
             ShellTheme theme = getExteriorManager().getCurrentTheme();
             if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
                if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
-                   return;
+                   return false;
                }
             }
         }
@@ -200,6 +200,7 @@ public class TardisLevelOperator {
                 }
             }
         }
+        return true;
     }
 
     public void setDoorClosed(boolean closeDoor) {
@@ -235,7 +236,8 @@ public class TardisLevelOperator {
             this.internalDoor.onSetMainDoor(false);
         }
         this.internalDoor = door;
-        this.internalDoor.onSetMainDoor(true);
+        if (door != null) //If the new door value is not null
+            this.internalDoor.onSetMainDoor(true);
     }
 
     public TardisExteriorManager getExteriorManager() {

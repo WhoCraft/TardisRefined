@@ -20,7 +20,7 @@ public class ConsolePatterns extends SimpleJsonResourceReloadListener {
     private static final Map<ConsoleTheme, List<BasePattern<ConsoleTheme>>> PATTERNS = new HashMap<>();
 
     public ConsolePatterns() {
-        super(TardisRefined.GSON, "patterns/console");
+        super(TardisRefined.GSON, TardisRefined.MODID + "/patterns/console");
     }
 
     public static BasePattern<ConsoleTheme> next(ConsoleTheme consoleTheme, BasePattern basePattern) {

@@ -40,20 +40,30 @@ public class InteriorCommand implements Command<CommandSourceStack> {
         ServerPlayer sender = context.getSource().getPlayer();
 
         if (tardisData.isPresent()) {
-            tardisData.ifPresent(tardisLevelOperator -> entities.forEach(entity -> teleportToInterior(tardisLevelOperator, entity)));
-            return 0;
+            for(Entity entity : entities){
+                if (!teleportToInterior(tardisData.get(), entity)){ //If internal door doesn't exist during teleport attempt, stop teleporting and notify the command sender.
+                    Component tpCommandSuggestion = CommandHelper.createComponentSuggestCommand("Default Teleport", "/execute in " + tardis.dimension().location().toString() + " run tp 0 100 0");
+                    PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_NO_INTERNAL_DOOR, tardis.dimension().location().toString(), tpCommandSuggestion), false);
+                    return 0;
+                }
+            }
+            return Command.SINGLE_SUCCESS;
         }
         PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_DIM_NOT_A_TARDIS, tardis.dimensionTypeId().location().toString()), false);
         return 0;
     }
 
-    private static void teleportToInterior(TardisLevelOperator tardisLevelOperator, Entity entity) {
+    private static boolean teleportToInterior(TardisLevelOperator tardisLevelOperator, Entity entity) {
         Level tpLevel = tardisLevelOperator.getLevel();
         if (tpLevel instanceof ServerLevel finalTpLevel) {
-            BlockPos pos = tardisLevelOperator.getInternalDoor().getDoorPosition();
-            pos = pos.relative(tardisLevelOperator.getInternalDoor().getEntryRotation(), 1);
-            TRTeleporter.performTeleport(entity, finalTpLevel, pos.getX(), pos.getY(), pos.getZ(), entity.getYRot(), entity.getXRot());
+            if (tardisLevelOperator.getInternalDoor() != null) {
+                BlockPos pos = tardisLevelOperator.getInternalDoor().getDoorPosition();
+                pos = pos.relative(tardisLevelOperator.getInternalDoor().getEntryRotation(), 1);
+                TRTeleporter.performTeleport(entity, finalTpLevel, pos.getX(), pos.getY(), pos.getZ(), entity.getYRot(), entity.getXRot());
+                return true;
+            }
         }
+        return false;
     }
 
 

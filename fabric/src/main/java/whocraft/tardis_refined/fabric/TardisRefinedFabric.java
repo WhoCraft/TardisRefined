@@ -63,9 +63,11 @@ public class TardisRefinedFabric implements ModInitializer {
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
 
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "console_patterns"), new ConsolePatterns());
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "desktops"), new TardisDesktops());
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, "shell_patterns"), new ShellPatterns());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" +"console_patterns"), new ConsolePatterns());
+
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), new ShellPatterns());
+
         if (ModCompatChecker.immersivePortals()) {
             if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();

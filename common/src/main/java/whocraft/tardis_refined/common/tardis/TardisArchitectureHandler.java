@@ -35,9 +35,9 @@ public class TardisArchitectureHandler {
             operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), 1);
         }
 
-        // Cheap and easy entity removal. Might want to make this more robust for items!
+
         List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
-        desktopEntities.forEach(x -> x.teleportTo(0,-1000,0));
+        desktopEntities.forEach(x -> x.discard()); //Don't teleport entities to a hard coded coordinate, that causes hanging entity out of world issues. In other cases, if another mod defines that coordinate as a safe area (possible) that will mean the entities never get killed.
         
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.getStructureLocation());
         structureNBT.ifPresent(structure -> {
@@ -104,7 +104,7 @@ public class TardisArchitectureHandler {
         });
     }
 
-    public static void setInteriorDoorFromStructure(StructureTemplate template, ServerLevel level) {
+    public static boolean setInteriorDoorFromStructure(StructureTemplate template, ServerLevel level) {
 
         BlockPos minPos = calculateArcOffset(template, DESKTOP_CENTER_POS);
         BlockPos maxPos = new BlockPos(minPos.getX() + template.getSize().getX(),
@@ -112,12 +112,16 @@ public class TardisArchitectureHandler {
                 minPos.getZ() + template.getSize().getZ()
                 );
 
+        //First set the internal door to null so that we aren't caching the previous desktop's internal door
+        TardisLevelOperator.get(level).ifPresent(cap -> cap.setInternalDoor(null));
+
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             if (level.getBlockEntity(pos) instanceof TardisInternalDoor internalDoor) {
                 TardisLevelOperator.get(level).ifPresent(cap -> cap.setInternalDoor(internalDoor));
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme) {

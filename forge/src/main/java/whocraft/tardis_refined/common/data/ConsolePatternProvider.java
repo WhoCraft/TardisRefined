@@ -105,7 +105,7 @@ public class ConsolePatternProvider implements DataProvider {
 
     private Path getPath(ConsoleTheme theme) {
         String themeName = theme.getSerializedName();
-        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/patterns/console/" + themeName + ".json");
+        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/console/" + themeName + ".json");
     }
 
     @Override

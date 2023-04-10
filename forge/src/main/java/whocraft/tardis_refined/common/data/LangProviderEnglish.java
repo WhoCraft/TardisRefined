@@ -5,9 +5,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
-import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
@@ -50,7 +48,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
 
         /*Items*/
-        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "BasePattern Manipulator");
+        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
@@ -78,6 +76,11 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
+        add(ModMessages.CMD_NO_INTERNAL_DOOR, ChatFormatting.RED + "No Internal Door found in dimension %s! Consider using the default teleport command %s");
+        add(ModMessages.CMD_EXPORT_DESKTOP_IN_PROGRESS, "Generating datapack for desktop %s, this may take some time depending on the structure's size...");
+        add(ModMessages.CMD_EXPORT_DESKTOP_SUCCESS, ChatFormatting.GREEN + "Successfully exported desktop %s to datapack %s! Use the %s command to see changes.");
+        add(ModMessages.CMD_EXPORT_DESKTOP_RESOURCE_PACK, ChatFormatting.BLUE + "To define the Desktop's preview image, please create a Resource Pack. See some example Resource Packs at: %s");
+        add(ModMessages.CMD_EXPORT_DESKTOP_FAIL, ChatFormatting.RED + "Failed to export desktop %s!");
 
         /*Creative Tab*/
         add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");

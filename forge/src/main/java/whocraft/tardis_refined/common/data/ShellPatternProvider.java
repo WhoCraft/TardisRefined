@@ -103,7 +103,7 @@ public class ShellPatternProvider implements DataProvider {
 
     private Path getPath(ShellTheme theme) {
         String themeName = theme.getSerializedName();
-        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/patterns/shell/" + themeName + ".json");
+        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/shell/" + themeName + ".json");
     }
 
     @Override
