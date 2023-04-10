@@ -16,6 +16,8 @@ import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollecti
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.Objects;
 
@@ -64,15 +66,16 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
 
             poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
             poseStack.translate(offset.x, offset.y, offset.z);
-            poseStack.translate(0,  blockEntity.getLevel().random.nextFloat() * 0.01, 0);
-            poseStack.scale(0.1f,0.1f,0.1f);
+            poseStack.translate(0, blockEntity.getLevel().random.nextFloat() * 0.01, 0);
+            poseStack.scale(0.1f, 0.1f, 0.1f);
             if (reactions.isFlying()) {
                 poseStack.mulPose(Axis.YP.rotationDegrees(((blockEntity.getLevel().getGameTime() % 360)) * 25f));
             } else {
                 poseStack.mulPose(Axis.YP.rotationDegrees(rotation % 360));
             }
 
-            model.renderToBuffer(poseStack,bufferSource.getBuffer(RenderType.entityTranslucent(reactions.getShellTheme().getExternalShellTexture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
+            ShellPattern pattern = reactions.shellPattern();
+            model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
             poseStack.popPose();
         }
     }

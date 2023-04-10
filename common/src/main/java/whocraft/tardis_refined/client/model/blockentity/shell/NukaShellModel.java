@@ -18,7 +18,6 @@ import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class NukaShellModel extends ShellModel {
 	private final ModelPart root;
@@ -102,16 +101,6 @@ public class NukaShellModel extends ShellModel {
 		this.animate(entity.liveliness, NUKAANIM, Minecraft.getInstance().player.tickCount, reactions.isFlying() ? 5 : 1);
 	}
 
-	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.NUKA.getExternalShellTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return ShellTheme.NUKA.emmissiveExternal();
-	}
-
 	public NukaShellModel(ModelPart root) {
 		super(root);
 		this.root = root;
@@ -128,15 +117,13 @@ public class NukaShellModel extends ShellModel {
 		this.bb_main = root.getChild("bb_main");
 	}
 
-
-
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
 		PartDefinition sign = partdefinition.addOrReplaceChild("sign", CubeListBuilder.create().texOffs(133, 110).addBox(-4.0F, -4.0F, -1.0F, 8.0F, 8.0F, 2.0F, new CubeDeformation(0.0F))
-		.texOffs(110, 47).addBox(-5.0F, -5.0F, 0.0F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.25F))
-		.texOffs(54, 55).addBox(-5.0F, -5.0F, -1.0F, 10.0F, 10.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, -25.5F, 0.0F));
+				.texOffs(110, 47).addBox(-5.0F, -5.0F, 0.0F, 10.0F, 10.0F, 1.0F, new CubeDeformation(0.25F))
+				.texOffs(54, 55).addBox(-5.0F, -5.0F, -1.0F, 10.0F, 10.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(-0.5F, -25.5F, 0.0F));
 
 		PartDefinition right_door = partdefinition.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(133, 76).addBox(-8.0F, -16.0F, 0.0F, 8.0F, 32.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(8.0F, 2.0F, -10.0F));
 
@@ -191,6 +178,11 @@ public class NukaShellModel extends ShellModel {
 		ShellModel.splice(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
+	}
+
+	@Override
+	public boolean isDoorModel() {
+		return false;
 	}
 
 	@Override

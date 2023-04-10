@@ -8,12 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.ModCompatChecker;
 
 public class PagodaDoorModel extends ShellModel {
 	private final ModelPart root;
@@ -92,16 +89,6 @@ public class PagodaDoorModel extends ShellModel {
 	}
 
 	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.PAGODA.getInternalDoorTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
-	}
-
-	@Override
 	public void setupAnim(Entity entity, float f, float g, float h, float i, float j) {
 
 	}
@@ -109,6 +96,11 @@ public class PagodaDoorModel extends ShellModel {
 	@Override
 	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
+	}
+
+	@Override
+	public boolean isDoorModel() {
+		return true;
 	}
 
 	@Override

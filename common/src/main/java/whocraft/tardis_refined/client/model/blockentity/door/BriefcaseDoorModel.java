@@ -5,11 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class BriefcaseDoorModel extends ShellModel {
 
@@ -30,22 +28,17 @@ public class BriefcaseDoorModel extends ShellModel {
 
 	}
 
-	@Override
-	public ResourceLocation texture() {
-		return ShellTheme.BRIEFCASE.getInternalDoorTexture();
-	}
-
-	@Override
-	public ResourceLocation lightTexture() {
-		return null;
-	}
-
 	public BriefcaseDoorModel(ModelPart root) {
 		super(root);
 		this.root = root;
 		this.door_open = root.getChild("door_open");
 		this.door_closed = root.getChild("door_closed");
 		this.bb_main = root.getChild("bb_main");
+	}
+
+	@Override
+	public boolean isDoorModel() {
+		return true;
 	}
 
 	public static LayerDefinition createBodyLayer() {

@@ -5,15 +5,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class MysticDoorModel extends ShellModel {
+    
     private final ModelPart right_door;
     private final ModelPart left_door;
+    private final ModelPart root_door;
     private final ModelPart root;
 
     public MysticDoorModel(ModelPart root) {
@@ -21,6 +21,7 @@ public class MysticDoorModel extends ShellModel {
         this.root = root;
         this.right_door = root.getChild("right_door");
         this.left_door = root.getChild("left_door");
+        this.root_door = root.getChild("root_door");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -33,9 +34,9 @@ public class MysticDoorModel extends ShellModel {
         PartDefinition left_door = partdefinition.addOrReplaceChild("left_door", CubeListBuilder.create().texOffs(0, 38).mirror().addBox(0.0F, -16.0F, 0.0F, 7.0F, 32.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(39, 27).mirror().addBox(3.975F, -3.0F, -1.0F, 3.0F, 6.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-7.0F, 7.0F, 6.0F));
 
-        PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 15.0F));
+        PartDefinition root_door = partdefinition.addOrReplaceChild("root_door", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 15.0F));
 
-        PartDefinition bone = root.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(39, 19).addBox(6.0F, -23.0F, -10.0F, 4.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
+        PartDefinition bone = root_door.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(39, 19).addBox(6.0F, -23.0F, -10.0F, 4.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(37, 36).addBox(7.0F, -33.0F, -9.0F, 2.0F, 28.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(37, 36).mirror().addBox(-9.0F, -33.0F, -9.0F, 2.0F, 28.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
                 .texOffs(39, 19).mirror().addBox(-10.0F, -23.0F, -10.0F, 4.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
@@ -56,16 +57,16 @@ public class MysticDoorModel extends ShellModel {
         PartDefinition bone4 = bone3.addOrReplaceChild("bone4", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
 
         PartDefinition bone5 = bone4.addOrReplaceChild("bone5", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.0F, -1.5708F, 0.0F));
-
-        ShellModel.splice(partdefinition);
+        splice(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-    }
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);    }
 
     @Override
     public ModelPart root() {
@@ -93,15 +94,9 @@ public class MysticDoorModel extends ShellModel {
 
     }
 
-
     @Override
-    public ResourceLocation texture() {
-        return ShellTheme.MYSTIC.getInternalDoorTexture();
-    }
-
-    @Override
-    public ResourceLocation lightTexture() {
-        return null;
+    public boolean isDoorModel() {
+        return true;
     }
 
 }
