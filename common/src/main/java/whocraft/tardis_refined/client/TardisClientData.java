@@ -46,7 +46,8 @@ public class TardisClientData {
     private ShellPattern shellPattern = safeGrabPattern();
 
     private ShellPattern safeGrabPattern() {
-        if (ShellPatterns.getPatternsForTheme(shellTheme) == null) return null;
+        if (ShellPatterns.getPatternsForTheme(shellTheme).isEmpty() || ShellPatterns.getPatternsForTheme(shellTheme) == null)
+            return null;
         return ShellPatterns.getPatternsForTheme(shellTheme).get(0);
     }
 
