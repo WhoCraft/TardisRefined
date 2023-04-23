@@ -3,6 +3,7 @@ package whocraft.tardis_refined.patterns;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
@@ -34,7 +35,8 @@ public class PatternReloadListener<T extends PatternCollection> extends CodecJso
     }
 
     /** Need to create this static method here as the Architectuary ExpectPlatform Annotation used in CodecJsonReloadListener requires a static builder method to construct an instance*/
-    public static <P extends PatternCollection> PatternReloadListener<P> createListener(String folderName, Codec<? extends PatternCollection> codec) {
-        return (PatternReloadListener<P>) CodecJsonReloadListener.create(folderName, codec);
+    @ExpectPlatform
+    public static <P extends PatternCollection> PatternReloadListener<P> createListener(String folderName, Codec<P> codec) {
+        throw new AssertionError();
     }
 }

@@ -18,10 +18,7 @@ import whocraft.tardis_refined.patterns.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class ShellPatternProvider implements DataProvider {
 
@@ -78,10 +75,13 @@ public class ShellPatternProvider implements DataProvider {
         ShellPatternCollection collection;
         if (this.data.containsKey(themeId)) {
             collection = this.data.get(themeId);
-            collection.patterns().add(pattern);
+            List<ShellPattern> currentList = new ArrayList<>();
+            currentList.addAll(collection.patterns());
+            currentList.add(pattern);
+            collection.setPatterns(currentList);
             this.data.replace(themeId, collection);
         } else {
-            collection = new ShellPatternCollection(List.of(pattern));
+            collection = (ShellPatternCollection) new ShellPatternCollection(List.of(pattern)).setThemeId(themeId);
             this.data.put(themeId, collection);
         }
         TardisRefined.LOGGER.info("Adding ShellPattern {} for {}", pattern.id(), themeId);

@@ -24,6 +24,11 @@ public abstract class PatternCollection<T extends BasePattern> {
         return this.patterns;
     }
 
+    public PatternCollection setPatterns(List<T> patterns){
+        this.patterns = patterns;
+        return this;
+    }
+
     public ResourceLocation themeId(){ return this.themeId;}
 
     public abstract Codec<? extends PatternCollection<T>> getCodec();

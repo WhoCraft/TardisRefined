@@ -13,10 +13,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class ConsolePatternProvider implements DataProvider {
 
@@ -74,10 +71,13 @@ public class ConsolePatternProvider implements DataProvider {
         ConsolePatternCollection collection;
         if (this.data.containsKey(themeId)) {
             collection = this.data.get(themeId);
-            collection.patterns().add(pattern);
+            List<ConsolePattern> currentList = new ArrayList<>();
+            currentList.addAll(collection.patterns());
+            currentList.add(pattern);
+            collection.setPatterns(currentList);
             this.data.replace(themeId, collection);
         } else {
-            collection = new ConsolePatternCollection(List.of(pattern));
+            collection = (ConsolePatternCollection) new ConsolePatternCollection(List.of(pattern)).setThemeId(themeId);
             this.data.put(themeId, collection);
         }
         TardisRefined.LOGGER.info("Adding ConsolePattern {} for {}", pattern.id(), themeId);

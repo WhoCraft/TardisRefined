@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.*;
 
@@ -85,17 +86,21 @@ public class ShellPatterns {
         //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
         ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
         ShellPatternCollection collection;
-        ShellPattern pattern = (ShellPattern) new ShellPattern("war", new PatternTexture(exteriorTextureLocation(theme, patternId), hasEmissiveTexture)
+        ShellPattern pattern = (ShellPattern) new ShellPattern(patternId, new PatternTexture(exteriorTextureLocation(theme, patternId), hasEmissiveTexture)
                 , new PatternTexture(interiorTextureLocation(theme, patternId), hasEmissiveTexture)).setThemeId(themeId);
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
             collection = DEFAULT_PATTERNS.get(themeId);
-            collection.patterns().add(pattern);
+            List<ShellPattern> currentList = new ArrayList<>();
+            currentList.addAll(collection.patterns());
+            currentList.add(pattern);
+            collection.setPatterns(currentList);
             DEFAULT_PATTERNS.replace(themeId, collection);
         } else {
-            collection = new ShellPatternCollection(List.of(pattern));
+            collection = (ShellPatternCollection) new ShellPatternCollection(List.of(pattern)).setThemeId(themeId);
             DEFAULT_PATTERNS.put(themeId, collection);
         }
-        TardisRefined.LOGGER.debug("Adding Shell Pattern {} for {}", pattern.id(), themeId);
+        if (!Platform.isProduction()) //Enable Logging in development environment
+            TardisRefined.LOGGER.info("Adding Shell Pattern {} for {}", pattern.id(), themeId);
         return pattern;
     }
 

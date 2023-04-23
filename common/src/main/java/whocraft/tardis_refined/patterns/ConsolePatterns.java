@@ -4,6 +4,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.io.Console;
 import java.util.*;
@@ -78,16 +79,20 @@ public class ConsolePatterns{
         //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
         ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
         ConsolePatternCollection collection;
-        ConsolePattern pattern = (ConsolePattern) new ConsolePattern("war", new PatternTexture(createConsolePatternTextureLocation(theme,textureName), true)).setThemeId(themeId);
+        ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(theme,textureName), true)).setThemeId(themeId);
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
             collection = DEFAULT_PATTERNS.get(themeId);
-            collection.patterns().add(pattern);
+            List<ConsolePattern> currentList = new ArrayList<>();
+            currentList.addAll(collection.patterns());
+            currentList.add(pattern);
+            collection.setPatterns(currentList);
             DEFAULT_PATTERNS.replace(themeId, collection);
         } else {
-            collection = new ConsolePatternCollection(List.of(pattern));
+            collection = (ConsolePatternCollection) new ConsolePatternCollection(List.of(pattern)).setThemeId(themeId);
             DEFAULT_PATTERNS.put(themeId, collection);
         }
-        TardisRefined.LOGGER.debug("Adding Pattern ConsolePattern {} for {}", pattern.id(), themeId);
+        if (!Platform.isProduction()) //Enable Logging in development environment
+            TardisRefined.LOGGER.info("Adding Pattern ConsolePattern {} for {}", pattern.id(), themeId);
         return pattern;
     }
 
@@ -123,7 +128,7 @@ public class ConsolePatterns{
         addDefaultPattern(ConsoleTheme.TOYOTA, "blue", "toyota_texture_blue", true);
 
         /*Crystal*/
-        addDefaultPattern(ConsoleTheme.CRYSTAL, "corrupted", "rystal_console_corrupted", true);
+        addDefaultPattern(ConsoleTheme.CRYSTAL, "corrupted", "crystal_console_corrupted", true);
 
         /*Myst*/
         addDefaultPattern(ConsoleTheme.MYST, "molten", "myst_console_molten", true);
