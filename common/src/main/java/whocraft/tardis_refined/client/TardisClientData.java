@@ -43,7 +43,13 @@ public class TardisClientData {
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
-    private ShellPattern shellPattern = ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+    private ShellPattern shellPattern = safeGrabPattern();
+
+    private ShellPattern safeGrabPattern() {
+        if (ShellPatterns.getPatternsForTheme(shellTheme) == null || ShellPatterns.getPatternsForTheme(shellTheme).isEmpty())
+            return null;
+        return ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+    }
 
     public TardisClientData setShellPattern(ShellPattern shellPattern) {
         this.shellPattern = shellPattern;
