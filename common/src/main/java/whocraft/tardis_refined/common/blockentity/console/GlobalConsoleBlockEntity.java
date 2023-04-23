@@ -49,7 +49,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public ConsolePattern pattern() {
         ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        ConsolePattern defaultBasePattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
+        ConsolePattern defaultBasePattern = ConsolePatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, "default"));
         return basePattern == null ? defaultBasePattern : basePattern;
     }
 

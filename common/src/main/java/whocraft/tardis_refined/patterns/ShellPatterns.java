@@ -70,7 +70,7 @@ public class ShellPatterns {
         }
         return basePatterns.get(0);
     }
-
+    //TODO: Find out what this does, currently isn't being used. Seems to have been an abandoned attempt to find the shell theme based on texture location??
     @NotNull
     private String findShellTheme(ResourceLocation resourceLocation) {
         String path = resourceLocation.getPath();
@@ -82,12 +82,10 @@ public class ShellPatterns {
         }
     }
 
-    public static ShellPattern addDefaultPattern(ShellTheme theme, String patternId, boolean hasEmissiveTexture) {
-        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
+    private static ShellPattern addDefaultPattern(ShellTheme theme, ShellPattern datagenPattern) {
         ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
         ShellPatternCollection collection;
-        ShellPattern pattern = (ShellPattern) new ShellPattern(patternId, new PatternTexture(exteriorTextureLocation(theme, patternId), hasEmissiveTexture)
-                , new PatternTexture(interiorTextureLocation(theme, patternId), hasEmissiveTexture)).setThemeId(themeId);
+        ShellPattern pattern = (ShellPattern) datagenPattern.setThemeId(themeId);
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
             collection = DEFAULT_PATTERNS.get(themeId);
             List<ShellPattern> currentList = new ArrayList<>();
@@ -102,6 +100,14 @@ public class ShellPatterns {
         if (!Platform.isProduction()) //Enable Logging in development environment
             TardisRefined.LOGGER.info("Adding Shell Pattern {} for {}", pattern.id(), themeId);
         return pattern;
+    }
+
+    private static ShellPattern addDefaultPattern(ShellTheme theme, String patternId, boolean hasEmissiveTexture) {
+        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
+        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+        ShellPattern pattern = (ShellPattern) new ShellPattern(patternId, new PatternTexture(exteriorTextureLocation(theme, patternId), hasEmissiveTexture)
+                , new PatternTexture(interiorTextureLocation(theme, patternId), hasEmissiveTexture)).setThemeId(themeId);
+        return addDefaultPattern(theme, pattern);
     }
 
     private static ResourceLocation exteriorTextureLocation(ShellTheme shellTheme, String textureName){
@@ -122,7 +128,11 @@ public class ShellPatterns {
         /*Add Base Textures*/
         for (ShellTheme shellTheme : ShellTheme.values()) {
             boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC || shellTheme == ShellTheme.NUKA || shellTheme == ShellTheme.PAGODA || shellTheme == ShellTheme.PHONE_BOOTH || shellTheme == ShellTheme.POLICE_BOX || shellTheme == ShellTheme.VENDING;
-            addDefaultPattern(shellTheme, "default", hasDefaultEmission);
+            String textureName = shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH);
+            //Use an overload version of the method for default shells because the texture files were named based on shell theme name
+            ShellPattern pattern = new ShellPattern("default", new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
+                    , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission));
+            addDefaultPattern(shellTheme, pattern);
         }
 
         addDefaultPattern(ShellTheme.POLICE_BOX, "marble", false);

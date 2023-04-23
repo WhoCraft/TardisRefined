@@ -28,7 +28,7 @@ public class SyncShellPatternsMessage extends MessageS2C {
     }
 
     public SyncShellPatternsMessage(FriendlyByteBuf buf) {
-        this.patterns = MAPPER.parse(NbtOps.INSTANCE, buf.readNbt()).result().orElse(ShellPatterns.getDefaultPatterns());
+        this.patterns = MAPPER.parse(NbtOps.INSTANCE, buf.readNbt()).result().orElse(ShellPatterns.registerDefaultPatterns());
     }
 
     @Override

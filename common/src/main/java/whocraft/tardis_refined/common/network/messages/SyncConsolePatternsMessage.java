@@ -31,7 +31,7 @@ public class SyncConsolePatternsMessage extends MessageS2C{
     }
 
     public SyncConsolePatternsMessage(FriendlyByteBuf buf) {
-        this.patterns = MAPPER.parse(NbtOps.INSTANCE, buf.readNbt()).result().orElse(ConsolePatterns.getDefaultPatterns());
+        this.patterns = MAPPER.parse(NbtOps.INSTANCE, buf.readNbt()).result().orElse(ConsolePatterns.registerDefaultPatterns());
     }
 
     @Override

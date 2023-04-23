@@ -28,7 +28,8 @@ public class PatternReloadListener<T extends PatternCollection> extends CodecJso
             // if we succeeded, add the resulting PatternCollection to the map and set the theme id
             this.codec.decode(JsonOps.INSTANCE, element)
                     .get()
-                    .ifLeft(result -> {entries.put(key, (T) result.getFirst().setThemeId(key)); TardisRefined.LOGGER.info("Adding entry {}", key);}) //Must call setThemeId
+                    //MUST call setThemeId as the constructor won't be initialising it since it will be used for its Codec.
+                    .ifLeft(result -> {entries.put(key, (T) result.getFirst().setThemeId(key)); TardisRefined.LOGGER.info("Adding entry {}", key);})
                     .ifRight(partial -> TardisRefined.LOGGER.error("Failed to parse data json for {} due to: {}", key, partial.message()));
         }
         return entries;

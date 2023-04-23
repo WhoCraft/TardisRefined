@@ -18,12 +18,12 @@ public class ConsolePatterns{
     private static Map<ResourceLocation, ConsolePatternCollection> DEFAULT_PATTERNS = new HashMap();
 
     public static ConsolePattern next(ConsoleTheme consoleTheme, ConsolePattern ConsolePattern) {
-        List<ConsolePattern> ConsolePatterns = getPatternsForTheme(consoleTheme);
-        int prevIndex = ConsolePatterns.indexOf(ConsolePattern);
-        if (prevIndex > ConsolePatterns.size() || prevIndex + 1 >= ConsolePatterns.size()) {
-            return ConsolePatterns.get(0);
+        List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
+        int prevIndex = consolePatterns.indexOf(ConsolePattern);
+        if (prevIndex > consolePatterns.size() || prevIndex + 1 >= consolePatterns.size()) {
+            return consolePatterns.get(0);
         }
-        return ConsolePatterns.get(prevIndex + 1);
+        return consolePatterns.get(prevIndex + 1);
     }
 
     public static PatternReloadListener<ConsolePatternCollection> getReloadListener(){
@@ -40,13 +40,13 @@ public class ConsolePatterns{
 
 
     public static List<ConsolePattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
-        return PATTERNS.getData().get(new ResourceLocation(consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
+        return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
     }
 
     public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation patternId) {
-        List<ConsolePattern> ConsolePatterns = getPatternsForTheme(consoleTheme);
-        for (ConsolePattern ConsolePattern : ConsolePatterns) {
-            if (Objects.equals(ConsolePattern.id(), patternId)) {
+        List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
+        for (ConsolePattern consolePattern : consolePatterns) {
+            if (Objects.equals(consolePattern.id(), patternId)) {
                 return true;
             }
         }
@@ -54,16 +54,16 @@ public class ConsolePatterns{
     }
 
     public static ConsolePattern getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
-        List<ConsolePattern> ConsolePatterns = getPatternsForTheme(consoleTheme);
-        for (ConsolePattern ConsolePattern : ConsolePatterns) {
-            if (Objects.equals(ConsolePattern.id(), id)) {
-                return ConsolePattern;
+        List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
+        for (ConsolePattern consolePattern : consolePatterns) {
+            if (Objects.equals(consolePattern.id(), id)) {
+                return consolePattern;
             }
         }
-        return ConsolePatterns.get(0);
+        return consolePatterns.get(0);
     }
 
-
+    //TODO: Find out what this does, currently isn't being used. Seems to have been an abandoned attempt to find the shell theme based on texture location??
     @NotNull
     private String findConsoleTheme(ResourceLocation resourceLocation) {
         String path = resourceLocation.getPath();
@@ -79,7 +79,7 @@ public class ConsolePatterns{
         //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
         ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
         ConsolePatternCollection collection;
-        ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(theme,textureName), true)).setThemeId(themeId);
+        ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(theme,textureName), hasEmissiveTexture)).setThemeId(themeId);
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
             collection = DEFAULT_PATTERNS.get(themeId);
             List<ConsolePattern> currentList = new ArrayList<>();
@@ -111,7 +111,7 @@ public class ConsolePatterns{
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
             String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
             boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL|| consoleTheme == ConsoleTheme.CORAL || consoleTheme == ConsoleTheme.FACTORY || consoleTheme == ConsoleTheme.INITIATIVE || consoleTheme == ConsoleTheme.TOYOTA || consoleTheme == ConsoleTheme.VICTORIAN;
-            addDefaultPattern(consoleTheme, "default", themeName + "/" + themeName + "_console", hasDefaultEmission);
+            addDefaultPattern(consoleTheme, "default", themeName + "_console", hasDefaultEmission);
         }
 
         /*Coral*/
@@ -131,7 +131,7 @@ public class ConsolePatterns{
         addDefaultPattern(ConsoleTheme.CRYSTAL, "corrupted", "crystal_console_corrupted", true);
 
         /*Myst*/
-        addDefaultPattern(ConsoleTheme.MYST, "molten", "myst_console_molten", true);
+        addDefaultPattern(ConsoleTheme.MYST, "molten", "myst_console_molten", false);
 
         /*Victorian*/
         addDefaultPattern(ConsoleTheme.VICTORIAN, "smissmass", "victorian_console_smissmass", false);
