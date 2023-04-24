@@ -50,5 +50,10 @@ public class TardisRefined {
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
+        /* Need to register a default list of entries because on Fabric Cardinal Components classloads the TardisClientData class early on, before datapack entries have been added.
+        We will use these as fallback values when looking up patterns.
+         */
+        ConsolePatterns.registerDefaultPatterns();
+        ShellPatterns.registerDefaultPatterns();
     }
 }

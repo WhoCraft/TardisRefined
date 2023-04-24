@@ -31,6 +31,8 @@ repositories {
         name = "Fuzs Mod Resources"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
     }
+
+    maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
 }
 
 sourceSets.main.resources {
@@ -72,6 +74,9 @@ dependencies {
         transitive(false)
     }
     // Immersive Portals End
+
+    // With loom use the modRuntimeOnly configuration
+//    modRuntimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_fabric}:${dev_auth_fabric_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

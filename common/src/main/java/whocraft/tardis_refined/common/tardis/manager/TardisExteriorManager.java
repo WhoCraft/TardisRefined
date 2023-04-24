@@ -10,7 +10,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -24,7 +23,6 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
-import java.util.Locale;
 import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
@@ -125,7 +123,7 @@ public class TardisExteriorManager {
         }
 
         if (tag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
-            this.shellPattern = ShellPatterns.getPatternFromString(currentTheme, new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
+            this.shellPattern = ShellPatterns.getPatternOrDefault(currentTheme, new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
         }
 
         locked = tag.getBoolean(NbtConstants.LOCKED);

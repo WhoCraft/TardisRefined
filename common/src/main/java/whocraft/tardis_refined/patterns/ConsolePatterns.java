@@ -6,8 +6,8 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.constants.ResourceConstants;
 
-import java.io.Console;
 import java.util.*;
 /**
  * Data manager for all {@link ConsolePattern}(s)
@@ -18,13 +18,26 @@ public class ConsolePatterns{
 
     private static Map<ResourceLocation, ConsolePatternCollection> DEFAULT_PATTERNS = new HashMap();
 
-    public static ConsolePattern next(ConsoleTheme consoleTheme, ConsolePattern ConsolePattern) {
-        List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
-        int prevIndex = consolePatterns.indexOf(ConsolePattern);
-        if (prevIndex > consolePatterns.size() || prevIndex + 1 >= consolePatterns.size()) {
-            return consolePatterns.get(0);
+    public static ConsolePattern next(ConsoleTheme consoleTheme, ConsolePattern currentPattern) {
+        ConsolePatternCollection collection = getPatternCollectionForTheme(consoleTheme);
+        return next(collection, currentPattern);
+    }
+
+    /** Helper to get the next available {@link ConsolePattern} in the current {@link ConsolePatternCollection}*/
+    public static ConsolePattern next(ConsolePatternCollection collection, ConsolePattern currentPattern) {
+        return next(collection.patterns(), currentPattern);
+    }
+
+    public static ConsolePattern next(List<ConsolePattern> patterns, ConsolePattern currentPattern) {
+        if(currentPattern == null){
+            return patterns.get(0);
         }
-        return consolePatterns.get(prevIndex + 1);
+
+        int prevIndex = patterns.indexOf(currentPattern);
+        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
+            return patterns.get(0);
+        }
+        return patterns.get(prevIndex + 1);
     }
 
     public static PatternReloadListener<ConsolePatternCollection> getReloadListener(){
@@ -35,8 +48,19 @@ public class ConsolePatterns{
         return PATTERNS.getData();
     }
 
+    /** Lookup the list of {@link ConsolePattern}(s) in a {@link ConsolePatternCollection} for a given {@link ConsoleTheme}*/
     public static List<ConsolePattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
         return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
+    }
+
+    /** Retrieves a pattern from a default list of patterns, for use when Capabiliteis or Cardinal Components classloads patterns before datapack loading*/
+    public static List<ConsolePattern> getPatternsForThemeDefault(ConsoleTheme consoleTheme) {
+        return DEFAULT_PATTERNS.get(new ResourceLocation(TardisRefined.MODID, consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
+    }
+
+    /** Helper method to get a {@link ConsolePatternCollection} by theme ID */
+    public static ConsolePatternCollection getPatternCollectionForTheme(ConsoleTheme consoleTheme) {
+        return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH)));
     }
 
     /** Lookup a {@link ConsoleTheme} based on a singular {@link ConsolePattern}
@@ -65,8 +89,8 @@ public class ConsolePatterns{
         return false;
     }
 
-    /** Lookup up a {@link ConsolePattern} within a particular {@link ConsoleTheme}*/
-    public static ConsolePattern getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
+    /** Lookup up a {@link ConsolePattern} within a particular {@link ConsoleTheme} or get the first one in the list if the input pattern id cannot be found*/
+    public static ConsolePattern getPatternOrDefault(ConsoleTheme consoleTheme, ResourceLocation id) {
         List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
         for (ConsolePattern consolePattern : consolePatterns) {
             if (Objects.equals(consolePattern.id(), id)) {
@@ -110,7 +134,7 @@ public class ConsolePatterns{
             DEFAULT_PATTERNS.put(themeId, collection);
         }
         if (!Platform.isProduction()) //Enable Logging in development environment
-            TardisRefined.LOGGER.info("Adding Pattern ConsolePattern {} for {}", pattern.id(), themeId);
+            TardisRefined.LOGGER.info("Adding ConsolePattern {} for {}", pattern.id(), themeId);
         return pattern;
     }
 
@@ -130,12 +154,12 @@ public class ConsolePatterns{
     /** Registers the Tardis Refined default Console Patterns and returns a map of them by Theme ID
      * <br> Should only be called ONCE when needed*/
     public static Map<ResourceLocation, ConsolePatternCollection> registerDefaultPatterns() {
-
+        DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
             String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
             boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL|| consoleTheme == ConsoleTheme.CORAL || consoleTheme == ConsoleTheme.FACTORY || consoleTheme == ConsoleTheme.INITIATIVE || consoleTheme == ConsoleTheme.TOYOTA || consoleTheme == ConsoleTheme.VICTORIAN;
-            addDefaultPattern(consoleTheme, "default", themeName + "_console", hasDefaultEmission);
+            addDefaultPattern(consoleTheme, ResourceConstants.DEFAULT_PATTERN_ID.getPath(), themeName + "_console", hasDefaultEmission);
         }
 
         /*Coral*/
