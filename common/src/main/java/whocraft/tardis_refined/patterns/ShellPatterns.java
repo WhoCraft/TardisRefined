@@ -13,28 +13,15 @@ public class ShellPatterns {
     public static PatternReloadListener<ShellPatternCollection> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC);
 
     private static Map<ResourceLocation, ShellPatternCollection> DEFAULT_PATTERNS = new HashMap();
-    
-    public static ShellPattern next(ShellTheme shellTheme, ShellPattern currentPattern) {
-        ShellPatternCollection collection = getPatternCollectionForTheme(shellTheme);
-        return next(collection, currentPattern);
+
+    public static PatternReloadListener<ShellPatternCollection> getReloadListener(){
+        return PATTERNS;
     }
 
-    /** Helper to get the next available {@link ShellPattern} in the current {@link ShellPatternCollection}*/
-    public static ShellPattern next(ShellPatternCollection collection, ShellPattern currentPattern) {
-        return next(collection.patterns(), currentPattern);
+    public static Map<ResourceLocation, ShellPatternCollection> getRegistry() {
+        return PATTERNS.getData();
     }
 
-    public static ShellPattern next(List<ShellPattern> patterns, ShellPattern currentPattern) {
-        if(currentPattern == null){
-            return patterns.get(0);
-        }
-
-        int prevIndex = patterns.indexOf(currentPattern);
-        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
-            return patterns.get(0);
-        }
-        return patterns.get(prevIndex + 1);
-    }
 
     /** Lookup the list of {@link ShellPattern}(s) in a {@link ShellPatternCollection} for a given {@link ShellTheme}*/
     public static List<ShellPattern> getPatternsForTheme(ShellTheme shellTheme) {
@@ -65,14 +52,6 @@ public class ShellPatterns {
         return ShellTheme.FACTORY;
     }
 
-    public static PatternReloadListener<ShellPatternCollection> getReloadListener(){
-        return PATTERNS;
-    }
-
-    public static Map<ResourceLocation, ShellPatternCollection> getRegistry() {
-        return PATTERNS.getData();
-    }
-
     /** Sanity check to make sure a Pattern for a {@link ShellTheme} exists
      * <br> A likely use case for this is when entries for the patterns are being modified in some way, such as when something triggers datapacks to be reloaded*/
     public static boolean doesPatternExist(ShellTheme ShellTheme, ResourceLocation id) {
@@ -96,16 +75,26 @@ public class ShellPatterns {
         return basePatterns.get(0);
     }
 
-    //TODO: Find out what this does, currently isn't being used. Seems to have been an abandoned attempt to find the shell theme based on texture location??
-    @NotNull
-    private String findShellTheme(ResourceLocation resourceLocation) {
-        String path = resourceLocation.getPath();
-        int index = path.lastIndexOf("/");
-        if (index == -1) {
-            return path.toUpperCase(Locale.ENGLISH);
-        } else {
-            return path.substring(index + 1).toUpperCase(Locale.ENGLISH);
+    public static ShellPattern next(ShellTheme shellTheme, ShellPattern currentPattern) {
+        ShellPatternCollection collection = getPatternCollectionForTheme(shellTheme);
+        return next(collection, currentPattern);
+    }
+
+    /** Helper to get the next available {@link ShellPattern} in the current {@link ShellPatternCollection}*/
+    public static ShellPattern next(ShellPatternCollection collection, ShellPattern currentPattern) {
+        return next(collection.patterns(), currentPattern);
+    }
+
+    public static ShellPattern next(List<ShellPattern> patterns, ShellPattern currentPattern) {
+        if(currentPattern == null){
+            return patterns.get(0);
         }
+
+        int prevIndex = patterns.indexOf(currentPattern);
+        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
+            return patterns.get(0);
+        }
+        return patterns.get(prevIndex + 1);
     }
 
     /** Constructs and a {@link ShellPattern}, then adds it to a {@link ShellPatternCollection}, which is assigned to a {@link ShellTheme}.

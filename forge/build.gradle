@@ -53,8 +53,8 @@ dependencies {
 
     compileOnly "curse.maven:immersive-portals-355440:4375619"
 
-    //With ForgeGradle 5, use the runtimeOnly configuration
-//    runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
+    // With ForgeGradle 5, use the runtimeOnly configuration
+    // runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

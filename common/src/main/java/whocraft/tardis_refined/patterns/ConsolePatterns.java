@@ -18,27 +18,6 @@ public class ConsolePatterns{
 
     private static Map<ResourceLocation, ConsolePatternCollection> DEFAULT_PATTERNS = new HashMap();
 
-    public static ConsolePattern next(ConsoleTheme consoleTheme, ConsolePattern currentPattern) {
-        ConsolePatternCollection collection = getPatternCollectionForTheme(consoleTheme);
-        return next(collection, currentPattern);
-    }
-
-    /** Helper to get the next available {@link ConsolePattern} in the current {@link ConsolePatternCollection}*/
-    public static ConsolePattern next(ConsolePatternCollection collection, ConsolePattern currentPattern) {
-        return next(collection.patterns(), currentPattern);
-    }
-
-    public static ConsolePattern next(List<ConsolePattern> patterns, ConsolePattern currentPattern) {
-        if(currentPattern == null){
-            return patterns.get(0);
-        }
-
-        int prevIndex = patterns.indexOf(currentPattern);
-        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
-            return patterns.get(0);
-        }
-        return patterns.get(prevIndex + 1);
-    }
 
     public static PatternReloadListener<ConsolePatternCollection> getReloadListener(){
         return PATTERNS;
@@ -100,17 +79,28 @@ public class ConsolePatterns{
         return consolePatterns.get(0);
     }
 
-    //TODO: Find out what this does, currently isn't being used. Seems to have been an abandoned attempt to find the shell theme based on texture location??
-    @NotNull
-    private String findConsoleTheme(ResourceLocation resourceLocation) {
-        String path = resourceLocation.getPath();
-        int index = path.lastIndexOf("/");
-        if (index == -1) {
-            return path.toUpperCase(Locale.ENGLISH);
-        } else {
-            return path.substring(index + 1).toUpperCase(Locale.ENGLISH);
-        }
+    public static ConsolePattern next(ConsoleTheme consoleTheme, ConsolePattern currentPattern) {
+        ConsolePatternCollection collection = getPatternCollectionForTheme(consoleTheme);
+        return next(collection, currentPattern);
     }
+
+    /** Helper to get the next available {@link ConsolePattern} in the current {@link ConsolePatternCollection}*/
+    public static ConsolePattern next(ConsolePatternCollection collection, ConsolePattern currentPattern) {
+        return next(collection.patterns(), currentPattern);
+    }
+
+    public static ConsolePattern next(List<ConsolePattern> patterns, ConsolePattern currentPattern) {
+        if(currentPattern == null){
+            return patterns.get(0);
+        }
+
+        int prevIndex = patterns.indexOf(currentPattern);
+        if (prevIndex > patterns.size() || prevIndex + 1 >= patterns.size()) {
+            return patterns.get(0);
+        }
+        return patterns.get(prevIndex + 1);
+    }
+
 
     /** Constructs and a {@link ConsolePattern}, then adds it to a {@link ConsolePatternCollection}, which is assigned to a {@link ConsoleTheme}.
      * <br> The {@link ConsolePatternCollection} is then added to an internal default map
