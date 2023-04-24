@@ -8,7 +8,7 @@ import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.*;
-
+/** Data Manager for all {@link ShellPattern}(s) */
 public class ShellPatterns {
     public static PatternReloadListener<ShellPatternCollection> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC);
 
@@ -28,13 +28,16 @@ public class ShellPatterns {
         return basePatterns.get(prevIndex + 1);
     }
 
-
     public static List<ShellPattern> getPatternsForTheme(ShellTheme shellTheme) {
         return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
     }
 
+    /** Lookup a {@link ShellTheme} based on a singular {@link ShellPattern}
+     * <br> As there is a many-to-one relationship between {@link ShellPattern} and {@link ShellTheme}
+     * <br> as well as a one-to-one relationship between a {@link ShellPatternCollection} and {@link ShellTheme},
+     * we will iterate through all {@link ShellPatternCollection} (which holds the theme ID) and find matchine ones*/
     public static ShellTheme getThemeForPattern(ShellPattern pattern) {
-        Map<ResourceLocation, ShellPatternCollection> entries = getRegistry();
+        Map<ResourceLocation, ShellPatternCollection> entries = ShellPatterns.getRegistry();
         for (Map.Entry<ResourceLocation, ShellPatternCollection> entry : entries.entrySet()){
             if (pattern.getThemeId() == entry.getKey()){
                 return ShellTheme.findOr(entry.getValue().themeId().getPath(), ShellTheme.FACTORY);
@@ -51,6 +54,8 @@ public class ShellPatterns {
         return PATTERNS.getData();
     }
 
+    /** Sanity check to make sure a Pattern for a {@link ShellTheme} exists
+     * <br> A likely use case for this is when entries for the patterns are being modified in some way, such as when something triggers datapacks to be reloaded*/
     public static boolean doesPatternExist(ShellTheme ShellTheme, ResourceLocation id) {
         List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
         for (ShellPattern basePattern : basePatterns) {
@@ -61,6 +66,7 @@ public class ShellPatterns {
         return false;
     }
 
+    /** Lookup up a {@link ShellPattern} within a particular {@link ShellTheme}*/
     public static ShellPattern getPatternFromString(ShellTheme ShellTheme, ResourceLocation id) {
         List<ShellPattern> basePatterns = getPatternsForTheme(ShellTheme);
         for (ShellPattern basePattern : basePatterns) {
@@ -70,6 +76,7 @@ public class ShellPatterns {
         }
         return basePatterns.get(0);
     }
+
     //TODO: Find out what this does, currently isn't being used. Seems to have been an abandoned attempt to find the shell theme based on texture location??
     @NotNull
     private String findShellTheme(ResourceLocation resourceLocation) {
@@ -82,6 +89,11 @@ public class ShellPatterns {
         }
     }
 
+    /** Constructs and a {@link ShellPattern}, then adds it to a {@link ShellPatternCollection}, which is assigned to a {@link ShellTheme}.
+     * <br> The {@link ShellPatternCollection} is then added to an internal default map
+     * <br> Also assigns the {@link ShellPattern} its parent {@link ShellTheme}'s ID
+     * @implSpec INTERNAL USE ONLY
+     * */
     private static ShellPattern addDefaultPattern(ShellTheme theme, ShellPattern datagenPattern) {
         ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
         ShellPatternCollection collection;
@@ -118,11 +130,16 @@ public class ShellPatterns {
         return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + textureName + "_interior.png");
     }
 
-    /** Gets a default list of Shell Patterns added by Tardis Refined. Useful as a fallback list.*/
+    /** Gets a default list of Shell Patterns added by Tardis Refined. Useful as a fallback list.
+     * <br> Requires calling {@link ShellPatterns#registerDefaultPatterns} first
+     * @implNote Used for datagen providers when we may need to lookup the map multiple times, but only need to register default entries once.
+     * */
     public static Map<ResourceLocation, ShellPatternCollection> getDefaultPatterns(){
         return DEFAULT_PATTERNS;
     }
 
+    /** Registers the Tardis Refined default Shell Patterns and returns a map of them by Theme ID
+     * <br> Should only be called ONCE when needed*/
     public static Map<ResourceLocation, ShellPatternCollection> registerDefaultPatterns() {
 
         /*Add Base Textures*/

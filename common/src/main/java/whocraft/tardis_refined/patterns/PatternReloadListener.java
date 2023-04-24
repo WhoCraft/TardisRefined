@@ -10,7 +10,7 @@ import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/** Slightly modified version of CodecJsonReloadListener to account for needing to call setThemeId on the PatternCollection*/
 public class PatternReloadListener<T extends PatternCollection> extends CodecJsonReloadListener<T> {
 
     protected PatternReloadListener(String folderName, Codec<T> codec) {

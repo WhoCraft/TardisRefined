@@ -4,7 +4,12 @@ import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
-/** Template for multiple patterns, to be assigned to a specific Console or Shell Theme*/
+/** Collection for holding multiple patterns, to be assigned to a specific Console or Shell Theme
+ * <br> This acts as a more debuggable bridging object between Themes and Patterns.
+ * <br> The output of this object is the JSON array part of a pattern JSON.
+ * <br> There is a many-to-one connection between BasePattern and a Theme
+ * <br> Hence, we tend to assign BasePattern the Theme ID which technically bypasses this object, but this object is still needed nonetheless
+ * */
 public abstract class PatternCollection<T extends BasePattern> {
 
     protected ResourceLocation themeId;

@@ -9,7 +9,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.util.Objects;
-/** Template for patterns*/
+/** Template for patterns. Patterns are assigned to a theme based on PatternCollection, though they also hold an instance of the Theme ID for lookup purposes.*/
 public abstract class BasePattern {
 
     private final ResourceLocation identifier;

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+/** Common template for texture objects used in instances of {@link BasePattern}*/
 public class PatternTexture{
 
     private final ResourceLocation textureLocation, emissiveTexture;

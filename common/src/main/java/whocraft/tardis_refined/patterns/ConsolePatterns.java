@@ -4,12 +4,13 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 
 import java.io.Console;
 import java.util.*;
 /**
- * Data manager for all ConsolePattern(s)
+ * Data manager for all {@link ConsolePattern}(s)
  */
 public class ConsolePatterns{
 
@@ -34,15 +35,26 @@ public class ConsolePatterns{
         return PATTERNS.getData();
     }
 
-    public static void clearPatterns() {
-        ConsolePatterns.PATTERNS.getData().clear();
-    }
-
-
     public static List<ConsolePattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
         return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
     }
 
+    /** Lookup a {@link ConsoleTheme} based on a singular {@link ConsolePattern}
+     * <br> As there is a many-to-one relationship between {@link ConsolePattern} and {@link ConsoleTheme}
+     * <br> as well as a one-to-one relationship between a {@link ShellPatternCollection} and {@link ShellTheme},
+     * we will iterate through all {@link ShellPatternCollection} (which holds the theme ID) and find matchine ones*/
+    public static ShellTheme getThemeForPattern(ShellPattern pattern) {
+        Map<ResourceLocation, ShellPatternCollection> entries = ShellPatterns.getRegistry();
+        for (Map.Entry<ResourceLocation, ShellPatternCollection> entry : entries.entrySet()){
+            if (pattern.getThemeId() == entry.getKey()){
+                return ShellTheme.findOr(entry.getValue().themeId().getPath(), ShellTheme.FACTORY);
+            }
+        }
+        return ShellTheme.FACTORY;
+    }
+
+    /** Sanity check to make sure a Pattern for a ConsoleTheme exists
+     * <br> A likely use case for this is when entries for the patterns are being modified in some way, such as when something triggers datapacks to be reloaded*/
     public static boolean doesPatternExist(ConsoleTheme consoleTheme, ResourceLocation patternId) {
         List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
         for (ConsolePattern consolePattern : consolePatterns) {
@@ -53,6 +65,7 @@ public class ConsolePatterns{
         return false;
     }
 
+    /** Lookup up a {@link ConsolePattern} within a particular {@link ConsoleTheme}*/
     public static ConsolePattern getPatternFromString(ConsoleTheme consoleTheme, ResourceLocation id) {
         List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleTheme);
         for (ConsolePattern consolePattern : consolePatterns) {
@@ -75,6 +88,11 @@ public class ConsolePatterns{
         }
     }
 
+    /** Constructs and a {@link ConsolePattern}, then adds it to a {@link ConsolePatternCollection}, which is assigned to a {@link ConsoleTheme}.
+     * <br> The {@link ConsolePatternCollection} is then added to an internal default map
+     * <br> Also assigns the {@link ConsolePattern} its parent {@link ConsoleTheme}'s ID
+     * @implSpec INTERNAL USE ONLY
+     * */
     private static ConsolePattern addDefaultPattern(ConsoleTheme theme, String patternId, String textureName, boolean hasEmissiveTexture) {
         //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
         ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
@@ -96,15 +114,21 @@ public class ConsolePatterns{
         return pattern;
     }
 
+    /** @implSpec INTERNAL USE ONLY */
     private static ResourceLocation createConsolePatternTextureLocation(ConsoleTheme theme, String textureName){
         return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + theme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
     }
 
-    /** Gets a default list of Console Patterns added by Tardis Refined. Useful as a fallback list.*/
+    /** Gets a default list of {@link ConsolePattern} added by Tardis Refined. Useful as a fallback list.
+     * <br> Requires calling {@link ConsolePatterns#registerDefaultPatterns} first
+     * @implNote Used for datagen providers when we may need to lookup the map multiple times, but only need to register default entries once.
+     * */
     public static Map<ResourceLocation, ConsolePatternCollection> getDefaultPatterns(){
         return DEFAULT_PATTERNS;
     }
 
+    /** Registers the Tardis Refined default Console Patterns and returns a map of them by Theme ID
+     * <br> Should only be called ONCE when needed*/
     public static Map<ResourceLocation, ConsolePatternCollection> registerDefaultPatterns() {
 
         /*Add Base Textures*/

@@ -38,6 +38,7 @@ public class ShellPatternProvider implements DataProvider {
         this.addDefaults = addDefaults;
     }
 
+    /** To be used by child classes to add new patterns after defaults are registered*/
     protected void addPatterns(){}
 
     @Override

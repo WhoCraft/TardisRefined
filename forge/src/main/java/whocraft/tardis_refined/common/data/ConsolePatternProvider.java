@@ -33,8 +33,8 @@ public class ConsolePatternProvider implements DataProvider {
         this.addDefaults = addDefaults;
     }
 
+    /** To be used by child classes to add new patterns after defaults are registered*/
     protected void addPatterns(){}
-
 
     @Override
     public void run(CachedOutput arg) throws IOException {
