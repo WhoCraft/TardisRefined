@@ -12,6 +12,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.data.*;
+import whocraft.tardis_refined.common.data.ProviderEntityTags;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.forge.PortalsCompatForge;
@@ -58,6 +59,8 @@ public class TardisRefinedForge {
 
         //Tags
         generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator, existingFileHelper));
+
+        generator.addProvider(e.includeServer(), new ProviderEntityTags(generator, existingFileHelper));
 
         //World Gen
         ConfiguredFeatureProvider.genConfiguredFeatures(e);
