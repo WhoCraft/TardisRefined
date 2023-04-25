@@ -60,7 +60,7 @@ public class TardisRefinedForge {
         //Tags
         generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
-        generator.addProvider(e.includeServer(), new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider()));
+        generator.addProvider(e.includeServer(), new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
         //World Gen
         BiomeModifierProvider.genBiomeModifiers(e);

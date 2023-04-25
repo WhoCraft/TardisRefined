@@ -20,8 +20,8 @@ public class ProviderEntityTags extends EntityTypeTagsProvider {
 
     public static final TagKey<EntityType<?>> ENTITY_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("carryon", "entity_blacklist"));
 
-    public ProviderEntityTags(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture) {
-        super(output, completableFuture);
+    public ProviderEntityTags(PackOutput output, CompletableFuture<HolderLookup.Provider> completableFuture, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, completableFuture, TardisRefined.MODID, existingFileHelper);
     }
 
     @Override
