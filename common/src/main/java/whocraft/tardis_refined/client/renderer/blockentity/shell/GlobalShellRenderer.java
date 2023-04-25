@@ -59,7 +59,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         /*Emmissive*/
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
-        if (pattern.emissive()) {
+        if (pattern.exteriorDoorTexture().emissive()) {
             currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.texture(pattern, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
         } else {
             if (isRegenerating) {

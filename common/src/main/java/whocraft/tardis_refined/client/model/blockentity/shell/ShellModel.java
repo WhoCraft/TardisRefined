@@ -34,9 +34,9 @@ public abstract class ShellModel extends HierarchicalModel {
 
     public ResourceLocation texture(ShellPattern pattern, boolean isEmmissive) {
         if (isDoorModel()) {
-            return pattern.interiorDoorTexture();
+            return pattern.interiorDoorTexture().texture();
         }
-        return isEmmissive ? pattern.emissiveTexture() : pattern.texture();
+        return isEmmissive ? pattern.exteriorDoorTexture().emissiveTexture() : pattern.exteriorDoorTexture().texture();
     }
 
     ModelPart fade_value;

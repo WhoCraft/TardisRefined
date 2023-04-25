@@ -37,6 +37,10 @@ configurations {
     developmentForge.extendsFrom common
 }
 
+repositories {
+    maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+}
+
 dependencies {
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
@@ -48,6 +52,9 @@ dependencies {
     modImplementation "curse.maven:jei-238222:${jei_version}"
 
     compileOnly "curse.maven:immersive-portals-355440:4375619"
+
+    // With ForgeGradle 5, use the runtimeOnly configuration
+    //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

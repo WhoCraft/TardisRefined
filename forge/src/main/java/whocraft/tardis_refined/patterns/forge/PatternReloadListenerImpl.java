@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.util.forge;
+package whocraft.tardis_refined.patterns.forge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
@@ -6,25 +6,26 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.NetworkManager;
-import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
+import whocraft.tardis_refined.patterns.PatternCollection;
+import whocraft.tardis_refined.patterns.PatternReloadListener;
 
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class CodecJsonReloadListenerImpl{
+public class PatternReloadListenerImpl{
 
-    public static <T> CodecJsonReloadListener<T> create(String folderName, Codec<T> codec) {
+    public static <P extends PatternCollection> PatternReloadListener<P> createListener(String folderName, Codec<P> codec) {
         return new Impl(folderName, codec);
     }
 
-    public static class Impl<T> extends CodecJsonReloadListener<T>{
+    public static class Impl<T extends PatternCollection> extends PatternReloadListener<T> {
         public Impl(String folderName, Codec<T> codec) {
             super(folderName, codec);
         }
 
         @Override
-        public CodecJsonReloadListener setSyncPacket(NetworkManager networkManager, Function packetFactory) {
+        public PatternReloadListener setSyncPacket(NetworkManager networkManager, Function packetFactory) {
             MinecraftForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, packetFactory));
             return this;
         }
@@ -37,5 +38,4 @@ public class CodecJsonReloadListenerImpl{
             };
         }
     }
-
 }

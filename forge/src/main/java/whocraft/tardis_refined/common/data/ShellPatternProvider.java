@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.data;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
@@ -11,103 +12,97 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.patterns.BasePattern;
-import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.patterns.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Locale;
+import java.util.*;
 
 public class ShellPatternProvider implements DataProvider {
 
     protected final DataGenerator generator;
 
+    protected Map<ResourceLocation, ShellPatternCollection> data = new HashMap<>();
+
+    private final boolean addDefaults;
+
     public ShellPatternProvider(DataGenerator generator) {
+        this(generator, true);
+    }
+
+    public ShellPatternProvider(DataGenerator generator, boolean addDefaults) {
         Preconditions.checkNotNull(generator);
         this.generator = generator;
+        this.addDefaults = addDefaults;
     }
 
-    public static void registerPatterns() {
-
-        /*Add Base Textures*/
-        for (ShellTheme shellTheme : ShellTheme.values()) {
-            String themeName = shellTheme.name().toLowerCase(Locale.ENGLISH);
-            boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC || shellTheme == ShellTheme.NUKA || shellTheme == ShellTheme.PAGODA || shellTheme == ShellTheme.PHONE_BOOTH || shellTheme == ShellTheme.POLICE_BOX || shellTheme == ShellTheme.VENDING;
-
-            ShellPattern pattern = (ShellPattern) new ShellPattern(shellTheme, new ResourceLocation(TardisRefined.MODID, shellTheme.getSerializedName()), createBasePatternLocation("textures/blockentity/shell/" + themeName + "/" + themeName + ".png"), createBasePatternLocation("textures/blockentity/shell/" + themeName + "/" + themeName + "_interior.png")).setEmissive(hasDefaultEmission);
-            pattern.setName("Default");
-            ShellPatterns.addPattern(shellTheme, (ShellPattern) pattern.setEmissive(hasDefaultEmission));
-        }
-
-        create(ShellTheme.POLICE_BOX, false, "marble");
-        create(ShellTheme.POLICE_BOX, false, "gaudy");
-        create(ShellTheme.POLICE_BOX, false, "metal");
-        create(ShellTheme.POLICE_BOX, false, "stone");
-        create(ShellTheme.POLICE_BOX, false, "red");
-
-        create(ShellTheme.PHONE_BOOTH, false, "metal");
-
-        create(ShellTheme.PRESENT, false, "cardboard");
-
-        create(ShellTheme.BRIEFCASE, false, "intel");
-        create(ShellTheme.BRIEFCASE, false, "metal");
-        create(ShellTheme.BRIEFCASE, false, "mesa");
-
-        create(ShellTheme.MYSTIC, false, "dwarven");
-
-        create(ShellTheme.BIG_BEN, false, "gothic");
-
-    }
-
-    private static void create(ShellTheme shellTheme, boolean emmsive, String name) {
-        ShellPatterns.addPattern(shellTheme, new ShellPattern(shellTheme, new ResourceLocation(TardisRefined.MODID, name), createBasePatternLocation("textures/blockentity/shell/" + shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + name + ".png"), createBasePatternLocation("textures/blockentity/shell/" + shellTheme.getSerializedName().toLowerCase(Locale.ENGLISH) + "/" + name + "_interior.png"))).setEmissive(emmsive);
-    }
-
-    public static ResourceLocation createBasePatternLocation(String path) {
-        return new ResourceLocation(TardisRefined.MODID, path);
-    }
+    /** To be used by child classes to add new patterns after defaults are registered*/
+    protected void addPatterns(){}
 
     @Override
     public void run(CachedOutput arg) throws IOException {
-        registerPatterns();
+        this.data.clear();
 
-        for (ShellTheme consoleTheme : ShellTheme.values()) {
-
-            JsonArray patternArray = new JsonArray();
-
-            for (ShellPattern basePattern : ShellPatterns.getPatterns().get(consoleTheme)) {
-                JsonObject currentPattern = new JsonObject();
-                currentPattern.addProperty("id", basePattern.id().toString());
-
-                JsonObject exteriorObject = new JsonObject();
-                exteriorObject.addProperty("texture", basePattern.texture().toString());
-                exteriorObject.addProperty("emissive", basePattern.emissive());
-
-                JsonObject interiorObject = new JsonObject();
-                interiorObject.addProperty("texture", basePattern.interiorDoorTexture().toString());
-
-                currentPattern.add("interior", interiorObject);
-                currentPattern.add("exterior", exteriorObject);
-
-                currentPattern.addProperty("name_component", TardisRefined.GSON.toJson(Component.literal(basePattern.name()).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
-                patternArray.add(currentPattern);
-            }
-
-            DataProvider.saveStable(arg, patternArray, getPath(consoleTheme));
-
+        if(this.addDefaults){
+            ShellPatterns.registerDefaultPatterns();
+            data.putAll(ShellPatterns.getDefaultPatterns());
         }
 
+        this.addPatterns();
+
+        if (!data.isEmpty()){
+            data.entrySet().forEach(entry -> {
+                try {
+                    ShellPatternCollection patternCollection = entry.getValue();
+                    JsonObject currentPatternCollection = ShellPatternCollection.CODEC.encodeStart(JsonOps.INSTANCE, patternCollection).get()
+                            .ifRight(right -> {
+                                TardisRefined.LOGGER.error(right.message());
+                            }).orThrow().getAsJsonObject();
+                    Path output = getPath(patternCollection.themeId());
+                    DataProvider.saveStable(arg, currentPatternCollection, output);
+                } catch (Exception exception) {
+                    TardisRefined.LOGGER.debug("Issue writing ShellPatternCollection {}! Error: {}", entry.getValue().themeId(), exception.getMessage());
+                }
+            });
+        }
     }
 
-    private Path getPath(ShellTheme theme) {
-        String themeName = theme.getSerializedName();
-        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/shell/" + themeName + ".json");
+    protected ShellPattern addPatternToDatagen(ShellTheme theme, ShellPattern shellPattern) {
+        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
+        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+        ShellPattern pattern = (ShellPattern) shellPattern.setThemeId(themeId);
+        ShellPatternCollection collection;
+        if (this.data.containsKey(themeId)) {
+            collection = this.data.get(themeId);
+            List<ShellPattern> currentList = new ArrayList<>();
+            currentList.addAll(collection.patterns());
+            currentList.add(pattern);
+            collection.setPatterns(currentList);
+            this.data.replace(themeId, collection);
+        } else {
+            collection = (ShellPatternCollection) new ShellPatternCollection(List.of(pattern)).setThemeId(themeId);
+            this.data.put(themeId, collection);
+        }
+        TardisRefined.LOGGER.info("Adding ShellPattern {} for {}", pattern.id(), themeId);
+        return pattern;
+    }
+
+    protected ResourceLocation exteriorTextureLocation(ResourceLocation themeId){
+        return new ResourceLocation(themeId.getNamespace(), "textures/blockentity/shell/" + themeId.getPath() + "/" + themeId.getPath() + ".png");
+    }
+
+    protected ResourceLocation interiorTextureLocation(ResourceLocation themeId){
+        return new ResourceLocation(themeId.getNamespace(), "textures/blockentity/shell/" + themeId.getPath() + "/" + themeId.getPath() + "_interior.png");
+    }
+
+    protected Path getPath(ResourceLocation themeId) {
+        return generator.getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/shell/" + themeId.getPath() + ".json");
     }
 
     @Override
     public String getName() {
-        return "Console Patterns";
+        return "Shell Patterns";
     }
 }
