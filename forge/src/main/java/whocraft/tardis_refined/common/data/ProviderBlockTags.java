@@ -45,5 +45,21 @@ public class ProviderBlockTags extends BlockTagsProvider {
             }
         }
 
+        tag(BlockTags.DRAGON_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get());
+        tag(BlockTags.WITHER_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get());
+
+        tag(BlockTags.MINEABLE_WITH_PICKAXE)
+                .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
+                .add(BlockRegistry.LANDING_PAD.get())
+                .add(BlockRegistry.FLIGHT_DETECTOR.get())
+                .add(BlockRegistry.TERRAFORMER_BLOCK.get())
+                .add(BlockRegistry.ROOT_PLANT_BLOCK.get());
+        
+        tag(BlockTags.NEEDS_IRON_TOOL)
+                .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
+                .add(BlockRegistry.LANDING_PAD.get())
+                .add(BlockRegistry.FLIGHT_DETECTOR.get())
+                .add(BlockRegistry.TERRAFORMER_BLOCK.get());
+
     }
 }

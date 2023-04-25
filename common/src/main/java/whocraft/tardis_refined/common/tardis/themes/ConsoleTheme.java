@@ -4,10 +4,9 @@ import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.*;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
-import whocraft.tardis_refined.patterns.BasePattern;
 
 
-public enum ConsoleTheme implements StringRepresentable, BasePattern.DataDrivenPattern {
+public enum ConsoleTheme implements StringRepresentable {
 
     FACTORY("factory", new FactoryConsoleTheme()),
     CRYSTAL("crystal", new CrystalConsoleTheme()),
@@ -46,8 +45,4 @@ public enum ConsoleTheme implements StringRepresentable, BasePattern.DataDrivenP
         return vals[(this.ordinal() + 1) % vals.length];
     }
 
-    @Override
-    public String getObjectName() {
-        return getSerializedName();
-    }
 }

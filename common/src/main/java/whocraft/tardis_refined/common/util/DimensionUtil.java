@@ -13,7 +13,7 @@ import java.util.Set;
 public class DimensionUtil {
 
     public static boolean isAllowedDimension(ResourceKey<Level> level) {
-        var bannedDimensions = TRConfig.COMMON.BANNED_DIMENSIONS.get();
+        var bannedDimensions = TRConfig.SERVER.BANNED_DIMENSIONS.get();
         return !level.location().getNamespace().toString().contains("tardis") && !bannedDimensions.contains(level.location().toString());
     }
 

@@ -1,117 +1,103 @@
 package whocraft.tardis_refined.common.data;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.ChatFormatting;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.patterns.BasePattern;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
+import whocraft.tardis_refined.patterns.*;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
-
-import static whocraft.tardis_refined.patterns.ConsolePatterns.addPattern;
 
 public class ConsolePatternProvider implements DataProvider {
 
     protected final DataGenerator generator;
 
+    protected Map<ResourceLocation, ConsolePatternCollection> data = new HashMap<>();
+
+    private final boolean addDefaults;
+
     public ConsolePatternProvider(DataGenerator generator) {
+        this(generator, true);
+    }
+
+    public ConsolePatternProvider(DataGenerator generator, boolean addDefaults) {
         Preconditions.checkNotNull(generator);
         this.generator = generator;
+        this.addDefaults = addDefaults;
     }
 
-    public static void registerPatterns() {
-
-        /*Add Base Textures*/
-        for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
-            String themeName = consoleTheme.name().toLowerCase(Locale.ENGLISH);
-            boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER || consoleTheme == ConsoleTheme.CRYSTAL|| consoleTheme == ConsoleTheme.CORAL || consoleTheme == ConsoleTheme.FACTORY || consoleTheme == ConsoleTheme.INITIATIVE || consoleTheme == ConsoleTheme.TOYOTA || consoleTheme == ConsoleTheme.VICTORIAN;
-            addPattern(consoleTheme, new BasePattern<>(consoleTheme, new ResourceLocation(TardisRefined.MODID, "default"), createBasePatternLocation(themeName + "/" + themeName + "_console"))).setEmissive(hasDefaultEmission);
-        }
-
-        /*Coral*/
-        addPattern(ConsoleTheme.CORAL, new BasePattern<>(ConsoleTheme.CORAL, new ResourceLocation(TardisRefined.MODID, "blue"), createBasePatternLocation("coral/coral_console_blue"))).setEmissive(true);
-        addPattern(ConsoleTheme.CORAL, new BasePattern<>(ConsoleTheme.CORAL, new ResourceLocation(TardisRefined.MODID, "war"), createBasePatternLocation("coral/coral_console_war"))).setEmissive(true);
-
-        /*Factory*/
-        addPattern(ConsoleTheme.FACTORY, new BasePattern<>(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "vintage"), createBasePatternLocation("factory/factory_console_vintage"))).setEmissive(true);
-        addPattern(ConsoleTheme.FACTORY, new BasePattern<>(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "mint"), createBasePatternLocation("factory/factory_console_mint"))).setEmissive(true);
-        addPattern(ConsoleTheme.FACTORY, new BasePattern<>(ConsoleTheme.FACTORY, new ResourceLocation(TardisRefined.MODID, "wood"), createBasePatternLocation("factory/factory_console_wood"))).setEmissive(true);
-
-        /*Toyota*/
-        addPattern(ConsoleTheme.TOYOTA, new BasePattern<>(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "violet"), createBasePatternLocation("toyota/toyota_texture_purple"))).setEmissive(true);
-        addPattern(ConsoleTheme.TOYOTA, new BasePattern<>(ConsoleTheme.TOYOTA, new ResourceLocation(TardisRefined.MODID, "blue"), createBasePatternLocation("toyota/toyota_texture_blue"))).setEmissive(true);
-
-        /*Crystal*/
-        addPattern(ConsoleTheme.CRYSTAL, new BasePattern<>(ConsoleTheme.CRYSTAL, new ResourceLocation(TardisRefined.MODID, "corrupted"), createBasePatternLocation("crystal/crystal_console_corrupted"))).setEmissive(true);
-
-        /*Myst*/
-        addPattern(ConsoleTheme.MYST, new BasePattern<>(ConsoleTheme.MYST, new ResourceLocation(TardisRefined.MODID, "molten"), createBasePatternLocation("myst/myst_console_molten")));
-
-        /*Victorian*/
-        addPattern(ConsoleTheme.VICTORIAN, new BasePattern<>(ConsoleTheme.VICTORIAN, new ResourceLocation(TardisRefined.MODID, "smissmass"), createBasePatternLocation("victorian/victorian_console_smissmass")));
-        addPattern(ConsoleTheme.VICTORIAN, new BasePattern<>(ConsoleTheme.VICTORIAN, new ResourceLocation(TardisRefined.MODID, "grant"), createBasePatternLocation("victorian/victorian_console_grant")));
-
-        /*Initiative*/
-        addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "aperture"), createBasePatternLocation("initiative/initiative_console_aperture"))).setEmissive(true);
-        addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "blue"), createBasePatternLocation("initiative/initiative_console_blue"))).setEmissive(true);
-        addPattern(ConsoleTheme.INITIATIVE, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "construction"), createBasePatternLocation("initiative/initiative_console_construction"))).setEmissive(false);
-
-        // Nuka
-        addPattern(ConsoleTheme.NUKA, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "industrial"), createBasePatternLocation("nuka/nuka_industrial"))).setEmissive(false);
-        addPattern(ConsoleTheme.NUKA, new BasePattern<>(ConsoleTheme.INITIATIVE, new ResourceLocation(TardisRefined.MODID, "cool"), createBasePatternLocation("nuka/nuka_cool"))).setEmissive(false);
-
-        /*Copper*/
-        addPattern(ConsoleTheme.COPPER, new BasePattern<>(ConsoleTheme.COPPER, new ResourceLocation(TardisRefined.MODID, "sculk"), createBasePatternLocation("copper/copper_console_sculk"))).setEmissive(false);
-
-    }
-
-    public static ResourceLocation createBasePatternLocation(String path){
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + path + ".png");
-    }
+    /** To be used by child classes to add new patterns after defaults are registered*/
+    protected void addPatterns(){}
 
     @Override
     public CompletableFuture<?> run(CachedOutput arg) {
-        registerPatterns();
+        this.data.clear();
 
         final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
+        if(this.addDefaults){
+            ConsolePatterns.registerDefaultPatterns();
+            data.putAll(ConsolePatterns.getDefaultPatterns());
+        }
 
-            JsonArray patternArray = new JsonArray();
+        this.addPatterns();
 
-            for (BasePattern<ConsoleTheme> basePattern : ConsolePatterns.getPatterns().get(consoleTheme)) {
-                JsonObject currentPattern = new JsonObject();
-                currentPattern.addProperty("id", basePattern.id().toString());
-                currentPattern.addProperty("emissive", basePattern.emissive());
-                currentPattern.addProperty("texture", basePattern.texture().toString());
-                currentPattern.addProperty("name_component", TardisRefined.GSON.toJson(Component.literal(basePattern.name()).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
-                patternArray.add(currentPattern);
-            }
-
-            futures.add(DataProvider.saveStable(arg, patternArray, getPath(consoleTheme)));
-
+        if (!data.isEmpty()){
+            data.entrySet().forEach(entry -> {
+                try {
+                    ConsolePatternCollection patternCollection = entry.getValue();
+                    JsonObject currentPatternCollection = ConsolePatternCollection.CODEC.encodeStart(JsonOps.INSTANCE, patternCollection).get()
+                            .ifRight(right -> {
+                                TardisRefined.LOGGER.error(right.message());
+                            }).orThrow().getAsJsonObject();
+                    Path output = getPath(patternCollection.themeId());
+                    futures.add(DataProvider.saveStable(arg, currentPatternCollection, output));;
+                } catch (Exception exception) {
+                    TardisRefined.LOGGER.debug("Issue writing ConsolePatternCollection {}! Error: {}", entry.getValue().themeId(), exception.getMessage());
+                }
+            });
         }
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-
     }
 
-    private Path getPath(ConsoleTheme theme) {
-        String themeName = theme.getSerializedName();
-        return generator.getPackOutput().getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/console/" + themeName + ".json");
+    protected ConsolePattern addPatternToDatagen(ConsoleTheme theme, ConsolePattern consolePattern) {
+        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
+        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+        ConsolePattern pattern = (ConsolePattern) consolePattern.setThemeId(themeId);
+        ConsolePatternCollection collection;
+        if (this.data.containsKey(themeId)) {
+            collection = this.data.get(themeId);
+            List<ConsolePattern> currentList = new ArrayList<>();
+            currentList.addAll(collection.patterns());
+            currentList.add(pattern);
+            collection.setPatterns(currentList);
+            this.data.replace(themeId, collection);
+        } else {
+            collection = (ConsolePatternCollection) new ConsolePatternCollection(List.of(pattern)).setThemeId(themeId);
+            this.data.put(themeId, collection);
+        }
+        TardisRefined.LOGGER.info("Adding ConsolePattern {} for {}", pattern.id(), themeId);
+        return pattern;
+    }
+
+    protected ResourceLocation createConsolePatternLocation(ResourceLocation path){
+        return new ResourceLocation(path.getNamespace(), "textures/blockentity/console/" + path + ".png");
+    }
+
+    private ResourceLocation createConsolePatternLocation(String path){
+        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + path + ".png");
+    }
+
+    protected Path getPath(ResourceLocation themeId) {
+        return generator.getPackOutput().getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + TardisRefined.MODID + "/patterns/console/" + themeId.getPath() + ".json");
     }
 
     @Override

@@ -4,7 +4,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +17,6 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 public class ChangeShellMessage extends MessageC2S {
 
@@ -35,7 +33,7 @@ public class ChangeShellMessage extends MessageC2S {
     public ChangeShellMessage(FriendlyByteBuf buffer) {
         resourceKey = buffer.readResourceKey(Registries.DIMENSION);
         this.shellTheme = ShellTheme.valueOf(buffer.readUtf(500));
-        this.pattern = ShellPatterns.getPatternFromString(shellTheme, buffer.readResourceLocation());
+        this.pattern = ShellPatterns.getPatternOrDefault(shellTheme, buffer.readResourceLocation());
     }
 
     @NotNull

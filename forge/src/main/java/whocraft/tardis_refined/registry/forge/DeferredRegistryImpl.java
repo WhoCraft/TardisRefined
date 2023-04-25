@@ -1,9 +1,12 @@
 package whocraft.tardis_refined.registry.forge;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.RegistryBuilder;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
@@ -15,6 +18,10 @@ import java.util.function.Supplier;
 public class DeferredRegistryImpl {
 
     public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
+        return new Impl<>(modid, resourceKey);
+    }
+
+    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey) {
         return new Impl<>(modid, resourceKey);
     }
 
@@ -46,6 +53,11 @@ public class DeferredRegistryImpl {
         @Override
         public Collection<RegistrySupplier<T>> getEntries() {
             return this.entries;
+        }
+
+        @Override
+        public Codec<T> getCodec() {
+            return this.register.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1)).get().getCodec();
         }
     }
 

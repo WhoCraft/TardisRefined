@@ -9,7 +9,6 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraftforge.api.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
@@ -63,11 +62,12 @@ public class TardisRefinedFabric implements ModInitializer {
         setupBiomeModifications();
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+        ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" +"console_patterns"), new ConsolePatterns());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" +"console_patterns"), ConsolePatterns.getReloadListener());
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), new ShellPatterns());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), ShellPatterns.getReloadListener());
 
         if (ModCompatChecker.immersivePortals()) {
             if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {

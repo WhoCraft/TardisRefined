@@ -28,5 +28,6 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockRegistry.FLIGHT_DETECTOR.get()).pattern("G G").pattern("IDI").pattern("III").define('G', Items.GOLD_INGOT).define('I', Items.IRON_INGOT).define('D', Blocks.DAYLIGHT_DETECTOR).unlockedBy("has_dalight_detector", has(Blocks.DAYLIGHT_DETECTOR)).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.KEY.get()).requires(Items.IRON_INGOT).requires(Items.TRIPWIRE_HOOK).unlockedBy("has_crafting_table", has(Blocks.TRIPWIRE_HOOK)).save(consumer);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BlockRegistry.GLOBAL_DOOR_BLOCK.get()).requires(Items.IRON_INGOT).requires(Items.TRIPWIRE_HOOK).requires(Items.IRON_DOOR).unlockedBy("has_crafting_table", has(Blocks.IRON_DOOR)).save(consumer);
     }
 }

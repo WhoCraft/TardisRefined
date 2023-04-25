@@ -261,7 +261,6 @@ public class TardisControlManager {
             // Try the next interval in the rotation.
             location.position = getLegalPosition(location.getLevel(), location.position, originalY);
             location.position = location.position.offset(location.rotation.getNormal().multiply((int) (failOffset * (1 + ((float) i * 0.1f)))));
-            PlayerUtil.globalMessage(Component.literal(String.valueOf(i)), level.getServer());
         }
 
 

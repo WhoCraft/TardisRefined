@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.List;
@@ -43,6 +44,8 @@ public class ShellSelectionScreen extends SelectionScreen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/shell.png");
     public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/ui/noise.png");
     private ShellPattern pattern;
+
+    private ShellPatternCollection patternCollection;
     private Button patternButton;
 
     public ShellSelectionScreen() {
@@ -63,7 +66,8 @@ public class ShellSelectionScreen extends SelectionScreen {
             Minecraft.getInstance().setScreen(null);
         });
         this.currentShellTheme = this.themeList.get(0);
-        pattern = ShellPatterns.getPatternsForTheme(currentShellTheme).get(0);
+        this.patternCollection = ShellPatterns.getPatternCollectionForTheme(this.currentShellTheme);
+        this.pattern = this.patternCollection.patterns().get(0);
 
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
@@ -71,10 +75,12 @@ public class ShellSelectionScreen extends SelectionScreen {
         addSubmitButton(width / 2 + 90, (height) / 2 + 35);
         addCancelButton(width / 2 - 11, (height) / 2 + 35);
 
-        patternButton = addRenderableWidget(Button.builder(Component.literal("Bob"), button -> {
-            pattern = ShellPatterns.next(currentShellTheme, pattern);
-            button.setMessage(Component.Serializer.fromJson(new StringReader(pattern.name())));
+        patternButton = addRenderableWidget(Button.builder(Component.literal(""), button -> {
+            pattern = ShellPatterns.next(this.patternCollection, this.pattern);
+            button.setMessage(Component.Serializer.fromJson(new StringReader(this.pattern.name())));
         }).pos(width / 2 + 14, (height) / 2 + 34).size(70, 20).build());
+
+        patternButton.visible = false; //Hide when initialised. We will only show it when there are more than 1 pattern for a shell (via its {@link PatternCollection} )
 
         super.init();
     }
@@ -88,9 +94,6 @@ public class ShellSelectionScreen extends SelectionScreen {
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
         renderBackground(poseStack);
-
-        boolean themeHasNoPatterns = ShellPatterns.getPatternsForTheme(currentShellTheme).size() == 2;
-        patternButton.visible = !themeHasNoPatterns;
 
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;
@@ -135,10 +138,12 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.normal().identity();
         poseStack.translate(2, 0.25, 1984.0);
         poseStack.scale(3F, 3F, 3F);
+
         poseStack.mulPose(Axis.YP.rotationDegrees(minecraft.level.getGameTime()));
         poseStack.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
 
         MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+
         VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(pattern, false)));
         model.renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         bufferSource.endBatch();
@@ -183,8 +188,17 @@ public class ShellSelectionScreen extends SelectionScreen {
                         current.setChecked(false);
                     }
                 }
-                pattern = ShellPatterns.getPatternsForTheme(shellTheme).get(0);
-                patternButton.setMessage(Component.Serializer.fromJson(new StringReader(pattern.name())));
+                this.patternCollection = ShellPatterns.getPatternCollectionForTheme(this.currentShellTheme);
+                this.pattern = this.patternCollection.patterns().get(0);
+
+                boolean themeHasPatterns = this.patternCollection.patterns().size() > 1;
+
+                //Hide the pattern button if there is only one pattern available for the shell, else show it. (i.e. The default)
+                patternButton.visible = themeHasPatterns;
+
+                if (themeHasPatterns) //Update the button name now that we have confirmed that there is more than one pattern in the shell
+                    this.patternButton.setMessage(Component.Serializer.fromJson(new StringReader(pattern.name())));
+
                 age = 0;
                 entry.setChecked(true);
             }));

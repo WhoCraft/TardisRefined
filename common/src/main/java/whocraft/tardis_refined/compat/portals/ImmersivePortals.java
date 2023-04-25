@@ -115,10 +115,27 @@ public class ImmersivePortals {
                 new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
                 new Vec3(1.3, 0, 0), new Vec3(0, 0, 1.3))));
 
-        themeToOffsetMap.put(ShellTheme.NUKA, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.65, 0.35, 0),
-                new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35, -0.65)), new PortalOffets.OffsetData(
-                new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
-                new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))));
+        themeToOffsetMap.put(ShellTheme.NUKA,
+                new PortalOffets(
+                        new PortalOffets.OffsetData(new Vec3(0.65, 0.35, 0), new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35, -0.65)),
+                        new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))
+                )
+        );
+
+        themeToOffsetMap.put(ShellTheme.PAGODA,
+                new PortalOffets(
+                        new PortalOffets.OffsetData(new Vec3(0.65, 0, 0), new Vec3(0, 0, 0.51), new Vec3(-0.65, 0, 0), new Vec3(0, 0, -0.51)),
+                        new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))
+                )
+        );
+
+
+        // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
+        themeToOffsetMap.put(ShellTheme.PORTALOO, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
+                        new Vec3(0, 0, 0.51), new Vec3(-0.61, 0, 0), new Vec3(0, 0, -0.51)),
+                new PortalOffets.OffsetData(
+                        new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
+                        new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
 
         for (ShellTheme value : ShellTheme.values()) {
             if (!themeToOffsetMap.containsKey(value) && !value.equals(ShellTheme.BRIEFCASE)) {

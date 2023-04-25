@@ -18,7 +18,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.BasePattern;
+import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
@@ -29,7 +29,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public ShellPattern pattern() {
         ShellTheme console = getBlockState().getValue(GlobalShellBlock.SHELL);
-        ShellPattern defaultBasePattern = ShellPatterns.getPatternFromString(console, new ResourceLocation(TardisRefined.MODID, console.getSerializedName() + "/default"));
+        ShellPattern defaultBasePattern = ShellPatterns.getPatternOrDefault(console, ResourceConstants.DEFAULT_PATTERN_ID);
         return basePattern == null ? defaultBasePattern : basePattern;
     }
 
@@ -50,7 +50,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             ShellTheme shellTheme = getBlockState().getValue(GlobalShellBlock.SHELL);
             ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
             if (ShellPatterns.doesPatternExist(shellTheme, currentPattern)) {
-                basePattern = ShellPatterns.getPatternFromString(shellTheme, currentPattern);
+                basePattern = ShellPatterns.getPatternOrDefault(shellTheme, currentPattern);
             }
         }
 

@@ -43,7 +43,13 @@ public class TardisClientData {
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
     private ShellTheme shellTheme = ShellTheme.FACTORY;
-    private ShellPattern shellPattern = ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+    private ShellPattern shellPattern = safeGrabPattern();
+
+    private ShellPattern safeGrabPattern() {
+        if (ShellPatterns.getRegistry().isEmpty())
+            return ShellPatterns.getPatternsForThemeDefault(shellTheme).get(0);
+        return ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+    }
 
     public TardisClientData setShellPattern(ShellPattern shellPattern) {
         this.shellPattern = shellPattern;
@@ -133,7 +139,7 @@ public class TardisClientData {
         isOnCooldown = arg.getBoolean("isOnCooldown");
 
         if (arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
-            this.shellPattern = ShellPatterns.getPatternFromString(shellTheme, new ResourceLocation(arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
+            this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, new ResourceLocation(arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
         }
 
     }

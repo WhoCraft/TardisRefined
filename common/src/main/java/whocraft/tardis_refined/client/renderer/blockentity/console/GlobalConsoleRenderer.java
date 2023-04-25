@@ -43,7 +43,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
 
         ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);
         consoleModel.renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
-        if(blockEntity.pattern() != null && blockEntity.pattern().emissive()) {
+        if(blockEntity.pattern() != null && blockEntity.pattern().patternTexture().emissive()) {
             consoleModel.renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(consoleModel.getTexture(blockEntity, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
         }
         poseStack.popPose();
@@ -75,7 +75,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             }
 
             ShellPattern pattern = reactions.shellPattern();
-            model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
+            model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.exteriorDoorTexture().texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
             poseStack.popPose();
         }
     }
