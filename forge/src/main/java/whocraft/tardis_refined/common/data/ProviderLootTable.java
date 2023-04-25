@@ -68,7 +68,7 @@ public class ProviderLootTable extends LootTableProvider {
 
         @Override
         public void generate() {
-            add(EntityRegistry.CONTROL_ENTITY.get(), LootTable.lootTable());
+
         }
     }
 }
