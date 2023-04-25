@@ -62,6 +62,7 @@ public class TardisRefinedFabric implements ModInitializer {
         setupBiomeModifications();
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+        ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" +"console_patterns"), ConsolePatterns.getReloadListener());
 
