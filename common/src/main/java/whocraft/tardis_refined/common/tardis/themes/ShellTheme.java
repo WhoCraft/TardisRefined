@@ -3,11 +3,10 @@ package whocraft.tardis_refined.common.tardis.themes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.patterns.BasePattern;
 
 import java.util.Locale;
 
-public enum ShellTheme implements StringRepresentable, Theme, BasePattern.DataDrivenPattern {
+public enum ShellTheme implements StringRepresentable, Theme {
     FACTORY("factory"),
     POLICE_BOX("police_box"),
     PHONE_BOOTH("phone_booth"),
@@ -50,10 +49,5 @@ public enum ShellTheme implements StringRepresentable, Theme, BasePattern.DataDr
             }
         }
         return shellTheme;
-    }
-
-    @Override
-    public String getObjectName() {
-        return getSerializedName();
     }
 }

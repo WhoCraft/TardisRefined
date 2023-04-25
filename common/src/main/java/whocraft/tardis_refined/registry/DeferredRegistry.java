@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.registry;
 
+import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -17,6 +18,13 @@ public abstract class DeferredRegistry<T> {
 
     @ExpectPlatform
     public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
+        throw new AssertionError();
+    }
+
+    public abstract Codec<T> getCodec();
+
+    @ExpectPlatform
+    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
         throw new AssertionError();
     }
 }
