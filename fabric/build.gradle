@@ -76,7 +76,7 @@ dependencies {
     // Immersive Portals End
 
     // With loom use the modRuntimeOnly configuration
-    // modRuntimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_fabric}:${dev_auth_fabric_version}")
+    //modRuntimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_fabric}:${dev_auth_fabric_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

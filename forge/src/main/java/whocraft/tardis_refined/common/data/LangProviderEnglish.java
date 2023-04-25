@@ -108,7 +108,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.DRIFTER, "Drifter");
         addShell(ShellTheme.PRESENT, "Present");
         addShell(ShellTheme.BRIEFCASE, "Briefcase");
-        addShell(ShellTheme.GROENING, "Greoning");
+        addShell(ShellTheme.GROENING, "Groening");
         addShell(ShellTheme.VENDING, "Vending Machine");
         addShell(ShellTheme.BIG_BEN, "Big Ben");
         addShell(ShellTheme.NUKA, "Nuka");
