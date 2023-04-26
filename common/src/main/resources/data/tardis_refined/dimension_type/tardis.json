@@ -1,6 +1,6 @@
 {
   "ultrawarm": false,
-  "natural": false,
+  "natural": true,
   "piglin_safe": true,
   "respawn_anchor_works": true,
   "bed_works": true,
@@ -10,6 +10,7 @@
   "coordinate_scale": 1,
   "ambient_light": 0,
   "logical_height": 384,
+  "effects": "minecraft:overworld",
   "infiniburn": "#minecraft:infiniburn_overworld",
   "min_y": -64,
   "height": 384,
