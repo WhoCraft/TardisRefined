@@ -1,24 +1,30 @@
 package whocraft.tardis_refined.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.network.chat.Component;
-import whocraft.tardis_refined.client.screen.ScreenHelper;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
-    public GenericMonitorSelectionList(Minecraft minecraft, int x, int y, int width, int height, int itemHeight) {
-        super(minecraft, width, height, y, y + height, itemHeight);
-        this.setLeftPos(x);
+    /**
+     * Creates a scrollable list with entries defined by a separate class
+     * @param minecraft
+     * @param width
+     * @param height
+     * @param xLeftPos - the x coordinate for the start position of the scrollable list area
+     * @param yStart - the y coordinate for the top of the scrollable list area
+     * @param yEnd - the y coordinate for the bottom of the scrollable list area
+     * @param itemHeight - height of each item in the list
+     */
+    public GenericMonitorSelectionList(Minecraft minecraft, int width, int height, int xLeftPos, int yStart, int yEnd, int itemHeight) {
+        super(minecraft, width, height, yStart, yEnd, itemHeight); //Don't add anything to the y1 variable otherwise the entry button will be slighter taller than expected
+        this.setLeftPos(xLeftPos);
         this.setRenderHeader(false, 0);
         this.setRenderTopAndBottom(false);
         this.setRenderSelection(false);
         this.setRenderBackground(true);
     }
 
+    @Override
     protected int getScrollbarPosition() {
         return this.x0 + this.width;
     }
@@ -29,44 +35,7 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
     }
 
 
-    @Environment(EnvType.CLIENT)
-    public static class Entry extends ObjectSelectionList.Entry<Entry> {
 
-        private final Component itemDisplayName;
-        private final GenericListSelection press;
-        private boolean checked = false;
-
-        public Entry(Component name, GenericListSelection onSelection) {
-            this.itemDisplayName = name;
-            this.press = onSelection;
-        }
-
-        @Override
-        public Component getNarration() {
-            return itemDisplayName;
-        }
-
-        @Override
-        public boolean mouseClicked(double d, double e, int i) {
-            press.onClick(this);
-            return super.mouseClicked(d, e, i);
-        }
-
-        @Override
-        public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            int color = isMouseOver ? ChatFormatting.YELLOW.getColor() : (checked ? ChatFormatting.YELLOW.getColor() :  itemDisplayName.getStyle().getColor() != null ? itemDisplayName.getStyle().getColor().getValue() : ChatFormatting.GOLD.getColor());
-            ScreenHelper.renderWidthScaledText((checked ? "> " : "") + itemDisplayName.getString(), poseStack, Minecraft.getInstance().font, left + 80, top, color, width, false);
-        }
-
-        public void setChecked(boolean checked) {
-            this.checked = checked;
-        }
-    }
-
-    @FunctionalInterface
-    public interface GenericListSelection {
-        void onClick(GenericMonitorSelectionList.Entry entry);
-    }
 }
 
 
