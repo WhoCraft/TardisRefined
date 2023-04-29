@@ -22,6 +22,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
+import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -126,7 +127,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         Lighting.setupForFlatItems();
         int k = (int) this.minecraft.getWindow().getGuiScale();
         RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
-        Matrix4f matrix4f = new Matrix4f().translate(-0.34F, 0.23F, 0.0F);
+        Matrix4f matrix4f = new Matrix4f().translate(-0.34F, 0.1F, 0.0F);
         matrix4f.mul(new Matrix4f().perspective(Integer.MAX_VALUE, 1.3333334F, 9.0F, Integer.MAX_VALUE));
         RenderSystem.backupProjectionMatrix();
         RenderSystem.setProjectionMatrix(matrix4f);
@@ -137,7 +138,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.pose().identity();
         pose.normal().identity();
         poseStack.translate(2, 0.25, 1984.0);
-        poseStack.scale(3F, 3F, 3F);
+        poseStack.scale(2F, 2F, 2F);
 
         poseStack.mulPose(Axis.YP.rotationDegrees(minecraft.level.getGameTime()));
         poseStack.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
@@ -174,17 +175,18 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public GenericMonitorSelectionList createSelectionList() {
-        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 - 50, height / 2 - 60, 150, 80, 12);
+        int leftPos = width / 2 - 5;
+        GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 100, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
 
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
         for (ShellTheme shellTheme : ShellTheme.values()) {
-            selectionList.children().add(new GenericMonitorSelectionList.Entry(shellTheme.getDisplayName(), (entry) -> {
+            selectionList.children().add(new SelectionListEntry(shellTheme.getDisplayName(), (entry) -> {
                 this.currentShellTheme = shellTheme;
 
                 for (Object child : selectionList.children()) {
-                    if (child instanceof GenericMonitorSelectionList.Entry current) {
+                    if (child instanceof SelectionListEntry current) {
                         current.setChecked(false);
                     }
                 }
@@ -201,7 +203,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
                 age = 0;
                 entry.setChecked(true);
-            }));
+            }, leftPos));
         }
 
         return selectionList;

@@ -10,6 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
+import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
@@ -47,24 +48,24 @@ public class MonitorScreen extends SelectionScreen {
 
     @Override
     protected void init() {
-        super.init();
 
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
 
-        addRenderableWidget(createSelectionList());
-
+        //Super method already creates the list, we don't need to create it a second time.
+        super.init();
     }
 
     @Override
     public GenericMonitorSelectionList createSelectionList() {
-        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 - 140, height / 2 - 55, 150, 80, 12);
+        int leftPos = this.width / 2 - 75;
+        GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 175, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 100,  12);
 
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
-        selectionList.children().add(new GenericMonitorSelectionList.Entry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen())));
-        selectionList.children().add(new GenericMonitorSelectionList.Entry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen())));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
 
         return selectionList;
     }
