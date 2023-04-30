@@ -33,6 +33,13 @@ repositories {
     }
 
     maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+
+    maven { url "https://maven.shedaniel.me/" }
+
+    maven {
+        name = "Mod Menu Maven"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 sourceSets.main.resources {
@@ -55,7 +62,7 @@ dependencies {
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
 
-    modCompileOnly "curse.maven:modmenu-308702:${rootProject.mod_menu_version}"
+    modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
     modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
 
     // Forge Config API Port
@@ -73,6 +80,16 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
+    //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
+    modCompileOnlyApi("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+        transitive(false)
+    }
+    //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
+    modCompileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_fabric_version}") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+
     // Immersive Portals End
 
     // With loom use the modRuntimeOnly configuration
