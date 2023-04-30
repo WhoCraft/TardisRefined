@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
+import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
@@ -117,11 +118,12 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public ObjectSelectionList createSelectionList() {
-        GenericMonitorSelectionList<GenericMonitorSelectionList.Entry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, width / 2 + 45, height / 2 - 60, 60, 80, 12);
+        int leftPos = width / 2 + 45;
+        GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 57, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
         selectionList.setRenderBackground(false);
         selectionList.setRenderTopAndBottom(false);
 
-        for (DesktopTheme desktop :  TardisDesktops.getRegistry().values()) {
+        for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
 
             Component name = Component.literal(MiscHelper.getCleanName(desktop.getIdentifier().getPath()));
 
@@ -133,19 +135,19 @@ public class DesktopSelectionScreen extends SelectionScreen {
                 TardisRefined.LOGGER.error("Could not process Name for datapack desktop " + desktop.getIdentifier().toString());
             }
 
-            selectionList.children().add(new GenericMonitorSelectionList.Entry(name, (entry) -> {
+            selectionList.children().add(new SelectionListEntry(name, (entry) -> {
                 previousImage = currentDesktopTheme.getPreviewTexture();
                 this.currentDesktopTheme = desktop;
 
                 for (Object child : selectionList.children()) {
-                    if (child instanceof GenericMonitorSelectionList.Entry current) {
+                    if (child instanceof SelectionListEntry current) {
                         current.setChecked(false);
                     }
                 }
                 entry.setChecked(true);
                 age = 0;
                 Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.STATIC.get(), (float) Math.random()));
-            }));
+            }, leftPos));
         }
 
         return selectionList;
