@@ -60,6 +60,7 @@ public class TardisDesktops {
      * @return
      */
     public static Map<ResourceLocation,DesktopTheme> registerDefaultDesktops() {
+        DEFAULT_DESKTOPS.clear();
         addDefaultDesktop(TardisDesktops.FACTORY_THEME);
         addDefaultDesktop(new DesktopTheme("coral", "desktop/coral"));
         addDefaultDesktop(new DesktopTheme("victorian","desktop/victorian"));
