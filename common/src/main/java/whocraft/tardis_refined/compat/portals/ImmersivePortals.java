@@ -2,7 +2,6 @@ package whocraft.tardis_refined.compat.portals;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -25,8 +24,6 @@ import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.mixin.PortalAccessorMixin;
-import whocraft.tardis_refined.common.mixin.PortalMixin;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -206,18 +203,11 @@ public class ImmersivePortals {
         interiorPortal.setInteractable(false);
 
 
-        CompoundTag tag = exteriorPortal.writePortalDataToNbt();
+        CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);
-        PortalAccessorMixin exteriorPortalMixin = (PortalAccessorMixin)exteriorPortal;
+        exteriorPortal.updatePortalFromNbt(tag);
 
-//        exteriorPortal.readPortalDataFromNbt(tag);
-        exteriorPortalMixin.readPortalDataFromNbt(tag);
-
-        tag = interiorPortal.writePortalDataToNbt();
-        tag.putBoolean("adjustPositionAfterTeleport", false);
-        PortalAccessorMixin interiorPortalMixin = (PortalAccessorMixin)interiorPortal;
-//        interiorPortal.readPortalDataFromNbt(tag);
-        interiorPortalMixin.readPortalDataFromNbt(tag);
+        interiorPortal.updatePortalFromNbt(tag);
 
         exteriorPortal.level.addFreshEntity(exteriorPortal);
         interiorPortal.level.addFreshEntity(interiorPortal);
