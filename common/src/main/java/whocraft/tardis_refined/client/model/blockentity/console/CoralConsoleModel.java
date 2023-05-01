@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
@@ -3578,9 +3579,8 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 		if (reactions.isFlying()) {
 			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 		} else {
-
-			if(globalConsoleBlock != null) {
-				animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+			if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
+				this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
 			}
 		}
 

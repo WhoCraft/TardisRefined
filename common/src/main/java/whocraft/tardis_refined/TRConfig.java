@@ -36,10 +36,12 @@ public class TRConfig {
 
     public static class Client {
         public final ForgeConfigSpec.BooleanValue CONTROL_NAMES;
+        public final ForgeConfigSpec.BooleanValue PLAY_CONSOLE_IDLE_ANIMATIONS;
 
         public Client(ForgeConfigSpec.Builder builder) {
             builder.push("rendering");
             CONTROL_NAMES = builder.comment("Toggle control name rendering").translation(ModMessages.CONFIG_CONTROL_NAMES).define("control_name_rendering", true);
+            PLAY_CONSOLE_IDLE_ANIMATIONS = builder.comment("Play idle console animations").translation(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS).define("console_idle_animations", true);
             builder.pop();
         }
 

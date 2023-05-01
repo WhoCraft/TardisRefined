@@ -124,6 +124,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add("config.tardis_refined.banned_dimensions", "Banned Dimensions");
+        add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
     }
 
     public void addControl(ConsoleControl control, String name) {

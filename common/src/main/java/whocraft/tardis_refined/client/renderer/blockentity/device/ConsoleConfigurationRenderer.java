@@ -12,6 +12,7 @@ import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelColl
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
 import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
@@ -28,6 +29,12 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
 
     @Override
     public void render(ConsoleConfigurationBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+
+        var offset = blockEntity.getBlockState().getValue(ConsoleConfigurationBlock.FACING).getNormal();
+        if (blockEntity.getLevel().getBlockEntity(blockEntity.getBlockPos().offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+            return; // Don't render the console into the console
+        }
+
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));

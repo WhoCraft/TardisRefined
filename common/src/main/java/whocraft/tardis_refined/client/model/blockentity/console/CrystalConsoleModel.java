@@ -15,6 +15,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -798,7 +799,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         if (reactions.isFlying()) {
             this.animate(reactions.ROTOR_ANIMATION, CrystalConsoleAnimations.FLIGHT, Minecraft.getInstance().player.tickCount);
         } else {
-            if(globalConsoleBlock != null) {
+            if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
                 this.animate(globalConsoleBlock.liveliness, CrystalConsoleAnimations.IDLE, Minecraft.getInstance().player.tickCount);
             }
         }
