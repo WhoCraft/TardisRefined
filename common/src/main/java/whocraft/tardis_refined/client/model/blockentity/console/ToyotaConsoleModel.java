@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -1489,11 +1490,15 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-		if(globalConsoleBlock != null) {
-			this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
-		}
 
-		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+		if (reactions.isFlying()) {
+			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+		} else {
+			if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
+				this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
+			}
+		}
+		;
 		this.throttle.xRot = (reactions.isThrottleDown()) ? -1f : 1f;
 		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
