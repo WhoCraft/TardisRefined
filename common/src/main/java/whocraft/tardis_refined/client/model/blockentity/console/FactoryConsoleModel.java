@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -2254,10 +2255,13 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
-		this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
 
-		if(globalConsoleBlock != null){
-			this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+		if (reactions.isFlying()) {
+			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+		} else {
+			if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
+				this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+			}
 		}
 
 		this.throttleLever.xRot = (reactions.isThrottleDown()) ? -155: -125;

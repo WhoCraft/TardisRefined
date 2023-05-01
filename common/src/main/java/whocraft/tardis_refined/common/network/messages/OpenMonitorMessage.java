@@ -17,7 +17,6 @@ import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.constants.NbtConstants;
 
 
 public class OpenMonitorMessage extends MessageS2C {

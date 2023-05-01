@@ -15,6 +15,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -2252,7 +2253,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 		this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-		if (globalConsoleBlock != null && !reactions.isFlying()) {
+		if (!reactions.isFlying() && TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
 			this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
 		} else {
 			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);

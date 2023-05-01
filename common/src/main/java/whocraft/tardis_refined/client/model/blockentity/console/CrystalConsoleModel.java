@@ -15,6 +15,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -553,8 +554,8 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
 
         PartDefinition exterior_control = west.addOrReplaceChild("exterior_control", CubeListBuilder.create().texOffs(133, 103).addBox(1.0F, -24.0F, -14.4F, 3.0F, 2.0F, 3.0F, new CubeDeformation(0.0F))
                 .texOffs(140, 111).addBox(1.0F, -24.75F, -14.4F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 12.0F, 0.0F));
-
-        PartDefinition bone141 = exterior_control.addOrReplaceChild("bone141", CubeListBuilder.create().texOffs(143, 116).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5F, -27.75F, -12.9F, 0.0F, -0.48F, 0.0F));
+        //Hide the bone (bone141) above the hologram stand to allow the Tardis hologram render to be shown
+//        PartDefinition bone141 = exterior_control.addOrReplaceChild("bone141", CubeListBuilder.create().texOffs(143, 116).addBox(-1.0F, -2.0F, -1.0F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5F, -27.75F, -12.9F, 0.0F, -0.48F, 0.0F));
 
         PartDefinition bone159 = west.addOrReplaceChild("bone159", CubeListBuilder.create().texOffs(76, 44).addBox(-2.0F, -1.0F, 8.0F, 4.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(99, 129).addBox(-7.0F, -0.5F, 1.0F, 2.0F, 1.0F, 3.0F, new CubeDeformation(0.0F))
@@ -798,7 +799,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         if (reactions.isFlying()) {
             this.animate(reactions.ROTOR_ANIMATION, CrystalConsoleAnimations.FLIGHT, Minecraft.getInstance().player.tickCount);
         } else {
-            if(globalConsoleBlock != null) {
+            if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
                 this.animate(globalConsoleBlock.liveliness, CrystalConsoleAnimations.IDLE, Minecraft.getInstance().player.tickCount);
             }
         }
