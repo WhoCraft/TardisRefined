@@ -22,14 +22,44 @@ public class PatternReloadListener<T extends PatternCollection> extends CodecJso
         Map<ResourceLocation, T> entries = new HashMap<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> entry : inputs.entrySet()) {
-            ResourceLocation key = entry.getKey();
+            ResourceLocation parsedInKey = entry.getKey();
+
+            //Hardcode the pattern collection id (uses theme id) to use the Tardis Refined namespace
+            //Since the theme Id is an enum, there is no way for other mods to add to it, so we can assume it is always in the Tardis Refined modid.
+            //TODO: Move away from enum system in a way that allows themes to have a namespace as well as path. It would allow for all lookup methods to not require a hardcoded namespace like we currently do.
+            ResourceLocation key = new ResourceLocation(TardisRefined.MODID, parsedInKey.getPath());
+
             JsonElement element = entry.getValue();
             // if we fail to parse json, log an error and continue
             // if we succeeded, add the resulting PatternCollection to the map and set the theme id
             this.codec.decode(JsonOps.INSTANCE, element)
                     .get()
+
                     //MUST call setThemeId as the constructor won't be initialising it since it will be used for its Codec.
-                    .ifLeft(result -> {entries.put(key, (T) result.getFirst().setThemeId(key)); TardisRefined.LOGGER.info("Adding entry {}", key);})
+                    .ifLeft(result -> {
+
+                        //Merge or replace datapack patterns for the default Tardis Refined patterns for a matching PatternCollection
+                        if (entries.containsKey(key)){
+
+                            T existingPatternCollection = entries.get(key);
+                            T newPatternCollection = result.getFirst();
+
+                            //Set the themeId of the PatternCollection (required)
+                            existingPatternCollection.setThemeId(key);
+                            newPatternCollection.setThemeId(key);
+
+                            //Merge or add to the existing pattern collection
+                            existingPatternCollection.addOrMergePatterns(newPatternCollection);
+
+                            entries.put(key, existingPatternCollection);
+                            TardisRefined.LOGGER.info("Modifying entry {} from {}", key, parsedInKey);
+                        }
+                        else {
+                            entries.put(key, (T) result.getFirst().setThemeId(key));
+                            TardisRefined.LOGGER.info("Adding entry {}", key);
+                        }
+
+                    })
                     .ifRight(partial -> TardisRefined.LOGGER.error("Failed to parse data json for {} due to: {}", key, partial.message()));
         }
         return entries;
