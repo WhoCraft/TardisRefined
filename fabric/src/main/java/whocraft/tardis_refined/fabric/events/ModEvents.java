@@ -40,17 +40,7 @@ public class ModEvents {
     }
 
     public static void addClientEvents() {
-        ClientTickEvents.START_CLIENT_TICK.register(client -> {
-            // Inelegant solution, please revise
-            if (client.level == null || client.isPaused()) {
-                if(!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
-                    TardisClientData.clearAll();
-                }
-                return;
-            }
-
-            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
-        });
+        ClientTickEvents.START_CLIENT_TICK.register(TardisClientData::tickClientData);
     }
 
 
