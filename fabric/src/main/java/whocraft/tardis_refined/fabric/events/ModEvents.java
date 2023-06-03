@@ -40,17 +40,16 @@ public class ModEvents {
     }
 
     public static void addClientEvents() {
-        ClientTickEvents.START_WORLD_TICK.register(world -> {
-            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> {
-             /*   if (world.dimension() != levelResourceKey) {
-                    return;
-                }*/
-                tardisClientData.tickClientside();
-            });
-
-            if (Minecraft.getInstance().level == null) {
-                TardisClientData.clearAll();
+        ClientTickEvents.START_CLIENT_TICK.register(client -> {
+            // Inelegant solution, please revise
+            if (client.level == null || client.isPaused()) {
+                if(!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
+                    TardisClientData.clearAll();
+                }
+                return;
             }
+
+            TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
         });
     }
 
