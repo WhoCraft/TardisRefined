@@ -17,15 +17,6 @@ public class ClientForgeBus {
             return;
         }
 
-        Minecraft client = Minecraft.getInstance();
-        // Inelegant solution, please revise
-        if (client.level == null || client.isPaused()) {
-            if(!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
-                TardisClientData.clearAll();
-            }
-            return;
-        }
-
-        TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
+        TardisClientData.tickClientData(Minecraft.getInstance());
     }
 }
