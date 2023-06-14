@@ -257,4 +257,19 @@ public class TardisClientData {
         DATA.clear();
     }
 
+    /**
+     * Called by platform-specific methods
+     * @param client Minecraft client
+     */
+    public static void tickClientData(Minecraft client) {
+        // Inelegant solution, please revise
+        if (client.level == null || client.isPaused()) {
+            if(!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
+                TardisClientData.clearAll();
+            }
+            return;
+        }
+
+        TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
+    }
 }
