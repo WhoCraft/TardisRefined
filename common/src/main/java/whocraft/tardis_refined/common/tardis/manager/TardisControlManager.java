@@ -326,7 +326,7 @@ public class TardisControlManager {
     }
 
     private boolean isSolidBlock(ServerLevel level, BlockPos pos) {
-        return level.getBlockState(pos).getMaterial().isSolidBlocking() || level.getBlockState(pos).getBlock() == Blocks.WATER || level.getBlockState(pos).getBlock() == Blocks.LAVA;
+        return level.getBlockState(pos).getMaterial().isSolid() || level.getBlockState(pos).getMaterial().isLiquid();
     }
 
     public boolean beginFlight(boolean autoLand) {
