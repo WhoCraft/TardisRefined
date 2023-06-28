@@ -285,6 +285,7 @@ public class TardisInteriorManager {
     }
 
     public void generateDesktop(DesktopTheme theme) {
+        DesktopTheme oldTheme = this.currentTheme;
         setCurrentTheme(theme);
         // Has generated before.
         if (this.operator.getInternalDoor() != null) {
@@ -299,7 +300,7 @@ public class TardisInteriorManager {
         }
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
-            TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+            TardisArchitectureHandler.generateDesktop(serverLevel, theme, oldTheme);
         }
     }
 

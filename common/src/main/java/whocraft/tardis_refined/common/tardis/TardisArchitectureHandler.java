@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
@@ -17,6 +18,8 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 import java.util.List;
 import java.util.Optional;
 
+import static whocraft.tardis_refined.common.tardis.TardisDesktops.DEFAULT_OVERGROWN_THEME;
+
 // Responsible for all the tedious generation of the desktop;
 public class TardisArchitectureHandler {
 
@@ -24,21 +27,17 @@ public class TardisArchitectureHandler {
     public static final BlockPos CORRIDOR_ENTRY_POS = new BlockPos(1000, 100, 0);
     public static final int INTERIOR_SIZE = 150;
 
-    public static void generateDesktop(ServerLevel operator, DesktopTheme theme) {
+    public static void generateDesktop(ServerLevel operator, DesktopTheme theme, DesktopTheme oldTheme) {
         TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.getIdentifier()));
 
-        // Fill the area out.
+        removeOldInterior(operator, oldTheme);
+
         BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);
         BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + INTERIOR_SIZE, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + INTERIOR_SIZE);
-
-        for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
-            operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), 1);
-        }
-
-
         List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
         desktopEntities.forEach(x -> x.discard()); //Don't teleport entities to a hard coded coordinate, that causes hanging entity out of world issues. In other cases, if another mod defines that coordinate as a safe area (possible) that will mean the entities never get killed.
-        
+
+        // Place the structure
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.getStructureLocation());
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
@@ -50,6 +49,30 @@ public class TardisArchitectureHandler {
         });
     }
 
+    public static void removeOldInterior(ServerLevel operator, DesktopTheme theme) {
+        Optional<StructureTemplate> oldStructureNBT = operator.getLevel().getStructureManager().get(theme.getStructureLocation());
+        oldStructureNBT.ifPresent(structure -> {
+            BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
+            BlockPos topCorner = offsetPosition.offset(new BlockPos(structure.getSize().getX(), structure.getSize().getY(), structure.getSize().getZ()));
+            BlockPos bottomCorner = offsetPosition.offset(new BlockPos(-structure.getSize().getX(), -structure.getSize().getY(), -structure.getSize().getZ()));
+            BlockState growthStone = BlockRegistry.GROWTH_STONE.get().defaultBlockState();
+
+            // Account for Airlock unless ther is no airlock
+            if(theme != DEFAULT_OVERGROWN_THEME) {
+                TardisLevelOperator.get(operator).ifPresent(cap -> {
+                    Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/airlock_entrance"));
+                    structureNBT.ifPresent(corrdior -> {
+                        topCorner.offset(corrdior.getSize().offset(cap.getInteriorManager().getCorridorAirlockCenter()));
+                        bottomCorner.subtract(corrdior.getSize().subtract(cap.getInteriorManager().getCorridorAirlockCenter()));
+                    });
+                });
+            }
+
+            for (BlockPos pos : BlockPos.betweenClosed(bottomCorner, topCorner)) {
+                operator.setBlock(pos, growthStone, 1);
+            }
+        });
+    }
 
     public static void buildAirlockEntranceFromStructure(StructureTemplate template, ServerLevel level) {
         BlockPos minPos = calculateArcOffset(template, DESKTOP_CENTER_POS);
@@ -124,9 +147,9 @@ public class TardisArchitectureHandler {
         return false;
     }
 
-    public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme) {
+    public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme, DesktopTheme oldTheme) {
         if(operator.getLevel() instanceof ServerLevel serverLevel){
-            generateDesktop(serverLevel, theme);
+            generateDesktop(serverLevel, theme, oldTheme);
         }
     }
 
