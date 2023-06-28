@@ -52,6 +52,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
+        if (this.TARDIS_ID == null) {
+            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (could this be an invalid block?) [" + this.getBlockPos().toShortString() + "]");
+            return;
+        }
+
         super.saveAdditional(pTag);
         pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.toString());
     }
@@ -70,11 +75,15 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos blockPos, Player player) {
+        if (this.TARDIS_ID == null) {
+            TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (could this be an invalid block?) [" + blockPos.toShortString() + "]");
+            return;
+        }
         if (level instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.TARDIS_ID.toString()));
             TardisLevelOperator.get(interior).ifPresent(cap -> {
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
-                    if(cap.getExteriorManager().getCurrentTheme() != null) {
+                    if (cap.getExteriorManager().getCurrentTheme() != null) {
                         ShellTheme theme = cap.getExteriorManager().getCurrentTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
@@ -99,13 +108,13 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
         switch (direction) {
             case 3:
-                return new BlockPos(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ() );
+                return new BlockPos(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ());
             case 2:
-                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() +1);
+                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() + 1);
             case 1:
-                return new BlockPos(getBlockPos().getX()+1, getBlockPos().getY(), getBlockPos().getZ());
+                return new BlockPos(getBlockPos().getX() + 1, getBlockPos().getY(), getBlockPos().getZ());
             case 0:
-                return new BlockPos(getBlockPos().getX() , getBlockPos().getY(), getBlockPos().getZ()-1);
+                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() - 1);
         }
 
         return getBlockPos().above();
