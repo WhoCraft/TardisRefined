@@ -5,6 +5,7 @@
 		"0": "tardis_refined:block/landing_pad",
 		"particle": "tardis_refined:block/landing_pad"
 	},
+	"render_type" : "cutout",
 	"elements": [
 		{
 			"from": [-3, 16, -3],
