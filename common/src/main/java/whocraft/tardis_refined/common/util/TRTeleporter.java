@@ -26,9 +26,9 @@ public class TRTeleporter {
     public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
         BlockPos blockpos = new BlockPos(pX, pY, pZ);
 
-        if (!canTeleportTo(blockpos, pLevel, pEntity)) {
-            return false;
-        }
+//        if (!canTeleportTo(blockpos, pLevel, pEntity)) {
+//            return false;
+//        }
 
         if (!Level.isInSpawnableBounds(blockpos)) {
             return false;

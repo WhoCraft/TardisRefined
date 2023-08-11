@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.TRTeleporter;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class DelayedTeleportData extends SavedData {
             @Nullable ServerPlayer player = server.getPlayerList().getPlayer(entry.playerUUID);
             @Nullable ServerLevel targetWorld = server.getLevel(entry.targetLevel);
             if (player != null && targetWorld != null && player.level == level) {
-                player.teleportTo(targetWorld, entry.targetVec.x(), entry.targetVec.y(), entry.targetVec.z(), entry.dir, 0);
+                TRTeleporter.performTeleport(player, targetWorld, entry.targetVec.x(), entry.targetVec.y(), entry.targetVec.z(), entry.dir(), player.getXRot());
             }
         }
     }
