@@ -29,9 +29,9 @@ public class TRTeleporter {
         int zRound = (int)pZ;
         BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
 
-        if (!canTeleportTo(blockpos, pLevel, pEntity)) {
-            return false;
-        }
+//        if (!canTeleportTo(blockpos, pLevel, pEntity)) {
+//            return false;
+//        }
 
         if (!Level.isInSpawnableBounds(blockpos)) {
             return false;
