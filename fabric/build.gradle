@@ -72,21 +72,21 @@ dependencies {
     // Immersive Portals Start
 
     // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
-    }
-    //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
-    modImplementation("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}"){
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
     //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
-    modImplementation("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_fabric_version}") {
+    modCompileOnlyApi("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}"){
+        exclude(group: "net.fabricmc.fabric-api")
+        transitive(false)
+    }
+    //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
+    modCompileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_fabric_version}") {
         exclude(group: "net.fabricmc.fabric-api")
     }
 
