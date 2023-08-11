@@ -3,7 +3,8 @@
 	"texture_size": [64, 64],
 	"render_type" : "cutout",
 	"textures": {
-		"1": "tardis_refined:block/flight_detector"
+		"1": "tardis_refined:block/flight_detector",
+		"particle": "tardis_refined:block/flight_detector"
 	},
 	"elements": [
 		{
