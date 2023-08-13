@@ -37,6 +37,8 @@ public class ModMessages {
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
     public static final String CONFIG_IDLE_CONSOLE_ANIMS = config("console_idle_animations");
 
+    public static final String CONFIG_BANNED_DIMENSIONS = config("banned_dimensions");
+
     public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
     public static final String CMD_NO_INTERNAL_DOOR = cmdOutput("no_internal_door");
     public static final String CMD_EXPORT_DESKTOP_IN_PROGRESS = cmdOutput("export_desktop.in_progress");
