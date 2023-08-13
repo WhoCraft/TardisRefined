@@ -23,9 +23,14 @@ public class LangProviderEnglish extends LanguageProvider {
     protected void addTranslations() {
 
         /*Sounds*/
-        addSound(SoundRegistry.TARDIS_LAND.get(), "TARDIS Lands");
-        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "TARDIS Flys");
-        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "TARDIS Takes off");
+        addSound(SoundRegistry.TARDIS_LAND.get(), "TARDIS lands");
+        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "TARDIS flies");
+        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "TARDIS takes off");
+        addSound(SoundRegistry.TARDIS_CRASH_LAND.get(), "TARDIS crash lands");
+        addSound(SoundRegistry.STATIC.get(), "Screen display static");
+        addSound(SoundRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator activates");
+        addSound(SoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
+        addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -123,7 +128,7 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
-        add("config.tardis_refined.banned_dimensions", "Banned Dimensions");
+        add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
     }
 
@@ -136,7 +141,8 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {
-        add("subtitle." + TardisRefined.MODID + "." + soundEvent.getLocation().getPath(), lang);
+        String subtitleKey = SoundProvider.createSubtitle(soundEvent.getLocation().getPath());
+        add(subtitleKey, lang);
     }
 
 }
