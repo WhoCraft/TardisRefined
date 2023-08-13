@@ -24,7 +24,7 @@ repositories {
 
     maven {
         name = 'Ladysnake Mods'
-        url = 'https://ladysnake.jfrog.io/artifactory/mods'
+        url = 'https://maven.ladysnake.org/releases'
     }
 
     maven {
@@ -33,6 +33,13 @@ repositories {
     }
 
     maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+
+    maven { url "https://maven.shedaniel.me/" }
+
+    maven {
+        name = "Mod Menu Maven"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 sourceSets.main.resources {

@@ -28,14 +28,14 @@ public class TardisRefinedForge {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
-        if (ModCompatChecker.immersivePortals()) {
+   /*     if (ModCompatChecker.immersivePortals()) {
             if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();
                 PortalsCompatForge.init();
             }
         } else {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
-        }
+        }*/
     }
 
     public void onGatherData(GatherDataEvent e) {
