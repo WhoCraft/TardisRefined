@@ -12,21 +12,25 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 public class RandomControl extends Control {
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        int increment = operator.getControlManager().getCordIncrement();
-        BlockPos currentExLoc = operator.getExteriorManager().getLastKnownLocation().position;
-        operator.getControlManager().getTargetLocation().position =
-                new BlockPos((currentExLoc.getX() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2),
-                        150,
-                        (currentExLoc.getZ() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2)
-                );
+    public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        if (!operator.getLevel().isClientSide()){
+            int increment = operator.getControlManager().getCordIncrement();
+            BlockPos currentExLoc = operator.getExteriorManager().getLastKnownLocation().getPosition();
+            operator.getControlManager().getTargetLocation().setPosition(
+                    new BlockPos((currentExLoc.getX() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2),
+                            150,
+                            (currentExLoc.getZ() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2)
+                    )
+            );
 
-        PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().position.toShortString()), true);
-        super.onRightClick(operator, theme, controlEntity, player);
+            PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().getPosition().toShortString()), true);
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        super.onLeftClick(operator, theme, controlEntity, player);
+    public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return false;
     }
 }

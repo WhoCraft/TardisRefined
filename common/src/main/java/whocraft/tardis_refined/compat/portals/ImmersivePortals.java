@@ -171,13 +171,13 @@ public class ImmersivePortals {
         TardisNavLocation location = operator.getExteriorManager().getLastKnownLocation();
         BlockPos entryPositionBPos = door.getEntryPosition();
         Vec3 entryPosition = new Vec3(entryPositionBPos.getX() + 0.5, entryPositionBPos.getY() + 1, entryPositionBPos.getZ() + 0.5);
-        BlockPos exteriorEntryBPos = location.position;
+        BlockPos exteriorEntryBPos = location.getPosition();
         Vec3 exteriorEntryPosition = new Vec3(exteriorEntryBPos.getX() + 0.5, exteriorEntryBPos.getY() + 1, exteriorEntryBPos.getZ() + 0.5);
 
         theme = operator.getExteriorManager().getCurrentTheme();
         PortalOffets themeData = themeToOffsetMap.get(theme);
 
-        switch (location.rotation) {
+        switch (location.getDirection()) {
             case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().east());
             case SOUTH -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().south());
             case WEST -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().west());
@@ -189,7 +189,7 @@ public class ImmersivePortals {
             case WEST -> entryPosition = entryPosition.add(themeData.intDoor().west());
             case NORTH -> entryPosition = entryPosition.add(themeData.intDoor().north());
         }
-        DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.rotation.toYRot());
+        DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
 
         Portal exteriorPortal = createPortal(operator.getExteriorManager().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);

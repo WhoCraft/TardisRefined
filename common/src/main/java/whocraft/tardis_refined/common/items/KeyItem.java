@@ -154,7 +154,7 @@ public class KeyItem extends Item {
                         var tardisLevel = Platform.getServer().levels.get(tardis);
                         TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
                             cap.getControlManager().setTargetPosition(context.getClickedPos().above());
-                            cap.getControlManager().getTargetLocation().rotation = context.getHorizontalDirection().getOpposite();
+                            cap.getControlManager().getTargetLocation().setDirection(context.getHorizontalDirection().getOpposite());
                             cap.getControlManager().beginFlight(true);
                             PlayerUtil.sendMessage(context.getPlayer(), "TARDIS ON ITS WAY", true);
                         });

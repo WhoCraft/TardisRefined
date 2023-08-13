@@ -120,8 +120,8 @@ public class TardisFlightEventManager {
         }
 
         // Calculate the distance between two points
-        var current = this.operator.getExteriorManager().getLastKnownLocation().position;
-        var target = this.operator.getControlManager().getTargetLocation().position;
+        var current = this.operator.getExteriorManager().getLastKnownLocation().getPosition();
+        var target = this.operator.getControlManager().getTargetLocation().getPosition();
         Vec3 currentVec = new Vec3(current.getX(), current.getY(), current.getZ());
         Vec3 targetVec = new Vec3(target.getX(), target.getY(), target.getZ());
 
