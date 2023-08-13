@@ -12,21 +12,23 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 public class RotationControl extends Control {
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        Direction dir = operator.getControlManager().getTargetLocation().rotation;
-        operator.getControlManager().getTargetLocation().rotation = dir.getClockWise();
-        var direction = operator.getControlManager().getTargetLocation().rotation.getSerializedName();
-        PlayerUtil.sendMessage(player, Component.translatable(direction), true);
-        super.onRightClick(operator, theme, controlEntity, player);
+    public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return this.rotateDir(operator, theme, controlEntity, player, true);
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        Direction dir = operator.getControlManager().getTargetLocation().rotation;
-        operator.getControlManager().getTargetLocation().rotation = dir.getCounterClockWise();
+    public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return this.rotateDir(operator, theme, controlEntity, player, false);
+    }
 
-        var direction = operator.getControlManager().getTargetLocation().rotation.getSerializedName();
-        PlayerUtil.sendMessage(player, Component.translatable(direction), true);
-        super.onLeftClick(operator, theme, controlEntity, player);
+    private boolean rotateDir(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean clockwise){
+        if (!operator.getLevel().isClientSide()) {
+            Direction dir = operator.getControlManager().getTargetLocation().getDirection();
+            operator.getControlManager().getTargetLocation().setDirection(clockwise ? dir.getClockWise() : dir.getCounterClockWise());
+            var direction = operator.getControlManager().getTargetLocation().getDirection().getSerializedName();
+            PlayerUtil.sendMessage(player, Component.translatable(direction), true);
+            return true;
+        }
+        return false;
     }
 }

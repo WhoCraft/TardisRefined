@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -228,39 +229,39 @@ public class TardisControlManager {
         var failOffset = 1;
         var attempts = 20;
 
-        var originalY = location.position.getY();
+        var originalY = location.getPosition().getY();
 
         // Do any specific dimension checks
         if (level.dimension() == Level.NETHER) {
-            if (location.position.getY() > 127) {
+            if (location.getPosition().getY() > 127) {
                 height = 125;
                 failOffset = 10;
-                location.position = new BlockPos(location.position.getX(), 80, location.position.getZ());
+                location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ()));
             }
         }
 
-        boolean isTargetFine = !isSolidBlock(level, location.position) && !isSolidBlock(level, location.position.above()) && isSolidBlock(level, location.position.below());
+        boolean isTargetFine = !isSolidBlock(level, location.getPosition()) && !isSolidBlock(level, location.getPosition().above()) && isSolidBlock(level, location.getPosition().below());
         if (isTargetFine) {
             var safeDir = findSafeDirection(location);
             if (safeDir != null) {return safeDir;}
         }
 
         for (int i = 0; i < attempts; i++) {
-            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
+            location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
             var result = scanUpwardsFromCord(location, height);
-            if (result != null && location.position.getY() < height && location.position.getY() > minHeight) {
+            if (result != null && location.getPosition().getY() < height && location.getPosition().getY() > minHeight) {
                 return result;
             }
 
-            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
+            location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
             result = scanDownwardsFromCord(location, minHeight);
-            if (result != null && location.position.getY() < height && location.position.getY() > minHeight) {
+            if (result != null && location.getPosition().getY() < height && location.getPosition().getY() > minHeight) {
                 return result;
             }
 
             // Try the next interval in the rotation.
-            location.position = getLegalPosition(location.getLevel(), location.position, originalY);
-            location.position = location.position.offset(location.rotation.getNormal().multiply((int) (failOffset * (1 + ((float) i * 0.1f)))));
+            location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
+            location.setPosition(location.getPosition().offset(location.getDirection().getNormal().multiply((int) (failOffset * (1 + ((float) i * 0.1f))))));
         }
 
 
@@ -280,33 +281,33 @@ public class TardisControlManager {
 
     private boolean isSafeToLand(TardisNavLocation location)
     {
-        if (!isSolidBlock(location.getLevel(), location.position) && isSolidBlock(location.getLevel(), location.position.below()) && !isSolidBlock(location.getLevel(), location.position.above())) {
-            return location.getLevel().getBlockState(location.position.below()).getBlock() != Blocks.LAVA && location.getLevel().getBlockState(location.position.below()).getBlock() != Blocks.WATER;
+        if (!isSolidBlock(location.getLevel(), location.getPosition()) && isSolidBlock(location.getLevel(), location.getPosition().below()) && !isSolidBlock(location.getLevel(), location.getPosition().above())) {
+            return !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.LAVA) && !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.WATER);
         }
         return false;
     }
 
     private TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
-        while (location.position.getY() <= maxHeight) {
+        while (location.getPosition().getY() <= maxHeight) {
             if (isSafeToLand(location)) {
                 return findSafeDirection(location);
             }
 
-            location.position = location.position.above(1);
+            location.setPosition(location.getPosition().above(1));
         }
         return null;
     }
 
 
     private TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
-        while (location.position.getY() >= minHeight) {
+        while (location.getPosition().getY() >= minHeight) {
 
             if (isSafeToLand(location)) {
 
                 return findSafeDirection(location);
             }
 
-            location.position = location.position.below(1);
+            location.setPosition(location.getPosition().below(1));
         }
 
         return null;
@@ -314,11 +315,11 @@ public class TardisControlManager {
 
     private TardisNavLocation findSafeDirection(TardisNavLocation location) {
 
-        Direction[] directions = new Direction[]{location.rotation, location.rotation.getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+        Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
         for (Direction dir : directions) {
-            BlockPos basePos = BlockPos.of(BlockPos.offset(location.position.asLong(), dir));
+            BlockPos basePos = BlockPos.of(BlockPos.offset(location.getPosition().asLong(), dir));
             if (!isSolidBlock(location.getLevel(), basePos) && !isSolidBlock(location.getLevel(), basePos.above())) {
-                return new TardisNavLocation(location.position, dir, location.getLevel());
+                return new TardisNavLocation(location.getPosition(), dir, location.getLevel());
             }
         }
 
@@ -329,34 +330,60 @@ public class TardisControlManager {
         return level.getBlockState(pos).getMaterial().isSolid() || level.getBlockState(pos).getMaterial().isLiquid();
     }
 
-    public boolean beginFlight(boolean autoLand) {
+    /**
+     * If the Tardis can start flight at the time of this method call
+     * @return true if able to, false if not
+     */
+    public boolean canBeginFlight(){
         if (isInFlight || ticksTakingOff > 0) {
             return false;
         }
-
-        this.autoLand = autoLand;
-        this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
-
-        operator.setDoorClosed(true);
-        operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
-        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
-        this.isInFlight = true;
-        this.ticksInFlight = 0;
-        this.ticksTakingOff = 1;
-        this.operator.getExteriorManager().setIsTakingOff(true);
-
-        this.operator.getTardisFlightEventManager().calculateTravelLogic();
-
-
-
         return true;
     }
 
-    public boolean endFlight() {
+    /**
+     * Logic to handle starting flight
+     * @return false if didn't start flight, true if flight was started
+     */
+    public boolean beginFlight(boolean autoLand) {
+
+        if (this.canBeginFlight()){
+            this.autoLand = autoLand;
+            this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
+
+            operator.setDoorClosed(true);
+            operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
+            operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
+            this.isInFlight = true;
+            this.ticksInFlight = 0;
+            this.ticksTakingOff = 1;
+            this.operator.getExteriorManager().setIsTakingOff(true);
+
+            this.operator.getTardisFlightEventManager().calculateTravelLogic();
+
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * If the Tardis can end flight at the time of this method call
+     * @return true if able to, false if not
+     */
+    public boolean canEndFlight(){
         if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (!this.operator.getTardisFlightEventManager().areControlEventsComplete() && !this.autoLand)) {
             return false;
         }
+        return true;
+    }
 
+    /**
+     * Logic to handle ending flight
+     * @return false if didn't end flight, true if flight was ended
+     */
+    public boolean endFlight() {
+
+        if (this.canEndFlight()){
             this.ticksInFlight = 0;
             this.ticksLanding = TICKS_LANDING_MAX;
 
@@ -371,7 +398,10 @@ public class TardisControlManager {
             operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
             operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
 
-        return true;
+            return true;
+        }
+        return false;
+
     }
 
     public void enterTimeVortex() {
@@ -379,14 +409,14 @@ public class TardisControlManager {
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
         TardisNavLocation lastKnown = operator.getExteriorManager().getLastKnownLocation();
-        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.position);
+        TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.getPosition());
     }
 
     public void onFlightEnd() {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
         this.autoLand = false;
-        TardisEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().position);
+        TardisEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().getPosition());
     }
 
     // Triggers the crash event.
@@ -407,13 +437,13 @@ public class TardisControlManager {
         }
 
         var progress = this.operator.getTardisFlightEventManager().getPercentComplete();
-        var targetPos = new Vec3(this.targetLocation.position.getX(), this.targetLocation.position.getY(), this.targetLocation.position.getZ());
-        var currentLoc = this.operator.getExteriorManager().getLastKnownLocation().position;
+        var targetPos = new Vec3(this.targetLocation.getPosition().getX(), this.targetLocation.getPosition().getY(), this.targetLocation.getPosition().getZ());
+        var currentLoc = this.operator.getExteriorManager().getLastKnownLocation().getPosition();
         var currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
-        var x = currentPos.x + ((targetPos.x - currentPos.x) * progress);
-        var y = currentPos.y + ((targetPos.y - currentPos.y) * progress);
-        var z = currentPos.z + ((targetPos.z - currentPos.z) * progress);
+        int x = (int) (currentPos.x + ((targetPos.x - currentPos.x) * progress));
+        int y = (int) (currentPos.y + ((targetPos.y - currentPos.y) * progress));
+        int z = (int) (currentPos.z + ((targetPos.z - currentPos.z) * progress));
 
         BlockPos landingLocation = new BlockPos(x, y, z);
 
@@ -439,16 +469,16 @@ public class TardisControlManager {
         TardisEvents.TARDIS_CRASH_EVENT.invoker().onTardisCrash(this.operator, this.targetLocation);
     }
 
-    public void offsetTargetPositionX(float x) {
-        this.targetLocation.position = this.targetLocation.position.offset(x, 0, 0);
+    public void offsetTargetPositionX(int x) {
+        this.targetLocation.setPosition(this.targetLocation.getPosition().offset(x, 0, 0));
     }
 
-    public void offsetTargetPositionY(float y) {
-        this.targetLocation.position = this.targetLocation.position.offset(0, y, 0);
+    public void offsetTargetPositionY(int y) {
+        this.targetLocation.setPosition(this.targetLocation.getPosition().offset(0, y, 0));
     }
 
-    public void offsetTargetPositionZ(float z) {
-        this.targetLocation.position = this.targetLocation.position.offset(0, 0, z);
+    public void offsetTargetPositionZ(int z) {
+        this.targetLocation.setPosition(this.targetLocation.getPosition().offset(0, 0, z));
     }
 
     public TardisNavLocation getTargetLocation() {
@@ -460,7 +490,7 @@ public class TardisControlManager {
     }
 
     public void setTargetPosition(BlockPos pos) {
-        this.targetLocation.position = pos;
+        this.targetLocation.setPosition(pos);
     }
 
     public int getCordIncrement() {

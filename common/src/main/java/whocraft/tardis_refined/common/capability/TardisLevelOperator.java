@@ -187,7 +187,7 @@ public class TardisLevelOperator {
 
         if (this.exteriorManager != null) {
             if (this.exteriorManager.getLastKnownLocation() != null) {
-                BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().position;
+                BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().getPosition();
                 ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().getLevel();
 
                 ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().getLevel().getChunk(targetPosition);
@@ -195,7 +195,7 @@ public class TardisLevelOperator {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (targetLevel.getBlockEntity(targetPosition) instanceof ExteriorShell shellBaseBlockEntity) {
                         BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
-                        DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().rotation.get2DDataValue() * (360 / 4));
+                        DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().getDirection().get2DDataValue() * (360 / 4));
                     }
                 }
             }

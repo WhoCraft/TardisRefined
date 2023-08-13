@@ -11,18 +11,22 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 public class IncrementControl extends Control {
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        operator.getControlManager().cycleCordIncrement(1);
-        int incrm = operator.getControlManager().getCordIncrement();
-        PlayerUtil.sendMessage(player, Component.translatable("x" + incrm), true);
-        super.onRightClick(operator, theme, controlEntity, player);
+    public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return this.incrementCoord(operator, theme, controlEntity, player, 1);
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        operator.getControlManager().cycleCordIncrement(-1);
-        int incrm = operator.getControlManager().getCordIncrement();
-        PlayerUtil.sendMessage(player, Component.translatable("x" + incrm), true);
-        super.onLeftClick(operator, theme, controlEntity, player);
+    public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return this.incrementCoord(operator, theme, controlEntity, player, -1);
+    }
+
+    private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount){
+        if (!operator.getLevel().isClientSide()){
+            operator.getControlManager().cycleCordIncrement(incAmount);
+            int currentIncAmount = operator.getControlManager().getCordIncrement();
+            PlayerUtil.sendMessage(player, Component.translatable("x" + currentIncAmount), true);
+            return true;
+        }
+        return false;
     }
 }

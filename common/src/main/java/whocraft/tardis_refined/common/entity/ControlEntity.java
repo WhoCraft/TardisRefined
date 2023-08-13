@@ -28,9 +28,11 @@ import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -167,16 +169,16 @@ public class ControlEntity extends Entity {
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
         if (interactionHand == InteractionHand.MAIN_HAND) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
+            if (this.level instanceof ServerLevel serverLevel) {
 
                 if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
                     this.handleControlSizeAndPositionAdjustment(player);
-                    return InteractionResult.SUCCESS;
                 }
-
-                this.handleRightClick(player, serverLevel, interactionHand);
-
+                else {
+                    this.handleRightClick(player, serverLevel, interactionHand);
+                }
                 return InteractionResult.SUCCESS;
+
             }
         }
 
@@ -282,7 +284,10 @@ public class ControlEntity extends Entity {
                 return;
 
             if (!interactWaitingControl(cap)) {
-                this.controlSpecification.control().getControl().onLeftClick(cap, consoleTheme, this, player);
+                Control control = this.controlSpecification.control().getControl();
+                boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
+                PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
+                control.playControlPitchedSound(cap, this, playedSound);
             }
         });
     }
@@ -302,7 +307,10 @@ public class ControlEntity extends Entity {
                 return;
 
             if (!interactWaitingControl(cap)) {
-                this.controlSpecification.control().getControl().onRightClick(cap, consoleTheme, this, player);
+                Control control = this.controlSpecification.control().getControl();
+                boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
+                PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
+                control.playControlPitchedSound(cap, this, playedSound);
             }
         });
     }

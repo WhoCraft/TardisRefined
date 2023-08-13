@@ -32,40 +32,30 @@ public class DimensionalControl extends Control {
     }
 
     @Override
-    public void onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-
-        var server = operator.getLevel().getServer();
-        if (server == null) {return;}
-        var dimensions = getAllowedDimensions(server);
-        var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().getLevel());
-        var nextIndex = (currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1;
-
-        operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
-
-        PlayerUtil.sendMessage(player,
-                Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
-
-        operator.getTardisFlightEventManager().calculateTravelLogic();
-
-        super.onLeftClick(operator, theme, controlEntity, player);
+    public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return changeDim(operator, theme, controlEntity, player, false);
     }
 
     @Override
-    public void onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-
-        var server = operator.getLevel().getServer();
-        if (server == null) {return;}
-        var dimensions = getAllowedDimensions(server);
-        var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().getLevel());
-        var nextIndex = (currentIndex >= dimensions.size()-1) ? 0 : currentIndex + 1;
-
-        operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
-
-        PlayerUtil.sendMessage(player,
-                Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
-
-        operator.getTardisFlightEventManager().calculateTravelLogic();
-
-        super.onRightClick(operator, theme, controlEntity, player);
+    public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
+        return changeDim(operator, theme, controlEntity, player, true);
     }
+
+    private boolean changeDim(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean forward) {
+        if (!operator.getLevel().isClientSide()) {
+            var server = operator.getLevel().getServer();
+            var dimensions = getAllowedDimensions(server);
+            var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().getLevel());
+            var nextIndex = forward ? ( (currentIndex >= dimensions.size()-1) ? 0 : currentIndex + 1) : ((currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1);
+
+            operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
+
+            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
+
+            operator.getTardisFlightEventManager().calculateTravelLogic();
+            return true;
+        }
+        return false;
+    }
+
 }

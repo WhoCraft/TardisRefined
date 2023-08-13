@@ -31,10 +31,10 @@ public class OpenMonitorMessage extends MessageS2C {
 
     public OpenMonitorMessage(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation) {
         this.desktopGenerating = desktopGenerating;
-        this.currentPos = currentLocation.position;
-        this.currentDir = currentLocation.rotation;
-        this.targetPos = targetLocation.position;
-        this.targetDir = targetLocation.rotation;
+        this.currentPos = currentLocation.getPosition();
+        this.currentDir = currentLocation.getDirection();
+        this.targetPos = targetLocation.getPosition();
+        this.targetDir = targetLocation.getDirection();
         this.currentKey = currentLocation.getLevel().dimension();
         this.targetKey = targetLocation.getLevel().dimension();
     }
