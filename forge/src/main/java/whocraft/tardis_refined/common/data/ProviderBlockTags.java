@@ -41,8 +41,8 @@ public class ProviderBlockTags extends BlockTagsProvider {
             }
         }
 
-        tag(BlockTags.DRAGON_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get());
-        tag(BlockTags.WITHER_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get());
+        tag(BlockTags.DRAGON_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
+        tag(BlockTags.WITHER_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
