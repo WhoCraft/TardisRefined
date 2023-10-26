@@ -274,8 +274,8 @@ public class TardisFlightEventManager {
         }
 
         // Check has the dragon been beaten?
-        if (targetPosition.getLevel().dragonFight() != null) {
-            if (((EndDragonFightAccessor) targetPosition.getLevel().dragonFight()).isDragonKilled()) {
+        if (targetPosition.getLevel().dragonFight != null) {
+            if (((EndDragonFightAccessor) targetPosition.getLevel().dragonFight).isDragonKilled()) {
                 operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
                 return;
             }

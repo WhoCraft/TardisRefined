@@ -46,7 +46,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
     protected void renderNameTag(ControlEntity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int textRenderingLayer) {
         MutableComponent textComponent = Component.literal(component.getString());
         textComponent.withStyle(style -> style
-                .applyFormats(ChatFormatting.BOLD, (entity.level.random.nextInt(50) == 0) ?  ChatFormatting.GOLD : ChatFormatting.YELLOW)
+                .applyFormats(ChatFormatting.BOLD, (entity.level().random.nextInt(50) == 0) ?  ChatFormatting.GOLD : ChatFormatting.YELLOW)
         );
 
         double distanceSquared = this.entityRenderDispatcher.distanceToSqr(entity);

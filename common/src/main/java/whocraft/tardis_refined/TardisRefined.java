@@ -36,6 +36,7 @@ public class TardisRefined {
             .registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory()).create();
 
     public static void init() {
+        ItemRegistry.TABS.register();
         BlockRegistry.BLOCKS.register();
         ItemRegistry.ITEMS.register();
         EntityRegistry.ENTITY_TYPES.register();

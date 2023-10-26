@@ -41,14 +41,14 @@ public class PlayerUtil {
 
     public static void sendMessage(LivingEntity livingEntity, String message, boolean hotBar) {
         if (!(livingEntity instanceof Player player)) return;
-        if (!player.level.isClientSide) {
+        if (!player.level().isClientSide) {
             player.displayClientMessage(Component.translatable(message), hotBar);
         }
     }
 
     public static void sendMessage(LivingEntity livingEntity, Component translation, boolean hotBar) {
         if (!(livingEntity instanceof Player player)) return;
-        if (!player.level.isClientSide) {
+        if (!player.level().isClientSide) {
             player.displayClientMessage(translation, hotBar);
         }
     }

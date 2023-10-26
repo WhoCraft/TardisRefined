@@ -15,7 +15,7 @@ public class MonitorControl extends Control {
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        if (!player.level.isClientSide()){
+        if (!player.level().isClientSide()){
             boolean isSyncingKey = false;
             if (PlayerUtil.isInMainHand(player, ItemRegistry.KEY.get())){
                 KeyItem key = (KeyItem)player.getMainHandItem().getItem();

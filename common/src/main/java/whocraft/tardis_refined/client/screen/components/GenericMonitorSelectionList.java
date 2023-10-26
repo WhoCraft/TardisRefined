@@ -2,6 +2,7 @@ package whocraft.tardis_refined.client.screen.components;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
@@ -19,8 +20,11 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
         super(minecraft, width, height, yStart, yEnd, itemHeight); //Don't add anything to the y1 variable otherwise the entry button will be slighter taller than expected
         this.setLeftPos(xLeftPos);
         this.setRenderHeader(false, 0);
-        this.setRenderTopAndBottom(false);
-        this.setRenderSelection(false);
+
+        //Todo is this important?
+        /*this.setRenderTopAndBottom(false);
+        this.setRenderSelection(false);*/
+
         this.setRenderBackground(true);
     }
 
@@ -30,8 +34,8 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        super.render(poseStack, mouseX, mouseY, partialTick);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
 

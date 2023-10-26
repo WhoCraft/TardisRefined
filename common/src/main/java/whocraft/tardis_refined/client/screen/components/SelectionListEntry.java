@@ -3,7 +3,7 @@ package whocraft.tardis_refined.client.screen.components;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 
@@ -40,7 +40,7 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
 
     /**
      *
-     * @param poseStack
+     * @param guiGraphics
      * @param index
      * @param top - the top most y position for this particular entry's row from getRowTop
      * @param left - the left most x position for this particular entry's row in the list from getRowLeft
@@ -52,13 +52,13 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
      * @param partialTick
      */
     @Override
-    public void render(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
         int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() : (this.checked ? ChatFormatting.YELLOW.getColor() :  this.itemDisplayName.getStyle().getColor() != null ? this.itemDisplayName.getStyle().getColor().getValue() : ChatFormatting.GOLD.getColor());
         Component text = Component.literal((this.checked ? "> " : "") + this.itemDisplayName.getString());
-        this.renderText(poseStack, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, colour);
+        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, colour);
     }
 
-    public void renderText(PoseStack poseStack, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour){
+    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour){
         int textWidth = Minecraft.getInstance().font.width(text);
 
         /*
@@ -74,7 +74,7 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
         int heightCentre = top + height / 2;
         int xPos = this.listLeft + 2;
         int yPos = heightCentre - 9 / 2;
-        GuiComponent.drawString(poseStack, Minecraft.getInstance().font, text, xPos, yPos, textColour);
+        guiGraphics.drawString(Minecraft.getInstance().font, text, xPos, yPos, textColour);
     }
 
     public void setChecked(boolean checked) {

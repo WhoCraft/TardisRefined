@@ -47,7 +47,7 @@ public abstract class Control {
     }
 
     public void playControlPitchedSound(TardisLevelOperator operator, ControlEntity controlEntity, PitchedSound pitchedSound, SoundSource source, float volume, float pitch, boolean ignorePitch){
-        controlEntity.getLevel().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(), source, volume, ignorePitch ? pitch : pitchedSound.getPitch());
+        controlEntity.level().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(), source, volume, ignorePitch ? pitch : pitchedSound.getPitch());
     }
 
     public void playControlPitchedSound(TardisLevelOperator operator, ControlEntity controlEntity, PitchedSound pitchedSound, float pitch){

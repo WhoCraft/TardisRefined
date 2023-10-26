@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.StringReader;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -64,36 +65,34 @@ public class DesktopSelectionScreen extends SelectionScreen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int i, int j, float f) {
-        renderBackground(poseStack);
-
+    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        renderBackground(guiGraphics, i, j, f);
+        PoseStack poseStack = guiGraphics.pose();
 
         /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
-        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 
         /*Render Interior Image*/
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, currentDesktopTheme.getPreviewTexture());
         poseStack.pushPose();
         poseStack.translate(width / 2 - 110, height / 2 - 72, 0);
         poseStack.scale(0.31333333F, 0.31333333F, 0.313333330F);
 
-        blit(poseStack, 0, 0, 0, 0, 400, 400, 400, 400);
+        guiGraphics.blit(currentDesktopTheme.getPreviewTexture(), 0, 0, 0, 0, 400, 400, 400, 400);
 
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
         RenderSystem.enableBlend();
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
         RenderSystem.setShaderTexture(0, previousImage);
-        blit(poseStack, (int) ((Math.random() * 14) - 2), (int) ((Math.random() * 14) - 2), 400, 400, 400, 400);
+        guiGraphics.blit(previousImage, (int) ((Math.random() * 14) - 2), (int) ((Math.random() * 14) - 2), 400, 400, 400, 400);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
         RenderSystem.setShaderTexture(0, NOISE);
-        blit(poseStack, 0, 0, this.noiseX, this.noiseY, 400, 400);
+        guiGraphics.blit(NOISE, 0, 0, this.noiseX, this.noiseY, 400, 400);
         RenderSystem.disableBlend();
         poseStack.popPose();
 
@@ -101,13 +100,13 @@ public class DesktopSelectionScreen extends SelectionScreen {
         /*Render Back drop*/
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, MONITOR_TEXTURE_OVERLAY);
-        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(MONITOR_TEXTURE_OVERLAY, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        super.render(poseStack, i, j, f);
+        super.render(guiGraphics, i, j, f);
     }
 
     public static void selectDesktop(DesktopTheme theme) {
-        new ChangeDesktopMessage(Minecraft.getInstance().player.getLevel().dimension(), theme).send();
+        new ChangeDesktopMessage(Minecraft.getInstance().player.level().dimension(), theme).send();
         Minecraft.getInstance().setScreen(null);
     }
 
@@ -121,7 +120,6 @@ public class DesktopSelectionScreen extends SelectionScreen {
         int leftPos = width / 2 + 45;
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 57, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
         selectionList.setRenderBackground(false);
-        selectionList.setRenderTopAndBottom(false);
 
         for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
 

@@ -147,7 +147,7 @@ public class TardisLevelOperator {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-                DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360 / 4));
+                DelayedTeleportData.getOrCreate(serverPlayer.serverLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360 / 4));
             } else {
 
                 // TODO: Scan for console units near the center to warp to.
@@ -158,7 +158,7 @@ public class TardisLevelOperator {
                     serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
                 }
                 level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-                DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
+                DelayedTeleportData.getOrCreate(serverPlayer.serverLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
             }
         }
 
@@ -195,7 +195,7 @@ public class TardisLevelOperator {
                 if (player instanceof ServerPlayer serverPlayer) {
                     if (targetLevel.getBlockEntity(targetPosition) instanceof ExteriorShell shellBaseBlockEntity) {
                         BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
-                        DelayedTeleportData.getOrCreate(serverPlayer.getLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().getDirection().get2DDataValue() * (360 / 4));
+                        DelayedTeleportData.getOrCreate(serverPlayer.serverLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().getDirection().get2DDataValue() * (360 / 4));
                     }
                 }
             }

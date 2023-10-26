@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -16,6 +17,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 // we can't teleport players from onBlockActivated as there are assumptions
 // in the right click processing that assume a player's world does not change
@@ -26,7 +29,7 @@ public class DelayedTeleportData extends SavedData {
     private List<TeleportEntry> delayedTeleports = new ArrayList<>();
 
     public static DelayedTeleportData getOrCreate(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(DelayedTeleportData::load, DelayedTeleportData::create, DATA_KEY);
+        return level.getDataStorage().computeIfAbsent(new Factory<>(DelayedTeleportData::new, DelayedTeleportData::load, DataFixTypes.SAVED_DATA_MAP_DATA), DATA_KEY);
     }
 
     public static DelayedTeleportData load(CompoundTag nbt) {
@@ -60,7 +63,7 @@ public class DelayedTeleportData extends SavedData {
         for (TeleportEntry entry : teleports) {
             @Nullable ServerPlayer player = server.getPlayerList().getPlayer(entry.playerUUID);
             @Nullable ServerLevel targetWorld = server.getLevel(entry.targetLevel);
-            if (player != null && targetWorld != null && player.level == level) {
+            if (player != null && targetWorld != null && player.level() == level) {
                 TRTeleporter.performTeleport(player, targetWorld, entry.targetVec.x(), entry.targetVec.y(), entry.targetVec.z(), entry.dir(), player.getXRot());
             }
         }

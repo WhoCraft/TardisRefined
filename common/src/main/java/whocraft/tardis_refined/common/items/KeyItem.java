@@ -125,7 +125,7 @@ public class KeyItem extends Item {
 
     public boolean interactMonitor(ItemStack itemStack, Player player, ControlEntity control, InteractionHand interactionHand) {
 
-        if (control.level instanceof ServerLevel serverLevel) {
+        if (control.level() instanceof ServerLevel serverLevel) {
             ResourceKey<Level> tardis = serverLevel.dimension();
             if (control.controlSpecification().control() != null) {
                 if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis)) {

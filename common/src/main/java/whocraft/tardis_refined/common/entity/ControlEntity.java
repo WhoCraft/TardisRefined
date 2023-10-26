@@ -164,7 +164,7 @@ public class ControlEntity extends Entity {
     @Override
     public boolean hurt(DamageSource damageSource, float f) {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
-            if (this.level instanceof ServerLevel serverLevel) {
+            if (this.level() instanceof ServerLevel serverLevel) {
                 handleLeftClick(player, serverLevel);
                 return true;
             }
@@ -175,7 +175,7 @@ public class ControlEntity extends Entity {
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
         if (interactionHand == InteractionHand.MAIN_HAND) {
-            if (this.level instanceof ServerLevel serverLevel) {
+            if (this.level() instanceof ServerLevel serverLevel) {
 
                 if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
                     this.handleControlSizeAndPositionAdjustment(player);
@@ -195,7 +195,7 @@ public class ControlEntity extends Entity {
     public void tick() {
 
 
-        if (level instanceof ServerLevel serverLevel) {
+        if (level() instanceof ServerLevel serverLevel) {
             if (this.controlSpecification == null) {
                 if (this.consoleBlockPos != null) {
                     if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
@@ -214,8 +214,8 @@ public class ControlEntity extends Entity {
             }
         } else {
             if (getEntityData().get(SHOW_PARTICLE)) {
-                if (getLevel().random.nextInt(5) == 0) {
-                    this.level.addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
+                if (level().random.nextInt(5) == 0) {
+                    this.level().addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         }

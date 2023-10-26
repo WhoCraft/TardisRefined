@@ -167,7 +167,7 @@ public class TardisClientData {
 
         // Responsible for screen-shake. Not sure of a better solution at this point in time.
         if (isInDangerZone || isCrashing) {
-            if (Minecraft.getInstance().player.level.dimension() == levelKey) {
+            if (Minecraft.getInstance().player.level().dimension() == levelKey) {
                 var player = Minecraft.getInstance().player;
                 player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                 player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);

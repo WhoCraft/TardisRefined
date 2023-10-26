@@ -16,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.util.Unit;
+import net.minecraft.world.RandomSequences;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
@@ -100,7 +101,8 @@ public class DimensionHandlerImpl {
                 // phantoms, raiders, travelling traders, cats are overworld special spawns
                 // the dimension loader is hardcoded to initialize preexisting non-overworld worlds with no special spawn lists
                 // so this can probably be left empty for best results and spawns should be handled via other means
-                false); // "tick time", true for overworld, always false for everything else
+                false, // "tick time", true for overworld, always false for everything else
+                new RandomSequences(BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed())));
 
         addDimension(newLevel.dimension());
 
@@ -114,7 +116,12 @@ public class DimensionHandlerImpl {
         BlockPos blockpos = new BlockPos(0, 0, 0);
         chunkListener.updateSpawnPos(new ChunkPos(blockpos));
         ServerChunkCache serverchunkcache = newLevel.getChunkSource();
+
+        //TODO Is this important?
+/*
         serverchunkcache.getLightEngine().setTaskPerBatch(500);
+*/
+
         serverchunkcache.addRegionTicket(TicketType.START, new ChunkPos(blockpos), 11, Unit.INSTANCE);
 
         return newLevel;

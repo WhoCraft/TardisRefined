@@ -28,8 +28,8 @@ public abstract class PortalMixin implements TardisPortalData {
     private void onTick(CallbackInfo ci) {
         Portal thisPortal = (Portal) (Object) this;
         // Just in case the portal persists
-        if(this.tardisID != null && !thisPortal.level.isClientSide) {
-            ServerLevel serverLevel = (ServerLevel) thisPortal.level;
+        if(this.tardisID != null && !thisPortal.level().isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) thisPortal.level();
             if (ImmersivePortals.tardisToPortalsMap.get(tardisID) == null) {
                 thisPortal.kill();
                 if(serverLevel.dimension().location().getPath().equals(tardisID.toString())) {

@@ -327,7 +327,7 @@ public class TardisControlManager {
     }
 
     private boolean isSolidBlock(ServerLevel level, BlockPos pos) {
-        return level.getBlockState(pos).getMaterial().isSolid() || level.getBlockState(pos).getMaterial().isLiquid();
+        return level.getBlockState(pos).isSolid() || level.getBlockState(pos).liquid();
     }
 
     /**

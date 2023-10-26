@@ -1,10 +1,10 @@
 package whocraft.tardis_refined.client.screen.selections;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -47,9 +47,14 @@ public class SelectionScreen extends Screen {
         super.init();
 
         if (onSubmit != null) {
-            this.selectButton = this.addRenderableWidget(new ImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
+
+            WidgetSprites widgetSprites = new WidgetSprites(BUTTON_LOCATION, BUTTON_LOCATION);
+
+        /*    this.selectButton = this.addRenderableWidget(new ImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
                 this.onSubmit.onPress();
-            }));
+            }));*/
+            //TODO Fix ImageButton
+
         }
 
         list = createSelectionList();
@@ -59,19 +64,22 @@ public class SelectionScreen extends Screen {
     }
 
     public void addSubmitButton(int x, int y) {
-        if (onSubmit != null) {
+      /*  if (onSubmit != null) {
             this.selectButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
                 this.onSubmit.onPress();
             }));
-        }
+        }*/
+        //TODO Fix ImageButton
     }
 
     public void addCancelButton(int x, int y) {
-        if (onCancel != null) {
+     /*   if (onCancel != null) {
             this.cancelButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
                 this.onCancel.onPress();
             }));
-        }
+        }*/
+        //TODO Fix ImageButton
+
     }
 
     public ObjectSelectionList createSelectionList() {
@@ -89,9 +97,9 @@ public class SelectionScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int i, int j, float f) {
-        super.render(poseStack, i, j, f);
-        ScreenHelper.renderWidthScaledText(title.getString(), poseStack, Minecraft.getInstance().font, width / 2, height / 2 - 100, Color.LIGHT_GRAY.getRGB(), 300, true);
+    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        super.render(guiGraphics, i, j, f);
+        ScreenHelper.renderWidthScaledText(title.getString(), guiGraphics, Minecraft.getInstance().font, width / 2, height / 2 - 100, Color.LIGHT_GRAY.getRGB(), 300, true);
     }
 
     @Override

@@ -5,9 +5,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexSorting;
 import com.mojang.brigadier.StringReader;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
@@ -87,14 +90,20 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
     public void selectShell(ShellTheme theme) {
-        new ChangeShellMessage(Minecraft.getInstance().player.getLevel().dimension(), theme, pattern).send();
+        new ChangeShellMessage(Minecraft.getInstance().player.level().dimension(), theme, pattern).send();
         Minecraft.getInstance().setScreen(null);
     }
 
 
     @Override
-    public void render(PoseStack poseStack, int i, int j, float f) {
-        renderBackground(poseStack);
+    public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        renderBackground(guiGraphics, i, j, f);
+
+        /*Render Widgets*/
+        super.render(guiGraphics, i, j, f);
+
+        PoseStack poseStack = guiGraphics.pose();
+
 
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;
@@ -115,8 +124,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
-        blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
         ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
@@ -130,7 +138,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         Matrix4f matrix4f = new Matrix4f().translate(-0.34F, 0.1F, 0.0F);
         matrix4f.mul(new Matrix4f().perspective(Integer.MAX_VALUE, 1.3333334F, 9.0F, Integer.MAX_VALUE));
         RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(matrix4f);
+        RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.DISTANCE_TO_ORIGIN); //TODO what is this
 
 
         poseStack.pushPose();
@@ -154,15 +162,11 @@ public class ShellSelectionScreen extends SelectionScreen {
         Lighting.setupFor3DItems();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        /*Render Widgets*/
-        super.render(poseStack, i, j, f);
-
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
         if (isCrashed) {
             RenderSystem.enableBlend();
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
-            RenderSystem.setShaderTexture(0, NOISE);
-            blit(poseStack, leftPos, topPos, this.noiseX, this.noiseY, imageWidth, imageHeight);
+            guiGraphics.blit(NOISE, leftPos, topPos, this.noiseX, this.noiseY, imageWidth, imageHeight);
             RenderSystem.disableBlend();
         }
 
@@ -179,7 +183,6 @@ public class ShellSelectionScreen extends SelectionScreen {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 100, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
 
         selectionList.setRenderBackground(false);
-        selectionList.setRenderTopAndBottom(false);
 
         for (ShellTheme shellTheme : ShellTheme.values()) {
             selectionList.children().add(new SelectionListEntry(shellTheme.getDisplayName(), (entry) -> {

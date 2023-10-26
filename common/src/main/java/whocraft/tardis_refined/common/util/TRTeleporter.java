@@ -53,7 +53,7 @@ public class TRTeleporter {
                     serverPlayer.stopSleepInBed(true, true);
                 }
 
-                if (pLevel == pEntity.level) {
+                if (pLevel == pEntity.level()) {
                     serverPlayer.connection.teleport(pX, pY, pZ, f, f1);
                 } else {
                     serverPlayer.teleportTo(pLevel, pX, pY, pZ, f, f1);
@@ -61,7 +61,7 @@ public class TRTeleporter {
                 pEntity.setYHeadRot(f);
             } else {
                 float f2 = Mth.clamp(f1, -90.0F, 90.0F);
-                if (pLevel == pEntity.level) {
+                if (pLevel == pEntity.level()) {
                     pEntity.moveTo(pX, pY, pZ, f, f2);
                     pEntity.setYHeadRot(f);
                 } else {

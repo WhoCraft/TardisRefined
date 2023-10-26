@@ -47,8 +47,8 @@ public class ImmersivePortals {
         if (world != null) return world;
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
         final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
-        DimensionAPI.addDimensionDynamically(id.location(), dimensionFactory.apply(server, dimensionKey));
-        DimensionAPI.saveDimensionConfiguration(id);
+        DimensionAPI.addDimensionDynamically(server, id.location(), dimensionFactory.apply(server, dimensionKey));
+        // TODO, Is this important? DimensionAPI.saveDimensionConfiguration(id);
         world = server.getLevel(id);
         DimensionHandler.addDimension(world.dimension());
         return world;
@@ -209,8 +209,8 @@ public class ImmersivePortals {
 
         interiorPortal.updatePortalFromNbt(tag);
 
-        exteriorPortal.level.addFreshEntity(exteriorPortal);
-        interiorPortal.level.addFreshEntity(interiorPortal);
+        exteriorPortal.level().addFreshEntity(exteriorPortal);
+        interiorPortal.level().addFreshEntity(interiorPortal);
     }
 
     @ExpectPlatform
@@ -237,12 +237,12 @@ public class ImmersivePortals {
 
         Portal newPortal = entityType.create(world);
         ((TardisPortalData) newPortal).setTardisID(UUID.fromString(world.dimension().location().getPath()));
-        newPortal.dimensionTo = portal.level.dimension();
+        newPortal.dimensionTo = portal.level().dimension();
         newPortal.setPos(doorPos);
         newPortal.setDestination(portal.getOriginPos());
         newPortal.specificPlayerId = portal.specificPlayerId;
 
-        newPortal.initCullableRange(portal.cullableXStart * portal.scaling, portal.cullableXEnd * portal.scaling, -portal.cullableYStart * portal.scaling, -portal.cullableYEnd * portal.scaling);
+        //TODO Is this important? newPortal.initCullableRange(portal.cullableXStart * portal.scaling, portal.cullableXEnd * portal.scaling, -portal.cullableYStart * portal.scaling, -portal.cullableYEnd * portal.scaling);
 
         newPortal.width = portal.width;
         newPortal.height = portal.height;
