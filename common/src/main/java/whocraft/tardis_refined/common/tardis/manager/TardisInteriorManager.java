@@ -51,8 +51,6 @@ public class TardisInteriorManager {
     private int airlockTimerSeconds = 5;
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
-    public static final ProtectedZone CORRIDOR_HUB = new ProtectedZone(new BlockPos(978, 146, 34), new BlockPos(1046, 69, -18));
-
     public DesktopTheme preparedTheme() {
         return preparedTheme;
     }
