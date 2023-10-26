@@ -5,11 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.event.network.CustomPayloadEvent;
+import net.minecraftforge.network.*;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -20,14 +18,16 @@ import java.util.function.Supplier;
 
 public class NetworkManagerImpl extends NetworkManager {
 
+
     private final SimpleChannel channel;
 
     public NetworkManagerImpl(ResourceLocation channelName) {
         super(channelName);
-        this.channel = NetworkRegistry.newSimpleChannel(channelName, () -> "1.0.0", (s) -> true, (s) -> true);
-        this.channel.registerMessage(0, ToServer.class, ToServer::toBytes, ToServer::new, ToServer::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
+
+        this.channel = ChannelBuilder.named(channelName).networkProtocolVersion(1).simpleChannel();
+   /*     this.channel.registerMessage(0, ToServer.class, ToServer::toBytes, ToServer::new, ToServer::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
         this.channel.registerMessage(1, ToClient.class, ToClient::toBytes, ToClient::new, ToClient::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-    }
+*/    }
 
     public static NetworkManager create(ResourceLocation channelName) {
         return new NetworkManagerImpl(channelName);
@@ -39,9 +39,9 @@ public class NetworkManagerImpl extends NetworkManager {
             System.out.println("Message type not registered: " + message.getType().getId());
             return;
         }
-
-        this.channel.sendToServer(new ToServer(message));
+        channel.send(new ToServer(message), PacketDistributor.SERVER.noArg());
     }
+
 
     @Override
     public void sendToPlayer(ServerPlayer player, MessageS2C message) {
@@ -50,8 +50,10 @@ public class NetworkManagerImpl extends NetworkManager {
             return;
         }
 
-        this.channel.send(PacketDistributor.PLAYER.with(() -> player), new ToClient(message));
+        if (channel.isRemotePresent(player.connection.getConnection()) && !player.connection.getConnection().isMemoryConnection())
+            channel.send(new ToClient(message), PacketDistributor.PLAYER.with(player));
     }
+
 
     @Override
     public void sendToTracking(Entity entity, MessageS2C message) {
@@ -59,7 +61,7 @@ public class NetworkManagerImpl extends NetworkManager {
             System.out.println("Message type not registered: " + message.getType().getId());
             return;
         }
-        this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
+        this.channel.send(message, PacketDistributor.TRACKING_ENTITY_AND_SELF.with(entity));
     }
 
     @Override
@@ -68,7 +70,8 @@ public class NetworkManagerImpl extends NetworkManager {
             System.out.println("Message type not registered: " + message.getType().getId());
             return;
         }
-        this.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos())), message);
+
+        this.channel.send(message, PacketDistributor.TRACKING_CHUNK.with(blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos())));
     }
 
 
@@ -93,7 +96,7 @@ public class NetworkManagerImpl extends NetworkManager {
             this.message = (MessageC2S) type.getDecoder().decode(buf);
         }
 
-        public static void handle(ToServer msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(ToServer msg, Supplier<CustomPayloadEvent.Context> ctx) {
             if (msg.message != null) {
                 ctx.get().enqueueWork(() -> msg.message.handle(() -> ctx.get().getSender()));
             }
@@ -128,7 +131,7 @@ public class NetworkManagerImpl extends NetworkManager {
             this.message = (MessageS2C) type.getDecoder().decode(buf);
         }
 
-        public static void handle(ToClient msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(ToClient msg, Supplier<CustomPayloadEvent.Context> ctx) {
             if (msg.message != null) {
                 ctx.get().enqueueWork(() -> msg.message.handle(() -> null));
             }

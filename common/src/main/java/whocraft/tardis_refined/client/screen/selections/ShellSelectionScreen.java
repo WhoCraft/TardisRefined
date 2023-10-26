@@ -3,23 +3,18 @@ package whocraft.tardis_refined.client.screen.selections;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexSorting;
 import com.mojang.brigadier.StringReader;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import org.joml.Matrix4f;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
@@ -97,10 +92,8 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        renderBackground(guiGraphics, i, j, f);
 
-        /*Render Widgets*/
-        super.render(guiGraphics, i, j, f);
+        this.renderTransparentBackground(guiGraphics);
 
         PoseStack poseStack = guiGraphics.pose();
 
@@ -121,46 +114,17 @@ public class ShellSelectionScreen extends SelectionScreen {
             }
         }
 
+
         /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-        ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
 
 
-        model.setDoorPosition(false);
+        renderShell(guiGraphics, width / 2- 75, height / 2 - 20, 25F);
 
-        Lighting.setupForFlatItems();
-        int k = (int) this.minecraft.getWindow().getGuiScale();
-        RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
-        Matrix4f matrix4f = new Matrix4f().translate(-0.34F, 0.1F, 0.0F);
-        matrix4f.mul(new Matrix4f().perspective(Integer.MAX_VALUE, 1.3333334F, 9.0F, Integer.MAX_VALUE));
-        RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.DISTANCE_TO_ORIGIN); //TODO what is this
-
-
-        poseStack.pushPose();
-        PoseStack.Pose pose = poseStack.last();
-        pose.pose().identity();
-        pose.normal().identity();
-        poseStack.translate(2, 0.25, 1984.0);
-        poseStack.scale(2F, 2F, 2F);
-
-        poseStack.mulPose(Axis.YP.rotationDegrees(minecraft.level.getGameTime()));
-        poseStack.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
-
-        MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(pattern, false)));
-        model.renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        bufferSource.endBatch();
-        poseStack.popPose();
-        RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
-        RenderSystem.restoreProjectionMatrix();
-        Lighting.setupFor3DItems();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
         if (isCrashed) {
@@ -169,8 +133,33 @@ public class ShellSelectionScreen extends SelectionScreen {
             guiGraphics.blit(NOISE, leftPos, topPos, this.noiseX, this.noiseY, imageWidth, imageHeight);
             RenderSystem.disableBlend();
         }
+        super.render(guiGraphics, i, j, f);
+
 
     }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+       // super.renderBackground(guiGraphics, i, j, f);
+    }
+
+    private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
+        ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
+        model.setDoorOpen(false);
+        Lighting.setupForEntityInInventory();
+        PoseStack pose = guiGraphics.pose();
+        pose.pushPose();
+        pose.translate((float) x, y, 100.0F);
+        pose.scale(-scale, scale, scale);
+        pose.mulPose(Axis.XP.rotationDegrees(-45F));
+        pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount));
+        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.texture(pattern, false)));
+        model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        guiGraphics.flush();
+        pose.popPose();
+        Lighting.setupFor3DItems();
+    }
+
 
     @Override
     public Component getSelectedDisplayName() {

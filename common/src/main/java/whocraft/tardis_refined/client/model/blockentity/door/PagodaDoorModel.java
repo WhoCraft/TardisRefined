@@ -104,7 +104,7 @@ public class PagodaDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorPosition(boolean open) {
+	public void setDoorOpen(boolean open) {
 		this.door.yRot = (open) ? -275f : 0;
 	}
 

@@ -67,8 +67,9 @@ public class MonitorScreen extends SelectionScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        super.render(guiGraphics, i, j, f);
 
-        this.renderBackground(guiGraphics, i, j, f);
+        this.renderTransparentBackground(guiGraphics);
 
         /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -92,6 +93,5 @@ public class MonitorScreen extends SelectionScreen {
         ScreenHelper.renderWidthScaledText(targetLocation.getDirection().getName().toUpperCase() + " @ " + targetLocation.getPosition().toShortString(), guiGraphics, Minecraft.getInstance().font, width / 2 + 10, textOffset + 60, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
         ScreenHelper.renderWidthScaledText(MiscHelper.getCleanDimensionName(targetLocation.getDimensionKey()), guiGraphics, Minecraft.getInstance().font, width / 2 + 10, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
 
-        super.render(guiGraphics, i, j, f);
     }
 }

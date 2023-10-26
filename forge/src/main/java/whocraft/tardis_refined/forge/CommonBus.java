@@ -47,7 +47,7 @@ public class CommonBus {
     @SubscribeEvent
     public static void onBlockPlace(BlockEvent.EntityPlaceEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (MiscHelper.shouldStopItem(event.getEntity().getLevel(), player, event.getPos(), player.getMainHandItem())) {
+            if (MiscHelper.shouldStopItem(event.getEntity().level(), player, event.getPos(), player.getMainHandItem())) {
                 event.getLevel().destroyBlock(event.getPos(), true);
             }
         }
@@ -55,7 +55,7 @@ public class CommonBus {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        event.setCanceled(MiscHelper.shouldCancelBreaking(event.getPlayer().level, event.getPlayer(), event.getPos(), event.getState()));
+        event.setCanceled(MiscHelper.shouldCancelBreaking(event.getPlayer().level(), event.getPlayer(), event.getPos(), event.getState()));
     }
 
 }

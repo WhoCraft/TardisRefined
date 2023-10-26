@@ -168,7 +168,7 @@ public class GrowthShellModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorPosition(boolean open) {
+	public void setDoorOpen(boolean open) {
 
 	}
 

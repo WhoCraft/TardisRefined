@@ -15,7 +15,7 @@ public class PresentShellModel extends ShellModel {
 	private final ModelPart door;
 
 	@Override
-	public void setDoorPosition(boolean open) {
+	public void setDoorOpen(boolean open) {
 		this.door.xRot = (open) ? 1.5f :0;
 	}
 

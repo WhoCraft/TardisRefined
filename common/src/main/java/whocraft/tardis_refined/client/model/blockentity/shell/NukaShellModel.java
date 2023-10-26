@@ -10,7 +10,6 @@ import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -80,7 +79,7 @@ public class NukaShellModel extends ShellModel {
 									AnimationChannel.Interpolations.LINEAR))).build();
 
 	@Override
-	public void setDoorPosition(boolean open) {
+	public void setDoorOpen(boolean open) {
 		if (open) {
 			this.left_door.yRot = 250f;
 			this.right_door.yRot = -250f;

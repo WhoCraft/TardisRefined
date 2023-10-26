@@ -3,10 +3,7 @@ package whocraft.tardis_refined.common.dimension.forge;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -15,12 +12,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.server.level.progress.ChunkProgressListener;
 import net.minecraft.util.Unit;
+import net.minecraft.world.RandomSequences;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.dimension.LevelStem;
-import net.minecraft.world.level.levelgen.WorldGenSettings;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
@@ -43,7 +40,7 @@ public class DimensionHandlerImpl {
 
     public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
 
-    public static void addDimension(ResourceKey<Level> resourceKey){
+    public static void addDimension(ResourceKey<Level> resourceKey) {
         LEVELS.add(resourceKey);
         writeLevels();
     }
@@ -105,7 +102,8 @@ public class DimensionHandlerImpl {
                 // phantoms, raiders, travelling traders, cats are overworld special spawns
                 // the dimension loader is hardcoded to initialize preexisting non-overworld worlds with no special spawn lists
                 // so this can probably be left empty for best results and spawns should be handled via other means
-                false); // "tick time", true for overworld, always false for everything else
+                false, // "tick time", true for overworld, always false for everything else
+                new RandomSequences(BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed())));
 
         addDimension(newLevel.dimension());
 
@@ -120,7 +118,7 @@ public class DimensionHandlerImpl {
         BlockPos blockpos = new BlockPos(0, 0, 0);
         chunkListener.updateSpawnPos(new ChunkPos(blockpos));
         ServerChunkCache serverchunkcache = newLevel.getChunkSource();
-        serverchunkcache.getLightEngine().setTaskPerBatch(500);
+        //TODO Is this important? serverchunkcache.getLightEngine().setTaskPerBatch(500);
         serverchunkcache.addRegionTicket(TicketType.START, new ChunkPos(blockpos), 11, Unit.INSTANCE);
 
         return newLevel;

@@ -19,7 +19,7 @@ import java.util.Map;
 public abstract class NetworkManager {
 
     protected final ResourceLocation channelName;
-    protected final Map<String, MessageType> toServer = new HashMap<>();
+    public static final Map<String, MessageType> toServer = new HashMap<>();
     protected final Map<String, MessageType> toClient = new HashMap<>();
 
     @ExpectPlatform
@@ -61,6 +61,7 @@ public abstract class NetworkManager {
 
     public void sendToAllPlayers(MessageS2C message){
         MinecraftServer server = Platform.getServer();
+        if(server == null) return;
         List<ServerPlayer> players = server.getPlayerList().getPlayers();
         players.forEach(entry -> sendToPlayer(entry, message));
     }

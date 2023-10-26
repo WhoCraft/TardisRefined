@@ -56,8 +56,8 @@ dependencies {
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
 
-    common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }
+    common(project(path: ":common", configuration: "namedElements"))
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge"))
 }
 
 def resourceTargets = ["META-INF/mods.toml", "pack.mcmeta"]

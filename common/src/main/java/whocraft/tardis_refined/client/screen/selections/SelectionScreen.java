@@ -4,13 +4,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
+import whocraft.tardis_refined.client.screen.components.OldImageButton;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
@@ -47,13 +47,9 @@ public class SelectionScreen extends Screen {
         super.init();
 
         if (onSubmit != null) {
-
-            WidgetSprites widgetSprites = new WidgetSprites(BUTTON_LOCATION, BUTTON_LOCATION);
-
-        /*    this.selectButton = this.addRenderableWidget(new ImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
+            this.selectButton = this.addRenderableWidget(new OldImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
                 this.onSubmit.onPress();
-            }));*/
-            //TODO Fix ImageButton
+            }));
 
         }
 
@@ -64,21 +60,19 @@ public class SelectionScreen extends Screen {
     }
 
     public void addSubmitButton(int x, int y) {
-      /*  if (onSubmit != null) {
-            this.selectButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
+        if (onSubmit != null) {
+            this.selectButton = this.addRenderableWidget(new OldImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
                 this.onSubmit.onPress();
             }));
-        }*/
-        //TODO Fix ImageButton
+        }
     }
 
     public void addCancelButton(int x, int y) {
-     /*   if (onCancel != null) {
-            this.cancelButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
+        if (onCancel != null) {
+            this.cancelButton = this.addRenderableWidget(new OldImageButton(x, y, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
                 this.onCancel.onPress();
             }));
-        }*/
-        //TODO Fix ImageButton
+        }
 
     }
 
@@ -109,8 +103,7 @@ public class SelectionScreen extends Screen {
         this.age++;
         this.noiseX = random.nextInt(736);
         this.noiseY = random.nextInt(414);
-        if (this.age % 3 == 0)
-            this.noiseAlpha = random.nextDouble();
+        if (this.age % 3 == 0) this.noiseAlpha = random.nextDouble();
     }
 
     public interface SelectionScreenRun {

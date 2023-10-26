@@ -66,7 +66,8 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        renderBackground(guiGraphics, i, j, f);
+        this.renderTransparentBackground(guiGraphics);
+
         PoseStack poseStack = guiGraphics.pose();
 
         /*Render Back drop*/
@@ -87,7 +88,6 @@ public class DesktopSelectionScreen extends SelectionScreen {
         RenderSystem.enableBlend();
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
-        RenderSystem.setShaderTexture(0, previousImage);
         guiGraphics.blit(previousImage, (int) ((Math.random() * 14) - 2), (int) ((Math.random() * 14) - 2), 400, 400, 400, 400);
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (float) alpha);
@@ -99,15 +99,21 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
         /*Render Back drop*/
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, MONITOR_TEXTURE_OVERLAY);
         guiGraphics.blit(MONITOR_TEXTURE_OVERLAY, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         super.render(guiGraphics, i, j, f);
+
+
     }
 
     public static void selectDesktop(DesktopTheme theme) {
         new ChangeDesktopMessage(Minecraft.getInstance().player.level().dimension(), theme).send();
         Minecraft.getInstance().setScreen(null);
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+
     }
 
     @Override

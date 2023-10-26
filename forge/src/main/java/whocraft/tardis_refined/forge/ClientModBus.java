@@ -4,12 +4,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.registries.ForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.ParticleGallifrey;
@@ -27,9 +30,22 @@ import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRender
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.RegistrySupplier;
+
+import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
+
+    @SubscribeEvent
+    public static void on(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTab() == ItemRegistry.getCreativeTab()) {
+            for (RegistrySupplier<Item> item : ItemRegistry.TAB_ITEMS.stream().toList()) {
+                event.accept(item.get());
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void event(EntityRenderersEvent.RegisterLayerDefinitions event) {

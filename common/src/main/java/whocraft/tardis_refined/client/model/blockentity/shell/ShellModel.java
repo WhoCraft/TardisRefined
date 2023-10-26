@@ -11,7 +11,6 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +21,7 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 
 public abstract class ShellModel extends HierarchicalModel {
 
-    public abstract void setDoorPosition(boolean open);
+    public abstract void setDoorOpen(boolean open);
 
     public abstract boolean isDoorModel();
 
@@ -71,7 +70,7 @@ public abstract class ShellModel extends HierarchicalModel {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
 
-        setDoorPosition(isDoorOpen);
+        setDoorOpen(isDoorOpen);
 
         if (reactions.isLanding()) {
             this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime * ANIMATION_SPEED);
