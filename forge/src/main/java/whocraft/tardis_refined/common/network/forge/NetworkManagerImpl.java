@@ -27,8 +27,8 @@ public class NetworkManagerImpl extends NetworkManager {
         super(channelName);
 
         this.channel = ChannelBuilder.named(channelName).networkProtocolVersion(1).simpleChannel();
-        this.channel.messageBuilder(ToServer.class, NetworkDirection.PLAY_TO_SERVER).encoder(ToServer::toBytes).decoder(ToServer::new).add();
-        this.channel.messageBuilder(ToClient.class, NetworkDirection.PLAY_TO_CLIENT).encoder(ToClient::toBytes).decoder(ToClient::new).add();
+        this.channel.messageBuilder(ToServer.class, NetworkDirection.PLAY_TO_SERVER).encoder(ToServer::toBytes).decoder(ToServer::new).consumerMainThread((toServer, context) -> ToServer.handle(toServer, () -> context)).add();
+        this.channel.messageBuilder(ToClient.class, NetworkDirection.PLAY_TO_CLIENT).encoder(ToClient::toBytes).decoder(ToClient::new).consumerMainThread((toClient, context) -> ToClient.handle(toClient, () -> context)).add();
     }
 
     public static NetworkManager create(ResourceLocation channelName) {
