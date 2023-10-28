@@ -80,7 +80,7 @@ public class TardisInteriorManager {
         ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
 
-        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, CORRIDOR_HUB};
+        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck};
     }
 
     public DesktopTheme currentTheme() {

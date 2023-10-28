@@ -22,9 +22,9 @@ loom {
 
     }
 
-    launches {
+    runs {
         data {
-            arg "--existing", project(":common").file("src/main/resources/").absolutePath
+            programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
         }
     }
 }
@@ -45,11 +45,11 @@ dependencies {
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
 
-    modCompileOnly "curse.maven:worldedit-225608:${world_edit_version}"
+ //   modCompileOnly "curse.maven:worldedit-225608:${world_edit_version}"
 //    modCompileOnly "curse.maven:structure-expansion-398430:${structure_expansion_version}"
 
-    modCompileOnly "curse.maven:configured-457570:${configured_version}"
-    modCompileOnly "curse.maven:jei-238222:${jei_version}"
+//    modCompileOnly "curse.maven:configured-457570:${configured_version}"
+ //   modCompileOnly "curse.maven:jei-238222:${jei_version}"
 
     compileOnly "curse.maven:immersive-portals-355440:${immersive_portals_forge_version}"
 
@@ -101,17 +101,17 @@ shadowJar {
     exclude "fabric.mod.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "forge"
+    archiveClassifier = "forge"
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {
