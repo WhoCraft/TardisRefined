@@ -23,11 +23,21 @@ public class TRTeleporter {
             return level.noCollision(entity, entity.getBoundingBox().move(blockpos));
         }
     }
-    public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
-        BlockPos blockpos = new BlockPos(pX, pY, pZ);
 
-        if (!canTeleportTo(blockpos, pLevel, pEntity)) {
-            return false;
+    public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
+        return performTeleport(pEntity, pLevel, pX, pY, pZ, pYaw, pPitch, false);
+    }
+
+    public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch, boolean safeBlockCheck) {
+        int xRound = (int)pX;
+        int yRound = (int)pY;
+        int zRound = (int)pZ;
+        BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
+
+        if (safeBlockCheck){
+            if (!canTeleportTo(blockpos, pLevel, pEntity)) {
+                return false;
+            }
         }
 
         if (!Level.isInSpawnableBounds(blockpos)) {
@@ -36,7 +46,7 @@ public class TRTeleporter {
             float f = Mth.wrapDegrees(pYaw);
             float f1 = Mth.wrapDegrees(pPitch);
             if (pEntity instanceof ServerPlayer serverPlayer) {
-                ChunkPos chunkpos = new ChunkPos(new BlockPos(pX, pY, pZ));
+                ChunkPos chunkpos = new ChunkPos(blockpos);
                 pLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, pEntity.getId());
                 pEntity.stopRiding();
                 if (serverPlayer.isSleeping()) {

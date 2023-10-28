@@ -16,6 +16,10 @@ public class PitchedSound {
         this.pitch = pitch;
     }
 
+    public PitchedSound(SoundEvent event){
+        this(event, 1F);
+    }
+
     public SoundEvent getSoundEvent() {
         return soundEvent;
     }

@@ -46,6 +46,8 @@ public abstract class ConsoleSoundProfile {
         return doorLocked;
     }
 
+    public void setDoorLocked(ConsoleSound doorLocked) { this.doorLocked = doorLocked;}
+
     public ConsoleSound getGeneric() {
         return generic;
     }
