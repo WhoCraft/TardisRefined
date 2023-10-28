@@ -63,7 +63,7 @@ public class TRConfig {
 
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("travel");
-            BANNED_DIMENSIONS = builder.translation("config.tardis_refined.banned_dimensions").comment("A list of Dimensions the TARDIS cannot land in.").defineList("banned_dimensions", Lists.newArrayList("example:dimension"), String.class::isInstance);
+            BANNED_DIMENSIONS = builder.translation(ModMessages.CONFIG_BANNED_DIMENSIONS).comment("A list of Dimensions the TARDIS cannot land in.").defineList("banned_dimensions", Lists.newArrayList("example:dimension"), String.class::isInstance);
             builder.pop();
         }
 
