@@ -118,7 +118,6 @@ run/
 !gradle-wrapper.jar
 
 # Forge generated assets
-forge/src/generated
 /common/bin/
 /fabric/bin/main/
 /forge/bin/main/

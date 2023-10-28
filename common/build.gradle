@@ -1,3 +1,11 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/tardis_refined.accesswidener")
+}
+
 dependencies {
     // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
     // Do NOT use other classes from fabric loader
@@ -16,14 +24,6 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
-}
-
-loom {
-    accessWidenerPath = file("src/main/resources/tardis_refined.accesswidener")
-}
-
-architectury {
-    common()
 }
 
 publishing {

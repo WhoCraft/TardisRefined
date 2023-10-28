@@ -1,0 +1,50 @@
+{
+  "pattern_manipulator": {
+    "sounds": [
+      "tardis_refined:gadgets/pattern_manipulator"
+    ],
+    "subtitle": "sound.pattern_manipulator.subtitle"
+  },
+  "static": {
+    "sounds": [
+      "tardis_refined:ui/static"
+    ],
+    "subtitle": "sound.static.subtitle"
+  },
+  "tardis_crash_land": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_crash_land"
+    ],
+    "subtitle": "sound.tardis_crash_land.subtitle"
+  },
+  "tardis_land": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_land"
+    ],
+    "subtitle": "sound.tardis_land.subtitle"
+  },
+  "tardis_misc_sparkle": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_misc_sparkle"
+    ],
+    "subtitle": "sound.tardis_misc_sparkle.subtitle"
+  },
+  "tardis_single_fly": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_single_fly"
+    ],
+    "subtitle": "sound.tardis_single_fly.subtitle"
+  },
+  "tardis_takeoff": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_takeoff"
+    ],
+    "subtitle": "sound.tardis_takeoff.subtitle"
+  },
+  "time_blast": {
+    "sounds": [
+      "tardis_refined:tardis/time_blast"
+    ],
+    "subtitle": "sound.time_blast.subtitle"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:stone_button"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "O": {
+      "item": "minecraft:observer"
+    }
+  },
+  "pattern": [
+    "IOI",
+    "IEI",
+    "IBI"
+  ],
+  "result": {
+    "item": "tardis_refined:console_configuration"
+  },
+  "show_notification": true
+}

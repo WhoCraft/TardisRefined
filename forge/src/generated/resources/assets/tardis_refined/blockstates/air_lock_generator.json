@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "tardis_refined:block/air_lock_generator"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "patterns": [
+    {
+      "id": "tardis_refined:default",
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}",
+      "texture_definition": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/console/coral/coral_console.png"
+      }
+    },
+    {
+      "id": "tardis_refined:war",
+      "name_component": "{\"color\":\"yellow\",\"text\":\"War\"}",
+      "texture_definition": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/console/coral/coral_console_war.png"
+      }
+    },
+    {
+      "id": "tardis_refined:blue",
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Blue\"}",
+      "texture_definition": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/console/coral/coral_console_blue.png"
+      }
+    }
+  ]
+}
