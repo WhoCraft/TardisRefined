@@ -2,15 +2,15 @@ package whocraft.tardis_refined.client.screen.selections;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
-import whocraft.tardis_refined.client.screen.components.OldImageButton;
+import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
@@ -21,15 +21,13 @@ public class SelectionScreen extends Screen {
     private SelectionScreenRun onCancel;
     private final Component title;
 
-    private Button selectButton;
-    private Button cancelButton;
     private ObjectSelectionList list;
 
     public int noiseX, noiseY, age;
     public double noiseAlpha;
 
-    private static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/save.png");
-    private static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/back.png");
+    private static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "save");
+    private static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "back");
 
 
     public SelectionScreen(Component title) {
@@ -45,33 +43,26 @@ public class SelectionScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-
-        if (onSubmit != null) {
-            this.selectButton = this.addRenderableWidget(new OldImageButton(width / 2 + 90, (height) / 2 + 35, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
-                this.onSubmit.onPress();
-            }));
-
-        }
-
         list = createSelectionList();
-
         this.addRenderableWidget(list);
 
     }
 
     public void addSubmitButton(int x, int y) {
         if (onSubmit != null) {
-            this.selectButton = this.addRenderableWidget(new OldImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {
+            SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
                 this.onSubmit.onPress();
-            }));
+            }, true, BUTTON_LOCATION));
+            spriteiconbutton.setPosition(x, y);
         }
     }
 
     public void addCancelButton(int x, int y) {
         if (onCancel != null) {
-            this.cancelButton = this.addRenderableWidget(new OldImageButton(x, y, 20, 18, 0, 0, 19, BCK_LOCATION, 20, 37, (arg) -> {
+            SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> {
                 this.onCancel.onPress();
-            }));
+            }, true, BCK_LOCATION));
+            spriteiconbutton.setPosition(x, y);
         }
 
     }

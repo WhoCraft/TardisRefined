@@ -27,7 +27,8 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
 
     public BulkHeadDoorBlock(Properties properties) {
-        super(properties);
+        super(properties.sound(SoundType.ANVIL));
+
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, true));
     }
 

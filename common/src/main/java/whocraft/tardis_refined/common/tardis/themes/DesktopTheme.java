@@ -7,10 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
-
-import java.util.Map;
 
 
 public class DesktopTheme {
@@ -60,7 +57,7 @@ public class DesktopTheme {
     public DesktopTheme(ResourceLocation id, ResourceLocation structureLocation, String name) {
         this.identifier = id;
         this.structureLocation = structureLocation;
-        this.uiTexture = new ResourceLocation(id.getNamespace(), "textures/ui/desktops/" + id.getPath().toString() + ".png");
+        this.uiTexture = new ResourceLocation(id.getNamespace(), "textures/gui/desktops/" + id.getPath().toString() + ".png");
         this.name = name;
     }
 

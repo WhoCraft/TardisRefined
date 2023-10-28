@@ -6,14 +6,16 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.network.*;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.network.SimpleChannel;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.NetworkManager;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class NetworkManagerImpl extends NetworkManager {
@@ -25,9 +27,9 @@ public class NetworkManagerImpl extends NetworkManager {
         super(channelName);
 
         this.channel = ChannelBuilder.named(channelName).networkProtocolVersion(1).simpleChannel();
-   /*     this.channel.registerMessage(0, ToServer.class, ToServer::toBytes, ToServer::new, ToServer::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
-        this.channel.registerMessage(1, ToClient.class, ToClient::toBytes, ToClient::new, ToClient::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
-*/    }
+        this.channel.messageBuilder(ToServer.class, NetworkDirection.PLAY_TO_SERVER).encoder(ToServer::toBytes).decoder(ToServer::new).add();
+        this.channel.messageBuilder(ToClient.class, NetworkDirection.PLAY_TO_CLIENT).encoder(ToClient::toBytes).decoder(ToClient::new).add();
+    }
 
     public static NetworkManager create(ResourceLocation channelName) {
         return new NetworkManagerImpl(channelName);
@@ -36,7 +38,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToServer(MessageC2S message) {
         if (!this.toServer.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.info("Message type not registered: " + message.getType().getId());
             return;
         }
         channel.send(new ToServer(message), PacketDistributor.SERVER.noArg());
@@ -87,7 +89,7 @@ public class NetworkManagerImpl extends NetworkManager {
             var msgId = buf.readUtf();
 
             if (!NetworkManagerImpl.this.toServer.containsKey(msgId)) {
-                System.out.println("Unknown message id received on server: " + msgId);
+                TardisRefined.LOGGER.info("Unknown message id received on server: " + msgId);
                 this.message = null;
                 return;
             }
@@ -122,7 +124,7 @@ public class NetworkManagerImpl extends NetworkManager {
             var msgId = buf.readUtf();
 
             if (!NetworkManagerImpl.this.toClient.containsKey(msgId)) {
-                System.out.println("Unknown message id received on client: " + msgId);
+                TardisRefined.LOGGER.info("Unknown message id received on client: " + msgId);
                 this.message = null;
                 return;
             }

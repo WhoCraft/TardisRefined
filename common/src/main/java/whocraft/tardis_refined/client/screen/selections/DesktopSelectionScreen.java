@@ -31,8 +31,8 @@ public class DesktopSelectionScreen extends SelectionScreen {
     protected int imageHeight = 173;
     private int leftPos, topPos;
 
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop.png");
-    public static ResourceLocation MONITOR_TEXTURE_OVERLAY = new ResourceLocation(TardisRefined.MODID, "textures/ui/desktop_overlay.png");
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/desktop.png");
+    public static ResourceLocation MONITOR_TEXTURE_OVERLAY = new ResourceLocation(TardisRefined.MODID, "textures/gui/desktop_overlay.png");
     public static ResourceLocation previousImage = TardisDesktops.FACTORY_THEME.getPreviewTexture();
 
     public DesktopSelectionScreen() {

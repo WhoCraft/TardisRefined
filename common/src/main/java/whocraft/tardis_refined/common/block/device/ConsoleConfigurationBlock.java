@@ -129,7 +129,6 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                         globalConsoleBlock.killControls();
                         level.destroyBlock(blockPos.offset(offset), true);
                     }
-
                 } else {
                     level.setBlockAndUpdate(blockPos, blockState.setValue(ConsoleConfigurationBlock.CONSOLE, nextTheme));
                     if ((consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {

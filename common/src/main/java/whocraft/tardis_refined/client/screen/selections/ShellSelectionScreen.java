@@ -40,8 +40,8 @@ public class ShellSelectionScreen extends SelectionScreen {
     private int leftPos, topPos;
 
 
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/shell.png");
-    public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/ui/noise.png");
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/shell.png");
+    public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/gui/noise.png");
     private ShellPattern pattern;
 
     private ShellPatternCollection patternCollection;

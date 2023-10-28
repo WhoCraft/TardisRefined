@@ -9,7 +9,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -57,7 +60,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (level.getBlockEntity(blockPos) instanceof InternalDoorBlockEntity door) {
-            door.onRightClick(blockState, level,blockPos,player,interactionHand,blockHitResult);
+            door.onRightClick(blockState, level, blockPos, player, interactionHand, blockHitResult);
         }
 
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
@@ -72,8 +75,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(FACING);
-        builder.add(OPEN);
+        builder.add(OPEN, FACING);
     }
 
     @Override
