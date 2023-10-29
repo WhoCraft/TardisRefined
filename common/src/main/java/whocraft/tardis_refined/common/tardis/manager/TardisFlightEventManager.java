@@ -210,7 +210,7 @@ public class TardisFlightEventManager {
 
         if (dangerZoneSecondsPast(30)) {
             if (operator.getLevel().getGameTime() % (3 * 20) == 0) {
-                playCloisterBell();
+                playCloisterBell(operator);
             }
 
             scaleForDanger = 1f;
@@ -303,10 +303,9 @@ public class TardisFlightEventManager {
         return (float)this.controlResponses /  (float)this.requiredControlRequests;
     }
 
-    private void playCloisterBell() {
+    public static void playCloisterBell(TardisLevelOperator tardisLevelOperator) {
         for (int i = 0; i < 3; i++) {
-            this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-
+            tardisLevelOperator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
         }
     }
 

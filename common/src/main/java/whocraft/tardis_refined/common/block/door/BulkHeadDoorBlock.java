@@ -29,7 +29,7 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public BulkHeadDoorBlock(Properties properties) {
         super(properties.sound(SoundType.ANVIL));
 
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, true));
     }
 
     @Override

@@ -6,6 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,7 +29,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.DimensionTypes;
 
 
 public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterloggedBlock{
@@ -62,6 +68,7 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
         return blockState.getValue(this.getAgeProperty()) >= this.getMaxAge();
     }
 
+
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
@@ -81,10 +88,10 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
 
     @Override
     public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-
         int age = this.getAge(blockState);
         Direction facing = blockState.getValue(FACING);
         if (age < this.getMaxAge()) {
+
             if (serverLevel.getBlockState(blockPos.below()).getBlock() == Blocks.MAGMA_BLOCK) {
                 if (randomSource.nextInt(6) == 0) {
                     FluidState fluidState = serverLevel.getFluidState(blockPos);
@@ -122,6 +129,17 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+
+        if(level instanceof ServerLevel serverLevel && level.dimensionTypeId() == DimensionTypes.TARDIS){
+            TardisLevelOperator.get(serverLevel).ifPresent(TardisFlightEventManager::playCloisterBell);
+            level.removeBlock(blockPos, false);
+            ItemEntity item = new ItemEntity(EntityType.ITEM, level);
+            item.setItem(new ItemStack(BlockRegistry.ROOT_PLANT_BLOCK.get()));
+            item.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+            level.addFreshEntity(item);
+            return;
+        }
+
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
         if (level.getBlockState(blockPos.below()).getBlock() == Blocks.MAGMA_BLOCK) {

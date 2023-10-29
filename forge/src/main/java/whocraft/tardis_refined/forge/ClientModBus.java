@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.forge;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.*;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.world.item.Item;
@@ -12,7 +12,6 @@ import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.ParticleGallifrey;
@@ -33,14 +32,12 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
-import java.util.stream.Stream;
-
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
 
     @SubscribeEvent
-    public static void on(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTab() == ItemRegistry.getCreativeTab()) {
+    public static void onBuildTabsContent(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTab() == ItemRegistry.MAIN_TAB.get()) {
             for (RegistrySupplier<Item> item : ItemRegistry.TAB_ITEMS.stream().toList()) {
                 event.accept(item.get());
             }
@@ -48,13 +45,13 @@ public class ClientModBus {
     }
 
     @SubscribeEvent
-    public static void event(EntityRenderersEvent.RegisterLayerDefinitions event) {
+    public static void onRegisterLayerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
         ModelRegistry.init();
         ModelRegistryImpl.register(event);
     }
 
     @SubscribeEvent
-    public static void registerParticles(RegisterParticleProvidersEvent event) {
+    public static void onRegisterParticles(RegisterParticleProvidersEvent event) {
       Minecraft.getInstance().particleEngine.register(TRParticles.GALLIFREY.get(), (ParticleEngine.SpriteParticleRegistration)(ParticleGallifrey.Provider::new));
     }
 

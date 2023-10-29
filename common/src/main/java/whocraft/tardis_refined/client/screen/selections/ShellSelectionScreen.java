@@ -151,8 +151,8 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.pushPose();
         pose.translate((float) x, y, 100.0F);
         pose.scale(-scale, scale, scale);
-        pose.mulPose(Axis.XP.rotationDegrees(-45F));
-        pose.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount));
+        pose.mulPose(Axis.XP.rotationDegrees(-15F));
+        pose.mulPose(Axis.YP.rotationDegrees(System.currentTimeMillis() % 5400L / 15L));
         VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.texture(pattern, false)));
         model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
