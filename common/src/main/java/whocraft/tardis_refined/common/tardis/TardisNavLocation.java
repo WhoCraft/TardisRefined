@@ -2,18 +2,18 @@ package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.common.util.Platform;
 
 /**
  * TardisNavLocation
  * Co-ordinates that represent position, rotation, level and name.
- * **/
+ **/
 public class TardisNavLocation {
 
     public static final TardisNavLocation ORIGIN = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD);
@@ -27,10 +27,10 @@ public class TardisNavLocation {
     private String name = ""; //To be used for waypoints later on
 
     /**
-     * @param position World co-ordinate
+     * @param position  World co-ordinate
      * @param direction Rotation/Facing direction.
-     * @param level ResourceKey of the desired level.
-     * **/
+     * @param level     ResourceKey of the desired level.
+     **/
     public TardisNavLocation(BlockPos position, Direction direction, ServerLevel level) {
         this.position = position;
         this.direction = direction;
@@ -45,6 +45,7 @@ public class TardisNavLocation {
      * <br> Alternate Constructor ONLY for static references.
      * <br> DO NOT use for logic E.g. Using methods from the Level instance
      * <br> This is because this version doesn't have a {@link Level}  reference
+     *
      * @param position
      * @param direction
      * @param level
@@ -58,9 +59,10 @@ public class TardisNavLocation {
     public ServerLevel getLevel() {
         if (this.level != null) {
             this.dimensionKey = this.level.dimension();
+            return Platform.getServer().getLevel(dimensionKey);
         }
 
-        return this.level;
+        return Platform.getServer().getLevel(Level.OVERWORLD);
     }
 
     public void setLevel(ServerLevel level) {
@@ -68,13 +70,15 @@ public class TardisNavLocation {
         this.level = level;
     }
 
-    public ResourceKey<Level> getDimensionKey() {return dimensionKey;}
+    public ResourceKey<Level> getDimensionKey() {
+        return dimensionKey;
+    }
 
     public BlockPos getPosition() {
         return position;
     }
 
-    public TardisNavLocation setPosition(BlockPos pos){
+    public TardisNavLocation setPosition(BlockPos pos) {
         this.position = pos;
         return this;
     }
@@ -83,7 +87,7 @@ public class TardisNavLocation {
         return direction;
     }
 
-    public TardisNavLocation setDirection(Direction dir){
+    public TardisNavLocation setDirection(Direction dir) {
         this.direction = dir;
         return this;
     }
@@ -121,17 +125,12 @@ public class TardisNavLocation {
         TardisNavLocation other = (TardisNavLocation) obj;
         if (this.position.equals(other.position) && this.dimensionKey.location().equals(other.dimensionKey.location()) && this.direction.equals(other.direction)) {
             if (this.name != null) {
-                if (other.name != null){
-                    if (this.name.equals(other.name))
-                        return true;
+                if (other.name != null) {
+                    return this.name.equals(other.name);
                 }
                 return false;
             }
             if (other.name != null) {
-                if (this.name != null){
-                    if (this.name.equals(other.name))
-                        return true;
-                }
                 return false;
             }
             return true;

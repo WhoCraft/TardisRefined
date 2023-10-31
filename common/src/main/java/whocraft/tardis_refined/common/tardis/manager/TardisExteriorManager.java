@@ -1,12 +1,15 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -33,7 +36,7 @@ import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 public class TardisExteriorManager {
 
     private final TardisLevelOperator operator;
-    private TardisNavLocation lastKnownLocation;
+    private TardisNavLocation lastKnownLocation = new TardisNavLocation(BlockPos.ZERO, Direction.DOWN, Level.OVERWORLD);
     private ShellTheme currentTheme;
 
     private ShellPattern shellPattern = null;
@@ -76,6 +79,11 @@ public class TardisExteriorManager {
     }
 
     public TardisNavLocation getLastKnownLocation() {
+
+        if(lastKnownLocation == null){
+            return new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD);
+        }
+
         return this.lastKnownLocation;
     }
 
@@ -143,6 +151,8 @@ public class TardisExteriorManager {
             closed = true;
         }
 
+        if(lastKnownLocation == null) return;
+
         // Get the exterior block.
         BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.getPosition());
         if (state.hasProperty(ShellBaseBlock.OPEN)) {
@@ -152,6 +162,10 @@ public class TardisExteriorManager {
     }
 
     public void setShellTheme(ShellTheme theme) {
+
+        if(lastKnownLocation == null) return;
+
+
         BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.getPosition());
 
         // Check if its our default global shell.
@@ -177,6 +191,8 @@ public class TardisExteriorManager {
     }
 
     public void triggerShellRegenState() {
+        if(lastKnownLocation == null) return;
+
         BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.getPosition());
 
         lastKnownLocation.getLevel().setBlock(lastKnownLocation.getPosition(),
