@@ -74,9 +74,9 @@ public class TardisChunkGenerator extends ChunkGenerator {
         BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
         for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
             if (pos.getY() <= bottom + 5) {
-                chunk.setBlockState(pos, BlockRegistry.HARDENED_GROWTH_STONE.get().defaultBlockState(), false);
+                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
             } else {
-                chunk.setBlockState(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), false);
+                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
             }
 
         }
