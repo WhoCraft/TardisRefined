@@ -84,7 +84,8 @@ public class NbtConstants {
         tag.put(prefix + NbtConstants.LOCATION_POSITION, NbtUtils.writeBlockPos(location.getPosition()));
         tag.putInt(prefix + NbtConstants.LOCATION_ROTATION, location.getDirection().get2DDataValue());
 
-        if(location.getLevel() == null) return;
+
+        if(location == null || location.getLevel() == null) return;
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, location.getLevel().dimension().location().getNamespace());
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, location.getLevel().dimension().location().getPath());
     }

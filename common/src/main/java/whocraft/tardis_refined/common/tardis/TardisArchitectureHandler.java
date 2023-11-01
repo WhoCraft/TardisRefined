@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
@@ -32,7 +33,7 @@ public class TardisArchitectureHandler {
         BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + INTERIOR_SIZE, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + INTERIOR_SIZE);
 
         for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
-            operator.setBlock(pos, BlockRegistry.GROWTH_STONE.get().defaultBlockState(), 1);
+            operator.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
         }
 
 
