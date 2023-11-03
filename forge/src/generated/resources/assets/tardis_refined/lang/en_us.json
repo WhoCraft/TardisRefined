@@ -83,5 +83,8 @@
   "ui.tardis_refined.monitor.main.destination": "Destination",
   "ui.tardis_refined.monitor.main.gps": "GPS",
   "ui.tardis_refined.monitor.main_title": "COMPUTER BANK",
+  "ui.tardis_refined.monitor.upload.coords": "UPLOAD COORDS",
+  "ui.tardis_refined.monitor.upload.waypoints": "UPLOAD WAYPOINTS",
+  "ui.tardis_refined.monitor.waypoints": "WAYPOINTS",
   "ui.tardis_refined.shell_selection": "EXTERNAL SHELL CONFIGURATION"
 }

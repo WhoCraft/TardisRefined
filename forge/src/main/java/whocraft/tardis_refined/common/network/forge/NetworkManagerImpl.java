@@ -99,6 +99,7 @@ public class NetworkManagerImpl extends NetworkManager {
         }
 
         public static void handle(ToServer msg, Supplier<CustomPayloadEvent.Context> ctx) {
+            System.out.println("Server message sent!");
             if (msg.message != null) {
                 ctx.get().enqueueWork(() -> msg.message.handle(() -> ctx.get().getSender()));
             }
@@ -134,6 +135,7 @@ public class NetworkManagerImpl extends NetworkManager {
         }
 
         public static void handle(ToClient msg, Supplier<CustomPayloadEvent.Context> ctx) {
+            System.out.println("Client message sent!");
             if (msg.message != null) {
                 ctx.get().enqueueWork(() -> msg.message.handle(() -> null));
             }

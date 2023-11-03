@@ -19,10 +19,7 @@ import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -40,6 +37,7 @@ public class TardisLevelOperator {
     private final TardisExteriorManager exteriorManager;
     private final TardisInteriorManager interiorManager;
     private final TardisControlManager controlManager;
+    private final TardisWaypointManager tardisWaypointManager;
     private final TardisFlightEventManager tardisFlightEventManager;
     private final TardisClientData tardisClientData;
 
@@ -48,6 +46,7 @@ public class TardisLevelOperator {
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.controlManager = new TardisControlManager(this);
+        this.tardisWaypointManager = new TardisWaypointManager(this);
         this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
     }
@@ -73,6 +72,7 @@ public class TardisLevelOperator {
         compoundTag = this.exteriorManager.saveData(compoundTag);
         compoundTag = this.interiorManager.saveData(compoundTag);
         compoundTag = this.controlManager.saveData(compoundTag);
+        compoundTag = this.tardisWaypointManager.saveData(compoundTag);
         compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
 
         return compoundTag;
@@ -93,6 +93,7 @@ public class TardisLevelOperator {
         this.interiorManager.loadData(tag);
         this.controlManager.loadData(tag);
         this.tardisFlightEventManager.loadData(tag);
+        this.tardisWaypointManager.loadData(tag);
 
 
         tardisClientData.sync();
@@ -260,4 +261,7 @@ public class TardisLevelOperator {
         return this.tardisFlightEventManager;
     }
 
+    public TardisWaypointManager getTardisWaypointManager() {
+        return tardisWaypointManager;
+    }
 }

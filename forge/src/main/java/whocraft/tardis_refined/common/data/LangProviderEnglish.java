@@ -93,6 +93,9 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*GUI*/
         add(ModMessages.UI_MONITOR_MAIN_TITLE, "COMPUTER BANK");
+        add(ModMessages.UI_MONITOR_WAYPOINTS, "WAYPOINTS");
+        add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "UPLOAD WAYPOINTS");
+        add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "UPLOAD COORDS");
         add(ModMessages.UI_MONITOR_GPS, "GPS");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
         add(ModMessages.UI_LIST_SELECTION, "Currently selected: &s");
