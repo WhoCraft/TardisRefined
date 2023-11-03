@@ -13,7 +13,7 @@ import whocraft.tardis_refined.common.util.Platform;
 /**
  * TardisNavLocation
  * Co-ordinates that represent position, rotation, level and name.
- **/
+ * **/
 public class TardisNavLocation {
 
     public static final TardisNavLocation ORIGIN = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD);
@@ -24,13 +24,13 @@ public class TardisNavLocation {
 
     private ResourceKey<Level> dimensionKey;
 
-    private String name = ""; //To be used for waypoints later on
+    private String name = "";
 
     /**
-     * @param position  World co-ordinate
+     * @param position World co-ordinate
      * @param direction Rotation/Facing direction.
-     * @param level     ResourceKey of the desired level.
-     **/
+     * @param level ResourceKey of the desired level.
+     * **/
     public TardisNavLocation(BlockPos position, Direction direction, ServerLevel level) {
         this.position = position;
         this.direction = direction;
@@ -45,7 +45,6 @@ public class TardisNavLocation {
      * <br> Alternate Constructor ONLY for static references.
      * <br> DO NOT use for logic E.g. Using methods from the Level instance
      * <br> This is because this version doesn't have a {@link Level}  reference
-     *
      * @param position
      * @param direction
      * @param level
@@ -63,6 +62,10 @@ public class TardisNavLocation {
         }
 
         return Platform.getServer().getLevel(Level.OVERWORLD);
+    }
+
+    public void setDimensionKey(ResourceKey<Level> dimensionKey) {
+        this.dimensionKey = dimensionKey;
     }
 
     public void setLevel(ServerLevel level) {
@@ -116,26 +119,17 @@ public class TardisNavLocation {
         return tag;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (!(obj instanceof TardisNavLocation))
-            return false;
-        TardisNavLocation other = (TardisNavLocation) obj;
-        if (this.position.equals(other.position) && this.dimensionKey.location().equals(other.dimensionKey.location()) && this.direction.equals(other.direction)) {
-            if (this.name != null) {
-                if (other.name != null) {
-                    return this.name.equals(other.name);
-                }
-                return false;
-            }
-            if (other.name != null) {
-                return false;
-            }
-            return true;
-        }
-        return false;
+    public BlockPos setX(int x){
+        return new BlockPos(x, position.getY(), position.getZ());
     }
+
+    public BlockPos setY(int y){
+        return new BlockPos(position.getX(), y, position.getZ());
+    }
+
+    public BlockPos setZ(int z){
+        return new BlockPos(position.getX(), position.getY(), z);
+    }
+
 
 }

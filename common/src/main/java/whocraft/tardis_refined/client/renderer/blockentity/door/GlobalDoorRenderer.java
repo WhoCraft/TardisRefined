@@ -108,7 +108,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
         ShellPattern shellPattern = reactions.shellPattern();
 
-        currentModel.setDoorPosition(isOpen);
+        currentModel.setDoorOpen(isOpen);
         currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.texture(shellPattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();

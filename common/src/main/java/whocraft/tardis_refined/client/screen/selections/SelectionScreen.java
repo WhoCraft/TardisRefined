@@ -28,7 +28,7 @@ public class SelectionScreen extends Screen {
     public int noiseX, noiseY, age;
     public double noiseAlpha;
 
-    private static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/save.png");
+    public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/save.png");
     private static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/back.png");
 
 

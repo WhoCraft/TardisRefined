@@ -62,7 +62,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             poseStack.pushPose();
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
             var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
-            model.setDoorPosition(false);
+            model.setDoorOpen(false);
 
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
             poseStack.translate(offset.x, offset.y, offset.z);

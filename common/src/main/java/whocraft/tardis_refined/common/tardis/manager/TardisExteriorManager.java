@@ -93,7 +93,7 @@ public class TardisExteriorManager {
     }
 
     public ServerLevel getLevel() {
-        return this.lastKnownLocation.getLevel();
+        return this.getLastKnownLocation().getLevel();
     }
 
     public ShellPattern shellPattern() {
