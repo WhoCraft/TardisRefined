@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
@@ -33,13 +32,13 @@ public class TardisArchitectureHandler {
         BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + INTERIOR_SIZE, operator.getMaxBuildHeight() -75, DESKTOP_CENTER_POS.getZ() + INTERIOR_SIZE);
 
         for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
-            operator.setBlock(pos, Blocks.AIR.defaultBlockState(), 1);
+            operator.removeBlock(pos, false);
         }
 
 
         List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
-        desktopEntities.forEach(x -> x.discard()); //Don't teleport entities to a hard coded coordinate, that causes hanging entity out of world issues. In other cases, if another mod defines that coordinate as a safe area (possible) that will mean the entities never get killed.
-        
+        desktopEntities.forEach(Entity::discard); //Don't teleport entities to a hard coded coordinate, that causes hanging entity out of world issues. In other cases, if another mod defines that coordinate as a safe area (possible) that will mean the entities never get killed.
+
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.getStructureLocation());
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
@@ -123,12 +122,6 @@ public class TardisArchitectureHandler {
             }
         }
         return false;
-    }
-
-    public static void generateDesktop(TardisLevelOperator operator, DesktopTheme theme) {
-        if(operator.getLevel() instanceof ServerLevel serverLevel){
-            generateDesktop(serverLevel, theme);
-        }
     }
 
     public static BlockPos calculateArcOffset(StructureTemplate structureTemplate, BlockPos centerPos) {
