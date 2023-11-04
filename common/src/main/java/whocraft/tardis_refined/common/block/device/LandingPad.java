@@ -59,7 +59,7 @@ public class LandingPad extends Block {
             ItemStack itemStack = player.getItemInHand(interactionHand);
             if (itemStack.getItem() instanceof KeyItem) {
                 var keyChain = KeyItem.getKeychain(itemStack);
-                if (keyChain.size() > 0) {
+                if (!keyChain.isEmpty()) {
                     ResourceKey<Level> dimension = KeyItem.getKeychain(itemStack).get(0);
 
                     if (serverLevel.isEmptyBlock(blockPos.above()) && DimensionUtil.isAllowedDimension(level.dimension())) {
@@ -72,9 +72,12 @@ public class LandingPad extends Block {
 
                         var operator = operatorOptional.get();
 
-                        if (operator.getControlManager().beginFlight(true) || !operator.getControlManager().isOnCooldown()) {
+                        if (operator.getControlManager().beginFlight(true) && !operator.getControlManager().isOnCooldown()) {
                             operator.getControlManager().setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
                             serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+                        } else {
+                            serverLevel.playSound(null, blockPos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1f, 1f);
                             return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
                         }
                     }

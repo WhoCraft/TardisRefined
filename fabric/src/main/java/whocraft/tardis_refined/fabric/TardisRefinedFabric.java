@@ -64,7 +64,7 @@ public class TardisRefinedFabric implements ModInitializer {
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
         ModLoadingContext.registerConfig(TardisRefined.MODID, ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" +"console_patterns"), ConsolePatterns.getReloadListener());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "console_patterns"), ConsolePatterns.getReloadListener());
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), ShellPatterns.getReloadListener());

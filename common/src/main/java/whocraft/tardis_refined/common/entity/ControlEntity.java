@@ -168,21 +168,17 @@ public class ControlEntity extends Entity {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
-        if (interactionHand == InteractionHand.MAIN_HAND) {
-            if (this.level instanceof ServerLevel serverLevel) {
-
-                if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
-                    this.handleControlSizeAndPositionAdjustment(player);
-                }
-                else {
-                    this.handleRightClick(player, serverLevel, interactionHand);
-                }
-                return InteractionResult.SUCCESS;
-
-            }
+        if (interactionHand != InteractionHand.MAIN_HAND || !(this.getLevel() instanceof ServerLevel serverLevel)) {
+            return InteractionResult.FAIL;
         }
 
-        return InteractionResult.FAIL;
+        if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
+            this.handleControlSizeAndPositionAdjustment(player);
+            return InteractionResult.SUCCESS;
+        }
+
+        this.handleRightClick(player, serverLevel, interactionHand);
+        return InteractionResult.SUCCESS;
     }
 
     @Override

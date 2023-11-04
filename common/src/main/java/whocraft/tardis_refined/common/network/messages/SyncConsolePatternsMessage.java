@@ -10,14 +10,10 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.patterns.*;
+import whocraft.tardis_refined.patterns.ConsolePatternCollection;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SyncConsolePatternsMessage extends MessageS2C{

@@ -112,6 +112,8 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         }
     }
 
+
+
     @Override
     public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
         if (blockState.getValue(WATERLOGGED)){
