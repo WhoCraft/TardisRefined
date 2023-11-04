@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -28,6 +29,7 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
+import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
 
 /**
  * External Shell data.
@@ -194,8 +196,10 @@ public class TardisExteriorManager {
 
         BlockState state = lastKnownLocation.getLevel().getBlockState(lastKnownLocation.getPosition());
 
-        lastKnownLocation.getLevel().setBlock(lastKnownLocation.getPosition(),
-                state.setValue(ShellBaseBlock.REGEN, true), 2);
+        ServerLevel level = lastKnownLocation.getLevel();
+        if (level == null) return;
+        if (!level.getBlockState(lastKnownLocation.getPosition()).hasProperty(REGEN)) return;
+        lastKnownLocation.getLevel().setBlock(lastKnownLocation.getPosition(), state.setValue(ShellBaseBlock.REGEN, true), Block.UPDATE_ALL);
     }
 
     public void removeExteriorBlock() {
@@ -208,29 +212,25 @@ public class TardisExteriorManager {
     }
 
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
-
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
+        BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
+                .setValue(GlobalShellBlock.SHELL, theme)
+                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
+                .setValue(GlobalShellBlock.REGEN, false)
+                .setValue(LOCKED, operator.getExteriorManager().locked)
+                .setValue(GlobalShellBlock.WATERLOGGED, location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
 
-        var shouldBeWaterlogged = (location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
-
-        var blockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.SHELL, theme)
-                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite()).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, operator.getExteriorManager().locked).setValue(GlobalShellBlock.WATERLOGGED, shouldBeWaterlogged);
-
-        BlockState check = location.getLevel().getBlockState(location.getPosition());
-        if(!check.is(Blocks.AIR)) {
-            location.getLevel().destroyBlock(location.getPosition(), true);
-        }
-
-        location.getLevel().setBlock(location.getPosition(), blockState, 2);
+        location.getLevel().setBlock(location.getPosition(), targetBlockState, 2);
 
         if (location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity globalShell) {
             globalShell.TARDIS_ID = UUID.fromString(operator.getLevel().dimension().location().getPath());
-            location.getLevel().sendBlockUpdated(location.getPosition(), blockState, blockState, 2);
+            location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, 2);
         }
 
         setLastKnownLocation(location);
         this.isLanding = true;
     }
+
 
     public boolean isExitLocationSafe() {
         if (lastKnownLocation.getLevel().getBlockEntity(lastKnownLocation.getPosition()) instanceof ExteriorShell shellBaseBlockEntity) {
