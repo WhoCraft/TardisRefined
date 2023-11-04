@@ -1,8 +1,6 @@
 package whocraft.tardis_refined.common.entity;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -17,8 +15,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -174,27 +170,21 @@ public class ControlEntity extends Entity {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
-        if (interactionHand == InteractionHand.MAIN_HAND) {
-            if (this.level() instanceof ServerLevel serverLevel) {
-
-                if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
-                    this.handleControlSizeAndPositionAdjustment(player);
-                }
-                else {
-                    this.handleRightClick(player, serverLevel, interactionHand);
-                }
-                return InteractionResult.SUCCESS;
-
-            }
+        if (interactionHand != InteractionHand.MAIN_HAND || !(this.level() instanceof ServerLevel serverLevel)) {
+            return InteractionResult.FAIL;
         }
 
-        return InteractionResult.FAIL;
+        if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
+            this.handleControlSizeAndPositionAdjustment(player);
+            return InteractionResult.SUCCESS;
+        }
+
+        this.handleRightClick(player, serverLevel, interactionHand);
+        return InteractionResult.SUCCESS;
     }
 
     @Override
     public void tick() {
-
-
         if (level() instanceof ServerLevel serverLevel) {
             if (this.controlSpecification == null) {
                 if (this.consoleBlockPos != null) {

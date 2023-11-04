@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.registry;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import whocraft.tardis_refined.TardisRefined;

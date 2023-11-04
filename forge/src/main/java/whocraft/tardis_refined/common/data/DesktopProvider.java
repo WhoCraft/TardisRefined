@@ -11,7 +11,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +20,8 @@ import java.util.concurrent.CompletableFuture;
 public class DesktopProvider implements DataProvider {
 
     protected final DataGenerator generator;
-
-    protected Map<ResourceLocation,DesktopTheme> data = new HashMap<>();
-
     private final boolean addDefaults;
+    protected Map<ResourceLocation, DesktopTheme> data = new HashMap<>();
 
     public DesktopProvider(DataGenerator generator) {
         this(generator, true);
@@ -36,7 +33,8 @@ public class DesktopProvider implements DataProvider {
         this.addDefaults = addDefaults;
     }
 
-    protected void addDesktops(){}
+    protected void addDesktops() {
+    }
 
     @Override
     public CompletableFuture<?> run(CachedOutput arg) {
@@ -44,14 +42,14 @@ public class DesktopProvider implements DataProvider {
 
         final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        if(this.addDefaults){
+        if (this.addDefaults) {
             TardisDesktops.registerDefaultDesktops();
             data.putAll(TardisDesktops.getDefaultDesktops());
         }
 
         this.addDesktops();
 
-        if (!data.isEmpty()){
+        if (!data.isEmpty()) {
             data.entrySet().forEach(entry -> {
                 try {
                     DesktopTheme desktop = entry.getValue();
@@ -59,7 +57,7 @@ public class DesktopProvider implements DataProvider {
                             .ifRight(right -> {
                                 TardisRefined.LOGGER.error(right.message());
                             }).orThrow().getAsJsonObject();
-                    String outputPath = "data/" + desktop.getIdentifier().getNamespace() + "/" + TardisDesktops.getReloadListener().getFolderName() + "/" +  desktop.getIdentifier().getPath().replace("/", "_") + ".json";
+                    String outputPath = "data/" + desktop.getIdentifier().getNamespace() + "/" + TardisDesktops.getReloadListener().getFolderName() + "/" + desktop.getIdentifier().getPath().replace("/", "_") + ".json";
                     futures.add(DataProvider.saveStable(arg, currentDesktop, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
                     TardisRefined.LOGGER.debug("Issue writing Desktop {}! Error: {}", entry.getValue().getIdentifier(), exception.getMessage());

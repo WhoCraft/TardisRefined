@@ -74,7 +74,7 @@ public class MonitorScreen extends SelectionScreen {
         testLevels.add(ServerLevel.NETHER);
         testLevels.add(ServerLevel.END);
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> Minecraft.getInstance().setScreen(new WaypointManageScreen(testLevels,  CoordInputType.TRAVEL, currentLocation)), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> Minecraft.getInstance().setScreen(new WaypointManageScreen(testLevels,  CoordInputType.WAYPOINT, currentLocation)), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> Minecraft.getInstance().setScreen(new WaypointManageScreen(testLevels,  CoordInputType.TRAVEL, currentLocation)), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
 

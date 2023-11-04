@@ -9,10 +9,8 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistries;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +18,15 @@ import java.util.concurrent.CompletableFuture;
 
 public class ParticleProvider implements DataProvider {
 
-    private DataGenerator gen;
     protected List<CompletableFuture<?>> futures = new ArrayList<>();
+    private DataGenerator gen;
 
     public ParticleProvider(DataGenerator gen) {
         this.gen = gen;
+    }
+
+    public static Path getPath(Path base, ResourceLocation name) {
+        return base.resolve("assets/" + name.getNamespace() + "/particles/" + name.getPath() + ".json");
     }
 
     @Override
@@ -93,16 +95,12 @@ public class ParticleProvider implements DataProvider {
         futures.add(DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, ForgeRegistries.PARTICLE_TYPES.getKey(type))));
     }
 
-    public static Path getPath(Path base, ResourceLocation name) {
-        return base.resolve("assets/" + name.getNamespace() + "/particles/" + name.getPath() + ".json");
-    }
-
-    public JsonObject createParticle(ResourceLocation baseName, int max){
+    public JsonObject createParticle(ResourceLocation baseName, int max) {
         JsonObject root = new JsonObject();
 
         JsonArray textures = new JsonArray();
 
-        for(int i = 0; i < max; ++i) {
+        for (int i = 0; i < max; ++i) {
             textures.add(baseName.getNamespace() + ":" + baseName.getPath() + i);
         }
 
@@ -111,7 +109,7 @@ public class ParticleProvider implements DataProvider {
         return root;
     }
 
-    public JsonObject createParticle(List<ResourceLocation> resourceLocationList){
+    public JsonObject createParticle(List<ResourceLocation> resourceLocationList) {
         JsonObject root = new JsonObject();
         JsonArray textures = new JsonArray();
         for (ResourceLocation location : resourceLocationList) {

@@ -8,10 +8,11 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.patterns.*;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.patterns.ConsolePatternCollection;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -19,10 +20,8 @@ import java.util.concurrent.CompletableFuture;
 public class ConsolePatternProvider implements DataProvider {
 
     protected final DataGenerator generator;
-
-    protected Map<ResourceLocation, ConsolePatternCollection> data = new HashMap<>();
-
     private final boolean addDefaults;
+    protected Map<ResourceLocation, ConsolePatternCollection> data = new HashMap<>();
 
     public ConsolePatternProvider(DataGenerator generator) {
         this(generator, true);
@@ -34,8 +33,11 @@ public class ConsolePatternProvider implements DataProvider {
         this.addDefaults = addDefaults;
     }
 
-    /** To be used by child classes to add new patterns after defaults are registered*/
-    protected void addPatterns(){}
+    /**
+     * To be used by child classes to add new patterns after defaults are registered
+     */
+    protected void addPatterns() {
+    }
 
     @Override
     public CompletableFuture<?> run(CachedOutput arg) {
@@ -43,14 +45,14 @@ public class ConsolePatternProvider implements DataProvider {
 
         final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        if(this.addDefaults){
+        if (this.addDefaults) {
             ConsolePatterns.registerDefaultPatterns();
             data.putAll(ConsolePatterns.getDefaultPatterns());
         }
 
         this.addPatterns();
 
-        if (!data.isEmpty()){
+        if (!data.isEmpty()) {
             data.entrySet().forEach(entry -> {
                 try {
                     ConsolePatternCollection patternCollection = entry.getValue();
@@ -59,7 +61,8 @@ public class ConsolePatternProvider implements DataProvider {
                                 TardisRefined.LOGGER.error(right.message());
                             }).orThrow().getAsJsonObject();
                     Path output = getPath(patternCollection.themeId());
-                    futures.add(DataProvider.saveStable(arg, currentPatternCollection, output));;
+                    futures.add(DataProvider.saveStable(arg, currentPatternCollection, output));
+                    ;
                 } catch (Exception exception) {
                     TardisRefined.LOGGER.debug("Issue writing ConsolePatternCollection {}! Error: {}", entry.getValue().themeId(), exception.getMessage());
                 }
@@ -88,11 +91,11 @@ public class ConsolePatternProvider implements DataProvider {
         return pattern;
     }
 
-    protected ResourceLocation createConsolePatternLocation(ResourceLocation path){
+    protected ResourceLocation createConsolePatternLocation(ResourceLocation path) {
         return new ResourceLocation(path.getNamespace(), "textures/blockentity/console/" + path + ".png");
     }
 
-    private ResourceLocation createConsolePatternLocation(String path){
+    private ResourceLocation createConsolePatternLocation(String path) {
         return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + path + ".png");
     }
 

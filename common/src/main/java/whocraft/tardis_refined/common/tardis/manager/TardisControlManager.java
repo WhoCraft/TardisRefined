@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.tardis.manager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -11,7 +10,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -19,7 +17,6 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -100,7 +97,7 @@ public class TardisControlManager {
         }
 
         if (this.targetLocation == null) {
-            this.targetLocation = new TardisNavLocation(new BlockPos(0, 0, 0), Direction.NORTH, operator.getLevel().getServer().getLevel(Level.OVERWORLD));
+            this.targetLocation = TardisNavLocation.ORIGIN;
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
@@ -334,12 +331,11 @@ public class TardisControlManager {
      * If the Tardis can start flight at the time of this method call
      * @return true if able to, false if not
      */
-    public boolean canBeginFlight(){
-        if (isInFlight || ticksTakingOff > 0) {
-            return false;
-        }
-        return true;
+    public boolean canBeginFlight() {
+        return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate()
+                && !isInFlight && ticksTakingOff <= 0;
     }
+
 
     /**
      * Logic to handle starting flight

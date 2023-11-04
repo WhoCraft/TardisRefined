@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.network.messages;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;

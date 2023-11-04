@@ -52,7 +52,7 @@ public class ClientModBus {
 
     @SubscribeEvent
     public static void onRegisterParticles(RegisterParticleProvidersEvent event) {
-      Minecraft.getInstance().particleEngine.register(TRParticles.GALLIFREY.get(), (ParticleEngine.SpriteParticleRegistration)(ParticleGallifrey.Provider::new));
+        Minecraft.getInstance().particleEngine.register(TRParticles.GALLIFREY.get(), (ParticleEngine.SpriteParticleRegistration) (ParticleGallifrey.Provider::new));
     }
 
 

@@ -1,11 +1,8 @@
 package whocraft.tardis_refined.registry.fabric;
 
 
-import com.google.common.base.MoreObjects;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;

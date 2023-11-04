@@ -22,7 +22,6 @@ import java.util.UUID;
 public class AbstractEntityBlockDoor extends BlockEntity implements TardisInternalDoor {
     private boolean isLocked = false;
     private String uuid_id;
-    private final boolean isOpen = false;
     private boolean isMainDoor = false;
 
     private TardisLevelOperator operator;
@@ -115,8 +114,6 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
             lvlOper.ifPresent(tardisLevelOperator -> this.operator = tardisLevelOperator);
         }
     }
-
-    // Generic Tile stuff.
 
     @Override
     protected void saveAdditional(CompoundTag compoundTag) {

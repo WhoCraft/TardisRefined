@@ -48,6 +48,7 @@ public class SelectionScreen extends Screen {
 
     }
 
+
     public void addSubmitButton(int x, int y) {
         if (onSubmit != null) {
             SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {

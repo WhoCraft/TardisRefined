@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.data;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
@@ -30,17 +29,17 @@ public class ProviderBlockTags extends BlockTagsProvider {
             Block block = blocksEntry.get();
 
             /*Fences*/
-            if(block instanceof FenceBlock fenceBlock){
+            if (block instanceof FenceBlock fenceBlock) {
                 tag(BlockTags.FENCES).add(fenceBlock);
             }
 
             /*Leaves*/
-            if(block instanceof LeavesBlock leavesBlock){
+            if (block instanceof LeavesBlock leavesBlock) {
                 tag(BlockTags.LEAVES).add(leavesBlock);
             }
 
             /*Slabs*/
-            if(block instanceof SlabBlock slabBlock){
+            if (block instanceof SlabBlock slabBlock) {
                 tag(BlockTags.SLABS).add(slabBlock);
             }
         }
@@ -54,7 +53,7 @@ public class ProviderBlockTags extends BlockTagsProvider {
                 .add(BlockRegistry.FLIGHT_DETECTOR.get())
                 .add(BlockRegistry.TERRAFORMER_BLOCK.get())
                 .add(BlockRegistry.ROOT_PLANT_BLOCK.get());
-        
+
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
                 .add(BlockRegistry.LANDING_PAD.get())

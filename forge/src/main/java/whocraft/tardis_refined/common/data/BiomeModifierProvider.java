@@ -5,14 +5,15 @@ import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.RarityFilter;
 import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
@@ -29,10 +30,9 @@ import java.util.List;
 import java.util.Set;
 
 public class BiomeModifierProvider {
-    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
     public static final ResourceKey<PlacedFeature> TARDIS_ROOT_CLUSTER_PLACED_FEATUE = ResourceKey.create(Registries.PLACED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
-    public static final ResourceKey<ConfiguredFeature<?,?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
-
+    public static final ResourceKey<ConfiguredFeature<?, ?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
     public static void genBiomeModifiers(GatherDataEvent e) {
         final DataGenerator generator = e.getGenerator();
@@ -44,10 +44,10 @@ public class BiomeModifierProvider {
         builder.add(Registries.CONFIGURED_FEATURE, context -> context.register(TARDIS_ROOT_CLUSTER_CONF_FEATURE, tardisRootCluster));
         builder.add(Registries.PLACED_FEATURE, context -> context.register(TARDIS_ROOT_CLUSTER_PLACED_FEATUE, new PlacedFeature
                 (context.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(TARDIS_ROOT_CLUSTER_CONF_FEATURE),
-                    List.of(
-                        RarityFilter.onAverageOnceEvery(25),
-                        InSquarePlacement.spread(),
-                        HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20))))
+                        List.of(
+                                RarityFilter.onAverageOnceEvery(25),
+                                InSquarePlacement.spread(),
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20))))
         ));
         builder.add(ForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
             var tardisRoot = context.lookup(Registries.BIOME).getOrThrow(TagKeys.TARDIS_ROOT_CLUSTER);

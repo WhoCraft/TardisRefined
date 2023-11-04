@@ -1,22 +1,18 @@
 package whocraft.tardis_refined.common.data;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.ChatFormatting;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.patterns.*;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatternCollection;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -24,10 +20,8 @@ import java.util.concurrent.CompletableFuture;
 public class ShellPatternProvider implements DataProvider {
 
     protected final DataGenerator generator;
-
-    protected Map<ResourceLocation, ShellPatternCollection> data = new HashMap<>();
-
     private final boolean addDefaults;
+    protected Map<ResourceLocation, ShellPatternCollection> data = new HashMap<>();
 
     public ShellPatternProvider(DataGenerator generator) {
         this(generator, true);
@@ -39,8 +33,11 @@ public class ShellPatternProvider implements DataProvider {
         this.addDefaults = addDefaults;
     }
 
-    /** To be used by child classes to add new patterns after defaults are registered*/
-    protected void addPatterns(){}
+    /**
+     * To be used by child classes to add new patterns after defaults are registered
+     */
+    protected void addPatterns() {
+    }
 
     @Override
     public CompletableFuture<?> run(CachedOutput arg) {
@@ -48,14 +45,14 @@ public class ShellPatternProvider implements DataProvider {
 
         final List<CompletableFuture<?>> futures = new ArrayList<>();
 
-        if(this.addDefaults){
+        if (this.addDefaults) {
             ShellPatterns.registerDefaultPatterns();
             data.putAll(ShellPatterns.getDefaultPatterns());
         }
 
         this.addPatterns();
 
-        if (!data.isEmpty()){
+        if (!data.isEmpty()) {
             data.entrySet().forEach(entry -> {
                 try {
                     ShellPatternCollection patternCollection = entry.getValue();
@@ -93,11 +90,11 @@ public class ShellPatternProvider implements DataProvider {
         return pattern;
     }
 
-    protected ResourceLocation exteriorTextureLocation(ResourceLocation themeId){
+    protected ResourceLocation exteriorTextureLocation(ResourceLocation themeId) {
         return new ResourceLocation(themeId.getNamespace(), "textures/blockentity/shell/" + themeId.getPath() + "/" + themeId.getPath() + ".png");
     }
 
-    protected ResourceLocation interiorTextureLocation(ResourceLocation themeId){
+    protected ResourceLocation interiorTextureLocation(ResourceLocation themeId) {
         return new ResourceLocation(themeId.getNamespace(), "textures/blockentity/shell/" + themeId.getPath() + "/" + themeId.getPath() + "_interior.png");
     }
 

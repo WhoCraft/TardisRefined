@@ -17,6 +17,10 @@ public class SoundProvider extends SoundDefinitionsProvider {
         super(generator.getPackOutput(), TardisRefined.MODID, helper);
     }
 
+    public static String createSubtitle(String langKey) {
+        return "sound." + langKey + ".subtitle";
+    }
+
     @Override
     public void registerSounds() {
         add(SoundRegistry.TARDIS_LAND.get(), basicSound("tardis_land", new ResourceLocation(TardisRefined.MODID, "tardis/tardis_land")));
@@ -36,10 +40,6 @@ public class SoundProvider extends SoundDefinitionsProvider {
 
     public SoundDefinition basicSound(String langKey, ResourceLocation resourceLocation) {
         return SoundDefinition.definition().with(SoundDefinition.Sound.sound(resourceLocation, SoundDefinition.SoundType.SOUND)).subtitle(createSubtitle(langKey));
-    }
-
-    public static String createSubtitle(String langKey){
-        return "sound." + langKey + ".subtitle";
     }
 
 }

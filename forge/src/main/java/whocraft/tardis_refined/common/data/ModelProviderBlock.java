@@ -58,7 +58,6 @@ public class ModelProviderBlock extends BlockStateProvider {
     }
 
 
-
     public JsonObject emptyBlockState(Block block) {
         return getVariantBuilder(block).partialState().modelForState().modelFile(models().getExistingFile(new ResourceLocation("minecraft:block/barrier"))).addModel().toJson();
     }
@@ -78,7 +77,7 @@ public class ModelProviderBlock extends BlockStateProvider {
     // Paul McGann is...
     public JsonObject threeDeeRotating(Block block, ResourceLocation location) {
         return getVariantBuilder(block).forAllStates(
-                state ->  ConfiguredModel.builder().modelFile(new ModelFile.UncheckedModelFile(location)).rotationY((int) state.getValue(HorizontalDirectionalBlock.FACING).toYRot()).build()).toJson();
+                state -> ConfiguredModel.builder().modelFile(new ModelFile.UncheckedModelFile(location)).rotationY((int) state.getValue(HorizontalDirectionalBlock.FACING).toYRot()).build()).toJson();
 
     }
 }

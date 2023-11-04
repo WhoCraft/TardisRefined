@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.client.screen.waypoints;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -99,6 +101,10 @@ public class WaypointListScreen extends SelectionScreen {
         this.renderTransparentBackground(guiGraphics);
 
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+
+        Font font = this.font;
+        Component literal = Component.literal("No Waypoints Saved");
+        guiGraphics.drawCenteredString(font, literal, width / 2, height / 2 - 10, ChatFormatting.GOLD.getColor());
 
         super.render(guiGraphics, i, j, f);
 

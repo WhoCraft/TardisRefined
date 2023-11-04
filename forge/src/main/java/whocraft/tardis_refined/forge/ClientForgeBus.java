@@ -13,7 +13,7 @@ public class ClientForgeBus {
 
     @SubscribeEvent
     public static void tickTARDIS(TickEvent.ClientTickEvent event) {
-        if(event.phase != TickEvent.Phase.START) {
+        if (event.phase != TickEvent.Phase.START) {
             return;
         }
 
