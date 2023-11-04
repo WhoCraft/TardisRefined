@@ -58,6 +58,7 @@ public class SelectionScreen extends Screen {
 
     }
 
+
     public void addSubmitButton(int x, int y) {
         if (onSubmit != null) {
             this.selectButton = this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, BUTTON_LOCATION, 20, 37, (arg) -> {

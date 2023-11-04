@@ -7,13 +7,13 @@ import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 
 import java.util.function.Function;
 
-public class CodecJsonReloadListenerImpl{
+public class CodecJsonReloadListenerImpl {
 
     public static <T> CodecJsonReloadListener<T> create(String folderName, Codec<T> codec) {
         return new Impl<T>(folderName, codec);
     }
 
-    public static class Impl<T> extends CodecJsonReloadListener<T>{
+    public static class Impl<T> extends CodecJsonReloadListener<T> {
         public Impl(String folderName, Codec<T> codec) {
             super(folderName, codec);
         }
@@ -22,7 +22,7 @@ public class CodecJsonReloadListenerImpl{
         public CodecJsonReloadListener setSyncPacket(NetworkManager networkManager, Function packetFactory) {
             //Use ServerLifecycleEvents#SYNC_DATA_PACK_CONTENTS rather than ServerPlayConnectionEvents#JOIN as this event happens for both player logic and after server resource reload finishes
             ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
-               this.handleSyncPacket(player, networkManager, packetFactory);
+                this.handleSyncPacket(player, networkManager, packetFactory);
             });
             return this;
         }

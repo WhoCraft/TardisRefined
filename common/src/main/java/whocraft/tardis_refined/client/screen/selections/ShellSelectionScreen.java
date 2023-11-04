@@ -96,7 +96,6 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         this.renderBackground(poseStack);
 
-
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;
 
@@ -121,8 +120,6 @@ public class ShellSelectionScreen extends SelectionScreen {
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-
-
         renderShell(poseStack, width / 2- 75, height / 2 - 20, 25F);
 
 

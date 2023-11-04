@@ -8,7 +8,7 @@ import whocraft.tardis_refined.patterns.PatternReloadListener;
 
 import java.util.function.Function;
 
-public class PatternReloadListenerImpl{
+public class PatternReloadListenerImpl {
 
     public static <P extends PatternCollection> PatternReloadListener<P> createListener(String folderName, Codec<P> codec) {
         return new Impl(folderName, codec);

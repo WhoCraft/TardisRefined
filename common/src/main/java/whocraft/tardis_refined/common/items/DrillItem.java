@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -22,26 +23,27 @@ public class DrillItem extends Item {
 
     @Override
     public InteractionResult useOn(UseOnContext useOnContext) {
+        BlockState blockState = useOnContext.getLevel().getBlockState(useOnContext.getClickedPos());
 
-        if (useOnContext.getLevel().getBlockState(useOnContext.getClickedPos()).getBlock() == BlockRegistry.GROWTH_STONE.get()) {
-
-            var player = useOnContext.getPlayer();
+        if (blockState.getBlock() == BlockRegistry.GROWTH_STONE.get()) {
+            Player player = useOnContext.getPlayer();
+            Level level = useOnContext.getLevel();
+            BlockPos clickedPos = useOnContext.getClickedPos();
 
             player.getCooldowns().addCooldown(this, 5);
+            destroyGrowthBlock(level, clickedPos);
 
-            destroyGrowthBlock(useOnContext.getLevel(), useOnContext.getClickedPos());
-
-            if (useOnContext.getPlayer().isShiftKeyDown()) {
+            if (player.isShiftKeyDown()) {
                 return super.useOn(useOnContext);
             }
 
-            destroyGrowthBlock(useOnContext.getLevel(), useOnContext.getClickedPos().above());
-            destroyGrowthBlock(useOnContext.getLevel(), useOnContext.getClickedPos().below());
+            destroyGrowthBlock(level, clickedPos.above());
+            destroyGrowthBlock(level, clickedPos.below());
         }
-
 
         return super.useOn(useOnContext);
     }
+
 
 
     private void destroyGrowthBlock(Level level, BlockPos pos) {

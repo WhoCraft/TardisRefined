@@ -2,7 +2,10 @@ package whocraft.tardis_refined.client.screen.waypoints;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
@@ -94,6 +97,11 @@ public class WaypointListScreen extends SelectionScreen {
         this.renderBackground(poseStack);
         RenderSystem.setShaderTexture(0, MONITOR_TEXTURE);
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        if(WAYPOINTS.isEmpty()) {
+            Font font = this.font;
+            Component literal = Component.literal("No Waypoints Saved");
+            GuiComponent.drawCenteredString(poseStack, font, literal, width / 2, height / 2 - 10, ChatFormatting.GOLD.getColor());
+        }
 
         super.render(poseStack, i, j, f);
 
