@@ -102,9 +102,12 @@ public class WaypointListScreen extends SelectionScreen {
 
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        Font font = this.font;
-        Component literal = Component.literal("No Waypoints Saved");
-        guiGraphics.drawCenteredString(font, literal, width / 2, height / 2 - 10, ChatFormatting.GOLD.getColor());
+
+        if(WAYPOINTS.isEmpty()) {
+            Font font = this.font;
+            Component literal = Component.literal("No Waypoints Saved");
+            guiGraphics.drawCenteredString(font, literal, width / 2, height / 2 - 10, ChatFormatting.GOLD.getColor());
+        }
 
         super.render(guiGraphics, i, j, f);
 
