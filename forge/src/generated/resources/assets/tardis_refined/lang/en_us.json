@@ -16,6 +16,7 @@
   "block.tardis_refined.root_shell_door": "Root Door",
   "block.tardis_refined.tardis_console": "Console",
   "block.tardis_refined.tardis_door": "Tardis Door",
+  "block.tardis_refined.tardis_shell": "TARDIS",
   "block.tardis_refined.terraformer": "Terraformer",
   "command.tardis_refined.dim_not_a_tardis": "§c%s is not a TARDIS Dimension!",
   "command.tardis_refined.export_desktop.fail": "§cFailed to export desktop %s!",
