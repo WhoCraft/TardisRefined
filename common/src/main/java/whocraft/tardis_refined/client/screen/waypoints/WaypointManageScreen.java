@@ -72,7 +72,7 @@ public class WaypointManageScreen extends Screen {
         if (coordInputType == CoordInputType.WAYPOINT) {
             onSaveWaypoint = this.addRenderableWidget(CommonTRWidgets.imageButton(uploadTextWidth, Component.translatable("Save"), (arg) -> {
                 if (issues.isEmpty()) {
-                    new UploadWaypointMessage(tardisNavLocation).send();
+                    new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
                     Minecraft.getInstance().setScreen(null);
                 }
             }, false, SelectionScreen.BUTTON_LOCATION));
@@ -81,7 +81,7 @@ public class WaypointManageScreen extends Screen {
             addWidget(onSaveWaypoint);
         } else {
             onSubmitButton = this.addRenderableWidget(CommonTRWidgets.imageButton(uploadTextWidth, Component.translatable("Upload"), (arg) -> {
-                //TODO Travel!
+                new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
             }, false, SelectionScreen.BUTTON_LOCATION));
             onSubmitButton.setPosition(width / 2 - 90, yPosition);
             onSubmitButton.setHeight(widgetHeight);

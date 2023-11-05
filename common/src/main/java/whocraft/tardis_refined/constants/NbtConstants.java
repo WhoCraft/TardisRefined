@@ -8,6 +8,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 
@@ -85,8 +86,9 @@ public class NbtConstants {
         tag.putInt(prefix + NbtConstants.LOCATION_ROTATION, location.getDirection().get2DDataValue());
 
 
-        if(location == null || location.getLevel() == null) return;
-        tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, location.getLevel().dimension().location().getNamespace());
-        tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, location.getLevel().dimension().location().getPath());
+        if(location == null || location.getDimensionKey() == null) return;
+        ResourceKey<Level> dimKey = location.getDimensionKey();
+        tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, dimKey.location().getNamespace());
+        tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, dimKey.location().getPath());
     }
 }

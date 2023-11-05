@@ -128,8 +128,6 @@ public class ShellSelectionScreen extends SelectionScreen {
             RenderSystem.disableBlend();
         }
         super.render(guiGraphics, i, j, f);
-
-
     }
 
     @Override

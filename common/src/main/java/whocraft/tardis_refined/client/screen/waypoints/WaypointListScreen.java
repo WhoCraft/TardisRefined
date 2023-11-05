@@ -26,7 +26,7 @@ public class WaypointListScreen extends SelectionScreen {
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
     Collection<TardisNavLocation> WAYPOINTS = new ArrayList<>();
-    TardisNavLocation tardisNavLocation = null;
+    TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
 
     public WaypointListScreen(Collection<TardisNavLocation> waypoints) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
@@ -51,7 +51,10 @@ public class WaypointListScreen extends SelectionScreen {
         super.init();
 
         setEvents(() -> {
-            new TravelToWaypointMessage(tardisNavLocation.getName()).send();
+            if(tardisNavLocation != TardisNavLocation.ORIGIN) {
+                new TravelToWaypointMessage(tardisNavLocation.getName()).send();
+                Minecraft.getInstance().setScreen(null);
+            }
             Minecraft.getInstance().setScreen(null);
         }, new SelectionScreenRun() {
             @Override

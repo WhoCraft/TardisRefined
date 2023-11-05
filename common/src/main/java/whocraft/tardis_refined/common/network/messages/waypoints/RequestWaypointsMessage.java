@@ -38,7 +38,7 @@ public class RequestWaypointsMessage extends MessageC2S {
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
             Collection<TardisNavLocation> waypoints = waypointManager.getWaypoints();
-            new OpenWayPointsMenuMessage(waypoints).send(player);
+            new OpenWayPointsListMessage(waypoints).send(player);
         });
 
     }

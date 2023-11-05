@@ -17,6 +17,7 @@ import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.client.screen.waypoints.WaypointManageScreen;
+import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesScreenMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -69,13 +70,8 @@ public class MonitorScreen extends SelectionScreen {
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
 
-        ArrayList<ResourceKey<Level>> testLevels = new ArrayList<>();
-        testLevels.add(ServerLevel.OVERWORLD);
-        testLevels.add(ServerLevel.NETHER);
-        testLevels.add(ServerLevel.END);
-
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> Minecraft.getInstance().setScreen(new WaypointManageScreen(testLevels,  CoordInputType.WAYPOINT, currentLocation)), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> Minecraft.getInstance().setScreen(new WaypointManageScreen(testLevels,  CoordInputType.TRAVEL, currentLocation)), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.WAYPOINT).send(), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.TRAVEL).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
 
         return selectionList;

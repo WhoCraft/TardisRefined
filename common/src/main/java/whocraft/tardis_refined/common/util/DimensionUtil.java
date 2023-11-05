@@ -26,4 +26,14 @@ public class DimensionUtil {
         }
         return set;
     }
+
+    public static Set<ResourceKey<Level>> getAllowedDimensions(MinecraftServer server){
+        Set<ResourceKey<Level>> set = Sets.newHashSet();
+        for(ServerLevel level : server.getAllLevels()) {
+            if(isAllowedDimension(level.dimension())){
+                set.add(level.dimension());
+            }
+        }
+        return set;
+    }
 }
