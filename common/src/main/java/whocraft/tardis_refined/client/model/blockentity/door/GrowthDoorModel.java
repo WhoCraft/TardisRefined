@@ -65,7 +65,7 @@ public class GrowthDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorPosition(boolean open) {
+	public void setDoorOpen(boolean open) {
 		this.isDoorOpen = open;
 	}
 

@@ -75,7 +75,7 @@ public class PhoneBoothDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorPosition(boolean open) {
+	public void setDoorOpen(boolean open) {
 		this.Door2.yRot = (open) ? (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f) : 0;
 	}
 

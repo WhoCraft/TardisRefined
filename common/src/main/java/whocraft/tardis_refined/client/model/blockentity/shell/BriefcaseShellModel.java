@@ -45,7 +45,7 @@ public class BriefcaseShellModel extends ShellModel {
     }
 
     @Override
-    public void setDoorPosition(boolean open) {
+    public void setDoorOpen(boolean open) {
         this.door.xRot = (open) ? -2f : 0f;
     }
 

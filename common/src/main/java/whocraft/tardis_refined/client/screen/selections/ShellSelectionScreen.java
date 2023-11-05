@@ -6,7 +6,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -94,7 +93,9 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public void render(PoseStack poseStack, int i, int j, float f) {
-        renderBackground(poseStack);
+
+        this.renderBackground(poseStack);
+
 
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;
@@ -112,6 +113,7 @@ public class ShellSelectionScreen extends SelectionScreen {
             }
         }
 
+
         /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -119,43 +121,10 @@ public class ShellSelectionScreen extends SelectionScreen {
         blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-        ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
 
 
-        model.setDoorPosition(false);
+        renderShell(poseStack, width / 2- 75, height / 2 - 20, 25F);
 
-        Lighting.setupForFlatItems();
-        int k = (int) this.minecraft.getWindow().getGuiScale();
-        RenderSystem.viewport((this.width - 320) / 2 * k, (this.height - 240) / 2 * k, 320 * k, 240 * k);
-        Matrix4f matrix4f = Matrix4f.createTranslateMatrix(-0.34F, 0.23F, 0.0F);
-        matrix4f.multiply(Matrix4f.perspective(Integer.MAX_VALUE, 1.3333334F, 9.0F, Integer.MAX_VALUE));
-        RenderSystem.backupProjectionMatrix();
-        RenderSystem.setProjectionMatrix(matrix4f);
-
-
-        poseStack.pushPose();
-        PoseStack.Pose pose = poseStack.last();
-        pose.pose().setIdentity();
-        pose.normal().setIdentity();
-        poseStack.translate(-3, -2, 1984.0);
-        poseStack.scale(3F, 3F, 3F);
-
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(180.0F));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L / 15L)));
-
-        MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(pattern, false)));
-        model.renderToBuffer(poseStack, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        bufferSource.endBatch();
-        poseStack.popPose();
-        RenderSystem.viewport(0, 0, this.minecraft.getWindow().getWidth(), this.minecraft.getWindow().getHeight());
-        RenderSystem.restoreProjectionMatrix();
-        Lighting.setupFor3DItems();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        /*Render Widgets*/
-        super.render(poseStack, i, j, f);
 
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
         if (isCrashed) {
@@ -166,7 +135,27 @@ public class ShellSelectionScreen extends SelectionScreen {
             RenderSystem.disableBlend();
         }
 
+
     }
+
+    private void renderShell(PoseStack poseStack, int x, int y, float scale) {
+        ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
+        model.setDoorOpen(false);
+        Lighting.setupForEntityInInventory();
+        PoseStack pose = poseStack;
+        pose.pushPose();
+        pose.translate((float) x, y, 100.0F);
+        pose.scale(-scale, scale, scale);
+        pose.mulPose(Vector3f.XP.rotationDegrees(-45F));
+        pose.mulPose(Vector3f.YP.rotationDegrees(Minecraft.getInstance().player.tickCount));
+        MultiBufferSource.BufferSource bufferSource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(model.renderType(model.texture(pattern, false)));
+        model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        bufferSource.endBatch();
+        pose.popPose();
+        Lighting.setupFor3DItems();
+    }
+
 
     @Override
     public Component getSelectedDisplayName() {
@@ -179,7 +168,6 @@ public class ShellSelectionScreen extends SelectionScreen {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 100, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
 
         selectionList.setRenderBackground(false);
-        selectionList.setRenderTopAndBottom(false);
 
         for (ShellTheme shellTheme : ShellTheme.values()) {
             selectionList.children().add(new SelectionListEntry(shellTheme.getDisplayName(), (entry) -> {

@@ -48,7 +48,7 @@ public class VendingMachineDoorModel extends ShellModel {
     }
 
     @Override
-    public void setDoorPosition(boolean open) {
+    public void setDoorOpen(boolean open) {
         this.door.xRot = (open) ? (ModCompatChecker.immersivePortals() ? -1.6f : 1.6F) : 0;
     }
 
