@@ -42,7 +42,6 @@ public class WaypointManageScreen extends Screen {
     private CycleButton<ResourceKey<Level>> levelButton;
 
     private HashMap<String, String> issues = new HashMap<>();
-    private ImageButton onSubmitButton;
     private ImageButton onSaveWaypoint;
 
     public WaypointManageScreen(List<ResourceKey<Level>> worlds, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
@@ -50,7 +49,6 @@ public class WaypointManageScreen extends Screen {
         this.worlds = worlds;
         this.coordInputType = coordInputType;
         this.tardisNavLocation = tardisNavLocation;
-        tardisNavLocation.setName("Placeholder");
     }
 
     @Override
@@ -70,18 +68,12 @@ public class WaypointManageScreen extends Screen {
         int uploadTextWidth = Minecraft.getInstance().font.width("Upload") * 2;
 
 
-        if (coordInputType == CoordInputType.WAYPOINT) {
             onSaveWaypoint = this.addRenderableWidget(new ImageButton(width / 2 - 90, yPosition, uploadTextWidth, widgetHeight, 0, 0, 19, SelectionScreen.BUTTON_LOCATION, 20, 20, (arg) -> {
                 if (issues.isEmpty()) {
-                    new UploadWaypointMessage(tardisNavLocation).send();
+                    new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
                     Minecraft.getInstance().setScreen(null);
                 }
             }, Component.translatable("Save")));
-        } else {
-            onSubmitButton = this.addRenderableWidget(new ImageButton(width / 2 - 90, yPosition, uploadTextWidth, widgetHeight, 0, 0, 19, SelectionScreen.BUTTON_LOCATION, 20, 20, (arg) -> {
-                //TODO Travel!
-            }, Component.translatable("Upload")));
-        }
 
 
         Collection<Direction> directionCollection = new ArrayList<>();
@@ -190,12 +182,11 @@ public class WaypointManageScreen extends Screen {
         this.levelButton.render(poseStack, i, j, f);
         this.directionButton.render(poseStack, i, j, f);
 
-        if (coordInputType == CoordInputType.WAYPOINT) {
+        if(coordInputType == CoordInputType.WAYPOINT) {
             this.waypointName.render(poseStack, i, j, f);
-            this.onSaveWaypoint.render(poseStack, i, j, f);
-        } else {
-            this.onSubmitButton.render(poseStack, i, j, f);
         }
+        this.onSaveWaypoint.render(poseStack, i, j, f);
+
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
 
