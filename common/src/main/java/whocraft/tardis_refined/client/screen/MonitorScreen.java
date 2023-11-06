@@ -5,18 +5,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
+import whocraft.tardis_refined.client.screen.upgrades.UpgradesScreen;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
-import whocraft.tardis_refined.client.screen.waypoints.WaypointManageScreen;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesScreenMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -24,7 +23,6 @@ import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 
 public class MonitorScreen extends SelectionScreen {
@@ -73,6 +71,7 @@ public class MonitorScreen extends SelectionScreen {
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.WAYPOINT).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.TRAVEL).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> Minecraft.getInstance().setScreen(new UpgradesScreen(new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level)))), leftPos));
 
         return selectionList;
     }

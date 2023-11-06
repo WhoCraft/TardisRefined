@@ -15,6 +15,7 @@ import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -40,6 +41,7 @@ public class TardisLevelOperator {
     private final TardisWaypointManager tardisWaypointManager;
     private final TardisFlightEventManager tardisFlightEventManager;
     private final TardisClientData tardisClientData;
+    private final UpgradeHandler upgradeHandler;
 
     public TardisLevelOperator(Level level) {
         this.level = level;
@@ -49,6 +51,11 @@ public class TardisLevelOperator {
         this.tardisWaypointManager = new TardisWaypointManager(this);
         this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
+        this.upgradeHandler = new UpgradeHandler(this);
+    }
+
+    public UpgradeHandler getUpgradeHandler() {
+        return upgradeHandler;
     }
 
     public TardisClientData tardisClientData() {

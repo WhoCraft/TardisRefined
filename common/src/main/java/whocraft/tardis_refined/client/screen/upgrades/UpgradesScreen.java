@@ -1,0 +1,218 @@
+package whocraft.tardis_refined.client.screen.upgrades;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class UpgradesScreen extends Screen {
+
+    public static final ResourceLocation WINDOW = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/window.png");
+    public static final ResourceLocation TABS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/tabs.png");
+    public static final ResourceLocation WIDGETS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/widgets.png");
+
+    public static final int WINDOW_WIDTH = 252;
+    public static final int WINDOW_HEIGHT = 196;
+    private static final int WINDOW_INSIDE_X = 9;
+    private static final int WINDOW_INSIDE_Y = 18;
+    public static final int WINDOW_INSIDE_WIDTH = 234;
+    public static final int WINDOW_INSIDE_HEIGHT = 169;
+    private static final Component VERY_SAD_LABEL = Component.translatable("advancements.sad_label");
+    private static final Component NO_ADVANCEMENTS_LABEL = Component.translatable("advancements.empty");
+    private static final Component TITLE = Component.translatable("gui.palladium.powers");
+    private final List<UpgradeTab> tabs = new ArrayList<>();
+    private final UpgradeHandler upgradeHandler;
+    @Nullable
+    public UpgradeTab selectedTab;
+    private boolean isScrolling;
+    private static int tabPage;
+    private static int maxPages;
+    public Screen overlayScreen = null;
+
+    public UpgradesScreen(UpgradeHandler upgradeHandler) {
+        super(Component.empty());
+        this.upgradeHandler = upgradeHandler;
+    }
+
+
+    @Override
+    protected void init() {
+        this.tabs.clear();
+        this.selectedTab = null;
+
+        UpgradeTab upgradeTab = UpgradeTab.create(this.minecraft, this, 0, upgradeHandler );
+        this.tabs.add(upgradeTab);
+
+
+        if (this.tabs.size() > UpgradeTabType.MAX_TABS) {
+            int guiLeft = (this.width - WINDOW_WIDTH) / 2;
+            int guiTop = (this.height - WINDOW_HEIGHT) / 2;
+            this.addRenderableWidget(Button.builder(Component.literal("<"), (b) -> {
+                tabPage = Math.max(tabPage - 1, 0);
+            }).bounds(guiLeft, guiTop - 50, 20, 20).build());
+            this.addRenderableWidget(Button.builder(Component.literal(">"), (b) -> {
+                tabPage = Math.min(tabPage + 1, maxPages);
+            }).bounds(guiLeft + WINDOW_WIDTH - 20, guiTop - 50, 20, 20).build());
+            maxPages = this.tabs.size() / UpgradeTabType.MAX_TABS;
+        }
+
+        if (!this.tabs.isEmpty()) {
+            this.selectedTab = tabs.get(0);
+        }
+
+        if (this.overlayScreen != null) {
+            this.overlayScreen.init(this.minecraft, this.width, this.height);
+        }
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            int i = (this.width - WINDOW_WIDTH) / 2;
+            int j = (this.height - WINDOW_HEIGHT) / 2;
+
+            if (this.isOverOverlayScreen(mouseX, mouseY)) {
+                return this.overlayScreen.mouseClicked(mouseX, mouseY, button);
+            } else {
+                for (UpgradeTab powerTab : this.tabs) {
+                    if (powerTab.isMouseOver(i, j, mouseX, mouseY)) {
+                        this.selectedTab = powerTab;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return this.overlayScreen == null ? super.keyPressed(keyCode, scanCode, modifiers) : this.overlayScreen.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        int i = (this.width - WINDOW_WIDTH) / 2;
+        int j = (this.height - WINDOW_HEIGHT) / 2;
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        this.renderInside(guiGraphics, mouseX, mouseY, i, j);
+        this.renderWindow(guiGraphics, i, j);
+        this.renderTooltips(guiGraphics, mouseX, mouseY, i, j);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        if (this.selectedTab != null && this.overlayScreen != null) {
+            guiGraphics.pose().translate(0, 0, 500);
+            this.overlayScreen.render(guiGraphics, mouseX, mouseY, partialTick);
+            this.selectedTab.fade = Mth.clamp(this.selectedTab.fade + 0.02F, 0, 0.5F);
+            guiGraphics.pose().translate(0, 0, -500);
+        }
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (button != 0) {
+            this.isScrolling = false;
+            return false;
+        } else {
+            if (!this.isScrolling) {
+                this.isScrolling = true;
+            } else if (this.selectedTab != null) {
+                this.selectedTab.scroll(dragX, dragY);
+            }
+
+            return true;
+        }
+    }
+
+    private void renderInside(GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY) {
+        UpgradeTab tab = this.selectedTab;
+        if (tab == null) {
+            guiGraphics.fill(offsetX + WINDOW_INSIDE_X, offsetY + WINDOW_INSIDE_Y, offsetX + WINDOW_INSIDE_X + WINDOW_INSIDE_WIDTH, offsetY + WINDOW_INSIDE_Y + WINDOW_INSIDE_HEIGHT, -16777216);
+            int i = offsetX + WINDOW_INSIDE_X + 117;
+            guiGraphics.drawCenteredString(this.font, NO_ADVANCEMENTS_LABEL, i, offsetY + WINDOW_INSIDE_Y + 56 - 4, -1);
+            guiGraphics.drawCenteredString(this.font, VERY_SAD_LABEL, i, offsetY + WINDOW_INSIDE_Y + WINDOW_INSIDE_HEIGHT - 9, -1);
+        } else {
+            tab.drawContents(guiGraphics, offsetX + WINDOW_INSIDE_X, offsetY + WINDOW_INSIDE_Y);
+        }
+    }
+
+    public void renderWindow(GuiGraphics guiGraphics, int offsetX, int offsetY) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.enableBlend();
+        guiGraphics.blit(WINDOW, offsetX, offsetY, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        if (this.tabs.size() > 1) {
+            RenderSystem.setShaderTexture(0, TABS);
+
+            for (UpgradeTab tab : this.tabs) {
+                tab.drawTab(guiGraphics, offsetX, offsetY, tab == this.selectedTab);
+            }
+
+            RenderSystem.defaultBlendFunc();
+
+            for (UpgradeTab tab : this.tabs) {
+                tab.drawIcon(guiGraphics, offsetX, offsetY);
+            }
+
+            RenderSystem.disableBlend();
+        }
+
+        guiGraphics.drawString(this.minecraft.font, TITLE, offsetX + 8, offsetY + 6, 4210752, false);
+    }
+
+    private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY) {
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        if (this.selectedTab != null) {
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate((float) (offsetX + WINDOW_INSIDE_X), (float) (offsetY + WINDOW_INSIDE_Y), 400.0F);
+            RenderSystem.enableDepthTest();
+            this.selectedTab.drawTooltips(guiGraphics, mouseX - offsetX - WINDOW_INSIDE_X, mouseY - offsetY - WINDOW_INSIDE_Y, offsetX, offsetY, this.overlayScreen != null);
+            RenderSystem.disableDepthTest();
+            guiGraphics.pose().popPose();
+        }
+
+        if (this.tabs.size() > 1) {
+            for (UpgradeTab tab : this.tabs) {
+                if (tab.isMouseOver(offsetX, offsetY, mouseX, mouseY)) {
+                    guiGraphics.renderTooltip(this.font, tab.getTitle(), mouseX, mouseY);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+
+    }
+
+    public void closeOverlayScreen() {
+        this.overlayScreen = null;
+    }
+
+    public void openOverlayScreen(Screen screen) {
+        this.closeOverlayScreen();
+        this.overlayScreen = screen;
+        this.overlayScreen.init(this.minecraft, this.width, this.height);
+    }
+
+
+    public boolean isOverOverlayScreen(double mouseX, double mouseY) {
+        return overlayScreen != null;
+    }
+
+
+}
