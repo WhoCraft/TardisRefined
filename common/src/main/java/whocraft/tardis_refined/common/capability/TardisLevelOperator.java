@@ -18,7 +18,6 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -30,7 +29,7 @@ import java.util.Optional;
 public class TardisLevelOperator {
 
     private final Level level;
-    private boolean setUp = false;
+    private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
 
     // Managers
@@ -62,7 +61,7 @@ public class TardisLevelOperator {
 
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
-        compoundTag.putBoolean(NbtConstants.TARDIS_IS_SETUP, this.setUp);
+        compoundTag.putBoolean(NbtConstants.TARDIS_IS_SETUP, this.hasInitiallyGenerated);
 
         if (this.internalDoor != null) {
             compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
@@ -79,7 +78,7 @@ public class TardisLevelOperator {
     }
 
     public void deserializeNBT(CompoundTag tag) {
-        this.setUp = tag.getBoolean(NbtConstants.TARDIS_IS_SETUP);
+        this.hasInitiallyGenerated = tag.getBoolean(NbtConstants.TARDIS_IS_SETUP);
 
         CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
         if (doorPos != null) {
@@ -123,20 +122,20 @@ public class TardisLevelOperator {
         }
     }
 
+    public boolean hasInitiallyGenerated() {
+        return hasInitiallyGenerated;
+    }
+
+    public void setInitiallyGenerated(boolean hasInitiallyGenerated) {
+        this.hasInitiallyGenerated = hasInitiallyGenerated;
+    }
+
     /**
      * Moves the entity into the TARDIS. If the TARDIS has no door established, the player is sent to 0,0,0.
      *
      * @param player Player Entity.
      **/
     public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, ServerLevel level, Direction direction) {
-
-        if (!setUp) {
-            this.interiorManager.generateDesktop(shell.getAssociatedTheme());
-            TardisNavLocation navLocation = new TardisNavLocation(externalPos, direction.getOpposite(), level);
-            this.getExteriorManager().setLastKnownLocation(navLocation);
-            this.getPilotingManager().setTargetLocation(navLocation);
-            this.setUp = true;
-        }
 
         if (player instanceof ServerPlayer serverPlayer) {
             if (internalDoor != null) {
