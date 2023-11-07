@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.network.messages;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +13,7 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -50,9 +50,11 @@ public class ChangeDesktopMessage extends MessageC2S {
     public void handle(MessageContext context) {
         Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
         level.ifPresent(x -> {
-            TardisLevelOperator.get(x).ifPresent(y -> {
-                if (!y.getControlManager().isInFlight()) {
-                    y.getInteriorManager().prepareDesktop(desktopTheme);
+            TardisLevelOperator.get(x).ifPresent(operator -> {
+                TardisPilotingManager pilotManager = operator.getPilotingManager();
+
+                if (!pilotManager.isInFlight()) {
+                    operator.getInteriorManager().prepareDesktop(desktopTheme);
                 } else {
                     x.playSound(null, context.getPlayer(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.BLOCKS, 10f, 0.25f);
                 }

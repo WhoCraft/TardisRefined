@@ -2,11 +2,11 @@ package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
@@ -31,9 +31,11 @@ public class CoordinateControl extends Control {
 
     private boolean changeCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean addValue){
         if (!operator.getLevel().isClientSide()){
-            int increment = operator.getControlManager().getCordIncrement();
+            TardisPilotingManager pilotManager = operator.getPilotingManager();
+
+            int increment = pilotManager.getCordIncrement();
             int incrementAmount = addValue ? increment : -increment;
-            BlockPos potentialPos = operator.getControlManager().getTargetLocation().getPosition();
+            BlockPos potentialPos = pilotManager.getTargetLocation().getPosition();
 
             switch (button){
                 case X -> potentialPos = potentialPos.offset(incrementAmount, 0, 0);
@@ -41,15 +43,15 @@ public class CoordinateControl extends Control {
                 case Z -> potentialPos = potentialPos.offset(0, 0, incrementAmount);
             }
 
-            if (operator.getControlManager().getTargetLocation().getLevel().isInWorldBounds(potentialPos)){ //Use vanilla check which accounts for both world height and horizontal bounds
+            if (pilotManager.getTargetLocation().getLevel().isInWorldBounds(potentialPos)){ //Use vanilla check which accounts for both world height and horizontal bounds
 
-                operator.getControlManager().setTargetPosition(potentialPos); //Only update target position if it is within both vertical and horizontal bounds.
+                pilotManager.setTargetPosition(potentialPos); //Only update target position if it is within both vertical and horizontal bounds.
 
-                if (operator.getControlManager().isInFlight()) {
+                if (pilotManager.isInFlight()) {
                     operator.getTardisFlightEventManager().calculateTravelLogic();
                 }
 
-                PlayerUtil.sendMessage(player, Component.translatable(operator.getControlManager().getTargetLocation().getPosition().toShortString()), true);
+                PlayerUtil.sendMessage(player, Component.translatable(pilotManager.getTargetLocation().getPosition().toShortString()), true);
                 return true;
             }
             else {

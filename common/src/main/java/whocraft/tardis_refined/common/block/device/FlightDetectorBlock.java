@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.FlightDetectorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 public class FlightDetectorBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
@@ -55,7 +56,9 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
                 if (level1 instanceof ServerLevel serverLevel) {
                     TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                         TardisFlightEventManager flightEventManager = tardisLevelOperator.getTardisFlightEventManager();
-                        int powerLevel = tardisLevelOperator.getControlManager().isInFlight() ? Mth.clamp((int) (flightEventManager.getPercentComplete() * 16), 1, 16) : 0;
+                        TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
+
+                        int powerLevel = pilotManager.isInFlight() ? Mth.clamp((int) (flightEventManager.getPercentComplete() * 16), 1, 16) : 0;
                         serverLevel.setBlock(blockPos, blockState1.setValue(LEVEL, powerLevel), Block.UPDATE_ALL);
                     });
                 }

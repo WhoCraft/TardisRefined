@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
 
@@ -71,9 +72,10 @@ public class LandingPad extends Block {
                         }
 
                         var operator = operatorOptional.get();
+                        TardisPilotingManager pilotManager = operator.getPilotingManager();
 
-                        if (operator.getControlManager().beginFlight(true) && !operator.getControlManager().isOnCooldown()) {
-                            operator.getControlManager().setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
+                        if (pilotManager.beginFlight(true) && !pilotManager.isOnCooldown()) {
+                            pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
                             serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
                             return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
                         } else {

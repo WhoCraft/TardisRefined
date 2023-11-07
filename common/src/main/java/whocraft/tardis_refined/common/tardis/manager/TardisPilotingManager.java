@@ -16,11 +16,10 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
-public class TardisControlManager {
+public class TardisPilotingManager {
 
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
@@ -54,7 +53,7 @@ public class TardisControlManager {
     private boolean autoLand = false;
     private ShellTheme currentExteriorTheme;
 
-    public TardisControlManager(TardisLevelOperator operator) {
+    public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
     }
 
@@ -133,7 +132,7 @@ public class TardisControlManager {
             if (targetLocation != null) {
                 this.targetLocation = location;
             } else {
-                this.targetLocation = new TardisNavLocation(new BlockPos(0, 100, 0), Direction.NORTH, Platform.getServer().overworld());
+                this.targetLocation = TardisNavLocation.ORIGIN;
             }
         }
 
@@ -367,10 +366,7 @@ public class TardisControlManager {
      * @return true if able to, false if not
      */
     public boolean canEndFlight(){
-        if (!isInFlight || ticksInFlight < (20 * 5) || ticksTakingOff > 0 || (!this.operator.getTardisFlightEventManager().areControlEventsComplete() && !this.autoLand)) {
-            return false;
-        }
-        return true;
+        return isInFlight && ticksInFlight >= (20 * 5) && ticksTakingOff <= 0 && (this.operator.getTardisFlightEventManager().areControlEventsComplete() || this.autoLand);
     }
 
     /**
@@ -378,21 +374,25 @@ public class TardisControlManager {
      * @return false if didn't end flight, true if flight was ended
      */
     public boolean endFlight() {
-
         if (this.canEndFlight()){
             this.ticksInFlight = 0;
             this.ticksLanding = TICKS_LANDING_MAX;
 
-            TardisNavLocation landingLocation = this.targetLocation;
-            var location = findClosestValidPosition(landingLocation);
+            TardisExteriorManager exteriorManager = operator.getExteriorManager();
+            TardisInteriorManager interiorManager = operator.getInteriorManager();
+            Level level = operator.getLevel();
 
-            operator.getExteriorManager().placeExteriorBlock(operator, location);
+            TardisNavLocation landingLocation = this.targetLocation;
+            TardisNavLocation location = findClosestValidPosition(landingLocation);
+
+
+            exteriorManager.placeExteriorBlock(operator, location);
             if (currentExteriorTheme != null) {
-                operator.getInteriorManager().setShellTheme(currentExteriorTheme);
+                interiorManager.setShellTheme(currentExteriorTheme);
             }
 
-            operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
-            operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
+            exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
+            level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
 
             return true;
         }
@@ -421,6 +421,9 @@ public class TardisControlManager {
         this.isCrashing = true;
         this.ticksCrashing = 8 * 20;
 
+        TardisExteriorManager tardisExteriorManager = operator.getExteriorManager();
+        Level tarisLevel = operator.getLevel();
+
         for (Player player : this.operator.getLevel().players()) {
             MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DARKNESS, 60, 60, false, false);
             player.addEffect(mobEffectInstance);
@@ -433,9 +436,9 @@ public class TardisControlManager {
         }
 
         var progress = this.operator.getTardisFlightEventManager().getPercentComplete();
-        var targetPos = new Vec3(this.targetLocation.getPosition().getX(), this.targetLocation.getPosition().getY(), this.targetLocation.getPosition().getZ());
-        var currentLoc = this.operator.getExteriorManager().getLastKnownLocation().getPosition();
-        var currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
+        Vec3 targetPos = new Vec3(this.targetLocation.getPosition().getX(), this.targetLocation.getPosition().getY(), this.targetLocation.getPosition().getZ());
+        BlockPos currentLoc = tardisExteriorManager.getLastKnownLocation().getPosition();
+        Vec3 currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
         int x = (int) (currentPos.x + ((targetPos.x - currentPos.x) * progress));
         int y = (int) (currentPos.y + ((targetPos.y - currentPos.y) * progress));
@@ -447,13 +450,13 @@ public class TardisControlManager {
         TardisNavLocation landing = this.targetLocation;
         var location =  findClosestValidPosition(landing);
 
-        operator.getExteriorManager().placeExteriorBlock(operator, location);
+        tardisExteriorManager.placeExteriorBlock(operator, location);
         if (currentExteriorTheme != null) {
-            operator.getInteriorManager().setShellTheme(currentExteriorTheme);
+            tardisExteriorManager.setShellTheme(currentExteriorTheme);
         }
 
-        operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
-        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1000f, 1f);
+        tardisExteriorManager.playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
+        tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1000f, 1f);
     }
 
     public void onCrashEnd() {

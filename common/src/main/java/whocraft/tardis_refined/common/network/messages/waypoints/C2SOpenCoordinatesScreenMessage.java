@@ -14,11 +14,10 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 
 import java.util.List;
-import java.util.Set;
 
 public class C2SOpenCoordinatesScreenMessage extends MessageC2S {
 
@@ -51,8 +50,8 @@ public class C2SOpenCoordinatesScreenMessage extends MessageC2S {
         List<ResourceKey<Level>> dimensions = DimensionUtil.getAllowedDimensions(server).stream().toList();
         ServerLevel level = serverPlayer.serverLevel();
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
-            TardisControlManager controlManager = tardisLevelOperator.getControlManager();
-            TardisNavLocation tardisTarget = controlManager.getTargetLocation() == null ? TardisNavLocation.ORIGIN : controlManager.getTargetLocation();
+            TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
+            TardisNavLocation tardisTarget = pilotManager.getTargetLocation() == null ? TardisNavLocation.ORIGIN : pilotManager.getTargetLocation();
             new S2COpenCoordinatesScreenMessage(dimensions, coordInput, tardisTarget).send(serverPlayer);
         });
     }

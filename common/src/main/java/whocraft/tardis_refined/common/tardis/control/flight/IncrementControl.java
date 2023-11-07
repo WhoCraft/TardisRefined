@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
@@ -22,8 +23,9 @@ public class IncrementControl extends Control {
 
     private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount){
         if (!operator.getLevel().isClientSide()){
-            operator.getControlManager().cycleCordIncrement(incAmount);
-            int currentIncAmount = operator.getControlManager().getCordIncrement();
+            TardisPilotingManager pilotManager = operator.getPilotingManager();
+            pilotManager.cycleCordIncrement(incAmount);
+            int currentIncAmount = pilotManager.getCordIncrement();
             PlayerUtil.sendMessage(player, Component.translatable("x" + currentIncAmount), true);
             return true;
         }

@@ -36,7 +36,7 @@ public class TardisLevelOperator {
     // Managers
     private final TardisExteriorManager exteriorManager;
     private final TardisInteriorManager interiorManager;
-    private final TardisControlManager controlManager;
+    private final TardisPilotingManager pilotingManager;
     private final TardisWaypointManager tardisWaypointManager;
     private final TardisFlightEventManager tardisFlightEventManager;
     private final TardisClientData tardisClientData;
@@ -45,7 +45,7 @@ public class TardisLevelOperator {
         this.level = level;
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
-        this.controlManager = new TardisControlManager(this);
+        this.pilotingManager = new TardisPilotingManager(this);
         this.tardisWaypointManager = new TardisWaypointManager(this);
         this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
@@ -71,7 +71,7 @@ public class TardisLevelOperator {
 
         compoundTag = this.exteriorManager.saveData(compoundTag);
         compoundTag = this.interiorManager.saveData(compoundTag);
-        compoundTag = this.controlManager.saveData(compoundTag);
+        compoundTag = this.pilotingManager.saveData(compoundTag);
         compoundTag = this.tardisWaypointManager.saveData(compoundTag);
         compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
 
@@ -91,7 +91,7 @@ public class TardisLevelOperator {
         // Managers
         this.exteriorManager.loadData(tag);
         this.interiorManager.loadData(tag);
-        this.controlManager.loadData(tag);
+        this.pilotingManager.loadData(tag);
         this.tardisFlightEventManager.loadData(tag);
         this.tardisWaypointManager.loadData(tag);
 
@@ -105,19 +105,19 @@ public class TardisLevelOperator {
 
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
-        controlManager.tick(level);
+        pilotingManager.tick(level);
         tardisFlightEventManager.tick();
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
-            tardisClientData.setFlying(controlManager.isInFlight());
-            tardisClientData.setThrottleDown(controlManager.shouldThrottleBeDown());
+            tardisClientData.setFlying(pilotingManager.isInFlight());
+            tardisClientData.setThrottleDown(pilotingManager.shouldThrottleBeDown());
             tardisClientData.setIsLanding(exteriorManager.isLanding());
             tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setShellTheme(controlManager.getCurrentExteriorTheme());
+            tardisClientData.setShellTheme(pilotingManager.getCurrentExteriorTheme());
             tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
             tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
-            tardisClientData.setIsOnCooldown(controlManager.isOnCooldown());
+            tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
             tardisClientData.setShellPattern(getExteriorManager().shellPattern());
             tardisClientData.sync();
         }
@@ -128,13 +128,13 @@ public class TardisLevelOperator {
      *
      * @param player Player Entity.
      **/
-    public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction) {
+    public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, ServerLevel level, Direction direction) {
 
         if (!setUp) {
             this.interiorManager.generateDesktop(shell.getAssociatedTheme());
-            TardisNavLocation navLocation = new TardisNavLocation(externalPos, direction.getOpposite(), (ServerLevel) level);
+            TardisNavLocation navLocation = new TardisNavLocation(externalPos, direction.getOpposite(), level);
             this.getExteriorManager().setLastKnownLocation(navLocation);
-            this.getControlManager().setTargetLocation(navLocation);
+            this.getPilotingManager().setTargetLocation(navLocation);
             this.setUp = true;
         }
 
@@ -205,17 +205,21 @@ public class TardisLevelOperator {
     }
 
     public void setDoorClosed(boolean closeDoor) {
-        if (getInternalDoor() != null) {
-            getInternalDoor().setClosed(closeDoor);
+        TardisExteriorManager extManager = getExteriorManager();
+        TardisInternalDoor intDoor = getInternalDoor();
+
+        if (intDoor != null) {
+            intDoor.setClosed(closeDoor);
         }
         if(closeDoor) {
             TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
         } else {
             TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
         }
-        if (getExteriorManager() != null) {
-            if (getExteriorManager().getLastKnownLocation() != null) {
-                getExteriorManager().setDoorClosed(closeDoor);
+
+        if (extManager != null) {
+            if (extManager.getLastKnownLocation() != null) {
+                extManager.setDoorClosed(closeDoor);
             }
         }
     }
@@ -223,7 +227,7 @@ public class TardisLevelOperator {
     public void setShellTheme(ShellTheme theme) {
         getExteriorManager().setShellTheme(theme);
         getInteriorManager().setShellTheme(theme);
-        this.getControlManager().setCurrentExteriorTheme(theme);
+        this.getPilotingManager().setCurrentExteriorTheme(theme);
         TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
     }
 
@@ -253,8 +257,8 @@ public class TardisLevelOperator {
         return this.interiorManager;
     }
 
-    public TardisControlManager getControlManager() {
-        return this.controlManager;
+    public TardisPilotingManager getPilotingManager() {
+        return this.pilotingManager;
     }
 
     public TardisFlightEventManager getTardisFlightEventManager() {
