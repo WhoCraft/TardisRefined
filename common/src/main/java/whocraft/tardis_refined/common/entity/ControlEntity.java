@@ -291,7 +291,7 @@ public class ControlEntity extends Entity {
     private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand){
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
-            if (!cap.getControlManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
+            if (!cap.getPilotingManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
                 if (player.isCreative()) {
                     serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                 } else {

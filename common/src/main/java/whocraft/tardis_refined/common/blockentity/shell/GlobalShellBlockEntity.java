@@ -74,7 +74,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, TARDIS_ID.toString());
             if (interior != null) {
                 TardisLevelOperator.get(interior).ifPresent(cap -> {
-                    if (cap.getControlManager().isInFlight()) return;
+                    if (cap.getPilotingManager().isInFlight()) return;
                     ResourceKey<Level> dimension = ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, TARDIS_ID.toString()));
 
                     boolean validKey = KeyItem.keychainContains(stack, dimension);

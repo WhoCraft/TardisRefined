@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
@@ -23,9 +24,11 @@ public class RotationControl extends Control {
 
     private boolean rotateDir(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean clockwise){
         if (!operator.getLevel().isClientSide()) {
-            Direction dir = operator.getControlManager().getTargetLocation().getDirection();
-            operator.getControlManager().getTargetLocation().setDirection(clockwise ? dir.getClockWise() : dir.getCounterClockWise());
-            var direction = operator.getControlManager().getTargetLocation().getDirection().getSerializedName();
+            TardisPilotingManager pilotManager = operator.getPilotingManager();
+
+            Direction dir = pilotManager.getTargetLocation().getDirection();
+            pilotManager.getTargetLocation().setDirection(clockwise ? dir.getClockWise() : dir.getCounterClockWise());
+            var direction = pilotManager.getTargetLocation().getDirection().getSerializedName();
             PlayerUtil.sendMessage(player, Component.translatable(direction), true);
             return true;
         }

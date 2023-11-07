@@ -4,6 +4,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class ThrottleControl extends Control {
@@ -20,22 +21,23 @@ public class ThrottleControl extends Control {
 
     private boolean engageThrottle(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!operator.getLevel().isClientSide()){
-            if (operator.getControlManager().isInFlight()) {
-                if (operator.getControlManager().canEndFlight()) {
+            TardisPilotingManager pilotManager = operator.getPilotingManager();
+            if (pilotManager.isInFlight()) {
+                if (pilotManager.canEndFlight()) {
                     var pitchedSound = theme.getSoundProfile().getThrottleDisable().getRightClick();
                     if (pitchedSound != null) {
                         this.setSuccessSound(pitchedSound);
                     }
-                    return operator.getControlManager().endFlight();
+                    return pilotManager.endFlight();
                 }
             }
 
-            if (operator.getControlManager().canBeginFlight()) {
+            if (pilotManager.canBeginFlight()) {
                 var pitchedSound = theme.getSoundProfile().getThrottleEnable().getRightClick();
                 if (pitchedSound != null) {
                     this.setSuccessSound(pitchedSound);
                 }
-                return operator.getControlManager().beginFlight(false);
+                return pilotManager.beginFlight(false);
             }
             return false;
         }

@@ -7,6 +7,7 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -43,14 +44,15 @@ public class DimensionalControl extends Control {
 
     private boolean changeDim(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean forward) {
         if (!operator.getLevel().isClientSide()) {
+            TardisPilotingManager pilotManager = operator.getPilotingManager();
             var server = operator.getLevel().getServer();
             var dimensions = getAllowedDimensions(server);
-            var currentIndex = dimensions.indexOf(operator.getControlManager().getTargetLocation().getLevel());
+            var currentIndex = dimensions.indexOf(pilotManager.getTargetLocation().getLevel());
             var nextIndex = forward ? ( (currentIndex >= dimensions.size()-1) ? 0 : currentIndex + 1) : ((currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1);
 
-            operator.getControlManager().getTargetLocation().setLevel(dimensions.get(nextIndex));
+            pilotManager.getTargetLocation().setLevel(dimensions.get(nextIndex));
 
-            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(operator.getControlManager().getTargetLocation().getDimensionKey())), true);
+            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);
 
             operator.getTardisFlightEventManager().calculateTravelLogic();
             return true;

@@ -122,13 +122,13 @@ public class TardisFlightEventManager {
 
         // Calculate the distance between two points
         var current = this.operator.getExteriorManager().getLastKnownLocation().getPosition();
-        var target = this.operator.getControlManager().getTargetLocation().getPosition();
+        var target = this.operator.getPilotingManager().getTargetLocation().getPosition();
         Vec3 currentVec = new Vec3(current.getX(), current.getY(), current.getZ());
         Vec3 targetVec = new Vec3(target.getX(), target.getY(), target.getZ());
 
         // Determine if the distance is worth the prompts
         var distance = currentVec.distanceTo(targetVec);
-        var dimensionalDistance = (this.operator.getExteriorManager().getLastKnownLocation().getDimensionKey() != this.operator.getControlManager().getTargetLocation().getDimensionKey()) ? 10 : 0;
+        var dimensionalDistance = (this.operator.getExteriorManager().getLastKnownLocation().getDimensionKey() != this.operator.getPilotingManager().getTargetLocation().getDimensionKey()) ? 10 : 0;
         this.requiredControlRequests = 3 + dimensionalDistance;
         if ((distance > MIN_DISTANCE_FOR_EVENTS)) {this.requiredControlRequests += getBlocksPerRequest(distance);}
 
@@ -142,15 +142,15 @@ public class TardisFlightEventManager {
 
     // All the logic related to the in-flight events of the TARDIS.
     public void tick() {
-        if (this.operator.getControlManager().isInFlight() && !this.operator.getControlManager().isAutoLandSet()) {
+        if (this.operator.getPilotingManager().isInFlight() && !this.operator.getPilotingManager().isAutoLandSet()) {
 
-            if (!this.operator.getControlManager().isCrashing()) {
+            if (!this.operator.getPilotingManager().isCrashing()) {
                 ticksSincePrompted++;
 
                 if (controlRequestCooldown > 0) controlRequestCooldown--;
 
                 // Prepare the next control for highlighting.
-                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !operator.getControlManager().isAutoLandSet()) {
+                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !operator.getPilotingManager().isAutoLandSet()) {
 
                     // Record what control type needs pressing.
                     this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
@@ -231,7 +231,7 @@ public class TardisFlightEventManager {
 
         // The requests are too great, the TARDIS needs to crash.
         if (this.requiredDangerZoneRequests >= 10) {
-            this.operator.getControlManager().crash();
+            this.operator.getPilotingManager().crash();
             this.isWaitingForControlResponse = false;
             this.isInDangerZone = false;
             this.ticksInTheDangerZone = 0;
@@ -267,7 +267,7 @@ public class TardisFlightEventManager {
     private void onTargetReached(ControlEntity entity) {
 
         // Is the target acceptable?
-        var targetPosition = operator.getControlManager().getTargetLocation();
+        var targetPosition = operator.getPilotingManager().getTargetLocation();
 
         if (targetPosition.getLevel().dimension() != Level.END) {
             operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
@@ -289,7 +289,7 @@ public class TardisFlightEventManager {
 
         this.requiredControlRequests += 5;
         var level = operator.getLevel();
-        operator.getControlManager().getTargetLocation().setLevel(targetPosition.getLevel().getServer().overworld());
+        operator.getPilotingManager().getTargetLocation().setLevel(targetPosition.getLevel().getServer().overworld());
         level.playSound(null, entity.blockPosition(), SoundEvents.ENDER_DRAGON_GROWL, SoundSource.AMBIENT, 1, 1);
         level.playSound(null, entity.blockPosition(), SoundRegistry.TARDIS_MISC_SPARKLE.get(), SoundSource.AMBIENT, 10, 1);
         level.explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Explosion.BlockInteraction.NONE);

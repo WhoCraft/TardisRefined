@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +26,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -124,7 +124,7 @@ public class KeyItem extends Item {
 
     public boolean interactMonitor(ItemStack itemStack, Player player, ControlEntity control, InteractionHand interactionHand) {
 
-        if (control.level instanceof ServerLevel serverLevel) {
+        if (control.getLevel() instanceof ServerLevel serverLevel) {
             ResourceKey<Level> tardis = serverLevel.dimension();
             if (control.controlSpecification().control() != null) {
                 if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis)) {
@@ -152,9 +152,11 @@ public class KeyItem extends Item {
                         ResourceKey<Level> tardis = keychain.get(0);
                         var tardisLevel = Platform.getServer().levels.get(tardis);
                         TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-                            cap.getControlManager().setTargetPosition(context.getClickedPos().above());
-                            cap.getControlManager().getTargetLocation().setDirection(context.getHorizontalDirection().getOpposite());
-                            cap.getControlManager().beginFlight(true);
+                            TardisPilotingManager pilotManager = cap.getPilotingManager();
+
+                            pilotManager.setTargetPosition(context.getClickedPos().above());
+                            pilotManager.getTargetLocation().setDirection(context.getHorizontalDirection().getOpposite());
+                            pilotManager.beginFlight(true);
                             PlayerUtil.sendMessage(context.getPlayer(), "TARDIS ON ITS WAY", true);
                         });
                     }
@@ -162,7 +164,7 @@ public class KeyItem extends Item {
             } else {
                 if (context.getPlayer().isShiftKeyDown()) {
                     var keychain = getKeychain(context.getItemInHand());
-                    if (keychain.size() > 0) {
+                    if (!keychain.isEmpty()) {
                         Collections.rotate(keychain.subList(0, keychain.size()), -1);
                         setKeychain(context.getItemInHand(), keychain);
                         context.getPlayer().displayClientMessage(Component.translatable(ModMessages.MSG_KEY_CYCLED, keychain.get(0).location().getPath()), true);

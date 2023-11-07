@@ -3,16 +3,13 @@ package whocraft.tardis_refined.common.network;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.*;
-import whocraft.tardis_refined.common.network.messages.waypoints.OpenWayPointsMenuMessage;
-import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
-import whocraft.tardis_refined.common.network.messages.waypoints.TravelToWaypointMessage;
-import whocraft.tardis_refined.common.network.messages.waypoints.UploadWaypointMessage;
+import whocraft.tardis_refined.common.network.messages.waypoints.*;
 
 public class TardisNetwork {
 
     public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
 
-    public static MessageType UPLOAD_WAYPOINT, SET_WAYPOINT, OPEN_WAYPOINTS_SCREEN, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS,SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP;
+    public static MessageType CLIENT_OPEN_COORDS_SCREEN, SERVER_OPEN_COORDS_SCREEN, UPLOAD_WAYPOINT, SET_WAYPOINT, OPEN_WAYPOINTS_SCREEN, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS,SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP;
 
     public static void init() {
         SYNC_LEVELS = NETWORK.registerS2C("sync_levels", SyncLevelListMessage::new);
@@ -28,6 +25,8 @@ public class TardisNetwork {
         OPEN_WAYPOINTS_SCREEN = NETWORK.registerS2C("open_waypoints_screen", OpenWayPointsMenuMessage::new);
         SET_WAYPOINT = NETWORK.registerC2S("set_waypoint", TravelToWaypointMessage::new);
         UPLOAD_WAYPOINT = NETWORK.registerC2S("upload_waypoint", UploadWaypointMessage::new);
+        SERVER_OPEN_COORDS_SCREEN = NETWORK.registerS2C("server_open_coords_screen", S2COpenCoordinatesScreenMessage::new);
+        CLIENT_OPEN_COORDS_SCREEN = NETWORK.registerC2S("client_open_coords_screen", C2SOpenCoordinatesScreenMessage::new);
     }
 
 }

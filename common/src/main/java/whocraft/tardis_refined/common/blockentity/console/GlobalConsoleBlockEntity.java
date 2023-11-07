@@ -17,9 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.constants.ResourceConstants;
-import whocraft.tardis_refined.patterns.ConsolePattern;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -28,6 +25,9 @@ import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 import java.util.ArrayList;
@@ -169,7 +169,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
 
                 // Check if we're crashing and if its okay to explode the TARDIS a little.
-                if (x.getControlManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                if (x.getPilotingManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
                     level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Explosion.BlockInteraction.NONE);
                 }
                     TardisInteriorManager intManager = x.getInteriorManager();

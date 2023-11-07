@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.block.console;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -26,16 +25,16 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.constants.ResourceConstants;
-import whocraft.tardis_refined.patterns.ConsolePattern;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.ClientHelper;
+import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 
 public class GlobalConsoleBlock extends BaseEntityBlock {
@@ -149,8 +148,9 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
                 var operatorOptional = TardisLevelOperator.get(serverLevel);
                 if (operatorOptional.isPresent()) {
                     var operator = operatorOptional.get();
-                    if (operator.getControlManager().isOnCooldown()) {
-                        operator.getControlManager().endCoolDown();
+                    TardisPilotingManager pilotManager = operator.getPilotingManager();
+                    if (pilotManager.isOnCooldown()) {
+                        pilotManager.endCoolDown();
                         return InteractionResult.CONSUME_PARTIAL;
                     }
                 }
