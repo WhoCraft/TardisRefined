@@ -51,6 +51,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.GROWTH_STONE.get(), "Growth Stone");
         add(BlockRegistry.HARDENED_GROWTH_STONE.get(), "Hardened Growth Stone");
         add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
+        add(BlockRegistry.GLOBAL_SHELL_BLOCK.get(), "TARDIS");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
