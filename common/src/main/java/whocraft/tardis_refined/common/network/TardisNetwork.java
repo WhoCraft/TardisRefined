@@ -22,7 +22,7 @@ public class TardisNetwork {
         SYNC_DESKTOPS = NETWORK.registerS2C("sync_desktop", SyncDesktopsMessage::new);
         CANCEL_CHANGE_DESKTOP = NETWORK.registerC2S("cancel_change_desktop", CancelDesktopChangeMessage::new);
         REQUEST_WAYPOINTS = NETWORK.registerC2S("request_waypoints", RequestWaypointsMessage::new);
-        OPEN_WAYPOINTS_SCREEN = NETWORK.registerS2C("open_waypoints_screen", OpenWayPointsMenuMessage::new);
+        OPEN_WAYPOINTS_SCREEN = NETWORK.registerS2C("open_waypoints_screen", OpenWayPointsListMessage::new);
         SET_WAYPOINT = NETWORK.registerC2S("set_waypoint", TravelToWaypointMessage::new);
         UPLOAD_WAYPOINT = NETWORK.registerC2S("upload_waypoint", UploadWaypointMessage::new);
         SERVER_OPEN_COORDS_SCREEN = NETWORK.registerS2C("server_open_coords_screen", S2COpenCoordinatesScreenMessage::new);

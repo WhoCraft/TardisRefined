@@ -133,6 +133,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         }
 
 
+        super.render(poseStack, i, j, f);
     }
 
     private void renderShell(PoseStack poseStack, int x, int y, float scale) {
