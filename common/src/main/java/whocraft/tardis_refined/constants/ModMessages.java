@@ -35,6 +35,10 @@ public class ModMessages {
     public static final String UI_MONITOR_WAYPOINTS = ui("monitor.waypoints");
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
+    public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
+    public static final String UI_MONITOR_UPLOAD = ui("monitor.upload");
+    public static final String UI_MONITOR_ISSUES = ui("monitor.issues");
+    public static final String UI_MONITOR_WAYPOINT_NAME = ui("monitor.waypoint_name");
 
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
