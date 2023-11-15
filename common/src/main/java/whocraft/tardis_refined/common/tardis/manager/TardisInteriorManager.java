@@ -11,7 +11,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -22,6 +21,7 @@ import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -73,7 +73,7 @@ public class TardisInteriorManager {
 
     public ProtectedZone[] unbreakableZones() {
 
-        if (!hasGeneratedCorridors) return new ProtectedZone[]{};
+        if (!hasGeneratedCorridors || corridorAirlockCenter == null) return new ProtectedZone[]{};
 
         ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
@@ -284,20 +284,24 @@ public class TardisInteriorManager {
 
     public void generateDesktop(DesktopTheme theme) {
         setCurrentTheme(theme);
-        // Has generated before.
-        if (this.operator.getInternalDoor() != null) {
-            this.operator.getLevel().setBlockAndUpdate(this.operator.getInternalDoor().getDoorPosition(), Blocks.AIR.defaultBlockState()); // Remove the already existing door.
-
-            if (!this.hasGeneratedCorridors) {
-                if (operator.getLevel() instanceof ServerLevel serverLevel) {
-                    TardisArchitectureHandler.generateEssentialCorridors(serverLevel);
-                    this.hasGeneratedCorridors = true;
-                }
-            }
-        }
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
+
+            // Remove Tardis Interior DOor
+            TardisInternalDoor tardisInternalDoor = this.operator.getInternalDoor();
+            if (tardisInternalDoor != null) {
+                serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
+            }
+
+            // Generate Corridors
+            if (!this.hasGeneratedCorridors) {
+                TardisArchitectureHandler.generateEssentialCorridors(serverLevel);
+                this.hasGeneratedCorridors = true;
+            }
+
+            // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+
         }
     }
 

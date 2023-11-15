@@ -15,7 +15,6 @@ import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
-import whocraft.tardis_refined.patterns.ConsolePatternCollection;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;

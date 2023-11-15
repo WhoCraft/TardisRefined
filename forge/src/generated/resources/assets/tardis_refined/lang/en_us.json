@@ -80,12 +80,16 @@
   "ui.tardis_refined.monitor.desktop_cancel.title": "OPERATION IN PROGRESS",
   "ui.tardis_refined.monitor.desktop_cancel_description": "Systems disabled as a Desktop reconfiguration has been scheduled.",
   "ui.tardis_refined.monitor.external_shell": "EXTERNAL SHELL CONFIGURATION",
+  "ui.tardis_refined.monitor.issues": "Issues:",
   "ui.tardis_refined.monitor.list.selection": "Currently selected: &s",
   "ui.tardis_refined.monitor.main.destination": "Destination",
   "ui.tardis_refined.monitor.main.gps": "GPS",
   "ui.tardis_refined.monitor.main_title": "COMPUTER BANK",
-  "ui.tardis_refined.monitor.upload.coords": "UPLOAD COORDS",
-  "ui.tardis_refined.monitor.upload.waypoints": "UPLOAD WAYPOINTS",
+  "ui.tardis_refined.monitor.no.waypoints": "No Waypoints Saved!",
+  "ui.tardis_refined.monitor.upload": "Upload",
+  "ui.tardis_refined.monitor.upload.coords": "COORD NAVIGATION",
+  "ui.tardis_refined.monitor.upload.waypoints": "WAYPOINT NAVIGATION",
+  "ui.tardis_refined.monitor.waypoint_name": "Waypoint Name:",
   "ui.tardis_refined.monitor.waypoints": "WAYPOINTS",
   "ui.tardis_refined.shell_selection": "EXTERNAL SHELL CONFIGURATION"
 }
