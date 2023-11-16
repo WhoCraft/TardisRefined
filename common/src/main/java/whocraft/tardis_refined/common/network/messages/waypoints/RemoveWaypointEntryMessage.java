@@ -39,7 +39,7 @@ public class RemoveWaypointEntryMessage extends MessageC2S {
     @Override
     public void handle(MessageContext context) {
         ServerPlayer player = context.getPlayer();
-        ServerLevel serverLevel = player.getLevel();
+        ServerLevel serverLevel = player.serverLevel();
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();

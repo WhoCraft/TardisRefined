@@ -1,15 +1,14 @@
 package whocraft.tardis_refined.client.screen.waypoints;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
@@ -31,7 +30,7 @@ public class WaypointListScreen extends SelectionScreen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
     Collection<TardisNavLocation> WAYPOINTS = new ArrayList<>();
     TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
-    private static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/ui/trash.png");
+    public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "trash");
 
     public WaypointListScreen(Collection<TardisNavLocation> waypoints) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
@@ -44,6 +43,7 @@ public class WaypointListScreen extends SelectionScreen {
     public boolean isPauseScreen() {
         return false;
     }
+
     Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
 
     @Override
@@ -73,14 +73,14 @@ public class WaypointListScreen extends SelectionScreen {
         addSubmitButton(width / 2 + 85, (height) / 2 - 35);
         addTrashIcon(width / 2 + 85, (height) / 2 - 55);
 
-
     }
 
-    public void addTrashIcon(int x, int y) {
-        this.addRenderableWidget(new ImageButton(x, y, 20, 18, 0, 0, 19, TRASH_LOCATION, 20, 37, (arg) -> {
-            new RemoveWaypointEntryMessage(tardisNavLocation.getName()).send();
 
-        }));
+    public void addTrashIcon(int x, int y) {
+        SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(25, Component.translatable("Submit"), (arg) -> {
+            new RemoveWaypointEntryMessage(tardisNavLocation.getName()).send();
+        }, true, TRASH_LOCATION));
+        spriteiconbutton.setPosition(x, y);
     }
 
     @Override
@@ -121,8 +121,7 @@ public class WaypointListScreen extends SelectionScreen {
 
         if(WAYPOINTS.isEmpty()) {
             Font font = this.font;
-            Component literal = Component.literal("No Waypoints Saved");
-            guiGraphics.drawCenteredString(font, literal, width / 2, height / 2 - 10, ChatFormatting.GOLD.getColor());
+            guiGraphics.drawCenteredString(font, noWaypointsLabel, width / 2, height / 2 - 10, ChatFormatting.GOLD.getColor());
         }
 
         super.render(guiGraphics, i, j, f);

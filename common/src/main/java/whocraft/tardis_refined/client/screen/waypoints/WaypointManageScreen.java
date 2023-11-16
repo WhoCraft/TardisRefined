@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
+import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.common.network.messages.waypoints.UploadWaypointMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+
+import static whocraft.tardis_refined.client.screen.selections.SelectionScreen.BUTTON_LOCATION;
 
 public class WaypointManageScreen extends Screen {
 
@@ -70,13 +73,18 @@ public class WaypointManageScreen extends Screen {
 
         // Upload Data Button
         Component uploadLiteral = Component.translatable(ModMessages.UI_MONITOR_UPLOAD);
-        onSaveWaypoint = this.addRenderableWidget(new Button(xPosition, yPosition + 100, this.width / 2 - 40, widgetHeight, uploadLiteral, (arg) -> {
+
+
+        onSaveWaypoint = this.addRenderableWidget(CommonTRWidgets.imageButton(this.width / 2 - 40, Component.translatable("Submit"), (arg) -> {
             if (issues.isEmpty()) {
                 prepareForUpload();
                 new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
                 Minecraft.getInstance().setScreen(null);
             }
-        }));
+        }, false, BUTTON_LOCATION));
+        onSaveWaypoint.setPosition(xPosition, yPosition + 100);
+        addWidget(onSaveWaypoint);
+
 
         if (coordInputType == CoordInputType.WAYPOINT) {
             this.waypointName = new EditBox(this.font, xPosition, yPosition, this.width / 2 - 40, widgetHeight, this.waypointName, Component.translatable("selectWorld.search"));
@@ -207,11 +215,11 @@ public class WaypointManageScreen extends Screen {
         int textYPosition = leftPos - 100;
 
         if (issues.isEmpty()) return;
-        ScreenHelper.renderWidthScaledText(ModMessages.UI_MONITOR_ISSUES, poseStack, Minecraft.getInstance().font, textXPosition - font.width(Component.translatable(ModMessages.UI_MONITOR_ISSUES).toString()) - 5, textYPosition, Color.RED.getRGB(), 100, 0.75F, false);
+        ScreenHelper.renderWidthScaledText(ModMessages.UI_MONITOR_ISSUES, guiGraphics, Minecraft.getInstance().font, textXPosition - font.width(Component.translatable(ModMessages.UI_MONITOR_ISSUES).toString()) - 5, textYPosition, Color.RED.getRGB(), 100, 0.75F, false);
         textYPosition += 10;
         for (String issueKey : issues.keySet()) {
             String issueValue = issues.get(issueKey);
-            ScreenHelper.renderWidthScaledText(issueValue, poseStack, Minecraft.getInstance().font, textXPosition, textYPosition, Color.RED.getRGB(), 100, 0.75F, true);
+            ScreenHelper.renderWidthScaledText(issueValue, guiGraphics, Minecraft.getInstance().font, textXPosition, textYPosition, Color.RED.getRGB(), 100, 0.75F, true);
             textYPosition += 10;
         }
 
