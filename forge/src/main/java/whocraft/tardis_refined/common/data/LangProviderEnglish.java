@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.data;
 import net.minecraft.ChatFormatting;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;

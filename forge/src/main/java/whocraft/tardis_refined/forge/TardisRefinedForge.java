@@ -1,14 +1,14 @@
 package whocraft.tardis_refined.forge;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.data.*;
@@ -18,7 +18,7 @@ public class TardisRefinedForge {
     public TardisRefinedForge() {
         TardisRefined.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
         modEventBus.addListener(this::onGatherData);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
@@ -48,7 +48,7 @@ public class TardisRefinedForge {
         /*Data Pack*/
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator.getPackOutput()));
-        generator.addProvider(e.includeServer(), new RecipeProvider(generator));
+        generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
         generator.addProvider(e.includeServer(), new DesktopProvider(generator));
         generator.addProvider(e.includeServer(), new ShellPatternProvider(generator));

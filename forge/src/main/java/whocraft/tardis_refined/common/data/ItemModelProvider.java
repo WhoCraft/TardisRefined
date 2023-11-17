@@ -2,13 +2,13 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
-public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
+public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider {
 
     public ItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator.getPackOutput(), TardisRefined.MODID, existingFileHelper);
