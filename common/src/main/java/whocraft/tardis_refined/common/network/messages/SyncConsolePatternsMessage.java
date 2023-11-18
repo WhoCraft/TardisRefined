@@ -10,19 +10,22 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
+import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatternCollection;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SyncConsolePatternsMessage extends MessageS2C{
 
-    protected Map<ResourceLocation, ConsolePatternCollection> patterns = new HashMap<>();
+    protected Map<ResourceLocation, Set<ConsolePattern>> patterns = new HashMap<>();
 
-    protected final UnboundedMapCodec<ResourceLocation, ConsolePatternCollection> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ConsolePatternCollection.CODEC);
+    protected final UnboundedMapCodec<ResourceLocation, Set<ConsolePattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ConsolePattern.CODEC.listOf().xmap(Set::copyOf, List::copyOf));
 
-    public SyncConsolePatternsMessage(Map<ResourceLocation, ConsolePatternCollection> patterns) {
+    public SyncConsolePatternsMessage(Map<ResourceLocation, Set<ConsolePattern>> patterns) {
         this.patterns = patterns;
     }
 
@@ -43,7 +46,7 @@ public class SyncConsolePatternsMessage extends MessageS2C{
     @Override
     public void handle(MessageContext context) {
         ConsolePatterns.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, ConsolePatternCollection> entry : this.patterns.entrySet()) {
+        for (Map.Entry<ResourceLocation, Set<ConsolePattern>> entry : this.patterns.entrySet()) {
             ConsolePatterns.getRegistry().put(entry.getKey(), entry.getValue());
         }
     }

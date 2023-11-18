@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.util;
 
+import com.google.common.collect.Sets;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -35,6 +36,8 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.DimensionTypes;
+
+import java.util.HashSet;
 
 public class MiscHelper {
 
@@ -161,6 +164,21 @@ public class MiscHelper {
                 .getHolderOrThrow(damageTypeResourceKey);
         DamageSource source = new DamageSource(damageType);
         return source;
+    }
+
+    public static <T extends Object> HashSet<T> unionSet(HashSet<T> setOne, HashSet<T> setTwo){
+        if(setOne == null){
+            if (setTwo != null){
+                for(T entry : setTwo){
+                    if(!setOne.contains(entry)){
+                        setOne.add(entry);
+                    }
+                }
+                return setOne;
+            }
+            throw new NullPointerException("set2");
+        }
+        throw new NullPointerException("set1");
     }
 
 }

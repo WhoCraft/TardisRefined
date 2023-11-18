@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.patterns;
 
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -9,27 +8,29 @@ import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * Data manager for all {@link ConsolePattern}(s)
  */
 public class ConsolePatterns{
 
-    private static PatternReloadListener<ConsolePatternCollection> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/console", ConsolePatternCollection.CODEC);
+    private static PatternReloadListener<ConsolePatternCollection, ConsolePattern> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/console", ConsolePatternCollection.CODEC, patternCollections -> PatternReloadListener.processPatternCollections(patternCollections));
 
     private static Map<ResourceLocation, ConsolePatternCollection> DEFAULT_PATTERNS = new HashMap();
 
 
-    public static PatternReloadListener<ConsolePatternCollection> getReloadListener(){
+    public static PatternReloadListener<ConsolePatternCollection, ConsolePattern> getReloadListener(){
         return PATTERNS;
     }
 
-    public static Map<ResourceLocation, ConsolePatternCollection> getRegistry() {
+    public static Map<ResourceLocation, Set<ConsolePattern>> getRegistry() {
         return PATTERNS.getData();
     }
 
     /** Lookup the list of {@link ConsolePattern}(s) in a {@link ConsolePatternCollection} for a given {@link ConsoleTheme}*/
     public static List<ConsolePattern> getPatternsForTheme(ConsoleTheme consoleTheme) {
-        return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, consoleTheme.getSerializedName().toLowerCase(Locale.ENGLISH))).patterns();
+        return PATTERNS.getData().get(new ResourceLocation(TardisRefined.MODID, consoleTheme.toLowerCase(Locale.ENGLISH)));
     }
 
     /** Retrieves a pattern from a default list of patterns, for use when Capabiliteis or Cardinal Components classloads patterns before datapack loading*/
@@ -143,7 +144,7 @@ public class ConsolePatterns{
 
     /** Registers the Tardis Refined default Console Patterns and returns a map of them by Theme ID
      * <br> Should only be called ONCE when needed*/
-    public static Map<ResourceLocation, ConsolePatternCollection> registerDefaultPatterns() {
+    public static Map<ResourceLocation, Set<ConsolePattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
         for (ConsoleTheme consoleTheme : ConsoleTheme.values()) {
@@ -186,6 +187,10 @@ public class ConsolePatterns{
 
         /*Copper*/
         addDefaultPattern(ConsoleTheme.COPPER, "sculk", "copper_console_sculk", false);
-        return DEFAULT_PATTERNS;
+
+        Map<ResourceLocation, Set<ConsolePattern>> patternsByCollection = new HashMap<>();
+        DEFAULT_PATTERNS.entrySet().forEach(entry -> patternsByCollection.put(entry.getKey(), entry.getValue().patterns().stream().collect(Collectors.toSet())));
+
+        return patternsByCollection;
     }
 }

@@ -39,11 +39,8 @@ import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 public class GlobalConsoleBlock extends BaseEntityBlock {
 
-    public static final ConsoleProperty CONSOLE = ConsoleProperty.create("console");
-
     public GlobalConsoleBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(CONSOLE, ConsoleTheme.FACTORY));
     }
 
     @Nullable
@@ -60,12 +57,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(CONSOLE);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
-        return super.getStateForPlacement(blockPlaceContext).setValue(CONSOLE, ConsoleTheme.FACTORY);
     }
 
 

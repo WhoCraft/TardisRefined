@@ -39,14 +39,24 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
-    private ConsolePattern basePattern = pattern();
+
+    private ConsoleTheme consoleTheme = null;
+
+    private ConsolePattern basePattern = null;
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
     }
 
+    public ConsoleTheme theme(){
+        if (this.consoleTheme == null){
+            this.consoleTheme = ConsoleTheme.FACTORY.get();
+        }
+        return this.consoleTheme;
+    }
+
     public ConsolePattern pattern() {
-        ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+        ConsoleTheme console = this.theme();
         ConsolePattern defaultBasePattern = ConsolePatterns.getPatternOrDefault(console, ResourceConstants.DEFAULT_PATTERN_ID);
         return basePattern == null ? defaultBasePattern : basePattern;
     }
@@ -60,9 +70,10 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
 
-        if (basePattern != null) {
+        if (this.basePattern != null) {
             compoundTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
         }
+
     }
 
     @Override
@@ -73,12 +84,16 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (tag.contains(NbtConstants.PATTERN)) {
             ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
             if (ConsolePatterns.doesPatternExist(console, currentPattern)) {
-                basePattern = ConsolePatterns.getPatternOrDefault(console, currentPattern);
+                this.basePattern = ConsolePatterns.getPatternOrDefault(console, currentPattern);
             }
         }
 
-        if (basePattern == null) {
-            basePattern = pattern();
+        if (this.consoleTheme == null){
+            this.consoleTheme = this.theme();
+        }
+
+        if (this.basePattern == null) {
+            this.basePattern = this.pattern();
         }
 
         super.load(tag);

@@ -1,24 +1,25 @@
 package whocraft.tardis_refined.patterns;
 
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
 
 import java.util.*;
+import java.util.stream.Collectors;
+
 /** Data Manager for all {@link ShellPattern}(s) */
 public class ShellPatterns {
-    public static PatternReloadListener<ShellPatternCollection> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC);
+    public static PatternReloadListener<ShellPatternCollection, ShellPattern> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC, patternCollections -> PatternReloadListener.processPatternCollections(patternCollections));
 
     private static Map<ResourceLocation, ShellPatternCollection> DEFAULT_PATTERNS = new HashMap();
 
-    public static PatternReloadListener<ShellPatternCollection> getReloadListener(){
+    public static PatternReloadListener<ShellPatternCollection, ShellPattern> getReloadListener(){
         return PATTERNS;
     }
 
-    public static Map<ResourceLocation, ShellPatternCollection> getRegistry() {
+    public static Map<ResourceLocation, Set<ShellPattern>> getRegistry() {
         return PATTERNS.getData();
     }
 
@@ -148,7 +149,7 @@ public class ShellPatterns {
 
     /** Registers the Tardis Refined default Shell Patterns and returns a map of them by Theme ID
      * <br> Should only be called ONCE when needed*/
-    public static Map<ResourceLocation, ShellPatternCollection> registerDefaultPatterns() {
+    public static Map<ResourceLocation, Set<ShellPattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
         for (ShellTheme shellTheme : ShellTheme.values()) {
@@ -178,7 +179,10 @@ public class ShellPatterns {
 
         addDefaultPattern(ShellTheme.BIG_BEN, "gothic", false);
 
-        return DEFAULT_PATTERNS;
+        Map<ResourceLocation, Set<ShellPattern>> patternsByCollection = new HashMap<>();
+        DEFAULT_PATTERNS.entrySet().forEach(entry -> patternsByCollection.put(entry.getKey(), entry.getValue().patterns().stream().collect(Collectors.toSet())));
+
+        return patternsByCollection;
     }
 
 }
