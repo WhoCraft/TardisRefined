@@ -2,12 +2,9 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
-import net.neoforged.neoforge.registries.ForgeRegistries;
-import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -33,10 +30,6 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(SoundRegistry.STATIC.get(), basicSound("static", new ResourceLocation(TardisRefined.MODID, "ui/static")));
     }
 
-    public SoundDefinition basicSound(SoundEvent soundEvent) {
-        @Nullable ResourceLocation soundKey = ForgeRegistries.SOUND_EVENTS.getKey(soundEvent);
-        return SoundDefinition.definition().with(SoundDefinition.Sound.sound(soundKey, SoundDefinition.SoundType.SOUND)).subtitle(createSubtitle(soundKey.getPath()));
-    }
 
     public SoundDefinition basicSound(String langKey, ResourceLocation resourceLocation) {
         return SoundDefinition.definition().with(SoundDefinition.Sound.sound(resourceLocation, SoundDefinition.SoundType.SOUND)).subtitle(createSubtitle(langKey));

@@ -3,7 +3,9 @@ plugins {
 }
 architectury {
     platformSetupLoomIde()
-    neoForge()
+    neoForge {
+        platformPackage = "forge" // This means map neoforge ExpectPlatform Annotations to forge
+    }
 }
 
 loom {

@@ -24,6 +24,8 @@ import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
+    private ShellTheme shellTheme = ShellTheme.FACTORY.get();
+
     private ShellPattern basePattern = pattern();
 
     public ShellPattern pattern() {
@@ -44,6 +46,11 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
+
+        if (pTag.contains(NbtConstants.THEME)) {
+            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+            this.shellTheme = ShellTheme.SHELL_THEME_REGISTRY.get(themeId);
+        }
 
         if (pTag.contains(NbtConstants.PATTERN)) {
             ShellTheme shellTheme = getBlockState().getValue(GlobalShellBlock.SHELL);

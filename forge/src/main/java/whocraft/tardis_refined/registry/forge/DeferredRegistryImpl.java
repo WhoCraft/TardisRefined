@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.RegistryBuilder;
 import whocraft.tardis_refined.registry.DeferredRegistry;
+import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class DeferredRegistryImpl {
@@ -20,19 +20,34 @@ public class DeferredRegistryImpl {
         return new Impl<>(modid, resourceKey);
     }
 
-    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey) {
-        return new Impl<>(modid, resourceKey);
+    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<? extends Registry<T>> resourceKey, boolean syncToClient) {
+        return new Impl<>(modid, resourceKey, true, syncToClient);
     }
 
     @SuppressWarnings("unchecked")
     public static class Impl<T> extends DeferredRegistry<T> {
 
         private final DeferredRegister<T> register;
-        private final List<RegistrySupplier<T>> entries;
+
+        private Registry<T> registry;
+
+        private ResourceKey<? extends Registry<T>> registryKey;
+
+        private Map<RegistrySupplierHolder<T, ?>, Supplier<? extends T>> entries = new LinkedHashMap<>();
+
+        private boolean isCustom;
+
+        private boolean syncToClient;
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
+            this(modid, resourceKey, false, false);
+        }
+
+        public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey, boolean isCustom, boolean sync) {
+            this.registryKey = resourceKey;
             this.register = DeferredRegister.create(resourceKey, modid);
-            this.entries = new ArrayList<>();
+            this.isCustom = isCustom;
+            this.syncToClient = sync;
         }
 
         @Override
@@ -45,18 +60,25 @@ public class DeferredRegistryImpl {
         public <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier) {
             var orig = this.register.register(id, supplier);
             var registrySupplier = new RegistrySupplier<>(orig.getId(), orig);
-            this.entries.add((RegistrySupplier<T>) registrySupplier);
             return registrySupplier;
         }
 
         @Override
-        public Collection<RegistrySupplier<T>> getEntries() {
-            return this.entries;
+        public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
+            DeferredHolder<T, I> deferredHolder = this.register.register(id, sup);
+            RegistrySupplierHolder<T,I> registryHolder = RegistrySupplierHolder.create(this.registryKey, deferredHolder.getId());
+            return registryHolder;
+        }
+
+        @Override
+        public Registry<T> getRegistry() {
+            this.registry = this.register.makeRegistry(builder -> builder.maxId(Integer.MAX_VALUE - 1).sync(this.syncToClient));
+            return this.registry;
         }
 
         @Override
         public Codec<T> getCodec() {
-            return this.register.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1)).get().getCodec();
+            return this.registry.byNameCodec();
         }
     }
 

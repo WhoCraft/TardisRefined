@@ -166,15 +166,22 @@ public class MiscHelper {
         return source;
     }
 
+    /**
+     * Combines elements of two sets togethor into a new set
+     * @param setOne
+     * @param setTwo
+     * @return
+     * @param <T>
+     */
     public static <T extends Object> HashSet<T> unionSet(HashSet<T> setOne, HashSet<T> setTwo){
-        if(setOne == null){
+        if(setOne != null){
             if (setTwo != null){
-                for(T entry : setTwo){
-                    if(!setOne.contains(entry)){
-                        setOne.add(entry);
-                    }
+                if (!setOne.isEmpty() && !setTwo.isEmpty()){
+                    HashSet<T> finalSet = new HashSet<>();
+                    finalSet.addAll(setOne);
+                    finalSet.addAll(setTwo);
+                    return finalSet;
                 }
-                return setOne;
             }
             throw new NullPointerException("set2");
         }

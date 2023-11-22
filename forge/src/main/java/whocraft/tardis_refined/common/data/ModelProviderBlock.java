@@ -1,11 +1,13 @@
 package whocraft.tardis_refined.common.data;
 
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 
-public class ModelProviderBlock extends BlockModelProvider {
+public class ModelProviderBlock extends BlockModelGenerators {
 
     public ModelProviderBlock(DataGenerator generator, ExistingFileHelper existingFileHelper) {
         super(generator.getPackOutput(), TardisRefined.MODID, existingFileHelper);

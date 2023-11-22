@@ -31,6 +31,7 @@ import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
@@ -131,7 +132,7 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
         if(level instanceof ServerLevel serverLevel && level.dimensionTypeId() == DimensionTypes.TARDIS){
-            TardisLevelOperator.get(serverLevel).ifPresent(TardisFlightEventManager::playCloisterBell);
+            TardisLevelOperator.get(serverLevel).ifPresent(TardisHelper::playCloisterBell);
             level.removeBlock(blockPos, false);
             ItemEntity item = new ItemEntity(EntityType.ITEM, level);
             item.setItem(new ItemStack(BlockRegistry.ROOT_PLANT_BLOCK.get()));
