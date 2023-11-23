@@ -6,22 +6,24 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.NetworkManager;
+import whocraft.tardis_refined.patterns.BasePattern;
 import whocraft.tardis_refined.patterns.PatternCollection;
 import whocraft.tardis_refined.patterns.PatternReloadListener;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PatternReloadListenerImpl{
 
-    public static <P extends PatternCollection> PatternReloadListener<P> createListener(String folderName, Codec<P> codec) {
-        return new Impl(folderName, codec);
+    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger) {
+        return new Impl(folderName, codec, merger);
     }
 
-    public static class Impl<T extends PatternCollection> extends PatternReloadListener<T> {
-        public Impl(String folderName, Codec<T> codec) {
-            super(folderName, codec);
+    public static class Impl<T extends PatternCollection, B extends BasePattern> extends PatternReloadListener<T, B> {
+        public Impl(String folderName, Codec<T> codec, final Function<List<T>, List<B>> merger) {
+            super(folderName, codec, merger);
         }
 
         @Override
@@ -32,7 +34,7 @@ public class PatternReloadListenerImpl{
 
         /** Generate an event listener function for Forge's dedicated on-datapack-sync event which is timed at the correct point when datapack registries are synced.
          * The event is fired when a player logs in or if server resources were reloaded successfully, so there is no need to add it in the login event **/
-        private Consumer<OnDatapackSyncEvent> getDatapackSyncListener(final NetworkManager networkManager, final Function<Map<ResourceLocation, T>, MessageS2C> packetFactory) {
+        private Consumer<OnDatapackSyncEvent> getDatapackSyncListener(final NetworkManager networkManager, final Function<Map<ResourceLocation, List<B>>, MessageS2C> packetFactory) {
             return event -> {
                 this.handleSyncPacket(event.getPlayer(), networkManager, packetFactory);
             };

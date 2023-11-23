@@ -46,21 +46,13 @@ public class ShellTheme implements Theme {
     }
 
     @Override
-    public String getTranslationKey() {
-        return ModMessages.shell(id);
+    public String getTranslationKey(ResourceLocation themeId) {
+        return ModMessages.shell(themeId.getPath());
     }
 
     @Override
-    public Component getDisplayName() {
-        return Component.translatable(getTranslationKey());
+    public Component getDisplayName(ResourceLocation themeId) {
+        return Component.translatable(this.getTranslationKey(themeId));
     }
 
-    public static ShellTheme findOr(String id, ShellTheme shellTheme) {
-        for (ShellTheme value : ShellTheme.values()) {
-            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
-                return value;
-            }
-        }
-        return shellTheme;
-    }
 }

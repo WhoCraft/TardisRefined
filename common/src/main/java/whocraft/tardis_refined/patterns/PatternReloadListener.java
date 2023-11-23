@@ -12,19 +12,20 @@ import whocraft.tardis_refined.common.util.MergeableCodecJsonReloadListener;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.io.Reader;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 
 /** Slightly modified version of CodecJsonReloadListener to account for needing to call setThemeId on the PatternCollection*/
-public class PatternReloadListener<T extends PatternCollection, B extends BasePattern> extends MergeableCodecJsonReloadListener<T, Set<B>> {
+public class PatternReloadListener<T extends PatternCollection, B extends BasePattern> extends MergeableCodecJsonReloadListener<T, List<B>> {
 
-    protected PatternReloadListener(String folderName, Codec<T> codec, final Function<List<T>, Set<B>> merger) {
+    protected PatternReloadListener(String folderName, Codec<T> codec, final Function<List<T>, List<B>> merger) {
         super(folderName, codec, merger);
     }
 
     @Override
-    protected Map<ResourceLocation, Set<B>> mapValues(Map<ResourceLocation, List<Resource>> inputs) {
-        Map<ResourceLocation, Set<B>> entries = new HashMap<>();
+    protected Map<ResourceLocation, List<B>> mapValues(Map<ResourceLocation, List<Resource>> inputs) {
+        Map<ResourceLocation, List<B>> entries = new HashMap<>();
 
         for (var entry : inputs.entrySet()) {
 
@@ -56,22 +57,22 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
         return entries;
     }
 
-    public static <B extends BasePattern, C extends PatternCollection> HashSet<B> processPatternCollections(final List<C> patternCollections) {
-        return patternCollections.stream().reduce(new HashSet<B>(), PatternReloadListener::mergeOrReplacePatterns, MiscHelper::unionSet);
+    public static <B extends BasePattern, C extends PatternCollection> ArrayList<B> processPatternCollections(final List<C> patternCollections) {
+        return patternCollections.stream().reduce(new ArrayList<B>(), PatternReloadListener::mergeOrReplacePatterns, MiscHelper::unionList);
     }
 
-    public static <B extends BasePattern, C extends PatternCollection> HashSet<B> mergeOrReplacePatterns(HashSet<B> set, final C nextPatternCollection){
-        return addPatterns(nextPatternCollection.isReplace() ? new HashSet<B>() : set, nextPatternCollection.patterns());
+    public static <B extends BasePattern, C extends PatternCollection> ArrayList<B> mergeOrReplacePatterns(ArrayList<B> set, final C nextPatternCollection){
+        return addPatterns(nextPatternCollection.isReplace() ? new ArrayList<B>() : set, nextPatternCollection.patterns());
     }
 
-    public static <B extends BasePattern> HashSet<B> addPatterns(final HashSet<B> finalPatterns, final List<B> patterns){
-        finalPatterns.add((B)patterns);
-        return finalPatterns;
+    public static <B extends BasePattern> ArrayList<B> addPatterns(final List<B> finalPatterns, final List<B> patterns){
+        ArrayList<B> finalPatternsModified = MiscHelper.unionList(finalPatterns, patterns);
+        return finalPatternsModified;
     }
 
     /** Need to create this static method here as the Architectuary ExpectPlatform Annotation used in CodecJsonReloadListener requires a static builder method to construct an instance*/
     @ExpectPlatform
-    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, Set<B>> merger) {
+    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger) {
         throw new AssertionError();
     }
 }

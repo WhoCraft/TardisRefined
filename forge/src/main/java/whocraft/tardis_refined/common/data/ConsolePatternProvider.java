@@ -47,7 +47,7 @@ public class ConsolePatternProvider implements DataProvider {
 
         if (this.addDefaults) {
             ConsolePatterns.registerDefaultPatterns();
-            data.putAll(ConsolePatterns.getDefaultPatterns());
+            data.putAll(ConsolePatterns.getDefaultPatternsDatagen());
         }
 
         this.addPatterns();
@@ -71,9 +71,7 @@ public class ConsolePatternProvider implements DataProvider {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
-    protected ConsolePattern addPatternToDatagen(ConsoleTheme theme, ConsolePattern consolePattern) {
-        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
-        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+    protected ConsolePattern addPatternToDatagen(ResourceLocation themeId, ConsolePattern consolePattern) {
         ConsolePattern pattern = (ConsolePattern) consolePattern.setThemeId(themeId);
         ConsolePatternCollection collection;
         if (this.data.containsKey(themeId)) {

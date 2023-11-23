@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.tardis.manager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -16,6 +17,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -51,7 +53,7 @@ public class TardisPilotingManager {
     private int cordIncrementIndex = 0;
 
     private boolean autoLand = false;
-    private ShellTheme currentExteriorTheme;
+    private ResourceLocation currentExteriorTheme;
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -65,11 +67,11 @@ public class TardisPilotingManager {
         return this.autoLand;
     }
 
-    public ShellTheme getCurrentExteriorTheme() {
+    public ResourceLocation getCurrentExteriorTheme() {
         return this.currentExteriorTheme;
     }
 
-    public void setCurrentExteriorTheme(ShellTheme theme) {
+    public void setCurrentExteriorTheme(ResourceLocation theme) {
         this.currentExteriorTheme = theme;
     }
 
@@ -92,7 +94,7 @@ public class TardisPilotingManager {
         this.canUseControls = tag.getBoolean("canUseControls");
 
         if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null && !tag.getString(NbtConstants.CONTROL_CURRENT_EXT).isEmpty()) {
-            this.currentExteriorTheme = ShellTheme.findOr(tag.getString(NbtConstants.CONTROL_CURRENT_EXT), ShellTheme.FACTORY);
+            this.currentExteriorTheme = new ResourceLocation(tag.getString(NbtConstants.CONTROL_CURRENT_EXT));
         }
 
         if (this.targetLocation == null) {
@@ -111,7 +113,7 @@ public class TardisPilotingManager {
         tag.putBoolean("canUseControls", this.canUseControls);
 
         if (this.currentExteriorTheme != null) {
-            tag.putString(NbtConstants.CONTROL_CURRENT_EXT, this.currentExteriorTheme.getSerializedName());
+            tag.putString(NbtConstants.CONTROL_CURRENT_EXT, this.currentExteriorTheme.toString());
         }
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);

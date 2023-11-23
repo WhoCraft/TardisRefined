@@ -12,6 +12,7 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.*;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
@@ -24,6 +25,8 @@ public class ConsoleTheme implements Theme {
 
     /** Tardis Refined instance of the ConsoleTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
     public static final DeferredRegistry<ConsoleTheme> CONSOLE_THEMES = DeferredRegistry.createCustom(TardisRefined.MODID, CONSOLE_THEME_REGISTRY_KEY);
+    /** Global instance of the Console Theme custom registry created by Tardis Refined*/
+    public static final Registry<ConsoleTheme> CONSOLE_THEME_REGISTRY = CONSOLE_THEMES.getRegistry();
 
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> FACTORY = registerConsoleTheme("factory", new FactoryConsoleTheme());
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> CRYSTAL = registerConsoleTheme("crystal", new CrystalConsoleTheme());
@@ -55,12 +58,12 @@ public class ConsoleTheme implements Theme {
     }
 
     @Override
-    public Component getDisplayName() {
-        return null;
+    public String getTranslationKey(ResourceLocation themeId) {
+        return ModMessages.shell(themeId.getPath());
     }
 
     @Override
-    public String getTranslationKey() {
-        return null;
+    public Component getDisplayName(ResourceLocation themeId) {
+        return Component.translatable(getTranslationKey(themeId));
     }
 }

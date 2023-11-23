@@ -40,7 +40,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         BlockState blockstate = blockEntity.getBlockState();
         float rotation = blockstate.getValue(RootedShellBlock.FACING).toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        ShellTheme theme = blockstate.getValue(GlobalShellBlock.SHELL);
+        ResourceLocation theme = blockEntity.theme();
         boolean isOpen = blockstate.getValue(GlobalShellBlock.OPEN);
 
         float sine = 0;

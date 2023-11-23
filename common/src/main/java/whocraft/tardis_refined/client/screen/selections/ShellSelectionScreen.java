@@ -12,8 +12,10 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -29,11 +31,12 @@ import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.List;
+import java.util.Set;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
-    private final List<ShellTheme> themeList;
-    private ShellTheme currentShellTheme;
+    private final List<ResourceLocation> themeList;
+    private ResourceLocation currentShellTheme;
 
     protected int imageWidth = 256;
     protected int imageHeight = 173;
@@ -44,12 +47,12 @@ public class ShellSelectionScreen extends SelectionScreen {
     public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/gui/noise.png");
     private ShellPattern pattern;
 
-    private ShellPatternCollection patternCollection;
+    private List<ShellPattern> patternCollection;
     private Button patternButton;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
-        this.themeList = List.of(ShellTheme.values());
+        this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
     }
 
     @Override
@@ -60,13 +63,13 @@ public class ShellSelectionScreen extends SelectionScreen {
     @Override
     protected void init() {
         this.setEvents(() -> {
-            selectShell(currentShellTheme);
+            selectShell(this.currentShellTheme);
         }, () -> {
             Minecraft.getInstance().setScreen(null);
         });
         this.currentShellTheme = this.themeList.get(0);
         this.patternCollection = ShellPatterns.getPatternCollectionForTheme(this.currentShellTheme);
-        this.pattern = this.patternCollection.patterns().get(0);
+        this.pattern = this.patternCollection.get(0);
 
         this.leftPos = (this.width - this.imageWidth) / 2;
         this.topPos = (this.height - this.imageHeight) / 2;
@@ -84,8 +87,8 @@ public class ShellSelectionScreen extends SelectionScreen {
         super.init();
     }
 
-    public void selectShell(ShellTheme theme) {
-        new ChangeShellMessage(Minecraft.getInstance().player.level().dimension(), theme, pattern).send();
+    public void selectShell(ResourceLocation themeId) {
+        new ChangeShellMessage(Minecraft.getInstance().player.level().dimension(), themeId, pattern).send();
         Minecraft.getInstance().setScreen(null);
     }
 
@@ -136,7 +139,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
-        ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
+        ShellModel model = ShellModelCollection.getInstance().getShellModel(this.currentShellTheme);
         model.setDoorOpen(false);
         Lighting.setupForEntityInInventory();
         PoseStack pose = guiGraphics.pose();
@@ -155,7 +158,8 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public Component getSelectedDisplayName() {
-        return currentShellTheme.getDisplayName();
+        ShellTheme theme = ShellTheme.SHELL_THEME_REGISTRY.get(this.currentShellTheme);
+        return theme.getDisplayName(this.currentShellTheme);
     }
 
     @Override
@@ -165,9 +169,11 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         selectionList.setRenderBackground(false);
 
-        for (ShellTheme shellTheme : ShellTheme.values()) {
-            selectionList.children().add(new SelectionListEntry(shellTheme.getDisplayName(), (entry) -> {
-                this.currentShellTheme = shellTheme;
+        for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
+            ShellTheme theme = shellTheme.value();
+            ResourceLocation shellThemeId = shellTheme.key().location();
+            selectionList.children().add(new SelectionListEntry(theme.getDisplayName(shellThemeId), (entry) -> {
+                this.currentShellTheme = shellThemeId;
 
                 for (Object child : selectionList.children()) {
                     if (child instanceof SelectionListEntry current) {
@@ -175,9 +181,9 @@ public class ShellSelectionScreen extends SelectionScreen {
                     }
                 }
                 this.patternCollection = ShellPatterns.getPatternCollectionForTheme(this.currentShellTheme);
-                this.pattern = this.patternCollection.patterns().get(0);
+                this.pattern = this.patternCollection.get(0);
 
-                boolean themeHasPatterns = this.patternCollection.patterns().size() > 1;
+                boolean themeHasPatterns = this.patternCollection.size() > 1;
 
                 //Hide the pattern button if there is only one pattern available for the shell, else show it. (i.e. The default)
                 patternButton.visible = themeHasPatterns;

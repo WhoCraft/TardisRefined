@@ -37,7 +37,9 @@ import whocraft.tardis_refined.common.protection.ProtectedZone;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class MiscHelper {
 
@@ -173,11 +175,11 @@ public class MiscHelper {
      * @return
      * @param <T>
      */
-    public static <T extends Object> HashSet<T> unionSet(HashSet<T> setOne, HashSet<T> setTwo){
+    public static <T extends Object> ArrayList<T> unionList(List<T> setOne, List<T> setTwo){
         if(setOne != null){
             if (setTwo != null){
                 if (!setOne.isEmpty() && !setTwo.isEmpty()){
-                    HashSet<T> finalSet = new HashSet<>();
+                    ArrayList<T> finalSet = new ArrayList<>();
                     finalSet.addAll(setOne);
                     finalSet.addAll(setTwo);
                     return finalSet;

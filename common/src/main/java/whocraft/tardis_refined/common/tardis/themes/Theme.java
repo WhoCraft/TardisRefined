@@ -1,7 +1,10 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public interface Theme {
-    Component getDisplayName();
+
+    public String getTranslationKey(ResourceLocation themeId);
+    Component getDisplayName(ResourceLocation themeId);
 }

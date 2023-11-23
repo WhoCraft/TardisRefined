@@ -21,11 +21,11 @@ import java.util.Set;
 
 public class SyncConsolePatternsMessage extends MessageS2C{
 
-    protected Map<ResourceLocation, Set<ConsolePattern>> patterns = new HashMap<>();
+    protected Map<ResourceLocation, List<ConsolePattern>> patterns = new HashMap<>();
 
-    protected final UnboundedMapCodec<ResourceLocation, Set<ConsolePattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ConsolePattern.CODEC.listOf().xmap(Set::copyOf, List::copyOf));
+    protected final UnboundedMapCodec<ResourceLocation, List<ConsolePattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ConsolePattern.CODEC.listOf().xmap(List::copyOf, List::copyOf));
 
-    public SyncConsolePatternsMessage(Map<ResourceLocation, Set<ConsolePattern>> patterns) {
+    public SyncConsolePatternsMessage(Map<ResourceLocation, List<ConsolePattern>> patterns) {
         this.patterns = patterns;
     }
 
@@ -46,7 +46,7 @@ public class SyncConsolePatternsMessage extends MessageS2C{
     @Override
     public void handle(MessageContext context) {
         ConsolePatterns.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, Set<ConsolePattern>> entry : this.patterns.entrySet()) {
+        for (Map.Entry<ResourceLocation, List<ConsolePattern>> entry : this.patterns.entrySet()) {
             ConsolePatterns.getRegistry().put(entry.getKey(), entry.getValue());
         }
     }

@@ -19,6 +19,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -36,7 +37,7 @@ public class TardisExteriorManager {
 
     private final TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation = TardisNavLocation.ORIGIN;
-    private ShellTheme currentTheme;
+    private ResourceLocation currentTheme;
 
     private ShellPattern shellPattern = null;
 
@@ -86,7 +87,7 @@ public class TardisExteriorManager {
         return this.lastKnownLocation;
     }
 
-    public ShellTheme getCurrentTheme() {
+    public ResourceLocation getCurrentTheme() {
         return this.currentTheme;
     }
 
@@ -109,7 +110,7 @@ public class TardisExteriorManager {
             NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
         }
         if (this.currentTheme != null) {
-            tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.getSerializedName());
+            tag.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.currentTheme.toString());
         }
 
         if (this.shellPattern != null) {
@@ -126,7 +127,7 @@ public class TardisExteriorManager {
         this.lastKnownLocation = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
 
         if (tag.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME) && tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME) != null) {
-            this.currentTheme = ShellTheme.findOr(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME), ShellTheme.FACTORY);
+            this.currentTheme = new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
         }
 
         if (tag.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) && tag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
@@ -162,7 +163,7 @@ public class TardisExteriorManager {
         }
     }
 
-    public void setShellTheme(ShellTheme theme) {
+    public void setShellTheme(ResourceLocation theme) {
 
         if(lastKnownLocation == null) return;
 
@@ -172,17 +173,18 @@ public class TardisExteriorManager {
 
         // Check if its our default global shell.
         if (state.getBlock() instanceof GlobalShellBlock) {
-            lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
+            lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false), 2);
         } else {
             if (state.getBlock() instanceof RootedShellBlock) {
                 lastKnownLocationLevel.setBlock(lastKnownLocationPosition,
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.SHELL, theme).setValue(GlobalShellBlock.REGEN, false), 2);
+                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), 2);
 
                 var shellBlockEntity = lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     if(shellPattern != null) {
-                        entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
+
+                        entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme().get(0));
                         entity.setChanged();
                     }
                 }
@@ -215,9 +217,8 @@ public class TardisExteriorManager {
     }
 
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
-        ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
+        ResourceLocation theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY.getId();
         BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
-                .setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
                 .setValue(GlobalShellBlock.REGEN, false)
                 .setValue(LOCKED, operator.getExteriorManager().locked)

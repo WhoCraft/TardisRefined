@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
@@ -114,20 +115,20 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
 
         /*Shell Themes*/
-        addShell(ShellTheme.FACTORY, "Factory");
-        addShell(ShellTheme.POLICE_BOX, "Police Box");
-        addShell(ShellTheme.PHONE_BOOTH, "Phone Booth");
-        addShell(ShellTheme.MYSTIC, "Mystic");
-        addShell(ShellTheme.DRIFTER, "Drifter");
-        addShell(ShellTheme.PRESENT, "Present");
-        addShell(ShellTheme.BRIEFCASE, "Briefcase");
-        addShell(ShellTheme.GROENING, "Groening");
-        addShell(ShellTheme.VENDING, "Vending Machine");
-        addShell(ShellTheme.BIG_BEN, "Big Ben");
-        addShell(ShellTheme.NUKA, "Nuka");
-        addShell(ShellTheme.GROWTH, "Growth");
-        addShell(ShellTheme.PORTALOO, "Portaloo");
-        addShell(ShellTheme.PAGODA, "Pagoda");
+        addShell(ShellTheme.FACTORY.getId(), "Factory");
+        addShell(ShellTheme.POLICE_BOX.getId(), "Police Box");
+        addShell(ShellTheme.PHONE_BOOTH.getId(), "Phone Booth");
+        addShell(ShellTheme.MYSTIC.getId(), "Mystic");
+        addShell(ShellTheme.DRIFTER.getId(), "Drifter");
+        addShell(ShellTheme.PRESENT.getId(), "Present");
+        addShell(ShellTheme.BRIEFCASE.getId(), "Briefcase");
+        addShell(ShellTheme.GROENING.getId(), "Groening");
+        addShell(ShellTheme.VENDING.getId(), "Vending Machine");
+        addShell(ShellTheme.BIG_BEN.getId(), "Big Ben");
+        addShell(ShellTheme.NUKA.getId(), "Nuka");
+        addShell(ShellTheme.GROWTH.getId(), "Growth");
+        addShell(ShellTheme.PORTALOO.getId(), "Portaloo");
+        addShell(ShellTheme.PAGODA.getId(), "Pagoda");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
@@ -144,8 +145,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(control.getTranslationKey(), name);
     }
 
-    public void addShell(ShellTheme theme, String name) {
-        add(theme.getTranslationKey(), name);
+    public void addShell(ResourceLocation theme, String name) {
+        add(ModMessages.shell(theme.getPath()), name);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {
