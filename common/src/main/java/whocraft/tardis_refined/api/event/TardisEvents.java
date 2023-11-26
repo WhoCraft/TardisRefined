@@ -2,6 +2,7 @@ package whocraft.tardis_refined.api.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -118,7 +119,7 @@ public class TardisEvents {
          * @param tardisLevelOperator The operator of the TARDIS level.
          * @param theme The theme the TARDIS changed to.
          */
-        void onShellChange(TardisLevelOperator tardisLevelOperator, ShellTheme theme);
+        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme);
     }
 
     /**

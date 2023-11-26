@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -17,17 +18,28 @@ import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
-    private static ShellModel currentModel, factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoor, drifterModel, presentModel, vendingModel, briefcaseModel,
+
+    protected static ShellModel currentModel;
+    private static ShellModel factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoorModel, drifterModel, presentModel, vendingModel, briefcaseModel,
             groeningModel, bigBenModel, nukaModel, growthModel, portalooModel, pagodaModel;
+
+    public static Map<ResourceLocation, ShellModel> DOOR_MODELS = new HashMap<>();
 
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
+        this.registerModels(context);
+    }
+
+    public void registerModels(BlockEntityRendererProvider.Context context){
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
         policeBoxModel = new PoliceBoxDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
         phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
-        mysticDoor = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
+        mysticDoorModel = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
         drifterModel = new DrifterDoorModel(context.bakeLayer((ModelRegistry.DRIFTER_DOOR)));
         presentModel = new PresentDoorModel(context.bakeLayer((ModelRegistry.PRESENT_DOOR)));
         vendingModel = new VendingMachineDoorModel(context.bakeLayer((ModelRegistry.VENDING_DOOR)));
@@ -39,6 +51,21 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         portalooModel = new PortalooDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)));
         pagodaModel = new PagodaDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)));
 
+        DOOR_MODELS.put(ShellTheme.FACTORY.getId(), factoryDoorModel);
+        DOOR_MODELS.put(ShellTheme.POLICE_BOX.getId(), policeBoxModel);
+        DOOR_MODELS.put(ShellTheme.PHONE_BOOTH.getId(), phoneBoothDoorModel);
+        DOOR_MODELS.put(ShellTheme.MYSTIC.getId(), mysticDoorModel);
+        DOOR_MODELS.put(ShellTheme.DRIFTER.getId(), drifterModel);
+        DOOR_MODELS.put(ShellTheme.PRESENT.getId(), presentModel);
+        DOOR_MODELS.put(ShellTheme.VENDING.getId(), vendingModel);
+        DOOR_MODELS.put(ShellTheme.BRIEFCASE.getId(), briefcaseModel);
+        DOOR_MODELS.put(ShellTheme.GROENING.getId(), groeningModel);
+        DOOR_MODELS.put(ShellTheme.BIG_BEN.getId(), bigBenModel);
+        DOOR_MODELS.put(ShellTheme.NUKA.getId(), nukaModel);
+        DOOR_MODELS.put(ShellTheme.GROWTH.getId(), growthModel);
+        DOOR_MODELS.put(ShellTheme.PORTALOO.getId(), portalooModel);
+        DOOR_MODELS.put(ShellTheme.PAGODA.getId(), pagodaModel);
+        
     }
 
     @Override
@@ -49,60 +76,19 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         BlockState blockstate = blockEntity.getBlockState();
         float rotation = blockstate.getValue(GlobalDoorBlock.FACING).toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        ShellTheme theme = blockstate.getValue(GlobalDoorBlock.SHELL);
+        ResourceLocation theme = blockEntity.theme();
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
 
         // Render slightly off the wall to prevent z-fighting.
         poseStack.translate(0, 0, -0.01);
 
-        switch (theme) {
-            default:
-            case FACTORY:
-                currentModel = factoryDoorModel;
-                break;
-            case POLICE_BOX:
-                currentModel = policeBoxModel;
-                poseStack.scale(1.05f, 1.05f, 1.05f);
-                poseStack.translate(0, -0.07, 0);
-                break;
-            case PHONE_BOOTH:
-                currentModel = phoneBoothDoorModel;
-                break;
-            case MYSTIC:
-                currentModel = mysticDoor;
-                break;
-            case DRIFTER:
-                currentModel = drifterModel;
-                break;
-            case PRESENT:
-                currentModel = presentModel;
-                break;
-            case VENDING:
-                currentModel = vendingModel;
-                break;
-            case BRIEFCASE:
-                currentModel = briefcaseModel;
-                break;
-             case GROENING:
-                currentModel = groeningModel;
-                break;
-             case BIG_BEN:
-                currentModel = bigBenModel;
-                break;
-             case NUKA:
-                currentModel = nukaModel;
-                break;
-             case GROWTH:
-                currentModel = growthModel;
-                 break;
-            case PORTALOO:
-                currentModel = portalooModel;
-                break;
-            case PAGODA:
-                currentModel = pagodaModel;
-                break;
+        currentModel = DOOR_MODELS.get(theme);
 
+        if(theme == ShellTheme.POLICE_BOX.getId()){
+            poseStack.scale(1.05f, 1.05f, 1.05f);
+            poseStack.translate(0, -0.07, 0);
         }
+
 
         TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
         ShellPattern shellPattern = reactions.shellPattern();

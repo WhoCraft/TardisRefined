@@ -389,8 +389,8 @@ public class TardisPilotingManager {
 
 
             exteriorManager.placeExteriorBlock(operator, location);
-            if (currentExteriorTheme != null) {
-                interiorManager.setShellTheme(currentExteriorTheme);
+            if (this.currentExteriorTheme != null) {
+                interiorManager.setShellTheme(this.currentExteriorTheme);
             }
 
             exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);

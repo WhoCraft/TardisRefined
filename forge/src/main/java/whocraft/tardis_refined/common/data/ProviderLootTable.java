@@ -39,8 +39,8 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Iterable<Block> getKnownBlocks() {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
-            for (RegistrySupplier<Block> entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
-                blocks.add(entry.get());
+            for (Block entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
+                blocks.add(entry);
             }
             return blocks;
         }

@@ -43,14 +43,14 @@ public class ShellPatterns {
      * <br> As there is a many-to-one relationship between {@link ShellPattern} and {@link ShellTheme}
      * <br> as well as a one-to-one relationship between a {@link ShellPatternCollection} and {@link ShellTheme},
      * we will iterate through all {@link ShellPatternCollection} (which holds the theme ID) and find matchine ones*/
-    public static ShellTheme getThemeForPattern(ShellPattern pattern) {
+    public static ResourceLocation getThemeForPattern(ShellPattern pattern) {
         Map<ResourceLocation, List<ShellPattern>> entries = ShellPatterns.getRegistry();
         for (Map.Entry<ResourceLocation, List<ShellPattern>> entry : entries.entrySet()){
             if (pattern.getThemeId() == entry.getKey()){
-                return ShellTheme.SHELL_THEME_REGISTRY.get(entry.getKey());
+                return pattern.getThemeId();
             }
         }
-        return ShellTheme.FACTORY.get();
+        return ShellTheme.FACTORY.getId();
     }
 
     /** Sanity check to make sure a Pattern for a {@link ShellTheme} exists

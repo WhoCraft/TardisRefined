@@ -55,8 +55,8 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
 
         /*Required to Render Transparency*/
-        for (RegistrySupplier<Block> entry : BlockRegistry.BLOCKS.getEntries()) {
-            BlockRenderLayerMap.INSTANCE.putBlock(entry.get(), RenderType.cutout());
+        for (Block entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
+            BlockRenderLayerMap.INSTANCE.putBlock(entry, RenderType.cutout());
         }
 
     }

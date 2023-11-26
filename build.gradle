@@ -5,10 +5,6 @@ plugins {
 
 architectury {
     minecraft = rootProject.minecraft_version
-    common("fabric", "neoforge") {
-        // This means map neoforge ExpectPlatform Annotations to forge
-        it.platformPackage "neoforge", "forge"
-    }
 }
 
 subprojects {

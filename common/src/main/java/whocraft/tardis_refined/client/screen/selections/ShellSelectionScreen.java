@@ -159,7 +159,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     @Override
     public Component getSelectedDisplayName() {
         ShellTheme theme = ShellTheme.SHELL_THEME_REGISTRY.get(this.currentShellTheme);
-        return theme.getDisplayName(this.currentShellTheme);
+        return theme.getDisplayName();
     }
 
     @Override
@@ -172,7 +172,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
             ShellTheme theme = shellTheme.value();
             ResourceLocation shellThemeId = shellTheme.key().location();
-            selectionList.children().add(new SelectionListEntry(theme.getDisplayName(shellThemeId), (entry) -> {
+            selectionList.children().add(new SelectionListEntry(theme.getDisplayName(), (entry) -> {
                 this.currentShellTheme = shellThemeId;
 
                 for (Object child : selectionList.children()) {

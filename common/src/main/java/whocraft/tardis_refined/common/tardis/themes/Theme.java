@@ -5,6 +5,6 @@ import net.minecraft.resources.ResourceLocation;
 
 public interface Theme {
 
-    public String getTranslationKey(ResourceLocation themeId);
-    Component getDisplayName(ResourceLocation themeId);
+    public String getTranslationKey();
+    Component getDisplayName();
 }

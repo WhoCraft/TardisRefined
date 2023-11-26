@@ -30,12 +30,12 @@ import java.util.UUID;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell {
 
+    public UUID TARDIS_ID = null;
+    public AnimationState liveliness = new AnimationState();
+
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
-
-    public UUID TARDIS_ID = null;
-    public AnimationState liveliness = new AnimationState();
 
     @Override
     public void load(CompoundTag pTag) {
@@ -84,7 +84,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             TardisLevelOperator.get(interior).ifPresent(cap -> {
                 if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     if (cap.getExteriorManager().getCurrentTheme() != null) {
-                        ShellTheme theme = cap.getExteriorManager().getCurrentTheme();
+                        ResourceLocation theme = cap.getExteriorManager().getCurrentTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
                             if (ImmersivePortals.exteriorHasPortalSupport(theme)) {

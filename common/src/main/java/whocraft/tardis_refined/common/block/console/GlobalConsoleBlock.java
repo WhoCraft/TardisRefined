@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.console;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,7 +12,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
@@ -26,11 +26,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.block.properties.ConsoleProperty;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
@@ -63,12 +61,11 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
-        if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-            if (blockState2.hasProperty(GlobalConsoleBlock.CONSOLE)) {
-                ConsolePattern defaultBasePattern = ConsolePatterns.getPatternOrDefault(blockState2.getValue(GlobalConsoleBlock.CONSOLE), ResourceConstants.DEFAULT_PATTERN_ID);
-                globalConsoleBlock.setPattern(defaultBasePattern);
-                globalConsoleBlock.markDirty();
-            }
+        if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+            ResourceLocation theme = globalConsoleBlockEntity.theme();
+            ConsolePattern defaultBasePattern = ConsolePatterns.getPatternOrDefault(theme, ResourceConstants.DEFAULT_PATTERN_ID);
+            globalConsoleBlockEntity.setPattern(defaultBasePattern);
+            globalConsoleBlockEntity.markDirty();
         }
 
         super.onPlace(blockState, level, blockPos, blockState2, bl);

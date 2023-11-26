@@ -38,9 +38,11 @@ public class ConsoleTheme implements Theme {
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> NUKA = registerConsoleTheme("nuka", new NukaConsoleTheme());
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> INITIATIVE = registerConsoleTheme("initiative", new InitiativeConsoleTheme());
 
+    private String translationKey;
     private final ConsoleThemeDetails consoleThemeDetails;
 
-    public ConsoleTheme(ConsoleThemeDetails consoleThemeDetails) {
+    public ConsoleTheme(String translationKey, ConsoleThemeDetails consoleThemeDetails) {
+        this.translationKey = ModMessages.console(translationKey);
         this.consoleThemeDetails = consoleThemeDetails;
     }
 
@@ -54,16 +56,16 @@ public class ConsoleTheme implements Theme {
 
 
     private static RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> registerConsoleTheme(String id, ConsoleThemeDetails themeDetails){
-        return CONSOLE_THEMES.registerHolder(id, () -> new ConsoleTheme(themeDetails));
+        return CONSOLE_THEMES.registerHolder(id, () -> new ConsoleTheme(id, themeDetails));
     }
 
     @Override
-    public String getTranslationKey(ResourceLocation themeId) {
-        return ModMessages.shell(themeId.getPath());
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 
     @Override
-    public Component getDisplayName(ResourceLocation themeId) {
-        return Component.translatable(getTranslationKey(themeId));
+    public Component getDisplayName() {
+        return Component.translatable(this.getTranslationKey());
     }
 }

@@ -184,7 +184,7 @@ public class TardisExteriorManager {
                     entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
                     if(shellPattern != null) {
 
-                        entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme().get(0));
+                        entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
                         entity.setChanged();
                     }
                 }

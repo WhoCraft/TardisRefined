@@ -19,7 +19,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.properties.ShellProperty;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
@@ -52,7 +51,7 @@ public class GlobalShellBlock extends ShellBaseBlock{
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
-            if(shellBlockEntity.theme() == ShellTheme.BRIEFCASE.get())
+            if(shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
                 return COLLISION;
         }
         return super.getShape(blockState, blockGetter, blockPos, collisionContext);

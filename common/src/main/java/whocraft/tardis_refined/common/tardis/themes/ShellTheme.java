@@ -8,7 +8,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
-import whocraft.tardis_refined.registry.RegistrySupplierHolderHolder;
 
 import java.util.Locale;
 
@@ -39,20 +38,22 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PAGODA = registerShellTheme("pagoda");
 
 
-    public ShellTheme(){}
+    private String translationKey;
+
+    public ShellTheme(String translationKey){ this.translationKey = ModMessages.shell(translationKey);}
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
-        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme());
+        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(id));
     }
 
     @Override
-    public String getTranslationKey(ResourceLocation themeId) {
-        return ModMessages.shell(themeId.getPath());
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 
     @Override
-    public Component getDisplayName(ResourceLocation themeId) {
-        return Component.translatable(this.getTranslationKey(themeId));
+    public Component getDisplayName() {
+        return Component.translatable(this.getTranslationKey());
     }
 
 }
