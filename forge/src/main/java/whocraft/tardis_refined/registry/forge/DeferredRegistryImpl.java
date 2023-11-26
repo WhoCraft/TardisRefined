@@ -2,6 +2,7 @@ package whocraft.tardis_refined.registry.forge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -72,7 +73,7 @@ public class DeferredRegistryImpl {
 
         @Override
         public Registry<T> getRegistry() {
-            this.registry = this.register.makeRegistry(builder -> builder.maxId(Integer.MAX_VALUE - 1).sync(this.syncToClient));
+            this.registry = this.isCustom ? (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location()) : this.register.makeRegistry(builder -> builder.maxId(Integer.MAX_VALUE - 1).sync(this.syncToClient));
             return this.registry;
         }
 
