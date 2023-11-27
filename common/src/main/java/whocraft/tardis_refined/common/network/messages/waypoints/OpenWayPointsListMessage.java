@@ -1,10 +1,11 @@
 package whocraft.tardis_refined.common.network.messages.waypoints;
 
-import net.minecraft.client.Minecraft;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
-import whocraft.tardis_refined.client.screen.waypoints.WaypointListScreen;
+import whocraft.tardis_refined.client.ScreenHandler;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -35,7 +36,7 @@ public class OpenWayPointsListMessage extends MessageS2C {
     @NotNull
     @Override
     public MessageType getType() {
-        return TardisNetwork.OPEN_WAYPOINTS_SCREEN;
+        return TardisNetwork.OPEN_WAYPOINTS_DISPLAY;
     }
 
     @Override
@@ -48,6 +49,11 @@ public class OpenWayPointsListMessage extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
-        Minecraft.getInstance().setScreen(new WaypointListScreen(waypoints));
+        handleScreens();
+    }
+
+    @Environment(EnvType.CLIENT)
+    private void handleScreens() {
+        ScreenHandler.setWaypointScreen(waypoints);
     }
 }

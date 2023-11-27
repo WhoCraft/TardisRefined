@@ -120,15 +120,21 @@ public class TardisNavLocation {
     }
 
     public BlockPos setX(int x){
-        return new BlockPos(x, position.getY(), position.getZ());
+        BlockPos blockPos = new BlockPos(x, position.getY(), position.getZ());
+        position = blockPos;
+        return position;
     }
 
     public BlockPos setY(int y){
-        return new BlockPos(position.getX(), y, position.getZ());
+        BlockPos blockPos = new BlockPos(position.getX(), y, position.getZ());
+        position = blockPos;
+        return position;
     }
 
     public BlockPos setZ(int z){
-        return new BlockPos(position.getX(), position.getY(), z);
+        BlockPos blockPos = new BlockPos(position.getX(), position.getY(), z);
+        position = blockPos;
+        return position;
     }
 
 
