@@ -35,7 +35,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 public class DatapackHelper {
 
-    public static boolean writeDesktopToFile(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean ignoreEntities, ResourceLocation structure, DesktopTheme desktop, String datapackName){
+    public static boolean writeDesktopToFile(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, ResourceLocation structure, DesktopTheme desktop, String datapackName){
         MinecraftServerStorageAccessor accessor = (MinecraftServerStorageAccessor)level.getServer();
         Path rootDir = accessor.getStorageSource().getLevelPath(LevelResource.DATAPACK_DIR).normalize();
         Path datapackRoot = rootDir.resolve(datapackName);
@@ -47,7 +47,7 @@ public class DatapackHelper {
                 }).orThrow().getAsJsonObject();
         Path output = createAndValidatePathToDatapackObject(datapackDataFolder, desktop.getIdentifier(), TardisDesktops.getReloadListener(), fileExtension);
         createPackDefinition(datapackRoot);
-        if (createStructure(level, bottomCorner, topCorner, ignoreEntities, structure, datapackDataFolder)){
+        if (createStructure(level, bottomCorner, topCorner, includeEntities, structure, datapackDataFolder)){
             if (saveJsonToPath(currentDesktop, output))
                 return true;
         }
@@ -90,7 +90,7 @@ public class DatapackHelper {
         }
     }
 
-    public static boolean createStructure(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean ignoreEntities, ResourceLocation structure, Path packRoot){
+    public static boolean createStructure(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, ResourceLocation structure, Path packRoot){
         StructureTemplateManager structureTemplateManager = level.getStructureManager();
 
         StructureTemplate structureTemplate;
@@ -119,7 +119,7 @@ public class DatapackHelper {
 
         //===Size Calculation End===
 
-        structureTemplate.fillFromWorld(level, pasteStartPos, structureSize, ignoreEntities, Blocks.STRUCTURE_VOID);
+        structureTemplate.fillFromWorld(level, pasteStartPos, structureSize, includeEntities, Blocks.STRUCTURE_VOID);
         structureTemplate.setAuthor("");
 
         Path path = createAndValidatePathToDatapackObject(packRoot, structure, "structures", ".nbt");

@@ -46,7 +46,7 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
 
     }
 
-    private static int exportDesktop(CommandContext<CommandSourceStack> context, BlockPos bottomCorner, BlockPos topCorner, boolean ignoreEntities, String namespace, String desktopId, String datapackName, Component displayName) {
+    private static int exportDesktop(CommandContext<CommandSourceStack> context, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, String namespace, String desktopId, String datapackName, Component displayName) {
         ResourceLocation loc = new ResourceLocation(namespace, desktopId);
         DesktopTheme theme = new DesktopTheme(loc, loc, Component.Serializer.toJson(displayName));
         ServerPlayer sender = context.getSource().getPlayer();
@@ -57,7 +57,7 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
 
         PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_IN_PROGRESS, loc), false);
 
-        boolean exported = DatapackHelper.writeDesktopToFile(context.getSource().getLevel(), bottomCorner, topCorner, ignoreEntities, loc, theme, datapackName);
+        boolean exported = DatapackHelper.writeDesktopToFile(context.getSource().getLevel(), bottomCorner, topCorner, includeEntities, loc, theme, datapackName);
 
         if (exported) {
             Component path = CommandHelper.createComponentOpenFile(datapackName, datapackRoot.toString());
