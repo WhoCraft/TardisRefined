@@ -37,7 +37,7 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
                                                                 .then(Commands.argument("desktop_display_name", ComponentArgument.textComponent())
                                                                         .executes(context -> exportDesktop(context, BlockPosArgument.getSpawnablePos(context, "pos1"),
                                                                                 BlockPosArgument.getSpawnablePos(context, "pos2"),
-                                                                                BoolArgumentType.getBool(context, "ignore_entities"),
+                                                                                BoolArgumentType.getBool(context, "include_entities"),
                                                                                 StringArgumentType.getString(context, "namespace"),
                                                                                 StringArgumentType.getString(context, "desktop_id"),
                                                                                 StringArgumentType.getString(context, "datapack_name"),
