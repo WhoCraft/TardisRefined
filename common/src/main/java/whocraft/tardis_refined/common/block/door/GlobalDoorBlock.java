@@ -41,6 +41,18 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     }
 
     @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
+
+        if(level instanceof ServerLevel serverLevel) {
+            TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
+                BlockState newState = blockState.setValue(SHELL, tardisLevelOperator.getExteriorManager().getCurrentTheme());
+                level.setBlock(blockPos, newState, Block.UPDATE_ALL);
+            });
+        }
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(SHELL);

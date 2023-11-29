@@ -40,10 +40,11 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        super.onPlace(blockState, level, blockPos, blockState2, bl);
         if (level.getBlockEntity(blockPos) instanceof AbstractEntityBlockDoor door) {
             door.onBlockPlaced();
         }
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
+
     }
 
     @Override
