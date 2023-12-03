@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 
-public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
@@ -67,6 +67,39 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
+    @Override
+    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+/*
+        levelAccessor.scheduleTick(blockPos, this, this.getDelayAfterPlace());
+*/
+
+        if (blockState.getValue(WATERLOGGED)){
+            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+        }
+
+        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+    }
+
+ /*   @Override
+    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
+        if (!FallingBlock.isFree(serverLevel.getBlockState(blockPos.below())) || blockPos.getY() < serverLevel.getMinBuildHeight()) {
+            return;
+        }
+        FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(serverLevel, blockPos, blockState);
+        this.falling(fallingBlockEntity);
+    }
+
+    protected void falling(FallingBlockEntity fallingBlockEntity) {
+    }
+
+    protected int getDelayAfterPlace() {
+        return 2;
+    }
+
+    public static boolean isFree(BlockState blockState) {
+        return blockState.isAir() || blockState.is(BlockTags.FIRE) || blockState.liquid() || blockState.canBeReplaced();
+    }*/
+
     @Nullable
     @Override
     public <T extends BlockEntity> GameEventListener getListener(ServerLevel pLevel, T pBlockEntity) {
@@ -103,15 +136,6 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         }
     }
 
-
-
-    @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
-        if (blockState.getValue(WATERLOGGED)){
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
-        }
-        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
-    }
 
     @Override
     public FluidState getFluidState(BlockState blockState) {

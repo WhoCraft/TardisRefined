@@ -3,12 +3,15 @@ package whocraft.tardis_refined.common.block.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,8 +22,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TRFeatureFlags;
 import whocraft.tardis_refined.common.block.properties.ShellProperty;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellBlock extends ShellBaseBlock{
@@ -64,6 +71,35 @@ public class GlobalShellBlock extends ShellBaseBlock{
         return new GlobalShellBlockEntity(blockPos, blockState);
     }
 
+    @Override
+    public void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult, Projectile projectile) {
+        super.onProjectileHit(level, blockState, blockHitResult, projectile);
+        activateHads(level, blockHitResult.getBlockPos());
+    }
+
+    private static void activateHads(Level level, BlockPos blockPos) {
+        if(TRFeatureFlags.hadsEnabled) return;
+        if(level instanceof ServerLevel serverLevel){
+            BlockEntity blockEntity = serverLevel.getBlockEntity(blockPos);
+            if(blockEntity instanceof GlobalShellBlockEntity globalShellBlockEntity) {
+                if(globalShellBlockEntity.TARDIS_ID == null) return;
+                ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, globalShellBlockEntity.TARDIS_ID.toString());
+                TardisLevelOperator.get(interior).ifPresent(tardisLevelOperator -> {
+                    RandomSource random = serverLevel.random;
+                    TardisNavLocation lastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
+                    BlockPos newLocation = new BlockPos(random.nextInt((int) lastKnown.getLevel().getWorldBorder().getMaxX() - 1000), lastKnown.getPosition().getY(), (int) lastKnown.getLevel().getWorldBorder().getMaxZ()  - 1000);
+                    tardisLevelOperator.getPilotingManager().setTargetPosition(newLocation);
+                    tardisLevelOperator.getPilotingManager().beginFlight(true);
+                });
+            }
+        }
+    }
+
+    @Override
+    public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
+        activateHads(level, blockPos);
+        super.wasExploded(level, blockPos, explosion);
+    }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {

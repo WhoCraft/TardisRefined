@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import whocraft.tardis_refined.TRFeatureFlags;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -82,7 +83,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         if (level instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.TARDIS_ID.toString()));
             TardisLevelOperator.get(interior).ifPresent(cap -> {
-                if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || cap.getPilotingManager().endFlight() && TRFeatureFlags.getPlayerInsideOnRemat)) {
                     if (cap.getExteriorManager().getCurrentTheme() != null) {
                         ShellTheme theme = cap.getExteriorManager().getCurrentTheme();
 
