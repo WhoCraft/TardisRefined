@@ -7,15 +7,9 @@ dependencies {
     modCompileOnlyApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
 
 
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
-    }
-
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
-    }
+    modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
+    modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")
+    modCompileOnlyApi ("blank:q_misc_util:2.3.1")
 }
 
 loom {
