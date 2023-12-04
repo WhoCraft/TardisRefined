@@ -27,6 +27,7 @@ public class MonitorScreen extends SelectionScreen {
 
     private final TardisNavLocation currentLocation;
     private final TardisNavLocation targetLocation;
+    private final boolean isCoordTravelEnabled;
 
 
     protected int imageWidth = 256;
@@ -36,10 +37,11 @@ public class MonitorScreen extends SelectionScreen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/ui/monitor.png");
 
 
-    public MonitorScreen(TardisNavLocation currentLocation, TardisNavLocation targetLocation) {
+    public MonitorScreen(boolean isCoordTravelEnabled, TardisNavLocation currentLocation, TardisNavLocation targetLocation) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
         this.currentLocation = currentLocation;
         this.targetLocation = targetLocation;
+        this.isCoordTravelEnabled = isCoordTravelEnabled;
     }
 
 
@@ -66,9 +68,11 @@ public class MonitorScreen extends SelectionScreen {
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
+        if(isCoordTravelEnabled) {
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos));
+        // TODO OP, so disabled until we have upgrades   selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
+        }
 
         return selectionList;
     }

@@ -11,6 +11,7 @@ public class TardisWaypointManager {
 
     private final TardisLevelOperator operator;
     private Map<String, TardisNavLocation> waypointMap = new HashMap<>();
+    private int flightsTaken = 0;
 
     public TardisWaypointManager(TardisLevelOperator tardisLevelOperator) {
         this.operator = tardisLevelOperator;
@@ -33,7 +34,12 @@ public class TardisWaypointManager {
         return waypointMap.get(name);
     }
 
+    public boolean isCoordinateInputEnabled(){
+        return flightsTaken >= 120;
+    }
+
     public CompoundTag saveData(CompoundTag compoundTag) {
+        compoundTag.putInt("flightsTaken", flightsTaken);
         ListTag waypointsList = new ListTag();
         for (TardisNavLocation location : waypointMap.values()) {
             CompoundTag locationTag = location.serialise();
@@ -44,6 +50,7 @@ public class TardisWaypointManager {
     }
 
     public void loadData(CompoundTag tag) {
+        flightsTaken = tag.getInt("flightsTaken");
         waypointMap.clear();
         ListTag waypointsList = tag.getList("Waypoints", 10);
         for (int i = 0; i < waypointsList.size(); i++) {
