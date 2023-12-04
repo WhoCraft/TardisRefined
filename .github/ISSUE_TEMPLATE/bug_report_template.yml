@@ -24,7 +24,6 @@ body:
       label: Minecraft version
       description: What version of Minecraft are you using?
       options:
-        - 1.19.4 (Latest)
         - 1.19.2 (Latest)
     validations:
       required: true
@@ -51,6 +50,7 @@ body:
       label: Tardis Refined version
       description: What version of Tardis Refined are you using?
       options:
+        - v1.0.1
         - v1.0
         - Pre-release v0.1
     validations:
