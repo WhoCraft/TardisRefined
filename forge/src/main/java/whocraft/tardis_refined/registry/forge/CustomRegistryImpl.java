@@ -12,6 +12,7 @@ import whocraft.tardis_refined.registry.CustomRegistry;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class CustomRegistryImpl<T> extends CustomRegistry<T> {
@@ -53,7 +54,7 @@ public class CustomRegistryImpl<T> extends CustomRegistry<T> {
     }
 
     @Override
-    public Map.Entry<ResourceLocation, Upgrade> getKeys() {
+    public Set<ResourceLocation> getKeys() {
         return this.parent.get().getKeys();
     }
 

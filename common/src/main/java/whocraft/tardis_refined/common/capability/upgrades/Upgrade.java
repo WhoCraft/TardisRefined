@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.capability.upgrades;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
@@ -21,13 +22,20 @@ public class Upgrade {
     private int cost = 1;
     private boolean posSet = false;
     private int posX = 0, posY = 0;
+    private final Supplier<ItemStack> icon;
 
-    public Upgrade() {
+    public Upgrade(Supplier<ItemStack> icon) {
+        this.icon = icon;
         this.parent = null;
     }
 
-    public Upgrade(Supplier<Upgrade> parent) {
+    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent) {
+        this.icon = icon;
         this.parent = parent;
+    }
+
+    public ItemStack getIcon() {
+        return this.icon.get();
     }
 
     public Upgrade setCost(int cost) {

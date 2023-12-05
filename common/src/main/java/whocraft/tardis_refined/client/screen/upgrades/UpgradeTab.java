@@ -118,10 +118,10 @@ public class UpgradeTab {
 
             for (UpgradeWidget child : entry.children) {
                 Connection connection = new Connection();
-                int startX = toCoord(entry.gridX) - 5;
-                int startY = toCoord(entry.gridY, 0.5D) - 2;
-                int endX = toCoord(child.gridX) - 5;
-                int endY = toCoord(child.gridY, 0.5D) - 2;
+                int startX = toCoord(entry.gridX);
+                int startY = toCoord(entry.gridY, 1D / (entry.children.size() + 1) * (entry.children.indexOf(child) + 1));
+                int endX = toCoord(child.gridX);
+                int endY = toCoord(child.gridY, 1D / (child.parents.size() + 1) * (child.parents.indexOf(entry) + 1));
 
                 if (this.getEntry(child.gridX, entry.gridY) == null) {
                     connection.addLine(new ConnectionLine(startX, startY, endX, startY));
@@ -277,7 +277,7 @@ public class UpgradeTab {
         }
     }
 
-    public UpgradeWidget getAbilityHoveredOver(int mouseX, int mouseY, int x, int y) {
+    public UpgradeWidget getUpgradeHoveredOver(int mouseX, int mouseY, int x, int y) {
         int i = Mth.floor(this.scrollX);
         int j = Mth.floor(this.scrollY);
         if (mouseX > 0 && mouseX < UpgradesScreen.WINDOW_INSIDE_WIDTH && mouseY > 0 && mouseY < UpgradesScreen.WINDOW_INSIDE_HEIGHT) {

@@ -94,6 +94,13 @@ public class UpgradesScreen extends Screen {
                         break;
                     }
                 }
+
+                if (selectedTab != null) {
+                    UpgradeWidget entry = this.selectedTab.getUpgradeHoveredOver((int) (mouseX - i - 9), (int) (mouseY - j - 18), i, j);
+                    if (entry != null) {
+                        this.openOverlayScreen(new BuyUpgradeScreen(entry.upgradeEntry, true, this));
+                    }
+                }
             }
         }
 

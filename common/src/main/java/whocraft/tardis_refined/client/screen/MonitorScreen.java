@@ -71,7 +71,7 @@ public class MonitorScreen extends SelectionScreen {
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.WAYPOINT).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.TRAVEL).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> Minecraft.getInstance().setScreen(new UpgradesScreen(new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level)))), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPGRADES), entry -> Minecraft.getInstance().setScreen(new UpgradesScreen(new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level)))), leftPos));
 
         return selectionList;
     }

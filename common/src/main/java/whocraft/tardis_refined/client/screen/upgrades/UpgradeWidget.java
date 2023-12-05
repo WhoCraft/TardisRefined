@@ -139,7 +139,7 @@ public class UpgradeWidget {
 
     public void drawDisplayIcon(Minecraft mc, GuiGraphics guiGraphics, int x, int y) {
         if (this.upgradeEntry.isUnlocked(upgradeHandler)) {
-            //TODO draw itemstack this.upgradeEntry.getProperty(Ability.ICON).draw(mc, guiGraphics, DataContext.forAbility(mc.player, this.upgradeEntry), x, y);
+            guiGraphics.renderFakeItem(this.upgradeEntry.getIcon(), x, y);
         } else {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             guiGraphics.blit(UpgradesScreen.WIDGETS, x, y, 90, 133, 16, 16);
@@ -215,7 +215,7 @@ public class UpgradeWidget {
 
         guiGraphics.blitSprite(advancementWidgetType.boxSprite(), 200, 26, 0, 0, q, p, n, 26);
         guiGraphics.blitSprite(advancementWidgetType2.boxSprite(), 200, 26, 200 - o, 0, q + n, p, o, 26);
-        guiGraphics.blitSprite(advancementWidgetType3.frameSprite(FrameType.GOAL), i + this.x + 3, j + this.y, 26, 26);
+        guiGraphics.blitSprite(advancementWidgetType3.frameSprite(FrameType.TASK), i + this.x + 3, j + this.y, 26, 26);
         if (bl) {
             guiGraphics.drawString(this.minecraft.font, this.title, q + 5, j + this.y + 9, -1);
             if (component != null) {
@@ -253,7 +253,7 @@ public class UpgradeWidget {
             }
         }
 
-        guiGraphics.renderFakeItem(new ItemStack(Items.COOKED_BEEF), i + this.x + 8, j + this.y + 5);
+        this.drawDisplayIcon(this.minecraft, guiGraphics, i + this.x + 8, j + this.y + 5);
     }
 
     public boolean isMouseOver(int x, int y, int mouseX, int mouseY) {
