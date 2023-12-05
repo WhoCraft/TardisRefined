@@ -216,18 +216,21 @@ public class TardisExteriorManager {
 
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
         ShellTheme theme = (this.currentTheme != null) ? this.currentTheme : ShellTheme.FACTORY;
+
+        ServerLevel level = location.getLevel();
+
         BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
                 .setValue(GlobalShellBlock.SHELL, theme)
                 .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
                 .setValue(GlobalShellBlock.REGEN, false)
                 .setValue(LOCKED, operator.getExteriorManager().locked)
-                .setValue(GlobalShellBlock.WATERLOGGED, location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
+                .setValue(GlobalShellBlock.WATERLOGGED, level.getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
 
-        location.getLevel().setBlock(location.getPosition(), targetBlockState, 2);
+        level.setBlock(location.getPosition(), targetBlockState, Block.UPDATE_CLIENTS);
 
         if (location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity globalShell) {
             globalShell.TARDIS_ID = UUID.fromString(operator.getLevel().dimension().location().getPath());
-            location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, 2);
+            level.sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, Block.UPDATE_CLIENTS);
         }
 
         setLastKnownLocation(location);
