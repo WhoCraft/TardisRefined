@@ -6,10 +6,10 @@ dependencies {
     // Forge Config API Port
     modCompileOnlyApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
 
+    modCompileOnly ("blank:imm_ptl_core:2.3.1")
+    modCompileOnly ("blank:q_misc_util:2.3.1")
 
-    modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
-    modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")
-    modCompileOnlyApi ("blank:q_misc_util:2.3.1")
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 }
 
 loom {
@@ -17,7 +17,7 @@ loom {
 }
 
 architectury {
-    common()
+    common(rootProject.enabled_platforms.split(","))
 }
 
 publishing {

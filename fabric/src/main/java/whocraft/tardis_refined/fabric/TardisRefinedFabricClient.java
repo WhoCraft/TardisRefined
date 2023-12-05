@@ -29,13 +29,11 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 public class TardisRefinedFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-
         establishBlockEntityRenderers();
         registerEntityRenderers();
         ModelRegistry.init();
         ModEvents.addClientEvents();
         particles();
-
     }
 
     private void particles() {
@@ -58,7 +56,6 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         for (RegistrySupplier<Block> entry : BlockRegistry.BLOCKS.getEntries()) {
             BlockRenderLayerMap.INSTANCE.putBlock(entry.get(), RenderType.cutout());
         }
-
     }
 
     private void registerEntityRenderers() {
