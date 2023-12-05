@@ -1,10 +1,13 @@
 package whocraft.tardis_refined.common.data;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -12,6 +15,8 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
+
+import static whocraft.tardis_refined.constants.ModMessages.UI_MONITOR_UPGRADES;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -134,6 +139,21 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
+
+        /*Upgrades*/
+        add("gui.tardis_refined.upgrades", "Tardis Upgrades");
+        add("gui.tardis_refined.buy_ability", "Purchase Upgrade?");
+        add(UI_MONITOR_UPGRADES, "UPGRADES");
+        addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
+        addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
+        addUpgrade(Upgrades.DEFENSE_SYSTEM.get(), "Defense System", "Enables Defense Protocols");
+        addUpgrade(Upgrades.HOSTILE_DISPLACEMENT.get(), "Hostile Action Displacement", "Enables the displacement of the TARDIS when attacked");
+        addUpgrade(Upgrades.WAYPOINTS.get(), "Waypoints", "Allows the Pilot to create saved locations");
+        addUpgrade(Upgrades.NAVIGATION_SYSTEM.get(), "Navigation System", "Allows upgrades to the TARDIS Navigation System");
+        addUpgrade(Upgrades.TARDIS_XP.get(), "System Upgrades", "Allows upgrades to the TARDIS");
+        addUpgrade(Upgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
+        addUpgrade(Upgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
+        addUpgrade(Upgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
     }
 
     public void addControl(ConsoleControl control, String name) {
@@ -142,6 +162,11 @@ public class LangProviderEnglish extends LanguageProvider {
 
     public void addShell(ShellTheme theme, String name) {
         add(theme.getTranslationKey(), name);
+    }
+
+    public void addUpgrade(Upgrade upgrade, String title, String description) {
+        add(Util.makeDescriptionId("upgrade", upgrade.getKey()), title);
+        add(Util.makeDescriptionId("upgrade", upgrade.getKey()) + ".description", description);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {

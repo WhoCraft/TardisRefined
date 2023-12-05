@@ -3,13 +3,16 @@ package whocraft.tardis_refined.common.network;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.*;
+import whocraft.tardis_refined.common.network.messages.upgrades.C2SDisplayUpgradeScreen;
+import whocraft.tardis_refined.common.network.messages.upgrades.S2CDisplayUpgradeScreen;
+import whocraft.tardis_refined.common.network.messages.upgrades.UnlockUpgradeMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.*;
 
 public class TardisNetwork {
 
     public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
 
-    public static MessageType CLIENT_OPEN_COORDS_SCREEN, SERVER_OPEN_COORDS_SCREEN, UPLOAD_WAYPOINT, SET_WAYPOINT, OPEN_WAYPOINTS_SCREEN, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS,SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE;
+    public static MessageType UPGRADE_SCREEN_S2C, UPGRADE_SCREEN_C2S, CLIENT_OPEN_COORDS_SCREEN, SERVER_OPEN_COORDS_SCREEN, UPLOAD_WAYPOINT, SET_WAYPOINT, OPEN_WAYPOINTS_SCREEN, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS,SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE;
 
     public static void init() {
         SYNC_LEVELS = NETWORK.registerS2C("sync_levels", SyncLevelListMessage::new);
@@ -28,6 +31,8 @@ public class TardisNetwork {
         SERVER_OPEN_COORDS_SCREEN = NETWORK.registerS2C("server_open_coords_screen", S2COpenCoordinatesScreenMessage::new);
         CLIENT_OPEN_COORDS_SCREEN = NETWORK.registerC2S("client_open_coords_screen", C2SOpenCoordinatesScreenMessage::new);
         UNLOCK_UPGRADE = NETWORK.registerC2S("unlock_upgrade", UnlockUpgradeMessage::new);
+        UPGRADE_SCREEN_C2S = NETWORK.registerC2S("upgrade_screen_c2s", C2SDisplayUpgradeScreen::new);
+        UPGRADE_SCREEN_S2C = NETWORK.registerS2C("upgrade_screen_s2c", S2CDisplayUpgradeScreen::new);
     }
 
 }

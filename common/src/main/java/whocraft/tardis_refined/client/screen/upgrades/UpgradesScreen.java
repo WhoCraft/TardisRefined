@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.client.screen.upgrades;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class UpgradesScreen extends Screen {
     public static final int WINDOW_INSIDE_HEIGHT = 169;
     private static final Component VERY_SAD_LABEL = Component.translatable("advancements.sad_label");
     private static final Component NO_ADVANCEMENTS_LABEL = Component.translatable("advancements.empty");
-    private static final Component TITLE = Component.translatable("gui.palladium.powers");
+    private static final Component TITLE = Component.translatable("gui.tardis_refined.upgrades");
     private final List<UpgradeTab> tabs = new ArrayList<>();
     private final UpgradeHandler upgradeHandler;
     @Nullable
@@ -97,14 +99,25 @@ public class UpgradesScreen extends Screen {
 
                 if (selectedTab != null) {
                     UpgradeWidget entry = this.selectedTab.getUpgradeHoveredOver((int) (mouseX - i - 9), (int) (mouseY - j - 18), i, j);
+
                     if (entry != null) {
-                        this.openOverlayScreen(new BuyUpgradeScreen(entry.upgradeEntry, true, this));
+                        Upgrade upgrade = entry.upgradeEntry;
+                        boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
+                        if(upgrade.isUnlocked(upgradeHandler)) return false;
+                        this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getCost(), this));
                     }
                 }
             }
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private boolean isPotentialParentUnlocked(Upgrade upgrade, UpgradeHandler upgradeHandler) {
+        if(upgrade.getParent() == null){
+            return true;
+        }
+        return upgrade.getParent().isUnlocked(upgradeHandler);
     }
 
     @Override
@@ -178,7 +191,7 @@ public class UpgradesScreen extends Screen {
             RenderSystem.disableBlend();
         }
 
-        guiGraphics.drawString(this.minecraft.font, TITLE, offsetX + 8, offsetY + 6, 4210752, false);
+        guiGraphics.drawString(this.minecraft.font, TITLE, offsetX + 8, offsetY + 6, ChatFormatting.GOLD.getColor(), false);
     }
 
     private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY) {

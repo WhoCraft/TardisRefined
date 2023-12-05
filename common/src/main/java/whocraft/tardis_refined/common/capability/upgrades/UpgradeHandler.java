@@ -21,11 +21,21 @@ public class UpgradeHandler {
     @NotNull
     private final TardisLevelOperator tardisLevelOperator;
     private int upgradeXP = 0;
-    private int upgradePoints = 0;
+    private int upgradePoints = 1000;
     private final List<Upgrade> unlockedUpgrades = new ArrayList<>();
 
     public UpgradeHandler(@NotNull TardisLevelOperator tardisLevelOperator) {
         this.tardisLevelOperator = tardisLevelOperator;
+    }
+
+    @Override
+    public String toString() {
+        return "UpgradeHandler{" +
+                "tardisLevelOperator=" + tardisLevelOperator +
+                ", upgradeXP=" + upgradeXP +
+                ", upgradePoints=" + upgradePoints +
+                ", unlockedUpgrades=" + unlockedUpgrades +
+                '}';
     }
 
     public void setUpgradeXP(int upgradeXP) {
@@ -122,21 +132,22 @@ public class UpgradeHandler {
         }
     }
 
-    public CompoundTag toNBT() {
-        CompoundTag compoundTag = new CompoundTag();
-        compoundTag.putInt("UpgradeXP", this.upgradeXP);
-        compoundTag.putInt("UpgradePoints", this.upgradePoints);
+    public CompoundTag saveData(CompoundTag compoundTag) {
+        CompoundTag updateTag = new CompoundTag();
+        updateTag.putInt("UpgradeXP", this.upgradeXP);
+        updateTag.putInt("UpgradePoints", this.upgradePoints);
 
         ListTag unlockedUpgradesTag = new ListTag();
         for (Upgrade upgrade : this.unlockedUpgrades) {
             unlockedUpgradesTag.add(StringTag.valueOf(Objects.requireNonNull(Upgrade.UPGRADES.getKey(upgrade)).toString()));
         }
-        compoundTag.put("UnlockedUpgrades", unlockedUpgradesTag);
-
+        updateTag.put("UnlockedUpgrades", unlockedUpgradesTag);
+        compoundTag.put("upgrades", updateTag);
         return compoundTag;
     }
 
-    public void fromNBT(CompoundTag nbt) {
+    public void loadData(CompoundTag compoundTag) {
+        CompoundTag nbt = (CompoundTag) compoundTag.get("upgrades");
         this.upgradeXP = nbt.getInt("UpgradeXP");
         this.upgradePoints = nbt.getInt("UpgradePoints");
         this.unlockedUpgrades.clear();

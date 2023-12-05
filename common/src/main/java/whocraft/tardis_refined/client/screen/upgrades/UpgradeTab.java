@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 
@@ -216,7 +217,7 @@ public class UpgradeTab {
         guiGraphics.enableScissor(x, y, x + UpgradesScreen.WINDOW_INSIDE_WIDTH, y + UpgradesScreen.WINDOW_INSIDE_HEIGHT);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate((float) x, (float) y, 0.0F);
-        var texture = new ResourceLocation("textures/block/red_wool.png");
+        var texture = new ResourceLocation(TardisRefined.MODID, "textures/gui/gui_black.png");
 
         int i = Mth.floor(this.scrollX);
         int j = Mth.floor(this.scrollY);

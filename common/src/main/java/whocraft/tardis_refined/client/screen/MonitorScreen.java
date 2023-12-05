@@ -12,10 +12,8 @@ import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
-import whocraft.tardis_refined.client.screen.upgrades.UpgradesScreen;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.network.messages.upgrades.C2SDisplayUpgradeScreen;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesScreenMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -71,7 +69,7 @@ public class MonitorScreen extends SelectionScreen {
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.WAYPOINT).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesScreenMessage(CoordInputType.TRAVEL).send(), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPGRADES), entry -> Minecraft.getInstance().setScreen(new UpgradesScreen(new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level)))), leftPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPGRADES), entry -> new C2SDisplayUpgradeScreen(Minecraft.getInstance().level.dimension()).send(), leftPos));
 
         return selectionList;
     }

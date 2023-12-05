@@ -2,6 +2,8 @@ package whocraft.tardis_refined.client.screen.upgrades;
 
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -10,7 +12,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import whocraft.tardis_refined.client.screen.components.BackgroundlessButton;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
-import whocraft.tardis_refined.common.network.messages.UnlockUpgradeMessage;
+import whocraft.tardis_refined.common.network.messages.upgrades.C2SDisplayUpgradeScreen;
+import whocraft.tardis_refined.common.network.messages.upgrades.UnlockUpgradeMessage;
 
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +32,7 @@ public class BuyUpgradeScreen extends Screen {
         this.upgrade = upgrade;
         this.available = available;
         this.parentScreen = parentScreen;
-        this.text = Component.translatable("gui.palladium.powers.buy_ability");
+        this.text = Component.translatable("gui.tardis_refined.buy_ability");
     }
 
     @Override
@@ -43,6 +46,7 @@ public class BuyUpgradeScreen extends Screen {
             new UnlockUpgradeMessage(this.upgrade).send();
             this.parentScreen.closeOverlayScreen();
             Objects.requireNonNull(Objects.requireNonNull(this.minecraft).player).playSound(SoundEvents.PLAYER_LEVELUP, 1F, 1F);
+            new C2SDisplayUpgradeScreen(Minecraft.getInstance().level.dimension()).send();
         }).bounds(guiLeft + 23, guiTop + 33, 54, 20).build();
         button.active = this.available;
         this.addRenderableWidget(button);
@@ -63,7 +67,7 @@ public class BuyUpgradeScreen extends Screen {
         for (int k = 0; k < lines.size(); k++) {
             FormattedCharSequence text = lines.get(k);
             int width = this.font.width(text);
-            guiGraphics.drawString(font, text, (int) (guiLeft + GUI_WIDTH / 2F - width / 2F), guiTop + 9 + k * 10, 4210752, false);
+            guiGraphics.drawString(font, text, (int) (guiLeft + GUI_WIDTH / 2F - width / 2F), guiTop + 9 + k * 10, ChatFormatting.GOLD.getColor(), false);
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);

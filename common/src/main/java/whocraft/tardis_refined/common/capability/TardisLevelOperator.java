@@ -81,6 +81,7 @@ public class TardisLevelOperator {
         compoundTag = this.controlManager.saveData(compoundTag);
         compoundTag = this.tardisWaypointManager.saveData(compoundTag);
         compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
+        compoundTag = this.upgradeHandler.saveData(compoundTag);
 
         return compoundTag;
     }
@@ -101,6 +102,7 @@ public class TardisLevelOperator {
         this.controlManager.loadData(tag);
         this.tardisFlightEventManager.loadData(tag);
         this.tardisWaypointManager.loadData(tag);
+        this.upgradeHandler.loadData(tag);
 
 
         tardisClientData.sync();
