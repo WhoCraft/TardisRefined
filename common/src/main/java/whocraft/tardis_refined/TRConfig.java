@@ -8,8 +8,6 @@ import whocraft.tardis_refined.constants.ModMessages;
 import java.util.List;
 
 public class TRConfig {
-
-
     public static Common COMMON;
     public static ForgeConfigSpec COMMON_SPEC;
     public static Server SERVER;

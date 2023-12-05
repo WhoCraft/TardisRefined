@@ -66,19 +66,19 @@ dependencies {
     modImplementation "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
 
     // Forge Config API Port
-    modApi "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
-    include "net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"
+    include(modImplementation("net.minecraftforge:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"))
 
     // Immersive Portals Start
 
     // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
-    modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
-    modCompileOnlyApi ("blank:immersive-portals:2.3.2-mc1.19.2-fabric")
-    modCompileOnlyApi ("blank:q_misc_util:2.3.1")
+    modImplementation ("blank:imm_ptl_core:2.3.1")
+    modImplementation ("blank:q_misc_util:2.3.1")
     // Immersive Portals End
 
     // With loom use the modRuntimeOnly configuration
     //modRuntimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_fabric}:${dev_auth_fabric_version}")
+
+    modCompileOnly("blank:core:3.6.5")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
@@ -120,19 +120,21 @@ processResources {
 }
 
 shadowJar {
+    exclude "architectury.common.json"
+
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier "fabric"
+    archiveClassifier =  "fabric"
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier =  "dev"
 }
 
 sourcesJar {

@@ -22,11 +22,11 @@ loom {
 
     }
 
-    launches {
-        data {
-            arg "--existing", project(":common").file("src/main/resources/").absolutePath
-        }
-    }
+    // launches {
+    //     data {
+    //         arg "--existing", project(":common").file("src/main/resources/").absolutePath
+    //     }
+    // }
 }
 
 configurations {
@@ -44,14 +44,13 @@ repositories {
 dependencies {
     forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-
-    modImplementation "curse.maven:worldedit-225608:${world_edit_version}"
+    // modImplementation "curse.maven:worldedit-225608:${world_edit_version}"
     modImplementation "curse.maven:structure-expansion-398430:${structure_expansion_version}"
 
     modImplementation "curse.maven:configured-457570:${configured_version}"
     modImplementation "curse.maven:jei-238222:${jei_version}"
 
-    compileOnly "curse.maven:immersive-portals-355440:4375619"
+    // modCompileOnly "curse.maven:immersive-portals-355440:4375619"
 
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
@@ -101,17 +100,19 @@ shadowJar {
     exclude "fabric.mod.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
+    injectAccessWidener = true
     input.set shadowJar.archiveFile
+    archiveClassifier = "forge"
+
     dependsOn shadowJar
-    classifier "forge"
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {
