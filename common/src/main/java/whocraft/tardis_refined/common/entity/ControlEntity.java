@@ -285,7 +285,7 @@ public class ControlEntity extends Entity {
                 boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
                 control.playControlPitchedSound(cap, this, playedSound);
-
+            } else {
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 upgradeHandler.addUpgradeXP(5);
             }
@@ -304,6 +304,7 @@ public class ControlEntity extends Entity {
                 }
                 return;
             }
+
             if (isDesktopWaitingToGenerate(cap, serverLevel))
                 return;
 
@@ -312,7 +313,7 @@ public class ControlEntity extends Entity {
                 boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
                 control.playControlPitchedSound(cap, this, playedSound);
-
+            } else {
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 upgradeHandler.addUpgradeXP(5);
             }
