@@ -96,10 +96,10 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     }
 
     static {
-        NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 1.0D);
-        SOUTH_AABB = Block.box(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D);
-        EAST_AABB= Block.box(15.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-        WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 1.0D, 16.0D, 16.0D);
+        NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 0.25D);
+        SOUTH_AABB = Block.box(0.0D, 0.0D, 15.75D, 16.0D, 16.0D, 16.0D);
+        EAST_AABB= Block.box(15.75D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 0.25D, 16.0D, 16.0D);
     }
 
 }
