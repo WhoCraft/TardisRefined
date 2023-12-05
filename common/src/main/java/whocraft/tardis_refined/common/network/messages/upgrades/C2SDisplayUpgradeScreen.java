@@ -41,7 +41,6 @@ public class C2SDisplayUpgradeScreen extends MessageC2S {
     public void handle(MessageContext context) {
         ServerLevel serverLevel = context.getPlayer().serverLevel();
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
-            tardisLevelOperator.getUpgradeHandler().setUpgradePoints(Integer.MAX_VALUE);
             new S2CDisplayUpgradeScreen(tardisLevelOperator.getUpgradeHandler().saveData(new CompoundTag())).send(context.getPlayer());
         });
     }

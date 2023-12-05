@@ -29,6 +29,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -284,6 +285,9 @@ public class ControlEntity extends Entity {
                 boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
                 control.playControlPitchedSound(cap, this, playedSound);
+
+                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
+                upgradeHandler.addUpgradeXP(5);
             }
         });
     }
@@ -308,6 +312,9 @@ public class ControlEntity extends Entity {
                 boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
                 control.playControlPitchedSound(cap, this, playedSound);
+
+                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
+                upgradeHandler.addUpgradeXP(5);
             }
         });
     }

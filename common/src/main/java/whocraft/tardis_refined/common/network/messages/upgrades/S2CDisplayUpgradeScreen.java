@@ -18,7 +18,6 @@ public class S2CDisplayUpgradeScreen extends MessageS2C {
 
     public S2CDisplayUpgradeScreen(CompoundTag compoundTag) {
         this.compoundTag = compoundTag;
-        System.out.println(compoundTag);
     }
 
     public S2CDisplayUpgradeScreen(FriendlyByteBuf friendlyByteBuf) {

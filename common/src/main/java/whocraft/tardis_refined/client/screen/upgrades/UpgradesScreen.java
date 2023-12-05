@@ -191,7 +191,7 @@ public class UpgradesScreen extends Screen {
             RenderSystem.disableBlend();
         }
 
-        guiGraphics.drawString(this.minecraft.font, TITLE, offsetX + 8, offsetY + 6, ChatFormatting.GOLD.getColor(), false);
+        guiGraphics.drawString(this.minecraft.font, TITLE.getString() + " - Upgrade Points: " + upgradeHandler.getUpgradePoints(), offsetX + 8, offsetY + 6, ChatFormatting.GOLD.getColor(), false);
     }
 
     private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY) {
