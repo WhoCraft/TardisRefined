@@ -17,7 +17,7 @@ description = '''${mod_description}'''
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
 mandatory = true
-versionRange = "${forge_version_range}"
+versionRange = "${neoforge_version_range}"
 ordering = "NONE" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
 side="BOTH" # Physical side this dependency is applied on - BOTH, CLIENT or SERVER
 [[dependencies."${mod_id}"]]
