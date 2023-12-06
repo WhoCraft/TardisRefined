@@ -3,7 +3,7 @@ plugins {
 }
 architectury {
     platformSetupLoomIde()
-    neoForge()
+    neoForge();
 }
 
 loom {
@@ -27,7 +27,9 @@ loom {
             programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
         }
     }*/
+
 }
+
 
 configurations {
     common

@@ -14,12 +14,12 @@ authors = "${mod_authors}"
 description = '''${mod_description}'''
 #displayTest=""
 
-[[dependencies."${mod_id}"]]
-modId = "forge"
-mandatory = true
-versionRange = "${forge_version_range}"
-ordering = "NONE" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
-side="BOTH" # Physical side this dependency is applied on - BOTH, CLIENT or SERVER
+# [[dependencies."${mod_id}"]]
+#modId = "forge"
+#mandatory = true
+#versionRange = "${forge_version_range}"
+#ordering = "NONE" # An ordering relationship for the dependency - BEFORE or AFTER required if the relationship is not mandatory
+#side="BOTH" # Physical side this dependency is applied on - BOTH, CLIENT or SERVER
 [[dependencies."${mod_id}"]]
 modId = "minecraft"
 mandatory = true

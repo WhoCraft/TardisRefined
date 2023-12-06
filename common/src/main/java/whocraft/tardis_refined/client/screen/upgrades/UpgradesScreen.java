@@ -25,9 +25,9 @@ public class UpgradesScreen extends Screen {
 
     public static final int WINDOW_WIDTH = 256;
     public static final int WINDOW_HEIGHT = 173;
-    private static final int WINDOW_INSIDE_X = 9;
+    private static final int WINDOW_INSIDE_X = 10;
     private static final int WINDOW_INSIDE_Y = 18;
-    public static final int WINDOW_INSIDE_WIDTH = 234;
+    public static final int WINDOW_INSIDE_WIDTH = 234 - 10;
     public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
     private static final Component TITLE = Component.translatable("gui.tardis_refined.upgrades");
     private final List<UpgradeTab> tabs = new ArrayList<>();
