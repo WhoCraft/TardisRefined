@@ -139,7 +139,7 @@ public class UpgradeHandler {
 
         ListTag unlockedUpgradesTag = new ListTag();
         for (Upgrade upgrade : this.unlockedUpgrades) {
-            unlockedUpgradesTag.add(StringTag.valueOf(Objects.requireNonNull(Upgrade.UPGRADES.getKey(upgrade)).toString()));
+            unlockedUpgradesTag.add(StringTag.valueOf(Objects.requireNonNull(Upgrades.UPGRADE_REGISTRY.getKey(upgrade)).toString()));
         }
         updateTag.put("UnlockedUpgrades", unlockedUpgradesTag);
         compoundTag.put("upgrades", updateTag);
@@ -152,7 +152,7 @@ public class UpgradeHandler {
         this.upgradePoints = nbt.getInt("UpgradePoints");
         this.unlockedUpgrades.clear();
         for (Tag upgrade : nbt.getList("UnlockedUpgrades", StringTag.TAG_STRING)) {
-            this.unlockedUpgrades.add(Upgrade.UPGRADES.get(new ResourceLocation(upgrade.getAsString())));
+            this.unlockedUpgrades.add(Upgrades.UPGRADE_REGISTRY.get(new ResourceLocation(upgrade.getAsString())));
         }
     }
 }

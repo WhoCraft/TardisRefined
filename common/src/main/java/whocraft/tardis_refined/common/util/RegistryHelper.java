@@ -16,6 +16,10 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
  * Allows for smoother transition to future versions where registries change*/
 public class RegistryHelper {
 
+    public static ResourceLocation makeKey(String id){
+        return new ResourceLocation(TardisRefined.MODID, id);
+    }
+
     public static ResourceKey<ConfiguredFeature<?,?>> makeConfiguredFeatureKey(ResourceLocation rl){
         return ResourceKey.create(Registries.CONFIGURED_FEATURE, rl);
     }

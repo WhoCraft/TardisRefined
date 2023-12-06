@@ -103,7 +103,7 @@ public class UpgradesScreen extends Screen {
                         Upgrade upgrade = entry.upgradeEntry;
                         boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
                         if(upgrade.isUnlocked(upgradeHandler)) return false;
-                        this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getCost(), this));
+                        this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired(), this));
                     }
                 }
             }

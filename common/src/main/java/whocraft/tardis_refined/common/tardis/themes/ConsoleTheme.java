@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -38,11 +39,11 @@ public class ConsoleTheme implements Theme {
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> NUKA = registerConsoleTheme("nuka", new NukaConsoleTheme());
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> INITIATIVE = registerConsoleTheme("initiative", new InitiativeConsoleTheme());
 
-    private String translationKey;
+    private ResourceLocation translationKey;
     private final ConsoleThemeDetails consoleThemeDetails;
 
-    public ConsoleTheme(String translationKey, ConsoleThemeDetails consoleThemeDetails) {
-        this.translationKey = ModMessages.console(translationKey);
+    public ConsoleTheme(ResourceLocation translationKey, ConsoleThemeDetails consoleThemeDetails) {
+        this.translationKey = translationKey;
         this.consoleThemeDetails = consoleThemeDetails;
     }
 
@@ -56,12 +57,12 @@ public class ConsoleTheme implements Theme {
 
 
     private static RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> registerConsoleTheme(String id, ConsoleThemeDetails themeDetails){
-        return CONSOLE_THEMES.registerHolder(id, () -> new ConsoleTheme(id, themeDetails));
+        return CONSOLE_THEMES.registerHolder(id, () -> new ConsoleTheme(new ResourceLocation(TardisRefined.MODID, id), themeDetails));
     }
 
     @Override
     public String getTranslationKey() {
-        return this.translationKey;
+        return Util.makeDescriptionId("console", this.translationKey);
     }
 
     @Override

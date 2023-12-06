@@ -74,7 +74,6 @@ public class ModMessages {
         return "shell." + TardisRefined.MODID + "." + translationKey;
     }
 
-
     public static String tooltip(String translationKey) {
         return "tooltip." + TardisRefined.MODID + "." + translationKey;
     }

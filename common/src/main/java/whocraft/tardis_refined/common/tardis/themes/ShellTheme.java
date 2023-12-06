@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
+import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -38,17 +39,17 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PAGODA = registerShellTheme("pagoda");
 
 
-    private String translationKey;
+    private ResourceLocation translationKey;
 
-    public ShellTheme(String translationKey){ this.translationKey = ModMessages.shell(translationKey);}
+    public ShellTheme(ResourceLocation translationKey){ this.translationKey = translationKey;}
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
-        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(id));
+        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
     }
 
     @Override
     public String getTranslationKey() {
-        return this.translationKey;
+        return Util.makeDescriptionId("shell", this.translationKey);
     }
 
     @Override
