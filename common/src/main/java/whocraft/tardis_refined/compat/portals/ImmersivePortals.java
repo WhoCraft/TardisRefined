@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
@@ -55,7 +56,7 @@ public class ImmersivePortals {
     }
 
     // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
-    private static final Map<ShellTheme, PortalOffets> themeToOffsetMap = new HashMap<>();
+    private static final Map<ResourceLocation, PortalOffets> themeToOffsetMap = new HashMap<>();
 
     public static void init() {
         if (!ModCompatChecker.immersivePortals()) return;
@@ -71,55 +72,55 @@ public class ImmersivePortals {
             }
         });
 
-        themeToOffsetMap.put(ShellTheme.FACTORY, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.2D, 0),
+        themeToOffsetMap.put(ShellTheme.FACTORY.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.2D, 0),
                 new Vec3(0, 0.2D, 0.499), new Vec3(-0.499, 0.2D, 0), new Vec3(0, 0.2D, -0.499)), new PortalOffets.OffsetData(
                 new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
                 new Vec3(1.375, 0, 0), new Vec3(0, 0, 1.375))));
 
-        themeToOffsetMap.put(ShellTheme.POLICE_BOX, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.6, 0.25, 0),
+        themeToOffsetMap.put(ShellTheme.POLICE_BOX.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.6, 0.25, 0),
                 new Vec3(0, 0.25, 0.6), new Vec3(-0.6, 0.25, 0), new Vec3(0, 0.25, -0.6)),
                 new PortalOffets.OffsetData(new Vec3(-1.425, 0.125, 0), new Vec3(0, 0.125, -1.425),
                         new Vec3(1.425, 0.125, 0), new Vec3(0, 0.125, 1.425))));
 
-        themeToOffsetMap.put(ShellTheme.PHONE_BOOTH, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.145, 0),
+        themeToOffsetMap.put(ShellTheme.PHONE_BOOTH.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.145, 0),
                 new Vec3(0, 0.145, 0.5), new Vec3(-0.5, 0.145, 0), new Vec3(0, 0.145, -0.5)),
                 new PortalOffets.OffsetData(new Vec3(-1.435, 0.145, 0), new Vec3(0, 0.145, -1.435),
                         new Vec3(1.435, 0.145, 0), new Vec3(0, 0.145, 1.435))));
 
-        themeToOffsetMap.put(ShellTheme.MYSTIC, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.15, 0),
+        themeToOffsetMap.put(ShellTheme.MYSTIC.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.15, 0),
                 new Vec3(0, 0.15, 0.5), new Vec3(-0.5, 0.15, 0), new Vec3(0, 0.175, -0.5)),
                 new PortalOffets.OffsetData(new Vec3(-1.425, 0.15, 0), new Vec3(0, 0.15, -1.425),
                         new Vec3(1.425, 0.15, 0), new Vec3(0, 0.15, 1.425))));
 
-        themeToOffsetMap.put(ShellTheme.PRESENT, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.57, 0.175, 0),
+        themeToOffsetMap.put(ShellTheme.PRESENT.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.57, 0.175, 0),
                 new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0, -0.57)), new PortalOffets.OffsetData(
                 new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
                 new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
-        themeToOffsetMap.put(ShellTheme.DRIFTER, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
+        themeToOffsetMap.put(ShellTheme.DRIFTER.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
                 new Vec3(0, 0, 0.61), new Vec3(-0.61, 0, 0), new Vec3(0, 0, -0.61)), new PortalOffets.OffsetData(
                 new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
                 new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
-        themeToOffsetMap.put(ShellTheme.VENDING, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.32, 0, 0),
+        themeToOffsetMap.put(ShellTheme.VENDING.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.32, 0, 0),
                 new Vec3(0, 0, 0.33), new Vec3(-0.32, 0, 0), new Vec3(0, 0, -0.32)), new PortalOffets.OffsetData(
                 new Vec3(-1.48, 0, 0), new Vec3(0, 0, -1.48),
                 new Vec3(1.48, 0, 0), new Vec3(0, 0, 1.48))));
-        themeToOffsetMap.put(ShellTheme.GROENING, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0, 0),
+        themeToOffsetMap.put(ShellTheme.GROENING.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0, 0),
                 new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0, -0.5)), new PortalOffets.OffsetData(
                 new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
                 new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))));
-        themeToOffsetMap.put(ShellTheme.BIG_BEN, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.46, 0, 0),
+        themeToOffsetMap.put(ShellTheme.BIG_BEN.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.46, 0, 0),
                 new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0, -0.46)), new PortalOffets.OffsetData(
                 new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
                 new Vec3(1.3, 0, 0), new Vec3(0, 0, 1.3))));
 
-        themeToOffsetMap.put(ShellTheme.NUKA,
+        themeToOffsetMap.put(ShellTheme.NUKA.getId(),
                 new PortalOffets(
                         new PortalOffets.OffsetData(new Vec3(0.65, 0.35, 0), new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35, -0.65)),
                         new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))
                 )
         );
 
-        themeToOffsetMap.put(ShellTheme.PAGODA,
+        themeToOffsetMap.put(ShellTheme.PAGODA.getId(),
                 new PortalOffets(
                         new PortalOffets.OffsetData(new Vec3(0.65, 0, 0), new Vec3(0, 0, 0.51), new Vec3(-0.65, 0, 0), new Vec3(0, 0, -0.51)),
                         new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))
@@ -128,20 +129,20 @@ public class ImmersivePortals {
 
 
         // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
-        themeToOffsetMap.put(ShellTheme.PORTALOO, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
+        themeToOffsetMap.put(ShellTheme.PORTALOO.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
                         new Vec3(0, 0, 0.51), new Vec3(-0.61, 0, 0), new Vec3(0, 0, -0.51)),
                 new PortalOffets.OffsetData(
                         new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
                         new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
 
-        for (ShellTheme value : ShellTheme.values()) {
+        for (ResourceLocation value : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
             if (!themeToOffsetMap.containsKey(value) && !value.equals(ShellTheme.BRIEFCASE)) {
                 TardisRefined.LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
             }
         }
     }
 
-    public static boolean exteriorHasPortalSupport(ShellTheme shellTheme) {
+    public static boolean exteriorHasPortalSupport(ResourceLocation shellTheme) {
         return themeToOffsetMap.containsKey(shellTheme);
     }
 
@@ -161,7 +162,7 @@ public class ImmersivePortals {
 
     public static void createPortals(TardisLevelOperator operator) {
         UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
-        ShellTheme theme = operator.getExteriorManager().getCurrentTheme();
+        ResourceLocation theme = operator.getExteriorManager().getCurrentTheme();
         TardisInternalDoor door = operator.getInternalDoor();
 
         if (operator.getInteriorManager().isCave() || !operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {

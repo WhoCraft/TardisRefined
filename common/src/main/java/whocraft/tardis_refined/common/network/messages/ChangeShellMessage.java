@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.network.messages;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -20,10 +21,10 @@ import java.util.Optional;
 public class ChangeShellMessage extends MessageC2S {
 
     private final ResourceKey<Level> resourceKey;
-    private final ShellTheme shellTheme;
+    private final ResourceLocation shellTheme;
     private final ShellPattern pattern;
 
-    public ChangeShellMessage(ResourceKey<Level> tardisLevel, ShellTheme theme, ShellPattern pattern) {
+    public ChangeShellMessage(ResourceKey<Level> tardisLevel, ResourceLocation theme, ShellPattern pattern) {
         this.resourceKey = tardisLevel;
         this.shellTheme = theme;
         this.pattern = pattern;
@@ -31,7 +32,7 @@ public class ChangeShellMessage extends MessageC2S {
 
     public ChangeShellMessage(FriendlyByteBuf buffer) {
         resourceKey = buffer.readResourceKey(Registries.DIMENSION);
-        this.shellTheme = ShellTheme.valueOf(buffer.readUtf(500));
+        this.shellTheme = buffer.readResourceLocation();
         this.pattern = ShellPatterns.getPatternOrDefault(shellTheme, buffer.readResourceLocation());
     }
 

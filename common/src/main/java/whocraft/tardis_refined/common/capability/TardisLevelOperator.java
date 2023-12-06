@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -186,7 +187,7 @@ public class TardisLevelOperator {
         }
 
         if(getExteriorManager().getCurrentTheme() != null) {
-            ShellTheme theme = getExteriorManager().getCurrentTheme();
+            ResourceLocation theme = getExteriorManager().getCurrentTheme();
             if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
                if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
                    return false;
@@ -232,9 +233,9 @@ public class TardisLevelOperator {
         }
     }
 
-    public void setShellTheme(ShellTheme theme) {
-        getExteriorManager().setShellTheme(theme);
-        getInteriorManager().setShellTheme(theme);
+    public void setShellTheme(ResourceLocation theme) {
+        this.getExteriorManager().setShellTheme(theme);
+        this.getInteriorManager().setShellTheme(theme);
         this.getPilotingManager().setCurrentExteriorTheme(theme);
         TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
     }

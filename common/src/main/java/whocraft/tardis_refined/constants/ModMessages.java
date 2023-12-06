@@ -66,6 +66,10 @@ public class ModMessages {
         return "desktop." + TardisRefined.MODID + "." + translationKey;
     }
 
+    public static String console(String translationKey) {
+        return "console." + TardisRefined.MODID + "." + translationKey;
+    }
+
     public static String shell(String translationKey) {
         return "shell." + TardisRefined.MODID + "." + translationKey;
     }

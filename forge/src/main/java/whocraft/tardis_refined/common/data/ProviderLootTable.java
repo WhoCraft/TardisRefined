@@ -39,8 +39,8 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Iterable<Block> getKnownBlocks() {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
-            for (RegistrySupplier<Block> entry : BlockRegistry.BLOCKS.getEntries()) {
-                blocks.add(entry.get());
+            for (Block entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
+                blocks.add(entry);
             }
             return blocks;
         }
@@ -55,10 +55,10 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Stream<EntityType<?>> getKnownEntityTypes() {
             ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
-            for (RegistrySupplier<EntityType<?>> entry : EntityRegistry.ENTITY_TYPES.getEntries()) {
-                if (entry.get() != EntityRegistry.CONTROL_ENTITY.get())
+            for (EntityType<?> entry : EntityRegistry.ENTITY_TYPES.getRegistry().stream().toList()) {
+                if (entry == EntityRegistry.CONTROL_ENTITY.get())
                     break;
-                entities.add(entry.get());
+                entities.add(entry);
             }
             return entities.stream();
         }

@@ -22,7 +22,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.properties.ShellProperty;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
@@ -33,22 +32,20 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellBlock extends ShellBaseBlock{
 
-    public static final ShellProperty SHELL = ShellProperty.create("shell");
 
     public GlobalShellBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(SHELL, ShellTheme.FACTORY).setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(WATERLOGGED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(SHELL);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
-        return super.getStateForPlacement(blockPlaceContext).setValue(SHELL, ShellTheme.FACTORY);
+        return super.getStateForPlacement(blockPlaceContext);
     }
 
     protected static final VoxelShape COLLISION = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
@@ -61,8 +58,10 @@ public class GlobalShellBlock extends ShellBaseBlock{
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        if(blockState.getValue(SHELL) == ShellTheme.BRIEFCASE)
-            return COLLISION;
+        if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
+            if(shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
+                return COLLISION;
+        }
         return super.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 

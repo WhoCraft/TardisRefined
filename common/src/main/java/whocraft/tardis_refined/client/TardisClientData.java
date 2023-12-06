@@ -42,7 +42,7 @@ public class TardisClientData {
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
-    private ShellTheme shellTheme = ShellTheme.FACTORY;
+    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ShellPattern shellPattern = safeGrabPattern();
 
     private ShellPattern safeGrabPattern() {
@@ -96,8 +96,8 @@ public class TardisClientData {
     public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
     public float flightShakeScale() {return flightShakeScale;}
 
-    public void setShellTheme(ShellTheme theme) {this.shellTheme = theme;}
-    public ShellTheme getShellTheme() {return shellTheme;}
+    public void setShellTheme(ResourceLocation theme) {this.shellTheme = theme;}
+    public ResourceLocation getShellTheme() {return this.shellTheme;}
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -126,20 +126,20 @@ public class TardisClientData {
     /**
      * Deserializes the Tardis instance from a CompoundTag.
      *
-     * @param arg A CompoundTag containing the serialized Tardis data.
+     * @param compoundTag A CompoundTag containing the serialized Tardis data.
      */
-    public void deserializeNBT(CompoundTag arg) {
-        flying = arg.getBoolean("flying");
-        throttleDown = arg.getBoolean("throttleDown");
-        isLanding = arg.getBoolean("isLanding");
-        isTakingOff = arg.getBoolean("isTakingOff");
-        shellTheme = ShellTheme.findOr(arg.getString("shellTheme"), ShellTheme.FACTORY);
-        isInDangerZone = arg.getBoolean("isInDangerZone");
-        flightShakeScale = arg.getFloat("flightShakeScale");
-        isOnCooldown = arg.getBoolean("isOnCooldown");
+    public void deserializeNBT(CompoundTag compoundTag) {
+        flying = compoundTag.getBoolean("flying");
+        throttleDown = compoundTag.getBoolean("throttleDown");
+        isLanding = compoundTag.getBoolean("isLanding");
+        isTakingOff = compoundTag.getBoolean("isTakingOff");
+        shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
+        isInDangerZone = compoundTag.getBoolean("isInDangerZone");
+        flightShakeScale = compoundTag.getFloat("flightShakeScale");
+        isOnCooldown = compoundTag.getBoolean("isOnCooldown");
 
-        if (arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
-            this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, new ResourceLocation(arg.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
+        if (compoundTag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
+            this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
         }
 
     }

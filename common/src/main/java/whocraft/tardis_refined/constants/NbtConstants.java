@@ -17,6 +17,9 @@ public class NbtConstants {
     // TARDIS Level Operator
 
     public static final String TARDIS_ID = "tardis_id";
+
+    public static final String THEME = "theme";
+
     public static final String PATTERN = "pattern";
 
     public static final String TARDIS_IS_SETUP = "has_setup";

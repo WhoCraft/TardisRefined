@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.network.forge;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -8,12 +9,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.NetworkEvent;
 import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PlayNetworkDirection;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.NetworkManager;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class NetworkManagerImpl extends NetworkManager {
@@ -23,8 +26,8 @@ public class NetworkManagerImpl extends NetworkManager {
     public NetworkManagerImpl(ResourceLocation channelName) {
         super(channelName);
         this.channel = NetworkRegistry.newSimpleChannel(channelName, () -> "1.0.0", (s) -> true, (s) -> true);
-     //TODO!   this.channel.registerMessage(0, ToServer.class, ToServer::toBytes, ToServer::new, ToServer::handle, Optional.of(NetworkDirection.PLAY_TO_SERVER));
-        //TODO!  this.channel.registerMessage(1, ToClient.class, ToClient::toBytes, ToClient::new, ToClient::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        this.channel.registerMessage(0, ToServer.class, ToServer::toBytes, ToServer::new, ToServer::handle, Optional.of(PlayNetworkDirection.PLAY_TO_SERVER));
+        this.channel.registerMessage(1, ToClient.class, ToClient::toBytes, ToClient::new, ToClient::handle, Optional.of(PlayNetworkDirection.PLAY_TO_CLIENT));
     }
 
     public static NetworkManager create(ResourceLocation channelName) {
@@ -91,11 +94,11 @@ public class NetworkManagerImpl extends NetworkManager {
             this.message = (MessageC2S) type.getDecoder().decode(buf);
         }
 
-        public static void handle(ToServer msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(ToServer msg, NetworkEvent.Context ctx) {
             if (msg.message != null) {
-                ctx.get().enqueueWork(() -> msg.message.handle(() -> ctx.get().getSender()));
+                ctx.enqueueWork(() -> msg.message.handle(() -> ctx.getSender()));
             }
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
         public void toBytes(FriendlyByteBuf buf) {
@@ -126,11 +129,11 @@ public class NetworkManagerImpl extends NetworkManager {
             this.message = (MessageS2C) type.getDecoder().decode(buf);
         }
 
-        public static void handle(ToClient msg, Supplier<NetworkEvent.Context> ctx) {
+        public static void handle(ToClient msg, NetworkEvent.Context ctx) {
             if (msg.message != null) {
-                ctx.get().enqueueWork(() -> msg.message.handle(() -> null));
+                ctx.enqueueWork(() -> msg.message.handle(() -> null));
             }
-            ctx.get().setPacketHandled(true);
+            ctx.setPacketHandled(true);
         }
 
         public void toBytes(FriendlyByteBuf buf) {

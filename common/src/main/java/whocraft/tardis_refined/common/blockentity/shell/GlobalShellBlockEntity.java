@@ -16,24 +16,38 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
-    private ShellPattern basePattern = pattern();
+    private ResourceLocation shellTheme;
 
-    public ShellPattern pattern() {
-        ShellTheme console = getBlockState().getValue(GlobalShellBlock.SHELL);
-        ShellPattern defaultBasePattern = ShellPatterns.getPatternOrDefault(console, ResourceConstants.DEFAULT_PATTERN_ID);
-        return basePattern == null ? defaultBasePattern : basePattern;
-    }
+    private ShellPattern basePattern;
+
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), blockPos, blockState);
+        this.shellTheme = ShellTheme.FACTORY.getId();
+        this.basePattern = this.pattern();
+    }
+
+    public ResourceLocation theme(){
+        if (this.shellTheme == null){
+            this.shellTheme = ShellTheme.FACTORY.getId();
+        }
+        return this.shellTheme;
+    }
+
+    public ShellPattern pattern() {
+        ShellPattern defaultBasePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, ResourceConstants.DEFAULT_PATTERN_ID);
+        return this.basePattern == null ? defaultBasePattern : this.basePattern;
     }
 
     public GlobalShellBlockEntity setPattern(ShellPattern basePattern) {
@@ -45,36 +59,48 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     public void load(CompoundTag pTag) {
         super.load(pTag);
 
+        if (pTag.contains(NbtConstants.THEME)) {
+            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+            this.shellTheme = themeId;
+        }
+
         if (pTag.contains(NbtConstants.PATTERN)) {
-            ShellTheme shellTheme = getBlockState().getValue(GlobalShellBlock.SHELL);
             ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
-            if (ShellPatterns.doesPatternExist(shellTheme, currentPattern)) {
-                basePattern = ShellPatterns.getPatternOrDefault(shellTheme, currentPattern);
+            if (ShellPatterns.doesPatternExist( this.shellTheme, currentPattern)) {
+                this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
             }
         }
 
-        if (basePattern == null) {
-            basePattern = pattern();
+        if (this.shellTheme == null){
+            this.shellTheme = this.theme();
+        }
+
+        if (this.basePattern == null) {
+            this.basePattern = pattern();
         }
     }
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         super.saveAdditional(pTag);
-        if (basePattern != null) {
-            pTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
+        if (this.shellTheme != null) {
+            pTag.putString(NbtConstants.THEME, this.shellTheme.toString());
+        }
+        if (this.basePattern != null) {
+            pTag.putString(NbtConstants.PATTERN, this.basePattern.id().toString());
         }
     }
 
-    public void onRightClick(BlockState blockState, ItemStack stack) {
+    public boolean onRightClick(BlockState blockState, ItemStack stack) {
 
-        if (blockState.getValue(ShellBaseBlock.REGEN)) {return;}
+        if (blockState.getValue(ShellBaseBlock.REGEN)) {return false;}
 
         if (getLevel() instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, TARDIS_ID.toString());
             if (interior != null) {
+                AtomicBoolean valid = new AtomicBoolean();
                 TardisLevelOperator.get(interior).ifPresent(cap -> {
-                    if (cap.getPilotingManager().isInFlight()) return;
+                    if (cap.getPilotingManager().isInFlight()) valid.set(false);
                     ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, TARDIS_ID.toString()));
 
                     boolean validKey = KeyItem.keychainContains(stack, dimension);
@@ -83,13 +109,15 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                         cap.getExteriorManager().setLocked(locked);
                         cap.getInternalDoor().setLocked(locked);
                         cap.setDoorClosed(true);
-                        return;
+                        valid.set(true);
                     }
-                    if(cap.getExteriorManager().locked()) return;
+                    if(cap.getExteriorManager().locked()) valid.set(false);
                     cap.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
                 });
+                return valid.get();
             }
         }
+        return false;
     }
 
     public void sendUpdates() {
