@@ -38,11 +38,21 @@ public class Upgrades {
     public static final RegistrySupplier<Upgrade> NAVIGATION_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("navigation_system", () -> new Upgrade(Items.COMPASS::getDefaultInstance, TARDIS_XP)
             .setCost(50).setPosition(1, 2));
 
-    public static final RegistrySupplier<Upgrade> WAYPOINTS = UPGRADE_DEFERRED_REGISTRY.register("waypoints", () -> new Upgrade(Items.MAP::getDefaultInstance, NAVIGATION_SYSTEM)
+    public static final RegistrySupplier<Upgrade> EXPLORER = UPGRADE_DEFERRED_REGISTRY.register("explorer", () -> new Upgrade(Items.COMPASS::getDefaultInstance, NAVIGATION_SYSTEM)
             .setCost(50).setPosition(2, 2));
 
-    public static final RegistrySupplier<Upgrade> COORDINATE_INPUT = UPGRADE_DEFERRED_REGISTRY.register("coordinate_input", () -> new Upgrade(Items.FILLED_MAP::getDefaultInstance, WAYPOINTS)
+    public static final RegistrySupplier<Upgrade> EXPLORER_II = UPGRADE_DEFERRED_REGISTRY.register("explorer_ii", () -> new Upgrade(Items.COMPASS::getDefaultInstance, EXPLORER)
             .setCost(50).setPosition(3, 2));
+
+    public static final RegistrySupplier<Upgrade> EXPLORER_III = UPGRADE_DEFERRED_REGISTRY.register("explorer_iii", () -> new Upgrade(Items.COMPASS::getDefaultInstance, EXPLORER_II)
+            .setCost(50).setPosition(4, 2));
+
+
+    public static final RegistrySupplier<Upgrade> WAYPOINTS = UPGRADE_DEFERRED_REGISTRY.register("waypoints", () -> new Upgrade(Items.MAP::getDefaultInstance, NAVIGATION_SYSTEM)
+            .setCost(50).setPosition(1, 3));
+
+    public static final RegistrySupplier<Upgrade> COORDINATE_INPUT = UPGRADE_DEFERRED_REGISTRY.register("coordinate_input", () -> new Upgrade(Items.FILLED_MAP::getDefaultInstance, WAYPOINTS)
+            .setCost(50).setPosition(2, 3));
 
 
 

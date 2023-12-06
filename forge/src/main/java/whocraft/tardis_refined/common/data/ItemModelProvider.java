@@ -29,7 +29,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
 
 
-        fenceInventory("ars_leaves_fence_inventory", leavesTexture);
+        myFenceInventory(new ResourceLocation(TardisRefined.MODID, "ars_leaves_fence_inventory"), leavesTexture);
 
         blockItem(BlockRegistry.ARS_LEAVES_FENCE.getId(), new ResourceLocation(TardisRefined.MODID, "item/ars_leaves_fence_inventory"));
         blockItem(BlockRegistry.TERRAFORMER_BLOCK.getId());
@@ -44,6 +44,11 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
 
 
+    }
+
+
+    public ItemModelBuilder myFenceInventory(ResourceLocation item, ResourceLocation texture) {
+        return this.getBuilder(item.toString()).parent(new ModelFile.UncheckedModelFile(BLOCK_FOLDER + "/fence_inventory")).texture("texture", texture);
     }
 
     public ItemModelBuilder basicItem(ResourceLocation item, ResourceLocation texture) {

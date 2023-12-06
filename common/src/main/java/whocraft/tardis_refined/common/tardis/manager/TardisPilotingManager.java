@@ -14,12 +14,17 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TardisPilotingManager {
 
@@ -49,7 +54,6 @@ public class TardisPilotingManager {
 
     private boolean canUseControls = true;
 
-    private final int[] coordinateIncrements = new int[]{1, 10, 100, 1000};
     private int cordIncrementIndex = 0;
 
     private boolean autoLand = false;
@@ -499,15 +503,35 @@ public class TardisPilotingManager {
     }
 
     public int getCordIncrement() {
-        return this.coordinateIncrements[this.cordIncrementIndex];
+        return getCoordinateIncrements(operator.getUpgradeHandler())[this.cordIncrementIndex];
     }
 
     public void cycleCordIncrement(int direction) {
         int nextIndex = this.cordIncrementIndex + direction;
-        if (nextIndex < 0) nextIndex = this.coordinateIncrements.length - 1;
-        if (nextIndex >= this.coordinateIncrements.length) nextIndex = 0;
+
+        int[] coordinateIncrements = getCoordinateIncrements(operator.getUpgradeHandler());
+        if (nextIndex < 0) nextIndex = coordinateIncrements.length - 1;
+        if (nextIndex >= coordinateIncrements.length) nextIndex = 0;
 
         this.cordIncrementIndex = nextIndex;
+    }
+
+    public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler){
+        List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
+
+        if(Upgrades.EXPLORER.get().isUnlocked(upgradeHandler)){
+            increments.add(1000);
+        }
+
+        if(Upgrades.EXPLORER_II.get().isUnlocked(upgradeHandler)){
+            increments.add(2500);
+        }
+
+        if(Upgrades.EXPLORER_III.get().isUnlocked(upgradeHandler)){
+            increments.add(5000);
+        }
+
+        return increments.stream().mapToInt(Integer::intValue).toArray();
     }
 
     public boolean shouldThrottleBeDown() {

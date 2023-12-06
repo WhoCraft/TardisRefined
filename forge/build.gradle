@@ -3,9 +3,7 @@ plugins {
 }
 architectury {
     platformSetupLoomIde()
-    neoForge {
-        platformPackage = "forge" // This means map neoforge ExpectPlatform Annotations to forge
-    }
+    neoForge();
 }
 
 loom {
@@ -29,7 +27,9 @@ loom {
             programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
         }
     }*/
+
 }
+
 
 configurations {
     common

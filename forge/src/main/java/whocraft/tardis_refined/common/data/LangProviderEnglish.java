@@ -159,6 +159,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
         addUpgrade(Upgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
         addUpgrade(Upgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
+        addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "1000k Increment");
+        addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "2500k Increment");
+        addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "5000k Increment");
     }
 
     public void addControl(ConsoleControl control, String name) {

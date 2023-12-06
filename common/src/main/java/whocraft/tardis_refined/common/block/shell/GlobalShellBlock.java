@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.block.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,10 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
-import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalShellBlock extends ShellBaseBlock{
@@ -74,35 +69,17 @@ public class GlobalShellBlock extends ShellBaseBlock{
     @Override
     public void onProjectileHit(Level level, BlockState blockState, BlockHitResult blockHitResult, Projectile projectile) {
         super.onProjectileHit(level, blockState, blockHitResult, projectile);
-        activateHads(level, blockHitResult.getBlockPos());
-    }
-
-    private static void activateHads(Level level, BlockPos blockPos) {
         if(level instanceof ServerLevel serverLevel){
-            BlockEntity blockEntity = serverLevel.getBlockEntity(blockPos);
-            if(blockEntity instanceof GlobalShellBlockEntity globalShellBlockEntity) {
-                if(globalShellBlockEntity.TARDIS_ID == null) return;
-                ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, globalShellBlockEntity.TARDIS_ID.toString());
-                TardisLevelOperator.get(interior).ifPresent(tardisLevelOperator -> {
-                    RandomSource random = serverLevel.random;
-                    UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
-
-                    if(!Upgrades.HOSTILE_DISPLACEMENT.get().isUnlocked(upgradeHandler)){
-                        return;
-                    }
-
-                    TardisNavLocation lastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
-                    BlockPos newLocation = new BlockPos(random.nextInt((int) lastKnown.getLevel().getWorldBorder().getMaxX() - 1000), lastKnown.getPosition().getY(), (int) lastKnown.getLevel().getWorldBorder().getMaxZ()  - 1000);
-                    tardisLevelOperator.getPilotingManager().setTargetPosition(newLocation);
-                    tardisLevelOperator.getPilotingManager().beginFlight(true);
-                });
-            }
+            TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> tardisLevelOperator.getTardisHADSManager().activateHads(serverLevel, blockHitResult.getBlockPos()));
         }
     }
 
+
     @Override
     public void wasExploded(Level level, BlockPos blockPos, Explosion explosion) {
-        activateHads(level, blockPos);
+        if (level instanceof ServerLevel serverLevel) {
+            TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> tardisLevelOperator.getTardisHADSManager().activateHads(serverLevel, blockPos));
+        }
         super.wasExploded(level, blockPos, explosion);
     }
 
