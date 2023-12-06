@@ -2,15 +2,14 @@ package whocraft.tardis_refined.client.screen.upgrades;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 
@@ -132,7 +131,7 @@ public class UpgradeTab {
                     connection.addLine(new ConnectionLine(startX, endY, endX, endY));
                 }
 
-                connection.color = entry.upgradeEntry.isUnlocked(upgradeHandler) ? Color.BLUE : Color.GRAY;
+                connection.color = entry.upgradeEntry.isUnlocked(upgradeHandler) ? new Color(ChatFormatting.GOLD.getColor()) : Color.GRAY;
                 this.connections.add(connection);
             }
         }
@@ -217,18 +216,12 @@ public class UpgradeTab {
         guiGraphics.enableScissor(x, y, x + UpgradesScreen.WINDOW_INSIDE_WIDTH, y + UpgradesScreen.WINDOW_INSIDE_HEIGHT);
         guiGraphics.pose().pushPose();
         guiGraphics.pose().translate((float) x, (float) y, 0.0F);
-        var texture = new ResourceLocation(TardisRefined.MODID, "textures/gui/gui_black.png");
 
         int i = Mth.floor(this.scrollX);
         int j = Mth.floor(this.scrollY);
         int k = i % 16;
         int l = j % 16;
 
-        for (int m = -1; m <= 15; ++m) {
-            for (int n = -1; n <= 11; ++n) {
-                guiGraphics.blit(texture, k + 16 * m, l + 16 * n, 0.0F, 0.0F, 16, 16, 16, 16);
-            }
-        }
 
         for (Connection connection : this.connections) {
             connection.drawOutlines(this, guiGraphics, i, j);
@@ -327,7 +320,7 @@ public class UpgradeTab {
 
     public static class Connection {
 
-        public Color color = Color.WHITE;
+        public Color color = Color.YELLOW;
         public List<ConnectionLine> lines = new LinkedList<>();
 
         public Connection(List<ConnectionLine> lines) {

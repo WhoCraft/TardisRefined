@@ -21,15 +21,14 @@ public class UpgradesScreen extends Screen {
     public static final ResourceLocation WINDOW = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/window.png");
     public static final ResourceLocation TABS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/tabs.png");
     public static final ResourceLocation WIDGETS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/widgets.png");
+    public static final ResourceLocation BACKDROP = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
 
-    public static final int WINDOW_WIDTH = 252;
-    public static final int WINDOW_HEIGHT = 196;
+    public static final int WINDOW_WIDTH = 256;
+    public static final int WINDOW_HEIGHT = 173;
     private static final int WINDOW_INSIDE_X = 9;
     private static final int WINDOW_INSIDE_Y = 18;
     public static final int WINDOW_INSIDE_WIDTH = 234;
-    public static final int WINDOW_INSIDE_HEIGHT = 169;
-    private static final Component VERY_SAD_LABEL = Component.translatable("advancements.sad_label");
-    private static final Component NO_ADVANCEMENTS_LABEL = Component.translatable("advancements.empty");
+    public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
     private static final Component TITLE = Component.translatable("gui.tardis_refined.upgrades");
     private final List<UpgradeTab> tabs = new ArrayList<>();
     private final UpgradeHandler upgradeHandler;
@@ -130,8 +129,8 @@ public class UpgradesScreen extends Screen {
         int i = (this.width - WINDOW_WIDTH) / 2;
         int j = (this.height - WINDOW_HEIGHT) / 2;
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
-        this.renderInside(guiGraphics, mouseX, mouseY, i, j);
         this.renderWindow(guiGraphics, i, j);
+        this.renderInside(guiGraphics, mouseX, mouseY, i, j);
         this.renderTooltips(guiGraphics, mouseX, mouseY, i, j);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
@@ -163,9 +162,6 @@ public class UpgradesScreen extends Screen {
         UpgradeTab tab = this.selectedTab;
         if (tab == null) {
             guiGraphics.fill(offsetX + WINDOW_INSIDE_X, offsetY + WINDOW_INSIDE_Y, offsetX + WINDOW_INSIDE_X + WINDOW_INSIDE_WIDTH, offsetY + WINDOW_INSIDE_Y + WINDOW_INSIDE_HEIGHT, -16777216);
-            int i = offsetX + WINDOW_INSIDE_X + 117;
-            guiGraphics.drawCenteredString(this.font, NO_ADVANCEMENTS_LABEL, i, offsetY + WINDOW_INSIDE_Y + 56 - 4, -1);
-            guiGraphics.drawCenteredString(this.font, VERY_SAD_LABEL, i, offsetY + WINDOW_INSIDE_Y + WINDOW_INSIDE_HEIGHT - 9, -1);
         } else {
             tab.drawContents(guiGraphics, offsetX + WINDOW_INSIDE_X, offsetY + WINDOW_INSIDE_Y);
         }
@@ -174,7 +170,7 @@ public class UpgradesScreen extends Screen {
     public void renderWindow(GuiGraphics guiGraphics, int offsetX, int offsetY) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
-        guiGraphics.blit(WINDOW, offsetX, offsetY, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        guiGraphics.blit(BACKDROP, offsetX, offsetY, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
         if (this.tabs.size() > 1) {
             RenderSystem.setShaderTexture(0, TABS);
 
