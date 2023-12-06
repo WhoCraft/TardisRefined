@@ -1,5 +1,7 @@
 architectury {
-    common(rootProject.enabled_platforms.split(","))
+    common(rootProject.enabled_platforms.split(",")) {
+        it.platformPackage "neoforge", "forge"
+    }
 }
 
 loom {

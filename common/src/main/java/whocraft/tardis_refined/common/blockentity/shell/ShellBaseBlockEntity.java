@@ -15,6 +15,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -82,7 +84,10 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         if (level instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getOrCreateInterior(level, new ResourceLocation(TardisRefined.MODID, this.TARDIS_ID.toString()));
             TardisLevelOperator.get(interior).ifPresent(cap -> {
-                if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
+
+                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
+
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || cap.getPilotingManager().endFlight() && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler))) {
                     if (cap.getExteriorManager().getCurrentTheme() != null) {
                         ShellTheme theme = cap.getExteriorManager().getCurrentTheme();
 

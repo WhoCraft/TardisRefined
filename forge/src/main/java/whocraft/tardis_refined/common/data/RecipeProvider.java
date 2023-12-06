@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -10,9 +11,11 @@ import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 
+import java.util.concurrent.CompletableFuture;
+
 public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
-    public RecipeProvider(DataGenerator arg) {
-        super(arg.getPackOutput());
+    public RecipeProvider(DataGenerator arg, CompletableFuture<HolderLookup.Provider> completableFuture) {
+        super(arg.getPackOutput(), completableFuture);
     }
 
 

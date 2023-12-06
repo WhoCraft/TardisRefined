@@ -14,11 +14,11 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.RarityFilter;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ForgeBiomeModifiers;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.ForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.common.world.feature.NbtTemplateFeature;
@@ -52,7 +52,7 @@ public class BiomeModifierProvider {
         builder.add(ForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
             var tardisRoot = context.lookup(Registries.BIOME).getOrThrow(TagKeys.TARDIS_ROOT_CLUSTER);
 
-            context.register(ADD_TARDIS_ROOT_CLUSTER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+            context.register(ADD_TARDIS_ROOT_CLUSTER, new BiomeModifiers.AddFeaturesBiomeModifier(
                     tardisRoot,
                     HolderSet.direct(context.lookup(Registries.PLACED_FEATURE).getOrThrow(TARDIS_ROOT_CLUSTER_PLACED_FEATUE)),
                     GenerationStep.Decoration.LOCAL_MODIFICATIONS

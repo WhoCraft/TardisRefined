@@ -3,19 +3,18 @@ package whocraft.tardis_refined.registry.forge;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.IForgeRegistry;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import whocraft.tardis_refined.registry.CustomRegistry;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
 public class CustomRegistryImpl<T> extends CustomRegistry<T> {
+
 
 
     public static <T> CustomRegistry<T> createInternal(Class<T> clazz, ResourceLocation id) {

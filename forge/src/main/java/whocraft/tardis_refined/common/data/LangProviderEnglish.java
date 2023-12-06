@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
@@ -100,8 +100,8 @@ public class LangProviderEnglish extends LanguageProvider {
         /*GUI*/
         add(ModMessages.UI_MONITOR_MAIN_TITLE, "COMPUTER BANK");
         add(ModMessages.UI_MONITOR_WAYPOINTS, "WAYPOINTS");
-        add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "UPLOAD WAYPOINTS");
-        add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "UPLOAD COORDS");
+        add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "WAYPOINT NAVIGATION");
+        add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "COORD NAVIGATION");
         add(ModMessages.UI_MONITOR_GPS, "GPS");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
         add(ModMessages.UI_LIST_SELECTION, "Currently selected: &s");
@@ -113,6 +113,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems disabled as a Desktop reconfiguration has been scheduled.");
         add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
         add(ModMessages.UI_DESKTOP_CANCEL, "Cancel Desktop Reconfiguration");
+        add(ModMessages.UI_MONITOR_NO_WAYPOINTS, "No Waypoints Saved!");
+        add(ModMessages.UI_MONITOR_UPLOAD, "Upload");
+        add(ModMessages.UI_MONITOR_ISSUES, "Issues:");
+        add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY, "Factory");

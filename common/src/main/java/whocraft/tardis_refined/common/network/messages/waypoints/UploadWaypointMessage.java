@@ -12,6 +12,7 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisWaypointManager;
 
 public class UploadWaypointMessage extends MessageC2S {
@@ -54,7 +55,8 @@ public class UploadWaypointMessage extends MessageC2S {
                 TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
                 tardisWaypointManager.addWaypoint(tardisNavLocation, tardisNavLocation.getName());
             } else {
-                tardisLevelOperator.getControlManager().setTargetLocation(tardisNavLocation);
+                TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
+                pilotManager.setTargetLocation(tardisNavLocation);
             }
         });
     }

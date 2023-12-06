@@ -2,8 +2,8 @@ package whocraft.tardis_refined.common.util.forge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
@@ -25,7 +25,7 @@ public class CodecJsonReloadListenerImpl{
 
         @Override
         public CodecJsonReloadListener setSyncPacket(NetworkManager networkManager, Function packetFactory) {
-            MinecraftForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, packetFactory));
+            NeoForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, packetFactory));
             return this;
         }
 

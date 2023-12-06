@@ -9,20 +9,18 @@ import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisWaypointManager;
 
-public class TravelToWaypointMessage extends MessageC2S {
+public class RemoveWaypointEntryMessage extends MessageC2S {
 
     String tardisNavName;
 
-    public TravelToWaypointMessage(String tardisNavName) {
+    public RemoveWaypointEntryMessage(String tardisNavName) {
         this.tardisNavName = tardisNavName;
     }
 
 
-    public TravelToWaypointMessage(FriendlyByteBuf buf) {
+    public RemoveWaypointEntryMessage(FriendlyByteBuf buf) {
         tardisNavName = buf.readUtf();
     }
 
@@ -30,7 +28,7 @@ public class TravelToWaypointMessage extends MessageC2S {
     @NotNull
     @Override
     public MessageType getType() {
-        return TardisNetwork.SET_WAYPOINT;
+        return TardisNetwork.DEL_WAYPOINT;
     }
 
     @Override
@@ -45,9 +43,8 @@ public class TravelToWaypointMessage extends MessageC2S {
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
-            TardisNavLocation waypoint = tardisWaypointManager.getWaypointByName(tardisNavName);
-            TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
-            pilotManager.setTargetLocation(waypoint);
+            tardisWaypointManager.deleteWaypoint(tardisNavName);
+            new OpenWayPointsListMessage(tardisWaypointManager.getWaypoints()).send(player);
         });
     }
 }

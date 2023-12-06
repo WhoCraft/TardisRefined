@@ -14,21 +14,20 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisControlManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 
 import java.util.List;
-import java.util.Set;
 
-public class C2SOpenCoordinatesScreenMessage extends MessageC2S {
+public class C2SOpenCoordinatesDisplayMessage extends MessageC2S {
 
     private CoordInputType coordInput;
 
-    public C2SOpenCoordinatesScreenMessage(CoordInputType coordInputType) {
+    public C2SOpenCoordinatesDisplayMessage(CoordInputType coordInputType) {
         this.coordInput = coordInputType;
     }
 
-    public C2SOpenCoordinatesScreenMessage(FriendlyByteBuf friendlyByteBuf) {
+    public C2SOpenCoordinatesDisplayMessage(FriendlyByteBuf friendlyByteBuf) {
         this.coordInput = CoordInputType.valueOf(friendlyByteBuf.readUtf());
     }
 
@@ -36,7 +35,7 @@ public class C2SOpenCoordinatesScreenMessage extends MessageC2S {
     @NotNull
     @Override
     public MessageType getType() {
-        return TardisNetwork.CLIENT_OPEN_COORDS_SCREEN;
+        return TardisNetwork.CLIENT_OPEN_COORDS_DISPLAY;
     }
 
     @Override
@@ -51,9 +50,9 @@ public class C2SOpenCoordinatesScreenMessage extends MessageC2S {
         List<ResourceKey<Level>> dimensions = DimensionUtil.getAllowedDimensions(server).stream().toList();
         ServerLevel level = serverPlayer.serverLevel();
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
-            TardisControlManager controlManager = tardisLevelOperator.getControlManager();
-            TardisNavLocation tardisTarget = controlManager.getTargetLocation() == null ? TardisNavLocation.ORIGIN : controlManager.getTargetLocation();
-            new S2COpenCoordinatesScreenMessage(dimensions, coordInput, tardisTarget).send(serverPlayer);
+            TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
+            TardisNavLocation tardisTarget = pilotManager.getTargetLocation() == null ? TardisNavLocation.ORIGIN : pilotManager.getTargetLocation();
+            new S2COpenCoordinatesDisplayMessage(dimensions, coordInput, tardisTarget).send(serverPlayer);
         });
     }
 }
