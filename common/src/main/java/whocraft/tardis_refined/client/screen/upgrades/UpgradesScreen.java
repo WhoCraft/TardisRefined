@@ -21,7 +21,7 @@ public class UpgradesScreen extends Screen {
     public static final ResourceLocation WINDOW = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/window.png");
     public static final ResourceLocation TABS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/tabs.png");
     public static final ResourceLocation WIDGETS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/widgets.png");
-    public static final ResourceLocation BACKDROP = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
+    public static final ResourceLocation BACKDROP = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/upgrades.png");
 
     public static final int WINDOW_WIDTH = 256;
     public static final int WINDOW_HEIGHT = 173;
@@ -187,7 +187,7 @@ public class UpgradesScreen extends Screen {
             RenderSystem.disableBlend();
         }
 
-        guiGraphics.drawString(this.minecraft.font, TITLE.getString() + " - Upgrade Points: " + upgradeHandler.getUpgradePoints(), offsetX + 8, offsetY + 6, ChatFormatting.GOLD.getColor(), false);
+        guiGraphics.drawString(this.minecraft.font, TITLE.getString() + " - Upgrade Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width(TITLE.getString() + " - Upgrade Points: " + upgradeHandler.getUpgradePoints()) / 2, offsetY + 6, ChatFormatting.BLACK.getColor(), false);
     }
 
     private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY) {

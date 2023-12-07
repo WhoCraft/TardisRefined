@@ -39,12 +39,14 @@ public class S2CDisplayUpgradeScreen extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
+        //TODO Move to client util, as this WILL crash servers
         UpgradeHandler upgradeHandlerClient = new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level));
         upgradeHandlerClient.loadData(compoundTag);
 
-        Minecraft.getInstance().setScreen(new UpgradesScreen(upgradeHandlerClient));
         if (Minecraft.getInstance().screen instanceof UpgradesScreen screen && screen.selectedTab != null) {
             screen.selectedTab.populate();
+        } else {
+            Minecraft.getInstance().setScreen(new UpgradesScreen(upgradeHandlerClient));
         }
     }
 }

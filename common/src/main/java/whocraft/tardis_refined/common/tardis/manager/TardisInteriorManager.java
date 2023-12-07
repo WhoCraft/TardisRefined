@@ -292,7 +292,6 @@ public class TardisInteriorManager {
             if (tardisInternalDoor != null) {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
-
             // Generate Corridors
             if (!this.hasGeneratedCorridors) {
                 TardisArchitectureHandler.generateEssentialCorridors(serverLevel);

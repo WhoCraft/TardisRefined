@@ -144,9 +144,6 @@ public class TardisPilotingManager {
         if (isInFlight) {
             ticksInFlight++;
 
-
-            System.out.println(operator.getUpgradeHandler());
-
             // Automatically trigger the ship to land for things such as landing pads.
             if (ticksInFlight > (20 * 10) && autoLand) {
                 this.endFlight();
