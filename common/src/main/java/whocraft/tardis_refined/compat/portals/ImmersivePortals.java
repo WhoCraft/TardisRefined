@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
@@ -72,68 +73,73 @@ public class ImmersivePortals {
             }
         });
 
-        themeToOffsetMap.put(ShellTheme.FACTORY.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.2D, 0),
-                new Vec3(0, 0.2D, 0.499), new Vec3(-0.499, 0.2D, 0), new Vec3(0, 0.2D, -0.499)), new PortalOffets.OffsetData(
-                new Vec3(-1.375, 0, 0), new Vec3(0, 0, -1.375),
-                new Vec3(1.375, 0, 0), new Vec3(0, 0, 1.375))));
+        themeToOffsetMap.put(ShellTheme.FACTORY.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.3125, 0),
+                new Vec3(0, 0.3125, 0.499), new Vec3(-0.499, 0.3125, 0), new Vec3(0, 0.3125, -0.499)), new PortalOffets.OffsetData(
+                new Vec3(-1.375, 0.125, 0), new Vec3(0, 0.125, -1.375),
+                new Vec3(1.375, 0.125, 0), new Vec3(0, 0.125, 1.375)), new Vec2(1, 2)));
 
-        themeToOffsetMap.put(ShellTheme.POLICE_BOX.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.6, 0.25, 0),
-                new Vec3(0, 0.25, 0.6), new Vec3(-0.6, 0.25, 0), new Vec3(0, 0.25, -0.6)),
-                new PortalOffets.OffsetData(new Vec3(-1.425, 0.125, 0), new Vec3(0, 0.125, -1.425),
-                        new Vec3(1.425, 0.125, 0), new Vec3(0, 0.125, 1.425))));
+        themeToOffsetMap.put(ShellTheme.POLICE_BOX.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.6, 0.125, 0),
+                new Vec3(0, 0.125, 0.6), new Vec3(-0.6, 0.125, 0), new Vec3(0, 0.125, -0.6)),
+                new PortalOffets.OffsetData(new Vec3(-1.425, 0.0625, 0), new Vec3(0, 0.0625, -1.425),
+                        new Vec3(1.425, 0.0625, 0), new Vec3(0, 0.0625, 1.425)), new Vec2(1, 2)));
 
-        themeToOffsetMap.put(ShellTheme.PHONE_BOOTH.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.145, 0),
-                new Vec3(0, 0.145, 0.5), new Vec3(-0.5, 0.145, 0), new Vec3(0, 0.145, -0.5)),
-                new PortalOffets.OffsetData(new Vec3(-1.435, 0.145, 0), new Vec3(0, 0.145, -1.435),
-                        new Vec3(1.435, 0.145, 0), new Vec3(0, 0.145, 1.435))));
+        themeToOffsetMap.put(ShellTheme.PHONE_BOOTH.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.125, 0),
+                new Vec3(0, 0.125, 0.5), new Vec3(-0.5, 0.125, 0), new Vec3(0, 0.125, -0.5)),
+                new PortalOffets.OffsetData(new Vec3(-1.435, 0, 0), new Vec3(0, 0, -1.435),
+                        new Vec3(1.435, 0, 0), new Vec3(0, 0, 1.435)), new Vec2(1, 2)));
 
-        themeToOffsetMap.put(ShellTheme.MYSTIC.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.15, 0),
-                new Vec3(0, 0.15, 0.5), new Vec3(-0.5, 0.15, 0), new Vec3(0, 0.175, -0.5)),
-                new PortalOffets.OffsetData(new Vec3(-1.425, 0.15, 0), new Vec3(0, 0.15, -1.425),
-                        new Vec3(1.425, 0.15, 0), new Vec3(0, 0.15, 1.425))));
+        themeToOffsetMap.put(ShellTheme.MYSTIC.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.1875, 0),
+                new Vec3(0, 0.1875, 0.5), new Vec3(-0.5, 0.1875, 0), new Vec3(0, 0.1875, -0.5)),
+                new PortalOffets.OffsetData(new Vec3(-1.425, 0.0625, 0), new Vec3(0, 0.0625, -1.425),
+                        new Vec3(1.425, 0.0625, 0), new Vec3(0, 0.0625, 1.425)), new Vec2(1, 2)));
 
-        themeToOffsetMap.put(ShellTheme.PRESENT.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.57, 0.175, 0),
+        themeToOffsetMap.put(ShellTheme.PRESENT.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.57, 0, 0),
                 new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0, -0.57)), new PortalOffets.OffsetData(
-                new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
-                new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
-        themeToOffsetMap.put(ShellTheme.DRIFTER.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
-                new Vec3(0, 0, 0.61), new Vec3(-0.61, 0, 0), new Vec3(0, 0, -0.61)), new PortalOffets.OffsetData(
-                new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
-                new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
-        themeToOffsetMap.put(ShellTheme.VENDING.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.32, 0, 0),
-                new Vec3(0, 0, 0.33), new Vec3(-0.32, 0, 0), new Vec3(0, 0, -0.32)), new PortalOffets.OffsetData(
-                new Vec3(-1.48, 0, 0), new Vec3(0, 0, -1.48),
-                new Vec3(1.48, 0, 0), new Vec3(0, 0, 1.48))));
+                new Vec3(-1.455, 0, 0), new Vec3(0, 0, -1.455),
+                new Vec3(1.455, 0, 0), new Vec3(0, 0, 1.455)), new Vec2(1, 2.175f)));
+
+        themeToOffsetMap.put(ShellTheme.DRIFTER.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0.125, 0),
+                new Vec3(0, 0.125, 0.61), new Vec3(-0.61, 0.125, 0), new Vec3(0, 0.125, -0.61)), new PortalOffets.OffsetData(
+                new Vec3(-1.425, 0.0625, 0), new Vec3(0, 0.0625, -1.425),
+                new Vec3(1.425, 0.0625, 0), new Vec3(0, 0.0625, 1.425)), new Vec2(1, 2)));
+
         themeToOffsetMap.put(ShellTheme.GROENING.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0, 0),
                 new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0, -0.5)), new PortalOffets.OffsetData(
                 new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
-                new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))));
+                new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33)), new Vec2(1, 2.25f)));
+
         themeToOffsetMap.put(ShellTheme.BIG_BEN.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.46, 0, 0),
                 new Vec3(0, 0, 0.46), new Vec3(-0.46, 0, 0), new Vec3(0, 0, -0.46)), new PortalOffets.OffsetData(
                 new Vec3(-1.3, 0, 0), new Vec3(0, 0, -1.3),
-                new Vec3(1.3, 0, 0), new Vec3(0, 0, 1.3))));
+                new Vec3(1.3, 0, 0), new Vec3(0, 0, 1.3)), new Vec2(1, 2)));
 
         themeToOffsetMap.put(ShellTheme.NUKA.getId(),
                 new PortalOffets(
-                        new PortalOffets.OffsetData(new Vec3(0.65, 0.35, 0), new Vec3(0, 0.35, 0.65), new Vec3(-0.65, 0.35, 0), new Vec3(0, 0.35, -0.65)),
-                        new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))
+                        new PortalOffets.OffsetData(new Vec3(0.65, 0.375, 0), new Vec3(0, 0.375, 0.65), new Vec3(-0.65, 0.375, 0), new Vec3(0, 0.375, -0.65)),
+                        new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33)), new Vec2(1, 2)
                 )
         );
 
+        /* TODO: Fix these
         themeToOffsetMap.put(ShellTheme.PAGODA.getId(),
                 new PortalOffets(
-                        new PortalOffets.OffsetData(new Vec3(0.65, 0, 0), new Vec3(0, 0, 0.51), new Vec3(-0.65, 0, 0), new Vec3(0, 0, -0.51)),
-                        new PortalOffets.OffsetData( new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33), new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33))
+                        new PortalOffets.OffsetData(new Vec3(0.65, 0.09375, 0), new Vec3(0, 0.09375, 0.51), new Vec3(-0.65, 0.09375, 0), new Vec3(0, 0.09375, -0.51)),
+                        new PortalOffets.OffsetData( new Vec3(-1.33, 0.09375, 0), new Vec3(0, 0.09375, -1.33), new Vec3(1.33, 0.09375, 0), new Vec3(0, 0.09375, 1.33))
                 )
         );
+        themeToOffsetMap.put(ShellTheme.GROENING.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.09375, 0),
+                new Vec3(0, 0.09375, 0.5), new Vec3(-0.5, 0.09375, 0), new Vec3(0, 0.09375, -0.5)), new PortalOffets.OffsetData(
+                new Vec3(-1.33, 0.09375, 0), new Vec3(0, 0.09375, -1.33),
+                new Vec3(1.33, 0.09375, 0), new Vec3(0, 0.09375, 1.33))));
+         */
 
 
         // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
-        themeToOffsetMap.put(ShellTheme.PORTALOO.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0, 0),
-                        new Vec3(0, 0, 0.51), new Vec3(-0.61, 0, 0), new Vec3(0, 0, -0.51)),
+        themeToOffsetMap.put(ShellTheme.PORTALOO.getId(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.51, 0.125, 0),
+                new Vec3(0, 0.125, 0.51), new Vec3(-0.51, 0.125, 0), new Vec3(0, 0.125, -0.51)),
                 new PortalOffets.OffsetData(
                         new Vec3(-1.425, 0, 0), new Vec3(0, 0, -1.425),
-                        new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425))));
+                        new Vec3(1.425, 0, 0), new Vec3(0, 0, 1.425)), new Vec2(1, 2)));
 
         for (ResourceLocation value : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
             if (!themeToOffsetMap.containsKey(value) && !value.equals(ShellTheme.BRIEFCASE)) {

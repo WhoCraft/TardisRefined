@@ -32,10 +32,10 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     public static final BooleanProperty REGEN = BooleanProperty.create("regen");
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 20.0D, 13.0D);
-    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 3.0D, 16.0D, 20.0D, 16.0D);
-    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 13.0D, 20.0D, 16.0D);
-    protected static final VoxelShape EAST_AABB = Block.box(3.0D, 0.0D, 0.0D, 16.0D, 20.0D, 16.0D);
+    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 20.0D, 11.0D);
+    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 2.0D, 16.0D, 20.0D, 16.0D);
+    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 11.0D, 20.0D, 16.0D);
+    protected static final VoxelShape EAST_AABB = Block.box(2.0D, 0.0D, 0.0D, 16.0D, 20.0D, 16.0D);
 
     public ShellBaseBlock(Properties properties) {
         super(properties);

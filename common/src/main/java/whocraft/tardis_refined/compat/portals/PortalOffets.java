@@ -1,14 +1,17 @@
 package whocraft.tardis_refined.compat.portals;
 
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class PortalOffets {
 
     private final OffsetData shell, intDoor;
+    private final Vec2 size;
 
-    public PortalOffets(OffsetData shell, OffsetData intDoor) {
+    public PortalOffets(OffsetData shell, OffsetData intDoor, Vec2 size) {
         this.shell = shell;
         this.intDoor = intDoor;
+        this.size = size;
     }
 
     public OffsetData shell() {
@@ -17,6 +20,10 @@ public class PortalOffets {
 
     public OffsetData intDoor() {
         return intDoor;
+    }
+
+    public Vec2 size() {
+        return size;
     }
 
     // East, South, West, North
