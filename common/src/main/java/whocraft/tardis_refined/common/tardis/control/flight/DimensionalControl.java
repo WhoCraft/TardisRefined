@@ -5,6 +5,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
@@ -16,6 +18,8 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
 
@@ -44,7 +48,18 @@ public class DimensionalControl extends Control {
 
     private boolean changeDim(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean forward) {
         if (!operator.getLevel().isClientSide()) {
+
+
+
             TardisPilotingManager pilotManager = operator.getPilotingManager();
+            UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
+
+            if(!Upgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)){
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HARDWARE_OFFLINE), true);
+                pilotManager.getTargetLocation().setDimensionKey(OVERWORLD);
+                return false;
+            }
+
             var server = operator.getLevel().getServer();
             var dimensions = getAllowedDimensions(server);
             var currentIndex = dimensions.indexOf(pilotManager.getTargetLocation().getLevel());

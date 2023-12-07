@@ -16,6 +16,7 @@ public class ModMessages {
     public static String MSG_KEY_BOUND = message("key_bound");
     public static String MSG_KEY_CYCLED = message("key_cycled");
     public static String CONTROL_DIMENSION_SELECTED = message("selected");
+    public static String HARDWARE_OFFLINE = message("hardware_offline");
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
 
@@ -33,13 +34,14 @@ public class ModMessages {
     public static final String UI_MONITOR_DESTINATION = ui("monitor.main.destination");
     public static final String UI_MONITOR_MAIN_TITLE = ui("monitor.main_title");
     public static final String UI_MONITOR_WAYPOINTS = ui("monitor.waypoints");
-    public static final String UI_MONITOR_UPGRADES = ui("monitor.upgrades");
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
     public static final String UI_MONITOR_UPLOAD = ui("monitor.upload");
     public static final String UI_MONITOR_ISSUES = ui("monitor.issues");
     public static final String UI_MONITOR_WAYPOINT_NAME = ui("monitor.waypoint_name");
+    public static final String UI_UPGRADES = ui("upgrades");
+    public static final String UI_UPGRADES_BUY = ui("upgrades.buy_ability");
 
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");

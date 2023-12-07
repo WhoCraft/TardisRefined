@@ -49,7 +49,6 @@ public class UnlockUpgradeMessage extends MessageC2S {
                 upgradeHandler.setUpgradePoints(upgradeHandler.getUpgradePoints() - upgrade.getSkillPointsRequired());
                 upgradeHandler.unlockUpgrade(upgrade);
                 CompoundTag nbt = upgradeHandler.saveData(new CompoundTag());
-                System.out.println("server nbt: " + nbt.toString());
                 new S2CDisplayUpgradeScreen(nbt).send(context.getPlayer());
             }
 
