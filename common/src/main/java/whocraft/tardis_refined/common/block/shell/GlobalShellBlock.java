@@ -51,7 +51,9 @@ public class GlobalShellBlock extends ShellBaseBlock{
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return COLLISION;
+        if(blockState.getValue(SHELL) == ShellTheme.BRIEFCASE)
+            return COLLISION;
+        return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
     @Override

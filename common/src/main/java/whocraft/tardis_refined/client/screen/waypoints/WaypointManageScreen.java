@@ -175,6 +175,13 @@ public class WaypointManageScreen extends Screen {
         yCoord.setValue(String.valueOf(tardisNavLocation.getPosition().getY()));
         zCoord.setValue(String.valueOf(tardisNavLocation.getPosition().getZ()));
         levelButton.setValue(tardisNavLocation.getDimensionKey());
+
+        if(coordInputType == CoordInputType.WAYPOINT){
+            xCoord.setEditable(false);
+            yCoord.setEditable(false);
+            zCoord.setEditable(false);
+            levelButton.active = false;
+        }
     }
 
 

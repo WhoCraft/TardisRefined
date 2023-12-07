@@ -351,7 +351,7 @@ public class TardisPilotingManager {
             this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
 
             operator.setDoorClosed(true);
-            operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 1000f, 1f);
+            operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
             operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
             this.isInFlight = true;
             this.ticksInFlight = 0;
@@ -396,8 +396,8 @@ public class TardisPilotingManager {
             }
 
             exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
-            level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 1000f, 1f);
-            level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 1000f, 1f);
+            level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
+            level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
 
             return true;
         }
@@ -461,7 +461,7 @@ public class TardisPilotingManager {
         }
 
         tardisExteriorManager.playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
-        tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1000f, 1f);
+        tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);
     }
 
     public void onCrashEnd() {
