@@ -97,7 +97,7 @@ public class TardisArchitectureHandler {
     }
 
     public static void generateArsTree(ServerLevel level) {
-        Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/room_ars_stage_one"));
+        Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/ars/room_ars_stage_five"));
         structureNBT.ifPresent(structure -> {
             BlockPos position = new BlockPos(1011,97,3);
             structure.placeInWorld(level.getLevel(), position, position, new StructurePlaceSettings(), level.getLevel().random, 3);

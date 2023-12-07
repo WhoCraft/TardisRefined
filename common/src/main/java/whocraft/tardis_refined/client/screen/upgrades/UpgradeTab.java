@@ -132,7 +132,7 @@ public class UpgradeTab {
                     connection.addLine(new ConnectionLine(startX, endY, endX, endY));
                 }
 
-                connection.color = entry.upgradeEntry.isUnlocked(upgradeHandler) ? new Color(ChatFormatting.GOLD.getColor()) : Color.GRAY;
+                connection.color = entry.upgradeEntry.isUnlocked(upgradeHandler) ? new Color(ChatFormatting.WHITE.getColor()) : Color.GRAY;
                 this.connections.add(connection);
             }
         }
