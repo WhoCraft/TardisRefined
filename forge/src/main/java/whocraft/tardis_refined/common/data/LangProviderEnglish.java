@@ -16,8 +16,6 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
-import static whocraft.tardis_refined.constants.ModMessages.UI_MONITOR_UPGRADES;
-
 public class LangProviderEnglish extends LanguageProvider {
 
     public LangProviderEnglish(DataGenerator gen) {
@@ -117,6 +115,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_UPLOAD, "Upload");
         add(ModMessages.UI_MONITOR_ISSUES, "Issues:");
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
+        add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
+        add(ModMessages.UI_UPGRADES_BUY, "Purchase Upgrade?");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY, "Factory");
@@ -145,9 +145,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
 
         /*Upgrades*/
-        add("gui.tardis_refined.upgrades", "Tardis Upgrades");
-        add("gui.tardis_refined.buy_ability", "Purchase Upgrade?");
-        add(UI_MONITOR_UPGRADES, "UPGRADES");
         addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
         addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
         addUpgrade(Upgrades.DEFENSE_SYSTEM.get(), "Defense System", "Enables Defense Protocols");
@@ -161,6 +158,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "1000k Increment");
         addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "2500k Increment");
         addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "5000k Increment");
+        addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
     }
 
     public void addControl(ConsoleControl control, String name) {

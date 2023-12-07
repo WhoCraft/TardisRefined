@@ -13,7 +13,8 @@ import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
-import whocraft.tardis_refined.common.network.messages.upgrades.C2SDisplayUpgradeScreen;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesDisplayMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -27,6 +28,7 @@ public class MonitorScreen extends SelectionScreen {
 
     private final TardisNavLocation currentLocation;
     private final TardisNavLocation targetLocation;
+    private final UpgradeHandler upgradeHandler;
 
 
     protected int imageWidth = 256;
@@ -36,10 +38,11 @@ public class MonitorScreen extends SelectionScreen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
 
 
-    public MonitorScreen(TardisNavLocation currentLocation, TardisNavLocation targetLocation) {
+    public MonitorScreen(TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
         this.currentLocation = currentLocation;
         this.targetLocation = targetLocation;
+        this.upgradeHandler = upgradeHandler;
     }
 
 
@@ -63,13 +66,23 @@ public class MonitorScreen extends SelectionScreen {
         int leftPos = this.width / 2 - 75;
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 250, 80, leftPos - 70, this.topPos + 30, this.topPos + this.imageHeight - 45 , 12);
         selectionList.setRenderBackground(false);
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPGRADES), entry -> new C2SDisplayUpgradeScreen(Minecraft.getInstance().level.dimension()).send(), leftPos));
+        if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(upgradeHandler)){
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
+        }
+
+        if(Upgrades.INSIDE_ARCHITECTURE.get().isUnlocked(upgradeHandler)){
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
+        }
+
+        if(Upgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)){
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos));
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
+        }
+
+        if(Upgrades.COORDINATE_INPUT.get().isUnlocked(upgradeHandler)){
+            selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
+        }
 
         return selectionList;
     }

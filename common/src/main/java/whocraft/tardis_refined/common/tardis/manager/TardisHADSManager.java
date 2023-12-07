@@ -52,6 +52,7 @@ public class TardisHADSManager {
     }
 
     public void activateHads(Level level, BlockPos blockPos) {
+        timeTillReturn = 0;
         if (level instanceof ServerLevel serverLevel && timeTillReturn == 0) {
             // Set the time until return
             timeTillReturn = serverLevel.random.nextInt(RETURN_DELAY_MIN, RETURN_DELAY_MAX);

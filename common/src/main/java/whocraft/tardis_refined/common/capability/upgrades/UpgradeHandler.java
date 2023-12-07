@@ -22,6 +22,7 @@ public class UpgradeHandler {
     private final TardisLevelOperator tardisLevelOperator;
     private int upgradeXP = 0;
     private int upgradePoints = 1000;
+    private int overallTardisPoints = 0;
     private final List<Upgrade> unlockedUpgrades = new ArrayList<>();
 
     public UpgradeHandler(@NotNull TardisLevelOperator tardisLevelOperator) {
@@ -55,6 +56,7 @@ public class UpgradeHandler {
 
         while (this.upgradeXP >= XP_PER_UPGRADE_POINT) {
             this.upgradePoints++;
+            this.overallTardisPoints++;
             this.upgradeXP -= XP_PER_UPGRADE_POINT;
         }
 
@@ -83,6 +85,10 @@ public class UpgradeHandler {
 
     public int getUpgradePoints() {
         return this.upgradePoints;
+    }
+
+    public int getOverallTardisPoints() {
+        return overallTardisPoints;
     }
 
     public void addUpgradePoints(int upgradePoints) {
@@ -136,6 +142,7 @@ public class UpgradeHandler {
         CompoundTag updateTag = new CompoundTag();
         updateTag.putInt("UpgradeXP", this.upgradeXP);
         updateTag.putInt("UpgradePoints", this.upgradePoints);
+        updateTag.putInt("OverallPoints", this.overallTardisPoints);
 
         ListTag unlockedUpgradesTag = new ListTag();
         for (Upgrade upgrade : this.unlockedUpgrades) {
@@ -150,6 +157,7 @@ public class UpgradeHandler {
         CompoundTag nbt = (CompoundTag) compoundTag.get("upgrades");
         this.upgradeXP = nbt.getInt("UpgradeXP");
         this.upgradePoints = nbt.getInt("UpgradePoints");
+        this.overallTardisPoints = nbt.getInt("OverallPoints");
         this.unlockedUpgrades.clear();
         for (Tag upgrade : nbt.getList("UnlockedUpgrades", StringTag.TAG_STRING)) {
             this.unlockedUpgrades.add(Upgrade.UPGRADES.get(new ResourceLocation(upgrade.getAsString())));

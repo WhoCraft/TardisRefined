@@ -3,10 +3,13 @@ package whocraft.tardis_refined.common.network.messages;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.screen.CancelDesktopScreen;
 import whocraft.tardis_refined.client.screen.MonitorScreen;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -18,17 +21,21 @@ public class OpenMonitorMessage extends MessageS2C {
 
     private final boolean desktopGenerating;
     private TardisNavLocation currentLocation, targetLocation;
+    private CompoundTag upgradeHandlerNbt;
 
-    public OpenMonitorMessage(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation) {
+    public OpenMonitorMessage(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler) {
         this.desktopGenerating = desktopGenerating;
         this.currentLocation = currentLocation;
         this.targetLocation = targetLocation;
+        this.upgradeHandlerNbt = upgradeHandler.saveData(new CompoundTag());
+
     }
 
     public OpenMonitorMessage(FriendlyByteBuf friendlyByteBuf) {
         this.desktopGenerating = friendlyByteBuf.readBoolean();
         this.currentLocation = TardisNavLocation.deserialise(friendlyByteBuf.readNbt());
         this.targetLocation = TardisNavLocation.deserialise(friendlyByteBuf.readNbt());
+        this.upgradeHandlerNbt = friendlyByteBuf.readNbt();
     }
 
     @NotNull
@@ -42,6 +49,7 @@ public class OpenMonitorMessage extends MessageS2C {
         buf.writeBoolean(this.desktopGenerating);
         buf.writeNbt(currentLocation.serialise());
         buf.writeNbt(targetLocation.serialise());
+        buf.writeNbt(upgradeHandlerNbt);
     }
 
 
@@ -56,7 +64,9 @@ public class OpenMonitorMessage extends MessageS2C {
         if (this.desktopGenerating) {
             Minecraft.getInstance().setScreen(new CancelDesktopScreen());
         } else {
-            Minecraft.getInstance().setScreen(new MonitorScreen(currentLocation, targetLocation));
+            UpgradeHandler upgradeHandlerClient = new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level));
+            upgradeHandlerClient.loadData(upgradeHandlerNbt);
+            Minecraft.getInstance().setScreen(new MonitorScreen(currentLocation, targetLocation, upgradeHandlerClient));
         }
     }
 }
