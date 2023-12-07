@@ -31,7 +31,7 @@ public class DeferredRegistryImpl {
     public static class Impl<T> extends DeferredRegistry<T> {
 
         private final String modid;
-        private final MappedRegistry<T> registry;
+        private final WritableRegistry<T> registry;
 
         private ResourceKey<? extends Registry<T>> registryKey;
 
@@ -44,7 +44,7 @@ public class DeferredRegistryImpl {
             this.registryKey = resourceKey;
             this.isCustom = false;
             this.syncToClient = false;
-            this.registry = (MappedRegistry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location());
+            this.registry = (WritableRegistry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location());
         }
 
         public Impl(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
@@ -52,7 +52,7 @@ public class DeferredRegistryImpl {
             this.registryKey = resourceKey;
             this.isCustom = true;
             this.syncToClient = syncToClient;
-            this.registry = syncToClient ? FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
+            this.registry = syncToClient ? (MappedRegistry<T>)FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : (MappedRegistry<T>)FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
             
         }
 
