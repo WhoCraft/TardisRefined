@@ -27,7 +27,7 @@ public abstract class DeferredRegistry<T> {
     public abstract Codec<T> getCodec();
 
     @ExpectPlatform
-    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey) {
+    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
         throw new AssertionError();
     }
 }
