@@ -160,6 +160,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "2500k Increment");
         addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "5000k Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
+        addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
     }
 
     public void addControl(ConsoleControl control, String name) {

@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class
-ItemRegistry {
+public class ItemRegistry {
     public static List<RegistrySupplier<Item>> TAB_ITEMS = new ArrayList<>();
     public static final DeferredRegistry<CreativeModeTab> TABS = DeferredRegistry.create(TardisRefined.MODID, Registries.CREATIVE_MODE_TAB);
 
