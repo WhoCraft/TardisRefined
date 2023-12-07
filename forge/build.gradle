@@ -9,6 +9,8 @@ architectury {
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
+
+
  /*   neoForge {
         convertAccessWideners = true
         extraAccessWideners.add loom.accessWidenerPath.get().asFile.name

@@ -57,6 +57,9 @@ public class Upgrades {
     public static final RegistrySupplier<Upgrade> COORDINATE_INPUT = UPGRADE_DEFERRED_REGISTRY.register("coordinate_input", () -> new Upgrade(Items.FILLED_MAP::getDefaultInstance, WAYPOINTS)
             .setCost(50).setPosition(0, 5));
 
+    public static final RegistrySupplier<Upgrade> LANDING_PAD = UPGRADE_DEFERRED_REGISTRY.register("landing_pad", () -> new Upgrade(BlockRegistry.LANDING_PAD.get().asItem()::getDefaultInstance, NAVIGATION_SYSTEM)
+            .setCost(50).setPosition(0, 6));
+
 
 
 
