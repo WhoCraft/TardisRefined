@@ -27,6 +27,8 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 public class RootedShellBlock extends ShellBaseBlock {
 
@@ -55,6 +57,9 @@ public class RootedShellBlock extends ShellBaseBlock {
                         Direction direction = blockState.getValue(FACING).getOpposite();
                         TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
                         extManager.setLastKnownLocation(navLocation);
+                        ResourceLocation defaultShellThemeId = ShellTheme.FACTORY.getId();
+                        extManager.setShellTheme(defaultShellThemeId);
+                        extManager.setShellPattern(ShellPatterns.getPatternsForThemeDefault(defaultShellThemeId).get(0));
                         pilotManager.setTargetLocation(navLocation);
                         tardisLevelOperator.setInitiallyGenerated(true);
                         level.setBlock(blockPos, blockState.setValue(OPEN, true), Block.UPDATE_ALL);
@@ -63,7 +68,7 @@ public class RootedShellBlock extends ShellBaseBlock {
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return InteractionResult.SUCCESS; //Prevents processing the ShellBaseBlockEntity generating another UUID and causing a second dimension to be created
     }
 
     @Nullable

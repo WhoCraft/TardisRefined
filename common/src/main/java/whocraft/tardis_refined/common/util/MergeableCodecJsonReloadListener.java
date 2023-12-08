@@ -127,6 +127,11 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
         return this.data;
     }
 
+    /** Overrides the existing data, ONLY use for the sync packet*/
+    public void setData (Map<ResourceLocation, PROCESSED> data){
+        this.data = data;
+    }
+
     /**
      * Gets the name of the folder which we are reading JSON files from
      * @return

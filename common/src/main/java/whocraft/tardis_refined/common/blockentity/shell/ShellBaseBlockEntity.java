@@ -42,7 +42,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);
-        this.TARDIS_ID = UUID.fromString(pTag.getString(NbtConstants.TARDIS_ID));
+        this.TARDIS_ID = pTag.getUUID(NbtConstants.TARDIS_ID);
     }
 
     @Override
@@ -60,7 +60,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         }
 
         super.saveAdditional(pTag);
-        pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.toString());
+        pTag.putUUID(NbtConstants.TARDIS_ID, TARDIS_ID);
     }
 
     @Override

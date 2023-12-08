@@ -65,9 +65,11 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         }
 
         if (pTag.contains(NbtConstants.PATTERN)) {
-            ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
-            if (ShellPatterns.doesPatternExist( this.shellTheme, currentPattern)) {
-                this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
+            if (this.shellTheme != null){
+                ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+                if (ShellPatterns.doesPatternExist(this.shellTheme, currentPattern)) {
+                    this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
+                }
             }
         }
 

@@ -132,7 +132,7 @@ public class TardisLevelOperator {
             tardisClientData.setThrottleDown(pilotingManager.shouldThrottleBeDown());
             tardisClientData.setIsLanding(exteriorManager.isLanding());
             tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setShellTheme(pilotingManager.getCurrentExteriorTheme());
+            tardisClientData.setShellTheme(exteriorManager.getCurrentTheme()); //Use the exterior manager's theme ID, the piloting manager's reference is almost always null, not sure why.
             tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
             tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
