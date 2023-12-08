@@ -58,7 +58,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
         //No need to define special syncing packet logic because the setSyncPacket method already subscribes us to the datapack sync events on the appropriate platform and defines the sync packet.
         TardisRefined.LOGGER.info("Beginning loading of data for data loader: {}", this.folderName);
         this.data = this.mapValues(jsons);
-        TardisRefined.LOGGER.info("Data loader for {} loaded {} jsons", this.folderName, this.data.size());
+        TardisRefined.LOGGER.info("Data loader for {} loaded {} entries", this.folderName, this.data.size());
     }
 
     /**

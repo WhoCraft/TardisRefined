@@ -73,7 +73,7 @@ public class DeferredRegistryImpl {
 
         @Override
         public Registry<T> getRegistry() {
-            this.registry = this.isCustom ? (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location()) : this.register.makeRegistry(builder -> builder.maxId(Integer.MAX_VALUE - 1).sync(this.syncToClient));
+            this.registry = this.isCustom ? this.register.makeRegistry(builder -> builder.maxId(Integer.MAX_VALUE - 1).sync(this.syncToClient)) : (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location());
             return this.registry;
         }
 

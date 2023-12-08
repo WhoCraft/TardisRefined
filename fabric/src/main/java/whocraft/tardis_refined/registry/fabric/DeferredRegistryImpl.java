@@ -71,7 +71,8 @@ public class DeferredRegistryImpl {
         @Override
         public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
             ResourceLocation registeredId = new ResourceLocation(this.modid, id);
-            RegistrySupplierHolder<T,I> registryHolder = RegistrySupplierHolder.create(this.registryKey, registeredId);
+            Registry.register(this.registry, registeredId, sup.get()); //Need to call this to register the object
+            RegistrySupplierHolder<T,I> registryHolder = RegistrySupplierHolder.create(this.registryKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
             return registryHolder;
         }
 

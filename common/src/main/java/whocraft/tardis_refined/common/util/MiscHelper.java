@@ -178,12 +178,10 @@ public class MiscHelper {
     public static <T extends Object> ArrayList<T> unionList(List<T> setOne, List<T> setTwo){
         if(setOne != null){
             if (setTwo != null){
-                if (!setOne.isEmpty() && !setTwo.isEmpty()){
-                    ArrayList<T> finalSet = new ArrayList<>();
-                    finalSet.addAll(setOne);
-                    finalSet.addAll(setTwo);
-                    return finalSet;
-                }
+                ArrayList<T> finalSet = new ArrayList<>();
+                finalSet.addAll(setOne);
+                finalSet.addAll(setTwo);
+                return finalSet;
             }
             throw new NullPointerException("set2");
         }
