@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.compat.portals.forge;
+package whocraft.tardis_refined.compat.portals.neoforge;
 
 import net.minecraft.world.entity.EntityType;
 import qouteall.imm_ptl.core.portal.Portal;

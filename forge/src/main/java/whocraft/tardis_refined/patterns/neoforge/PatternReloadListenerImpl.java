@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.patterns.forge;
+package whocraft.tardis_refined.patterns.neoforge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;

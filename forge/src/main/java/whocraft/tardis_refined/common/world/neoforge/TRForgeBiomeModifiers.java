@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.world.forge;
+package whocraft.tardis_refined.common.world.neoforge;
 
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;

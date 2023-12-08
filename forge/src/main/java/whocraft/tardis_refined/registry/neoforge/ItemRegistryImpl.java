@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.registry.forge;
+package whocraft.tardis_refined.registry.neoforge;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;

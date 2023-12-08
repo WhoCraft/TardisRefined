@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.util.forge;
+package whocraft.tardis_refined.common.util.neoforge;
 
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;

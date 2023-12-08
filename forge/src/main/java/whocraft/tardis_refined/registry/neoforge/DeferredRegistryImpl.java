@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.registry.forge;
+package whocraft.tardis_refined.registry.neoforge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;

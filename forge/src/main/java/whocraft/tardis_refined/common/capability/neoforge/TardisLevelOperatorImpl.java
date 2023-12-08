@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.capability.forge;
+package whocraft.tardis_refined.common.capability.neoforge;
 
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;

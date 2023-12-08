@@ -1,7 +1,6 @@
-package whocraft.tardis_refined.common.network.forge;
+package whocraft.tardis_refined.common.network.neoforge;
 
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +16,6 @@ import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.NetworkManager;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class NetworkManagerImpl extends NetworkManager {
 

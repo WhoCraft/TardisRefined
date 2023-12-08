@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.compat.portals.forge;
+package whocraft.tardis_refined.compat.portals.neoforge;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.bus.api.SubscribeEvent;

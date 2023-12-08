@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.forge;
+package whocraft.tardis_refined.neoforge;
 
 import net.minecraft.data.DataGenerator;
 import net.neoforged.bus.api.IEventBus;

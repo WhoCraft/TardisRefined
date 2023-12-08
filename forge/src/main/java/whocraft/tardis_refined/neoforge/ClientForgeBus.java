@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.forge;
+package whocraft.tardis_refined.neoforge;
 
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;

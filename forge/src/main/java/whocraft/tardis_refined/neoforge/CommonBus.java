@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.forge;
+package whocraft.tardis_refined.neoforge;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
