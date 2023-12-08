@@ -1,0 +1,16 @@
+{
+  "patterns": [
+    {
+      "exterior": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/shell/pagoda/pagoda.png"
+      },
+      "id": "tardis_refined:default",
+      "interior": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/shell/pagoda/pagoda_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}"
+    }
+  ]
+}
