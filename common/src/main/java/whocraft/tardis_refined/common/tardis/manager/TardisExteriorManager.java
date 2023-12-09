@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -163,35 +165,58 @@ public class TardisExteriorManager {
         }
     }
 
-    public void setShellTheme(ResourceLocation theme) {
+    /**
+     * Set the theme ID for the Exterior Shell Block assuming that the Tardis is NOT being transformed from a Root Shell
+     * @param theme
+     */
+    public void setShellTheme(ResourceLocation theme){
+        this.setShellTheme(theme, false);
+    }
+
+    /**
+     * Sets the shell theme ID for the Exterior Shell Block
+     * @param theme - the Shell Theme ID
+     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one. True if that is the case.
+     */
+    public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
 
         if(lastKnownLocation == null) return;
+
+        this.currentTheme = theme;
 
         BlockPos lastKnownLocationPosition = lastKnownLocation.getPosition();
         ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
         BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocationPosition);
 
-        // Check if its our default global shell.
-        if (state.getBlock() instanceof GlobalShellBlock) {
-            lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false), 2);
-        } else {
+        if (setupTardis){
             if (state.getBlock() instanceof RootedShellBlock) {
+                // If the block at the last known location was originally a Root Shell Block (i.e. transforming to a proper Tardis),
+                // Create a new Global Shell Block instance and copy over all attributes from the existing shell
                 lastKnownLocationLevel.setBlock(lastKnownLocationPosition,
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), 2);
+                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL);
 
+                //Copy over important data such as Tardis ID
                 var shellBlockEntity = lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition);
                 if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
-                    entity.TARDIS_ID = UUID.fromString((operator.getLevel().dimension().location().getPath()));
+                    entity.setTardisId(operator.getLevel().dimension());
+                    // Make sure to set the shell theme so that any pattern lookups by theme Id won't fail
+                    entity.setShellTheme(theme);
+                    // Also update the shell pattern
+                    // If the exterior manager has a shell pattern already set, make sure the theme being updated mismatches the theme ID of the current shell Pattern
+                    //TODO: This has a performance implication because ShellPatterns#getThemeForPattern does an expensive lookup, do we still need this?
                     if(shellPattern != null) {
-
                         entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
-                        entity.setChanged();
                     }
                 }
             }
         }
+        else {
+            // Check if its our default global shell.
+            if (state.getBlock() instanceof GlobalShellBlock) {
+                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false), 2);
+            }
+        }
 
-        this.currentTheme = theme;
     }
 
     public void triggerShellRegenState() {
@@ -210,9 +235,15 @@ public class TardisExteriorManager {
         if (lastKnownLocation != null) {
             BlockPos lastKnownLocationPosition = lastKnownLocation.getPosition();
             ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
+            ChunkPos chunkPos = lastKnownLocationLevel.getChunk(lastKnownLocationPosition).getPos();
+            //Force load chunk
+            lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly remove block
+            //Remove block
             if (lastKnownLocationLevel.getBlockState(lastKnownLocationPosition).getBlock() instanceof GlobalShellBlock shellBlock) {
-                lastKnownLocationLevel.setBlockAndUpdate(lastKnownLocationPosition, Blocks.AIR.defaultBlockState());
+                lastKnownLocationLevel.destroyBlock(lastKnownLocationPosition, false); //Set block to air with drop items flag to false
             }
+            //Un-force load chunk
+            lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to not be force loaded after we remove the block
         }
     }
 
@@ -224,12 +255,24 @@ public class TardisExteriorManager {
                 .setValue(LOCKED, operator.getExteriorManager().locked)
                 .setValue(GlobalShellBlock.WATERLOGGED, location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
 
-        location.getLevel().setBlock(location.getPosition(), targetBlockState, 2);
+        ServerLevel targetLevel = location.getLevel();
+        BlockPos lastKnownLocationPosition = location.getPosition();
+        ChunkPos chunkPos = location.getLevel().getChunk(lastKnownLocationPosition).getPos();
 
+        //Force load target chunk
+        targetLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly place block
+
+        //Place the exterior block
+        location.getLevel().setBlock(location.getPosition(), targetBlockState, Block.UPDATE_ALL);
+        //Copy over important data points
         if (location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity globalShell) {
-            globalShell.TARDIS_ID = UUID.fromString(operator.getLevel().dimension().location().getPath());
-            location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, 2);
+            globalShell.setTardisId(operator.getLevel().dimension());
+            globalShell.setShellTheme(theme);
+            location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, Block.UPDATE_CLIENTS);
         }
+
+        //Un-force load target chunk
+        targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
 
         setLastKnownLocation(location);
         this.isLanding = true;

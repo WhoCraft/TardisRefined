@@ -29,6 +29,7 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
 
     public void setConsoleTheme(ResourceLocation themeId){
         this.consoleTheme = themeId;
+        this.setChanged();
     }
 
     @Override

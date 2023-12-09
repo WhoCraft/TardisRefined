@@ -234,11 +234,12 @@ public class TardisPilotingManager {
         var originalY = location.getPosition().getY();
 
         // Do any specific dimension checks
+        //TODO: Handle dimension checks in a dedicated function, we already have duplicated codfein #getLegalPosition
         if (level.dimension() == Level.NETHER) {
             if (location.getPosition().getY() > 127) {
                 height = 125;
                 failOffset = 10;
-                location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ()));
+                location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ())); //TODO: Remove this hardcoding to continue searching for a spot
             }
         }
 
@@ -273,8 +274,8 @@ public class TardisPilotingManager {
     private BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
         if (level.dimension() == Level.NETHER) {
 
-            if (pos.getY() > 125 || originalY > 125) {
-                return new BlockPos(pos.getX(), 60, pos.getZ());
+            if (pos.getY() > level.getMaxBuildHeight() || originalY > level.getMaxBuildHeight()) {
+                return new BlockPos(pos.getX(), 60, pos.getZ()); //TODO: Remove this hardcoding and run a search below max height
             }
         }
 
@@ -359,6 +360,8 @@ public class TardisPilotingManager {
             this.ticksInFlight = 0;
             this.ticksTakingOff = 1;
             this.operator.getExteriorManager().setIsTakingOff(true);
+            //Debug if the blockstate at the current position during takeoff is air. If not air, it means we have forgotten to actually remove the exterior block which could be the cause of the duplication issue
+//            System.out.println(this.operator.getLevel().getBlockState(this.operator.getExteriorManager().getLastKnownLocation().getPosition()).getBlock().toString());
 
             this.operator.getTardisFlightEventManager().calculateTravelLogic();
 
@@ -394,7 +397,7 @@ public class TardisPilotingManager {
 
             exteriorManager.placeExteriorBlock(operator, location);
             if (this.currentExteriorTheme != null) {
-                interiorManager.setShellTheme(this.currentExteriorTheme);
+                interiorManager.setShellTheme(this.currentExteriorTheme, false);
             }
 
             exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
@@ -406,7 +409,7 @@ public class TardisPilotingManager {
         return false;
 
     }
-
+    /** Start to remove the Tardis Shell block and set up fast return location data*/
     public void enterTimeVortex() {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
@@ -459,7 +462,7 @@ public class TardisPilotingManager {
 
         tardisExteriorManager.placeExteriorBlock(operator, location);
         if (currentExteriorTheme != null) {
-            tardisExteriorManager.setShellTheme(currentExteriorTheme);
+            tardisExteriorManager.setShellTheme(this.currentExteriorTheme);
         }
 
         tardisExteriorManager.playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);

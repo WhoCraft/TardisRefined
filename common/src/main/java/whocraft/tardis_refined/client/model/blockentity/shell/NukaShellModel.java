@@ -96,7 +96,7 @@ public class NukaShellModel extends ShellModel {
 
 	@Override
 	public void handleSpecialAnimation(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
-		TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
+		TardisClientData reactions = TardisClientData.getInstance(entity.getTardisId());
 		this.animate(entity.liveliness, NUKAANIM, Minecraft.getInstance().player.tickCount, reactions.isFlying() ? 5 : 1);
 	}
 

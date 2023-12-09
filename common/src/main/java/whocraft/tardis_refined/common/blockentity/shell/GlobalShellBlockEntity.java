@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
@@ -45,13 +46,20 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         return this.shellTheme;
     }
 
+    public void setShellTheme(ResourceLocation theme){
+        this.shellTheme = theme;
+        this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
+    }
+
     public ShellPattern pattern() {
-        ShellPattern defaultBasePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, ResourceConstants.DEFAULT_PATTERN_ID);
-        return this.basePattern == null ? defaultBasePattern : this.basePattern;
+        return this.basePattern == null ? ShellPatterns.DEFAULT : this.basePattern;
     }
 
     public GlobalShellBlockEntity setPattern(ShellPattern basePattern) {
         this.basePattern = basePattern;
+        this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
         return this;
     }
 
@@ -60,7 +68,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         super.load(pTag);
 
         if (pTag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.THEME));
             this.shellTheme = themeId;
         }
 
@@ -98,12 +106,12 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         if (blockState.getValue(ShellBaseBlock.REGEN)) {return false;}
 
         if (getLevel() instanceof ServerLevel serverLevel) {
-            ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, TARDIS_ID.toString());
+            ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, this.TARDIS_ID);
             if (interior != null) {
                 AtomicBoolean valid = new AtomicBoolean();
                 TardisLevelOperator.get(interior).ifPresent(cap -> {
                     if (cap.getPilotingManager().isInFlight()) valid.set(false);
-                    ResourceKey<Level> dimension = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, TARDIS_ID.toString()));
+                    ResourceKey<Level> dimension = this.getTardisId();
 
                     boolean validKey = KeyItem.keychainContains(stack, dimension);
                     if(validKey) {

@@ -53,7 +53,7 @@ public class ChangeShellMessage extends MessageC2S {
     public void handle(MessageContext context) {
         Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
         level.flatMap(TardisLevelOperator::get).ifPresent(y -> {
-            y.setShellTheme(this.shellTheme);
+            y.setShellTheme(this.shellTheme, false);
             y.getExteriorManager().setShellPattern(pattern);
         });
 

@@ -12,6 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,16 +63,19 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public void setConsoleTheme(ResourceLocation themeId){
         this.consoleTheme = themeId;
+        this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     public ConsolePattern pattern() {
         ResourceLocation console = this.theme();
-        ConsolePattern defaultBasePattern = ConsolePatterns.getPatternOrDefault(console, ResourceConstants.DEFAULT_PATTERN_ID);
-        return basePattern == null ? defaultBasePattern : basePattern;
+
+        return basePattern == null ? ConsolePatterns.DEFAULT : basePattern;
     }
 
     public GlobalConsoleBlockEntity setPattern(ConsolePattern basePattern) {
         this.basePattern = basePattern;
+        this.setChanged();
         return this;
     }
 
@@ -93,7 +97,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void load(CompoundTag tag) {
 
         if (tag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
+            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.THEME));
             this.consoleTheme = themeId;
         }
 

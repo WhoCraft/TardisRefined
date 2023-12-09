@@ -49,6 +49,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
     @Override
     public void setID(String id) {
         this.uuid_id = id;
+        this.setChanged();
     }
 
     @Override

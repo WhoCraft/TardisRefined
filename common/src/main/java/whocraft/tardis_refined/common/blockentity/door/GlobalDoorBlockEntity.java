@@ -36,6 +36,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
 
     public void setShellTheme(ResourceLocation shellTheme){
         this.shellTheme = shellTheme;
+        this.setChanged();
     }
 
     @Override

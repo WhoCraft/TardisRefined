@@ -115,11 +115,12 @@ public class DimensionHandlerImpl {
 
         new SyncLevelListMessage(newLevel.dimension(), true).sendToAll();
 
-        BlockPos blockpos = new BlockPos(0, 0, 0);
-        chunkListener.updateSpawnPos(new ChunkPos(blockpos));
+        BlockPos blockPos = new BlockPos(0, 0, 0);
+        ChunkPos chunkPos = new ChunkPos(blockPos);
+        chunkListener.updateSpawnPos(chunkPos);
         ServerChunkCache serverchunkcache = newLevel.getChunkSource();
-        //TODO Is this important? serverchunkcache.getLightEngine().setTaskPerBatch(500);
-        serverchunkcache.addRegionTicket(TicketType.START, new ChunkPos(blockpos), 11, Unit.INSTANCE);
+        serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
+        serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
 
         return newLevel;
     }

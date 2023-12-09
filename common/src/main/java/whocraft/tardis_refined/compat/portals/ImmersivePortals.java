@@ -64,7 +64,7 @@ public class ImmersivePortals {
         TardisRefined.LOGGER.info("Immersive Portals Detected - Setting up Compatibility");
         TardisEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
         TardisEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
-        TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
+        TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme, isSetupTardis) -> {
             ImmersivePortals.destroyPortals(operator);
             if (operator.getInternalDoor() != null){
                 if (operator.getInternalDoor().isOpen()) {
