@@ -77,6 +77,14 @@ public class TardisPilotingManager {
         return (ticksSinceCrash > 0);
     }
 
+    public int getCooldownTicks() {
+        return ticksSinceCrash;
+    }
+
+    public int getCooldownDuration() {
+        return ticksSinceCrash / TICKS_COOLDOWN_MAX;
+    }
+
     public void endCoolDown() {
         this.ticksSinceCrash = TICKS_COOLDOWN_MAX;
     }
@@ -482,6 +490,10 @@ public class TardisPilotingManager {
 
     public TardisNavLocation getTargetLocation() {
         return this.targetLocation;
+    }
+
+    public TardisNavLocation getFastReturnLocation() {
+        return this.fastReturnLocation;
     }
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
