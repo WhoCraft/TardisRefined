@@ -3,7 +3,6 @@ package whocraft.tardis_refined.client.screen.selections;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -11,7 +10,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -22,11 +23,13 @@ import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.List;
 
@@ -46,10 +49,14 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     private List<ShellPattern> patternCollection;
     private Button patternButton;
+    private static GlobalShellBlockEntity globalShellBlockEntity;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
+        globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
+        assert Minecraft.getInstance().level != null;
+        globalShellBlockEntity.setLevel(Minecraft.getInstance().level);
     }
 
     @Override
@@ -117,7 +124,8 @@ public class ShellSelectionScreen extends SelectionScreen {
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-        renderShell(guiGraphics, width / 2- 75, height / 2 - 20, 25F);
+      //  renderShell(guiGraphics, width / 2- 75, height / 2 - 20, 25F);
+        renderShell(guiGraphics, width / 2, height / 2, 25F);
 
 
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
@@ -145,8 +153,12 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.scale(-scale, scale, scale);
         pose.mulPose(Axis.XP.rotationDegrees(-15F));
         pose.mulPose(Axis.YP.rotationDegrees(System.currentTimeMillis() % 5400L / 15L));
-        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
-        model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        BlockEntityRenderer<GlobalShellBlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(globalShellBlockEntity);
+        renderer.render(globalShellBlockEntity, Minecraft.getInstance().getDeltaFrameTime(), pose, Minecraft.getInstance().renderBuffers().bufferSource(), 1, OverlayTexture.NO_OVERLAY);
+
+      //  VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
+     //   model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
         pose.popPose();
         Lighting.setupFor3DItems();

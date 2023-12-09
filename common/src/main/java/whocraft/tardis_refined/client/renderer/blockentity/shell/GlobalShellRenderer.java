@@ -53,16 +53,16 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, blockEntity.TARDIS_ID.toString())));
         ShellPattern pattern = reactions.shellPattern();
 
-        currentModel.renderShellOrInteriorDoor(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getShellTexture(pattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getShellTexture(pattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
 
         /*Emmissive*/
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
         if (pattern.exteriorDoorTexture().emissive()) {
-            currentModel.renderShellOrInteriorDoor(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
+            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
         } else {
             if (isRegenerating) {
-                currentModel.renderShellOrInteriorDoor(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, false))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, false))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
             }
         }
 

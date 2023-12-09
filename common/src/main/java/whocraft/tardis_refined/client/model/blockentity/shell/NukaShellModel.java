@@ -90,7 +90,7 @@ public class NukaShellModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -177,11 +177,6 @@ public class NukaShellModel extends ShellModel {
 		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
-	}
-
-	@Override
-	public boolean isDoorModel() {
-		return false;
 	}
 
 	@Override

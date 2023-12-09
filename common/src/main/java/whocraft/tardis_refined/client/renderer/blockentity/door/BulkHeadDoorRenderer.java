@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.door.BulkHeadDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.door.interior.BulkHeadDoorModel;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 

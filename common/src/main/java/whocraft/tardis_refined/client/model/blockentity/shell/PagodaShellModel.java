@@ -1,6 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.shell;// Made with Blockbench 4.6.4
-// Exported for Minecraft version 1.17 or later with Mojang mappings
-// Paste this class into your mod and generate all required imports
+package whocraft.tardis_refined.client.model.blockentity.shell;
 
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -167,13 +165,8 @@ public class PagodaShellModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity, root, isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-	}
-
-	@Override
-	public boolean isDoorModel() {
-		return false;
 	}
 
 	@Override

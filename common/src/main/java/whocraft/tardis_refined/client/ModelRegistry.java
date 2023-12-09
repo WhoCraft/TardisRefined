@@ -6,7 +6,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
-import whocraft.tardis_refined.client.model.blockentity.door.*;
+import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
 import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.*;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;

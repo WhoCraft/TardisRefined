@@ -111,13 +111,15 @@ public class TardisClientData {
         compoundTag.putBoolean("throttleDown", throttleDown);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
-        compoundTag.putString("shellTheme", String.valueOf(shellTheme));
+        if (shellTheme != null)
+            compoundTag.putString("shellTheme", shellTheme.toString());
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
         compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
         compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
 
-        if (this.shellPattern != null) {
-            compoundTag.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
+        if (this.shellTheme != null) {
+            if ( this.shellPattern != null)
+                compoundTag.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
         }
 
         return compoundTag;
@@ -133,7 +135,8 @@ public class TardisClientData {
         throttleDown = compoundTag.getBoolean("throttleDown");
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
-        shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
+        if (compoundTag.contains("shellTheme"))
+            shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
         flightShakeScale = compoundTag.getFloat("flightShakeScale");
         isOnCooldown = compoundTag.getBoolean("isOnCooldown");

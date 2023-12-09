@@ -10,13 +10,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.client.model.blockentity.door.*;
-import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
+import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.patterns.ShellPattern;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,11 +21,11 @@ import java.util.Map;
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
 
-    protected static ShellModel currentModel;
-    private static ShellModel factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoorModel, drifterModel, presentModel, vendingModel, briefcaseModel,
+    protected static ShellDoorModel currentModel;
+    private static ShellDoorModel factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoorModel, drifterModel, presentModel, vendingModel, briefcaseModel,
             groeningModel, bigBenModel, nukaModel, growthModel, portalooModel, pagodaModel;
 
-    public static Map<ResourceLocation, ShellModel> DOOR_MODELS = new HashMap<>();
+    public static Map<ResourceLocation, ShellDoorModel> DOOR_MODELS = new HashMap<>();
 
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
@@ -89,12 +86,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
             poseStack.translate(0, -0.07, 0);
         }
 
-
-        TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
-        ShellPattern shellPattern = reactions.shellPattern();
-
         currentModel.setDoorPosition(isOpen);
-        currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(shellPattern))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.renderInteriorDoor(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();
     }

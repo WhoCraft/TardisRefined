@@ -1,0 +1,7 @@
+{
+  "type": "tardis_refined:nbt_feature",
+  "config": {
+    "height_offset": 0,
+    "template_location": "tardis_refined:cave/tardis_root_cluster_deepslate"
+  }
+}

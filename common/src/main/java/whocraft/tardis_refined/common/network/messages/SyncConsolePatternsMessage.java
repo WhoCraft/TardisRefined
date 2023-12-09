@@ -45,10 +45,7 @@ public class SyncConsolePatternsMessage extends MessageS2C{
 
     @Override
     public void handle(MessageContext context) {
-        ConsolePatterns.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, List<ConsolePattern>> entry : this.patterns.entrySet()) {
-            ConsolePatterns.getRegistry().put(entry.getKey(), entry.getValue());
-        }
+        ConsolePatterns.getReloadListener().setData(this.patterns);
     }
 
 }

@@ -140,7 +140,7 @@ public class PoliceBoxModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if (isBaseModel) {
 			poseStack.scale(1.05f, 1.05f, 1.05f);
 			poseStack.translate(0, -0.07, 0);
@@ -152,9 +152,4 @@ public class PoliceBoxModel extends ShellModel {
 		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 	}
 
-
-	@Override
-	public boolean isDoorModel() {
-		return false;
-	}
 }

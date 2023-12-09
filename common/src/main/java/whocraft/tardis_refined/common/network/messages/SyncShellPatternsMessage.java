@@ -46,9 +46,6 @@ public class SyncShellPatternsMessage extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
-        ShellPatterns.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, List<ShellPattern>> entry : this.patterns.entrySet()) {
-            ShellPatterns.getRegistry().put(entry.getKey(), entry.getValue());
-        }
+        ShellPatterns.getReloadListener().setData(this.patterns);
     }
 }

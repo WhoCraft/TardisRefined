@@ -16,7 +16,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.patterns.ShellPattern;
 
@@ -24,34 +23,19 @@ public abstract class ShellModel extends HierarchicalModel {
 
     public abstract void setDoorPosition(boolean open);
 
-    public abstract boolean isDoorModel();
-
-    public abstract void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+    public abstract void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
 
 
     public ResourceLocation getShellTexture(ShellPattern pattern, boolean isEmmissive) {
-        return texture(pattern, isEmmissive, false);
+        return texture(pattern, isEmmissive);
     }
 
     public ResourceLocation getShellTexture(GlobalShellBlockEntity shellBlockEntitys, boolean isEmmissive) {
         ShellPattern pattern = shellBlockEntitys.pattern();
-        return texture(pattern, isEmmissive, false);
+        return texture(pattern, isEmmissive);
     }
 
-    public ResourceLocation getInteriorDoorTexture(GlobalDoorBlockEntity globalDoorBlockEntity) {
-        ShellPattern pattern = globalDoorBlockEntity.pattern();
-        return texture(pattern, false, true);
-    }
-
-    public ResourceLocation getInteriorDoorTexture(ShellPattern pattern) {
-        return texture(pattern, false, true);
-    }
-
-
-    private ResourceLocation texture(ShellPattern pattern, boolean isEmmissive, boolean isDoorModel) {
-        if (isDoorModel) {
-            return pattern.interiorDoorTexture().texture();
-        }
+    private ResourceLocation texture(ShellPattern pattern, boolean isEmmissive) {
         return isEmmissive ? pattern.exteriorDoorTexture().emissiveTexture() : pattern.exteriorDoorTexture().texture();
     }
 

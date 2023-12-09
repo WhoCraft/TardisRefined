@@ -1,0 +1,52 @@
+{
+  "patterns": [
+    {
+      "exterior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/briefcase.png"
+      },
+      "id": "tardis_refined:default",
+      "interior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/briefcase_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}"
+    },
+    {
+      "exterior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/intel.png"
+      },
+      "id": "tardis_refined:intel",
+      "interior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/intel_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Intel\"}"
+    },
+    {
+      "exterior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/metal.png"
+      },
+      "id": "tardis_refined:metal",
+      "interior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/metal_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Metal\"}"
+    },
+    {
+      "exterior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/mesa.png"
+      },
+      "id": "tardis_refined:mesa",
+      "interior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/briefcase/mesa_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Mesa\"}"
+    }
+  ]
+}

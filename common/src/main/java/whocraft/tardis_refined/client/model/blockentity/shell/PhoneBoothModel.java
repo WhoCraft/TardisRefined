@@ -93,17 +93,12 @@ public class PhoneBoothModel extends ShellModel {
 	}
 
 	@Override
-	public boolean isDoorModel() {
-		return false;
-	}
-
-	@Override
 	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? 1.75f : 0;
 	}
 
 	@Override
-	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }
