@@ -49,7 +49,7 @@ public class PoliceBoxDoorModel extends ShellModel {
 				.texOffs(19, 46).addBox(-10.0F, -37.0F, -11.0F, 2.0F, 35.0F, 2.0F, new CubeDeformation(0.0F))
 				.texOffs(19, 46).mirror().addBox(8.0F, -37.0F, -11.0F, 2.0F, 35.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 25.0F, 16.75F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
@@ -73,12 +73,12 @@ public class PoliceBoxDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.right_door.yRot = (open) ? -275f : 0;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open,boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 

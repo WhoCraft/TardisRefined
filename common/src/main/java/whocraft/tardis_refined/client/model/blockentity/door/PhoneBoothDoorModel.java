@@ -49,7 +49,7 @@ public class PhoneBoothDoorModel extends ShellModel {
 		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(40, 27).addBox(-8.5F, -40.0F, 7.225F, 17.0F, 4.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 79).addBox(-9.0F, -37.0F, 7.25F, 18.0F, 37.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
@@ -75,7 +75,7 @@ public class PhoneBoothDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.Door2.yRot = (open) ? (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f) : 0;
 	}
 
@@ -85,7 +85,7 @@ public class PhoneBoothDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 }

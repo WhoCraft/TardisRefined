@@ -45,7 +45,7 @@ public class PortalooDoorModel extends ShellModel {
 		.texOffs(47, 4).addBox(-13.0F, -10.5F, -1.0F, 12.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(47, 7).addBox(-13.0F, 2.0F, -2.75F, 2.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, 2.5F, 6.75F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -63,12 +63,12 @@ public class PortalooDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.Door.yRot = (open) ? (ModCompatChecker.immersivePortals() ?  1.75f :  -1.75f) : 0;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 

@@ -79,7 +79,7 @@ public class NukaShellModel extends ShellModel {
 									AnimationChannel.Interpolations.LINEAR))).build();
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		if (open) {
 			this.left_door.yRot = 250f;
 			this.right_door.yRot = -250f;
@@ -90,7 +90,7 @@ public class NukaShellModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity,root(),isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -174,7 +174,7 @@ public class NukaShellModel extends ShellModel {
 
 		PartDefinition cube_r5 = bb_main.addOrReplaceChild("cube_r5", CubeListBuilder.create().texOffs(94, 125).addBox(-1.5F, -36.5F, -1.5F, 3.0F, 38.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(9.5F, -4.5F, -9.5F, 0.0F, -0.7854F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}

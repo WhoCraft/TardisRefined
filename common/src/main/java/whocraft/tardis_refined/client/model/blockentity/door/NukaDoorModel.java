@@ -41,7 +41,7 @@ public class NukaDoorModel extends ShellModel {
 
 		PartDefinition cube_r2 = bb_main.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(51, 47).addBox(-1.5F, -36.5F, -1.5F, 3.0F, 35.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(9.5F, 1.5F, 6.5F, 0.0F, -0.7854F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -63,7 +63,7 @@ public class NukaDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		if (open) {
 			this.left_door.yRot = -250f;
 			this.right_door.yRot = 250f;
@@ -79,7 +79,7 @@ public class NukaDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 }

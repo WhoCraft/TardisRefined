@@ -33,7 +33,7 @@ public class BigBenShellModel extends ShellModel {
 	private final ModelPart bb_main;
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? -275f : 0;
 
 	}
@@ -44,7 +44,7 @@ public class BigBenShellModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
@@ -213,7 +213,7 @@ public class BigBenShellModel extends ShellModel {
 				.texOffs(0, 103).addBox(-8.5F, -34.0F, 5.5F, 3.0F, 34.0F, 3.0F, new CubeDeformation(0.0F))
 				.texOffs(0, 103).mirror().addBox(5.5F, -34.0F, 5.5F, 3.0F, 34.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		splice(partdefinition);
+		addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 256, 256);
 	}

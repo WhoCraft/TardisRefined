@@ -134,6 +134,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.GROWTH.getId(), "Growth");
         addShell(ShellTheme.PORTALOO.getId(), "Portaloo");
         addShell(ShellTheme.PAGODA.getId(), "Pagoda");
+        addShell(ShellTheme.LIFT.getId(), "Lift");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");

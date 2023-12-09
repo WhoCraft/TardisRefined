@@ -41,7 +41,7 @@ public class GrowthDoorModel extends ShellModel {
 		PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(44, 46).addBox(-5.5F, -34.0F, 7.55F, 11.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 0).addBox(-15.5F, -44.0F, 7.825F, 31.0F, 44.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -65,12 +65,12 @@ public class GrowthDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.isDoorOpen = open;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 

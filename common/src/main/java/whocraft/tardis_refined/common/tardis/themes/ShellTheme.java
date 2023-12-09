@@ -6,11 +6,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
-
-import java.util.Locale;
 
 public class ShellTheme implements Theme {
 
@@ -37,6 +34,7 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROWTH = registerShellTheme("growth");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PORTALOO = registerShellTheme("portaloo");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PAGODA = registerShellTheme("pagoda");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> LIFT = registerShellTheme("lift");
 
 
     private ResourceLocation translationKey;

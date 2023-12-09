@@ -18,12 +18,12 @@ public class GroeningDoorModel extends ShellModel {
     private final ModelPart bb_main;
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         this.door.yRot = (open) ? -275f : 0;
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
     }
 
@@ -59,7 +59,7 @@ public class GroeningDoorModel extends ShellModel {
 
         PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 0).addBox(-10.5F, -39.0F, 6.0F, 21.0F, 39.0F, 2.0F, new CubeDeformation(0.0F)).texOffs(35, 42).addBox(-9.0F, -39.0F, 3.025F, 18.0F, 5.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        ShellModel.splice(partdefinition);
+        ShellModel.addMaterializationPart(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }

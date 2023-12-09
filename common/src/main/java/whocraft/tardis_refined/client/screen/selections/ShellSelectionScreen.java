@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -27,11 +26,9 @@ import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.List;
-import java.util.Set;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
@@ -140,7 +137,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
         ShellModel model = ShellModelCollection.getInstance().getShellModel(this.currentShellTheme);
-        model.setDoorOpen(false);
+        model.setDoorPosition(false);
         Lighting.setupForEntityInInventory();
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
@@ -148,7 +145,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.scale(-scale, scale, scale);
         pose.mulPose(Axis.XP.rotationDegrees(-15F));
         pose.mulPose(Axis.YP.rotationDegrees(System.currentTimeMillis() % 5400L / 15L));
-        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.texture(pattern, false)));
+        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
         model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
         pose.popPose();

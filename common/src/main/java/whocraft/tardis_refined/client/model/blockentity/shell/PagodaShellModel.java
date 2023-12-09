@@ -146,7 +146,7 @@ public class PagodaShellModel extends ShellModel {
 		.texOffs(23, 91).addBox(-9.0F, -33.0F, -9.0F, 18.0F, 1.0F, 18.0F, new CubeDeformation(0.0F))
 		.texOffs(0, 111).addBox(-8.0F, -0.025F, -8.0F, 16.0F, 1.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -161,13 +161,13 @@ public class PagodaShellModel extends ShellModel {
 		return root;
 	}
 
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? -275f : 0;
 
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity, root, isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

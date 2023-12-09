@@ -39,7 +39,7 @@ public class FactoryDoorModel extends ShellModel {
 
 		PartDefinition right_door = root.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(95, 81).addBox(-7.0F, -15.0F, -0.6F, 7.0F, 31.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(7.0F, -20.0F, -5.6F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
@@ -62,7 +62,7 @@ public class FactoryDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		if (open) {
 			this.leftDoor.yRot = -250f;
 			this.rightDoor.yRot = 250f;
@@ -78,7 +78,7 @@ public class FactoryDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 }

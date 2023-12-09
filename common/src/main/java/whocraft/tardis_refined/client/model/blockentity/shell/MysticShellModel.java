@@ -979,7 +979,7 @@ public class MysticShellModel extends ShellModel {
                 .texOffs(44, 0).addBox(-6.9F, -35.9F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F))
                 .texOffs(44, 0).addBox(-6.9F, -4.1F, -7.0F, 14.0F, 1.0F, 8.0F, new CubeDeformation(-0.025F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        splice(partdefinition);
+        addMaterializationPart(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
@@ -1012,7 +1012,7 @@ public class MysticShellModel extends ShellModel {
     }
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         if (open) {
             this.left_door.yRot = 250f;
             this.right_door.yRot = -250f;
@@ -1023,7 +1023,7 @@ public class MysticShellModel extends ShellModel {
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

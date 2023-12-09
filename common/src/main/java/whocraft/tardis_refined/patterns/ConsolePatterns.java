@@ -1,17 +1,13 @@
 package whocraft.tardis_refined.patterns;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.ResourceConstants;
 
-import java.io.Console;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Data manager for all {@link ConsolePattern}(s)
@@ -166,6 +162,7 @@ public class ConsolePatterns{
         /*Toyota*/
         addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "violet", "toyota_texture_purple", true);
         addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "blue", "toyota_texture_blue", true);
+        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "skulk", "toyota_texture_skulk", false);
 
         /*Crystal*/
         addDefaultPattern(ConsoleTheme.CRYSTAL.getId(), "corrupted", "crystal_console_corrupted", true);

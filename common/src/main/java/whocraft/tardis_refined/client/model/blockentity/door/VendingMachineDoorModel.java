@@ -31,7 +31,7 @@ public class VendingMachineDoorModel extends ShellModel {
 
         PartDefinition bone11 = partdefinition.addOrReplaceChild("bone11", CubeListBuilder.create().texOffs(58, 0).addBox(-7.0F, -35.0F, 0.0F, 14.0F, 6.0F, 3.0F, new CubeDeformation(0.0F)).texOffs(0, 0).addBox(-10.0F, -32.0F, 2.0F, 20.0F, 36.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 20.0F, 6.0F));
 
-        ShellModel.splice(partdefinition);
+        ShellModel.addMaterializationPart(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
@@ -48,12 +48,12 @@ public class VendingMachineDoorModel extends ShellModel {
     }
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         this.door.xRot = (open) ? (ModCompatChecker.immersivePortals() ? -1.6f : 1.6F) : 0;
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
     }
 

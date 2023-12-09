@@ -23,6 +23,14 @@
         "emissive": true,
         "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_texture_blue.png"
       }
+    },
+    {
+      "id": "tardis_refined:skulk",
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Skulk\"}",
+      "texture_definition": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_texture_skulk.png"
+      }
     }
   ]
 }

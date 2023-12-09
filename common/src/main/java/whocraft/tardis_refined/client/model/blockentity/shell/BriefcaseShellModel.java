@@ -33,7 +33,7 @@ public class BriefcaseShellModel extends ShellModel {
 
         PartDefinition bb_main = partdefinition.addOrReplaceChild("bb_main", CubeListBuilder.create().texOffs(0, 21).addBox(-10.0F, -6.0F, -7.0F, 20.0F, 6.0F, 14.0F, new CubeDeformation(0.0F)).texOffs(0, 0).addBox(-10.0F, -6.25F, -7.0F, 20.0F, 6.0F, 14.0F, new CubeDeformation(0.25F)).texOffs(55, 21).addBox(-5.0F, -4.25F, -10.0F, 10.0F, 2.0F, 3.0F, new CubeDeformation(0.0F)).texOffs(0, 0).addBox(-8.0F, -7.5F, -8.0F, 3.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).texOffs(0, 0).mirror().addBox(5.0F, -7.5F, -8.0F, 3.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        ShellModel.splice(partdefinition);
+        ShellModel.addMaterializationPart(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
@@ -45,12 +45,12 @@ public class BriefcaseShellModel extends ShellModel {
     }
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         this.door.xRot = (open) ? -2f : 0f;
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

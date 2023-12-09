@@ -110,7 +110,7 @@ public class PoliceBoxModel extends ShellModel {
 		.texOffs(32, 64).mirror().addBox(-0.5F, -31.5F, -10.75F, 1.0F, 30.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
 		.texOffs(0, 15).mirror().addBox(1.75F, -30.5F, -10.35F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -135,12 +135,12 @@ public class PoliceBoxModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.right_door.yRot = (open) ? -275f : 0;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		if (isBaseModel) {
 			poseStack.scale(1.05f, 1.05f, 1.05f);
 			poseStack.translate(0, -0.07, 0);
@@ -151,6 +151,7 @@ public class PoliceBoxModel extends ShellModel {
 		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
 	}
+
 
 	@Override
 	public boolean isDoorModel() {

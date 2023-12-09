@@ -45,7 +45,7 @@ public class FactoryShellModel extends ShellModel {
 
 		PartDefinition bone = root.addOrReplaceChild("bone", CubeListBuilder.create().texOffs(70, 52).addBox(-1.0F, -17.0F, -5.0F, 2.0F, 34.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -20.0F, 11.0F, 0.0F, 1.5708F, 0.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
@@ -67,7 +67,7 @@ public class FactoryShellModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		if (open) {
 			this.leftDoor.yRot = 250f;
 			this.rightDoor.yRot = -250f;
@@ -83,7 +83,7 @@ public class FactoryShellModel extends ShellModel {
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 		handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

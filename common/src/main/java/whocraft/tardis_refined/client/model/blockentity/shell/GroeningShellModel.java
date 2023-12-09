@@ -55,7 +55,7 @@ public class GroeningShellModel extends ShellModel {
 
         PartDefinition cube_r7 = bone5.addOrReplaceChild("cube_r7", CubeListBuilder.create().texOffs(88, 9).addBox(-2.0F, 0.0F, 0.0F, 3.0F, 4.0F, 10.0F, new CubeDeformation(0.025F)), PartPose.offsetAndRotation(0.5F, -8.0F, -15.15F, 0.9599F, 0.0F, 0.0F));
 
-        ShellModel.splice(partdefinition);
+        ShellModel.addMaterializationPart(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
@@ -66,12 +66,12 @@ public class GroeningShellModel extends ShellModel {
     }
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         this.door.yRot = (open) ? -275f : 0;
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

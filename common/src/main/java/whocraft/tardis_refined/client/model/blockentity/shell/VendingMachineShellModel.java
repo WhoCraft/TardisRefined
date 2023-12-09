@@ -31,7 +31,7 @@ public class VendingMachineShellModel extends ShellModel {
 
         PartDefinition bone11 = partdefinition.addOrReplaceChild("bone11", CubeListBuilder.create().texOffs(0, 49).addBox(-7.0F, -35.0F, -1.0F, 14.0F, 6.0F, 14.0F, new CubeDeformation(0.0F)).texOffs(0, 0).addBox(-10.0F, -32.0F, 2.0F, 20.0F, 36.0F, 12.0F, new CubeDeformation(0.0F)).texOffs(91, 0).addBox(-4.0F, -23.0F, 14.0F, 8.0F, 15.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(91, 17).addBox(-4.0F, -6.0F, 14.0F, 8.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).texOffs(91, 23).addBox(-3.0F, -8.0F, 14.5F, 6.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).texOffs(76, 10).addBox(10.0F, -26.0F, 5.0F, 1.0F, 19.0F, 6.0F, new CubeDeformation(0.0F)).texOffs(76, 10).mirror().addBox(-11.0F, -26.0F, 5.0F, 1.0F, 19.0F, 6.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 20.0F, -7.0F));
 
-        ShellModel.splice(partdefinition);
+        ShellModel.addMaterializationPart(partdefinition);
 
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
@@ -42,7 +42,7 @@ public class VendingMachineShellModel extends ShellModel {
     }
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         this.door.xRot = (open) ? 1.6f : 0;
     }
 
@@ -52,7 +52,7 @@ public class VendingMachineShellModel extends ShellModel {
     }
 
     @Override
-    public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 

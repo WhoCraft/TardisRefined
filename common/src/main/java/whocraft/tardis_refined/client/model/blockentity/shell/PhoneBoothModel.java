@@ -70,7 +70,7 @@ public class PhoneBoothModel extends ShellModel {
 		.texOffs(0, 0).addBox(-1.5F, 8.0F, -1.0F, 2.0F, 8.0F, 2.0F, new CubeDeformation(0.25F))
 		.texOffs(0, 23).addBox(-1.5F, -20.75F, -1.0F, 2.0F, 5.0F, 2.0F, new CubeDeformation(0.25F)), PartPose.offset(-7.5F, -18.0F, -8.0F));
 
-		ShellModel.splice(partdefinition);
+		ShellModel.addMaterializationPart(partdefinition);
 
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
@@ -98,12 +98,12 @@ public class PhoneBoothModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? 1.75f : 0;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 		handleAllAnimations(entity, root(), isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

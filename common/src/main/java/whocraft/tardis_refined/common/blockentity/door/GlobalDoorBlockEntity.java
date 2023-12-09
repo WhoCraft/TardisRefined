@@ -8,7 +8,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -22,9 +21,15 @@ import java.util.Optional;
 public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
 
     private ResourceLocation shellTheme;
+    private ShellPattern basePattern;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), blockPos, blockState);
+    }
+
+    public ShellPattern pattern() {
+        ShellPattern defaultBasePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, ResourceConstants.DEFAULT_PATTERN_ID);
+        return this.basePattern == null ? defaultBasePattern : this.basePattern;
     }
 
     public ResourceLocation theme(){
@@ -47,8 +52,19 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
             this.shellTheme = themeId;
         }
 
+        if (pTag.contains(NbtConstants.PATTERN)) {
+            ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+            if (ShellPatterns.doesPatternExist( this.shellTheme, currentPattern)) {
+                this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
+            }
+        }
+
         if (this.shellTheme == null){
             this.shellTheme = this.theme();
+        }
+
+        if (this.basePattern == null) {
+            this.basePattern = pattern();
         }
     }
 
@@ -57,6 +73,9 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
         super.saveAdditional(pTag);
         if (this.shellTheme != null) {
             pTag.putString(NbtConstants.THEME, this.shellTheme.toString());
+        }
+        if (this.basePattern != null) {
+            pTag.putString(NbtConstants.PATTERN, this.basePattern.id().toString());
         }
     }
 

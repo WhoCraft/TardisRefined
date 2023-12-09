@@ -42,7 +42,7 @@ public class PresentDoorModel extends ShellModel {
 				.texOffs(0, 0).addBox(-9.0F, -35.0F, 8.025F, 18.0F, 35.0F, 1.0F, new CubeDeformation(0.0F))
 				.texOffs(35, 45).mirror().addBox(8.0F, -35.0F, 7.0F, 1.0F, 35.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
 				.texOffs(42, 45).addBox(-9.0F, -36.0F, 7.0F, 18.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
-		splice(partdefinition);
+		addMaterializationPart(partdefinition);
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
@@ -61,12 +61,12 @@ public class PresentDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.xRot = (open) ? (ModCompatChecker.immersivePortals() ? -1.5f : 1.5F) : 0;
 	}
 
 	@Override
-	public void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderShellOrInteriorDoor(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
 
 	}
 
