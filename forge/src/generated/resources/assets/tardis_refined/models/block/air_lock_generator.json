@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "tardis_refined:block/air_lock_generator"
+  }
+}

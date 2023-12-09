@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "tardis_refined:block/ars_leaves_slab"
+    },
+    "type=double": {
+      "model": "tardis_refined:block/ars_leaves"
+    },
+    "type=top": {
+      "model": "tardis_refined:block/ars_leaves_slab_top"
+    }
+  }
+}
