@@ -1,0 +1,28 @@
+{
+  "variants": {
+    "facing=east,open=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=east,open=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=north,open=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=north,open=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=south,open=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=south,open=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=west,open=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "facing=west,open=true": {
+      "model": "tardis_refined:block/terraformer"
+    }
+  }
+}
