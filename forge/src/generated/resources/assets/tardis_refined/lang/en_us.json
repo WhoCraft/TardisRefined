@@ -92,6 +92,7 @@
   "ui.tardis_refined.monitor.upload.waypoints": "WAYPOINT NAVIGATION",
   "ui.tardis_refined.monitor.waypoint_name": "Waypoint Name:",
   "ui.tardis_refined.monitor.waypoints": "WAYPOINTS",
+  "ui.tardis_refined.no_installed_subsystems": "No Available Sub-Systems",
   "ui.tardis_refined.shell_selection": "EXTERNAL SHELL CONFIGURATION",
   "ui.tardis_refined.upgrades": "Tardis Upgrades",
   "ui.tardis_refined.upgrades.buy_ability": "Purchase Upgrade?",

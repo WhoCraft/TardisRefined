@@ -6,27 +6,39 @@ architectury {
     neoForge();
 }
 
+def generatedResources = project(":forge").file("src/generated/resources")
+
+sourceSets {
+    main {
+        resources.srcDir generatedResources
+    }
+}
+
+
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
- /*   neoForge {
-        convertAccessWideners = true
-        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+//    neoForge {
+//        convertAccessWideners = true
+//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+//
+//        mixinConfig "tardis_refined-common.mixins.json"
+//        mixinConfig "tardis_refined.mixins.json"
 
-        mixinConfig "tardis_refined-common.mixins.json"
-        mixinConfig "tardis_refined.mixins.json"
+//        dataGen {
+//            mod "${mod_id}"
+//        }
 
-        dataGen {
-            mod "${mod_id}"
-        }
-
-    }
+//    }
 
     runs {
         data {
+            data()
+            programArgs "--all", "--mod", "${mod_id}"
+            programArgs "--output", project(":forge").file("src/generated/resources").absolutePath
             programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
         }
-    }*/
+    }
 
 }
 

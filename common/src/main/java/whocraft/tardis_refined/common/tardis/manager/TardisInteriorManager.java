@@ -11,17 +11,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
-import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
-import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
@@ -31,12 +24,11 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TardisInteriorManager {
+public class TardisInteriorManager extends BaseHandler {
 
     private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
@@ -95,6 +87,11 @@ public class TardisInteriorManager {
         return currentTheme == TardisDesktops.DEFAULT_OVERGROWN_THEME;
     }
 
+    @Override
+    public void tick() {
+
+    }
+
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE, this.isWaitingToGenerate);
         tag.putBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP, this.isGeneratingDesktop);
@@ -150,7 +147,7 @@ public class TardisInteriorManager {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getExteriorManager().getCurrentTheme() != null) ? operator.getExteriorManager().getCurrentTheme() : ShellTheme.FACTORY.getId());
+                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? ShellTheme.getKey(operator.getAestheticHandler().getShellTheme()) : ShellTheme.FACTORY.getId(), true);
                 this.isGeneratingDesktop = false;
             }
 
@@ -324,28 +321,4 @@ public class TardisInteriorManager {
         this.isWaitingToGenerate = false;
     }
 
-    public void setShellTheme(ResourceLocation theme) {
-        if (operator.getInternalDoor() != null){
-            BlockPos internalDoorPos = operator.getInternalDoor().getDoorPosition();
-            BlockState state = operator.getLevel().getBlockState(internalDoorPos);
-            BlockEntity blockEntity = operator.getLevel().getBlockEntity(internalDoorPos);
-            // Check if its our default global shell.
-
-            if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
-                doorBlockEntity.setShellTheme(theme);
-            } else {
-                if (state.getBlock() instanceof RootShellDoorBlock) {
-                    operator.getLevel().setBlock(internalDoorPos,
-                            BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
-                                    .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), 2);
-
-                    var shellBlockEntity = operator.getLevel().getBlockEntity(internalDoorPos);
-                    if (shellBlockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
-                        doorBlockEntity.setShellTheme(theme);
-                        operator.setInternalDoor(doorBlockEntity);
-                    }
-                }
-            }
-        }
-    }
 }

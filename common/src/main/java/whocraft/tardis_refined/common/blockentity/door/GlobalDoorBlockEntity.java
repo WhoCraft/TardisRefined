@@ -2,11 +2,15 @@ package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -32,6 +36,19 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
         return this.basePattern == null ? defaultBasePattern : this.basePattern;
     }
 
+    public GlobalDoorBlockEntity setPattern(ShellPattern basePattern) {
+        this.basePattern = basePattern;
+        this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+        return this;
+    }
+
+    public void sendUpdates() {
+        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        setChanged();
+    }
+
     public ResourceLocation theme(){
         if (this.shellTheme == null){
             this.shellTheme = ShellTheme.FACTORY.getId();
@@ -41,6 +58,20 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
 
     public void setShellTheme(ResourceLocation shellTheme){
         this.shellTheme = shellTheme;
+        this.setChanged();
+    }
+
+    @Override
+    public CompoundTag getUpdateTag() {
+        CompoundTag compoundTag = new CompoundTag();
+        saveAdditional(compoundTag);
+        return compoundTag;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return super.getUpdatePacket();
     }
 
     @Override
@@ -100,6 +131,8 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
             });
         }
     }
+
+
 
     public void onAttemptEnter(Level level, Player player) {
         if (!level.isClientSide()) {

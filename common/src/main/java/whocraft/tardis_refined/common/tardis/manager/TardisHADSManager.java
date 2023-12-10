@@ -12,7 +12,7 @@ import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 
-public class TardisHADSManager {
+public class TardisHADSManager extends BaseHandler {
 
     private static final int MAX_DISTANCE = 1000;
     private static final int RETURN_DELAY_MIN = 12000;
@@ -58,7 +58,7 @@ public class TardisHADSManager {
             timeTillReturn = serverLevel.random.nextInt(RETURN_DELAY_MIN, RETURN_DELAY_MAX);
 
             BlockEntity blockEntity = serverLevel.getBlockEntity(blockPos);
-            if (blockEntity instanceof GlobalShellBlockEntity globalShellBlockEntity && globalShellBlockEntity.TARDIS_ID != null) {
+            if (blockEntity instanceof GlobalShellBlockEntity globalShellBlockEntity && globalShellBlockEntity.getTardisId() != null) {
                 RandomSource random = serverLevel.random;
                 UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
 

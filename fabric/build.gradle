@@ -47,9 +47,14 @@ repositories {
     }
 }
 
-sourceSets.main.resources {
-    srcDir project(":forge").file("src/generated/resources").absolutePath
+def generatedResources = project(":forge").file("src/generated/resources")
+
+sourceSets {
+    main {
+        resources.srcDir generatedResources
+    }
 }
+
 
 
 dependencies {

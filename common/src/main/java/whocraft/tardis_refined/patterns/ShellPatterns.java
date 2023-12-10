@@ -2,6 +2,7 @@ package whocraft.tardis_refined.patterns;
 
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
@@ -14,6 +15,9 @@ public class ShellPatterns {
     public static PatternReloadListener<ShellPatternCollection, ShellPattern> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC, patternCollections -> PatternReloadListener.processPatternCollections(patternCollections));
 
     private static Map<ResourceLocation, List<ShellPattern>> DEFAULT_PATTERNS = new HashMap();
+
+    public static final ShellPattern DEFAULT = (ShellPattern) new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID.getPath(), new PatternTexture(exteriorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)
+            , new PatternTexture(interiorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)).setThemeId(ConsoleTheme.FACTORY.getId());
 
     public static PatternReloadListener<ShellPatternCollection, ShellPattern> getReloadListener(){
         return PATTERNS;

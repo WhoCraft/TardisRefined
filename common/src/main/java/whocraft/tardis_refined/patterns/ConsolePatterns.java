@@ -18,6 +18,7 @@ public class ConsolePatterns{
 
     private static Map<ResourceLocation, List<ConsolePattern>> DEFAULT_PATTERNS = new HashMap();
 
+    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(ConsoleTheme.FACTORY.getId(), ConsoleTheme.FACTORY.getId().getPath() + "_console"), true)).setThemeId(ConsoleTheme.FACTORY.getId());
 
     public static PatternReloadListener<ConsolePatternCollection, ConsolePattern> getReloadListener(){
         return PATTERNS;

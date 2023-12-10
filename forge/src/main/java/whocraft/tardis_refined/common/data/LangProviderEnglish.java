@@ -118,6 +118,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase Upgrade?");
+        add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No Available Sub-Systems");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY.getId(), "Factory");

@@ -43,6 +43,7 @@ public class TardisLevelOperator {
     private final TardisClientData tardisClientData;
     private final UpgradeHandler upgradeHandler;
     private final TardisHADSManager tardisHADSManager;
+    private final AestheticHandler aestheticHandler;
 
     public TardisLevelOperator(Level level) {
         this.level = level;
@@ -54,6 +55,7 @@ public class TardisLevelOperator {
         this.tardisClientData = new TardisClientData(level.dimension());
         this.upgradeHandler = new UpgradeHandler(this);
         this.tardisHADSManager = new TardisHADSManager(this);
+        this.aestheticHandler = new AestheticHandler(this);
     }
 
     public UpgradeHandler getUpgradeHandler() {
@@ -66,6 +68,10 @@ public class TardisLevelOperator {
 
     public TardisHADSManager getTardisHADSManager() {
         return tardisHADSManager;
+    }
+
+    public AestheticHandler getAestheticHandler() {
+        return aestheticHandler;
     }
 
     @ExpectPlatform
@@ -89,6 +95,7 @@ public class TardisLevelOperator {
         compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
         compoundTag = this.upgradeHandler.saveData(compoundTag);
         compoundTag = this.tardisHADSManager.saveData(compoundTag);
+        compoundTag = this.aestheticHandler.saveData(compoundTag);
 
         return compoundTag;
     }
@@ -111,6 +118,7 @@ public class TardisLevelOperator {
         this.tardisWaypointManager.loadData(tag);
         this.upgradeHandler.loadData(tag);
         this.tardisHADSManager.loadData(tag);
+        this.aestheticHandler.loadData(tag);
 
 
         tardisClientData.sync();
@@ -132,11 +140,9 @@ public class TardisLevelOperator {
             tardisClientData.setThrottleDown(pilotingManager.shouldThrottleBeDown());
             tardisClientData.setIsLanding(exteriorManager.isLanding());
             tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setShellTheme(exteriorManager.getCurrentTheme()); //Use the exterior manager's theme ID, the piloting manager's reference is almost always null, not sure why.
             tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
             tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
-            tardisClientData.setShellPattern(getExteriorManager().shellPattern());
             tardisClientData.sync();
         }
     }
@@ -195,10 +201,10 @@ public class TardisLevelOperator {
             return false;
         }
 
-        if(getExteriorManager().getCurrentTheme() != null) {
-            ResourceLocation theme = getExteriorManager().getCurrentTheme();
+        if(aestheticHandler.getShellTheme() != null) {
+            ShellTheme theme = aestheticHandler.getShellTheme();
             if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-               if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
+               if(ImmersivePortals.exteriorHasPortalSupport(ShellTheme.getKey(theme))) {
                    return false;
                }
             }
@@ -242,11 +248,10 @@ public class TardisLevelOperator {
         }
     }
 
-    public void setShellTheme(ResourceLocation theme) {
-        this.getExteriorManager().setShellTheme(theme);
-        this.getInteriorManager().setShellTheme(theme);
-        this.getPilotingManager().setCurrentExteriorTheme(theme);
-        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
+    public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
+        this.getAestheticHandler().setShellTheme(theme, setupTardis, getExteriorManager().getLastKnownLocation());
+
+        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
     }
 
     /**

@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.tardis.manager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -18,15 +17,13 @@ import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TardisPilotingManager {
+public class TardisPilotingManager extends BaseHandler{
 
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
@@ -57,7 +54,6 @@ public class TardisPilotingManager {
     private int cordIncrementIndex = 0;
 
     private boolean autoLand = false;
-    private ResourceLocation currentExteriorTheme;
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -71,13 +67,6 @@ public class TardisPilotingManager {
         return this.autoLand;
     }
 
-    public ResourceLocation getCurrentExteriorTheme() {
-        return this.currentExteriorTheme;
-    }
-
-    public void setCurrentExteriorTheme(ResourceLocation theme) {
-        this.currentExteriorTheme = theme;
-    }
 
     public boolean isOnCooldown() {
         return (ticksSinceCrash > 0);
@@ -97,15 +86,16 @@ public class TardisPilotingManager {
         this.ticksSinceCrash = tag.getInt("ticksSinceCrash");
         this.canUseControls = tag.getBoolean("canUseControls");
 
-        if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null && !tag.getString(NbtConstants.CONTROL_CURRENT_EXT).isEmpty()) {
-            this.currentExteriorTheme = new ResourceLocation(tag.getString(NbtConstants.CONTROL_CURRENT_EXT));
-        }
-
         if (this.targetLocation == null) {
             this.targetLocation = TardisNavLocation.ORIGIN;
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
+    }
+
+    @Override
+    public void tick() {
+
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -116,9 +106,6 @@ public class TardisPilotingManager {
         tag.putInt("ticksSinceCrash", this.ticksSinceCrash);
         tag.putBoolean("canUseControls", this.canUseControls);
 
-        if (this.currentExteriorTheme != null) {
-            tag.putString(NbtConstants.CONTROL_CURRENT_EXT, this.currentExteriorTheme.toString());
-        }
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
         }
@@ -234,11 +221,12 @@ public class TardisPilotingManager {
         var originalY = location.getPosition().getY();
 
         // Do any specific dimension checks
+        //TODO: Handle dimension checks in a dedicated function, we already have duplicated codfein #getLegalPosition
         if (level.dimension() == Level.NETHER) {
             if (location.getPosition().getY() > 127) {
                 height = 125;
                 failOffset = 10;
-                location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ()));
+                location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ())); //TODO: Remove this hardcoding to continue searching for a spot
             }
         }
 
@@ -273,8 +261,8 @@ public class TardisPilotingManager {
     private BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
         if (level.dimension() == Level.NETHER) {
 
-            if (pos.getY() > 125 || originalY > 125) {
-                return new BlockPos(pos.getX(), 60, pos.getZ());
+            if (pos.getY() > level.getMaxBuildHeight() || originalY > level.getMaxBuildHeight()) {
+                return new BlockPos(pos.getX(), 60, pos.getZ()); //TODO: Remove this hardcoding and run a search below max height
             }
         }
 
@@ -359,6 +347,8 @@ public class TardisPilotingManager {
             this.ticksInFlight = 0;
             this.ticksTakingOff = 1;
             this.operator.getExteriorManager().setIsTakingOff(true);
+            //Debug if the blockstate at the current position during takeoff is air. If not air, it means we have forgotten to actually remove the exterior block which could be the cause of the duplication issue
+//            System.out.println(this.operator.getLevel().getBlockState(this.operator.getExteriorManager().getLastKnownLocation().getPosition()).getBlock().toString());
 
             this.operator.getTardisFlightEventManager().calculateTravelLogic();
 
@@ -385,17 +375,13 @@ public class TardisPilotingManager {
             this.ticksLanding = TICKS_LANDING_MAX;
 
             TardisExteriorManager exteriorManager = operator.getExteriorManager();
-            TardisInteriorManager interiorManager = operator.getInteriorManager();
+
             Level level = operator.getLevel();
 
             TardisNavLocation landingLocation = this.targetLocation;
             TardisNavLocation location = findClosestValidPosition(landingLocation);
 
-
             exteriorManager.placeExteriorBlock(operator, location);
-            if (this.currentExteriorTheme != null) {
-                interiorManager.setShellTheme(this.currentExteriorTheme);
-            }
 
             exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
             level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
@@ -406,7 +392,7 @@ public class TardisPilotingManager {
         return false;
 
     }
-
+    /** Start to remove the Tardis Shell block and set up fast return location data*/
     public void enterTimeVortex() {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
@@ -458,9 +444,6 @@ public class TardisPilotingManager {
         var location =  findClosestValidPosition(landing);
 
         tardisExteriorManager.placeExteriorBlock(operator, location);
-        if (currentExteriorTheme != null) {
-            tardisExteriorManager.setShellTheme(currentExteriorTheme);
-        }
 
         tardisExteriorManager.playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
         tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);

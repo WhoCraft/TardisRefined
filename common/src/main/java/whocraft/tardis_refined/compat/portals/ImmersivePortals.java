@@ -64,7 +64,7 @@ public class ImmersivePortals {
         TardisRefined.LOGGER.info("Immersive Portals Detected - Setting up Compatibility");
         TardisEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
         TardisEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
-        TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme) -> {
+        TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme, isSetupTardis) -> {
             ImmersivePortals.destroyPortals(operator);
             if (operator.getInternalDoor() != null){
                 if (operator.getInternalDoor().isOpen()) {
@@ -168,7 +168,7 @@ public class ImmersivePortals {
 
     public static void createPortals(TardisLevelOperator operator) {
         UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
-        ResourceLocation theme = operator.getExteriorManager().getCurrentTheme();
+        ResourceLocation theme = ShellTheme.getKey(operator.getAestheticHandler().getShellTheme());
         TardisInternalDoor door = operator.getInternalDoor();
 
         if (operator.getInteriorManager().isCave() || !operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
@@ -181,7 +181,7 @@ public class ImmersivePortals {
         BlockPos exteriorEntryBPos = location.getPosition();
         Vec3 exteriorEntryPosition = new Vec3(exteriorEntryBPos.getX() + 0.5, exteriorEntryBPos.getY() + 1, exteriorEntryBPos.getZ() + 0.5);
 
-        theme = operator.getExteriorManager().getCurrentTheme();
+        theme = ShellTheme.getKey(operator.getAestheticHandler().getShellTheme());
         PortalOffets themeData = themeToOffsetMap.get(theme);
 
         switch (location.getDirection()) {

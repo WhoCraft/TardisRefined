@@ -5,14 +5,9 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.Map;
 
@@ -42,23 +37,13 @@ public class TardisClientData {
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
-    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
-    private ShellPattern shellPattern = safeGrabPattern();
 
-    private ShellPattern safeGrabPattern() {
-        if (ShellPatterns.getRegistry().isEmpty())
-            return ShellPatterns.getPatternsForThemeDefault(shellTheme).get(0);
-        return ShellPatterns.getPatternsForTheme(shellTheme).get(0);
-    }
+//    private ShellPattern safeGrabPattern() {
+//        if (ShellPatterns.getRegistry().isEmpty())
+//            return ShellPatterns.getPatternsForThemeDefault(shellTheme).get(0);
+//        return ShellPatterns.getPatternsForTheme(shellTheme).get(0);
+//    }
 
-    public TardisClientData setShellPattern(ShellPattern shellPattern) {
-        this.shellPattern = shellPattern;
-        return this;
-    }
-
-    public ShellPattern shellPattern() {
-        return shellPattern;
-    }
 
     public int landingTime = 0, takeOffTime = 0;
 
@@ -96,9 +81,6 @@ public class TardisClientData {
     public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
     public float flightShakeScale() {return flightShakeScale;}
 
-    public void setShellTheme(ResourceLocation theme) {this.shellTheme = theme;}
-    public ResourceLocation getShellTheme() {return this.shellTheme;}
-
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -111,16 +93,9 @@ public class TardisClientData {
         compoundTag.putBoolean("throttleDown", throttleDown);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
-        if (shellTheme != null)
-            compoundTag.putString("shellTheme", shellTheme.toString());
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
         compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
         compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
-
-        if (this.shellTheme != null) {
-            if ( this.shellPattern != null)
-                compoundTag.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
-        }
 
         return compoundTag;
     }
@@ -135,16 +110,9 @@ public class TardisClientData {
         throttleDown = compoundTag.getBoolean("throttleDown");
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
-        if (compoundTag.contains("shellTheme"))
-            shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
         flightShakeScale = compoundTag.getFloat("flightShakeScale");
         isOnCooldown = compoundTag.getBoolean("isOnCooldown");
-
-        if (compoundTag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
-            this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
-        }
-
     }
 
     /**

@@ -69,17 +69,17 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-        var bottom = chunk.getMinBuildHeight() + 70;
-        BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), bottom, chunk.getPos().getMinBlockZ());
-        BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
-        for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
-            if (pos.getY() <= bottom + 5) {
-                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
-            } else {
-                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
-            }
-
-        }
+//        var bottom = chunk.getMinBuildHeight() + 70;
+//        BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), bottom, chunk.getPos().getMinBlockZ());
+//        BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
+//        for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
+//            if (pos.getY() <= bottom + 5) {
+//                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
+//            } else {
+//                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
+//            }
+//
+//        }
     }
 
     @Override

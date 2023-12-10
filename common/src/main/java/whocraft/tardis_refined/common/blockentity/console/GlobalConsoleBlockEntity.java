@@ -7,27 +7,23 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.LevelHelper;
-import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
@@ -38,7 +34,7 @@ import java.util.List;
 
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
 
-    private boolean isDirty = true;
+    private boolean shouldSpawnControls = true;
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
@@ -62,16 +58,18 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public void setConsoleTheme(ResourceLocation themeId){
         this.consoleTheme = themeId;
+        this.setChanged();
+        this.sendUpdates();
     }
 
     public ConsolePattern pattern() {
-        ResourceLocation console = this.theme();
-        ConsolePattern defaultBasePattern = ConsolePatterns.getPatternOrDefault(console, ResourceConstants.DEFAULT_PATTERN_ID);
-        return basePattern == null ? defaultBasePattern : basePattern;
+        return basePattern == null ? ConsolePatterns.DEFAULT : basePattern;
     }
 
     public GlobalConsoleBlockEntity setPattern(ConsolePattern basePattern) {
         this.basePattern = basePattern;
+        this.setChanged();
+        this.sendUpdates();
         return this;
     }
 
@@ -93,7 +91,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void load(CompoundTag tag) {
 
         if (tag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
+            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.THEME));
             this.consoleTheme = themeId;
         }
 
@@ -144,12 +142,12 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 controlEntityList.add(controlEntity);
             });
 
-            this.isDirty = false;
+            this.shouldSpawnControls = false;
         }
     }
 
     public void markDirty() {
-        this.isDirty = true;
+        this.shouldSpawnControls = true;
     }
 
     @Override
@@ -172,8 +170,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public void sendUpdates() {
-        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        level.updateNeighbourForOutputSignal(this.getBlockPos(), getBlockState().getBlock());
+        level.sendBlockUpdated(this.getBlockPos(), level.getBlockState(this.getBlockPos()), level.getBlockState(this.getBlockPos()), Block.UPDATE_CLIENTS);
         setChanged();
     }
 
@@ -188,7 +186,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
 
-        if (this.isDirty) {
+        if (this.shouldSpawnControls) {
             spawnControlEntities();
         }
 

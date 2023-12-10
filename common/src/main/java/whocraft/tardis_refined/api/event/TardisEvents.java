@@ -39,9 +39,9 @@ public class TardisEvents {
         }
     });
 
-    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
+    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme, isSetupTardis) -> {
         for (ShellChange listener : listeners) {
-            listener.onShellChange(tardisLevelOperator, theme);
+            listener.onShellChange(tardisLevelOperator, theme, isSetupTardis);
         }
     });
 
@@ -118,8 +118,9 @@ public class TardisEvents {
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
          * @param theme The theme the TARDIS changed to.
+         * @param isSetupTardis if the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
          */
-        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme);
+        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, boolean isSetupTardis);
     }
 
     /**

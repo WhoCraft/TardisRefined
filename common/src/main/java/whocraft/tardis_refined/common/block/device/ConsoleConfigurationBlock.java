@@ -32,6 +32,8 @@ import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlo
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
@@ -87,141 +89,170 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
-
         var offset = blockState.getValue(FACING).getNormal();
         BlockPos consolePos = blockPos.offset(offset);
         BlockState consoleBlock = level.getBlockState(consolePos);
 
-        BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
-
 
         if (player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get()) {
-
-            if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-                ResourceLocation consoleThemeId = globalConsoleBlock.theme();
-
-                if (ConsolePatterns.getPatternsForTheme(consoleThemeId).size() == 1) {
-                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 100, (float) (0.1 + (level.getRandom().nextFloat() * 0.5)));
-                    return InteractionResult.SUCCESS;
-                }
-
-                globalConsoleBlock.setPattern(ConsolePatterns.next(consoleThemeId, globalConsoleBlock.pattern()));
-                PlayerUtil.sendMessage(player, Component.Serializer.fromJson(new StringReader(globalConsoleBlock.pattern().name())), true);
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                globalConsoleBlock.sendUpdates();
-                player.getCooldowns().addCooldown(ItemRegistry.PATTERN_MANIPULATOR.get(), 20);
-            }
-
+            this.changePattern(level, blockPos, consolePos, player);
             return InteractionResult.SUCCESS;
         }
 
         if (player.getMainHandItem().getItem() == Items.IRON_BLOCK) {
-            if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) {
-                if (expectedConsoleBlockEntity instanceof ConsoleConfigurationBlockEntity consoleConfigurationBlockEntity) {
-                    ResourceLocation consoleThemeId = consoleConfigurationBlockEntity.theme();
-                    level.destroyBlock(consolePos, true);
-                    this.placeGlobalConsoleBlock(consolePos, blockState, level, consoleThemeId);
+            if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) { // If there is no existing console block
+                //Spawn the console block use set its console theme using the one stored in the configurator
+                if (this.placeNewGlobalConsoleBlock(level, blockPos, consolePos)) {
+                    //Use up the iron block
+                    if (!player.isCreative()) {
+                        player.getMainHandItem().shrink(1);
+                    }
+                    return InteractionResult.SUCCESS;
                 }
 
-                if (!player.isCreative()) {
-                    player.getMainHandItem().shrink(1);
-                }
-                return InteractionResult.CONSUME;
             } else {
-
-                if (player.isShiftKeyDown()) {
-                    if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
-                        consoleBlockEntity.killControls();
-                        level.destroyBlock(consolePos, true);
-                    }
-                } else {
-                    if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
-                        ResourceLocation nextTheme = this.nextTheme(consoleBlockEntity);
-                        this.changeConsoleTheme(level, consolePos, consoleBlockEntity, blockState, nextTheme);
-                    }
-                }
-
-                return InteractionResult.FAIL;
+                //If we're holding an iron block but there is an existing console
+                this.changeConsoleTheme(level, blockPos, consolePos);
+                return InteractionResult.SUCCESS;
             }
         }
 
-        if (player.isShiftKeyDown()) {
+        if (player.isShiftKeyDown()) { //If we are destroying the console block
             this.removeGlobalConsoleBlock(consolePos, level);
+            return InteractionResult.SUCCESS; //Don't try to continue interaction which will rerun the change console function
         } else {
-            if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
-                ResourceLocation nextTheme = this.nextTheme(consoleBlockEntity);
-                this.changeConsoleTheme(level, consolePos, consoleBlockEntity, blockState, nextTheme);
-            }
+            this.changeConsoleTheme(level, blockPos, consolePos);
         }
-
         return InteractionResult.SUCCESS;
     }
 
     /**
      * Places a Global Console block at the specified position, with the same theme as the Console Configuration block.
      *
-     * @param pos   The position to place the Global Console block at.
-     * @param state The state of the Console Configuration block that was used to place the Global Console block.
      * @param level The level the Global Console block will be placed in.
+     * @param configuratorPos - The position where this current configurator block is at
+     * @param consolePos   The position to place the Global Console block at.
      */
-    private void placeGlobalConsoleBlock(BlockPos pos, BlockState state, Level level, ResourceLocation consoleThemeId) {
-        level.setBlockAndUpdate(pos, BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
-        if(level.getBlockEntity(pos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-            globalConsoleBlock.setConsoleTheme(consoleThemeId);
+    private boolean placeNewGlobalConsoleBlock(Level level, BlockPos configuratorPos, BlockPos consolePos) {
+        BlockEntity expectedConfiguratorBlockEntity = level.getBlockEntity(configuratorPos);
+
+        if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity consoleConfigurationBlockEntity) {
+
+            ResourceLocation consoleThemeId = consoleConfigurationBlockEntity.theme();
+
+            level.setBlockAndUpdate(consolePos, BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
+
+            BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
+
+            if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) { //Set console theme
+                globalConsoleBlockEntity.setConsoleTheme(consoleThemeId);
+
+                level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+
+                if (level.isClientSide()) {
+                    this.playParticles(configuratorPos, level);
+                }
+                return true;
+            }
         }
-        if (Platform.isClient()) {
-            level.playSound(null, pos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
-            playParticles(pos, level);
-        }
+        return false;
     }
 
     /**
      * Removes the Global Console block at the specified position and kills its controls.
      *
-     * @param pos   The position of the Global Console block to be removed.
+     * @param consolePos   The position of the Global Console block to be removed.
      * @param level The level the Global Console block is in.
      */
-    private void removeGlobalConsoleBlock(BlockPos pos, Level level) {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity instanceof GlobalConsoleBlockEntity) {
-            ((GlobalConsoleBlockEntity) blockEntity).killControls();
+    private boolean removeGlobalConsoleBlock(BlockPos consolePos, Level level) {
+        BlockEntity blockEntity = level.getBlockEntity(consolePos);
+        if (blockEntity instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+            consoleBlockEntity.killControls();
+            level.destroyBlock(consolePos, true);
+            return true;
         }
-        level.destroyBlock(pos, true);
+        return false;
     }
 
     /**
-     * Changes the theme of the Console Configuration block and its adjacent Global Console block.
-     *
-     * @param level The level the Console Configuration and Global Console blocks are in.
-     * @param pos   The position of the Console Configuration block.
-     * @param blockEntity the Console block's block entity
-     * @param state The state of the Console Configuration block.
-     * @param themeId The new theme for the Console Configuration and Global Console blocks.
-
+     * Change the pattern of the console blocks' current theme
+     * @param level
+     * @param configuratorPos
+     * @param consolePos
+     * @param player
+     * @return
      */
-    private void changeConsoleTheme(Level level, BlockPos pos, GlobalConsoleBlockEntity blockEntity, BlockState state, ResourceLocation themeId) {
+    private boolean changePattern(Level level, BlockPos configuratorPos, BlockPos consolePos, Player player){
 
-        blockEntity.setConsoleTheme(themeId);
-        BlockPos consoleBlockPos = pos.offset(state.getValue(FACING).getNormal());
+        BlockEntity expectedConfiguratorBlockEntity = level.getBlockEntity(configuratorPos);
 
-        BlockState consoleBlock = level.getBlockState(consoleBlockPos);
-        if (consoleBlock.getBlock() instanceof GlobalConsoleBlock) {
-            level.setBlockAndUpdate(consoleBlockPos, BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
+        BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
 
-            if(level.getBlockEntity(consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock){
-                globalConsoleBlock.setConsoleTheme(themeId);
-                globalConsoleBlock.setPattern(globalConsoleBlock.pattern());
-                globalConsoleBlock.sendUpdates();
-            }
+        if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity consoleConfigurationBlockEntity) {
+            if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) { //Change console theme
+                ResourceLocation currentConsoleThemeId = globalConsoleBlockEntity.theme();
 
-            if (Platform.isClient()) {
-                level.playSound(null, pos.offset(state.getValue(FACING).getNormal()), SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
-                this.playParticles(pos, level);
+                if (ConsolePatterns.getPatternsForTheme(currentConsoleThemeId).size() == 1) { //If there is only one pattern for this theme, don't iterate and warn the player
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 100, (float) (0.1 + (level.getRandom().nextFloat() * 0.5)));
+                    return false;
+                }
+
+                globalConsoleBlockEntity.setPattern(ConsolePatterns.next(currentConsoleThemeId, globalConsoleBlockEntity.pattern()));
+                PlayerUtil.sendMessage(player, Component.Serializer.fromJson(new StringReader(globalConsoleBlockEntity.pattern().name())), true);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+
+                player.getCooldowns().addCooldown(ItemRegistry.PATTERN_MANIPULATOR.get(), 20);
+                return true;
             }
         }
+        return false;
     }
 
-    public ResourceLocation nextTheme(GlobalConsoleBlockEntity blockEntity){
+    /**
+     * Changes the theme of the Console Configuration block and its adjacent Global Console block using the next theme from the configurator's current theme.
+     *
+     * @param level The level the Console Configuration and Global Console blocks are in.
+     * @param configuratorPos   The position of the Console Configuration block.
+     * @param consolePos - The configurator block entity which we expect to not be null
+
+     */
+    private boolean changeConsoleTheme(Level level, BlockPos configuratorPos, BlockPos consolePos) {
+
+        BlockEntity expectedConfiguratorBlockEntity = level.getBlockEntity(configuratorPos);
+
+        BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
+
+        if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity configurationBlockEntity) { //Change console theme
+            ResourceLocation nextTheme = this.nextTheme(configurationBlockEntity);
+
+            configurationBlockEntity.setConsoleTheme(nextTheme);
+
+            if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+
+                consoleBlockEntity.setConsoleTheme(nextTheme);
+
+                //Kill previous controls and update control positions to that of the current theme
+                consoleBlockEntity.spawnControlEntities();
+
+                // Change theme and set the current pattern to the default
+                ConsolePattern defaultOrEquivalentPattern = ConsolePatterns.getPatternOrDefault(nextTheme, ResourceConstants.DEFAULT_PATTERN_ID);
+
+                if (defaultOrEquivalentPattern != null){
+                    consoleBlockEntity.setPattern(defaultOrEquivalentPattern);
+
+                    level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+
+                    if (level.isClientSide()) {
+                        this.playParticles(configuratorPos, level);
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private ResourceLocation nextTheme(ConsoleConfigurationBlockEntity blockEntity){
         ResourceLocation consoleThemeId = blockEntity.theme();
         //Get next console theme
         List<ResourceLocation> themesList = ConsoleTheme.CONSOLE_THEME_REGISTRY.keySet().stream().toList();

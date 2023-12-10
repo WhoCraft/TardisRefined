@@ -19,7 +19,7 @@ import whocraft.tardis_refined.registry.SoundRegistry;
 import java.util.Arrays;
 import java.util.List;
 
-public class TardisFlightEventManager {
+public class TardisFlightEventManager extends BaseHandler{
 
     private final TardisLevelOperator operator;
     private final List<ConsoleControl> possibleControls;

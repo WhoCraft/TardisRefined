@@ -37,6 +37,18 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> LIFT = registerShellTheme("lift");
 
 
+    public static ShellTheme getShellTheme(ResourceLocation resourceLocation){
+        ShellTheme potentialTheme = SHELL_THEME_REGISTRY.get(resourceLocation);
+        if(potentialTheme != null){
+            return potentialTheme;
+        }
+        return FACTORY.get();
+    }
+
+    public static ResourceLocation getKey(ShellTheme shellTheme){
+        return SHELL_THEME_REGISTRY.getKey(shellTheme);
+    }
+
     private ResourceLocation translationKey;
 
     public ShellTheme(ResourceLocation translationKey){ this.translationKey = translationKey;}

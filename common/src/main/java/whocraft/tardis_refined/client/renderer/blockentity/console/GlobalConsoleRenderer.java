@@ -10,13 +10,10 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
-import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.patterns.ShellPattern;
 
 import java.util.Objects;
 
@@ -57,7 +54,8 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     }
 
     private void renderHoloShell(Vec3 offset, int rotation, GlobalConsoleBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Vec3 color) {
-        if (blockEntity.getLevel().random.nextInt(20) != 0) {
+       //TODO Implement
+        /* if (blockEntity.getLevel().random.nextInt(20) != 0) {
             poseStack.pushPose();
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
             var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
@@ -76,7 +74,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             ShellPattern pattern = reactions.shellPattern();
             model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.exteriorDoorTexture().texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
             poseStack.popPose();
-        }
+        }*/
     }
 
     @Override
