@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
+import whocraft.tardis_refined.common.network.messages.SyncTardisClientDataMessage;
 
 import java.util.Map;
 
@@ -120,7 +120,7 @@ public class TardisClientData {
      * server-side, as calling it client-side may cause the game to crash.
      */
     public void sync() {
-        new SyncIntReactionsMessage(getLevelKey(), serializeNBT()).sendToAll();
+        new SyncTardisClientDataMessage(getLevelKey(), serializeNBT()).sendToAll();
     }
 
     public void tickClientside() {

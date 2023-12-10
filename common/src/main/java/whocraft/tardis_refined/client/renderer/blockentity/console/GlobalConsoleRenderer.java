@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
@@ -54,11 +53,13 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     }
 
     private void renderHoloShell(Vec3 offset, int rotation, GlobalConsoleBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, Vec3 color) {
-       //TODO Implement
-        /* if (blockEntity.getLevel().random.nextInt(20) != 0) {
+       /* if (blockEntity.getLevel().random.nextInt(20) != 0) {
             poseStack.pushPose();
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
-            var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
+            ShellPattern shellPattern = reactions.shellPattern();
+            ResourceLocation shellTheme = reactions.getShellTheme();
+            System.out.println(shellTheme + " " + shellPattern);
+            var model = ShellModelCollection.getInstance().getShellEntry(shellTheme).getShellModel();
             model.setDoorPosition(false);
 
             poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
@@ -71,7 +72,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
                 poseStack.mulPose(Axis.YP.rotationDegrees(rotation % 360));
             }
 
-            ShellPattern pattern = reactions.shellPattern();
+            ShellPattern pattern = ShellPatterns.getPatternOrDefault(shellTheme, shellPattern.id());
             model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.exteriorDoorTexture().texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
             poseStack.popPose();
         }*/

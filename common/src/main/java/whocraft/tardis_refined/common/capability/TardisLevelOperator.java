@@ -118,8 +118,6 @@ public class TardisLevelOperator {
         this.upgradeHandler.loadData(tag);
         this.tardisHADSManager.loadData(tag);
         this.aestheticHandler.loadData(tag);
-
-
         tardisClientData.sync();
     }
 

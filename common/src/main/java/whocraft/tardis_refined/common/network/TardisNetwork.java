@@ -16,7 +16,7 @@ public class TardisNetwork {
 
     public static void init() {
         SYNC_LEVELS = NETWORK.registerS2C("sync_levels", SyncLevelListMessage::new);
-        INT_REACTION = NETWORK.registerS2C("int_reaction", SyncIntReactionsMessage::new);
+        INT_REACTION = NETWORK.registerS2C("int_reaction", SyncTardisClientDataMessage::new);
         OPEN_MONITOR = NETWORK.registerS2C("open_monitor", OpenMonitorMessage::new);
         SYNC_CONSOLE_PATTERNS = NETWORK.registerS2C("sync_console_patterns", SyncConsolePatternsMessage::new);
         SYNC_SHELL_PATTERNS = NETWORK.registerS2C("sync_shell_patterns", SyncShellPatternsMessage::new);
