@@ -111,13 +111,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 }
 
             } else {
-                if (player.isShiftKeyDown()) { // Destroy the Console block if player is sneaking
-                    this.removeGlobalConsoleBlock(consolePos, level);
-                    return InteractionResult.SUCCESS; //Don't try to continue interaction which will rerun the change console function
-                }
-                else { //If we're holding an iron block but there is no existing console
-                    this.changeConsoleTheme(level, blockPos, consolePos);
-                }
+                //If we're holding an iron block but there is an existing console
+                this.changeConsoleTheme(level, blockPos, consolePos);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -141,13 +136,13 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     private boolean placeNewGlobalConsoleBlock(Level level, BlockPos configuratorPos, BlockPos consolePos) {
         BlockEntity expectedConfiguratorBlockEntity = level.getBlockEntity(configuratorPos);
 
-        BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
-
         if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity consoleConfigurationBlockEntity) {
 
             ResourceLocation consoleThemeId = consoleConfigurationBlockEntity.theme();
 
             level.setBlockAndUpdate(consolePos, BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
+
+            BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
 
             if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) { //Set console theme
                 globalConsoleBlockEntity.setConsoleTheme(consoleThemeId);
@@ -228,11 +223,11 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
 
         if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity configurationBlockEntity) { //Change console theme
+            ResourceLocation nextTheme = this.nextTheme(configurationBlockEntity);
+
+            configurationBlockEntity.setConsoleTheme(nextTheme);
+
             if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
-
-                ResourceLocation nextTheme = this.nextTheme(configurationBlockEntity);
-
-                configurationBlockEntity.setConsoleTheme(nextTheme);
 
                 consoleBlockEntity.setConsoleTheme(nextTheme);
 
@@ -250,9 +245,9 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                     if (level.isClientSide()) {
                         this.playParticles(configuratorPos, level);
                     }
-                    return true;
                 }
             }
+            return true;
         }
         return false;
     }
