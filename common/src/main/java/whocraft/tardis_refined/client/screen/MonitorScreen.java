@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -61,6 +62,8 @@ public class MonitorScreen extends SelectionScreen {
         super.init();
     }
 
+    private boolean noUpgrades = false;
+
     @Override
     public GenericMonitorSelectionList createSelectionList() {
         int leftPos = this.width / 2 - 75;
@@ -84,12 +87,24 @@ public class MonitorScreen extends SelectionScreen {
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
         }
 
+        if(selectionList.children().isEmpty()){
+            noUpgrades = true;
+        }
+
         return selectionList;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
         super.render(guiGraphics, i, j, f);
+        int textOffset = height / 2 - 35;
+
+        int upgradesLeftPos = this.width / 2 - 75;
+
+
+        if(noUpgrades){
+            guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS).getString(), upgradesLeftPos, this.topPos + 30, ChatFormatting.GOLD.getColor());
+        }
 
         this.renderTransparentBackground(guiGraphics);
 
@@ -97,7 +112,6 @@ public class MonitorScreen extends SelectionScreen {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        int textOffset = height / 2 - 35;
         int textScale = 40;
 
         guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", width / 2 - 96, textOffset + 50, Color.WHITE.getRGB());
