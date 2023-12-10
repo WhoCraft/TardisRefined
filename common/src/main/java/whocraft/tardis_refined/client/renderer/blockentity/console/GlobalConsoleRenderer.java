@@ -38,7 +38,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
-        BlockState blockstate = blockEntity.getBlockState();
+
         ResourceLocation theme = blockEntity.theme();
 
         ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);

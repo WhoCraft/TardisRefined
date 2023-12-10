@@ -178,7 +178,7 @@ public class TardisExteriorManager {
     }
 
     /**
-     * Set the theme ID for the Exterior Shell Block assuming that the Tardis is NOT being transformed from a Root Shell
+     * Set the theme ID for the Exterior Shell Block assuming that the Tardis is NOT being transformed from a Root Shell or changing desktops
      * @param theme
      */
     public void setShellTheme(ResourceLocation theme){
@@ -188,7 +188,7 @@ public class TardisExteriorManager {
     /**
      * Sets the shell theme ID for the Exterior Shell Block
      * @param theme - the Shell Theme ID
-     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one. True if that is the case.
+     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one, or changing desktops. True if that is the case.
      */
     public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
 
@@ -200,32 +200,34 @@ public class TardisExteriorManager {
         ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
         BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocationPosition);
 
-        if (setupTardis){
-            if (state.getBlock() instanceof RootedShellBlock) {
-                // If the block at the last known location was originally a Root Shell Block (i.e. transforming to a proper Tardis),
-                // Create a new Global Shell Block instance and copy over all attributes from the existing shell
-                lastKnownLocationLevel.setBlock(lastKnownLocationPosition,
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL);
 
-                //Copy over important data such as Tardis ID
-                var shellBlockEntity = lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition);
-                if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
-                    entity.setTardisId(operator.getLevel().dimension());
-                    // Make sure to set the shell theme so that any pattern lookups by theme Id won't fail
-                    entity.setShellTheme(theme);
-                    // Also update the shell pattern
-                    // If the exterior manager has a shell pattern already set, make sure the theme being updated mismatches the theme ID of the current shell Pattern
-                    //TODO: This has a performance implication because ShellPatterns#getThemeForPattern does an expensive lookup, do we still need this?
-                    if(shellPattern != null) {
-                        entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
-                    }
+        if (setupTardis){
+            // Check if we're updating an existing GlobalShellBlock instance, set the shell's REGEN property to false to indicate it's no longer regenerating
+            if (state.getBlock() instanceof GlobalShellBlock) {
+                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false), 2);
+            }
+            else {
+                //Otherwise, check if we're trying to setup a new Tardis beginning from a root shell
+                if (state.getBlock() instanceof RootedShellBlock) {
+                    // If the block at the last known location was originally a Root Shell Block (i.e. transforming to a proper Tardis),
+                    // Create a new Global Shell Block instance and copy over all attributes from the existing shell
+                    lastKnownLocationLevel.setBlock(lastKnownLocationPosition,
+                            BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL);
                 }
             }
         }
-        else {
-            // Check if its our default global shell.
-            if (state.getBlock() instanceof GlobalShellBlock) {
-                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false), 2);
+
+        //After accounting for logic such as desktop generation, copy over important data such as Tardis ID and actually set the theme for the block entity
+        var shellBlockEntity = lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition);
+        if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
+            entity.setTardisId(operator.getLevel().dimension());
+            // Make sure to set the shell theme so that any pattern lookups by theme Id won't fail
+            entity.setShellTheme(theme);
+            // Also update the shell pattern
+            // If the exterior manager has a shell pattern already set, make sure the theme being updated doesn't mismatch the theme ID of the current shell Pattern
+            //TODO: This has a performance implication because ShellPatterns#getThemeForPattern does an expensive lookup, do we still need this?
+            if(shellPattern != null) {
+                entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
             }
         }
 

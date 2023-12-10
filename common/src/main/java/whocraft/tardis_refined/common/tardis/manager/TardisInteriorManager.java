@@ -327,13 +327,12 @@ public class TardisInteriorManager {
     /**
      * Sets the shell theme ID for the Door block
      * @param theme - the Shell Theme ID
-     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one. True if that is the case.
+     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one or changing desktops. True if that is the case.
      */
     public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
         if (operator.getInternalDoor() != null){
             BlockPos internalDoorPos = operator.getInternalDoor().getDoorPosition();
             BlockState state = operator.getLevel().getBlockState(internalDoorPos);
-            BlockEntity blockEntity = operator.getLevel().getBlockEntity(internalDoorPos);
 
             if (setupTardis){
                 if (state.getBlock() instanceof RootShellDoorBlock) {
@@ -342,21 +341,15 @@ public class TardisInteriorManager {
                     operator.getLevel().setBlock(internalDoorPos,
                             BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
                                     .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), 2);
-
-                    var shellBlockEntity = operator.getLevel().getBlockEntity(internalDoorPos);
-                    if (shellBlockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
-                        doorBlockEntity.setShellTheme(theme);
-                        operator.setInternalDoor(doorBlockEntity);
-                    }
                 }
             }
-            else {
-                // Check if its our default global shell.
-                if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
-                    doorBlockEntity.setShellTheme(theme);
-                }
-            }
+            //After handling logic for changing desktops or transforming from root shell to functional Tardis, set the theme for the door block entity
+            BlockEntity blockEntity = operator.getLevel().getBlockEntity(internalDoorPos);
 
+            if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
+                doorBlockEntity.setShellTheme(theme);
+                operator.setInternalDoor(doorBlockEntity);
+            }
 
         }
     }
