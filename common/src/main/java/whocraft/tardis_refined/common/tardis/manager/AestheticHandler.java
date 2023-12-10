@@ -155,7 +155,7 @@ public class AestheticHandler extends BaseHandler {
         // Shell
         CompoundTag shellInfo = new CompoundTag();
         if (this.shellTheme != null) {
-            shellInfo.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, this.shellTheme.toString());
+            shellInfo.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, ShellTheme.getKey(shellTheme).toString());
         }
         if (this.shellPattern != null) {
             shellInfo.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
@@ -180,9 +180,11 @@ public class AestheticHandler extends BaseHandler {
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME, NbtType.STRING) && shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, NbtType.STRING)) {
                     ResourceLocation themeID = new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
                     this.shellTheme = ShellTheme.getShellTheme(themeID);
+                    System.out.println(shellTheme);
 
                     String patternId = shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN);
                     this.shellPattern = ShellPatterns.getPatternOrDefault(themeID, new ResourceLocation(patternId));
+                    System.out.println(patternId);
                 }
             }
         }

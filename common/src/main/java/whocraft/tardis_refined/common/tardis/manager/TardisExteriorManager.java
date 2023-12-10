@@ -10,17 +10,24 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
+import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
+
+import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
@@ -32,6 +39,9 @@ public class TardisExteriorManager extends BaseHandler {
 
     private final TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation = TardisNavLocation.ORIGIN;
+    private ResourceLocation currentTheme;
+
+    private ShellPattern shellPattern = null;
 
     public boolean locked() {
         return locked;
@@ -192,7 +202,6 @@ public class TardisExteriorManager extends BaseHandler {
         if (location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity globalShell) {
             globalShell.setTardisId(operator.getLevel().dimension());
             globalShell.setShellTheme(theme);
-            globalShell.setPattern(operator.getAestheticHandler().shellPattern());
             location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, Block.UPDATE_CLIENTS);
         }
 
