@@ -52,6 +52,18 @@ public class TardisExteriorManager {
             return;
         }
         this.locked = locked;
+        if (this.getLastKnownLocation() != null){
+            TardisNavLocation lastKnownLocation = this.getLastKnownLocation();
+            Level level = lastKnownLocation.getLevel();
+            BlockPos extPos = lastKnownLocation.getPosition();
+            if (level.getBlockState(extPos) != null){
+                BlockState extState = level.getBlockState(extPos);
+                if (extState.getBlock() instanceof GlobalShellBlock shellBlock){
+                    level.setBlock(extPos, extState.setValue(LOCKED, locked), Block.UPDATE_ALL);
+                }
+            }
+        }
+
     }
 
     private boolean locked;

@@ -118,11 +118,18 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                         boolean locked = !cap.getExteriorManager().locked();
                         cap.getExteriorManager().setLocked(locked);
                         cap.getInternalDoor().setLocked(locked);
-                        cap.setDoorClosed(true);
+                        cap.setDoorClosed(locked);
                         valid.set(true);
                     }
-                    if(cap.getExteriorManager().locked()) valid.set(false);
-                    cap.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
+                    else { //If not a valid key
+                        if(cap.getExteriorManager().locked()) {
+                            valid.set(false);
+                        }
+                        else {
+                            cap.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
+                            valid.set(true);
+                        }
+                    }
                 });
                 return valid.get();
             }
