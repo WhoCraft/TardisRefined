@@ -61,7 +61,7 @@ public class GlobalDoorBlock extends InternalDoorBlock{
             }
         }
 
-        return InteractionResult.FAIL;
+        return InteractionResult.SUCCESS;
     }
 
     @Override
