@@ -107,23 +107,26 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                     if (!player.isCreative()) {
                         player.getMainHandItem().shrink(1);
                     }
-                    return InteractionResult.CONSUME;
+                    return InteractionResult.SUCCESS;
                 }
 
             } else {
                 if (player.isShiftKeyDown()) { // Destroy the Console block if player is sneaking
                     this.removeGlobalConsoleBlock(consolePos, level);
-                } else { //If we're holding an iron block but there is no existing console
+                    return InteractionResult.SUCCESS; //Don't try to continue interaction which will rerun the change console function
+                }
+                else { //If we're holding an iron block but there is no existing console
                     this.changeConsoleTheme(level, blockPos, consolePos);
                 }
-                return InteractionResult.FAIL;
+                return InteractionResult.SUCCESS;
             }
         }
 
         if (player.isShiftKeyDown()) { //If we are destroying the console block
             this.removeGlobalConsoleBlock(consolePos, level);
+            return InteractionResult.SUCCESS; //Don't try to continue interaction which will rerun the change console function
         } else {
-           this.changeConsoleTheme(level, blockPos, consolePos);
+            this.changeConsoleTheme(level, blockPos, consolePos);
         }
         return InteractionResult.SUCCESS;
     }
@@ -149,8 +152,9 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) { //Set console theme
                 globalConsoleBlockEntity.setConsoleTheme(consoleThemeId);
 
-                if (Platform.isClient()) {
-                    level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+                level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+
+                if (level.isClientSide()) {
                     this.playParticles(configuratorPos, level);
                 }
                 return true;
@@ -231,14 +235,19 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 configurationBlockEntity.setConsoleTheme(nextTheme);
 
                 consoleBlockEntity.setConsoleTheme(nextTheme);
+
+                //Kill previous controls and update control positions to that of the current theme
+                consoleBlockEntity.spawnControlEntities();
+
                 // Change theme and set the current pattern to the default
                 ConsolePattern defaultOrEquivalentPattern = ConsolePatterns.getPatternOrDefault(nextTheme, ResourceConstants.DEFAULT_PATTERN_ID);
 
                 if (defaultOrEquivalentPattern != null){
                     consoleBlockEntity.setPattern(defaultOrEquivalentPattern);
 
-                    if (Platform.isClient()) {
-                        level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+                    level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
+
+                    if (level.isClientSide()) {
                         this.playParticles(configuratorPos, level);
                     }
                     return true;
