@@ -79,7 +79,7 @@ public class DeferredRegistryImpl {
 
         @Override
         public Codec<T> getCodec() {
-            return this.registry.byNameCodec();
+            return this.getRegistry().byNameCodec();
         }
     }
 

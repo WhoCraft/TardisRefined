@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -35,6 +36,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(SoundRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator activates");
         addSound(SoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
         addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
+        addSound(SoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
