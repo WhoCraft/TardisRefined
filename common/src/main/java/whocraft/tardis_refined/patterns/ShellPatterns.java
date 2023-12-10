@@ -8,7 +8,6 @@ import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /** Data Manager for all {@link ShellPattern}(s) */
 public class ShellPatterns {

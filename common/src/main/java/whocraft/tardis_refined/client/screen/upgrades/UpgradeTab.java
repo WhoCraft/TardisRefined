@@ -48,18 +48,18 @@ public class UpgradeTab {
         this.index = i;
         this.upgradeHandler = powerHolder;
         this.icon = new ItemStack(Items.COOKED_PORKCHOP);
-        this.title = Component.literal("its shy");
-        this.populate();
+        this.title = Component.literal("");
+        this.populate(powerHolder);
     }
 
-    public void populate() {
+    public void populate(UpgradeHandler upgradeHandlerClient) {
         this.entries.clear();
         this.connections.clear();
         List<UpgradeWidget> root = new LinkedList<>();
 
         // Create entry for each ability
         for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
-            var widget = new UpgradeWidget(this, this.minecraft, this.upgradeHandler, upgrade).setPosition(0, 0);
+            var widget = new UpgradeWidget(this, this.minecraft, upgradeHandlerClient, upgrade).setPosition(0, 0);
             this.entries.add(widget);
             var pos = upgrade.getScreenPosition();
 

@@ -44,7 +44,7 @@ public class S2CDisplayUpgradeScreen extends MessageS2C {
         upgradeHandlerClient.loadData(compoundTag);
 
         if (Minecraft.getInstance().screen instanceof UpgradesScreen screen && screen.selectedTab != null) {
-            screen.selectedTab.populate();
+            screen.selectedTab.populate(upgradeHandlerClient);
         } else {
             Minecraft.getInstance().setScreen(new UpgradesScreen(upgradeHandlerClient));
         }

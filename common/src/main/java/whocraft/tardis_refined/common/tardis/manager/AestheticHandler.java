@@ -170,9 +170,6 @@ public class AestheticHandler extends BaseHandler {
 
     @Override
     public void loadData(CompoundTag tag) {
-
-        System.out.println(tag);
-
         if (tag.contains("aesthetic", NbtType.COMPOUND)) {
             CompoundTag aestheticTag = tag.getCompound("aesthetic");
 
@@ -183,11 +180,8 @@ public class AestheticHandler extends BaseHandler {
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME, NbtType.STRING) && shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, NbtType.STRING)) {
                     ResourceLocation themeID = new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
                     this.shellTheme = themeID;
-                    System.out.println(shellTheme);
-
                     String patternId = shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN);
                     this.shellPattern = ShellPatterns.getPatternOrDefault(themeID, new ResourceLocation(patternId));
-                    System.out.println(patternId);
                 }
             }
         }

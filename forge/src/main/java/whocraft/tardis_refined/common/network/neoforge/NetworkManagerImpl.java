@@ -10,6 +10,7 @@ import net.neoforged.neoforge.network.NetworkRegistry;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.PlayNetworkDirection;
 import net.neoforged.neoforge.network.simple.SimpleChannel;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -35,7 +36,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToServer(MessageC2S message) {
         if (!this.toServer.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
 
@@ -45,7 +46,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToPlayer(ServerPlayer player, MessageS2C message) {
         if (!this.toClient.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
 
@@ -55,7 +56,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToTracking(Entity entity, MessageS2C message) {
         if (!this.toClient.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
         this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
@@ -64,7 +65,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToTracking(BlockEntity blockEntity, MessageS2C message) {
         if (!this.toClient.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
         this.channel.send(PacketDistributor.TRACKING_CHUNK.with(() -> blockEntity.getLevel().getChunkAt(blockEntity.getBlockPos())), message);
@@ -83,7 +84,7 @@ public class NetworkManagerImpl extends NetworkManager {
             var msgId = buf.readUtf();
 
             if (!NetworkManagerImpl.this.toServer.containsKey(msgId)) {
-                System.out.println("Unknown message id received on server: " + msgId);
+                TardisRefined.LOGGER.error("Unknown message id received on server: " + msgId);
                 this.message = null;
                 return;
             }
@@ -118,7 +119,7 @@ public class NetworkManagerImpl extends NetworkManager {
             var msgId = buf.readUtf();
 
             if (!NetworkManagerImpl.this.toClient.containsKey(msgId)) {
-                System.out.println("Unknown message id received on client: " + msgId);
+                TardisRefined.LOGGER.error("Unknown message id received on client: " + msgId);
                 this.message = null;
                 return;
             }

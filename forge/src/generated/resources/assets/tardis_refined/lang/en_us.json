@@ -65,6 +65,7 @@
   "shell.tardis_refined.portaloo": "Portaloo",
   "shell.tardis_refined.present": "Present",
   "shell.tardis_refined.vending": "Vending Machine",
+  "sound.destination_ding.subtitle": "TARDIS reaches destination",
   "sound.pattern_manipulator.subtitle": "Pattern Manipulator activates",
   "sound.static.subtitle": "Screen display static",
   "sound.tardis_crash_land.subtitle": "TARDIS crash lands",

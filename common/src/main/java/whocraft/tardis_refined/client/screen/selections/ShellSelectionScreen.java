@@ -144,7 +144,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
-        ShellModel model = ShellModelCollection.getInstance().getShellModel(this.currentShellTheme);
+        ShellModel model = ShellModelCollection.getInstance().getShellEntry(this.currentShellTheme).getShellModel();
         model.setDoorPosition(false);
         Lighting.setupForEntityInInventory();
         PoseStack pose = guiGraphics.pose();

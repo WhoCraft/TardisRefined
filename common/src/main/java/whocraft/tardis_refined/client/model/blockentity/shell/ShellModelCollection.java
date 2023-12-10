@@ -4,6 +4,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.client.ModelRegistry;
+import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
+import whocraft.tardis_refined.client.model.blockentity.shell.shells.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 import java.util.HashMap;
@@ -15,7 +17,10 @@ public class ShellModelCollection {
             presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel,
             portalooModel, pagodaModel, liftModel;
 
-    public static Map<ResourceLocation, ShellModel> SHELL_MODELS = new HashMap<>();
+    private static ShellDoorModel factoryDoorModel, policeBoxDoorModel, phoneBoothDoorModel, mysticDoorModel, drifterDoorModel, presentDoorModel, vendingDoorModel, briefcaseDoorModel,
+            groeningDoorModel, bigBenDoorModel, nukaDoorModel, growthDoorModel, portalooDoorModel, pagodaDoorModel, liftDoorModel;
+
+    public static Map<ResourceLocation, ShellEntry> SHELL_MODELS = new HashMap<>();
 
     public ShellModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
@@ -23,6 +28,8 @@ public class ShellModelCollection {
     }
 
     public void registerModels(EntityModelSet context){
+
+        // Shells
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
         policeBoxModel = new PoliceBoxModel(context.bakeLayer((ModelRegistry.POLICE_BOX_SHELL)));
         phoneBoothModel = new PhoneBoothModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_SHELL)));
@@ -39,31 +46,50 @@ public class ShellModelCollection {
         pagodaModel = new PagodaShellModel(context.bakeLayer((ModelRegistry.PAGODA_SHELL)));
         liftModel = new LiftShellModel(context.bakeLayer((ModelRegistry.LIFT_SHELL)));
 
-        SHELL_MODELS.put(ShellTheme.FACTORY.getId(), factoryShellModel);
-        SHELL_MODELS.put(ShellTheme.POLICE_BOX.getId(), policeBoxModel);
-        SHELL_MODELS.put(ShellTheme.PHONE_BOOTH.getId(), phoneBoothModel);
-        SHELL_MODELS.put(ShellTheme.MYSTIC.getId(), mysticModel);
-        SHELL_MODELS.put(ShellTheme.DRIFTER.getId(), drifterModel);
-        SHELL_MODELS.put(ShellTheme.PRESENT.getId(), presentModel);
-        SHELL_MODELS.put(ShellTheme.VENDING.getId(), vendingModel);
-        SHELL_MODELS.put(ShellTheme.BRIEFCASE.getId(), briefcaseModel);
-        SHELL_MODELS.put(ShellTheme.GROENING.getId(), groeningModel);
-        SHELL_MODELS.put(ShellTheme.BIG_BEN.getId(), bigBenModel);
-        SHELL_MODELS.put(ShellTheme.NUKA.getId(), nukaModel);
-        SHELL_MODELS.put(ShellTheme.GROWTH.getId(), growthModel);
-        SHELL_MODELS.put(ShellTheme.PORTALOO.getId(), portalooModel);
-        SHELL_MODELS.put(ShellTheme.PAGODA.getId(), pagodaModel);
-        SHELL_MODELS.put(ShellTheme.LIFT.getId(), liftModel);
+        // Doors
+        factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
+        policeBoxDoorModel = new PoliceBoxDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
+        phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
+        mysticDoorModel = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
+        drifterDoorModel = new DrifterDoorModel(context.bakeLayer((ModelRegistry.DRIFTER_DOOR)));
+        presentDoorModel = new PresentDoorModel(context.bakeLayer((ModelRegistry.PRESENT_DOOR)));
+        vendingDoorModel = new VendingMachineDoorModel(context.bakeLayer((ModelRegistry.VENDING_DOOR)));
+        briefcaseDoorModel = new BriefcaseDoorModel(context.bakeLayer((ModelRegistry.BRIEFCASE_DOOR)));
+        groeningDoorModel = new GroeningDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)));
+        bigBenDoorModel = new BigBenDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)));
+        nukaDoorModel = new NukaDoorModel(context.bakeLayer((ModelRegistry.NUKA_DOOR)));
+        growthDoorModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
+        portalooDoorModel = new PortalooDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)));
+        pagodaDoorModel = new PagodaDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)));
+        liftDoorModel = new LiftShellDoorModel(context.bakeLayer((ModelRegistry.LIFT_DOOR)));
+
+        registerShellEntry(ShellTheme.FACTORY.get(), factoryShellModel, factoryDoorModel);
+        registerShellEntry(ShellTheme.POLICE_BOX.get(), policeBoxModel, policeBoxDoorModel);
+        registerShellEntry(ShellTheme.PHONE_BOOTH.get(), phoneBoothModel, phoneBoothDoorModel);
+        registerShellEntry(ShellTheme.MYSTIC.get(), mysticModel, mysticDoorModel);
+        registerShellEntry(ShellTheme.DRIFTER.get(), drifterModel, drifterDoorModel);
+        registerShellEntry(ShellTheme.PRESENT.get(), presentModel, presentDoorModel);
+        registerShellEntry(ShellTheme.VENDING.get(), vendingModel, vendingDoorModel);
+        registerShellEntry(ShellTheme.BRIEFCASE.get(), briefcaseModel, briefcaseDoorModel);
+        registerShellEntry(ShellTheme.GROENING.get(), groeningModel, groeningDoorModel);
+        registerShellEntry(ShellTheme.BIG_BEN.get(), bigBenModel, bigBenDoorModel);
+        registerShellEntry(ShellTheme.NUKA.get(), nukaModel, nukaDoorModel);
+        registerShellEntry(ShellTheme.GROWTH.get(), growthModel, growthDoorModel);
+        registerShellEntry(ShellTheme.PORTALOO.get(), portalooModel, portalooDoorModel);
+        registerShellEntry(ShellTheme.PAGODA.get(), pagodaModel, pagodaDoorModel);
+        registerShellEntry(ShellTheme.LIFT.get(), liftModel, liftDoorModel);
     }
 
-
+    public static void registerShellEntry(ShellTheme theme, ShellModel shellModel, ShellDoorModel shellDoorModel){
+        SHELL_MODELS.put(ShellTheme.getKey(theme), new ShellEntry(shellModel, shellDoorModel));
+    }
 
     /**
      * Get the associated shell model from a shell theme.
      * @param themeId The Shell theme Id.
      * @return Shell model tied with the shell theme.
      * **/
-    public ShellModel getShellModel(ResourceLocation themeId) {
+    public ShellEntry getShellEntry(ResourceLocation themeId) {
         return SHELL_MODELS.get(themeId);
     }
 

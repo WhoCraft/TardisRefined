@@ -21,11 +21,11 @@ public class Upgrades {
     public static final Registry<Upgrade> UPGRADE_REGISTRY = UPGRADE_DEFERRED_REGISTRY.getRegistry();
 
 
-    // Base
+    // Base Upgrades
     public static final RegistrySupplier<Upgrade> TARDIS_XP = UPGRADE_DEFERRED_REGISTRY.register("tardis_xp", () -> new Upgrade(Items.GLASS_BOTTLE::getDefaultInstance, RegistryHelper.makeKey("tardis_xp"))
             .setSkillPointsRequired(50).setPosition(0, -1));
 
-    // Chameleon Circuit
+    // Chameleon Circuit Upgrades
     public static final RegistrySupplier<Upgrade> ARCHITECTURE_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("architecture_system", () -> new Upgrade(BlockRegistry.ARS_EGG.get().asItem()::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("architecture_system"))
             .setSkillPointsRequired(50).setPosition(0, 1));
 
@@ -35,7 +35,7 @@ public class Upgrades {
     public static final RegistrySupplier<Upgrade> INSIDE_ARCHITECTURE = UPGRADE_DEFERRED_REGISTRY.register("inside_architecture", () -> new Upgrade(BlockRegistry.TERRAFORMER_BLOCK.get().asItem()::getDefaultInstance, ARCHITECTURE_SYSTEM, RegistryHelper.makeKey("inside_architecture"))
             .setSkillPointsRequired(50).setPosition(1, 1));
 
-    // Defense
+    // Defense Upgrades
     public static final RegistrySupplier<Upgrade> DEFENSE_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("defense_system", () -> new Upgrade(Items.DIAMOND_SWORD::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("defense_system"))
             .setSkillPointsRequired(50).setPosition(0, -2));
 
@@ -45,7 +45,7 @@ public class Upgrades {
     public static final RegistrySupplier<Upgrade> MATERIALIZE_AROUND = UPGRADE_DEFERRED_REGISTRY.register("materialize_around", () -> new Upgrade(Items.GLASS_PANE::getDefaultInstance, DEFENSE_SYSTEM, RegistryHelper.makeKey("materialize_around"))
             .setSkillPointsRequired(50).setPosition(0, -4));
 
-    // Navigation
+    // Navigation Upgrades
     public static final RegistrySupplier<Upgrade> NAVIGATION_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("navigation_system", () -> new Upgrade(Items.COMPASS::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("navigation_system"))
             .setSkillPointsRequired(50).setPosition(0, 2));
 

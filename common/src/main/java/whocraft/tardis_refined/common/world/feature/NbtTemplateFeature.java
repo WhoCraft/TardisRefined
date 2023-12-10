@@ -47,7 +47,7 @@ public class NbtTemplateFeature extends Feature<NbtTemplateFeatureConfig> {
         posMutable.set(context.origin());
         BlockPos offset = new BlockPos(-template.get().getSize().getX() / 2, context.config().heightOffset, -template.get().getSize().getZ() / 2);
         template.get().placeInWorld(context.level(), posMutable.offset(offset), posMutable.offset(offset), placementSettings, context.random(), Block.UPDATE_CLIENTS);
-//        System.out.println("Placed template at: " + posMutable.offset(offset).toString());
+//        .println("Placed template at: " + posMutable.offset(offset).toString());
         return true;
     }
 }

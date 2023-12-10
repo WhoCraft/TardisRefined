@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
@@ -15,7 +16,6 @@ import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
 
-    private ResourceLocation shellTheme = ShellTheme.getKey(ShellTheme.FACTORY.get());
+    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ShellPattern basePattern;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -32,7 +32,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
     }
 
     public ShellPattern pattern() {
-        ShellPattern defaultBasePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, ResourceConstants.DEFAULT_PATTERN_ID);
+        ShellPattern defaultBasePattern = ShellPatterns.DEFAULT;
         return this.basePattern == null ? defaultBasePattern : this.basePattern;
     }
 
@@ -71,7 +71,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
     @Nullable
     @Override
     public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return super.getUpdatePacket();
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
         super.load(pTag);
 
         if (pTag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.THEME));
             this.shellTheme = themeId;
         }
 
@@ -98,6 +98,8 @@ public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
             this.basePattern = pattern();
         }
     }
+
+
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
