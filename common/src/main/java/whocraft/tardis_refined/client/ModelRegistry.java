@@ -50,6 +50,8 @@ public class ModelRegistry {
     public static ModelLayerLocation PORTALOO_SHELL;
     public static ModelLayerLocation PAGODA_SHELL;
     public static ModelLayerLocation LIFT_SHELL;
+    public static ModelLayerLocation HIEROGLYPH_SHELL;
+    public static ModelLayerLocation CASTLE_SHELL;
 
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -68,6 +70,8 @@ public class ModelRegistry {
     public static ModelLayerLocation PORTALOO_DOOR;
     public static ModelLayerLocation PAGODA_DOOR;
     public static ModelLayerLocation LIFT_DOOR;
+    public static ModelLayerLocation HIEROGLYPH_DOOR;
+    public static ModelLayerLocation CASTLE_DOOR;
 
 
     public static ModelLayerLocation ARS_EGG;
@@ -106,6 +110,8 @@ public class ModelRegistry {
         PORTALOO_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_shell"), "portaloo_shell"), PortalooShellModel::createBodyLayer);
         PAGODA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pagoda_shell"), "pagoda_shell"), PagodaShellModel::createBodyLayer);
         LIFT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_shell"), "lift_shell"), LiftShellModel::createBodyLayer);
+        HIEROGLYPH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_shell"), "hieroglyph_shell"), HieroglyphModel::createBodyLayer);
+        CASTLE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_shell"), "castle_shell"), CastleShellModel::createBodyLayer);
 
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
@@ -124,6 +130,8 @@ public class ModelRegistry {
         PORTALOO_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_door"), "portaloo_door"), PortalooDoorModel::createBodyLayer);
         PAGODA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pagoda_door"), "pagoda_door"), PagodaDoorModel::createBodyLayer);
         LIFT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_door"), "lift_door"), LiftShellDoorModel::createBodyLayer);
+        HIEROGLYPH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
+        CASTLE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
 
 
 

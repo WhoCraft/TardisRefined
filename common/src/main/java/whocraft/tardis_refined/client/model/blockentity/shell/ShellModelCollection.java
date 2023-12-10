@@ -15,10 +15,10 @@ public class ShellModelCollection {
 
     private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
             presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel,
-            portalooModel, pagodaModel, liftModel;
+            portalooModel, pagodaModel, liftModel, hieroglyphModel, castleShellModel;
 
     private static ShellDoorModel factoryDoorModel, policeBoxDoorModel, phoneBoothDoorModel, mysticDoorModel, drifterDoorModel, presentDoorModel, vendingDoorModel, briefcaseDoorModel,
-            groeningDoorModel, bigBenDoorModel, nukaDoorModel, growthDoorModel, portalooDoorModel, pagodaDoorModel, liftDoorModel;
+            groeningDoorModel, bigBenDoorModel, nukaDoorModel, growthDoorModel, portalooDoorModel, pagodaDoorModel, liftDoorModel, hieroglyphDoorModel, castleDoorModel;
 
     public static Map<ResourceLocation, ShellEntry> SHELL_MODELS = new HashMap<>();
 
@@ -45,6 +45,8 @@ public class ShellModelCollection {
         portalooModel = new PortalooShellModel(context.bakeLayer((ModelRegistry.PORTALOO_SHELL)));
         pagodaModel = new PagodaShellModel(context.bakeLayer((ModelRegistry.PAGODA_SHELL)));
         liftModel = new LiftShellModel(context.bakeLayer((ModelRegistry.LIFT_SHELL)));
+        hieroglyphModel = new HieroglyphModel(context.bakeLayer((ModelRegistry.HIEROGLYPH_SHELL)));
+        castleShellModel = new CastleShellModel(context.bakeLayer((ModelRegistry.CASTLE_SHELL)));
 
         // Doors
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
@@ -62,6 +64,8 @@ public class ShellModelCollection {
         portalooDoorModel = new PortalooDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)));
         pagodaDoorModel = new PagodaDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)));
         liftDoorModel = new LiftShellDoorModel(context.bakeLayer((ModelRegistry.LIFT_DOOR)));
+        hieroglyphDoorModel = new HieroglyphShellDoor(context.bakeLayer((ModelRegistry.HIEROGLYPH_DOOR)));
+        castleDoorModel = new CastleShellDoorModel(context.bakeLayer((ModelRegistry.CASTLE_DOOR)));
 
         registerShellEntry(ShellTheme.FACTORY.get(), factoryShellModel, factoryDoorModel);
         registerShellEntry(ShellTheme.POLICE_BOX.get(), policeBoxModel, policeBoxDoorModel);
@@ -78,6 +82,8 @@ public class ShellModelCollection {
         registerShellEntry(ShellTheme.PORTALOO.get(), portalooModel, portalooDoorModel);
         registerShellEntry(ShellTheme.PAGODA.get(), pagodaModel, pagodaDoorModel);
         registerShellEntry(ShellTheme.LIFT.get(), liftModel, liftDoorModel);
+        registerShellEntry(ShellTheme.HIEROGLYPH.get(), hieroglyphModel, hieroglyphDoorModel);
+        registerShellEntry(ShellTheme.CASTLE.get(), castleShellModel, castleDoorModel);
     }
 
     public static void registerShellEntry(ShellTheme theme, ShellModel shellModel, ShellDoorModel shellDoorModel){

@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -138,6 +137,8 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.PORTALOO.getId(), "Portaloo");
         addShell(ShellTheme.PAGODA.getId(), "Pagoda");
         addShell(ShellTheme.LIFT.getId(), "Lift");
+        addShell(ShellTheme.HIEROGLYPH.getId(), "Hieroglyph");
+        addShell(ShellTheme.CASTLE.getId(), "Castle");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");

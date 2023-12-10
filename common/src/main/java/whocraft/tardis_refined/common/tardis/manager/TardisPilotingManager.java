@@ -498,7 +498,6 @@ public class TardisPilotingManager extends BaseHandler{
 
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler){
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
-
         if(Upgrades.EXPLORER.get().isUnlocked(upgradeHandler)){
             increments.add(1000);
         }

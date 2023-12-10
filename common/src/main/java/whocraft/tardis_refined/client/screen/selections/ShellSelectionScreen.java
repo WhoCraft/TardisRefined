@@ -14,9 +14,12 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
@@ -32,6 +35,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.List;
+import java.util.UUID;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
@@ -57,6 +61,9 @@ public class ShellSelectionScreen extends SelectionScreen {
         globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
         assert Minecraft.getInstance().level != null;
         globalShellBlockEntity.setLevel(Minecraft.getInstance().level);
+        ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+        globalShellBlockEntity.setTardisId(generatedLevelKey);
+
     }
 
     @Override
@@ -158,7 +165,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         renderer.render(globalShellBlockEntity, Minecraft.getInstance().getDeltaFrameTime(), pose, Minecraft.getInstance().renderBuffers().bufferSource(), 1, OverlayTexture.NO_OVERLAY);
 */
         VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
-        model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.renderShell(globalShellBlockEntity, false, false, pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
         pose.popPose();
         Lighting.setupFor3DItems();

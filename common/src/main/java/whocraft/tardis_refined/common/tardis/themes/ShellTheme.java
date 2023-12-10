@@ -35,6 +35,8 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PORTALOO = registerShellTheme("portaloo");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PAGODA = registerShellTheme("pagoda");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> LIFT = registerShellTheme("lift");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> CASTLE = registerShellTheme("castle");
 
 
     public static ShellTheme getShellTheme(ResourceLocation resourceLocation){
