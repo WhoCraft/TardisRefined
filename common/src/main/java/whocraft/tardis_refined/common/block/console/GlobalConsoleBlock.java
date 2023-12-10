@@ -63,6 +63,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
         if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
             ResourceLocation theme = globalConsoleBlockEntity.theme();
+            globalConsoleBlockEntity.setConsoleTheme(theme);
             globalConsoleBlockEntity.setPattern(ConsolePatterns.DEFAULT);
             globalConsoleBlockEntity.markDirty();
         }

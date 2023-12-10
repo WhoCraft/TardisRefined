@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.blockentity.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -30,6 +31,7 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
     public void setConsoleTheme(ResourceLocation themeId){
         this.consoleTheme = themeId;
         this.setChanged();
+        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     @Override
