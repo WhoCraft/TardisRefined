@@ -24,7 +24,7 @@ import java.util.Optional;
 
 public class GlobalDoorBlockEntity extends AbstractEntityBlockDoor {
 
-    private ResourceLocation shellTheme;
+    private ResourceLocation shellTheme = ShellTheme.getKey(ShellTheme.FACTORY.get());
     private ShellPattern basePattern;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {

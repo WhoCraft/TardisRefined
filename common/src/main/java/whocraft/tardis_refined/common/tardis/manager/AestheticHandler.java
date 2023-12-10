@@ -27,7 +27,7 @@ public class AestheticHandler extends BaseHandler {
     private final TardisLevelOperator tardisOperator;
 
     // Shell
-    private ShellTheme shellTheme = ShellTheme.FACTORY.get();
+    private ResourceLocation shellTheme = ShellTheme.getKey(ShellTheme.FACTORY.get());
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
 
     public AestheticHandler(TardisLevelOperator tardisLevelOperator) {
@@ -43,7 +43,7 @@ public class AestheticHandler extends BaseHandler {
         this.shellPattern = shellPattern;
     }
 
-    public ShellTheme getShellTheme() {
+    public ResourceLocation getShellTheme() {
         return shellTheme;
     }
 
@@ -66,7 +66,7 @@ public class AestheticHandler extends BaseHandler {
 
         if (tardisNavLocation == null) return;
 
-        this.shellTheme = ShellTheme.getShellTheme(theme);
+        this.shellTheme = theme;
 
         BlockPos lastKnownLocationPosition = tardisNavLocation.getPosition();
         ServerLevel lastKnownLocationLevel = tardisNavLocation.getLevel();
@@ -155,7 +155,7 @@ public class AestheticHandler extends BaseHandler {
         // Shell
         CompoundTag shellInfo = new CompoundTag();
         if (this.shellTheme != null) {
-            shellInfo.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, ShellTheme.getKey(shellTheme).toString());
+            shellInfo.putString(NbtConstants.TARDIS_EXT_CURRENT_THEME, shellTheme.toString());
         }
         if (this.shellPattern != null) {
             shellInfo.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
@@ -170,6 +170,9 @@ public class AestheticHandler extends BaseHandler {
 
     @Override
     public void loadData(CompoundTag tag) {
+
+        System.out.println(tag);
+
         if (tag.contains("aesthetic", NbtType.COMPOUND)) {
             CompoundTag aestheticTag = tag.getCompound("aesthetic");
 
@@ -179,7 +182,7 @@ public class AestheticHandler extends BaseHandler {
 
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME, NbtType.STRING) && shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, NbtType.STRING)) {
                     ResourceLocation themeID = new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
-                    this.shellTheme = ShellTheme.getShellTheme(themeID);
+                    this.shellTheme = themeID;
                     System.out.println(shellTheme);
 
                     String patternId = shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN);

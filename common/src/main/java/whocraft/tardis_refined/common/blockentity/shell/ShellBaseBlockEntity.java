@@ -24,7 +24,6 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -103,7 +102,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
                 if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || cap.getPilotingManager().endFlight() && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler))) {
                     if (cap.getAestheticHandler().getShellTheme() != null) {
-                        ResourceLocation theme = ShellTheme.getKey(cap.getAestheticHandler().getShellTheme());
+                        ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
                             if (ImmersivePortals.exteriorHasPortalSupport(theme)) {

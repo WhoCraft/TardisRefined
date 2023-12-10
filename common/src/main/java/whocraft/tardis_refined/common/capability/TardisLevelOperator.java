@@ -21,7 +21,6 @@ import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.manager.*;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -202,9 +201,9 @@ public class TardisLevelOperator {
         }
 
         if(aestheticHandler.getShellTheme() != null) {
-            ShellTheme theme = aestheticHandler.getShellTheme();
+            ResourceLocation theme = aestheticHandler.getShellTheme();
             if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-               if(ImmersivePortals.exteriorHasPortalSupport(ShellTheme.getKey(theme))) {
+               if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
                    return false;
                }
             }
