@@ -77,10 +77,20 @@ public class TardisPilotingManager {
         return (ticksSinceCrash > 0);
     }
 
+    /**
+     * Accessor for the number of ticks since the Tardis crashed.
+     * @return private field ticksSinceCrash
+     */
     public int getCooldownTicks() {
         return ticksSinceCrash;
     }
 
+
+    /**
+     * A progress value after crashing that determines how long until cooldown has finished.
+     * Zero means it has only started, 1 means that cooldown has finished.
+     * @return a percentage value between 0 - 1.
+     */
     public int getCooldownDuration() {
         return ticksSinceCrash / TICKS_COOLDOWN_MAX;
     }
@@ -492,6 +502,9 @@ public class TardisPilotingManager {
         return this.targetLocation;
     }
 
+    /**
+     * @return the current fast return location
+     */
     public TardisNavLocation getFastReturnLocation() {
         return this.fastReturnLocation;
     }
