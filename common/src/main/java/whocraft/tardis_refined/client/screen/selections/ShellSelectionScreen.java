@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client.screen.selections;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -10,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -124,8 +124,8 @@ public class ShellSelectionScreen extends SelectionScreen {
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
         /*Model*/
-      //  renderShell(guiGraphics, width / 2- 75, height / 2 - 20, 25F);
-        renderShell(guiGraphics, width / 2, height / 2, 25F);
+        renderShell(guiGraphics, width / 2- 75, height / 2 - 20, 25F);
+        //renderShell(guiGraphics, width / 2, height / 2, 25F);
 
 
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
@@ -154,11 +154,11 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.mulPose(Axis.XP.rotationDegrees(-15F));
         pose.mulPose(Axis.YP.rotationDegrees(System.currentTimeMillis() % 5400L / 15L));
 
-        BlockEntityRenderer<GlobalShellBlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(globalShellBlockEntity);
+     /*   BlockEntityRenderer<GlobalShellBlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(globalShellBlockEntity);
         renderer.render(globalShellBlockEntity, Minecraft.getInstance().getDeltaFrameTime(), pose, Minecraft.getInstance().renderBuffers().bufferSource(), 1, OverlayTexture.NO_OVERLAY);
-
-      //  VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
-     //   model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+*/
+        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
+        model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
         pose.popPose();
         Lighting.setupFor3DItems();

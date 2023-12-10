@@ -13,10 +13,9 @@ public class ShellModelCollection {
 
     private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
             presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel,
-            portalooModel, pagodaModel;
+            portalooModel, pagodaModel, liftModel;
 
     public static Map<ResourceLocation, ShellModel> SHELL_MODELS = new HashMap<>();
-
 
     public ShellModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
@@ -38,6 +37,7 @@ public class ShellModelCollection {
         growthModel = new GrowthShellModel(context.bakeLayer((ModelRegistry.GROWTH_SHELL)));
         portalooModel = new PortalooShellModel(context.bakeLayer((ModelRegistry.PORTALOO_SHELL)));
         pagodaModel = new PagodaShellModel(context.bakeLayer((ModelRegistry.PAGODA_SHELL)));
+        liftModel = new LiftShellModel(context.bakeLayer((ModelRegistry.LIFT_SHELL)));
 
         SHELL_MODELS.put(ShellTheme.FACTORY.getId(), factoryShellModel);
         SHELL_MODELS.put(ShellTheme.POLICE_BOX.getId(), policeBoxModel);
@@ -53,6 +53,7 @@ public class ShellModelCollection {
         SHELL_MODELS.put(ShellTheme.GROWTH.getId(), growthModel);
         SHELL_MODELS.put(ShellTheme.PORTALOO.getId(), portalooModel);
         SHELL_MODELS.put(ShellTheme.PAGODA.getId(), pagodaModel);
+        SHELL_MODELS.put(ShellTheme.LIFT.getId(), liftModel);
     }
 
 

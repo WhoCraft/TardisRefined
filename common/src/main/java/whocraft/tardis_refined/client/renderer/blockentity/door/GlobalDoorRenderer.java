@@ -23,7 +23,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
     protected static ShellDoorModel currentModel;
     private static ShellDoorModel factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoorModel, drifterModel, presentModel, vendingModel, briefcaseModel,
-            groeningModel, bigBenModel, nukaModel, growthModel, portalooModel, pagodaModel;
+            groeningModel, bigBenModel, nukaModel, growthModel, portalooModel, pagodaModel, liftDoorModel;
 
     public static Map<ResourceLocation, ShellDoorModel> DOOR_MODELS = new HashMap<>();
 
@@ -47,6 +47,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         growthModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
         portalooModel = new PortalooDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)));
         pagodaModel = new PagodaDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)));
+        liftDoorModel = new LiftShellDoorModel(context.bakeLayer((ModelRegistry.LIFT_DOOR)));
 
         DOOR_MODELS.put(ShellTheme.FACTORY.getId(), factoryDoorModel);
         DOOR_MODELS.put(ShellTheme.POLICE_BOX.getId(), policeBoxModel);
@@ -62,7 +63,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         DOOR_MODELS.put(ShellTheme.GROWTH.getId(), growthModel);
         DOOR_MODELS.put(ShellTheme.PORTALOO.getId(), portalooModel);
         DOOR_MODELS.put(ShellTheme.PAGODA.getId(), pagodaModel);
-        
+        DOOR_MODELS.put(ShellTheme.LIFT.getId(), liftDoorModel);
+
     }
 
     @Override
