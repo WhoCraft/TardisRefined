@@ -1,4 +1,11 @@
 {
+  "ars_hum": {
+    "sounds": [
+      "tardis_refined:tardis/ars/ars_hum_1",
+      "tardis_refined:tardis/ars/ars_hum_2"
+    ],
+    "subtitle": "sound.ars_hum.subtitle"
+  },
   "destination_ding": {
     "sounds": [
       "tardis_refined:tardis/destination_ding"

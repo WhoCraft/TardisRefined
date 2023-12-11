@@ -15,15 +15,15 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class OpenWayPointsListMessage extends MessageS2C {
+public class WaypointsListScreenMessage extends MessageS2C {
 
     private Collection<TardisNavLocation> waypoints;
 
-    public OpenWayPointsListMessage(Collection<TardisNavLocation> waypoints){
+    public WaypointsListScreenMessage(Collection<TardisNavLocation> waypoints) {
         this.waypoints = waypoints;
     }
 
-    public OpenWayPointsListMessage(FriendlyByteBuf friendlyByteBuf){
+    public WaypointsListScreenMessage(FriendlyByteBuf friendlyByteBuf) {
         waypoints = new ArrayList<>();
         int size = friendlyByteBuf.readInt();
         for (int i = 0; i < size; i++) {

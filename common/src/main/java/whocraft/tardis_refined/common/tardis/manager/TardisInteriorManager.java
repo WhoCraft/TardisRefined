@@ -44,6 +44,7 @@ public class TardisInteriorManager extends BaseHandler {
     private int airlockTimerSeconds = 5;
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
+
     public DesktopTheme preparedTheme() {
         return preparedTheme;
     }
@@ -70,8 +71,9 @@ public class TardisInteriorManager extends BaseHandler {
 
         ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
+        ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1009, 97, -2), new BlockPos(1041, 118, 30), "ars_room");
 
-        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck};
+        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, arsRoom};
     }
 
     public DesktopTheme currentTheme() {
@@ -120,6 +122,11 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void tick(ServerLevel level) {
 
+        //TODO Remove
+        TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
+            tardisLevelOperator.getUpgradeHandler().setUpgradePoints(199);
+        });
+
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
@@ -129,8 +136,7 @@ public class TardisInteriorManager extends BaseHandler {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
             }
 
-            if (level.players().size() == 0) {
-
+            if (level.players().isEmpty()) {
                 this.operator.getExteriorManager().triggerShellRegenState();
                 operator.setDoorClosed(true);
                 generateDesktop(this.preparedTheme);
@@ -290,6 +296,7 @@ public class TardisInteriorManager extends BaseHandler {
             if (tardisInternalDoor != null) {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
+
             // Generate Corridors
             if (!this.hasGeneratedCorridors) {
                 TardisArchitectureHandler.generateEssentialCorridors(serverLevel);

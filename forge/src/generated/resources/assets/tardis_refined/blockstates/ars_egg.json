@@ -1,6 +1,15 @@
 {
   "variants": {
-    "": {
+    "hanging=false,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "hanging=false,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "hanging=true,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "hanging=true,waterlogged=true": {
       "model": "tardis_refined:block/terraformer"
     }
   }

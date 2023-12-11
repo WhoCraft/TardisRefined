@@ -3,11 +3,21 @@ package whocraft.tardis_refined.client;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.common.network.messages.SyncTardisClientDataMessage;
+import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.Map;
 
@@ -136,17 +146,45 @@ public class TardisClientData {
         }
 
 
+
+        if (Minecraft.getInstance().player.level().dimensionTypeId() == DimensionTypes.TARDIS) {
+            createWorldAmbience(Minecraft.getInstance().player);
+        }
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+        if (LoopingSound.ARS_HUMMING == null) {
+            LoopingSound.ARS_HUMMING = new LoopingSound(SoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
+        }
+
+        if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
+            if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
+                LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
+                soundManager.play(LoopingSound.ARS_HUMMING);
+            }
+
+            if (soundManager.isActive(LoopingSound.ARS_HUMMING)) {
+                Minecraft.getInstance().getMusicManager().stopPlaying();
+            }
+        } else {
+            LoopingSound.ARS_HUMMING.stopSound();
+        }
+
+
         // Responsible for screen-shake. Not sure of a better solution at this point in time.
         if (isInDangerZone || isCrashing) {
             if (Minecraft.getInstance().player.level().dimension() == levelKey) {
                 var player = Minecraft.getInstance().player;
                 player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                 player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+
             }
         }
 
 
+
     }
+
 
     /**
      * Updates the Tardis instance. This method is called manually from the SyncIntReactionsMessage message.
@@ -243,4 +281,41 @@ public class TardisClientData {
 
         TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
     }
+
+    private static void createWorldAmbience(Player player) {
+        if (player.tickCount % 120 == 0 && !isInArsArea(player.blockPosition())) return;
+        RandomSource random = player.level().random;
+        Level level = player.level();
+        double originX = player.getX();
+        double originY = player.getY();
+        double originZ = player.getZ();
+        for (int i = 0; i < 5; i++) {
+            double particleX = originX + (random.nextInt(24) - random.nextInt(24));
+            double particleY = originY + (random.nextInt(24) - random.nextInt(24));
+            double particleZ = originZ + (random.nextInt(24) - random.nextInt(24));
+            double velocityX = (random.nextDouble() - 0.5) * 0.02;
+            double velocityY = (random.nextDouble() - 0.5) * 0.02;
+            double velocityZ = (random.nextDouble() - 0.5) * 0.02;
+            if(isInArsArea(new BlockPos((int) particleX, (int) particleY, (int) particleZ))) {
+                level.addParticle(ParticleTypes.END_ROD, particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
+            }
+        }
+    }
+
+    public static boolean isInArsArea(BlockPos blockPos) {
+        BlockPos corner1 = new BlockPos(1009, 97, -2);
+        BlockPos corner2 = new BlockPos(1041, 118, 30);
+
+        int minX = Math.min(corner1.getX(), corner2.getX());
+        int maxX = Math.max(corner1.getX(), corner2.getX());
+        int minY = Math.min(corner1.getY(), corner2.getY());
+        int maxY = Math.max(corner1.getY(), corner2.getY());
+        int minZ = Math.min(corner1.getZ(), corner2.getZ());
+        int maxZ = Math.max(corner1.getZ(), corner2.getZ());
+
+        return blockPos.getX() >= minX && blockPos.getX() <= maxX &&
+                blockPos.getY() >= minY && blockPos.getY() <= maxY &&
+                blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
+    }
+
 }

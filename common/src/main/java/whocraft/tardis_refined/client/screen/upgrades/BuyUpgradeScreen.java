@@ -14,6 +14,7 @@ import whocraft.tardis_refined.client.screen.components.BackgroundlessButton;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.network.messages.upgrades.C2SDisplayUpgradeScreen;
 import whocraft.tardis_refined.common.network.messages.upgrades.UnlockUpgradeMessage;
+import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.List;
 import java.util.Objects;
@@ -32,7 +33,7 @@ public class BuyUpgradeScreen extends Screen {
         this.upgrade = upgrade;
         this.available = available;
         this.parentScreen = parentScreen;
-        this.text = Component.translatable("gui.tardis_refined.buy_ability");
+        this.text = Component.translatable(ModMessages.UI_UPGRADES_BUY);
     }
 
     @Override

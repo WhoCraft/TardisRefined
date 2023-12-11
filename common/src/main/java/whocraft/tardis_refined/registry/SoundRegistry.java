@@ -17,6 +17,7 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> TARDIS_MISC_SPARKLE = setUpSound("tardis_misc_sparkle");
     public static final RegistrySupplier<SoundEvent> STATIC = setUpSound("static");
     public static final RegistrySupplier<SoundEvent> DESTINATION_DING = setUpSound("destination_ding");
+    public static final RegistrySupplier<SoundEvent> ARS_HUM = setUpSound("ars_hum");
 
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
         SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(TardisRefined.MODID, soundName));

@@ -5,13 +5,17 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static whocraft.tardis_refined.common.tardis.TardisArchitectureHandler.generateArsTree;
 
 public class UpgradeHandler {
 
@@ -21,12 +25,39 @@ public class UpgradeHandler {
     @NotNull
     private final TardisLevelOperator tardisLevelOperator;
     private int upgradeXP = 0;
-    private int upgradePoints = 1000;
+    private int upgradePoints = 0;
     private int overallTardisPoints = 0;
     private final List<Upgrade> unlockedUpgrades = new ArrayList<>();
 
     public UpgradeHandler(@NotNull TardisLevelOperator tardisLevelOperator) {
         this.tardisLevelOperator = tardisLevelOperator;
+    }
+
+    public double calculateProgress() {
+        int totalUpgrades = Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry().size();
+        int unlockedCount = unlockedUpgrades.size();
+
+        if (totalUpgrades == 0) {
+            return 0.0;
+        }
+
+        return ((double) unlockedCount / totalUpgrades) * 100.0;
+    }
+
+    public String getProgressLevel() {
+        double progress = calculateProgress();
+
+        if (progress >= 80.0) {
+            return "five";
+        } else if (progress >= 60.0) {
+            return "four";
+        } else if (progress >= 40.0) {
+            return "three";
+        } else if (progress >= 20.0) {
+            return "two";
+        } else {
+            return "one";
+        }
     }
 
     @Override
@@ -125,6 +156,13 @@ public class UpgradeHandler {
 
             this.unlockedUpgrades.add(upgrade);
             upgrade.onUnlocked(this.tardisLevelOperator, this);
+
+            if(this.tardisLevelOperator.getLevel() instanceof ServerLevel serverLevel) {
+                generateArsTree(serverLevel);
+            }
+
+            TardisEvents.UPGRADE_UNLOCKED.invoker().onUpgradeUnlock(this.tardisLevelOperator, upgrade);
+
         }
     }
 

@@ -20,7 +20,6 @@ public class Upgrades {
     /** Global instance of the Console Theme custom registry created by Tardis Refined*/
     public static final Registry<Upgrade> UPGRADE_REGISTRY = UPGRADE_DEFERRED_REGISTRY.getRegistry();
 
-
     // Base Upgrades
     public static final RegistrySupplier<Upgrade> TARDIS_XP = UPGRADE_DEFERRED_REGISTRY.register("tardis_xp", () -> new Upgrade(Items.GLASS_BOTTLE::getDefaultInstance, RegistryHelper.makeKey("tardis_xp"))
             .setSkillPointsRequired(50).setPosition(0, -1));

@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
@@ -91,17 +92,20 @@ public class TardisArchitectureHandler {
         structureNBT = operator.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/workshop"));
         structureNBT.ifPresent(structure -> {
             BlockPos position = new BlockPos(977,99,9);
-            structure.placeInWorld(operator.getLevel(), position, position, new StructurePlaceSettings(), operator.getLevel().random, 3);
+            structure.placeInWorld(operator.getLevel(), position, position, new StructurePlaceSettings(), operator.getLevel().random, Block.UPDATE_ALL);
         });
 
     }
 
     public static void generateArsTree(ServerLevel level) {
-        Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/ars/room_ars_stage_five"));
-        structureNBT.ifPresent(structure -> {
-            BlockPos position = new BlockPos(1011,97,3);
-            structure.placeInWorld(level.getLevel(), position, position, new StructurePlaceSettings(), level.getLevel().random, 3);
+        TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
+            Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/ars/room_ars_stage_" + tardisLevelOperator.getUpgradeHandler().getProgressLevel()));
+            structureNBT.ifPresent(structure -> {
+                BlockPos position = new BlockPos(1011,97,3);
+                structure.placeInWorld(level.getLevel(), position, position, new StructurePlaceSettings(), level.getLevel().random, Block.UPDATE_ALL);
+            });
         });
+
     }
 
     public static boolean setInteriorDoorFromStructure(StructureTemplate template, ServerLevel level) {

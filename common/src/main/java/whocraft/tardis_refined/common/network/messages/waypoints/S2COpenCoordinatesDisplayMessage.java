@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.network.messages.waypoints;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -67,6 +66,7 @@ public class S2COpenCoordinatesDisplayMessage extends MessageS2C {
 
     @Environment(EnvType.CLIENT)
     private void handleDisplay() {
-        ScreenHandler.setCoordinatesScreen(levels, coordInputType, tardisNavLocation);
+        ScreenHandler.openCoordinatesScreen(levels, coordInputType, tardisNavLocation);
     }
+
 }

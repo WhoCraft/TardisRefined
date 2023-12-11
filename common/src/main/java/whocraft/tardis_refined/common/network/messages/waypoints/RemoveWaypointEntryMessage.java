@@ -44,7 +44,7 @@ public class RemoveWaypointEntryMessage extends MessageC2S {
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
             tardisWaypointManager.deleteWaypoint(tardisNavName);
-            new OpenWayPointsListMessage(tardisWaypointManager.getWaypoints()).send(player);
+            new WaypointsListScreenMessage(tardisWaypointManager.getWaypoints()).send(player);
         });
     }
 }

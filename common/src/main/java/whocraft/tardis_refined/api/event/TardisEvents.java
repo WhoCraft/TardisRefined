@@ -7,9 +7,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class TardisEvents {
 
@@ -48,6 +48,12 @@ public class TardisEvents {
     public static final Event<TardisCrash> TARDIS_CRASH_EVENT = new Event<>(TardisCrash.class, listeners -> ((tardisLevelOperator, crashLocation) -> {
         for (TardisCrash listener : listeners) {
             listener.onTardisCrash(tardisLevelOperator, crashLocation);
+        }
+    }));
+
+    public static final Event<UpgradeUnlocked> UPGRADE_UNLOCKED = new Event<>(UpgradeUnlocked.class, listeners -> ((tardisLevelOperator, upgrade) -> {
+        for (UpgradeUnlocked listener : listeners) {
+            listener.onUpgradeUnlock(tardisLevelOperator, upgrade);
         }
     }));
 
@@ -152,5 +158,19 @@ public class TardisEvents {
          * @param crashLocation       The Location of the crash..
          */
         void onTardisCrash(TardisLevelOperator tardisLevelOperator, TardisNavLocation crashLocation);
+    }
+
+    /**
+     * An event that is triggered when a TARDIS unlocks a new Upgrade.
+     */
+    @FunctionalInterface
+    public interface UpgradeUnlocked {
+        /**
+         * Called when a TARDIS unlocks a new Upgrade.
+         *
+         * @param tardisLevelOperator The TARDIS Level Operator.
+         * @param upgrade       The Upgrade
+         */
+        void onUpgradeUnlock(TardisLevelOperator tardisLevelOperator, Upgrade upgrade);
     }
 }

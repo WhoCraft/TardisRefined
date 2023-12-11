@@ -194,6 +194,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             liveliness.start(12);
         }
 
+
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
                 if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {

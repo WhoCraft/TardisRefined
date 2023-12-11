@@ -30,7 +30,6 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
@@ -88,6 +87,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         if (interactionHand != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
         }
+
 
         var offset = blockState.getValue(FACING).getNormal();
         BlockPos consolePos = blockPos.offset(offset);
