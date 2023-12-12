@@ -27,7 +27,7 @@ public class AestheticHandler extends BaseHandler {
     private final TardisLevelOperator tardisOperator;
 
     // Shell
-    private ResourceLocation shellTheme = ShellTheme.getKey(ShellTheme.FACTORY.get());
+    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
 
     public AestheticHandler(TardisLevelOperator tardisLevelOperator) {
@@ -44,6 +44,9 @@ public class AestheticHandler extends BaseHandler {
     }
 
     public ResourceLocation getShellTheme() {
+        if(shellTheme.getNamespace().contains("minecraft")){
+            return ShellTheme.FACTORY.getId();
+        }
         return shellTheme;
     }
 
@@ -113,10 +116,12 @@ public class AestheticHandler extends BaseHandler {
                         BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
                                 .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), 2);
 
-                var shellBlockEntity = tardisOperator.getLevel().getBlockEntity(internalDoorPos);
-                if (shellBlockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
+                var potentialDoor = tardisOperator.getLevel().getBlockEntity(internalDoorPos);
+                if (potentialDoor instanceof GlobalDoorBlockEntity doorBlockEntity) {
                     doorBlockEntity.setShellTheme(theme);
+                    doorBlockEntity.setPattern(shellPattern);
                     tardisOperator.setInternalDoor(doorBlockEntity);
+                    doorBlockEntity.sendUpdates();
                 }
             } else {
                 // Check if its our default global shell.

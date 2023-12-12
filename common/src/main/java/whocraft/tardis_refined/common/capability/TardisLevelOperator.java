@@ -140,6 +140,10 @@ public class TardisLevelOperator {
             tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
             tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
+
+            tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
+            tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
+
             tardisClientData.sync();
         }
     }
@@ -249,7 +253,9 @@ public class TardisLevelOperator {
 
     public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
         this.getAestheticHandler().setShellTheme(theme, setupTardis, getExteriorManager().getLastKnownLocation());
-
+        tardisClientData.setShellTheme(theme);
+        tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
+        tardisClientData.sync();
         TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
     }
 

@@ -53,17 +53,21 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     private List<ShellPattern> patternCollection;
     private Button patternButton;
-    private static GlobalShellBlockEntity globalShellBlockEntity;
+    public static GlobalShellBlockEntity globalShellBlockEntity;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
+        generateDummyGlobalShell();
+
+    }
+
+    public static void generateDummyGlobalShell() {
         globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
         assert Minecraft.getInstance().level != null;
         globalShellBlockEntity.setLevel(Minecraft.getInstance().level);
         ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
         globalShellBlockEntity.setTardisId(generatedLevelKey);
-
     }
 
     @Override
@@ -159,11 +163,8 @@ public class ShellSelectionScreen extends SelectionScreen {
         pose.translate((float) x, y, 100.0F);
         pose.scale(-scale, scale, scale);
         pose.mulPose(Axis.XP.rotationDegrees(-15F));
-        pose.mulPose(Axis.YP.rotationDegrees(System.currentTimeMillis() % 5400L / 15L));
+        pose.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L) / 15L));
 
-     /*   BlockEntityRenderer<GlobalShellBlockEntity> renderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(globalShellBlockEntity);
-        renderer.render(globalShellBlockEntity, Minecraft.getInstance().getDeltaFrameTime(), pose, Minecraft.getInstance().renderBuffers().bufferSource(), 1, OverlayTexture.NO_OVERLAY);
-*/
         VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
         model.renderShell(globalShellBlockEntity, false, false, pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
