@@ -147,7 +147,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-       // super.renderBackground(guiGraphics, i, j, f);
+        // super.renderBackground(guiGraphics, i, j, f);
     }
 
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {

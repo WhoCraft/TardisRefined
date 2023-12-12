@@ -22,6 +22,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.common.util.RegistryHelper;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;

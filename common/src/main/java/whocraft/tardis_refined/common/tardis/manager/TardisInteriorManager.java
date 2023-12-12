@@ -122,11 +122,6 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void tick(ServerLevel level) {
 
-        //TODO Remove
-        TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
-            tardisLevelOperator.getUpgradeHandler().setUpgradePoints(199);
-        });
-
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);

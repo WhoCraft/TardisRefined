@@ -25,6 +25,7 @@ import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 public class TardisRefinedFabricClient implements ClientModInitializer {
     @Override
