@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
@@ -48,7 +49,7 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
             poseStack.translate(0, 1.5f + blockEntity.getLevel().random.nextFloat() * 0.01, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(blockEntity.getLevel().getGameTime() % 360));
 
-            ConsoleTheme theme = blockstate.getValue(ConsoleConfigurationBlock.CONSOLE);
+            ResourceLocation theme = blockEntity.theme();
 
             ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);
             consoleModel.renderConsole(null, blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 1f, 0.64f, 0f, 0.5f);

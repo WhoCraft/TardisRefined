@@ -42,7 +42,7 @@ public class BuyUpgradeScreen extends Screen {
         int guiLeft = (this.width - GUI_WIDTH) / 2;
         int guiTop = (this.height - GUI_HEIGHT) / 2;
         this.addRenderableWidget(BackgroundlessButton.backgroundlessBuilder(Component.literal("x"), s -> parentScreen.closeOverlayScreen()).bounds(guiLeft + 193, guiTop + 3, 5, 5).build());
-        Button button = Button.builder(Component.literal(this.upgrade.getCost() + " COST"), s -> {
+        Button button = Button.builder(Component.literal(this.upgrade.getSkillPointsRequired() + " COST"), s -> { //TODO: Add translation key for Cost
             new UnlockUpgradeMessage(this.upgrade).send();
             this.parentScreen.closeOverlayScreen();
             Objects.requireNonNull(Objects.requireNonNull(this.minecraft).player).playSound(SoundEvents.PLAYER_LEVELUP, 1F, 1F);

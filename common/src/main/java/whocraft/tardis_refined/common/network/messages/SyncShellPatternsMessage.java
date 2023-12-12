@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.network.messages;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -9,19 +10,23 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SyncShellPatternsMessage extends MessageS2C {
 
-    protected Map<ResourceLocation, ShellPatternCollection> patterns = new HashMap<>();
+    protected Map<ResourceLocation, List<ShellPattern>> patterns = new HashMap<>();
 
-    protected final UnboundedMapCodec<ResourceLocation, ShellPatternCollection> MAPPER = new UnboundedMapCodec<>(ResourceLocation.CODEC, ShellPatternCollection.CODEC);
+    protected final UnboundedMapCodec<ResourceLocation, List<ShellPattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ShellPattern.CODEC.listOf().xmap(List::copyOf, List::copyOf));
 
-    public SyncShellPatternsMessage(Map<ResourceLocation, ShellPatternCollection> patterns) {
+    public SyncShellPatternsMessage(Map<ResourceLocation, List<ShellPattern>> patterns) {
         this.patterns = patterns;
     }
 
@@ -41,9 +46,6 @@ public class SyncShellPatternsMessage extends MessageS2C {
 
     @Override
     public void handle(MessageContext context) {
-        ShellPatterns.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, ShellPatternCollection> entry : this.patterns.entrySet()) {
-            ShellPatterns.getRegistry().put(entry.getKey(), entry.getValue());
-        }
+        ShellPatterns.getReloadListener().setData(this.patterns);
     }
 }

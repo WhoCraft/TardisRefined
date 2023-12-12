@@ -18,7 +18,7 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import net.neoforged.neoforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.common.world.feature.NbtTemplateFeature;
@@ -32,7 +32,7 @@ import java.util.Set;
 public class BiomeModifierProvider {
     public static final ResourceKey<PlacedFeature> TARDIS_ROOT_CLUSTER_PLACED_FEATUE = ResourceKey.create(Registries.PLACED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
     public static final ResourceKey<ConfiguredFeature<?, ?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
-    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
     public static void genBiomeModifiers(GatherDataEvent e) {
         final DataGenerator generator = e.getGenerator();
@@ -49,7 +49,7 @@ public class BiomeModifierProvider {
                                 InSquarePlacement.spread(),
                                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20))))
         ));
-        builder.add(ForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
+        builder.add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, context -> {
             var tardisRoot = context.lookup(Registries.BIOME).getOrThrow(TagKeys.TARDIS_ROOT_CLUSTER);
 
             context.register(ADD_TARDIS_ROOT_CLUSTER, new BiomeModifiers.AddFeaturesBiomeModifier(

@@ -11,12 +11,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -24,7 +24,6 @@ import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
@@ -35,24 +34,42 @@ import java.util.List;
 
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
 
-    private boolean isDirty = true;
+    private boolean shouldSpawnControls = true;
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
-    private ConsolePattern basePattern = pattern();
+
+    private ResourceLocation consoleTheme;
+
+    private ConsolePattern basePattern;
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
+        this.consoleTheme = ConsoleTheme.FACTORY.getId();
+        this.basePattern = this.pattern();
+    }
+
+    public ResourceLocation theme(){
+        if (this.consoleTheme == null){
+            this.consoleTheme = ConsoleTheme.FACTORY.getId();
+        }
+        return this.consoleTheme;
+    }
+
+    public void setConsoleTheme(ResourceLocation themeId){
+        this.consoleTheme = themeId;
+        this.setChanged();
+        this.sendUpdates();
     }
 
     public ConsolePattern pattern() {
-        ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-        ConsolePattern defaultBasePattern = ConsolePatterns.getPatternOrDefault(console, ResourceConstants.DEFAULT_PATTERN_ID);
-        return basePattern == null ? defaultBasePattern : basePattern;
+        return basePattern == null ? ConsolePatterns.DEFAULT : basePattern;
     }
 
     public GlobalConsoleBlockEntity setPattern(ConsolePattern basePattern) {
         this.basePattern = basePattern;
+        this.setChanged();
+        this.sendUpdates();
         return this;
     }
 
@@ -60,30 +77,43 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
 
-        if (basePattern != null) {
+        if (this.consoleTheme != null) {
+            compoundTag.putString(NbtConstants.THEME, this.consoleTheme.toString());
+        }
+
+        if (this.basePattern != null) {
             compoundTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
         }
+
     }
 
     @Override
     public void load(CompoundTag tag) {
 
-        ConsoleTheme console = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
+        if (tag.contains(NbtConstants.THEME)) {
+            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.THEME));
+            this.consoleTheme = themeId;
+        }
 
         if (tag.contains(NbtConstants.PATTERN)) {
             ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
-            if (ConsolePatterns.doesPatternExist(console, currentPattern)) {
-                basePattern = ConsolePatterns.getPatternOrDefault(console, currentPattern);
+            ResourceLocation theme = this.theme();
+            if (ConsolePatterns.doesPatternExist(theme, currentPattern)) {
+                this.basePattern = ConsolePatterns.getPatternOrDefault(theme, currentPattern);
             }
         }
 
-        if (basePattern == null) {
-            basePattern = pattern();
+        if (this.consoleTheme == null){
+            this.consoleTheme = this.theme();
+        }
+
+        if (this.basePattern == null) {
+            this.basePattern = this.pattern();
         }
 
         super.load(tag);
 
-        spawnControlEntities();
+        this.spawnControlEntities();
     }
 
     public void spawnControlEntities() {
@@ -94,8 +124,9 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (getLevel() instanceof ServerLevel serverLevel) {
 
             killControls();
-            ConsoleTheme theme = getBlockState().getValue(GlobalConsoleBlock.CONSOLE);
-            ControlSpecification[] controls = theme.getControlSpecificationList();
+            ResourceLocation themeId = this.theme();
+            ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEME_REGISTRY.get(themeId);
+            ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
 
@@ -105,18 +136,18 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                 Vec3 location = LevelHelper.centerPos(currentBlockPos, true).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
                 controlEntity.setPos(location.x(), location.y(), location.z());
 
-                controlEntity.assignControlData(theme, control, this.getBlockPos());
+                controlEntity.assignControlData(consoleTheme, control, this.getBlockPos());
 
                 serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
             });
 
-            this.isDirty = false;
+            this.shouldSpawnControls = false;
         }
     }
 
     public void markDirty() {
-        this.isDirty = true;
+        this.shouldSpawnControls = true;
     }
 
     @Override
@@ -139,8 +170,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     public void sendUpdates() {
-        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        level.updateNeighbourForOutputSignal(this.getBlockPos(), getBlockState().getBlock());
+        level.sendBlockUpdated(this.getBlockPos(), level.getBlockState(this.getBlockPos()), level.getBlockState(this.getBlockPos()), Block.UPDATE_CLIENTS);
         setChanged();
     }
 
@@ -155,7 +186,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
 
-        if (this.isDirty) {
+        if (this.shouldSpawnControls) {
             spawnControlEntities();
         }
 

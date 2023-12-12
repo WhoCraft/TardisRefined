@@ -13,6 +13,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.Arrays;
@@ -210,7 +211,7 @@ public class TardisFlightEventManager {
 
         if (dangerZoneSecondsPast(30)) {
             if (operator.getLevel().getGameTime() % (3 * 20) == 0) {
-                playCloisterBell(operator);
+                TardisHelper.playCloisterBell(operator);
             }
 
             scaleForDanger = 1f;
@@ -303,10 +304,5 @@ public class TardisFlightEventManager {
         return (float)this.controlResponses /  (float)this.requiredControlRequests;
     }
 
-    public static void playCloisterBell(TardisLevelOperator tardisLevelOperator) {
-        for (int i = 0; i < 3; i++) {
-            tardisLevelOperator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1000f, 0.1f);
-        }
-    }
 
 }

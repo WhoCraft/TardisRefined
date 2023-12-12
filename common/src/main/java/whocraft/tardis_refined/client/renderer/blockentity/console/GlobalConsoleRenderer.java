@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -37,8 +38,8 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
-        BlockState blockstate = blockEntity.getBlockState();
-        ConsoleTheme theme = blockstate.getValue(GlobalConsoleBlock.CONSOLE);
+
+        ResourceLocation theme = blockEntity.theme();
 
         ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);
         consoleModel.renderConsole(blockEntity, Objects.requireNonNull(blockEntity.getLevel()), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
@@ -47,11 +48,11 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         }
         poseStack.popPose();
 
-        if (theme == ConsoleTheme.CRYSTAL) {
+        if (theme == ConsoleTheme.CRYSTAL.getId()) {
             renderHoloShell(crystalHolo,270, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
         }
 
-        if (theme == ConsoleTheme.INITIATIVE) {
+        if (theme == ConsoleTheme.INITIATIVE.getId()) {
             renderHoloShell(initiativeHolo, -30 + 180, blockEntity, poseStack, bufferSource, packedLight, initiativeHoloColor);
         }
     }

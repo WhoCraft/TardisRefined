@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,6 +50,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
     @Override
     public void setID(String id) {
         this.uuid_id = id;
+        this.setChanged();
     }
 
     @Override
@@ -58,10 +60,11 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
 
     @Override
     public void setClosed(boolean state) {
-        BlockState blockState = getLevel().getBlockState(getDoorPosition());
-        if (!blockState.isAir()){
-            getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), 2);
-            getLevel().playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
+        BlockState blockState = this.getLevel().getBlockState(getDoorPosition());
+        if (blockState.getBlock() instanceof InternalDoorBlock){
+            this.getLevel().setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), Block.UPDATE_CLIENTS);
+            this.getLevel().playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
+            this.setChanged();
         }
     }
 
@@ -96,7 +99,8 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
 
     @Override
     public void setLocked(boolean locked) {
-        isLocked = locked;
+        this.isLocked = locked;
+        this.setChanged();
     }
 
     @Override

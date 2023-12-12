@@ -1,137 +1,17 @@
 {
   "variants": {
-    "console=copper,facing=east": {
+    "facing=east": {
       "model": "tardis_refined:block/console_configuration",
       "y": 270
     },
-    "console=copper,facing=north": {
+    "facing=north": {
       "model": "tardis_refined:block/console_configuration",
       "y": 180
     },
-    "console=copper,facing=south": {
+    "facing=south": {
       "model": "tardis_refined:block/console_configuration"
     },
-    "console=copper,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=coral,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=coral,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=coral,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=coral,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=crystal,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=crystal,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=crystal,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=crystal,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=factory,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=factory,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=factory,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=factory,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=initiative,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=initiative,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=initiative,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=initiative,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=myst,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=myst,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=myst,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=myst,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=nuka,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=nuka,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=nuka,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=nuka,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=toyota,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=toyota,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=toyota,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=toyota,facing=west": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 90
-    },
-    "console=victorian,facing=east": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 270
-    },
-    "console=victorian,facing=north": {
-      "model": "tardis_refined:block/console_configuration",
-      "y": 180
-    },
-    "console=victorian,facing=south": {
-      "model": "tardis_refined:block/console_configuration"
-    },
-    "console=victorian,facing=west": {
+    "facing=west": {
       "model": "tardis_refined:block/console_configuration",
       "y": 90
     }

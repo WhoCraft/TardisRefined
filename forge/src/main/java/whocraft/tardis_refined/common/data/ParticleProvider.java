@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -15,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import static net.neoforged.neoforge.registries.ForgeRegistries.PARTICLE_TYPES;
 
 public class ParticleProvider implements DataProvider {
 
@@ -89,11 +89,11 @@ public class ParticleProvider implements DataProvider {
     }
 
     private void makeParticle(SimpleParticleType simpleParticleType, JsonObject particle, CachedOutput arg, Path base) {
-        futures.add(DataProvider.saveStable(arg, particle, getPath(base, PARTICLE_TYPES.getKey(simpleParticleType))));
+        futures.add(DataProvider.saveStable(arg, particle, getPath(base, BuiltInRegistries.PARTICLE_TYPE.getKey(simpleParticleType))));
     }
 
     public void makeParticle(ParticleType<?> type, ResourceLocation textureName, int count, CachedOutput cache, Path base) {
-        futures.add(DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, PARTICLE_TYPES.getKey(type))));
+        futures.add(DataProvider.saveStable(cache, this.createParticle(textureName, count), getPath(base, BuiltInRegistries.PARTICLE_TYPE.getKey(type))));
     }
 
     public JsonObject createParticle(ResourceLocation baseName, int max) {

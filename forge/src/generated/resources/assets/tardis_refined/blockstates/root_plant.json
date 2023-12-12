@@ -1,7 +1,220 @@
 {
   "variants": {
-    "": {
-      "model": "minecraft:block/barrier"
+    "age=0,facing=down,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=down,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=east,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=east,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=north,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=north,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=south,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=south,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=up,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=up,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=west,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=0,facing=west,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=down,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=down,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=east,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=east,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=north,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=north,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=south,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=south,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=up,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=up,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=west,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=1,facing=west,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=down,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=down,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=east,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=east,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=north,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=north,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=south,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=south,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=up,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=up,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=west,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=2,facing=west,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=down,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=down,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=east,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=east,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=north,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=north,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=south,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=south,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=up,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=up,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=west,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=3,facing=west,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=down,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=down,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=east,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=east,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=north,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=north,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=south,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=south,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=up,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=up,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=west,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=4,facing=west,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=down,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=down,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=east,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=east,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=north,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=north,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=south,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=south,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=up,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=up,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=west,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "age=5,facing=west,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
     }
   }
 }

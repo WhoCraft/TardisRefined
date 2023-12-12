@@ -2,7 +2,9 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
@@ -34,6 +36,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(SoundRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator activates");
         addSound(SoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
         addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
+        addSound(SoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -117,22 +120,23 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase Upgrade?");
+        add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No Available Sub-Systems");
 
         /*Shell Themes*/
-        addShell(ShellTheme.FACTORY, "Factory");
-        addShell(ShellTheme.POLICE_BOX, "Police Box");
-        addShell(ShellTheme.PHONE_BOOTH, "Phone Booth");
-        addShell(ShellTheme.MYSTIC, "Mystic");
-        addShell(ShellTheme.DRIFTER, "Drifter");
-        addShell(ShellTheme.PRESENT, "Present");
-        addShell(ShellTheme.BRIEFCASE, "Briefcase");
-        addShell(ShellTheme.GROENING, "Groening");
-        addShell(ShellTheme.VENDING, "Vending Machine");
-        addShell(ShellTheme.BIG_BEN, "Big Ben");
-        addShell(ShellTheme.NUKA, "Nuka");
-        addShell(ShellTheme.GROWTH, "Growth");
-        addShell(ShellTheme.PORTALOO, "Portaloo");
-        addShell(ShellTheme.PAGODA, "Pagoda");
+        addShell(ShellTheme.FACTORY.getId(), "Factory");
+        addShell(ShellTheme.POLICE_BOX.getId(), "Police Box");
+        addShell(ShellTheme.PHONE_BOOTH.getId(), "Phone Booth");
+        addShell(ShellTheme.MYSTIC.getId(), "Mystic");
+        addShell(ShellTheme.DRIFTER.getId(), "Drifter");
+        addShell(ShellTheme.PRESENT.getId(), "Present");
+        addShell(ShellTheme.BRIEFCASE.getId(), "Briefcase");
+        addShell(ShellTheme.GROENING.getId(), "Groening");
+        addShell(ShellTheme.VENDING.getId(), "Vending Machine");
+        addShell(ShellTheme.BIG_BEN.getId(), "Big Ben");
+        addShell(ShellTheme.NUKA.getId(), "Nuka");
+        addShell(ShellTheme.GROWTH.getId(), "Growth");
+        addShell(ShellTheme.PORTALOO.getId(), "Portaloo");
+        addShell(ShellTheme.PAGODA.getId(), "Pagoda");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
@@ -166,13 +170,13 @@ public class LangProviderEnglish extends LanguageProvider {
         add(control.getTranslationKey(), name);
     }
 
-    public void addShell(ShellTheme theme, String name) {
-        add(theme.getTranslationKey(), name);
+    public void addShell(ResourceLocation theme, String name) {
+        add(ModMessages.shell(theme.getPath()), name);
     }
 
     public void addUpgrade(Upgrade upgrade, String title, String description) {
-        add(Util.makeDescriptionId("upgrade", upgrade.getKey()), title);
-        add(Util.makeDescriptionId("upgrade", upgrade.getKey()) + ".description", description);
+        add(Util.makeDescriptionId("upgrade", Upgrades.UPGRADE_REGISTRY.getKey(upgrade)), title);
+        add(Util.makeDescriptionId("upgrade", Upgrades.UPGRADE_REGISTRY.getKey(upgrade)) + ".description", description);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {

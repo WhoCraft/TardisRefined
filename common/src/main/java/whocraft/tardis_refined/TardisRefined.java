@@ -14,6 +14,8 @@ import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessag
 import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
 import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
@@ -48,6 +50,8 @@ public class TardisRefined {
         Features.FEATURES.register();
         TRParticles.TYPES.register();
         Upgrades.UPGRADE_DEFERRED_REGISTRY.register();
+        ConsoleTheme.CONSOLE_THEMES.register();
+        ShellTheme.SHELL_THEMES.register();
         TagKeys.init();
         TardisNetwork.init();
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);

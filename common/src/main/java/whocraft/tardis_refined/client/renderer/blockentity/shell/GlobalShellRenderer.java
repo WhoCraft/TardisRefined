@@ -31,7 +31,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
     @Override
     public void render(GlobalShellBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        if(blockEntity.TARDIS_ID == null) return;
+        if(blockEntity.getTardisId() == null) return;
 
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.5F, 0.5F);
@@ -40,7 +40,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         BlockState blockstate = blockEntity.getBlockState();
         float rotation = blockstate.getValue(RootedShellBlock.FACING).toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
-        ShellTheme theme = blockstate.getValue(GlobalShellBlock.SHELL);
+        ResourceLocation theme = blockEntity.theme();
         boolean isOpen = blockstate.getValue(GlobalShellBlock.OPEN);
 
         float sine = 0;
@@ -52,7 +52,7 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         }
 
         var currentModel = ShellModelCollection.getInstance().getShellModel(theme);
-        TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, blockEntity.TARDIS_ID.toString())));
+        TardisClientData reactions = TardisClientData.getInstance(blockEntity.getTardisId());
         ShellPattern pattern = reactions.shellPattern();
 
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.texture(pattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);

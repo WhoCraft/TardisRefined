@@ -58,7 +58,7 @@ public class TardisHADSManager {
             timeTillReturn = serverLevel.random.nextInt(RETURN_DELAY_MIN, RETURN_DELAY_MAX);
 
             BlockEntity blockEntity = serverLevel.getBlockEntity(blockPos);
-            if (blockEntity instanceof GlobalShellBlockEntity globalShellBlockEntity && globalShellBlockEntity.TARDIS_ID != null) {
+            if (blockEntity instanceof GlobalShellBlockEntity globalShellBlockEntity && globalShellBlockEntity.getTardisId() != null) {
                 RandomSource random = serverLevel.random;
                 UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
 

@@ -6,9 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.registry.CustomRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +14,6 @@ import java.util.function.Supplier;
 
 public class Upgrade {
 
-    public static final CustomRegistry<Upgrade> UPGRADES = CustomRegistry.create(Upgrade.class, new ResourceLocation(TardisRefined.MODID, "upgrades"));
 
     private final Supplier<Upgrade> parent;
     private int cost = 1;
@@ -24,26 +21,46 @@ public class Upgrade {
     private int posX = 0, posY = 0;
     private final Supplier<ItemStack> icon;
 
-    public Upgrade(Supplier<ItemStack> icon) {
+    private ResourceLocation translationKey;
+
+    /**
+     *
+     * @param icon
+     * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
+     */
+    public Upgrade(Supplier<ItemStack> icon, ResourceLocation translationKey) {
         this.icon = icon;
         this.parent = null;
+        this.translationKey = translationKey;
     }
 
-    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent) {
+    /**
+     *
+     * @param icon
+     * @param parent - the parent Upgrade object before we can unlock this current upgrade
+     * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
+     */
+    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey) {
         this.icon = icon;
         this.parent = parent;
+        this.translationKey = translationKey;
     }
 
     public ItemStack getIcon() {
         return this.icon.get();
     }
 
-    public Upgrade setCost(int cost) {
+    public Upgrade setSkillPointsRequired(int cost) {
         this.cost = cost;
         return this;
     }
 
-    public int getCost() {
+    /**
+     * Currently, the Tardis has a XP system, every successful flight event supplies a certain amount of Tardis XP
+     * 50 Tardis XP becomes 1 skill point
+     * @return Skill points required before the upgrade unlocks
+     */
+    public int getSkillPointsRequired() {
         return this.cost;
     }
 
@@ -70,7 +87,7 @@ public class Upgrade {
     public List<Upgrade> getDirectChildren() {
         List<Upgrade> upgrades = new ArrayList<>();
 
-        for (Upgrade upgrade : UPGRADES.getValues()) {
+        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
             if (upgrade.getParent() == this) {
                 upgrades.add(upgrade);
             }
@@ -80,11 +97,11 @@ public class Upgrade {
     }
 
     public Component getDisplayName() {
-        return Component.translatable(Util.makeDescriptionId("upgrade", getKey()));
+        return Component.translatable(Util.makeDescriptionId("upgrade", this.translationKey));
     }
 
     public Component getDisplayDescription() {
-        return Component.translatable(Util.makeDescriptionId("upgrade", getKey()) + ".description");
+        return Component.translatable(Util.makeDescriptionId("upgrade", this.translationKey) + ".description");
     }
 
     public void onUnlocked(TardisLevelOperator tardisLevelOperator, UpgradeHandler upgradeHandler) {
@@ -100,7 +117,4 @@ public class Upgrade {
         return upgradeHandler.isUpgradeUnlocked(this);
     }
 
-    public ResourceLocation getKey() {
-        return UPGRADES.getKey(this);
-    }
 }

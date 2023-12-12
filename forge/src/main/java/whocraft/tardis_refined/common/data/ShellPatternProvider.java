@@ -47,7 +47,7 @@ public class ShellPatternProvider implements DataProvider {
 
         if (this.addDefaults) {
             ShellPatterns.registerDefaultPatterns();
-            data.putAll(ShellPatterns.getDefaultPatterns());
+            data.putAll(ShellPatterns.getDefaultPatternsDatagen());
         }
 
         this.addPatterns();
@@ -70,9 +70,7 @@ public class ShellPatternProvider implements DataProvider {
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
 
-    protected ShellPattern addPatternToDatagen(ShellTheme theme, ShellPattern shellPattern) {
-        //TODO: When moving away from enum system to a registry-like system, remove hardcoded Tardis Refined modid
-        ResourceLocation themeId = new ResourceLocation(TardisRefined.MODID, theme.getSerializedName().toLowerCase(Locale.ENGLISH));
+    protected ShellPattern addPatternToDatagen(ResourceLocation themeId, ShellPattern shellPattern) {
         ShellPattern pattern = (ShellPattern) shellPattern.setThemeId(themeId);
         ShellPatternCollection collection;
         if (this.data.containsKey(themeId)) {

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -131,11 +132,11 @@ public class TardisLevelOperator {
             tardisClientData.setThrottleDown(pilotingManager.shouldThrottleBeDown());
             tardisClientData.setIsLanding(exteriorManager.isLanding());
             tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setShellTheme(pilotingManager.getCurrentExteriorTheme());
+            tardisClientData.setShellTheme(exteriorManager.getCurrentTheme()); //Use the exterior manager's theme ID, the piloting manager's reference is almost always null, not sure why.
             tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
             tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
-            tardisClientData.setShellPattern(getExteriorManager().shellPattern());
+            tardisClientData.setShellPattern(exteriorManager.shellPattern());
             tardisClientData.sync();
         }
     }
@@ -195,7 +196,7 @@ public class TardisLevelOperator {
         }
 
         if(getExteriorManager().getCurrentTheme() != null) {
-            ShellTheme theme = getExteriorManager().getCurrentTheme();
+            ResourceLocation theme = getExteriorManager().getCurrentTheme();
             if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
                if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
                    return false;
@@ -241,11 +242,11 @@ public class TardisLevelOperator {
         }
     }
 
-    public void setShellTheme(ShellTheme theme) {
-        getExteriorManager().setShellTheme(theme);
-        getInteriorManager().setShellTheme(theme);
+    public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
+        this.getExteriorManager().setShellTheme(theme, setupTardis);
+        this.getInteriorManager().setShellTheme(theme, setupTardis);
         this.getPilotingManager().setCurrentExteriorTheme(theme);
-        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme);
+        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
     }
 
     /**

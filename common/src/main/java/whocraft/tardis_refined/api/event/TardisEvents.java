@@ -2,6 +2,7 @@ package whocraft.tardis_refined.api.event;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -38,9 +39,9 @@ public class TardisEvents {
         }
     });
 
-    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme) -> {
+    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme, isSetupTardis) -> {
         for (ShellChange listener : listeners) {
-            listener.onShellChange(tardisLevelOperator, theme);
+            listener.onShellChange(tardisLevelOperator, theme, isSetupTardis);
         }
     });
 
@@ -117,8 +118,9 @@ public class TardisEvents {
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
          * @param theme The theme the TARDIS changed to.
+         * @param isSetupTardis if the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
          */
-        void onShellChange(TardisLevelOperator tardisLevelOperator, ShellTheme theme);
+        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, boolean isSetupTardis);
     }
 
     /**
