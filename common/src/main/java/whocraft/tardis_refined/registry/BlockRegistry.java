@@ -88,6 +88,9 @@ public class BlockRegistry {
         return 15;
     })), true, true);
 
+    public static final RegistrySupplier<EngineInterfaceBlock> ENGINE_INTERFACE = register("engine_interface", () -> new EngineInterfaceBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+
+
 
 
 }

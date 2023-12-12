@@ -7,6 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.items.UpgradeItem;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,22 +23,29 @@ public class Upgrade {
     private boolean posSet = false;
     private int posX = 0, posY = 0;
     private final Supplier<ItemStack> icon;
+    private final UpgradeActions upgradeActions;
 
     public enum UpgradeType {
         MAIN_UPGRADE, SUB_UPGRADE;
     }
     private ResourceLocation translationKey;
 
+
+    public UpgradeActions getUpgradeCondition() {
+        return upgradeActions;
+    }
+
     /**
      *
      * @param icon
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
-    public Upgrade(Supplier<ItemStack> icon, ResourceLocation translationKey, UpgradeType upgradeType) {
+    public Upgrade(Supplier<ItemStack> icon, ResourceLocation translationKey, UpgradeType upgradeType, UpgradeActions upgradeActions) {
         this.icon = icon;
         this.parent = null;
         this.translationKey = translationKey;
         this.upgradeType = upgradeType;
+        this.upgradeActions = upgradeActions;
     }
 
     /**
@@ -45,11 +54,12 @@ public class Upgrade {
      * @param parent - the parent Upgrade object before we can unlock this current upgrade
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
-    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey, UpgradeType upgradeType) {
+    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey, UpgradeType upgradeType, UpgradeActions upgradeActions) {
         this.icon = icon;
         this.parent = parent;
         this.translationKey = translationKey;
         this.upgradeType = upgradeType;
+        this.upgradeActions = upgradeActions;
     }
 
     public ItemStack getIcon() {
@@ -120,11 +130,34 @@ public class Upgrade {
     public void onLocked(TardisLevelOperator tardisLevelOperator, UpgradeHandler upgradeHandler) {
     }
 
-    public boolean isUnlocked(UpgradeHandler upgradeHandler) {
+    public void onUpgradeTick(TardisLevelOperator tardisLevelOperator, UpgradeHandler upgradeHandler) {
+    }
+
+
+    public interface UpgradeActions {
+        boolean areConditionsMetForFunctionality(TardisLevelOperator tardisLevelOperator, UpgradeHandler upgradeHandler);
+        void inflictDamageToComponents(TardisLevelOperator tardisLevelOperator, UpgradeHandler upgradeHandler);
+        UpgradeItem[] components();
+    }
+
+
+    public boolean hasUserBought(UpgradeHandler upgradeHandler) {
         if (this.cost <= 0) {
             return true;
         }
         return upgradeHandler.isUpgradeUnlocked(this);
     }
+
+    public boolean isUnlockedAndCanBeUsed(TardisLevelOperator tardisLevelOperator, UpgradeHandler upgradeHandler) {
+        if (this.cost <= 0) {
+            return upgradeActions.areConditionsMetForFunctionality(tardisLevelOperator, upgradeHandler);
+        }
+        System.out.println(upgradeHandler.isItemInstalled(ItemRegistry.CHAMELEON_CIRCUIT.get()));
+        return upgradeHandler.isUpgradeUnlocked(this) && upgradeActions.areConditionsMetForFunctionality(tardisLevelOperator, upgradeHandler);
+    }
+
+
+
+
 
 }

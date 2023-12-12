@@ -135,7 +135,7 @@ public class UpgradeWidget {
     }
 
     public void drawDisplayIcon(Minecraft mc, GuiGraphics guiGraphics, int x, int y) {
-        if (this.upgradeEntry.isUnlocked(upgradeHandler)) {
+        if (this.upgradeEntry.hasUserBought(upgradeHandler)) {
             guiGraphics.renderFakeItem(this.upgradeEntry.getIcon(), x, y);
         } else {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -147,7 +147,7 @@ public class UpgradeWidget {
 
     public void drawIcon(Minecraft mc, GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), this.upgradeEntry.isUnlocked(upgradeHandler)), x - 13, y - 13, 26, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), this.upgradeEntry.hasUserBought(upgradeHandler)), x - 13, y - 13, 26, 26);
         this.drawDisplayIcon(mc, guiGraphics, x - 8, y - 8);
     }
 
@@ -212,9 +212,9 @@ public class UpgradeWidget {
             }
         }
 
-        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 0, 0, q, p, n, 26);
-        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 200 - o, 0, q + n, p, o, 26);
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 26, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.hasUserBought(upgradeHandler)), 200, 26, 0, 0, q, p, n, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.hasUserBought(upgradeHandler)), 200, 26, 200 - o, 0, q + n, p, o, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.hasUserBought(upgradeHandler)), i + this.x + 3, j + this.y, 26, 26);
         if (bl) {
             guiGraphics.drawString(this.minecraft.font, this.title, q + 5, j + this.y + 9, -1);
             if (component != null) {

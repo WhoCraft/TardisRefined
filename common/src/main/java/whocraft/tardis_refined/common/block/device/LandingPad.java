@@ -80,7 +80,8 @@ public class LandingPad extends Block {
                         TardisPilotingManager pilotManager = operator.getPilotingManager();
                         UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-                        if (Upgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true) && !pilotManager.isOnCooldown()) {
+                        if (Upgrades.LANDING_PAD.get().isUnlockedAndCanBeUsed(operator, upgradeHandler) && pilotManager.beginFlight(true) && !pilotManager.isOnCooldown()) {
+                            Upgrades.LANDING_PAD.get().getUpgradeCondition().inflictDamageToComponents(operator, upgradeHandler);
                             pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
                             serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
                             return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);

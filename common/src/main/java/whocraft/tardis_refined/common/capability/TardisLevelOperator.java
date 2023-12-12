@@ -130,6 +130,7 @@ public class TardisLevelOperator {
         pilotingManager.tick(level);
         tardisFlightEventManager.tick();
         tardisHADSManager.tick();
+        upgradeHandler.tick();
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {

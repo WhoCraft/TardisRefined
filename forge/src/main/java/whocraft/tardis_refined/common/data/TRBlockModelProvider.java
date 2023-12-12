@@ -11,6 +11,7 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.device.EngineInterfaceBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
@@ -42,6 +43,13 @@ public class TRBlockModelProvider extends BlockStateProvider {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> ConfiguredModel.builder().modelFile(new ModelFile.UncheckedModelFile(location)).rotationY((int) blockState.getValue(HorizontalDirectionalBlock.FACING).toYRot()).build());
 
 
+        return builder.toJson();
+    }
+
+    public JsonObject engineInterface(Block block) {
+        VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> blockState.getValue(EngineInterfaceBlock.ENABLED) ?
+                ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/engine_interface"))).build() :
+                ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/engine_interface_disabled"))).build());
         return builder.toJson();
     }
 
@@ -84,6 +92,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         threeDeeRotating(BlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
 
         terraformer(BlockRegistry.TERRAFORMER_BLOCK.get());
+        engineInterface(BlockRegistry.ENGINE_INTERFACE.get());
 
         /*
          **Basic Blocks**

@@ -70,20 +70,20 @@ public class MonitorScreen extends SelectionScreen {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 250, 80, leftPos - 70, this.topPos + 30, this.topPos + this.imageHeight - 45 , 12);
         selectionList.setRenderBackground(false);
 
-        if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().hasUserBought(upgradeHandler)){
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
         }
 
-        if(Upgrades.INSIDE_ARCHITECTURE.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.INSIDE_ARCHITECTURE.get().hasUserBought(upgradeHandler)){
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
         }
 
-        if(Upgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.WAYPOINTS.get().hasUserBought(upgradeHandler)){
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos));
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
         }
 
-        if(Upgrades.COORDINATE_INPUT.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.COORDINATE_INPUT.get().hasUserBought(upgradeHandler)){
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
         }
 

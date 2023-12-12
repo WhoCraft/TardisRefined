@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -422,6 +423,10 @@ public class TardisPilotingManager extends BaseHandler{
             player.addEffect(mobEffectInstance);
         }
 
+        for (Upgrade unlockedUpgrade : operator.getUpgradeHandler().getUnlockedUpgrades()) {
+            unlockedUpgrade.getUpgradeCondition().inflictDamageToComponents(operator, operator.getUpgradeHandler());
+        }
+
         // Calculate the random position from what we've gotten.
 
         if (this.targetLocation.getLevel().dimension() == Level.END) {
@@ -498,15 +503,15 @@ public class TardisPilotingManager extends BaseHandler{
 
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler){
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
-        if(Upgrades.EXPLORER.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.EXPLORER.get().isUnlockedAndCanBeUsed(operator, upgradeHandler)){
             increments.add(1000);
         }
 
-        if(Upgrades.EXPLORER_II.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.EXPLORER_II.get().isUnlockedAndCanBeUsed(operator, upgradeHandler)){
             increments.add(2500);
         }
 
-        if(Upgrades.EXPLORER_III.get().isUnlocked(upgradeHandler)){
+        if(Upgrades.EXPLORER_III.get().isUnlockedAndCanBeUsed(operator, upgradeHandler)){
             increments.add(5000);
         }
 

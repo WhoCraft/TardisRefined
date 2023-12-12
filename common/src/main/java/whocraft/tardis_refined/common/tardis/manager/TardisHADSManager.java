@@ -61,9 +61,10 @@ public class TardisHADSManager extends BaseHandler {
                 RandomSource random = serverLevel.random;
                 UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
 
-                if (!Upgrades.HOSTILE_DISPLACEMENT.get().isUnlocked(upgradeHandler)) {
+                if (!Upgrades.HOSTILE_DISPLACEMENT.get().isUnlockedAndCanBeUsed(tardisLevelOperator, upgradeHandler)) {
                     return;
                 }
+                Upgrades.HOSTILE_DISPLACEMENT.get().getUpgradeCondition().inflictDamageToComponents(tardisLevelOperator, upgradeHandler);
 
                 TardisNavLocation lastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation();
                 int maxX = (int) lastKnown.getLevel().getWorldBorder().getMaxX();

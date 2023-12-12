@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.capability.upgrades;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
@@ -7,17 +8,26 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.block.device.EngineInterfaceBlock;
+import whocraft.tardis_refined.common.blockentity.device.EngineInterfaceBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.manager.BaseHandler;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static whocraft.tardis_refined.common.tardis.TardisArchitectureHandler.generateArsTree;
 
-public class UpgradeHandler {
+public class UpgradeHandler extends BaseHandler {
 
     // TODO max xp per point might change, set to 50 for testing
     public static final int XP_PER_UPGRADE_POINT = 50;
@@ -28,10 +38,56 @@ public class UpgradeHandler {
     private int upgradePoints = 0;
     private int overallTardisPoints = 0;
     private final List<Upgrade> unlockedUpgrades = new ArrayList<>();
+    private final List<BlockPos> interfacePositions = new ArrayList<>();
 
     public UpgradeHandler(@NotNull TardisLevelOperator tardisLevelOperator) {
         this.tardisLevelOperator = tardisLevelOperator;
     }
+
+    public boolean isItemInstalled(Item item){
+        return firstInstalledItem(item).isPresent();
+    }
+
+    public List<BlockPos> getInterfacePositions() {
+        return interfacePositions;
+    }
+
+    public void addInterfacePosition(BlockPos blockPos){
+        interfacePositions.add(blockPos);
+    }
+
+    public void removeInterfacePosition(BlockPos blockPos) {
+        interfacePositions.removeIf(pos -> pos.equals(blockPos));
+    }
+
+
+    public Optional<BlockPos> firstInstalledItem(Item item) {
+        Level level = tardisLevelOperator.getLevel();
+        if (!(level instanceof ServerLevel serverLevel)) {
+            return Optional.empty();
+        }
+
+        for (BlockPos interfacePosition : interfacePositions) {
+            BlockState state = serverLevel.getBlockState(interfacePosition);
+
+            if (state.getBlock() == BlockRegistry.ENGINE_INTERFACE.get() &&
+                    state.hasProperty(EngineInterfaceBlock.ENABLED) &&
+                    state.getValue(EngineInterfaceBlock.ENABLED)) {
+
+                BlockEntity potentialEngineInterface = serverLevel.getBlockEntity(interfacePosition);
+
+                if (potentialEngineInterface instanceof EngineInterfaceBlockEntity engineInterfaceBlockEntity) {
+                    if (engineInterfaceBlockEntity.getComponent().getItem() == item) {
+                        return Optional.of(interfacePosition);
+                    }
+                }
+            }
+        }
+
+        return Optional.empty();
+    }
+
+
 
     public double calculateProgress() {
         int totalUpgrades = Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry().size();
@@ -173,6 +229,14 @@ public class UpgradeHandler {
             for (Upgrade child : upgrade.getDirectChildren()) {
                 this.lockUpgrade(child);
             }
+        }
+    }
+
+
+    @Override
+    public void tick() {
+        for (Upgrade unlockedUpgrade : unlockedUpgrades) {
+            unlockedUpgrade.onUpgradeTick(tardisLevelOperator, this);
         }
     }
 

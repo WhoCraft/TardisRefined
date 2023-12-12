@@ -8,10 +8,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -52,8 +55,12 @@ public class ChangeShellMessage extends MessageC2S {
     public void handle(MessageContext context) {
         Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
         level.flatMap(TardisLevelOperator::get).ifPresent(y -> {
-            y.setShellTheme(this.shellTheme, false);
-            y.getAestheticHandler().setShellPattern(pattern);
+            if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlockedAndCanBeUsed(y, y.getUpgradeHandler())) {
+                y.setShellTheme(this.shellTheme, false);
+                y.getAestheticHandler().setShellPattern(pattern);
+            } else {
+                PlayerUtil.sendMessage(context.getPlayer(), ModMessages.HARDWARE_OFFLINE, true);
+            }
         });
 
     }

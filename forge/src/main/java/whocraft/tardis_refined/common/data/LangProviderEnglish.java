@@ -66,6 +66,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.AERIAL_UPGRADE.get(), "Aerial");
         add(ItemRegistry.DEFENSE_UPGRADE.get(), "Defense Circuit");
         add(ItemRegistry.NAVIGATION_UPGRADE.get(), "Navigation Circuit");
+        add(ItemRegistry.ARCHITECTURE_UPGRADE.get(), "Architecture Circuit");
+        add(ItemRegistry.CHAMELEON_CIRCUIT.get(), "Chameleon Circuit");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
 
         /*Entity*/

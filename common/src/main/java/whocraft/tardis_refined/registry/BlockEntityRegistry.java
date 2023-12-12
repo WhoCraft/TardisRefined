@@ -7,6 +7,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.blockentity.desktop.InternalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
+import whocraft.tardis_refined.common.blockentity.device.EngineInterfaceBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.FlightDetectorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
@@ -35,5 +36,6 @@ public class BlockEntityRegistry {
     public static final RegistrySupplier<BlockEntityType<BulkHeadDoorBlockEntity>> BULK_HEAD_DOOR = BLOCK_ENTITY_TYPES.register("bulk_head_door", () -> BlockEntityType.Builder.of(BulkHeadDoorBlockEntity::new, BlockRegistry.BULK_HEAD_DOOR.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<ConsoleConfigurationBlockEntity>> CONSOLE_CONFIGURATION = BLOCK_ENTITY_TYPES.register("console_configuration", () -> BlockEntityType.Builder.of(ConsoleConfigurationBlockEntity::new, BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<FlightDetectorBlockEntity>> FLIGHT_DETECTOR = BLOCK_ENTITY_TYPES.register("flight_detector", () -> BlockEntityType.Builder.of(FlightDetectorBlockEntity::new, BlockRegistry.FLIGHT_DETECTOR.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<EngineInterfaceBlockEntity>> ENGINE_INTERFACE = BLOCK_ENTITY_TYPES.register("engine_interface", () -> BlockEntityType.Builder.of(EngineInterfaceBlockEntity::new, BlockRegistry.ENGINE_INTERFACE.get()).build(null));
 
 }

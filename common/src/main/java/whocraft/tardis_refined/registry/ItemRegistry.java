@@ -7,6 +7,7 @@ import net.minecraft.world.item.Item;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.items.DrillItem;
 import whocraft.tardis_refined.common.items.KeyItem;
+import whocraft.tardis_refined.common.items.UpgradeItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,11 @@ public class ItemRegistry {
     public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = register("pattern_manipulator", () -> new Item(new Item.Properties().stacksTo(1)), true);
     public static final RegistrySupplier<Item> DRILL = register("drill", () -> new DrillItem(new Item.Properties().stacksTo(1)), true);
 
-    public static final RegistrySupplier<Item> NAVIGATION_UPGRADE = register("navigation_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
-    public static final RegistrySupplier<Item> DEFENSE_UPGRADE = register("defense_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
-    public static final RegistrySupplier<Item> AERIAL_UPGRADE = register("aerial_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
-    public static final RegistrySupplier<Item> ARCHITECTURE_UPGRADE = register("architecture_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> NAVIGATION_UPGRADE = register("navigation_upgrade", () -> new UpgradeItem(new Item.Properties().durability(100)), true);
+    public static final RegistrySupplier<Item> DEFENSE_UPGRADE = register("defense_upgrade", () -> new UpgradeItem(new Item.Properties().durability(100)), true);
+    public static final RegistrySupplier<Item> AERIAL_UPGRADE = register("aerial_upgrade", () -> new UpgradeItem(new Item.Properties().durability(100)), true);
+    public static final RegistrySupplier<Item> ARCHITECTURE_UPGRADE = register("architecture_upgrade", () -> new UpgradeItem(new Item.Properties().durability(100)), true);
+    public static final RegistrySupplier<Item> CHAMELEON_CIRCUIT = register("chameleon_circuit_upgrade", () -> new UpgradeItem(new Item.Properties().durability(100)), true);
 
 
     private static <T extends Item> RegistrySupplier<T> register(String id, Supplier<T> itemSupplier, boolean addToTab) {

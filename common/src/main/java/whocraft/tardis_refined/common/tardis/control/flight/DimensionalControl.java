@@ -54,7 +54,7 @@ public class DimensionalControl extends Control {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-            if(!Upgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)){
+            if(!Upgrades.DIMENSION_TRAVEL.get().isUnlockedAndCanBeUsed(operator, upgradeHandler)){
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HARDWARE_OFFLINE), true);
                 pilotManager.getTargetLocation().setDimensionKey(OVERWORLD);
                 return false;
