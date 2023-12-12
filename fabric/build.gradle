@@ -74,6 +74,7 @@ dependencies {
 
     modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
     modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
+    modImplementation "curse.maven:huge-structure-blocks-474114:4803539"
 
     // Forge Config API Port
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"

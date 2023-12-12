@@ -1,13 +1,7 @@
 package whocraft.tardis_refined.common.tardis;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-
-import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
-
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.common.util.Platform;
@@ -70,6 +64,7 @@ public class TardisDesktops {
         addDefaultDesktop(new DesktopTheme("nuka", "desktop/nuka"));
         addDefaultDesktop(new DesktopTheme("future_nostalgia", "desktop/future_nostalgia"));
         addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
+        addDefaultDesktop(new DesktopTheme("shalka", "desktop/shalka"));
         return DEFAULT_DESKTOPS;
     }
 
