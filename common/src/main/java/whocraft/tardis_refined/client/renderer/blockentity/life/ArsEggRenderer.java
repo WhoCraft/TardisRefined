@@ -40,6 +40,7 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
            poseStack.translate(0, -0.5, 0);
         }
 
+
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
 

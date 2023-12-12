@@ -29,7 +29,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(SoundRegistry.TARDIS_MISC_SPARKLE.get(), basicSound("tardis_misc_sparkle", new ResourceLocation(TardisRefined.MODID, "tardis/tardis_misc_sparkle")));
         add(SoundRegistry.STATIC.get(), basicSound("static", new ResourceLocation(TardisRefined.MODID, "ui/static")));
         add(SoundRegistry.DESTINATION_DING.get(), basicSound("destination_ding", new ResourceLocation(TardisRefined.MODID, "tardis/destination_ding")));
-        add(SoundRegistry.ARS_HUM.get(), basicSound("ars_hum", new ResourceLocation(TardisRefined.MODID, "tardis/ars/ars_hum_1"), new ResourceLocation(TardisRefined.MODID, "tardis/ars/ars_hum_2")));
+        add(SoundRegistry.ARS_HUM.get(), basicSound("ars_hum", new ResourceLocation(TardisRefined.MODID, "tardis/ars/ars_hum")));
     }
 
 

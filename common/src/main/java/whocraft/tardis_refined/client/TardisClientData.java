@@ -166,8 +166,6 @@ public class TardisClientData {
             if (soundManager.isActive(LoopingSound.ARS_HUMMING)) {
                 Minecraft.getInstance().getMusicManager().stopPlaying();
             }
-        } else {
-            LoopingSound.ARS_HUMMING.stopSound();
         }
 
 
@@ -177,7 +175,6 @@ public class TardisClientData {
                 var player = Minecraft.getInstance().player;
                 player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                 player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-
             }
         }
 
@@ -316,6 +313,13 @@ public class TardisClientData {
         return blockPos.getX() >= minX && blockPos.getX() <= maxX &&
                 blockPos.getY() >= minY && blockPos.getY() <= maxY &&
                 blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
+    }
+
+    public Vec3 fogColor(boolean isCrashing) {
+        if (isCrashing) {
+            return new Vec3(1, 0, 0);
+        }
+        return new Vec3(0.14F, 0.15F, 0.22F);
     }
 
 }

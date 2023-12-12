@@ -36,6 +36,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(SoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
         addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
         addSound(SoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
+        addSound(SoundRegistry.ARS_HUM.get(), "ARS Tree Hum");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");

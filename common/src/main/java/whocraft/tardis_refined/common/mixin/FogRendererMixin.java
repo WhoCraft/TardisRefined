@@ -33,14 +33,13 @@ public class FogRendererMixin {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
             if (TardisClientData.isInArsArea(blockPosition)) {
-                RenderSystem.setShaderFogColor((float) fogColor().x, (float) fogColor().y, (float) fogColor().z);
+                TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
+                Vec3 fogColor = reactions.fogColor(reactions.isCrashing() || reactions.isInDangerZone());
+                RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);
                 callbackInfo.cancel();
             }
         }
     }
 
-    private static Vec3 fogColor() {
-        return new Vec3(0.14F, 0.15F, 0.22F);
-    }
 
 }

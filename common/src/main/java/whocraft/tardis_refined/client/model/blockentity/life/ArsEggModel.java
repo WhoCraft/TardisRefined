@@ -15,6 +15,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 
@@ -64,7 +65,14 @@ public class ArsEggModel extends HierarchicalModel {
 		}
 
 		if(blockState.getValue(ArsEggBlock.HANGING)){
-			this.animate(arsEggBlockEntity.getLiveliness(), SWING_ANIMATION, Minecraft.getInstance().player.tickCount);
+			TardisClientData tardisClientData = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
+			boolean crashingOrDanger = tardisClientData.isCrashing() || tardisClientData.isInDangerZone();
+			int animationCounter = Minecraft.getInstance().player.tickCount;
+			if(crashingOrDanger){
+				animationCounter = animationCounter * 15;
+			}
+
+			this.animate(arsEggBlockEntity.getLiveliness(), SWING_ANIMATION, animationCounter);
 		}
 
 
