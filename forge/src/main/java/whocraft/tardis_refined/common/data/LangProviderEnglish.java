@@ -63,6 +63,9 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(ItemRegistry.DRILL.get(), "Growth Drill");
+        add(ItemRegistry.AERIAL_UPGRADE.get(), "Aerial");
+        add(ItemRegistry.DEFENSE_UPGRADE.get(), "Defense Circuit");
+        add(ItemRegistry.NAVIGATION_UPGRADE.get(), "Navigation Circuit");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
 
         /*Entity*/

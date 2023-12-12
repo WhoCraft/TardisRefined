@@ -25,6 +25,10 @@ public class ItemRegistry {
     public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = register("pattern_manipulator", () -> new Item(new Item.Properties().stacksTo(1)), true);
     public static final RegistrySupplier<Item> DRILL = register("drill", () -> new DrillItem(new Item.Properties().stacksTo(1)), true);
 
+    public static final RegistrySupplier<Item> NAVIGATION_UPGRADE = register("navigation_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> DEFENSE_UPGRADE = register("defense_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> AERIAL_UPGRADE = register("aerial_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> ARCHITECTURE_UPGRADE = register("architecture_upgrade", () -> new Item(new Item.Properties().stacksTo(1)), true);
 
 
     private static <T extends Item> RegistrySupplier<T> register(String id, Supplier<T> itemSupplier, boolean addToTab) {
