@@ -68,7 +68,7 @@ public class BuyUpgradeScreen extends Screen {
         for (int k = 0; k < lines.size(); k++) {
             FormattedCharSequence text = lines.get(k);
             int width = this.font.width(text);
-            guiGraphics.drawString(font, text, (int) (guiLeft + GUI_WIDTH / 2F - width / 2F), guiTop + 9 + k * 10, ChatFormatting.GOLD.getColor(), false);
+            guiGraphics.drawString(font, text, (int) (guiLeft + GUI_WIDTH / 2F - width / 2F), guiTop + 9 + k * 10, ChatFormatting.BLACK.getColor(), false);
         }
 
         super.render(guiGraphics, mouseX, mouseY, partialTick);

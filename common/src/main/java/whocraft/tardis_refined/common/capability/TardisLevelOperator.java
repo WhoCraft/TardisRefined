@@ -198,6 +198,8 @@ public class TardisLevelOperator {
             return false;
         }
 
+
+
         if(aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {

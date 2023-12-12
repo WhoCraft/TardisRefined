@@ -16,11 +16,15 @@ public class Upgrade {
 
 
     private final Supplier<Upgrade> parent;
+    private final UpgradeType upgradeType;
     private int cost = 1;
     private boolean posSet = false;
     private int posX = 0, posY = 0;
     private final Supplier<ItemStack> icon;
 
+    public enum UpgradeType {
+        MAIN_UPGRADE, SUB_UPGRADE;
+    }
     private ResourceLocation translationKey;
 
     /**
@@ -28,10 +32,11 @@ public class Upgrade {
      * @param icon
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
-    public Upgrade(Supplier<ItemStack> icon, ResourceLocation translationKey) {
+    public Upgrade(Supplier<ItemStack> icon, ResourceLocation translationKey, UpgradeType upgradeType) {
         this.icon = icon;
         this.parent = null;
         this.translationKey = translationKey;
+        this.upgradeType = upgradeType;
     }
 
     /**
@@ -40,10 +45,11 @@ public class Upgrade {
      * @param parent - the parent Upgrade object before we can unlock this current upgrade
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
-    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey) {
+    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey, UpgradeType upgradeType) {
         this.icon = icon;
         this.parent = parent;
         this.translationKey = translationKey;
+        this.upgradeType = upgradeType;
     }
 
     public ItemStack getIcon() {
@@ -53,6 +59,10 @@ public class Upgrade {
     public Upgrade setSkillPointsRequired(int cost) {
         this.cost = cost;
         return this;
+    }
+
+    public UpgradeType getUpgradeType() {
+        return upgradeType;
     }
 
     /**

@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.screen.upgrades;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.FrameType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
@@ -16,8 +15,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 
@@ -142,13 +139,15 @@ public class UpgradeWidget {
             guiGraphics.renderFakeItem(this.upgradeEntry.getIcon(), x, y);
         } else {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.blit(UpgradesScreen.WIDGETS, x, y, 90, 133, 16, 16);
+
+            //Display Lock6,
+            guiGraphics.blitSprite(UpgradesScreen.LOCKED, x - 5, y - 5, 26, 26);
         }
     }
 
     public void drawIcon(Minecraft mc, GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blit(UpgradesScreen.WIDGETS, x - 13, y - 13, 0, this.upgradeEntry.isUnlocked(upgradeHandler) ? 128 : 154, 26, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), this.upgradeEntry.isUnlocked(upgradeHandler)), x - 13, y - 13, 26, 26);
         this.drawDisplayIcon(mc, guiGraphics, x - 8, y - 8);
     }
 
@@ -213,9 +212,9 @@ public class UpgradeWidget {
             }
         }
 
-        guiGraphics.blitSprite(advancementWidgetType.boxSprite(), 200, 26, 0, 0, q, p, n, 26);
-        guiGraphics.blitSprite(advancementWidgetType2.boxSprite(), 200, 26, 200 - o, 0, q + n, p, o, 26);
-        guiGraphics.blitSprite(advancementWidgetType3.frameSprite(FrameType.TASK), i + this.x + 3, j + this.y, 26, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 0, 0, q, p, n, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 200 - o, 0, q + n, p, o, 26);
+        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 26, 26);
         if (bl) {
             guiGraphics.drawString(this.minecraft.font, this.title, q + 5, j + this.y + 9, -1);
             if (component != null) {
