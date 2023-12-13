@@ -168,7 +168,7 @@ public class TardisInteriorManager extends BaseHandler {
                 List<LivingEntity> desktopEntities = getAirlockEntities(level);
                 List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
-                if (desktopEntities.size() > 0 || corridorEntities.size() > 0) {
+                if (!desktopEntities.isEmpty() || !corridorEntities.isEmpty()) {
                     airlockCountdownSeconds--;
                     if (airlockCountdownSeconds <= 0) {
 
@@ -237,7 +237,6 @@ public class TardisInteriorManager extends BaseHandler {
                 }
 
                 if (airlockTimerSeconds == 7) {
-                    airlockTimerSeconds = 0;
                     this.processingWarping = false;
                     this.airlockTimerSeconds = 20;
                     BlockPos desktopDoorPos = corridorAirlockCenter.north(2);

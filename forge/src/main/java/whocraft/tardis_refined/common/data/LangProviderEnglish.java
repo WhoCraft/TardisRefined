@@ -162,9 +162,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
         addUpgrade(Upgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
         addUpgrade(Upgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
-        addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "1000k Increment");
-        addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "2500k Increment");
-        addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "5000k Increment");
+        addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "x1000 Increment");
+        addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "x2500 Increment");
+        addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
         addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
     }
