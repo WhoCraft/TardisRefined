@@ -83,6 +83,7 @@ public class ParticleProvider implements DataProvider {
         resourceLocations.add(new ResourceLocation("tardis_refined:silver/s_silver_sym_07"));
 
         makeParticle(TRParticles.GALLIFREY.get(), createParticle(resourceLocations), arg, base);
+        makeParticle(TRParticles.ARS_LEAVES.get(), createParticle(List.of(new ResourceLocation("minecraft:generic_0"))), arg, base);
 
         return CompletableFuture.allOf(this.futures.toArray(CompletableFuture[]::new));
 

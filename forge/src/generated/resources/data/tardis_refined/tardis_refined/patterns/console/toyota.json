@@ -13,7 +13,7 @@
       "name_component": "{\"color\":\"yellow\",\"text\":\"Violet\"}",
       "texture_definition": {
         "emissive": true,
-        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_texture_purple.png"
+        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_console_purple.png"
       }
     },
     {
@@ -21,7 +21,7 @@
       "name_component": "{\"color\":\"yellow\",\"text\":\"Blue\"}",
       "texture_definition": {
         "emissive": true,
-        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_texture_blue.png"
+        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_console_blue.png"
       }
     },
     {
@@ -29,7 +29,7 @@
       "name_component": "{\"color\":\"yellow\",\"text\":\"Skulk\"}",
       "texture_definition": {
         "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_texture_skulk.png"
+        "texture": "tardis_refined:textures/blockentity/console/toyota/toyota_console_skulk.png"
       }
     }
   ]

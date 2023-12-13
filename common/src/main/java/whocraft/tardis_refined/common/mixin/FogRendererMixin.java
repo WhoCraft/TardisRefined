@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.util.TardisHelper;
 
 @Mixin(FogRenderer.class)
 public class FogRendererMixin {
@@ -20,7 +21,7 @@ public class FogRendererMixin {
     private static void setupFog(Camera camera, FogRenderer.FogMode fogMode, float farPlaneDistance, boolean bl, float f, CallbackInfo ci) {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
-            if (TardisClientData.isInArsArea(blockPosition)) {
+            if (TardisHelper.isInArsArea(blockPosition)) {
                 RenderSystem.setShaderFogStart(-8);
                 RenderSystem.setShaderFogEnd(60 * 0.5F);
                 RenderSystem.setShaderFogShape(FogShape.SPHERE);
@@ -32,7 +33,7 @@ public class FogRendererMixin {
     private static void setupColor(CallbackInfo callbackInfo) {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
-            if (TardisClientData.isInArsArea(blockPosition)) {
+            if (TardisHelper.isInArsArea(blockPosition)) {
                 TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
                 Vec3 fogColor = reactions.fogColor(reactions.isCrashing() || reactions.isInDangerZone());
                 RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);

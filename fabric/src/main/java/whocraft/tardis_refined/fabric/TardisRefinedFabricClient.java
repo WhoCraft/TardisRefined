@@ -25,7 +25,6 @@ import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplier;
 
 public class TardisRefinedFabricClient implements ClientModInitializer {
     @Override
@@ -41,6 +40,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
     private void particles() {
         ParticleFactoryRegistry.getInstance().register(TRParticles.GALLIFREY.get(), (ParticleGallifrey.Provider::new));
+        ParticleFactoryRegistry.getInstance().register(TRParticles.ARS_LEAVES.get(), (ParticleGallifrey.ARSVinesParticle::new));
     }
 
     private void establishBlockEntityRenderers() {

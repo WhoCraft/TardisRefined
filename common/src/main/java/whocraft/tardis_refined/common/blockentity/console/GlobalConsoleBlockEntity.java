@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.blockentity.console;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -197,6 +198,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(x -> {
+
+                if (x.getPilotingManager().isOnCooldown() && serverLevel.getGameTime() % 20 == 0) {
+
+                    serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(), 120, 2.0, 1.0, 2.0, 0.005);
+                    serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(), 120, 2.0, 1.0, 2.0, 0.005);
+                    serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(), 120, 2.0, 1.0, 2.0, 0.01);
+                }
+
                 if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
 
                 // Check if we're crashing and if its okay to explode the TARDIS a little.

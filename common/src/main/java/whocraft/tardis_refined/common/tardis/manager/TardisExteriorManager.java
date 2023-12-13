@@ -20,9 +20,7 @@ import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.common.util.RegistryHelper;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
@@ -34,9 +32,6 @@ public class TardisExteriorManager extends BaseHandler {
 
     private final TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation = TardisNavLocation.ORIGIN;
-    private ResourceLocation currentTheme;
-
-    private ShellPattern shellPattern = null;
 
     public boolean locked() {
         return locked;

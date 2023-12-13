@@ -24,6 +24,8 @@ import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.Map;
 
+import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
+
 public class TardisClientData {
 
 
@@ -316,25 +318,10 @@ public class TardisClientData {
             double velocityY = (random.nextDouble() - 0.5) * 0.02;
             double velocityZ = (random.nextDouble() - 0.5) * 0.02;
             if(isInArsArea(new BlockPos((int) particleX, (int) particleY, (int) particleZ))) {
+                level.addParticle(TRParticles.ARS_LEAVES.get(), particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
                 level.addParticle(ParticleTypes.END_ROD, particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
             }
         }
-    }
-
-    public static boolean isInArsArea(BlockPos blockPos) {
-        BlockPos corner1 = new BlockPos(1009, 97, -2);
-        BlockPos corner2 = new BlockPos(1041, 118, 30);
-
-        int minX = Math.min(corner1.getX(), corner2.getX());
-        int maxX = Math.max(corner1.getX(), corner2.getX());
-        int minY = Math.min(corner1.getY(), corner2.getY());
-        int maxY = Math.max(corner1.getY(), corner2.getY());
-        int minZ = Math.min(corner1.getZ(), corner2.getZ());
-        int maxZ = Math.max(corner1.getZ(), corner2.getZ());
-
-        return blockPos.getX() >= minX && blockPos.getX() <= maxX &&
-                blockPos.getY() >= minY && blockPos.getY() <= maxY &&
-                blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
     }
 
     public Vec3 fogColor(boolean isCrashing) {

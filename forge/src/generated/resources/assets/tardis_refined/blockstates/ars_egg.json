@@ -1,15 +1,27 @@
 {
   "variants": {
-    "hanging=false,waterlogged=false": {
+    "alive=false,hanging=false,waterlogged=false": {
       "model": "tardis_refined:block/terraformer"
     },
-    "hanging=false,waterlogged=true": {
+    "alive=false,hanging=false,waterlogged=true": {
       "model": "tardis_refined:block/terraformer"
     },
-    "hanging=true,waterlogged=false": {
+    "alive=false,hanging=true,waterlogged=false": {
       "model": "tardis_refined:block/terraformer"
     },
-    "hanging=true,waterlogged=true": {
+    "alive=false,hanging=true,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "alive=true,hanging=false,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "alive=true,hanging=false,waterlogged=true": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "alive=true,hanging=true,waterlogged=false": {
+      "model": "tardis_refined:block/terraformer"
+    },
+    "alive=true,hanging=true,waterlogged=true": {
       "model": "tardis_refined:block/terraformer"
     }
   }

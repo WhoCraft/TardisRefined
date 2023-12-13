@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 
 public class GlobalDoorBlock extends InternalDoorBlock{
 
@@ -35,6 +36,22 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new GlobalDoorBlockEntity(blockPos, blockState);
+    }
+
+    @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
+        if(level instanceof ServerLevel serverLevel){
+            TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
+                BlockEntity block = level.getBlockEntity(blockPos);
+                AestheticHandler aesthetics = tardisLevelOperator.getAestheticHandler();
+                if(block instanceof GlobalDoorBlockEntity globalDoorBlockEntity){
+                    globalDoorBlockEntity.setShellTheme(aesthetics.getShellTheme());
+                    globalDoorBlockEntity.setPattern(aesthetics.shellPattern());
+                    globalDoorBlockEntity.sendUpdates();
+                }
+            });
+        }
     }
 
     @Override

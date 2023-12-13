@@ -31,10 +31,12 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.network.messages.upgrades.S2CDisplayUpgradeScreen;
+import whocraft.tardis_refined.common.util.TardisHelper;
 
 public class ArsEggBlock extends BaseEntityBlock {
 
     public static final BooleanProperty HANGING = BlockStateProperties.HANGING;
+    public static final BooleanProperty ALIVE = BooleanProperty.create("alive");;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape AABB = Shapes.or(Block.box(5.0, 0.0, 5.0, 11.0, 7.0, 11.0), Block.box(6.0, 7.0, 6.0, 10.0, 9.0, 10.0));
 
@@ -56,7 +58,7 @@ public class ArsEggBlock extends BaseEntityBlock {
             if (direction.getAxis() == Direction.Axis.Y) {
                 BlockState blockState = this.defaultBlockState().setValue(HANGING, direction == Direction.UP);
                 if (blockState.canSurvive(blockPlaceContext.getLevel(), blockPlaceContext.getClickedPos())) {
-                    return blockState.setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER);
+                    return blockState.setValue(WATERLOGGED, fluidState.getType() == Fluids.WATER).setValue(ALIVE, TardisHelper.isInArsArea(blockPlaceContext.getClickedPos()));
                 }
             }
         }
@@ -66,7 +68,7 @@ public class ArsEggBlock extends BaseEntityBlock {
 
     public ArsEggBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(HANGING, false).setValue(WATERLOGGED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(HANGING, false).setValue(WATERLOGGED, false).setValue(ALIVE, true));
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ArsEggBlock extends BaseEntityBlock {
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(HANGING, WATERLOGGED);
+        builder.add(HANGING, WATERLOGGED, ALIVE);
     }
 
     @Override
@@ -113,8 +115,10 @@ public class ArsEggBlock extends BaseEntityBlock {
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if(player instanceof ServerPlayer serverPlayer){
             TardisLevelOperator.get(serverPlayer.serverLevel()).ifPresent(tardisLevelOperator -> {
-                CompoundTag upgradeNbt = tardisLevelOperator.getUpgradeHandler().saveData(new CompoundTag());
-                new S2CDisplayUpgradeScreen(upgradeNbt).send(serverPlayer);
+                if(TardisHelper.isInArsArea(blockPos)) {
+                    CompoundTag upgradeNbt = tardisLevelOperator.getUpgradeHandler().saveData(new CompoundTag());
+                    new S2CDisplayUpgradeScreen(upgradeNbt).send(serverPlayer);
+                }
             });
         }
 

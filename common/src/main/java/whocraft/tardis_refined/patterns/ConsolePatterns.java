@@ -107,6 +107,7 @@ public class ConsolePatterns{
     private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture) {
         List<ConsolePattern> consolePatternList;
         ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(themeId,textureName), hasEmissiveTexture)).setThemeId(themeId);
+
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
             consolePatternList = DEFAULT_PATTERNS.get(themeId);
             List<ConsolePattern> currentList = new ArrayList<>();
@@ -124,7 +125,9 @@ public class ConsolePatterns{
 
     /** @implSpec INTERNAL USE ONLY */
     private static ResourceLocation createConsolePatternTextureLocation(ResourceLocation themeId, String textureName){
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + themeId.getPath().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
+        ResourceLocation texture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + themeId.getPath().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
+       
+        return texture;
     }
 
     /** Gets a default list of {@link ConsolePattern} added by Tardis Refined. Useful as a fallback list.
@@ -161,9 +164,9 @@ public class ConsolePatterns{
         addDefaultPattern(ConsoleTheme.FACTORY.getId(), "wood", "factory_console_wood", true);
 
         /*Toyota*/
-        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "violet", "toyota_texture_purple", true);
-        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "blue", "toyota_texture_blue", true);
-        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "skulk", "toyota_texture_skulk", false);
+        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "violet", "toyota_console_purple", true);
+        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "blue", "toyota_console_blue", true);
+        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "skulk", "toyota_console_skulk", false);
 
         /*Crystal*/
         addDefaultPattern(ConsoleTheme.CRYSTAL.getId(), "corrupted", "crystal_console_corrupted", true);
@@ -187,9 +190,6 @@ public class ConsolePatterns{
         /*Copper*/
         addDefaultPattern(ConsoleTheme.COPPER.getId(), "sculk", "copper_console_sculk", false);
 
-        Map<ResourceLocation, List<ConsolePattern>> patternsByCollection = new HashMap<>();
-        DEFAULT_PATTERNS.entrySet().forEach(entry -> patternsByCollection.put(entry.getKey(), entry.getValue()));
-
-        return patternsByCollection;
+        return new HashMap<>(DEFAULT_PATTERNS);
     }
 }

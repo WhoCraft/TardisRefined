@@ -165,7 +165,7 @@ public class TardisPilotingManager extends BaseHandler{
 
             if ((ticksLanding >= 6 * 20 || ticksLanding == 0) && !this.isCrashing()) {
                 var distanceBetweenWroop = (this.operator.getTardisFlightEventManager().getControlResponses() < this.operator.getTardisFlightEventManager().getRequiredControlRequests()) ? 20 * 1.6 : 20 * 1.75;
-                if (level.getGameTime() % (distanceBetweenWroop) == 0)
+                if (level.getGameTime() % (distanceBetweenWroop) == 0 && operator.getInternalDoor() != null)
                     operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 10f, (this.operator.getTardisFlightEventManager().getControlResponses() < this.operator.getTardisFlightEventManager().getRequiredControlRequests()) ? 1.02f : 1f);
             }
         }

@@ -80,7 +80,7 @@ public class AestheticHandler extends BaseHandler {
             if (state.getBlock() instanceof RootedShellBlock) {
                 // If the block at the last known location was originally a Root Shell Block (i.e. transforming to a proper Tardis),
                 // Create a new Global Shell Block instance and copy over all attributes from the existing shell
-                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL);
+                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL_IMMEDIATE);
 
                 //Copy over important data such as Tardis ID
                 updateShellBlock(theme, lastKnownLocationLevel, lastKnownLocationPosition);

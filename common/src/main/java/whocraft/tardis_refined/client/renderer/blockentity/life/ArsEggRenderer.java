@@ -47,8 +47,10 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
         arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(arsEggTexture)),
                 i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
-        arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(arsEggTextureEmissive)),
-                i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1F);
+        if(blockState.getValue(ArsEggBlock.ALIVE)) {
+            arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(arsEggTextureEmissive)),
+                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1F);
+        }
 
         poseStack.popPose();
     }
