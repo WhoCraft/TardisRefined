@@ -30,8 +30,6 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.ClientHelper;
-import whocraft.tardis_refined.constants.ResourceConstants;
-import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 
@@ -137,8 +135,11 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
                 if (operatorOptional.isPresent()) {
                     var operator = operatorOptional.get();
                     TardisPilotingManager pilotManager = operator.getPilotingManager();
+
                     if (pilotManager.isOnCooldown()) {
                         pilotManager.endCoolDown();
+
+
                         return InteractionResult.CONSUME_PARTIAL;
                     }
                 }

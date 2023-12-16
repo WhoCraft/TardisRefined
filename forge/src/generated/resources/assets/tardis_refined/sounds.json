@@ -53,6 +53,12 @@
     ],
     "subtitle": "sound.tardis_takeoff.subtitle"
   },
+  "test_hum": {
+    "sounds": [
+      "tardis_refined:tardis/test_hum"
+    ],
+    "subtitle": "sound.test_hum.subtitle"
+  },
   "time_blast": {
     "sounds": [
       "tardis_refined:tardis/time_blast"

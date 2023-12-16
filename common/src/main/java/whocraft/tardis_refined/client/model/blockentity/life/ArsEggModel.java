@@ -12,6 +12,8 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.block.state.BlockState;
+import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 
 public class ArsEggModel extends HierarchicalModel {
@@ -39,10 +41,12 @@ public class ArsEggModel extends HierarchicalModel {
 					new Keyframe(7.5F, KeyframeAnimations.degreeVec(0.0F, -6.7F, -0.79F), AnimationChannel.Interpolations.CATMULLROM)
 			))
 			.build();
+	private final ModelPart clamp;
 
 
 	public ArsEggModel(ModelPart root) {
 		this.Lamp = root.getChild("Lamp");
+		this.clamp = Lamp.getChild("clamp");
 		this.root = root;
 	}
 
@@ -64,6 +68,12 @@ public class ArsEggModel extends HierarchicalModel {
 	}
 
 	public void renderToBuffer(ArsEggBlockEntity arsEggBlockEntity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+		BlockState blockState = arsEggBlockEntity.getBlockState();
+
+		if (blockState.hasProperty(ArsEggBlock.ALIVE)) {
+			clamp.visible = blockState.getValue(ArsEggBlock.ALIVE);
+		}
+
 		Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

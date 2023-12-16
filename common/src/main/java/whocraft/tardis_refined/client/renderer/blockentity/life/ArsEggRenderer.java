@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -36,12 +35,12 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
     public void render(ArsEggBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
-        poseStack.translate(0, 0.5, 0);
+        poseStack.translate(0, 0.3, 0);
 
         BlockState blockState = blockEntity.getBlockState();
 
         if(!blockState.getValue(ArsEggBlock.HANGING)){
-           poseStack.translate(0, -0.5, 0);
+           poseStack.translate(0, -0.3, 0);
         }
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
@@ -50,7 +49,6 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
 
 
         if(!blockEntity.getLiveliness().isStarted()) {
-            LocalPlayer player = Minecraft.getInstance().player;
             blockEntity.getLiveliness().start(12);
         }
 

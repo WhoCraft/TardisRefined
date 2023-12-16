@@ -24,6 +24,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -33,19 +34,26 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.network.messages.upgrades.S2CDisplayUpgradeScreen;
 import whocraft.tardis_refined.common.util.TardisHelper;
 
+import java.util.stream.Stream;
+
 public class ArsEggBlock extends BaseEntityBlock {
 
     public static final BooleanProperty HANGING = BlockStateProperties.HANGING;
     public static final BooleanProperty ALIVE = BooleanProperty.create("alive");;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    protected static final VoxelShape AABB = Shapes.or(Block.box(5.0, 0.0, 5.0, 11.0, 7.0, 11.0), Block.box(6.0, 7.0, 6.0, 10.0, 9.0, 10.0));
 
-    protected static final VoxelShape HANGING_AABB = Shapes.or(Block.box(5.0, 1.0, 5.0, 11.0, 8.0, 11.0), Block.box(6.0, 8.0, 6.0, 10.0, 10.0, 10.0));
+    protected static final VoxelShape AABB = Shapes.join(Stream.of(
+            Block.box(4, 9, 7, 12, 10, 9),
+            Block.box(4, 9, 7, 12, 10, 9),
+            Block.box(5, 9, 5, 11, 11, 11),
+            Block.box(6, 11, 6, 10, 13, 10)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get(), Block.box(4, 0, 4, 12, 9, 12), BooleanOp.OR);
 
+    private static final VoxelShape NO_CLAMP_AABB = Block.box(4, 0, 4, 12, 9, 12);
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return blockState.getValue(HANGING) ? HANGING_AABB.move(0,0.4,0) : AABB;
+        return blockState.getValue(HANGING) ? AABB.move(0,0.3,0) : (blockState.getValue(ALIVE) ? AABB : NO_CLAMP_AABB);
     }
 
     @Override
