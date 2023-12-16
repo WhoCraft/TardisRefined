@@ -9,7 +9,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +19,6 @@ import whocraft.tardis_refined.common.network.messages.SyncTardisClientDataMessa
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.Map;
 
@@ -33,7 +31,8 @@ public class TardisClientData {
     public AnimationState ROTOR_ANIMATION = new AnimationState();
     public AnimationState LANDING_ANIMATION = new AnimationState();
     public AnimationState TAKEOFF_ANIMATION = new AnimationState();
-    public TardisClientData(ResourceKey<Level> resourceKey){
+
+    public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
     }
 
@@ -89,23 +88,53 @@ public class TardisClientData {
         return throttleDown;
     }
 
-    public void setIsLanding(boolean landing) {this.isLanding = landing;}
-    public boolean isLanding() {return isLanding;}
+    public void setIsLanding(boolean landing) {
+        this.isLanding = landing;
+    }
 
-    public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
-    public boolean isTakingOff() {return isTakingOff;}
+    public boolean isLanding() {
+        return isLanding;
+    }
 
-    public void setInDangerZone(boolean isInDangerZone) {this.isInDangerZone = isInDangerZone;}
-    public boolean isInDangerZone() {return isInDangerZone;}
+    public void setIsTakingOff(boolean takingOff) {
+        this.isTakingOff = takingOff;
+    }
 
-    public void setIsCrashing(boolean isCrashing) {this.isCrashing = isCrashing;}
-    public boolean isCrashing() {return isCrashing;}
+    public boolean isTakingOff() {
+        return isTakingOff;
+    }
 
-    public void setIsOnCooldown(boolean isCooldown) {this.isOnCooldown = isCooldown;}
-    public boolean isOnCooldown() {return isOnCooldown;}
+    public void setInDangerZone(boolean isInDangerZone) {
+        this.isInDangerZone = isInDangerZone;
+    }
 
-    public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
-    public float flightShakeScale() {return flightShakeScale;}
+    public boolean isInDangerZone() {
+        return isInDangerZone;
+    }
+
+    public void setIsCrashing(boolean isCrashing) {
+        this.isCrashing = isCrashing;
+    }
+
+    public boolean isCrashing() {
+        return isCrashing;
+    }
+
+    public void setIsOnCooldown(boolean isCooldown) {
+        this.isOnCooldown = isCooldown;
+    }
+
+    public boolean isOnCooldown() {
+        return isOnCooldown;
+    }
+
+    public void setFlightShakeScale(float scale) {
+        this.flightShakeScale = scale;
+    }
+
+    public float flightShakeScale() {
+        return flightShakeScale;
+    }
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -158,6 +187,10 @@ public class TardisClientData {
     }
 
     public void tickClientside() {
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+
         if (isTakingOff()) {
             takeOffTime++;
             landingTime = 0;
@@ -170,26 +203,29 @@ public class TardisClientData {
         }
 
 
-
         if (Minecraft.getInstance().player.level().dimensionTypeId() == DimensionTypes.TARDIS) {
             createWorldAmbience(Minecraft.getInstance().player);
-        }
 
-        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 
-        if (LoopingSound.ARS_HUMMING == null) {
-            LoopingSound.ARS_HUMMING = new LoopingSound(SoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
-        }
-
-        if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
-            if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
-                LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
-                soundManager.play(LoopingSound.ARS_HUMMING);
+            if (LoopingSound.ARS_HUMMING == null) {
+                LoopingSound.setupSounds();
             }
 
-            if (soundManager.isActive(LoopingSound.ARS_HUMMING)) {
-                Minecraft.getInstance().getMusicManager().stopPlaying();
+            if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
+                if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
+                    LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
+                    soundManager.play(LoopingSound.ARS_HUMMING);
+                }
             }
+
+            if(!soundManager.isActive(LoopingSound.HUM_TEST)){
+                soundManager.play(LoopingSound.HUM_TEST);
+            }
+        }
+
+
+        if (LoopingSound.shouldMinecraftMusicStop(soundManager)) {
+            Minecraft.getInstance().getMusicManager().stopPlaying();
         }
 
 
@@ -201,7 +237,6 @@ public class TardisClientData {
                 player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
             }
         }
-
 
 
     }
@@ -263,7 +298,7 @@ public class TardisClientData {
      * @param levelResourceKey The resource key of the level the Tardis is in.
      * @return The TardisIntReactions instance containing information about the Tardis.
      */
-    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey){
+    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey) {
         // Check if the map contains information about the Tardis
         if (DATA.containsKey(levelResourceKey)) {
             // If the map contains information about the Tardis, return it
@@ -289,12 +324,13 @@ public class TardisClientData {
 
     /**
      * Called by platform-specific methods
+     *
      * @param client Minecraft client
      */
     public static void tickClientData(Minecraft client) {
         // Inelegant solution, please revise
         if (client.level == null || client.isPaused()) {
-            if(!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
+            if (!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
                 TardisClientData.clearAll();
             }
             return;
@@ -317,7 +353,7 @@ public class TardisClientData {
             double velocityX = (random.nextDouble() - 0.5) * 0.02;
             double velocityY = (random.nextDouble() - 0.5) * 0.02;
             double velocityZ = (random.nextDouble() - 0.5) * 0.02;
-            if(isInArsArea(new BlockPos((int) particleX, (int) particleY, (int) particleZ))) {
+            if (isInArsArea(new BlockPos((int) particleX, (int) particleY, (int) particleZ))) {
                 level.addParticle(TRParticles.ARS_LEAVES.get(), particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
                 level.addParticle(ParticleTypes.END_ROD, particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
             }
