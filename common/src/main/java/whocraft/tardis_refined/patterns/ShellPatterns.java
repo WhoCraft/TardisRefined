@@ -163,11 +163,12 @@ public class ShellPatterns {
             addDefaultPattern(shellTheme, pattern);
         }
 
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "marble", false);
+        //TODO Currently not compatible
+ /*       addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "marble", false);
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "gaudy", false);
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "metal", false);
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "stone", false);
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);
+        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);*/
 
         addDefaultPattern(ShellTheme.PHONE_BOOTH.getId(), "metal", false);
 
