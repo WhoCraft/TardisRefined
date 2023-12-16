@@ -293,7 +293,7 @@ public class TardisPilotingManager {
         return new BlockPos(pos.getX(), originalY, pos.getZ());
     }
 
-    private boolean isSafeToLand(TardisNavLocation location)
+    public boolean isSafeToLand(TardisNavLocation location)
     {
         if (!isSolidBlock(location.getLevel(), location.getPosition()) && isSolidBlock(location.getLevel(), location.getPosition().below()) && !isSolidBlock(location.getLevel(), location.getPosition().above())) {
             return !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.LAVA) && !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.WATER);
