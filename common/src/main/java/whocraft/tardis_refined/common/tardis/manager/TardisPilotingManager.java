@@ -293,6 +293,10 @@ public class TardisPilotingManager {
         return new BlockPos(pos.getX(), originalY, pos.getZ());
     }
 
+    /** Checks the tardis nav location for a variety of reasons that a given position would be unsafe to land at.
+     * @param location the coordinates to check against
+     * @return true if safe to land, otherwise false
+     */
     public boolean isSafeToLand(TardisNavLocation location)
     {
         if (!isSolidBlock(location.getLevel(), location.getPosition()) && isSolidBlock(location.getLevel(), location.getPosition().below()) && !isSolidBlock(location.getLevel(), location.getPosition().above())) {
