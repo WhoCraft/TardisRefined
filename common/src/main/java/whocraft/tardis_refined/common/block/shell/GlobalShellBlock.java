@@ -1,15 +1,8 @@
 package whocraft.tardis_refined.common.block.shell;
 
-import com.mojang.brigadier.StringReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -26,22 +19,9 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.properties.ShellProperty;
-import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
-import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.ItemRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class GlobalShellBlock extends ShellBaseBlock{
 
@@ -68,7 +48,9 @@ public class GlobalShellBlock extends ShellBaseBlock{
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return COLLISION;
+        if(blockState.getValue(SHELL) == ShellTheme.BRIEFCASE)
+            return COLLISION;
+        return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
     @Override

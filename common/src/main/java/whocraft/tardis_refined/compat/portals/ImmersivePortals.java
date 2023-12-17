@@ -119,6 +119,18 @@ public class ImmersivePortals {
                 )
         );
 
+        /* TODO: Fix these
+        themeToOffsetMap.put(ShellTheme.PAGODA,
+                new PortalOffets(
+                        new PortalOffets.OffsetData(new Vec3(0.65, 0.09375, 0), new Vec3(0, 0.09375, 0.51), new Vec3(-0.65, 0.09375, 0), new Vec3(0, 0.09375, -0.51)),
+                        new PortalOffets.OffsetData( new Vec3(-1.33, 0.09375, 0), new Vec3(0, 0.09375, -1.33), new Vec3(1.33, 0.09375, 0), new Vec3(0, 0.09375, 1.33))
+                )
+        );
+        themeToOffsetMap.put(ShellTheme.GROENING, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.09375, 0),
+                new Vec3(0, 0.09375, 0.5), new Vec3(-0.5, 0.09375, 0), new Vec3(0, 0.09375, -0.5)), new PortalOffets.OffsetData(
+                new Vec3(-1.33, 0.09375, 0), new Vec3(0, 0.09375, -1.33),
+                new Vec3(1.33, 0.09375, 0), new Vec3(0, 0.09375, 1.33))));
+         */
 
         // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
         themeToOffsetMap.put(ShellTheme.PORTALOO, new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.51, 0.125, 0),
