@@ -96,14 +96,14 @@ public class TardisFlightEventManager {
     /*
     * Is a prompt still within the combo time.
     * */
-    private boolean isEventInComboTime() {
+    public boolean isEventInComboTime() {
         return (this.ticksSincePrompted < 3 * 20);
     }
 
     /*
     * Get the current remaining ticks of cooldown between two controls.
     * */
-    private int getControlRequestCooldown() {
+    public int getControlRequestCooldown() {
         return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
     }
 

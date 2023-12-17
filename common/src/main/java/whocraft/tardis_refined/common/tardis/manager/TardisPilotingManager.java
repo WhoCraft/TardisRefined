@@ -77,6 +77,24 @@ public class TardisPilotingManager {
         return (ticksSinceCrash > 0);
     }
 
+    /**
+     * Accessor for the number of ticks since the Tardis crashed.
+     * @return private field ticksSinceCrash
+     */
+    public int getCooldownTicks() {
+        return ticksSinceCrash;
+    }
+
+
+    /**
+     * A progress value after crashing that determines how long until cooldown has finished.
+     * Zero means it has only started, 1 means that cooldown has finished.
+     * @return a percentage value between 0 - 1.
+     */
+    public int getCooldownDuration() {
+        return ticksSinceCrash / TICKS_COOLDOWN_MAX;
+    }
+
     public void endCoolDown() {
         this.ticksSinceCrash = TICKS_COOLDOWN_MAX;
     }
@@ -275,7 +293,11 @@ public class TardisPilotingManager {
         return new BlockPos(pos.getX(), originalY, pos.getZ());
     }
 
-    private boolean isSafeToLand(TardisNavLocation location)
+    /** Checks the tardis nav location for a variety of reasons that a given position would be unsafe to land at.
+     * @param location the coordinates to check against
+     * @return true if safe to land, otherwise false
+     */
+    public boolean isSafeToLand(TardisNavLocation location)
     {
         if (!isSolidBlock(location.getLevel(), location.getPosition()) && isSolidBlock(location.getLevel(), location.getPosition().below()) && !isSolidBlock(location.getLevel(), location.getPosition().above())) {
             return !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.LAVA) && !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.WATER);
@@ -482,6 +504,13 @@ public class TardisPilotingManager {
 
     public TardisNavLocation getTargetLocation() {
         return this.targetLocation;
+    }
+
+    /**
+     * @return the current fast return location
+     */
+    public TardisNavLocation getFastReturnLocation() {
+        return this.fastReturnLocation;
     }
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
