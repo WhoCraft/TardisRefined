@@ -50,7 +50,9 @@ dependencies {
     modImplementation "curse.maven:configured-457570:${configured_version}"
     modImplementation "curse.maven:jei-238222:${jei_version}"
 
-    // modCompileOnly "curse.maven:immersive-portals-355440:4375619"
+    //_must_ be compileOnly, not modCompileOnly, as the IP forge jar contains fabric related stuff that it isn't expecting for forge
+    //this also means that we cannot test immersive portals in the dev environment, as it wont get correct mappings
+    compileOnly "curse.maven:immersive-portals-355440:${ip_forge_version}"
 
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
