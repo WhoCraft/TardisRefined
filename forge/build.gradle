@@ -132,13 +132,19 @@ components.java {
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifactId = archives_base_name + "-" + project.name
+            artifactId = archives_base_name + "_" + project.name
             from components.java
         }
     }
 
     // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
     repositories {
-        // Add repositories to publish to here.
+        maven {
+            url = project.findProperty("maven_repo_url") ?: "https://maven.craig.software/repository/whocraft/"
+            credentials {
+                username = project.findProperty("MAVEN_REPO_USERNAME") ?: System.getenv("MAVEN_REPO_USERNAME") ?: ""
+                password = project.findProperty("MAVEN_REPO_PASSWORD") ?: System.getenv("MAVEN_REPO_PASSWORD") ?: ""
+            }
+        }
     }
 }

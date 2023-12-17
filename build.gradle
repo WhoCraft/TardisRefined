@@ -21,13 +21,31 @@ subprojects {
     }
 }
 
+def gitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def gitBranch() {
+    def branch = ""
+    def proc = "git rev-parse --abbrev-ref HEAD".execute()
+    proc.in.eachLine { line -> branch = line }
+    proc.err.eachLine { line -> println line }
+    proc.waitFor()
+    branch
+}
+
 allprojects {
     apply plugin: "java"
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
     archivesBaseName = rootProject.jar_name
-    version = "${rootProject.minecraft_version}-${rootProject.mod_version}"
+    version = "${rootProject.minecraft_version}-${rootProject.mod_version}-${gitHash()}-${gitBranch()}"
     group = rootProject.maven_group
 
     repositories {
