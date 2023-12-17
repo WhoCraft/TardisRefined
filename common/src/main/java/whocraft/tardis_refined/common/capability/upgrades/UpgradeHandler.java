@@ -101,7 +101,7 @@ public class UpgradeHandler {
             this.upgradeXP = XP_PER_UPGRADE_POINT - Mth.abs(this.upgradeXP);
         }
 
-        this.upgradePoints = Mth.clamp(this.upgradePoints, 0, 99);
+        this.upgradePoints = Mth.clamp(this.upgradePoints, 0, Integer.MAX_VALUE);
 
     }
 
@@ -110,8 +110,7 @@ public class UpgradeHandler {
     }
 
     public void setUpgradePoints(int upgradePoints) {
-        this.upgradePoints = Mth.clamp(upgradePoints, 0, 99);
-
+        this.upgradePoints = Mth.clamp(upgradePoints, 0, Integer.MAX_VALUE);
     }
 
     public int getUpgradePoints() {

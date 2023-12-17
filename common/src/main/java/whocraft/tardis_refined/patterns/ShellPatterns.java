@@ -183,7 +183,7 @@ public class ShellPatterns {
         addDefaultPattern(ShellTheme.BIG_BEN.getId(), "gothic", false);
 
         Map<ResourceLocation, List<ShellPattern>> patternsByCollection = new HashMap<>();
-        DEFAULT_PATTERNS.entrySet().forEach(entry -> patternsByCollection.put(entry.getKey(), entry.getValue()));
+        patternsByCollection.putAll(DEFAULT_PATTERNS);
 
         return patternsByCollection;
     }
