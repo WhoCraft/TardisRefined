@@ -11,66 +11,6 @@
         "texture": "tardis_refined:textures/blockentity/shell/police_box/police_box_interior.png"
       },
       "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}"
-    },
-    {
-      "exterior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/marble.png"
-      },
-      "id": "tardis_refined:marble",
-      "interior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/marble_interior.png"
-      },
-      "name_component": "{\"color\":\"yellow\",\"text\":\"Marble\"}"
-    },
-    {
-      "exterior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/gaudy.png"
-      },
-      "id": "tardis_refined:gaudy",
-      "interior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/gaudy_interior.png"
-      },
-      "name_component": "{\"color\":\"yellow\",\"text\":\"Gaudy\"}"
-    },
-    {
-      "exterior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/metal.png"
-      },
-      "id": "tardis_refined:metal",
-      "interior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/metal_interior.png"
-      },
-      "name_component": "{\"color\":\"yellow\",\"text\":\"Metal\"}"
-    },
-    {
-      "exterior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/stone.png"
-      },
-      "id": "tardis_refined:stone",
-      "interior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/stone_interior.png"
-      },
-      "name_component": "{\"color\":\"yellow\",\"text\":\"Stone\"}"
-    },
-    {
-      "exterior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/red.png"
-      },
-      "id": "tardis_refined:red",
-      "interior": {
-        "emissive": false,
-        "texture": "tardis_refined:textures/blockentity/shell/police_box/red_interior.png"
-      },
-      "name_component": "{\"color\":\"yellow\",\"text\":\"Red\"}"
     }
   ]
 }
