@@ -135,7 +135,7 @@ public class PoliceBoxModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.right_door.yRot = (open) ? -275f : 0;
 	}
 

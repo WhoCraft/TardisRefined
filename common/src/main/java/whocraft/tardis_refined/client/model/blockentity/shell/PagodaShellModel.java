@@ -161,7 +161,7 @@ public class PagodaShellModel extends ShellModel {
 		return root;
 	}
 
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? -275f : 0;
 
 	}

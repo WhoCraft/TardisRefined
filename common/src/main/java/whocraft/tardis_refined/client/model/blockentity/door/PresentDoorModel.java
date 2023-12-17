@@ -61,7 +61,7 @@ public class PresentDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.xRot = (open) ? (ModCompatChecker.immersivePortals() ? -1.5f : 1.5F) : 0;
 	}
 

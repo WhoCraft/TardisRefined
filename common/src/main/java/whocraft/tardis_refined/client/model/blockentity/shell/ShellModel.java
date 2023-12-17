@@ -21,7 +21,7 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 
 public abstract class ShellModel extends HierarchicalModel {
 
-    public abstract void setDoorOpen(boolean open);
+    public abstract void setDoorPosition(boolean open);
 
     public abstract boolean isDoorModel();
 
@@ -70,7 +70,7 @@ public abstract class ShellModel extends HierarchicalModel {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(TardisRefined.MODID, entity.TARDIS_ID.toString())));
 
-        setDoorOpen(isDoorOpen);
+        setDoorPosition(isDoorOpen);
 
         if (reactions.isLanding()) {
             this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime * ANIMATION_SPEED);

@@ -80,7 +80,7 @@ public class PortalooShellModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? 1.75f : 0;
 	}
 

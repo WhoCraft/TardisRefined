@@ -16,7 +16,6 @@ import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatterns;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
@@ -108,7 +107,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
         ShellPattern shellPattern = reactions.shellPattern();
 
-        currentModel.setDoorOpen(isOpen);
+        currentModel.setDoorPosition(isOpen);
         currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.texture(shellPattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();

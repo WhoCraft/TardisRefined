@@ -179,7 +179,7 @@ public class DrifterShellModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 
 	}
 

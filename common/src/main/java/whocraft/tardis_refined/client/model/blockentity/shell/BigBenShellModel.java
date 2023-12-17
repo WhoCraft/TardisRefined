@@ -33,7 +33,7 @@ public class BigBenShellModel extends ShellModel {
 	private final ModelPart bb_main;
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.door.yRot = (open) ? -275f : 0;
 
 	}

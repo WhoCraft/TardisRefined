@@ -17,7 +17,6 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.Objects;
 
@@ -62,7 +61,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             poseStack.pushPose();
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
             var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
-            model.setDoorOpen(false);
+            model.setDoorPosition(false);
 
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
             poseStack.translate(offset.x, offset.y, offset.z);

@@ -63,7 +63,7 @@ public class PortalooDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.Door.yRot = (open) ? (ModCompatChecker.immersivePortals() ?  1.75f :  -1.75f) : 0;
 	}
 

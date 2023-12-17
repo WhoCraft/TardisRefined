@@ -138,7 +138,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     private void renderShell(PoseStack poseStack, int x, int y, float scale) {
         ShellModel model = ShellModelCollection.getInstance().getShellModel(currentShellTheme);
-        model.setDoorOpen(false);
+        model.setDoorPosition(false);
         Lighting.setupForEntityInInventory();
         PoseStack pose = poseStack;
         pose.pushPose();

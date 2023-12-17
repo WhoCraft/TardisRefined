@@ -62,7 +62,7 @@ public class FactoryDoorModel extends ShellModel {
 	}
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		if (open) {
 			this.leftDoor.yRot = -250f;
 			this.rightDoor.yRot = 250f;

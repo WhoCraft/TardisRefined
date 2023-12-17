@@ -19,7 +19,7 @@ public class BriefcaseDoorModel extends ShellModel {
 	private boolean isDoorOpen;
 
 	@Override
-	public void setDoorOpen(boolean open) {
+	public void setDoorPosition(boolean open) {
 		this.isDoorOpen = open;
 	}
 

@@ -1012,7 +1012,7 @@ public class MysticShellModel extends ShellModel {
     }
 
     @Override
-    public void setDoorOpen(boolean open) {
+    public void setDoorPosition(boolean open) {
         if (open) {
             this.left_door.yRot = 250f;
             this.right_door.yRot = -250f;
