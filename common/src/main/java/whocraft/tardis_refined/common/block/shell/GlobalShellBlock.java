@@ -43,14 +43,17 @@ public class GlobalShellBlock extends ShellBaseBlock{
         return super.getStateForPlacement(blockPlaceContext);
     }
 
-    protected static final VoxelShape COLLISION = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
+    //The collision box for the briefcase shell
+    //overrides the default collision shape from ShellBaseBlock.java
+    protected static final VoxelShape BRIEFCASE_COLLISION_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
+
 
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
             if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
-                return COLLISION;
+                return BRIEFCASE_COLLISION_SHAPE;
         }
         return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
     }
@@ -59,7 +62,7 @@ public class GlobalShellBlock extends ShellBaseBlock{
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
             if(shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
-                return COLLISION;
+                return BRIEFCASE_COLLISION_SHAPE;
         }
         return super.getShape(blockState, blockGetter, blockPos, collisionContext);
     }

@@ -1,4 +1,4 @@
-// 1.20.2	2023-12-17T14:37:14.1934321	Shell Patterns
+// 1.20.2	2023-12-10T20:38:52.4743381	Shell Patterns
 24c3b07d5ebcb921f1a4014c0c7b7ce1db66d291 data/tardis_refined/tardis_refined/patterns/shell/big_ben.json
 c023593375b56bf2ba50df33b355f0f99d062227 data/tardis_refined/tardis_refined/patterns/shell/briefcase.json
 0c683f48298e8e97709fa8f659a659440e35dc61 data/tardis_refined/tardis_refined/patterns/shell/castle.json
@@ -12,7 +12,7 @@ a033e392d5ce58b74e9dd2561b2a3012b49525d2 data/tardis_refined/tardis_refined/patt
 9636dacb9cae8d3d893a7f9bfca195631397973b data/tardis_refined/tardis_refined/patterns/shell/nuka.json
 bb9b537f1b29c2414d9284828094163a425bcd70 data/tardis_refined/tardis_refined/patterns/shell/pagoda.json
 9acf33da121ce7c83457b3d85c0a92d5ba511efd data/tardis_refined/tardis_refined/patterns/shell/phone_booth.json
-d137e095ef4d32650e62dc8cba9a8abdb6634ef2 data/tardis_refined/tardis_refined/patterns/shell/police_box.json
+67d26906e3655e7f9f08a906b56b225f71248726 data/tardis_refined/tardis_refined/patterns/shell/police_box.json
 ba4b42fe3655f24a4263e59b614b0644229730a8 data/tardis_refined/tardis_refined/patterns/shell/portaloo.json
 fdc997718013ffac35fe5192e0fbf32b60323720 data/tardis_refined/tardis_refined/patterns/shell/present.json
 23066a16183502e0751e16f152356bde64f17045 data/tardis_refined/tardis_refined/patterns/shell/vending.json
