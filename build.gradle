@@ -35,6 +35,18 @@ allprojects {
             url "https://cursemaven.com"
         }
 
+        mavenCentral()
+        maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
+        maven { url = "https://dvs1.progwml6.com/files/maven/" } // JEI
+        maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+        maven { // Flywheel
+            url = "https://maven.tterrag.com/"
+            content {
+                // need to be specific here due to version overlaps
+                includeGroup("com.jozufozu.flywheel")
+            }
+        }
+
         maven {
             name = "Fuzs Mod Resources"
             url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
@@ -45,6 +57,8 @@ allprojects {
         flatDir {
             dirs '../modlibs'
         }
+
+        maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
 
     }
 

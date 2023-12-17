@@ -39,6 +39,19 @@ configurations {
 
 repositories {
     maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
+
+    // mavens for Forge-exclusives
+    maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { // Create Forge and Registrate Forge
+        url = "https://maven.tterrag.com/"
+        content {
+            includeGroup("com.tterrag.registrate")
+            includeGroup("com.simibubi.create")
+        }
+    }
+
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -50,10 +63,14 @@ dependencies {
     modImplementation "curse.maven:configured-457570:${configured_version}"
     modImplementation "curse.maven:jei-238222:${jei_version}"
 
-    // modCompileOnly "curse.maven:immersive-portals-355440:4375619"
+     modCompileOnly "curse.maven:immersive-portals-355440:4375619"
 
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
+
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_forge_version}:slim") { transitive = false }
+    modImplementation("com.tterrag.registrate:Registrate:${registrate_forge_version}")
+    modImplementation("com.jozufozu.flywheel:flywheel-forge-${flywheel_forge_minecraft_version}:${flywheel_forge_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

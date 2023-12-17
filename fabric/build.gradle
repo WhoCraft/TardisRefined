@@ -40,6 +40,15 @@ repositories {
         name = "Mod Menu Maven"
         url = "https://maven.terraformersmc.com/"
     }
+
+    // mavens for Fabric-exclusives
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
+    maven { url = "https://mvn.devos.one/snapshots/" } // Create Fabric, Porting Lib, Forge Tags, Milk Lib, Registrate Fabric
+    maven { url = "https://cursemaven.com" } // Forge Config API Port
+    maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
+    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+    maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
 }
 
 sourceSets.main.resources {
@@ -56,6 +65,7 @@ dependencies {
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
     // Adds a dependency on a specific module
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
+    modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:${create_fabric_version}")
 
 
     // Includes Cardinal Components API as a Jar-in-Jar dependency (optional)
@@ -71,8 +81,8 @@ dependencies {
     // Immersive Portals Start
 
     // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
-    modImplementation ("blank:imm_ptl_core:2.3.1")
-    modImplementation ("blank:q_misc_util:2.3.1")
+    modCompileOnlyApi ("blank:imm_ptl_core:2.3.1")
+    modCompileOnlyApi ("blank:q_misc_util:2.3.1")
     // Immersive Portals End
 
     // With loom use the modRuntimeOnly configuration
