@@ -26,14 +26,12 @@ subprojects {
     }
 }
 
-def gitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
+def getTimestamp() {
+    def timestamp = java.time.Instant.now()
+    def formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+    return timestamp.atZone(java.time.ZoneId.systemDefault()).format(formatter)
 }
+
 
 def gitBranch() {
     def branch = ""
@@ -50,7 +48,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     archivesBaseName = rootProject.jar_name
-    version = "${rootProject.minecraft_version}-${rootProject.mod_version}-${gitHash()}-${gitBranch()}"
+    version = "${rootProject.minecraft_version}-${rootProject.mod_version}-${getTimestamp()}-${gitBranch()}"
     group = rootProject.maven_group
 
     repositories {

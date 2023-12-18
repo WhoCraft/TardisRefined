@@ -6,6 +6,7 @@
 - x5000 Increment now introduced and locked behind upgrades
 - Added Waypoints 
 - Added Co-ordinate Input (This might make you lazy people happy, but you are going to hell and back to get it)
+- Landing Pad now locked behind upgrades
 
 ## Particles
 #### Additions
@@ -39,6 +40,9 @@
 - Removed Police Box "Stone" Pattern due to Model Change
 - Removed Police Box "Red" Pattern due to Model Change
 
+## Crafting
+- Bulkhead doors can now be crafted
+
 ## Consoles
 #### Additions
 - Updated all Toyota Pattern Textures
@@ -62,11 +66,21 @@
 - Interior doors and Shells now hold their own data instead of taking it from their related dimension
 - Shell animations now play in Shell Selection Screen
 - Sounds that loop are now handled differently, improving performance
+- Root shell now only creates the TARDIS dimension when sheared (Hi Performance gains!)
+- TARDIS interior is now air instead of growth stone 
 
+
+# Bugs
+- Fix GlobalDoorBlock deleting the player held item when interacted with
+- Fix unexpected behaviour with ConsoleConfigurator console removal logic and change theme
+- Fixed console removal running the interaction twice and causing the configurator to change its console theme
+- Fixed console changing not updating control positions and sizes
+- Fixed various screens hard crashing the server
 
 ## API
 #### Additions
 - Added TARDIS Upgrade Unlocked Event
 - Allows other mods to add: Shells, Patterns, Desktops, Consoles, Upgrades
+
 
 

@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -179,14 +180,14 @@ public class TardisInteriorManager extends BaseHandler {
                         // Lock the doors.
                         BlockPos desktopDoorPos = corridorAirlockCenter.north(2);
                         if (level.getBlockEntity(desktopDoorPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                            bulkHeadDoorBlockEntity.closeDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos));
-                            level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), 2);
+                            bulkHeadDoorBlockEntity.toggleDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos), false);
+                            level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
 
                         BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                            bulkHeadDoorBlockEntity.closeDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos));
-                            level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), 2);
+                            bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), false);
+                            level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
                     }
                 } else {
@@ -241,14 +242,14 @@ public class TardisInteriorManager extends BaseHandler {
                     this.airlockTimerSeconds = 20;
                     BlockPos desktopDoorPos = corridorAirlockCenter.north(2);
                     if (level.getBlockEntity(desktopDoorPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                        bulkHeadDoorBlockEntity.openDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos));
-                        level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
+                        bulkHeadDoorBlockEntity.toggleDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos), true);
+                        level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
 
                     BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                        bulkHeadDoorBlockEntity.openDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos));
-                        level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
+                        bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), true);
+                        level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
                 }
 
