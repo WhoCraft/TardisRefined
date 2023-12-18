@@ -3,7 +3,7 @@ name: Publish to Maven Repository
 on:
   push:
     branches:
-      - new_assets
+      - master
 
 jobs:
   publish:
