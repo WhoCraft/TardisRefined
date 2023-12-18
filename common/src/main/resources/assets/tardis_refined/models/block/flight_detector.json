@@ -5,6 +5,7 @@
 		"1": "tardis_refined:block/flight_detector",
 		"particle": "tardis_refined:block/flight_detector"
 	},
+	"render_type" : "cutout",
 	"elements": [
 		{
 			"from": [1, 0, 1],
