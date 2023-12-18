@@ -93,6 +93,20 @@ public class TardisFlightEventManager {
         return this.requiredDangerZoneRequests <= this.dangerZoneResponses;
     }
 
+    /**
+     * @return The total required danger zone requests the player will need to complete
+     */
+    public int getRequiredDangerZoneRequests() {
+        return this.requiredDangerZoneRequests;
+    }
+
+    /**
+     * @return The total danger zone responses the player has completed so far
+     */
+    public int getDangerZoneResponses() {
+        return this.dangerZoneResponses;
+    }
+
     /*
     * Is a prompt still within the combo time.
     * */
