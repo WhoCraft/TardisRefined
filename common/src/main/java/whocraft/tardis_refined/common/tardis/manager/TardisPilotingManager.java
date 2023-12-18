@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -21,6 +23,7 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TardisPilotingManager extends BaseHandler{
@@ -518,22 +521,20 @@ public class TardisPilotingManager extends BaseHandler{
         this.cordIncrementIndex = nextIndex;
     }
 
-    public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler){
+    public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
-        if(Upgrades.EXPLORER.get().isUnlocked(upgradeHandler)){
-            increments.add(1000);
-        }
 
-        if(Upgrades.EXPLORER_II.get().isUnlocked(upgradeHandler)){
-            increments.add(2500);
+        for (Upgrade upgrade : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
+            if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
+                if (upgrade.isUnlocked(upgradeHandler)) {
+                    increments.add(incrementUpgrade.getIncrementAmount());
+                }
+            }
         }
-
-        if(Upgrades.EXPLORER_III.get().isUnlocked(upgradeHandler)){
-            increments.add(5000);
-        }
-
+        Collections.sort(increments);
         return increments.stream().mapToInt(Integer::intValue).toArray();
     }
+
 
     public boolean shouldThrottleBeDown() {
         return isInFlight && ticksLanding == 0;

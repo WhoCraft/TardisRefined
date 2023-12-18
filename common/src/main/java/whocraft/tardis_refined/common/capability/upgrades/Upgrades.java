@@ -48,13 +48,13 @@ public class Upgrades {
     public static final RegistrySupplier<Upgrade> NAVIGATION_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("navigation_system", () -> new Upgrade(Items.COMPASS::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("navigation_system"), Upgrade.UpgradeType.MAIN_UPGRADE)
             .setSkillPointsRequired(50).setPosition(0, 2));
 
-    public static final RegistrySupplier<Upgrade> EXPLORER = UPGRADE_DEFERRED_REGISTRY.register("explorer", () -> new Upgrade(Items.COMPASS::getDefaultInstance, NAVIGATION_SYSTEM, RegistryHelper.makeKey("explorer"), Upgrade.UpgradeType.SUB_UPGRADE)
+    public static final RegistrySupplier<Upgrade> EXPLORER = UPGRADE_DEFERRED_REGISTRY.register("explorer", () -> new IncrementUpgrade(Items.COMPASS::getDefaultInstance, NAVIGATION_SYSTEM, RegistryHelper.makeKey("explorer"), Upgrade.UpgradeType.SUB_UPGRADE).setIncrementAmount(1000)
             .setSkillPointsRequired(50).setPosition(1, 2));
 
-    public static final RegistrySupplier<Upgrade> EXPLORER_II = UPGRADE_DEFERRED_REGISTRY.register("explorer_ii", () -> new Upgrade(Items.COMPASS::getDefaultInstance, EXPLORER, RegistryHelper.makeKey("explorer_ii"), Upgrade.UpgradeType.SUB_UPGRADE)
+    public static final RegistrySupplier<Upgrade> EXPLORER_II = UPGRADE_DEFERRED_REGISTRY.register("explorer_ii", () -> new IncrementUpgrade(Items.COMPASS::getDefaultInstance, EXPLORER, RegistryHelper.makeKey("explorer_ii"), Upgrade.UpgradeType.SUB_UPGRADE).setIncrementAmount(2500)
             .setSkillPointsRequired(50).setPosition(2, 2));
 
-    public static final RegistrySupplier<Upgrade> EXPLORER_III = UPGRADE_DEFERRED_REGISTRY.register("explorer_iii", () -> new Upgrade(Items.COMPASS::getDefaultInstance, EXPLORER_II, RegistryHelper.makeKey("explorer_iii"), Upgrade.UpgradeType.SUB_UPGRADE)
+    public static final RegistrySupplier<Upgrade> EXPLORER_III = UPGRADE_DEFERRED_REGISTRY.register("explorer_iii", () -> new IncrementUpgrade(Items.COMPASS::getDefaultInstance, EXPLORER_II, RegistryHelper.makeKey("explorer_iii"), Upgrade.UpgradeType.SUB_UPGRADE).setIncrementAmount(5000)
             .setSkillPointsRequired(50).setPosition(3, 2));
 
     public static final RegistrySupplier<Upgrade> DIMENSION_TRAVEL = UPGRADE_DEFERRED_REGISTRY.register("dimension_travel", () -> new Upgrade(Blocks.NETHER_BRICKS.asItem()::getDefaultInstance, NAVIGATION_SYSTEM, RegistryHelper.makeKey("dimension_travel"), Upgrade.UpgradeType.SUB_UPGRADE)
