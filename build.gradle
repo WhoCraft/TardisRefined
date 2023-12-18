@@ -28,8 +28,8 @@ subprojects {
 
 def getTimestamp() {
     def timestamp = java.time.Instant.now()
-    def formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
-    return timestamp.atZone(java.time.ZoneId.systemDefault()).format(formatter)
+    def formatter = java.time.format.DateTimeFormatter.ofPattern("dd_MM_yy_HHmm")
+    return "[" + timestamp.atZone(java.time.ZoneId.systemDefault()).format(formatter) + "]"
 }
 
 
