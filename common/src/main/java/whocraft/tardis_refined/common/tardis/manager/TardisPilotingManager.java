@@ -91,8 +91,8 @@ public class TardisPilotingManager {
      * Zero means it has only started, 1 means that cooldown has finished.
      * @return a percentage value between 0 - 1.
      */
-    public int getCooldownDuration() {
-        return ticksSinceCrash / TICKS_COOLDOWN_MAX;
+    public float getCooldownDuration() {
+        return (float)ticksSinceCrash / (float)TICKS_COOLDOWN_MAX;
     }
 
     public void endCoolDown() {
