@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.door;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -30,7 +31,7 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
 
     public BulkHeadDoorBlock(Properties properties) {
-        super(properties.sound(SoundType.ANVIL).offsetType(OffsetType.XZ));
+        super(properties.sound(SoundType.ANVIL));
 
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, true));
     }
@@ -66,8 +67,6 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
-        if(!canSurvive(blockState, level, blockPos)) return;
-
         if (blockState.getValue(OPEN)) {
             changeBlockStates(level, blockPos, blockState, Blocks.AIR.defaultBlockState());
         } else {
@@ -77,12 +76,16 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
 
     @Override
+    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
+        super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
+        destroy(level, blockPos, blockState);
+    }
+
+    @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
         super.destroy(levelAccessor, blockPos, blockState);
 
-        if(blockState.is(this) && canSurvive(blockState, levelAccessor, blockPos)) {
-            changeBlockStates((Level) levelAccessor, blockPos, blockState, Blocks.AIR.defaultBlockState());
-        }
+        changeBlockStates((Level) levelAccessor, blockPos, blockState, Blocks.AIR.defaultBlockState());
     }
 
     private void changeBlockStates(Level level, BlockPos blockPos, BlockState blockState, BlockState blockToSet) {

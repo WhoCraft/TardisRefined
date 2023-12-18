@@ -11,4 +11,3 @@ accessible method net/minecraft/server/MinecraftServer wrapRunnable (Ljava/lang/
 accessible field net/minecraft/server/level/ServerLevel dragonFight Lnet/minecraft/world/level/dimension/end/EndDragonFight;
 accessible method net/minecraft/client/particle/SuspendedParticle <init> (Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/particle/SpriteSet;DDDDDD)V
 accessible field net/minecraft/client/particle/Particle gravity F
-accessible field net/minecraft/client/resources/sounds/AbstractSoundInstance sound Lnet/minecraft/client/resources/sounds/Sound;

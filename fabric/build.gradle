@@ -86,24 +86,24 @@ dependencies {
     modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:v4.0.3-mc1.20.2")
     modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:build:v4.0.3-mc1.20.2")
 
-  /*  // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
-    modCompileOnlyApi("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
-    }
-    modCompileOnlyApi("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
-    }
-    //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
-    modCompileOnlyApi("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
-    }
-    //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
-    modCompileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_fabric_version}") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }*/
+    /*  // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
+      modCompileOnlyApi("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}") {
+          exclude(group: "net.fabricmc.fabric-api")
+          transitive(false)
+      }
+      modCompileOnlyApi("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}") {
+          exclude(group: "net.fabricmc.fabric-api")
+          transitive(false)
+      }
+      //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
+      modCompileOnlyApi("com.github.LlamaLad7:MixinExtras:${rootProject.mixin_extras_version}") {
+          exclude(group: "net.fabricmc.fabric-api")
+          transitive(false)
+      }
+      //Immersive Portals Dependency, not listed on their repo but required for 1.19+ versions
+      modCompileOnlyApi("me.shedaniel.cloth:cloth-config-fabric:${rootProject.cloth_config_fabric_version}") {
+          exclude(group: "net.fabricmc.fabric-api")
+      }*/
 
     // Immersive Portals End
 
@@ -182,11 +182,12 @@ publishing {
 
     repositories {
         maven {
-            url = project.findProperty("maven_repo_url") ?: "https://maven.craig.software/repository/whocraft/"
+            url = project.findProperty("maven_repo_url") ?: "http://craig.software:8081/repository/whocraft/"
             credentials {
-                username = project.findProperty("MAVEN_REPO_USERNAME") ?: System.getenv("MAVEN_REPO_USERNAME") ?: ""
-                password = project.findProperty("MAVEN_REPO_PASSWORD") ?: System.getenv("MAVEN_REPO_PASSWORD") ?: ""
+                username = System.getenv("MAVEN_REPO_USERNAME")
+                password = System.getenv("MAVEN_REPO_PASSWORD")
             }
+            allowInsecureProtocol = true
         }
     }
 }

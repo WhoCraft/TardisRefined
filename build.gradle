@@ -20,18 +20,20 @@ subprojects {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
         mappings loom.layered() {
             officialMojangMappings()
-           // parchment("org.parchmentmc.data:parchment-${rootProject.mappings}")
+            // parchment("org.parchmentmc.data:parchment-${rootProject.mappings}")
         }
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     }
 }
 
-def getTimestamp() {
-    def timestamp = java.time.Instant.now()
-    def formatter = java.time.format.DateTimeFormatter.ofPattern("dd_MM_yy_HHmm")
-    return "[" + timestamp.atZone(java.time.ZoneId.systemDefault()).format(formatter) + "]"
+def gitHash = { ->
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'rev-parse', '--short', 'HEAD'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
 }
-
 
 def gitBranch() {
     def branch = ""
@@ -48,7 +50,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     archivesBaseName = rootProject.jar_name
-    version = "${rootProject.minecraft_version}-${rootProject.mod_version}-${getTimestamp()}-${gitBranch()}"
+    version = "${rootProject.minecraft_version}-${rootProject.mod_version}-${gitHash()}-${gitBranch()}"
     group = rootProject.maven_group
 
     repositories {
