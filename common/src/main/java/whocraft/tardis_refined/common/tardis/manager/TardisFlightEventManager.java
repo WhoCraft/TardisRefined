@@ -115,10 +115,18 @@ public class TardisFlightEventManager {
     }
 
     /*
+    * Gets a context-sensitive remaining number of ticks of cooldown. Less in combo time, more otherwise.
+    * The controlRequestCooldown field gets set to this value when needed.
+    * */
+    private int getControlRequestCooldown() {
+        return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
+    }
+
+    /*
     * Get the current remaining ticks of cooldown between two controls.
     * */
-    public int getControlRequestCooldown() {
-        return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
+    public int getCurrentControlRequestCooldown() {
+        return controlRequestCooldown;
     }
 
 
