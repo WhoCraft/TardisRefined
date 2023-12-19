@@ -332,4 +332,36 @@ public class TardisFlightEventManager {
         }
     }
 
+    /**
+     * All the valid controls that can be used as a flight event and need to be interacted with
+     * @return a list of flight event capable controls.
+     */
+    public List<ConsoleControl> getPossibleControls()
+    {
+        return possibleControls;
+    }
+
+    // The minimum distance that the tardis needs to travel for flight events to happen.
+    public int getMinDistanceForEvents()
+    {
+        return MIN_DISTANCE_FOR_EVENTS;
+    }
+
+    // How many ticks since the last flight event prompt
+    public int getTicksSincePrompted()
+    {
+        return ticksSincePrompted;
+    }
+
+    // how many ticks the tardis has been in the danger zone for
+    public int getTicksInTheDangerZone()
+    {
+        return ticksInTheDangerZone;
+    }
+
+    // the danger zone shake scale
+    public float getDangerZoneShakeScale()
+    {
+        return dangerZoneShakeScale;
+    }
 }
