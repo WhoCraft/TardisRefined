@@ -103,7 +103,7 @@ public class ShellPatterns {
      * <br> Also assigns the {@link ShellPattern} its parent {@link ShellTheme}'s ID
      * @implSpec INTERNAL USE ONLY
      * */
-    private static ShellPattern addDefaultPattern(ResourceLocation themeId, ShellPattern datagenPattern) {
+    public static ShellPattern addDefaultPattern(ResourceLocation themeId, ShellPattern datagenPattern) {
         List<ShellPattern> patternList;
         ShellPattern pattern = (ShellPattern) datagenPattern.setThemeId(themeId);
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
@@ -121,17 +121,25 @@ public class ShellPatterns {
         return pattern;
     }
 
-    private static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture) {
+    public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture) {
         ShellPattern pattern = (ShellPattern) new ShellPattern(patternName, new PatternTexture(exteriorTextureLocation(themeId, patternName), hasEmissiveTexture)
                 , new PatternTexture(interiorTextureLocation(themeId, patternName), hasEmissiveTexture)).setThemeId(themeId);
         return addDefaultPattern(themeId, pattern);
     }
 
-    private static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String textureName){
+    public static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String textureName){
         return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
     }
 
-    private static ResourceLocation interiorTextureLocation(ResourceLocation themeId, String textureName){
+    public static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String modid, String textureName){
+        return new ResourceLocation(modid, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
+    }
+
+    public static ResourceLocation interiorTextureLocation(ResourceLocation themeId, String modid, String textureName){
+        return new ResourceLocation(modid, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
+    }
+
+    public static ResourceLocation interiorTextureLocation(ResourceLocation themeId, String textureName){
         return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
     }
 
