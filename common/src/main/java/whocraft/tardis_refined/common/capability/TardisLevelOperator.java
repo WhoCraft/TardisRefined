@@ -41,8 +41,8 @@ public class TardisLevelOperator {
     private final TardisFlightEventManager tardisFlightEventManager;
     private final TardisClientData tardisClientData;
     private final UpgradeHandler upgradeHandler;
-    private final TardisHADSManager tardisHADSManager;
     private final AestheticHandler aestheticHandler;
+
 
     public TardisLevelOperator(Level level) {
         this.level = level;
@@ -53,7 +53,6 @@ public class TardisLevelOperator {
         this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
         this.upgradeHandler = new UpgradeHandler(this);
-        this.tardisHADSManager = new TardisHADSManager(this);
         this.aestheticHandler = new AestheticHandler(this);
     }
 
@@ -63,10 +62,6 @@ public class TardisLevelOperator {
 
     public TardisClientData tardisClientData() {
         return tardisClientData;
-    }
-
-    public TardisHADSManager getTardisHADSManager() {
-        return tardisHADSManager;
     }
 
     public AestheticHandler getAestheticHandler() {
@@ -93,7 +88,6 @@ public class TardisLevelOperator {
         compoundTag = this.tardisWaypointManager.saveData(compoundTag);
         compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
         compoundTag = this.upgradeHandler.saveData(compoundTag);
-        compoundTag = this.tardisHADSManager.saveData(compoundTag);
         compoundTag = this.aestheticHandler.saveData(compoundTag);
 
         return compoundTag;
@@ -116,7 +110,6 @@ public class TardisLevelOperator {
         this.tardisFlightEventManager.loadData(tag);
         this.tardisWaypointManager.loadData(tag);
         this.upgradeHandler.loadData(tag);
-        this.tardisHADSManager.loadData(tag);
         this.aestheticHandler.loadData(tag);
         tardisClientData.sync();
     }
@@ -129,7 +122,6 @@ public class TardisLevelOperator {
         interiorManager.tick(level);
         pilotingManager.tick(level);
         tardisFlightEventManager.tick();
-        tardisHADSManager.tick();
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
