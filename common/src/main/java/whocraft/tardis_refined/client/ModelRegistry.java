@@ -6,11 +6,11 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
-import whocraft.tardis_refined.client.model.blockentity.door.*;
+import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
 import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
-import whocraft.tardis_refined.client.model.blockentity.shell.*;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.rootplant.*;
+import whocraft.tardis_refined.client.model.blockentity.shell.shells.*;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 
 import java.util.function.Supplier;
@@ -49,6 +49,9 @@ public class ModelRegistry {
     public static ModelLayerLocation GROWTH_SHELL;
     public static ModelLayerLocation PORTALOO_SHELL;
     public static ModelLayerLocation PAGODA_SHELL;
+    public static ModelLayerLocation LIFT_SHELL;
+    public static ModelLayerLocation HIEROGLYPH_SHELL;
+    public static ModelLayerLocation CASTLE_SHELL;
 
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -66,6 +69,9 @@ public class ModelRegistry {
     public static ModelLayerLocation GROWTH_DOOR;
     public static ModelLayerLocation PORTALOO_DOOR;
     public static ModelLayerLocation PAGODA_DOOR;
+    public static ModelLayerLocation LIFT_DOOR;
+    public static ModelLayerLocation HIEROGLYPH_DOOR;
+    public static ModelLayerLocation CASTLE_DOOR;
 
 
     public static ModelLayerLocation ARS_EGG;
@@ -103,6 +109,9 @@ public class ModelRegistry {
         GROWTH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_shell"), "growth_shell"), GrowthShellModel::createBodyLayer);
         PORTALOO_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_shell"), "portaloo_shell"), PortalooShellModel::createBodyLayer);
         PAGODA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pagoda_shell"), "pagoda_shell"), PagodaShellModel::createBodyLayer);
+        LIFT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_shell"), "lift_shell"), LiftShellModel::createBodyLayer);
+        HIEROGLYPH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_shell"), "hieroglyph_shell"), HieroglyphModel::createBodyLayer);
+        CASTLE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_shell"), "castle_shell"), CastleShellModel::createBodyLayer);
 
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
@@ -120,6 +129,9 @@ public class ModelRegistry {
         GROWTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_door"), "growth_door"), GrowthDoorModel::createBodyLayer);
         PORTALOO_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_door"), "portaloo_door"), PortalooDoorModel::createBodyLayer);
         PAGODA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pagoda_door"), "pagoda_door"), PagodaDoorModel::createBodyLayer);
+        LIFT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_door"), "lift_door"), LiftShellDoorModel::createBodyLayer);
+        HIEROGLYPH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
+        CASTLE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
 
 
 

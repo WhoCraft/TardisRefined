@@ -1,4 +1,10 @@
 {
+  "ars_hum": {
+    "sounds": [
+      "tardis_refined:tardis/ars/ars_hum"
+    ],
+    "subtitle": "sound.ars_hum.subtitle"
+  },
   "destination_ding": {
     "sounds": [
       "tardis_refined:tardis/destination_ding"
@@ -46,6 +52,12 @@
       "tardis_refined:tardis/tardis_takeoff"
     ],
     "subtitle": "sound.tardis_takeoff.subtitle"
+  },
+  "test_hum": {
+    "sounds": [
+      "tardis_refined:tardis/test_hum"
+    ],
+    "subtitle": "sound.test_hum.subtitle"
   },
   "time_blast": {
     "sounds": [

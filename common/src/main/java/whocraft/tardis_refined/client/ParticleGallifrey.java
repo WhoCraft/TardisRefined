@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
 
 public class ParticleGallifrey extends BaseAshSmokeParticle {
 
@@ -50,5 +51,23 @@ public class ParticleGallifrey extends BaseAshSmokeParticle {
             particleGallifrey.pickSprite(this.sprite);
             return particleGallifrey;
         }
+    }
+
+    public static class ARSVinesParticle implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet sprite;
+
+        public ARSVinesParticle(SpriteSet arg) {
+            this.sprite = arg;
+        }
+
+        @Override
+        public Particle createParticle(SimpleParticleType arg, ClientLevel arg2, double d, double e, double f, double g, double h, double i) {
+            SuspendedParticle suspendedParticle = new SuspendedParticle(arg2, this.sprite, d, e, f, 0.0, -0.8f, 0.0);
+            suspendedParticle.setLifetime(Mth.randomBetweenInclusive(arg2.random, 500, 1000));
+            suspendedParticle.gravity = 0.01f;
+            suspendedParticle.setColor(0.4F, 0.4F, 0.7F);
+            return suspendedParticle;
+        }
+
     }
 }

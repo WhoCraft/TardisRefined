@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.tardis.manager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -14,19 +13,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class TardisPilotingManager {
+public class TardisPilotingManager extends BaseHandler{
 
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
@@ -57,7 +57,6 @@ public class TardisPilotingManager {
     private int cordIncrementIndex = 0;
 
     private boolean autoLand = false;
-    private ResourceLocation currentExteriorTheme;
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -71,16 +70,27 @@ public class TardisPilotingManager {
         return this.autoLand;
     }
 
-    public ResourceLocation getCurrentExteriorTheme() {
-        return this.currentExteriorTheme;
-    }
-
-    public void setCurrentExteriorTheme(ResourceLocation theme) {
-        this.currentExteriorTheme = theme;
-    }
 
     public boolean isOnCooldown() {
         return (ticksSinceCrash > 0);
+    }
+
+    /**
+     * Accessor for the number of ticks since the Tardis crashed.
+     * @return private field ticksSinceCrash
+     */
+    public int getCooldownTicks() {
+        return ticksSinceCrash;
+    }
+
+
+    /**
+     * A progress value after crashing that determines how long until cooldown has finished.
+     * Zero means it has only started, 1 means that cooldown has finished.
+     * @return a percentage value between 0 - 1.
+     */
+    public int getCooldownDuration() {
+        return ticksSinceCrash / TICKS_COOLDOWN_MAX;
     }
 
     public void endCoolDown() {
@@ -97,15 +107,16 @@ public class TardisPilotingManager {
         this.ticksSinceCrash = tag.getInt("ticksSinceCrash");
         this.canUseControls = tag.getBoolean("canUseControls");
 
-        if (tag.getString(NbtConstants.CONTROL_CURRENT_EXT) != null && !tag.getString(NbtConstants.CONTROL_CURRENT_EXT).isEmpty()) {
-            this.currentExteriorTheme = new ResourceLocation(tag.getString(NbtConstants.CONTROL_CURRENT_EXT));
-        }
-
         if (this.targetLocation == null) {
             this.targetLocation = TardisNavLocation.ORIGIN;
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
+    }
+
+    @Override
+    public void tick() {
+
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -116,9 +127,6 @@ public class TardisPilotingManager {
         tag.putInt("ticksSinceCrash", this.ticksSinceCrash);
         tag.putBoolean("canUseControls", this.canUseControls);
 
-        if (this.currentExteriorTheme != null) {
-            tag.putString(NbtConstants.CONTROL_CURRENT_EXT, this.currentExteriorTheme.toString());
-        }
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
         }
@@ -173,13 +181,6 @@ public class TardisPilotingManager {
 
             if (ticksCrashing == 1) {
                 onCrashEnd();
-            }
-
-
-            if ((ticksLanding >= 6 * 20 || ticksLanding == 0) && !this.isCrashing()) {
-                var distanceBetweenWroop = (this.operator.getTardisFlightEventManager().getControlResponses() < this.operator.getTardisFlightEventManager().getRequiredControlRequests()) ? 20 * 1.6 : 20 * 1.75;
-                if (level.getGameTime() % (distanceBetweenWroop) == 0)
-                    operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 10f, (this.operator.getTardisFlightEventManager().getControlResponses() < this.operator.getTardisFlightEventManager().getRequiredControlRequests()) ? 1.02f : 1f);
             }
         }
 
@@ -282,7 +283,11 @@ public class TardisPilotingManager {
         return new BlockPos(pos.getX(), originalY, pos.getZ());
     }
 
-    private boolean isSafeToLand(TardisNavLocation location)
+    /** Checks the tardis nav location for a variety of reasons that a given position would be unsafe to land at.
+     * @param location the coordinates to check against
+     * @return true if safe to land, otherwise false
+     */
+    public boolean isSafeToLand(TardisNavLocation location)
     {
         if (!isSolidBlock(location.getLevel(), location.getPosition()) && isSolidBlock(location.getLevel(), location.getPosition().below()) && !isSolidBlock(location.getLevel(), location.getPosition().above())) {
             return !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.LAVA) && !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.WATER);
@@ -388,17 +393,13 @@ public class TardisPilotingManager {
             this.ticksLanding = TICKS_LANDING_MAX;
 
             TardisExteriorManager exteriorManager = operator.getExteriorManager();
-            TardisInteriorManager interiorManager = operator.getInteriorManager();
+
             Level level = operator.getLevel();
 
             TardisNavLocation landingLocation = this.targetLocation;
             TardisNavLocation location = findClosestValidPosition(landingLocation);
 
-
             exteriorManager.placeExteriorBlock(operator, location);
-            if (this.currentExteriorTheme != null) {
-                interiorManager.setShellTheme(this.currentExteriorTheme, false);
-            }
 
             exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
             level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
@@ -461,9 +462,6 @@ public class TardisPilotingManager {
         var location =  findClosestValidPosition(landing);
 
         tardisExteriorManager.placeExteriorBlock(operator, location);
-        if (currentExteriorTheme != null) {
-            tardisExteriorManager.setShellTheme(this.currentExteriorTheme);
-        }
 
         tardisExteriorManager.playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
         tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);
@@ -494,6 +492,13 @@ public class TardisPilotingManager {
         return this.targetLocation;
     }
 
+    /**
+     * @return the current fast return location
+     */
+    public TardisNavLocation getFastReturnLocation() {
+        return this.fastReturnLocation;
+    }
+
     public void setTargetLocation(TardisNavLocation targetLocation) {
         this.targetLocation = targetLocation;
     }
@@ -516,23 +521,20 @@ public class TardisPilotingManager {
         this.cordIncrementIndex = nextIndex;
     }
 
-    public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler){
+    public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
 
-        if(Upgrades.EXPLORER.get().isUnlocked(upgradeHandler)){
-            increments.add(1000);
+        for (Upgrade upgrade : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
+            if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
+                if (upgrade.isUnlocked(upgradeHandler)) {
+                    increments.add(incrementUpgrade.getIncrementAmount());
+                }
+            }
         }
-
-        if(Upgrades.EXPLORER_II.get().isUnlocked(upgradeHandler)){
-            increments.add(2500);
-        }
-
-        if(Upgrades.EXPLORER_III.get().isUnlocked(upgradeHandler)){
-            increments.add(5000);
-        }
-
+        Collections.sort(increments);
         return increments.stream().mapToInt(Integer::intValue).toArray();
     }
+
 
     public boolean shouldThrottleBeDown() {
         return isInFlight && ticksLanding == 0;

@@ -8,16 +8,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
+import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.Objects;
 
@@ -48,11 +48,11 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         }
         poseStack.popPose();
 
-        if (theme == ConsoleTheme.CRYSTAL.getId()) {
+        if (theme.toString().equals(ConsoleTheme.CRYSTAL.getId().toString())) {
             renderHoloShell(crystalHolo,270, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
         }
 
-        if (theme == ConsoleTheme.INITIATIVE.getId()) {
+        if (theme.toString().equals(ConsoleTheme.INITIATIVE.getId().toString())) {
             renderHoloShell(initiativeHolo, -30 + 180, blockEntity, poseStack, bufferSource, packedLight, initiativeHoloColor);
         }
     }
@@ -61,8 +61,11 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         if (blockEntity.getLevel().random.nextInt(20) != 0) {
             poseStack.pushPose();
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
-            var model = ShellModelCollection.getInstance().getShellModel(reactions.getShellTheme());
-            model.setDoorOpen(false);
+            ResourceLocation shellTheme = reactions.getShellTheme();
+            ResourceLocation shellPattern = reactions.getShellPattern();
+
+            var model = ShellModelCollection.getInstance().getShellEntry(shellTheme).getShellModel();
+            model.setDoorPosition(false);
 
             poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
             poseStack.translate(offset.x, offset.y, offset.z);
@@ -74,8 +77,12 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
                 poseStack.mulPose(Axis.YP.rotationDegrees(rotation % 360));
             }
 
-            ShellPattern pattern = reactions.shellPattern();
-            model.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.exteriorDoorTexture().texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
+            if (ShellSelectionScreen.globalShellBlockEntity == null) {
+                ShellSelectionScreen.generateDummyGlobalShell();
+            }
+
+            ShellPattern pattern = ShellPatterns.getPatternOrDefault(shellTheme, shellPattern);
+            model.renderShell(ShellSelectionScreen.globalShellBlockEntity, false, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.exteriorDoorTexture().texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
             poseStack.popPose();
         }
     }

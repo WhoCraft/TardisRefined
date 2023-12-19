@@ -1,0 +1,16 @@
+{
+  "patterns": [
+    {
+      "exterior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/lift/lift.png"
+      },
+      "id": "tardis_refined:default",
+      "interior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/lift/lift_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}"
+    }
+  ]
+}

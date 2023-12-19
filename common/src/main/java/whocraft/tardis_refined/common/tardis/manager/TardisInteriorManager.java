@@ -11,17 +11,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
-import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
-import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
@@ -31,12 +25,11 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TardisInteriorManager {
+public class TardisInteriorManager extends BaseHandler {
 
     private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
@@ -52,6 +45,7 @@ public class TardisInteriorManager {
     private int airlockTimerSeconds = 5;
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
+
     public DesktopTheme preparedTheme() {
         return preparedTheme;
     }
@@ -78,8 +72,9 @@ public class TardisInteriorManager {
 
         ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
+        ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1009, 97, -2), new BlockPos(1041, 118, 30), "ars_room");
 
-        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck};
+        return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, arsRoom};
     }
 
     public DesktopTheme currentTheme() {
@@ -93,6 +88,11 @@ public class TardisInteriorManager {
 
     public boolean isCave() {
         return currentTheme == TardisDesktops.DEFAULT_OVERGROWN_THEME;
+    }
+
+    @Override
+    public void tick() {
+
     }
 
     public CompoundTag saveData(CompoundTag tag) {
@@ -132,8 +132,7 @@ public class TardisInteriorManager {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
             }
 
-            if (level.players().size() == 0) {
-
+            if (level.players().isEmpty()) {
                 this.operator.getExteriorManager().triggerShellRegenState();
                 operator.setDoorClosed(true);
                 generateDesktop(this.preparedTheme);
@@ -150,7 +149,8 @@ public class TardisInteriorManager {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getExteriorManager().getCurrentTheme() != null) ? operator.getExteriorManager().getCurrentTheme() : ShellTheme.FACTORY.getId(), true);
+                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.FACTORY.getId(), true);
+                this.operator.getExteriorManager().placeExteriorBlock(operator,operator.getExteriorManager().getLastKnownLocation());
                 this.isGeneratingDesktop = false;
             }
 
@@ -169,7 +169,7 @@ public class TardisInteriorManager {
                 List<LivingEntity> desktopEntities = getAirlockEntities(level);
                 List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
-                if (desktopEntities.size() > 0 || corridorEntities.size() > 0) {
+                if (!desktopEntities.isEmpty() || !corridorEntities.isEmpty()) {
                     airlockCountdownSeconds--;
                     if (airlockCountdownSeconds <= 0) {
 
@@ -180,14 +180,14 @@ public class TardisInteriorManager {
                         // Lock the doors.
                         BlockPos desktopDoorPos = corridorAirlockCenter.north(2);
                         if (level.getBlockEntity(desktopDoorPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                            bulkHeadDoorBlockEntity.closeDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos));
-                            level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), 2);
+                            bulkHeadDoorBlockEntity.toggleDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos), false);
+                            level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
 
                         BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                            bulkHeadDoorBlockEntity.closeDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos));
-                            level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), 2);
+                            bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), false);
+                            level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
                     }
                 } else {
@@ -238,19 +238,18 @@ public class TardisInteriorManager {
                 }
 
                 if (airlockTimerSeconds == 7) {
-                    airlockTimerSeconds = 0;
                     this.processingWarping = false;
                     this.airlockTimerSeconds = 20;
                     BlockPos desktopDoorPos = corridorAirlockCenter.north(2);
                     if (level.getBlockEntity(desktopDoorPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                        bulkHeadDoorBlockEntity.openDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos));
-                        level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
+                        bulkHeadDoorBlockEntity.toggleDoor(level, desktopDoorPos, level.getBlockState(desktopDoorPos), true);
+                        level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
 
                     BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
-                        bulkHeadDoorBlockEntity.openDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos));
-                        level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
+                        bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), true);
+                        level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
                 }
 
@@ -293,6 +292,7 @@ public class TardisInteriorManager {
             if (tardisInternalDoor != null) {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
+
             // Generate Corridors
             if (!this.hasGeneratedCorridors) {
                 TardisArchitectureHandler.generateEssentialCorridors(serverLevel);
@@ -324,33 +324,4 @@ public class TardisInteriorManager {
         this.isWaitingToGenerate = false;
     }
 
-    /**
-     * Sets the shell theme ID for the Door block
-     * @param theme - the Shell Theme ID
-     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one or changing desktops. True if that is the case.
-     */
-    public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
-        if (operator.getInternalDoor() != null){
-            BlockPos internalDoorPos = operator.getInternalDoor().getDoorPosition();
-            BlockState state = operator.getLevel().getBlockState(internalDoorPos);
-
-            if (setupTardis){
-                if (state.getBlock() instanceof RootShellDoorBlock) {
-                    // If the block at the last known location was originally a Root Shell Door (i.e. transforming to a proper Tardis),
-                    // Create a new Global Shell Door instance and copy over all attributes from the existing shell
-                    operator.getLevel().setBlock(internalDoorPos,
-                            BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
-                                    .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), 2);
-                }
-            }
-            //After handling logic for changing desktops or transforming from root shell to functional Tardis, set the theme for the door block entity
-            BlockEntity blockEntity = operator.getLevel().getBlockEntity(internalDoorPos);
-
-            if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
-                doorBlockEntity.setShellTheme(theme);
-                operator.setInternalDoor(doorBlockEntity);
-            }
-
-        }
-    }
 }

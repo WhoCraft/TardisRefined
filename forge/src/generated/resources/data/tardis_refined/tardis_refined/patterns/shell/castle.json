@@ -1,0 +1,16 @@
+{
+  "patterns": [
+    {
+      "exterior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/castle/castle.png"
+      },
+      "id": "tardis_refined:default",
+      "interior": {
+        "emissive": false,
+        "texture": "tardis_refined:textures/blockentity/shell/castle/castle_interior.png"
+      },
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}"
+    }
+  ]
+}

@@ -32,12 +32,9 @@ public class DeferredRegistryImpl {
 
         private final String modid;
         private final WritableRegistry<T> registry;
-
-        private ResourceKey<? extends Registry<T>> registryKey;
-
         private final boolean isCustom;
-
         private final boolean syncToClient;
+        private ResourceKey<? extends Registry<T>> registryKey;
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
             this.modid = modid;
@@ -52,8 +49,8 @@ public class DeferredRegistryImpl {
             this.registryKey = resourceKey;
             this.isCustom = true;
             this.syncToClient = syncToClient;
-            this.registry = syncToClient ? (MappedRegistry<T>)FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : (MappedRegistry<T>)FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
-            
+            this.registry = syncToClient ? (MappedRegistry<T>) FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : (MappedRegistry<T>) FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
+
         }
 
         @Override
@@ -72,7 +69,7 @@ public class DeferredRegistryImpl {
         public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
             ResourceLocation registeredId = new ResourceLocation(this.modid, id);
             Registry.register(this.registry, registeredId, sup.get()); //Need to call this to register the object
-            RegistrySupplierHolder<T,I> registryHolder = RegistrySupplierHolder.create(this.registryKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
+            RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.registryKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
             return registryHolder;
         }
 

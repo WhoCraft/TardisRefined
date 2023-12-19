@@ -2,10 +2,13 @@ package whocraft.tardis_refined.common.network.messages;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.client.ScreenHandler;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.client.screen.CancelDesktopScreen;
 import whocraft.tardis_refined.client.screen.MonitorScreen;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -61,12 +64,7 @@ public class OpenMonitorMessage extends MessageS2C {
     @Environment(EnvType.CLIENT)
     private void handleScreens() {
         // Open the monitor.
-        if (this.desktopGenerating) {
-            Minecraft.getInstance().setScreen(new CancelDesktopScreen());
-        } else {
-            UpgradeHandler upgradeHandlerClient = new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level));
-            upgradeHandlerClient.loadData(upgradeHandlerNbt);
-            Minecraft.getInstance().setScreen(new MonitorScreen(currentLocation, targetLocation, upgradeHandlerClient));
-        }
+        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation);
     }
+
 }

@@ -9,64 +9,21 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.client.model.blockentity.door.*;
-import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
+import whocraft.tardis_refined.client.model.blockentity.door.interior.ShellDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.patterns.ShellPattern;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
 
-    protected static ShellModel currentModel;
-    private static ShellModel factoryDoorModel, policeBoxModel, phoneBoothDoorModel, mysticDoorModel, drifterModel, presentModel, vendingModel, briefcaseModel,
-            groeningModel, bigBenModel, nukaModel, growthModel, portalooModel, pagodaModel;
-
-    public static Map<ResourceLocation, ShellModel> DOOR_MODELS = new HashMap<>();
-
+    protected static ShellDoorModel currentModel;
 
     public GlobalDoorRenderer(BlockEntityRendererProvider.Context context) {
-        this.registerModels(context);
+
     }
 
-    public void registerModels(BlockEntityRendererProvider.Context context){
-        factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
-        policeBoxModel = new PoliceBoxDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)));
-        phoneBoothDoorModel = new PhoneBoothDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)));
-        mysticDoorModel = new MysticDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)));
-        drifterModel = new DrifterDoorModel(context.bakeLayer((ModelRegistry.DRIFTER_DOOR)));
-        presentModel = new PresentDoorModel(context.bakeLayer((ModelRegistry.PRESENT_DOOR)));
-        vendingModel = new VendingMachineDoorModel(context.bakeLayer((ModelRegistry.VENDING_DOOR)));
-        briefcaseModel = new BriefcaseDoorModel(context.bakeLayer((ModelRegistry.BRIEFCASE_DOOR)));
-        groeningModel = new GroeningDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)));
-        bigBenModel = new BigBenDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)));
-        nukaModel = new NukaDoorModel(context.bakeLayer((ModelRegistry.NUKA_DOOR)));
-        growthModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
-        portalooModel = new PortalooDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)));
-        pagodaModel = new PagodaDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)));
-
-        DOOR_MODELS.put(ShellTheme.FACTORY.getId(), factoryDoorModel);
-        DOOR_MODELS.put(ShellTheme.POLICE_BOX.getId(), policeBoxModel);
-        DOOR_MODELS.put(ShellTheme.PHONE_BOOTH.getId(), phoneBoothDoorModel);
-        DOOR_MODELS.put(ShellTheme.MYSTIC.getId(), mysticDoorModel);
-        DOOR_MODELS.put(ShellTheme.DRIFTER.getId(), drifterModel);
-        DOOR_MODELS.put(ShellTheme.PRESENT.getId(), presentModel);
-        DOOR_MODELS.put(ShellTheme.VENDING.getId(), vendingModel);
-        DOOR_MODELS.put(ShellTheme.BRIEFCASE.getId(), briefcaseModel);
-        DOOR_MODELS.put(ShellTheme.GROENING.getId(), groeningModel);
-        DOOR_MODELS.put(ShellTheme.BIG_BEN.getId(), bigBenModel);
-        DOOR_MODELS.put(ShellTheme.NUKA.getId(), nukaModel);
-        DOOR_MODELS.put(ShellTheme.GROWTH.getId(), growthModel);
-        DOOR_MODELS.put(ShellTheme.PORTALOO.getId(), portalooModel);
-        DOOR_MODELS.put(ShellTheme.PAGODA.getId(), pagodaModel);
-        
-    }
 
     @Override
     public void render(GlobalDoorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
@@ -81,8 +38,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
         // Render slightly off the wall to prevent z-fighting.
         poseStack.translate(0, 0, -0.01);
-
-        currentModel = DOOR_MODELS.get(theme);
+        currentModel = ShellModelCollection.getInstance().getShellEntry(theme).getShellDoorModel();
 
         if(theme == ShellTheme.POLICE_BOX.getId()){
             poseStack.scale(1.05f, 1.05f, 1.05f);
@@ -90,11 +46,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         }
 
 
-        TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
-        ShellPattern shellPattern = reactions.shellPattern();
-
-        currentModel.setDoorOpen(isOpen);
-        currentModel.renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.texture(shellPattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.setDoorPosition(isOpen);
+        currentModel.renderInteriorDoor(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         poseStack.popPose();
     }

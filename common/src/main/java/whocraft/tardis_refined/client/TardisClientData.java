@@ -3,18 +3,26 @@ package whocraft.tardis_refined.client;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import whocraft.tardis_refined.common.network.messages.SyncIntReactionsMessage;
+import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.client.sounds.LoopingSound;
+import whocraft.tardis_refined.common.network.messages.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.Map;
+
+import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
 
 public class TardisClientData {
 
@@ -23,7 +31,8 @@ public class TardisClientData {
     public AnimationState ROTOR_ANIMATION = new AnimationState();
     public AnimationState LANDING_ANIMATION = new AnimationState();
     public AnimationState TAKEOFF_ANIMATION = new AnimationState();
-    public TardisClientData(ResourceKey<Level> resourceKey){
+
+    public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
     }
 
@@ -43,21 +52,22 @@ public class TardisClientData {
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
-    private ShellPattern shellPattern = ShellPatterns.DEFAULT;
+    private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
 
-//    private ShellPattern safeGrabPattern() {
-//        if (ShellPatterns.getRegistry().isEmpty())
-//            return ShellPatterns.getPatternsForThemeDefault(shellTheme).get(0);
-//        return ShellPatterns.getPatternsForTheme(shellTheme).get(0);
-//    }
-
-    public TardisClientData setShellPattern(ShellPattern shellPattern) {
-        this.shellPattern = shellPattern;
-        return this;
+    public ResourceLocation getShellTheme() {
+        return shellTheme;
     }
 
-    public ShellPattern shellPattern() {
+    public void setShellTheme(ResourceLocation shellTheme) {
+        this.shellTheme = shellTheme;
+    }
+
+    public ResourceLocation getShellPattern() {
         return shellPattern;
+    }
+
+    public void setShellPattern(ResourceLocation shellPattern) {
+        this.shellPattern = shellPattern;
     }
 
     public int landingTime = 0, takeOffTime = 0;
@@ -78,26 +88,53 @@ public class TardisClientData {
         return throttleDown;
     }
 
-    public void setIsLanding(boolean landing) {this.isLanding = landing;}
-    public boolean isLanding() {return isLanding;}
+    public void setIsLanding(boolean landing) {
+        this.isLanding = landing;
+    }
 
-    public void setIsTakingOff(boolean takingOff) {this.isTakingOff = takingOff;}
-    public boolean isTakingOff() {return isTakingOff;}
+    public boolean isLanding() {
+        return isLanding;
+    }
 
-    public void setInDangerZone(boolean isInDangerZone) {this.isInDangerZone = isInDangerZone;}
-    public boolean isInDangerZone() {return isInDangerZone;}
+    public void setIsTakingOff(boolean takingOff) {
+        this.isTakingOff = takingOff;
+    }
 
-    public void setIsCrashing(boolean isCrashing) {this.isCrashing = isCrashing;}
-    public boolean isCrashing() {return isCrashing;}
+    public boolean isTakingOff() {
+        return isTakingOff;
+    }
 
-    public void setIsOnCooldown(boolean isCooldown) {this.isOnCooldown = isCooldown;}
-    public boolean isOnCooldown() {return isOnCooldown;}
+    public void setInDangerZone(boolean isInDangerZone) {
+        this.isInDangerZone = isInDangerZone;
+    }
 
-    public void setFlightShakeScale(float scale) {this.flightShakeScale = scale;}
-    public float flightShakeScale() {return flightShakeScale;}
+    public boolean isInDangerZone() {
+        return isInDangerZone;
+    }
 
-    public void setShellTheme(ResourceLocation theme) {this.shellTheme = theme;}
-    public ResourceLocation getShellTheme() {return this.shellTheme;}
+    public void setIsCrashing(boolean isCrashing) {
+        this.isCrashing = isCrashing;
+    }
+
+    public boolean isCrashing() {
+        return isCrashing;
+    }
+
+    public void setIsOnCooldown(boolean isCooldown) {
+        this.isOnCooldown = isCooldown;
+    }
+
+    public boolean isOnCooldown() {
+        return isOnCooldown;
+    }
+
+    public void setFlightShakeScale(float scale) {
+        this.flightShakeScale = scale;
+    }
+
+    public float flightShakeScale() {
+        return flightShakeScale;
+    }
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -111,16 +148,12 @@ public class TardisClientData {
         compoundTag.putBoolean("throttleDown", throttleDown);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
-        if (shellTheme != null)
-            compoundTag.putString("shellTheme", shellTheme.toString());
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
         compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
         compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
-
-        if (this.shellTheme != null) {
-            if ( this.shellPattern != null)
-                compoundTag.putString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, shellPattern.id().toString());
-        }
+        // Save shellTheme and shellPattern
+        compoundTag.putString("shellTheme", shellTheme.toString());
+        compoundTag.putString("shellPattern", shellPattern.toString());
 
         return compoundTag;
     }
@@ -135,15 +168,13 @@ public class TardisClientData {
         throttleDown = compoundTag.getBoolean("throttleDown");
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
-        if (compoundTag.contains("shellTheme"))
-            shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
         flightShakeScale = compoundTag.getFloat("flightShakeScale");
         isOnCooldown = compoundTag.getBoolean("isOnCooldown");
 
-        if (compoundTag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) != null) {
-            this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN)));
-        }
+        // Load shellTheme and shellPattern
+        shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
+        shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
 
     }
 
@@ -152,10 +183,14 @@ public class TardisClientData {
      * server-side, as calling it client-side may cause the game to crash.
      */
     public void sync() {
-        new SyncIntReactionsMessage(getLevelKey(), serializeNBT()).sendToAll();
+        new SyncTardisClientDataMessage(getLevelKey(), serializeNBT()).sendToAll();
     }
 
     public void tickClientside() {
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+
         if (isTakingOff()) {
             takeOffTime++;
             landingTime = 0;
@@ -165,6 +200,32 @@ public class TardisClientData {
         if (isLanding()) {
             landingTime++;
             takeOffTime = 0;
+        }
+
+
+        if (Minecraft.getInstance().player.level().dimensionTypeId() == DimensionTypes.TARDIS) {
+            createWorldAmbience(Minecraft.getInstance().player);
+
+
+            if (LoopingSound.ARS_HUMMING == null) {
+                LoopingSound.setupSounds();
+            }
+
+            if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
+                if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
+                    LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
+                    soundManager.play(LoopingSound.ARS_HUMMING);
+                }
+            }
+
+            if(!soundManager.isActive(LoopingSound.HUM_TEST)){
+                soundManager.play(LoopingSound.HUM_TEST);
+            }
+        }
+
+
+        if (LoopingSound.shouldMinecraftMusicStop(soundManager)) {
+            Minecraft.getInstance().getMusicManager().stopPlaying();
         }
 
 
@@ -179,6 +240,7 @@ public class TardisClientData {
 
 
     }
+
 
     /**
      * Updates the Tardis instance. This method is called manually from the SyncIntReactionsMessage message.
@@ -236,7 +298,7 @@ public class TardisClientData {
      * @param levelResourceKey The resource key of the level the Tardis is in.
      * @return The TardisIntReactions instance containing information about the Tardis.
      */
-    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey){
+    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey) {
         // Check if the map contains information about the Tardis
         if (DATA.containsKey(levelResourceKey)) {
             // If the map contains information about the Tardis, return it
@@ -262,12 +324,13 @@ public class TardisClientData {
 
     /**
      * Called by platform-specific methods
+     *
      * @param client Minecraft client
      */
     public static void tickClientData(Minecraft client) {
         // Inelegant solution, please revise
         if (client.level == null || client.isPaused()) {
-            if(!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
+            if (!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
                 TardisClientData.clearAll();
             }
             return;
@@ -275,4 +338,33 @@ public class TardisClientData {
 
         TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
     }
+
+    private static void createWorldAmbience(Player player) {
+        if (player.tickCount % 120 == 0 && !isInArsArea(player.blockPosition())) return;
+        RandomSource random = player.level().random;
+        Level level = player.level();
+        double originX = player.getX();
+        double originY = player.getY();
+        double originZ = player.getZ();
+        for (int i = 0; i < 5; i++) {
+            double particleX = originX + (random.nextInt(24) - random.nextInt(24));
+            double particleY = originY + (random.nextInt(24) - random.nextInt(24));
+            double particleZ = originZ + (random.nextInt(24) - random.nextInt(24));
+            double velocityX = (random.nextDouble() - 0.5) * 0.02;
+            double velocityY = (random.nextDouble() - 0.5) * 0.02;
+            double velocityZ = (random.nextDouble() - 0.5) * 0.02;
+            if (isInArsArea(new BlockPos((int) particleX, (int) particleY, (int) particleZ))) {
+                level.addParticle(TRParticles.ARS_LEAVES.get(), particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
+                level.addParticle(ParticleTypes.END_ROD, particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
+            }
+        }
+    }
+
+    public Vec3 fogColor(boolean isCrashing) {
+        if (isCrashing) {
+            return new Vec3(1, 0, 0);
+        }
+        return new Vec3(0.14F, 0.15F, 0.22F);
+    }
+
 }

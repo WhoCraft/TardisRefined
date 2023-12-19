@@ -11,33 +11,31 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.patterns.ShellPattern;
 
 public abstract class ShellModel extends HierarchicalModel {
 
-    public abstract void setDoorOpen(boolean open);
-
-    public abstract boolean isDoorModel();
+    public abstract void setDoorPosition(boolean open);
 
     public abstract void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
 
-    public ResourceLocation texture(GlobalShellBlockEntity entity, boolean isEmmissive) {
-        ShellPattern pattern = entity.pattern();
+
+    public ResourceLocation getShellTexture(ShellPattern pattern, boolean isEmmissive) {
         return texture(pattern, isEmmissive);
     }
 
-    public ResourceLocation texture(ShellPattern pattern, boolean isEmmissive) {
-        if (isDoorModel()) {
-            return pattern.interiorDoorTexture().texture();
-        }
+    public ResourceLocation getShellTexture(GlobalShellBlockEntity shellBlockEntitys, boolean isEmmissive) {
+        ShellPattern pattern = shellBlockEntitys.pattern();
+        return texture(pattern, isEmmissive);
+    }
+
+    private ResourceLocation texture(ShellPattern pattern, boolean isEmmissive) {
         return isEmmissive ? pattern.exteriorDoorTexture().emissiveTexture() : pattern.exteriorDoorTexture().texture();
     }
+
 
     ModelPart fade_value;
 
@@ -70,7 +68,7 @@ public abstract class ShellModel extends HierarchicalModel {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(entity.getTardisId());
 
-        setDoorOpen(isDoorOpen);
+        setDoorPosition(isDoorOpen);
 
         if (reactions.isLanding()) {
             this.animate(reactions.LANDING_ANIMATION, MODEL_LAND, reactions.landingTime * ANIMATION_SPEED);
@@ -91,7 +89,7 @@ public abstract class ShellModel extends HierarchicalModel {
     }
 
 
-    public static void splice(PartDefinition partDefinition) {
+    public static void addMaterializationPart(PartDefinition partDefinition) {
         partDefinition.addOrReplaceChild("fade_value", CubeListBuilder.create().texOffs(128, 128), PartPose.offset(-24.0F, 24.0F, 0.0F));
     }
 

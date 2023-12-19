@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.entity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -264,10 +265,10 @@ public class ControlEntity extends Entity {
         }
     }
 
-    private boolean isDesktopWaitingToGenerate(TardisLevelOperator operator, ServerLevel serverLevel){
+    public boolean isDesktopWaitingToGenerate(TardisLevelOperator operator){
         if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
             if (operator.getInteriorManager().isWaitingToGenerate()) {
-                serverLevel.playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100F, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
+                operator.getLevel().playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100F, (float) (0.1 + (level().getRandom().nextFloat() * 0.5)));
                 return true;
             }
         }
@@ -277,17 +278,21 @@ public class ControlEntity extends Entity {
     private void handleLeftClick(Player player, ServerLevel serverLevel){
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
-            if (isDesktopWaitingToGenerate(cap, serverLevel))
+            if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
             if (!interactWaitingControl(cap)) {
                 Control control = this.controlSpecification.control().getControl();
+
                 boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
                 control.playControlPitchedSound(cap, this, playedSound);
             } else {
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 upgradeHandler.addUpgradeXP(5);
+                upgradeHandler.setUpgradePoints(50000);
+
+                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
             }
         });
     }
@@ -305,7 +310,7 @@ public class ControlEntity extends Entity {
                 return;
             }
 
-            if (isDesktopWaitingToGenerate(cap, serverLevel))
+            if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
             if (!interactWaitingControl(cap)) {
@@ -316,6 +321,7 @@ public class ControlEntity extends Entity {
             } else {
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 upgradeHandler.addUpgradeXP(5);
+                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
             }
         });
     }

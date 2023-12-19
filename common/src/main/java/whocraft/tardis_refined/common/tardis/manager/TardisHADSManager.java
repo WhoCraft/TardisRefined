@@ -6,13 +6,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 
-public class TardisHADSManager {
+public class TardisHADSManager extends BaseHandler {
 
     private static final int MAX_DISTANCE = 1000;
     private static final int RETURN_DELAY_MIN = 12000;
@@ -27,8 +28,6 @@ public class TardisHADSManager {
     }
 
     public void tick() {
-        tardisLevelOperator.getUpgradeHandler().setUpgradePoints(100);
-
         if (timeTillReturn > 0) {
             timeTillReturn = timeTillReturn - 1;
             // Check if it's time to return
@@ -73,7 +72,8 @@ public class TardisHADSManager {
 
                 tardisLevelOperator.getPilotingManager().setTargetPosition(newLocation);
                 tardisLevelOperator.getPilotingManager().beginFlight(true);
-                System.out.println("New destination set. Returning in " + (timeTillReturn / 20) + " seconds. " + newLocation.toShortString());
+                //TODO Debug Code removal
+                TardisRefined.LOGGER.info("New destination set. Returning in " + (timeTillReturn / 20) + " seconds. " + newLocation.toShortString());
             }
         }
     }

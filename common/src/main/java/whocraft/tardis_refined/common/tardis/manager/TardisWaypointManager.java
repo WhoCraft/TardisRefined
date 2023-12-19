@@ -7,7 +7,7 @@ import net.minecraft.nbt.ListTag;
 
 import java.util.*;
 
-public class TardisWaypointManager {
+public class TardisWaypointManager extends BaseHandler{
 
     private final TardisLevelOperator operator;
     private Map<String, TardisNavLocation> waypointMap = new HashMap<>();
@@ -31,6 +31,11 @@ public class TardisWaypointManager {
 
     public TardisNavLocation getWaypointByName(String name) {
         return waypointMap.get(name);
+    }
+
+    @Override
+    public void tick() {
+
     }
 
     public CompoundTag saveData(CompoundTag compoundTag) {

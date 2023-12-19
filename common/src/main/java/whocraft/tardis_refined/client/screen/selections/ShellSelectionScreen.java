@@ -12,26 +12,30 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 public class ShellSelectionScreen extends SelectionScreen {
 
@@ -49,10 +53,21 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     private List<ShellPattern> patternCollection;
     private Button patternButton;
+    public static GlobalShellBlockEntity globalShellBlockEntity;
 
     public ShellSelectionScreen() {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
+        generateDummyGlobalShell();
+
+    }
+
+    public static void generateDummyGlobalShell() {
+        globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
+        assert Minecraft.getInstance().level != null;
+        globalShellBlockEntity.setLevel(Minecraft.getInstance().level);
+        ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+        globalShellBlockEntity.setTardisId(generatedLevelKey);
     }
 
     @Override
@@ -121,6 +136,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         /*Model*/
         renderShell(guiGraphics, width / 2- 75, height / 2 - 20, 25F);
+        //renderShell(guiGraphics, width / 2, height / 2, 25F);
 
 
         double alpha = (100.0D - this.age * 3.0D) / 100.0D;
@@ -135,21 +151,22 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-       // super.renderBackground(guiGraphics, i, j, f);
+        // super.renderBackground(guiGraphics, i, j, f);
     }
 
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
-        ShellModel model = ShellModelCollection.getInstance().getShellModel(this.currentShellTheme);
-        model.setDoorOpen(false);
+        ShellModel model = ShellModelCollection.getInstance().getShellEntry(this.currentShellTheme).getShellModel();
+        model.setDoorPosition(false);
         Lighting.setupForEntityInInventory();
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate((float) x, y, 100.0F);
         pose.scale(-scale, scale, scale);
         pose.mulPose(Axis.XP.rotationDegrees(-15F));
-        pose.mulPose(Axis.YP.rotationDegrees(System.currentTimeMillis() % 5400L / 15L));
-        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.texture(pattern, false)));
-        model.renderToBuffer(pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        pose.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L) / 15L));
+
+        VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
+        model.renderShell(globalShellBlockEntity, false, false, pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.flush();
         pose.popPose();
         Lighting.setupFor3DItems();

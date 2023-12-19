@@ -2,8 +2,10 @@ package whocraft.tardis_refined.fabric;
 
 import fuzs.forgeconfigapiport.api.config.v3.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -12,6 +14,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.neoforged.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
@@ -63,6 +66,9 @@ public class TardisRefinedFabric implements ModInitializer {
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
+
+        ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(TardisRefined.MODID, "upgrades"), UpgradeArgumentType.class, SingletonArgumentInfo.contextFree(UpgradeArgumentType::upgradeArgumentType));
+
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "console_patterns"), ConsolePatterns.getReloadListener());
 

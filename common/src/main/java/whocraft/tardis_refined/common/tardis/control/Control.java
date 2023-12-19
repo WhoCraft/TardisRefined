@@ -3,6 +3,8 @@ package whocraft.tardis_refined.common.tardis.control;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import whocraft.tardis_refined.api.event.EventResult;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
@@ -56,6 +58,11 @@ public abstract class Control {
 
     public void playControlPitchedSound(TardisLevelOperator operator, ControlEntity controlEntity, PitchedSound pitchedSound){
         this.playControlPitchedSound(operator, controlEntity, pitchedSound, SoundSource.BLOCKS, 1F, 1F, false);
+    }
+
+    public boolean canUseControl(TardisLevelOperator tardisLevelOperator, Control control, ControlEntity controlEntity){
+        boolean isDeskopWaiting = controlEntity.isDesktopWaitingToGenerate(tardisLevelOperator);
+        return !isDeskopWaiting && TardisEvents.PLAYER_CONTROL_INTERACT.invoker().canControlBeUsed(tardisLevelOperator, control, controlEntity) == EventResult.pass();
     }
 
 }

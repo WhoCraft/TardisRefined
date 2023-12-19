@@ -39,11 +39,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         super(blockEntityType, blockPos, blockState);
     }
 
-    public ResourceKey<Level> getTardisId(){
+    public ResourceKey<Level> getTardisId() {
         return this.TARDIS_ID;
     }
 
-    public void setTardisId(ResourceKey<Level> levelKey){
+    public void setTardisId(ResourceKey<Level> levelKey) {
         this.TARDIS_ID = levelKey;
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
@@ -53,7 +53,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void load(CompoundTag pTag) {
         super.load(pTag);
         if (pTag.contains(NbtConstants.TARDIS_ID))
-           this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
+            this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
     }
 
     @Override
@@ -80,7 +80,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     public boolean shouldSetup() {
-        if (!this.level.isClientSide()){
+        if (!this.level.isClientSide()) {
             if (this.TARDIS_ID != null) {
                 return false;
             }
@@ -101,8 +101,8 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
 
                 if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || cap.getPilotingManager().endFlight() && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler))) {
-                    if (cap.getExteriorManager().getCurrentTheme() != null) {
-                        ResourceLocation theme = cap.getExteriorManager().getCurrentTheme();
+                    if (cap.getAestheticHandler().getShellTheme() != null) {
+                        ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
                             if (ImmersivePortals.exteriorHasPortalSupport(theme)) {

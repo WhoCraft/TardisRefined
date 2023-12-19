@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.ParticleGallifrey;
 import whocraft.tardis_refined.client.TRParticles;
@@ -24,7 +25,6 @@ import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplier;
 
 public class TardisRefinedFabricClient implements ClientModInitializer {
     @Override
@@ -40,6 +40,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
     private void particles() {
         ParticleFactoryRegistry.getInstance().register(TRParticles.GALLIFREY.get(), (ParticleGallifrey.Provider::new));
+        ParticleFactoryRegistry.getInstance().register(TRParticles.ARS_LEAVES.get(), (ParticleGallifrey.ARSVinesParticle::new));
     }
 
     private void establishBlockEntityRenderers() {
@@ -55,8 +56,10 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
 
         /*Required to Render Transparency*/
-        for (Block entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
-            BlockRenderLayerMap.INSTANCE.putBlock(entry, RenderType.cutout());
+        for (Block block : BlockRegistry.BLOCKS.getRegistry()) {
+            if(BlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)){
+                BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
+            }
         }
 
     }

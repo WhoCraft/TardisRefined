@@ -2,10 +2,14 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -40,8 +44,12 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
+
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false);
+        if (canSurvive(state, blockPlaceContext.getLevel(), blockPlaceContext.getClickedPos())) {
+            return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false);
+        }
+        return null;
     }
 
     @Override
@@ -64,6 +72,13 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         } else {
             changeBlockStates(level, blockPos, blockState, Blocks.BARRIER.defaultBlockState());
         }
+    }
+
+
+    @Override
+    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
+        super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
+        destroy(level, blockPos, blockState);
     }
 
     @Override
@@ -97,6 +112,34 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
             level.setBlock(blockPos.above().south(), blockToSet, 2);
             level.setBlock(blockPos.above(2).south(), blockToSet, 2);
         }
+    }
+
+
+    @Override
+    public void setPlacedBy(Level level, BlockPos blockPos, BlockState blockState, @Nullable LivingEntity livingEntity, ItemStack itemStack) {
+        super.setPlacedBy(level, blockPos, blockState, livingEntity, itemStack);
+
+    }
+
+    @Override
+    public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
+        return checkAirBlockStates(world, pos) && super.canSurvive(state, world, pos);
+    }
+
+
+    private boolean checkAirBlockStates(LevelReader world, BlockPos pos) {
+        for (int y = 0; y < 3; y++) {
+            for (int x = -1; x < 2; x++) {
+                for (int z = -1; z < 2; z++) {
+                    BlockPos checkPos = pos.offset(x, y, z);
+                    BlockState checkState = world.getBlockState(checkPos);
+                    if (!checkState.isAir() && !checkState.is(this)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     @Override

@@ -8,7 +8,6 @@ import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /** Data Manager for all {@link ShellPattern}(s) */
 public class ShellPatterns {
@@ -164,11 +163,12 @@ public class ShellPatterns {
             addDefaultPattern(shellTheme, pattern);
         }
 
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "marble", false);
+        //TODO Currently not compatible
+ /*       addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "marble", false);
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "gaudy", false);
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "metal", false);
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "stone", false);
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);
+        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);*/
 
         addDefaultPattern(ShellTheme.PHONE_BOOTH.getId(), "metal", false);
 
@@ -183,7 +183,7 @@ public class ShellPatterns {
         addDefaultPattern(ShellTheme.BIG_BEN.getId(), "gothic", false);
 
         Map<ResourceLocation, List<ShellPattern>> patternsByCollection = new HashMap<>();
-        DEFAULT_PATTERNS.entrySet().forEach(entry -> patternsByCollection.put(entry.getKey(), entry.getValue()));
+        patternsByCollection.putAll(DEFAULT_PATTERNS);
 
         return patternsByCollection;
     }

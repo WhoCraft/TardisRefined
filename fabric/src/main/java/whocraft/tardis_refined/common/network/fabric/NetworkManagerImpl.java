@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -25,7 +26,7 @@ public class NetworkManagerImpl extends NetworkManager {
             var msgId = buf.readUtf();
 
             if (!this.toServer.containsKey(msgId)) {
-                System.out.println("Unknown message id received on server: " + msgId);
+                TardisRefined.LOGGER.error("Unknown message id received on server: " + msgId);
                 return;
             }
 
@@ -49,7 +50,7 @@ public class NetworkManagerImpl extends NetworkManager {
             var msgId = buf.readUtf();
 
             if (!this.toClient.containsKey(msgId)) {
-                System.out.println("Unknown message id received on client: " + msgId);
+                TardisRefined.LOGGER.error("Unknown message id received on client: " + msgId);
                 return;
             }
 
@@ -62,7 +63,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToServer(MessageC2S message) {
         if (!this.toServer.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
 
@@ -75,7 +76,7 @@ public class NetworkManagerImpl extends NetworkManager {
     @Override
     public void sendToPlayer(ServerPlayer player, MessageS2C message) {
         if (!this.toClient.containsValue(message.getType())) {
-            System.out.println("Message type not registered: " + message.getType().getId());
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
 

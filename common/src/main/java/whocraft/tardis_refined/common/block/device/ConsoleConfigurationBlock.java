@@ -89,6 +89,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             return InteractionResult.PASS;
         }
 
+
         var offset = blockState.getValue(FACING).getNormal();
         BlockPos consolePos = blockPos.offset(offset);
         BlockState consoleBlock = level.getBlockState(consolePos);

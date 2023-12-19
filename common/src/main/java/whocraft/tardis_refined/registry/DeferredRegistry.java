@@ -2,11 +2,10 @@ package whocraft.tardis_refined.registry;
 
 import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
+import whocraft.tardis_refined.TardisRefined;
 
-import java.util.Collection;
 import java.util.function.Supplier;
 
 /** Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister. */
@@ -32,7 +31,7 @@ public abstract class DeferredRegistry<T> {
      */
     @ExpectPlatform
     public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
-        throw new AssertionError();
+        throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
 
     /** Gets the underlying Codec for the registry object type, if defined. Currently unused and untested, but added for completeness*/

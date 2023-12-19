@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
-import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -37,6 +36,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(SoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
         addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
         addSound(SoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
+        addSound(SoundRegistry.ARS_HUM.get(), "ARS Tree Hum");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -137,6 +137,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.GROWTH.getId(), "Growth");
         addShell(ShellTheme.PORTALOO.getId(), "Portaloo");
         addShell(ShellTheme.PAGODA.getId(), "Pagoda");
+        addShell(ShellTheme.LIFT.getId(), "Lift");
+        addShell(ShellTheme.HIEROGLYPH.getId(), "Hieroglyph");
+        addShell(ShellTheme.CASTLE.getId(), "Castle");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
@@ -159,9 +162,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
         addUpgrade(Upgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
         addUpgrade(Upgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
-        addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "1000k Increment");
-        addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "2500k Increment");
-        addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "5000k Increment");
+        addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "x1000 Increment");
+        addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "x2500 Increment");
+        addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
         addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
     }

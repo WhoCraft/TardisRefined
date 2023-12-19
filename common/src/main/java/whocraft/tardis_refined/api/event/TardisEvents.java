@@ -7,9 +7,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
+import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.tardis.control.Control;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class TardisEvents {
 
@@ -50,6 +55,37 @@ public class TardisEvents {
             listener.onTardisCrash(tardisLevelOperator, crashLocation);
         }
     }));
+
+    public static final Event<UpgradeUnlocked> UPGRADE_UNLOCKED = new Event<>(UpgradeUnlocked.class, listeners -> ((tardisLevelOperator, upgrade) -> {
+        for (UpgradeUnlocked listener : listeners) {
+            listener.onUpgradeUnlock(tardisLevelOperator, upgrade);
+        }
+    }));
+
+
+    /**
+     * Represents an event that allows checking whether player control can be used.
+     */
+    public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
+
+
+    /**
+     * Functional interface to define the conditions for using player control.
+     */
+    @FunctionalInterface
+    public interface CanControlBeUsed {
+
+        /**
+         * Checks whether player control can be used based on specified parameters.
+         *
+         * @param tardisLevelOperator The Tardis level operator.
+         * @param control The control to be used.
+         * @param controlEntity The entity associated with the control.
+         * @return True if control can be used, false otherwise.
+         */
+        EventResult canControlBeUsed(TardisLevelOperator tardisLevelOperator, Control control, ControlEntity controlEntity);
+    }
+
 
     /**
      * An event that is triggered when a TARDIS takes off.
@@ -152,5 +188,19 @@ public class TardisEvents {
          * @param crashLocation       The Location of the crash..
          */
         void onTardisCrash(TardisLevelOperator tardisLevelOperator, TardisNavLocation crashLocation);
+    }
+
+    /**
+     * An event that is triggered when a TARDIS unlocks a new Upgrade.
+     */
+    @FunctionalInterface
+    public interface UpgradeUnlocked {
+        /**
+         * Called when a TARDIS unlocks a new Upgrade.
+         *
+         * @param tardisLevelOperator The TARDIS Level Operator.
+         * @param upgrade       The Upgrade
+         */
+        void onUpgradeUnlock(TardisLevelOperator tardisLevelOperator, Upgrade upgrade);
     }
 }
