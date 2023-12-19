@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.api.event;
 
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -12,9 +13,6 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
-
-import java.util.List;
-import java.util.function.Function;
 
 public class TardisEvents {
 
@@ -62,11 +60,23 @@ public class TardisEvents {
         }
     }));
 
+    public static final Event<SetupModels> SHELLENTRY_MODELS_SETUP = new Event<>(SetupModels.class, listeners -> (EntityModelSet context) -> {
+        for(SetupModels listener : listeners) {
+            listener.setUpShellAndInteriorModels(context);
+        }
+    });
+
 
     /**
      * Represents an event that allows checking whether player control can be used.
      */
     public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
+
+
+    @FunctionalInterface
+    public interface SetupModels {
+        void setUpShellAndInteriorModels(EntityModelSet context);
+    }
 
 
     /**
