@@ -38,11 +38,12 @@ def gitHash = { ->
 def gitBranch() {
     def branch = ""
     def proc = "git rev-parse --abbrev-ref HEAD".execute()
-    proc.in.eachLine { line -> branch = line }
+    proc.in.eachLine { line -> branch = line.replace('/', '~') }
     proc.err.eachLine { line -> println line }
     proc.waitFor()
     branch
 }
+
 
 allprojects {
     apply plugin: "java"
