@@ -278,7 +278,7 @@ public class ControlEntity extends Entity {
     private void handleLeftClick(Player player, ServerLevel serverLevel){
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
-            if (controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
+            if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
             if (!interactWaitingControl(cap)) {
@@ -310,7 +310,7 @@ public class ControlEntity extends Entity {
                 return;
             }
 
-            if (controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
+            if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
             if (!interactWaitingControl(cap)) {

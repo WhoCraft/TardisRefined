@@ -66,12 +66,8 @@ public class TardisEvents {
     /**
      * Represents an event that allows checking whether player control can be used.
      */
-    public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> ((tardisLevelOperator, control, controlEntity) -> {
-        for (CanControlBeUsed listener : listeners) {
-            return listener.canControlBeUsed(tardisLevelOperator, control, controlEntity);
-        }
-        return true;
-    }));
+    public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
+
 
     /**
      * Functional interface to define the conditions for using player control.
@@ -87,7 +83,7 @@ public class TardisEvents {
          * @param controlEntity The entity associated with the control.
          * @return True if control can be used, false otherwise.
          */
-        boolean canControlBeUsed(TardisLevelOperator tardisLevelOperator, Control control, ControlEntity controlEntity);
+        EventResult canControlBeUsed(TardisLevelOperator tardisLevelOperator, Control control, ControlEntity controlEntity);
     }
 
 
