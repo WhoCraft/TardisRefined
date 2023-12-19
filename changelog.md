@@ -76,6 +76,8 @@
 - Fixed console removal running the interaction twice and causing the configurator to change its console theme
 - Fixed console changing not updating control positions and sizes
 - Fixed various screens hard crashing the server
+- Fixed BulkHeadDoor deleting blocks around it when placed, you can no longer place it unless there is enough room
+
 
 ## API
 #### Additions

@@ -8,8 +8,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
+import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.control.Control;
+
+import java.util.List;
+import java.util.function.Function;
 
 public class TardisEvents {
 
@@ -56,6 +61,35 @@ public class TardisEvents {
             listener.onUpgradeUnlock(tardisLevelOperator, upgrade);
         }
     }));
+
+
+    /**
+     * Represents an event that allows checking whether player control can be used.
+     */
+    public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> ((tardisLevelOperator, control, controlEntity) -> {
+        for (CanControlBeUsed listener : listeners) {
+            return listener.canControlBeUsed(tardisLevelOperator, control, controlEntity);
+        }
+        return true;
+    }));
+
+    /**
+     * Functional interface to define the conditions for using player control.
+     */
+    @FunctionalInterface
+    public interface CanControlBeUsed {
+
+        /**
+         * Checks whether player control can be used based on specified parameters.
+         *
+         * @param tardisLevelOperator The Tardis level operator.
+         * @param control The control to be used.
+         * @param controlEntity The entity associated with the control.
+         * @return True if control can be used, false otherwise.
+         */
+        boolean canControlBeUsed(TardisLevelOperator tardisLevelOperator, Control control, ControlEntity controlEntity);
+    }
+
 
     /**
      * An event that is triggered when a TARDIS takes off.
