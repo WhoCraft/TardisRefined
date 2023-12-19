@@ -155,12 +155,11 @@ publishing {
 
     repositories {
         maven {
-            url = project.findProperty("maven_repo_url") ?: "http://craig.software:8081/repository/whocraft/"
+            url = "https://maven.craig.software/repository/whocraft/"
             credentials {
-                username = System.getenv("MAVEN_REPO_USERNAME")
-                password = System.getenv("MAVEN_REPO_PASSWORD")
+                username = project.findProperty("MAVEN_REPO_USERNAME") ?: System.getenv("MAVEN_REPO_USERNAME") ?: ""
+                password = project.findProperty("MAVEN_REPO_PASSWORD") ?: System.getenv("MAVEN_REPO_PASSWORD") ?: ""
             }
-            allowInsecureProtocol = true
         }
     }
 }
