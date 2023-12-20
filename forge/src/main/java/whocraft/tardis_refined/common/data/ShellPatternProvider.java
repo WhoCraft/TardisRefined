@@ -96,7 +96,7 @@ public class ShellPatternProvider implements DataProvider {
     }
 
     protected Path getPath(ResourceLocation themeId) {
-        return generator.getPackOutput().getOutputFolder().resolve("data/" + TardisRefined.MODID + "/" + modid + "/patterns/shell/" + themeId.getPath() + ".json");
+        return generator.getPackOutput().getOutputFolder().resolve("data/" + modid + "/" + TardisRefined.MODID + "/patterns/shell/" + themeId.getPath() + ".json");
     }
 
     @Override
