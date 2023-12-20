@@ -63,8 +63,9 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
             TardisClientData reactions = TardisClientData.getInstance(blockEntity.getLevel().dimension());
             ResourceLocation shellTheme = reactions.getShellTheme();
             ResourceLocation shellPattern = reactions.getShellPattern();
+            ShellPattern pattern = ShellPatterns.getPatternOrDefault(shellTheme, shellPattern);
 
-            var model = ShellModelCollection.getInstance().getShellEntry(shellTheme).getShellModel();
+            var model = ShellModelCollection.getInstance().getShellEntry(shellTheme).getShellModel(pattern);
             model.setDoorPosition(false);
 
             poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
@@ -81,7 +82,6 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
                 ShellSelectionScreen.generateDummyGlobalShell();
             }
 
-            ShellPattern pattern = ShellPatterns.getPatternOrDefault(shellTheme, shellPattern);
             model.renderShell(ShellSelectionScreen.globalShellBlockEntity, false, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(pattern.exteriorDoorTexture().texture())), packedLight, OverlayTexture.NO_OVERLAY, (float) color.x, (float) color.y, (float) color.z, 0.25f);
             poseStack.popPose();
         }

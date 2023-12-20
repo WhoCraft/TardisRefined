@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import whocraft.tardis_refined.client.model.blockentity.door.interior.ShellDoorModel;
+import whocraft.tardis_refined.patterns.ShellPattern;
 
 public class ShellEntry {
 
@@ -12,19 +13,12 @@ public class ShellEntry {
         this.shellDoorModel = shellDoorModel;
     }
 
-    public ShellModel getShellModel() {
+    public ShellModel getShellModel(ShellPattern shellPattern) {
         return shellModel;
     }
 
-    public void setShellModel(ShellModel shellModel) {
-        this.shellModel = shellModel;
-    }
-
-    public ShellDoorModel getShellDoorModel() {
+    public ShellDoorModel getShellDoorModel(ShellPattern shellPattern) {
         return shellDoorModel;
     }
 
-    public void setShellDoorModel(ShellDoorModel shellDoorModel) {
-        this.shellDoorModel = shellDoorModel;
-    }
 }

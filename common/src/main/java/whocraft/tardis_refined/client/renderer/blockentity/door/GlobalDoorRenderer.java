@@ -38,7 +38,7 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
         // Render slightly off the wall to prevent z-fighting.
         poseStack.translate(0, 0, -0.01);
-        currentModel = ShellModelCollection.getInstance().getShellEntry(theme).getShellDoorModel();
+        currentModel = ShellModelCollection.getInstance().getShellEntry(theme).getShellDoorModel(blockEntity.pattern());
 
         if(theme == ShellTheme.POLICE_BOX.getId()){
             poseStack.scale(1.05f, 1.05f, 1.05f);
