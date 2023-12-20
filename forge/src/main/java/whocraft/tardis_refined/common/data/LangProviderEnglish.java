@@ -155,7 +155,6 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
         addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
         addUpgrade(Upgrades.DEFENSE_SYSTEM.get(), "Defense System", "Enables Defense Protocols");
-        addUpgrade(Upgrades.HOSTILE_DISPLACEMENT.get(), "Hostile Action Displacement", "Enables the displacement of the TARDIS when attacked");
         addUpgrade(Upgrades.WAYPOINTS.get(), "Waypoints", "Allows the Pilot to create saved locations");
         addUpgrade(Upgrades.NAVIGATION_SYSTEM.get(), "Navigation System", "Allows upgrades to the TARDIS Navigation System");
         addUpgrade(Upgrades.TARDIS_XP.get(), "System Upgrades", "Allows upgrades to the TARDIS");

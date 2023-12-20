@@ -116,8 +116,6 @@
   "upgrade.tardis_refined.explorer_ii.description": "x2500 Increment",
   "upgrade.tardis_refined.explorer_iii": "Explorer III",
   "upgrade.tardis_refined.explorer_iii.description": "x5000 Increment",
-  "upgrade.tardis_refined.hostile_displacement": "Hostile Action Displacement",
-  "upgrade.tardis_refined.hostile_displacement.description": "Enables the displacement of the TARDIS when attacked",
   "upgrade.tardis_refined.inside_architecture": "Desktop Reconfiguration",
   "upgrade.tardis_refined.inside_architecture.description": "Allows the Pilot to change the appearance of the TARDIS Desktop",
   "upgrade.tardis_refined.landing_pad": "Landing Pad",
