@@ -94,6 +94,10 @@ public class ShellModelCollection {
         SHELL_MODELS.put(ShellTheme.getKey(theme), new ShellEntry(shellModel, shellDoorModel));
     }
 
+    public static void registerShellEntry(ShellTheme theme, ShellEntry shellEntry){
+        SHELL_MODELS.put(ShellTheme.getKey(theme), shellEntry);
+    }
+
     /**
      * Get the associated shell model from a shell theme.
      * @param themeId The Shell theme Id.
