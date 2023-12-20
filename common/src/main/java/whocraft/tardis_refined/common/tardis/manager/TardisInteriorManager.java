@@ -110,7 +110,7 @@ public class TardisInteriorManager extends BaseHandler {
         tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         return tag;
     }
-
+    @Override
     public void loadData(CompoundTag tag) {
         this.isWaitingToGenerate = tag.getBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE);
         this.isGeneratingDesktop = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP);
@@ -120,6 +120,7 @@ public class TardisInteriorManager extends BaseHandler {
         this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
     }
+
 
     public void tick(ServerLevel level) {
 

@@ -37,7 +37,7 @@ public class TardisWaypointManager extends BaseHandler{
     public void tick() {
 
     }
-
+    @Override
     public CompoundTag saveData(CompoundTag compoundTag) {
         ListTag waypointsList = new ListTag();
         for (TardisNavLocation location : waypointMap.values()) {
@@ -47,7 +47,7 @@ public class TardisWaypointManager extends BaseHandler{
         compoundTag.put("Waypoints", waypointsList);
         return compoundTag;
     }
-
+    @Override
     public void loadData(CompoundTag tag) {
         waypointMap.clear();
         ListTag waypointsList = tag.getList("Waypoints", 10);

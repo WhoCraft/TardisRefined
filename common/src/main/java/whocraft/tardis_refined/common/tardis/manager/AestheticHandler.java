@@ -183,7 +183,7 @@ public class AestheticHandler extends BaseHandler {
                 CompoundTag shellInfo = aestheticTag.getCompound("shell");
 
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME, NbtType.STRING) && shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, NbtType.STRING)) {
-                    ResourceLocation themeID = new ResourceLocation(tag.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
+                    ResourceLocation themeID = new ResourceLocation(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
                     this.shellTheme = themeID;
                     String patternId = shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN);
                     this.shellPattern = ShellPatterns.getPatternOrDefault(themeID, new ResourceLocation(patternId));

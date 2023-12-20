@@ -43,7 +43,7 @@ public class TardisFlightEventManager extends BaseHandler{
         this.operator = operator;
         this.possibleControls = Arrays.stream(ConsoleControl.values()).filter(x -> x != ConsoleControl.MONITOR && x != ConsoleControl.THROTTLE).toList();
     }
-
+    @Override
     public void loadData(CompoundTag tag) {
         this.isWaitingForControlResponse = tag.getBoolean("isWaitingForControlResponse");
         this.isInDangerZone = tag.getBoolean("isInDangerZone");
@@ -55,7 +55,7 @@ public class TardisFlightEventManager extends BaseHandler{
         this.dangerZoneShakeScale = tag.getInt("dangerZoneShakeScale");
         this.controlPrompt = ConsoleControl.findOr(tag.getString("controlPrompt"), ConsoleControl.THROTTLE);
     }
-
+    @Override
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean("isWaitingForControlResponse", this.isWaitingForControlResponse);
         tag.putBoolean("isInDangerZone", this.isInDangerZone);
