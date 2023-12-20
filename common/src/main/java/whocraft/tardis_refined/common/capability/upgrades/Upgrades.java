@@ -38,11 +38,8 @@ public class Upgrades {
     public static final RegistrySupplier<Upgrade> DEFENSE_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("defense_system", () -> new Upgrade(Items.DIAMOND_SWORD::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("defense_system"), Upgrade.UpgradeType.MAIN_UPGRADE)
             .setSkillPointsRequired(50).setPosition(0, 1));
 
-    public static final RegistrySupplier<Upgrade> HOSTILE_DISPLACEMENT = UPGRADE_DEFERRED_REGISTRY.register("hostile_displacement", () -> new Upgrade(Items.ZOMBIE_HEAD::getDefaultInstance, DEFENSE_SYSTEM, RegistryHelper.makeKey("hostile_displacement"), Upgrade.UpgradeType.SUB_UPGRADE)
-            .setSkillPointsRequired(50).setPosition(1, 1));
-
     public static final RegistrySupplier<Upgrade> MATERIALIZE_AROUND = UPGRADE_DEFERRED_REGISTRY.register("materialize_around", () -> new Upgrade(Items.GLASS_PANE::getDefaultInstance, DEFENSE_SYSTEM, RegistryHelper.makeKey("materialize_around"), Upgrade.UpgradeType.SUB_UPGRADE)
-            .setSkillPointsRequired(50).setPosition(2, 1));
+            .setSkillPointsRequired(50).setPosition(1, 1));
 
     // Navigation Upgrades
     public static final RegistrySupplier<Upgrade> NAVIGATION_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("navigation_system", () -> new Upgrade(Items.COMPASS::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("navigation_system"), Upgrade.UpgradeType.MAIN_UPGRADE)

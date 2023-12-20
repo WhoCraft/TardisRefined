@@ -53,7 +53,7 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
         generator.addProvider(e.includeServer(), new DesktopProvider(generator));
-        generator.addProvider(e.includeServer(), new ShellPatternProvider(generator));
+        generator.addProvider(e.includeServer(), new ShellPatternProvider(generator, TardisRefined.MODID));
 
         //Tags
         generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
