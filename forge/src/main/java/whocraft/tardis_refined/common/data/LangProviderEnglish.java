@@ -94,6 +94,25 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CMD_EXPORT_DESKTOP_RESOURCE_PACK, ChatFormatting.BLUE + "To define the Desktop's preview image, please create a Resource Pack. See some example Resource Packs at: %s");
         add(ModMessages.CMD_EXPORT_DESKTOP_FAIL, ChatFormatting.RED + "Failed to export desktop %s!");
 
+        add(ModMessages.CMD_LEVEL_POINT_GET, "%s has %s upgrade points");
+        add(ModMessages.CMD_LEVEL_POINT_SET, "Set upgrade points for %s to %s");
+        add(ModMessages.CMD_LEVEL_POINT_ADD, "Added %s points for %s, total points are now %s");
+
+        add(ModMessages.CMD_LEVEL_XP_GET, "%s has %s XP");
+        add(ModMessages.CMD_LEVEL_XP_SET, "Set XP for %s to %s");
+        add(ModMessages.CMD_LEVEL_XP_ADD, "Added %s XP for %s, total XP is now %s");
+
+        add(ModMessages.CMD_UPGRADE_LOCK, "Locked upgrade %s for %s");
+        add(ModMessages.CMD_UPGRADE_UNLOCK, "Unlocked upgrade %s for %s");
+
+        add(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, "Attempting to create Tardis %s, generation in progress");
+        add(ModMessages.CMD_CREATE_TARDIS_SUCCESS, "Successfully created Tardis with id %s");
+
+        add(ModMessages.CMD_ARG_UPGRADE_INVALID, "Invalid Upgrade of ID %s");
+        add(ModMessages.CMD_ARG_DESKTOP_INVALID, "Invalid Desktop of ID %s");
+        add(ModMessages.CMD_ARG_SHELL_INVALID, "Invalid Shell of ID %s");
+
+
         /*Creative Tab*/
         add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");
         add("itemGroup.tardis_refined", "Tardis Refined");

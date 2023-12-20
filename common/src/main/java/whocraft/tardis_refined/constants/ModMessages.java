@@ -57,6 +57,28 @@ public class ModMessages {
     public static final String CMD_EXPORT_DESKTOP_RESOURCE_PACK = cmdOutput("export_desktop.resource_pack");
     public static final String CMD_EXPORT_DESKTOP_FAIL = cmdOutput("export_desktop.fail");
 
+    public static final String CMD_LEVEL_POINT_GET = cmdOutput("level.point.get");
+    public static final String CMD_LEVEL_POINT_SET = cmdOutput("level.point.set");
+    public static final String CMD_LEVEL_POINT_ADD = cmdOutput("level.point.add");
+
+    public static final String CMD_LEVEL_XP_GET = cmdOutput("level.xp.get");
+    public static final String CMD_LEVEL_XP_SET = cmdOutput("level.xp.set");
+    public static final String CMD_LEVEL_XP_ADD = cmdOutput("level.xp.add");
+
+    public static final String CMD_UPGRADE_LOCK = cmdOutput("upgrade.lock");
+
+    public static final String CMD_UPGRADE_UNLOCK = cmdOutput("upgrade.unlock");
+
+    public static final String CMD_CREATE_TARDIS_IN_PROGRESS = cmdOutput("create.in_progress");
+
+    public static final String CMD_CREATE_TARDIS_SUCCESS = cmdOutput("create.success");
+
+    public static final String CMD_ARG_UPGRADE_INVALID = cmdArgInvalid("upgrade");
+
+    public static final String CMD_ARG_DESKTOP_INVALID = cmdArgInvalid("desktop");
+
+    public static final String CMD_ARG_SHELL_INVALID = cmdArgInvalid("shell");
+
     public static String message(String translationKey){
         return "message." + TardisRefined.MODID + "." + translationKey;
     }
@@ -87,6 +109,10 @@ public class ModMessages {
 
     public static String config(String translationKey) {
         return "config." + TardisRefined.MODID + "." + translationKey;
+    }
+
+    public static String cmdArgInvalid(String translationKey) {
+        return "argument" + "." + TardisRefined.MODID + "." + translationKey + "." + "invalid";
     }
 
 }

@@ -14,40 +14,53 @@ import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.util.CommandHelper;
+import whocraft.tardis_refined.constants.ModMessages;
 
 public class UpgradesCommand {
 
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("upgrades")
                 .then(Commands.literal("lock")
-                        .then(Commands.argument("dimension", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES)
-                                .then(Commands.argument("upgrade", UpgradeArgumentType.upgradeArgumentType())
-                                        .executes(UpgradesCommand::setUpgradeLocked))))
+                    .then(Commands.argument("upgrade", UpgradeArgumentType.upgradeArgumentType())
+                        .then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES)
+                            .executes(UpgradesCommand::setUpgradeLocked)
+                        )
+                    )
+                )
                 .then(Commands.literal("unlock")
-                        .then(Commands.argument("dimension", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES)
-                                .then(Commands.argument("upgrade", UpgradeArgumentType.upgradeArgumentType())
-                                        .executes(UpgradesCommand::setUpgradeUnlocked))));
+                    .then(Commands.argument("upgrade", UpgradeArgumentType.upgradeArgumentType())
+                        .then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES)
+                            .executes(UpgradesCommand::setUpgradeUnlocked)
+                    )
+                )
+        );
     }
 
     private static int setUpgradeLocked(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
-        Upgrade upgrade = context.getArgument("upgrade", Upgrade.class);
+
+        Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
+        ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
+
+        String id = dimension.dimension().location().toString();
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().lockUpgrade(upgrade);
-            context.getSource().sendSystemMessage(Component.literal("Tardis: " + dimension.toString().split(":")[1] + " locked " + upgrade.getDisplayName()));
+            context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, upgrade.getDisplayName(), id));
         });
 
         return Command.SINGLE_SUCCESS;
     }
 
     private static int setUpgradeUnlocked(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        ServerLevel dimension = DimensionArgument.getDimension(context, "dimension");
-        Upgrade upgrade = context.getArgument("upgrade", Upgrade.class);
+
+        Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
+        ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
+
+        String id = dimension.dimension().location().toString();
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().unlockUpgrade(upgrade);
-            context.getSource().sendSystemMessage(Component.literal("Tardis: " + dimension.toString().split(":")[1] + " unlocked " + upgrade.getDisplayName()));
+            context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, upgrade.getDisplayName(), id));
         });
 
         return Command.SINGLE_SUCCESS;

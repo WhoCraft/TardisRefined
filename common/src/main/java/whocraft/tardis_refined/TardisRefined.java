@@ -52,6 +52,7 @@ public class TardisRefined {
         Upgrades.UPGRADE_DEFERRED_REGISTRY.register();
         ConsoleTheme.CONSOLE_THEMES.register();
         ShellTheme.SHELL_THEMES.register();
+        ArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.register();
         TagKeys.init();
         TardisNetwork.init();
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
