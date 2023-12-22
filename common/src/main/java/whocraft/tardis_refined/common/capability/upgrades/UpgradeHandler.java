@@ -157,7 +157,7 @@ public class UpgradeHandler {
             upgrade.onUnlocked(this.tardisLevelOperator, this);
 
             if(this.tardisLevelOperator.getLevel() instanceof ServerLevel serverLevel) {
-                generateArsTree(serverLevel);
+                generateArsTree(tardisLevelOperator, serverLevel);
             }
 
             TardisEvents.UPGRADE_UNLOCKED.invoker().onUpgradeUnlock(this.tardisLevelOperator, upgrade);

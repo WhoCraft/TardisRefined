@@ -5,6 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +29,6 @@ public class UpgradeTab {
     private final UpgradeTabType type;
     private final int index;
     public final UpgradeHandler upgradeHandler;
-    private final ItemStack icon;
     private final Component title;
     private final List<UpgradeWidget> entries = new ArrayList<>();
     private final List<Connection> connections = new ArrayList<>();
@@ -47,7 +47,6 @@ public class UpgradeTab {
         this.type = tabType;
         this.index = i;
         this.upgradeHandler = powerHolder;
-        this.icon = new ItemStack(Items.COOKED_PORKCHOP);
         this.title = Component.literal("");
         this.populate(powerHolder);
     }
@@ -55,6 +54,8 @@ public class UpgradeTab {
     public void populate(UpgradeHandler upgradeHandlerClient) {
         this.entries.clear();
         this.connections.clear();
+        CompoundTag newData = upgradeHandlerClient.saveData(new CompoundTag());
+        this.upgradeHandler.loadData(newData);
         List<UpgradeWidget> root = new LinkedList<>();
 
         // Create entry for each ability

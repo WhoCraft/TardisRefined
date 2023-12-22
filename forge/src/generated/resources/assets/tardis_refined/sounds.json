@@ -5,6 +5,12 @@
     ],
     "subtitle": "sound.ars_hum.subtitle"
   },
+  "bulkhead_locked": {
+    "sounds": [
+      "tardis_refined:blocks/bulkhead_locked"
+    ],
+    "subtitle": "sound.bulkhead_locked.subtitle"
+  },
   "destination_ding": {
     "sounds": [
       "tardis_refined:tardis/destination_ding"
