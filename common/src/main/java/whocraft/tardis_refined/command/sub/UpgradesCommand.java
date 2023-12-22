@@ -9,6 +9,8 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -41,11 +43,14 @@ public class UpgradesCommand {
         Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        String id = dimension.dimension().location().toString();
+        ResourceLocation levelId = dimension.dimension().location();
+        String id = levelId.toString();
+        String displayId = levelId.getPath().substring(0, 5);
+        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().lockUpgrade(upgrade);
-            context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, upgrade.getDisplayName(), id));
+            context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, upgrade.getDisplayName(), tardisId));
         });
 
         return Command.SINGLE_SUCCESS;
@@ -56,11 +61,14 @@ public class UpgradesCommand {
         Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        String id = dimension.dimension().location().toString();
+        ResourceLocation levelId = dimension.dimension().location();
+        String id = levelId.toString();
+        String displayId = levelId.getPath().substring(0, 5);
+        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().unlockUpgrade(upgrade);
-            context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, upgrade.getDisplayName(), id));
+            context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, upgrade.getDisplayName(), tardisId));
         });
 
         return Command.SINGLE_SUCCESS;

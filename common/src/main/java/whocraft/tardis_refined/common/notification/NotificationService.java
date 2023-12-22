@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.logging.Level;
 
-public class NotifcationService {
+public class NotificationService {
 
     public static boolean canPlayerBeNotified(Player player, ResourceKey<Level> tardis) {
         Inventory inventory = player.getInventory();
