@@ -139,8 +139,8 @@ public class TardisExteriorManager {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
         if (lastKnownLocation != null) {
+            ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
             lastKnownLocationLevel.playSound(null, lastKnownLocation.getPosition(), event, source, volume, pitch);
         }
     }
