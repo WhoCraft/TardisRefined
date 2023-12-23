@@ -93,6 +93,20 @@ public class TardisFlightEventManager {
         return this.requiredDangerZoneRequests <= this.dangerZoneResponses;
     }
 
+    /**
+     * @return The total required danger zone requests the player will need to complete
+     */
+    public int getRequiredDangerZoneRequests() {
+        return this.requiredDangerZoneRequests;
+    }
+
+    /**
+     * @return The total danger zone responses the player has completed so far
+     */
+    public int getDangerZoneResponses() {
+        return this.dangerZoneResponses;
+    }
+
     /*
     * Is a prompt still within the combo time.
     * */
@@ -101,10 +115,18 @@ public class TardisFlightEventManager {
     }
 
     /*
+    * Gets a context-sensitive remaining number of ticks of cooldown. Less in combo time, more otherwise.
+    * The controlRequestCooldown field gets set to this value when needed.
+    * */
+    private int getControlRequestCooldown() {
+        return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
+    }
+
+    /*
     * Get the current remaining ticks of cooldown between two controls.
     * */
-    public int getControlRequestCooldown() {
-        return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
+    public int getCurrentControlRequestCooldown() {
+        return controlRequestCooldown;
     }
 
 
@@ -310,4 +332,36 @@ public class TardisFlightEventManager {
         }
     }
 
+    /**
+     * All the valid controls that can be used as a flight event and need to be interacted with
+     * @return a list of flight event capable controls.
+     */
+    public List<ConsoleControl> getPossibleControls()
+    {
+        return possibleControls;
+    }
+
+    // The minimum distance that the tardis needs to travel for flight events to happen.
+    public int getMinDistanceForEvents()
+    {
+        return MIN_DISTANCE_FOR_EVENTS;
+    }
+
+    // How many ticks since the last flight event prompt
+    public int getTicksSincePrompted()
+    {
+        return ticksSincePrompted;
+    }
+
+    // how many ticks the tardis has been in the danger zone for
+    public int getTicksInTheDangerZone()
+    {
+        return ticksInTheDangerZone;
+    }
+
+    // the danger zone shake scale
+    public float getDangerZoneShakeScale()
+    {
+        return dangerZoneShakeScale;
+    }
 }

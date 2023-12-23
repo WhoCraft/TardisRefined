@@ -10,7 +10,8 @@ import java.util.*;
 public class TardisWaypointManager {
 
     private final TardisLevelOperator operator;
-    private Map<String, TardisNavLocation> waypointMap = new HashMap<>();
+
+    private final Map<String, TardisNavLocation> waypointMap = new HashMap<>();
     private int flightsTaken = 0;
 
     public TardisWaypointManager(TardisLevelOperator tardisLevelOperator) {
@@ -37,6 +38,33 @@ public class TardisWaypointManager {
     public boolean isCoordinateInputEnabled(){
         return flightsTaken >= 120;
     }
+
+    /**
+     * @return Map of waypoints, with string names as keys
+     */
+    public Map<String, TardisNavLocation> getWaypointMap()
+    {
+        return waypointMap;
+    }
+/*
+     //todo - provide access when upgrade system exists
+
+    /**
+     * @return Total number of flights taken.
+     *//*
+    public int getFlightsTaken()
+    {
+        return flightsTaken;
+    }
+
+    /**
+     * @return Total number of flights taken.
+     *//*
+    public int incrementFlightsTaken()
+    {
+        return flightsTaken++;
+    }
+*/
 
     public CompoundTag saveData(CompoundTag compoundTag) {
         compoundTag.putInt("flightsTaken", flightsTaken);
