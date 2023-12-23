@@ -48,7 +48,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ROOT_SHELL_BLOCK.get(), "Root Shell");
         add(BlockRegistry.TERRAFORMER_BLOCK.get(), "Terraformer");
         add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get(), "Console");
-        add(BlockRegistry.INTERNAL_DOOR_BLOCK.get(), "Internal Door");
         add(BlockRegistry.GLOBAL_DOOR_BLOCK.get(), "Tardis Door");
         add(BlockRegistry.ROOT_SHELL_DOOR.get(), "Root Door");
         add(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
@@ -134,8 +133,15 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
         add(ModMessages.UI_DESKTOP_CANCEL, "Cancel Desktop Reconfiguration");
         add(ModMessages.UI_MONITOR_NO_WAYPOINTS, "No Waypoints Saved!");
-        add(ModMessages.UI_MONITOR_UPLOAD, "Upload");
+        add(ModMessages.UI_MONITOR_WAYPOINT_UPLOAD, "Upload");
+        add(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT, "Submit");
+        add(ModMessages.UI_MONITOR_WAYPOINT_DIMENSION, "Dimension");
+        add(ModMessages.UI_MONITOR_WAYPOINT_DIRECTION, "Direction");
         add(ModMessages.UI_MONITOR_ISSUES, "Issues:");
+        add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_NAME, "Invalid waypoint name");
+        add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_X, "Invalid X value");
+        add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_Y, "Invalid Y value");
+        add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_Z, "Invalid Z value");
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase Upgrade?");

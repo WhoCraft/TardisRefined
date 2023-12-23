@@ -25,6 +25,14 @@ public class TardisWaypointManager extends BaseHandler{
         waypointMap.remove(name);
     }
 
+    /**
+     * @return Map of waypoints, with string names as keys
+     */
+    public Map<String, TardisNavLocation> getWaypointMap()
+    {
+        return this.waypointMap;
+    }
+
     public Collection<TardisNavLocation> getWaypoints() {
         return waypointMap.values();
     }

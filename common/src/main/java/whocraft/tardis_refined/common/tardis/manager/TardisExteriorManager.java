@@ -118,8 +118,8 @@ public class TardisExteriorManager extends BaseHandler {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
         if (lastKnownLocation != null) {
+            ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
             lastKnownLocationLevel.playSound(null, lastKnownLocation.getPosition(), event, source, volume, pitch);
         }
     }
@@ -174,7 +174,7 @@ public class TardisExteriorManager extends BaseHandler {
         AestheticHandler aestheticHandler = operator.getAestheticHandler();
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.FACTORY.getId();
         BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
-                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
+                .setValue(GlobalShellBlock.FACING, location.getDirection())
                 .setValue(GlobalShellBlock.REGEN, false)
                 .setValue(LOCKED, operator.getExteriorManager().locked)
                 .setValue(GlobalShellBlock.WATERLOGGED, location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);

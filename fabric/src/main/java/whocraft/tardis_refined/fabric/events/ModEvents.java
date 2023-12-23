@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
+import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.registry.DimensionTypes;
@@ -23,7 +23,7 @@ public class ModEvents {
 
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
 
-        END_WORLD_TICK.register(DelayedTeleportData::tick);
+        END_WORLD_TICK.register(TardisTeleportData::tick);
         START_WORLD_TICK.register(world -> {
             if (world.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
                 TardisLevelOperator.get(world).get().tick(world);

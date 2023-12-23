@@ -37,8 +37,19 @@ public class ModMessages {
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
-    public static final String UI_MONITOR_UPLOAD = ui("monitor.upload");
-    public static final String UI_MONITOR_ISSUES = ui("monitor.issues");
+    public static final String UI_MONITOR_WAYPOINT_UPLOAD = ui("monitor.waypoints.upload");
+    public static final String UI_MONITOR_WAYPOINT_SUBMIT = ui("monitor.waypoints.submit");
+    public static final String UI_MONITOR_WAYPOINT_DIMENSION = ui("monitor.waypoints.dimension");
+    public static final String UI_MONITOR_WAYPOINT_DIRECTION = ui("monitor.waypoints.direction");
+
+    public static final String VANILLA_SELECT_WORLD  = "selectWorld.search";
+    public static final String UI_MONITOR_ISSUES = ui("monitor.waypoints.issues");
+
+    public static final String UI_MONITOR_WAYPOINT_ISSUE_NAME = ui("monitor.waypoints.issues.name");
+    public static final String UI_MONITOR_WAYPOINT_ISSUE_X = ui("monitor.waypoints.issues.x");
+    public static final String UI_MONITOR_WAYPOINT_ISSUE_Y = ui("monitor.waypoints.issues.y");
+    public static final String UI_MONITOR_WAYPOINT_ISSUE_Z = ui("monitor.waypoints.issues.z");
+
     public static final String UI_MONITOR_WAYPOINT_NAME = ui("monitor.waypoint_name");
     public static final String UI_UPGRADES = ui("upgrades");
     public static final String UI_UPGRADES_BUY = ui("upgrades.buy_ability");

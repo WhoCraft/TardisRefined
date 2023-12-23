@@ -7,20 +7,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.dimension.DelayedTeleportData;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -100,6 +98,7 @@ public class TardisLevelOperator {
         if (doorPos != null) {
             if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof TardisInternalDoor door) {
                 this.internalDoor = door;
+                this.internalDoor.setID(tag.getString(NbtConstants.TARDIS_INTERNAL_DOOR_ID));
             }
         }
 
@@ -148,79 +147,76 @@ public class TardisLevelOperator {
     }
 
     /**
-     * Moves the entity into the TARDIS. If the TARDIS has no door established, the player is sent to 0,0,0.
+     * Moves the entity into the TARDIS. If the TARDIS has no door established, the entity is sent to 0,100,0.
      *
-     * @param player Player Entity.
      **/
-    public void enterTardis(ExteriorShell shell, Player player, BlockPos externalPos, ServerLevel level, Direction direction) {
+    public boolean enterTardis(Entity entity, BlockPos externalShellPos, ServerLevel shellLevel, Direction shellDirection) {
 
-        if (player instanceof ServerPlayer serverPlayer) {
-            if (internalDoor != null) {
-                BlockPos targetPosition = internalDoor.getEntryPosition();
-                Direction dir = internalDoor.getEntryRotation();
+        if (!entity.level().isClientSide()) {
+            if (this.level instanceof ServerLevel targetServerLevel){
 
-                ChunkAccess chunk = getLevel().getChunk(internalDoor.getDoorPosition());
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
-                }
-                level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-                DelayedTeleportData.getOrCreate(serverPlayer.serverLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(targetPosition), dir.get2DDataValue() * (360 / 4));
-            } else {
+                BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
+                Direction doorDirection = internalDoor != null ? internalDoor.getEntryRotation() : entity.getDirection();
 
-                // TODO: Scan for console units near the center to warp to.
+                TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
+                TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
 
-                ChunkAccess chunk = getLevel().getChunk(TardisArchitectureHandler.DESKTOP_CENTER_POS);
-
-                if (getLevel() instanceof ServerLevel serverLevel) {
-                    serverLevel.setChunkForced(chunk.getPos().x, chunk.getPos().z, true);
-                }
-                level.getChunkSource().updateChunkForced(chunk.getPos(), true);
-                DelayedTeleportData.getOrCreate(serverPlayer.serverLevel()).schedulePlayerTeleport(serverPlayer, getLevel().dimension(), Vec3.atCenterOf(TardisArchitectureHandler.DESKTOP_CENTER_POS.above()), 0);
+                TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
+                return true;
             }
-        }
 
-        tardisClientData.sync();
-        TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(this, shell, player, externalPos, level, direction);
+        }
+        return false;
+
     }
 
     public boolean isTardisReady() {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
 
-    public boolean exitTardis(Player player) {
+    public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
 
-        if (!this.internalDoor.isOpen()) {
-            return false;
-        }
-
-
-
-        if(aestheticHandler.getShellTheme() != null) {
-            ResourceLocation theme = aestheticHandler.getShellTheme();
-            if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-               if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
-                   return false;
-               }
+        if (!entity.level().isClientSide()){
+            if (!this.internalDoor.isOpen()) {
+                return false;
             }
-        }
 
-        if (this.exteriorManager != null) {
-            if (this.exteriorManager.getLastKnownLocation() != null) {
-                BlockPos targetPosition = this.exteriorManager.getLastKnownLocation().getPosition();
-                ServerLevel targetLevel = this.exteriorManager.getLastKnownLocation().getLevel();
-
-                ChunkAccess preloadedArea = this.exteriorManager.getLastKnownLocation().getLevel().getChunk(targetPosition);
-
-                if (player instanceof ServerPlayer serverPlayer) {
-                    if (targetLevel.getBlockEntity(targetPosition) instanceof ExteriorShell shellBaseBlockEntity) {
-                        BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
-                        DelayedTeleportData.getOrCreate(serverPlayer.serverLevel()).schedulePlayerTeleport(serverPlayer, targetLevel.dimension(), Vec3.atCenterOf(landingArea), this.exteriorManager.getLastKnownLocation().getDirection().get2DDataValue() * (360 / 4));
+            if(aestheticHandler.getShellTheme() != null) {
+                ResourceLocation theme = aestheticHandler.getShellTheme();
+                if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
+                    if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                        return false;
                     }
                 }
             }
+
+            if (this.exteriorManager != null) {
+                if (this.exteriorManager.getLastKnownLocation() != null) {
+
+                    TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
+                    BlockPos exteriorPos = targetLocation.getPosition();
+                    ServerLevel targetLevel = targetLocation.getLevel();
+                    Direction exteriorDirection = targetLocation.getDirection();
+
+                    BlockPos teleportPos = exteriorPos;
+
+                    if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
+                        teleportPos = exteriorShell.getExitPosition();
+                    }
+
+                    TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
+                    TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
+
+                    TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
+                }
+            }
         }
+
         return true;
     }
+
+
+
 
     public void setDoorClosed(boolean closeDoor) {
         TardisExteriorManager extManager = getExteriorManager();

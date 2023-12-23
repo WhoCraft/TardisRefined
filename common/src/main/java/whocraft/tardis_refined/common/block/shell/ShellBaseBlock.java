@@ -131,9 +131,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
         if (!level.isClientSide()){
             if (level.getBlockEntity(blockPos) instanceof ShellBaseBlockEntity shellEntity) {
-                if (entity instanceof Player player) {
-                    shellEntity.onAttemptEnter(blockState, level, shellEntity.getBlockPos(), player);
-                }
+                shellEntity.onAttemptEnter(blockState, level, shellEntity.getBlockPos(), entity);
             }
         }
     }

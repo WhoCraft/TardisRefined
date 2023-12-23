@@ -47,7 +47,7 @@ public class WaypointManageScreen extends Screen {
     private SpriteIconButton onSaveWaypoint;
 
     public WaypointManageScreen(List<ResourceKey<Level>> worlds, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
-        super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS)); //todo translatable
+        super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS));
         this.worlds = worlds;
         this.coordInputType = coordInputType;
         this.tardisNavLocation = tardisNavLocation;
@@ -72,10 +72,10 @@ public class WaypointManageScreen extends Screen {
         xPosition = this.width / 2 - 95;
 
         // Upload Data Button
-        Component uploadLiteral = Component.translatable(ModMessages.UI_MONITOR_UPLOAD);
+        Component uploadLiteral = Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_UPLOAD);
 
 
-        onSaveWaypoint = this.addRenderableWidget(CommonTRWidgets.imageButton(this.width / 2 - 40, Component.translatable("Submit"), (arg) -> {
+        onSaveWaypoint = this.addRenderableWidget(CommonTRWidgets.imageButton(this.width / 2 - 40, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT), (arg) -> {
             if (issues.isEmpty()) {
                 prepareForUpload();
                 new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
@@ -87,10 +87,10 @@ public class WaypointManageScreen extends Screen {
 
 
         if (coordInputType == CoordInputType.WAYPOINT) {
-            this.waypointName = new EditBox(this.font, xPosition, yPosition, this.width / 2 - 40, widgetHeight, this.waypointName, Component.translatable("selectWorld.search"));
+            this.waypointName = new EditBox(this.font, xPosition, yPosition, this.width / 2 - 40, widgetHeight, this.waypointName, Component.translatable(ModMessages.VANILLA_SELECT_WORLD));
             this.waypointName.setResponder((string) -> {
                 if (string.isEmpty()) {
-                    issues.put("waypoint_error", "Invalid Waypoint name");
+                    issues.put("waypoint_error", Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_NAME).getString());
                     return;
                 } else {
                     tardisNavLocation.setName(string);
@@ -103,45 +103,45 @@ public class WaypointManageScreen extends Screen {
         }
 
 
-        this.xCoord = new EditBox(this.font, xPosition, yPosition, widgetLengths - 30, widgetHeight, this.xCoord, Component.translatable("selectWorld.search"));
+        this.xCoord = new EditBox(this.font, xPosition, yPosition, widgetLengths - 30, widgetHeight, this.xCoord, Component.translatable(ModMessages.VANILLA_SELECT_WORLD));
         this.xCoord.setResponder((string) -> {
             try {
                 int newValue = Integer.parseInt(string);
                 tardisNavLocation.setX(newValue);
                 issues.remove("x_error");
             } catch (NumberFormatException e) {
-                issues.put("x_error", "Invalid X Value!");
+                issues.put("x_error", Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_X).getString());
             }
         });
 
         xPosition += widgetLengths - 35 + 15;
 
-        this.yCoord = new EditBox(this.font, xPosition, yPosition, widgetLengths - 30, widgetHeight, this.yCoord, Component.translatable("selectWorld.search"));
+        this.yCoord = new EditBox(this.font, xPosition, yPosition, widgetLengths - 30, widgetHeight, this.yCoord, Component.translatable(ModMessages.VANILLA_SELECT_WORLD));
         this.yCoord.setResponder((string) -> {
             try {
                 int newValue = Integer.parseInt(string);
                 tardisNavLocation.setY(newValue);
                 issues.remove("y_error");
             } catch (NumberFormatException e) {
-                issues.put("y_error", "Invalid Y Value!");
+                issues.put("y_error", Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_Y).getString());
             }
         });
 
         xPosition += widgetLengths - 35 + 15;
 
-        this.zCoord = new EditBox(this.font, xPosition, yPosition, widgetLengths - 30, widgetHeight, this.zCoord, Component.translatable("selectWorld.search"));
+        this.zCoord = new EditBox(this.font, xPosition, yPosition, widgetLengths - 30, widgetHeight, this.zCoord, Component.translatable(ModMessages.VANILLA_SELECT_WORLD));
         this.zCoord.setResponder((string) -> {
             try {
                 int newValue = Integer.parseInt(string);
                 tardisNavLocation.setZ(newValue);
                 issues.remove("z_error");
             } catch (NumberFormatException e) {
-                issues.put("z_error", "Invalid Z Value!");
+                issues.put("z_error", Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_Z).getString());
             }
         });
 
 
-//Buttons
+        //Buttons
         xPosition = this.width / 2 - 95;
 
         // Set Dimension Button
@@ -150,7 +150,7 @@ public class WaypointManageScreen extends Screen {
             return Component.literal(MiscHelper.getCleanDimensionName(dimension));
         });
         dimBuilder.withValues(this.worlds);
-        levelButton = dimBuilder.create(xPosition, yPosition + 100 - 45, this.width / 2 - 40, widgetHeight, Component.literal("Dimension"));
+        levelButton = dimBuilder.create(xPosition, yPosition + 100 - 45, this.width / 2 - 40, widgetHeight, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_DIMENSION));
         this.addWidget(levelButton);
 
         // Direction Button
@@ -162,7 +162,7 @@ public class WaypointManageScreen extends Screen {
             return Component.literal(direction.getName().substring(0, 1).toUpperCase() + direction.getName().substring(1));
         });
         builder.withValues(directionCollection);
-        directionButton = builder.create(xPosition, yPosition + 100 - 65, this.width / 2 - 40, widgetHeight, Component.literal("Direction"));
+        directionButton = builder.create(xPosition, yPosition + 100 - 65, this.width / 2 - 40, widgetHeight, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_DIRECTION));
         addWidget(directionButton);
 
 

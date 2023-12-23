@@ -2,10 +2,7 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -18,20 +15,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.gameevent.GameEventListener;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.blockentity.desktop.InternalDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.door.AbstractEntityBlockDoor;
+import whocraft.tardis_refined.common.blockentity.door.InternalDoorBlockEntity;
 
 public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     protected static final VoxelShape COLLISION = Block.box(0, 0, 0, 16, 3, 16);
+    protected static BlockEntity blockEntity;
+
 
     public InternalDoorBlock(Properties properties) {
         super(properties);
@@ -40,7 +36,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        if (level.getBlockEntity(blockPos) instanceof AbstractEntityBlockDoor door) {
+        if (level.getBlockEntity(blockPos) instanceof InternalDoorBlockEntity door) {
             door.onBlockPlaced();
         }
         super.onPlace(blockState, level, blockPos, blockState2, bl);
@@ -57,20 +53,18 @@ public class InternalDoorBlock extends BaseEntityBlock {
         return COLLISION;
     }
 
-    @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-
-        if (level.getBlockEntity(blockPos) instanceof InternalDoorBlockEntity door) {
-            door.onRightClick(blockState, level, blockPos, player, interactionHand, blockHitResult);
-        }
-
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new InternalDoorBlockEntity(blockPos, blockState);
+        return this.getDoorBlockEntity();
+    }
+
+    public void setBlockEntity(BlockEntity blockEntity){
+        this.blockEntity = blockEntity;
+    }
+
+    public BlockEntity getDoorBlockEntity(){
+        return this.blockEntity;
     }
 
     @Override
@@ -90,10 +84,14 @@ public class InternalDoorBlock extends BaseEntityBlock {
         return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
     }
 
-    @Nullable
     @Override
-    public <T extends BlockEntity> GameEventListener getListener(ServerLevel pLevel, T pBlockEntity) {
-        return super.getListener(pLevel, pBlockEntity);
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+
+        if (!level.isClientSide()) {
+            if (level.getBlockEntity(blockPos) instanceof InternalDoorBlockEntity door) {
+                door.onAttemptEnter(blockState, level, blockPos, entity);
+            }
+        }
     }
 
 

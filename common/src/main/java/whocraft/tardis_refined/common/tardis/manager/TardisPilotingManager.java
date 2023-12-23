@@ -89,8 +89,8 @@ public class TardisPilotingManager extends BaseHandler{
      * Zero means it has only started, 1 means that cooldown has finished.
      * @return a percentage value between 0 - 1.
      */
-    public int getCooldownDuration() {
-        return ticksSinceCrash / TICKS_COOLDOWN_MAX;
+    public float getCooldownDuration() {
+        return (float)ticksSinceCrash / (float)TICKS_COOLDOWN_MAX;
     }
 
     public void endCoolDown() {
@@ -272,7 +272,7 @@ public class TardisPilotingManager extends BaseHandler{
         return location;
     }
 
-    private BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
+    public BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
         if (level.dimension() == Level.NETHER) {
 
             if (pos.getY() > level.getMaxBuildHeight() || originalY > level.getMaxBuildHeight()) {
@@ -295,7 +295,7 @@ public class TardisPilotingManager extends BaseHandler{
         return false;
     }
 
-    private TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
+    public TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
         while (location.getPosition().getY() <= maxHeight) {
             if (isSafeToLand(location)) {
                 return findSafeDirection(location);
@@ -307,7 +307,7 @@ public class TardisPilotingManager extends BaseHandler{
     }
 
 
-    private TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
+    public TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
         while (location.getPosition().getY() >= minHeight) {
 
             if (isSafeToLand(location)) {
@@ -321,7 +321,7 @@ public class TardisPilotingManager extends BaseHandler{
         return null;
     }
 
-    private TardisNavLocation findSafeDirection(TardisNavLocation location) {
+    public TardisNavLocation findSafeDirection(TardisNavLocation location) {
 
         Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
         for (Direction dir : directions) {
@@ -334,7 +334,7 @@ public class TardisPilotingManager extends BaseHandler{
         return null;
     }
 
-    private boolean isSolidBlock(ServerLevel level, BlockPos pos) {
+    public boolean isSolidBlock(ServerLevel level, BlockPos pos) {
         return level.getBlockState(pos).isSolid() || level.getBlockState(pos).liquid();
     }
 

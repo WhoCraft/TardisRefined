@@ -4,9 +4,11 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -24,9 +26,15 @@ public class TardisEvents {
         }
     }));
 
-    public static final Event<TardisEntry> TARDIS_ENTRY_EVENT = new Event<>(TardisEntry.class, listeners -> (tardisLevelOperator, shell, player, externalPos, level, direction) -> {
+    public static final Event<TardisEntry> TARDIS_ENTRY_EVENT = new Event<>(TardisEntry.class, listeners -> (tardisLevelOperator, livingEntity, source, destination) -> {
         for (TardisEntry listener : listeners) {
-            listener.onEnterTardis(tardisLevelOperator, shell, player, externalPos, level, direction);
+            listener.onEnterTardis(tardisLevelOperator, livingEntity, source, destination);
+        }
+    });
+
+    public static final Event<TardisExit> TARDIS_EXIT_EVENT = new Event<>(TardisExit.class, listeners -> (tardisLevelOperator, livingEntity, source, destination) -> {
+        for (TardisExit listener : listeners) {
+            listener.onExitTardis(tardisLevelOperator, livingEntity, source, destination);
         }
     });
 
@@ -175,15 +183,28 @@ public class TardisEvents {
     @FunctionalInterface
     public interface TardisEntry {
         /**
-         * Called when a player enters a TARDIS.
+         * Called when a living entity enters a TARDIS.
          *
-         * @param shell The exterior shell of the TARDIS.
-         * @param player The player who is entering the TARDIS.
-         * @param externalPos The position of the exterior of the TARDIS.
-         * @param level The level where the TARDIS is located.
-         * @param direction The direction the player is facing when entering the TARDIS.
+         * @param tardisLevelOperator The Tardis capability
+         * @param livingEntity The living entity who is entering the TARDIS.
+         * @param sourceLocation The position, level and direction of the exterior of the TARDIS.
+         * @param destinationLocation The position, level and direction of the internal door of the TARDIS.
          */
-        void onEnterTardis(TardisLevelOperator tardisLevelOperator, ExteriorShell shell, Player player, BlockPos externalPos, Level level, Direction direction);
+        void onEnterTardis(TardisLevelOperator tardisLevelOperator, LivingEntity livingEntity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation);
+
+    }
+
+    @FunctionalInterface
+    public interface TardisExit {
+        /**
+         * Called when a living entity exits a TARDIS.
+         *
+         * @param tardisLevelOperator The Tardis capability
+         * @param livingEntity The living entity who is exiting the TARDIS.
+         * @param sourceLocation The position, level and direction of the internal door of the TARDIS.
+         * @param destinationLocation The position, level and direction of the exterior of the TARDIS.
+         */
+        void onExitTardis(TardisLevelOperator tardisLevelOperator, LivingEntity livingEntity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation);
     }
 
     /**

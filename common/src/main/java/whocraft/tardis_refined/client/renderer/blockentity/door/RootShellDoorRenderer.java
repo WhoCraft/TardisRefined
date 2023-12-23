@@ -13,7 +13,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.RootShellDoorModel;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
-import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 
 public class RootShellDoorRenderer implements BlockEntityRenderer<RootShellDoorBlockEntity>, BlockEntityRendererProvider<RootShellDoorBlockEntity> {
 

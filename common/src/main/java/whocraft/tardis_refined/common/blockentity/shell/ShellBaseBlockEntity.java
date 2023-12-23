@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -38,11 +40,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
     }
-
+    @Override
     public ResourceKey<Level> getTardisId() {
         return this.TARDIS_ID;
     }
-
+    @Override
     public void setTardisId(ResourceKey<Level> levelKey) {
         this.TARDIS_ID = levelKey;
         this.setChanged();
@@ -89,18 +91,18 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         return false;
     }
 
-    public void onAttemptEnter(BlockState blockState, Level level, BlockPos blockPos, Player player) {
-        if (level instanceof ServerLevel serverLevel) {
+    public void onAttemptEnter(BlockState blockState, Level level, BlockPos externalShellPos, Entity entity) {
+        if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
             if (this.TARDIS_ID == null) {
-                TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (could this be an invalid block?) [" + blockPos.toShortString() + "]");
+                TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (could this be an invalid block?) [" + externalShellPos.toShortString() + "]");
                 return;
             }
-            ServerLevel interior = DimensionHandler.getOrCreateInterior(level, this.TARDIS_ID.location());
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.location());
             TardisLevelOperator.get(interior).ifPresent(cap -> {
 
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
 
-                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || cap.getPilotingManager().endFlight() && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler))) {
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().endFlight() && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
                     if (cap.getAestheticHandler().getShellTheme() != null) {
                         ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 
@@ -110,10 +112,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                             }
                         }
                     }
-                    cap.enterTardis(this, player, blockPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
+                    cap.enterTardis(entity, externalShellPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
                 } else {
                     if (!cap.isTardisReady()) {
-                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_EXTERIOR_COOLDOWN, cap.getInteriorManager().getInteriorGenerationCooldown()), true);
+                        if (entity instanceof Player player)
+                            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_EXTERIOR_COOLDOWN, cap.getInteriorManager().getInteriorGenerationCooldown()), true);
                     }
                 }
             });
@@ -123,19 +126,8 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public BlockPos getExitPosition() {
-        int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
-        switch (direction) {
-            case 3:
-                return new BlockPos(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ());
-            case 2:
-                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() + 1);
-            case 1:
-                return new BlockPos(getBlockPos().getX() + 1, getBlockPos().getY(), getBlockPos().getZ());
-            case 0:
-                return new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() - 1);
-        }
-
-        return getBlockPos().above();
+        Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
+        return this.getBlockPos().offset(direction.getOpposite().getNormal());
     }
 
     @Override
