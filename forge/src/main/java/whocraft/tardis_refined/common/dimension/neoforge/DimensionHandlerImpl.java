@@ -23,7 +23,7 @@ import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.network.messages.SyncLevelListMessage;
+import whocraft.tardis_refined.common.network.messages.sync.SyncLevelListMessage;
 
 import java.io.File;
 import java.io.FileWriter;

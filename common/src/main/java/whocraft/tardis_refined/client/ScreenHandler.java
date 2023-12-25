@@ -5,9 +5,11 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.screen.CancelDesktopScreen;
 import whocraft.tardis_refined.client.screen.MonitorScreen;
+import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import whocraft.tardis_refined.client.screen.upgrades.UpgradesScreen;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.client.screen.waypoints.WaypointListScreen;
@@ -59,5 +61,9 @@ public class ScreenHandler {
         } else {
             Minecraft.getInstance().setScreen(new UpgradesScreen(upgradeHandlerClient));
         }
+    }
+
+    public static void openShellSelection(ResourceLocation currentShell) {
+        Minecraft.getInstance().setScreen(new ShellSelectionScreen(currentShell));
     }
 }

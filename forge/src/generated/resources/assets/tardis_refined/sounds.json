@@ -61,7 +61,7 @@
   },
   "test_hum": {
     "sounds": [
-      "tardis_refined:tardis/test_hum"
+      "tardis_refined:tardis/interior_hums/hum1996"
     ],
     "subtitle": "sound.test_hum.subtitle"
   },

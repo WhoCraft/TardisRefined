@@ -86,6 +86,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
         if(this == LoopingSound.HUM_TEST){
             delay = 40;
             volume = TardisHelper.isInArsArea(player.blockPosition()) ? 0 : 0.2F;
+            LoopingSound.HUM_TEST.setLocation(player.position());
             if(DimensionTypes.TARDIS == player.level().dimensionTypeId()){
                 volume = 0.2F;
             } else {
