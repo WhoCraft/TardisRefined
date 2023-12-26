@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.stream.Stream;
@@ -85,13 +86,14 @@ public class TerraformerBlock extends Block {
         if (level instanceof ServerLevel serverLevel) {
             if (checkIfStructure(serverLevel, blockPos)) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (cap.getInteriorManager().isWaitingToGenerate()) {
+                    TardisInteriorManager interiorManager = cap.getInteriorManager();
+                    if (interiorManager.isWaitingToGenerate()) {
                         level.destroyBlock(blockPos, true);
                     } else {
-                        if (cap.getInteriorManager().isCave()) {
-                            cap.getInteriorManager().prepareDesktop(TardisDesktops.FACTORY_THEME);
+                        if (interiorManager.isCave()) {
+                            interiorManager.prepareDesktop(TardisDesktops.FACTORY_THEME);
                             destroyStructure(serverLevel, blockPos);
-                            serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
+                            serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
                         }
                     }
                 });
@@ -121,8 +123,9 @@ public class TerraformerBlock extends Block {
         if (level instanceof ServerLevel serverLevel) {
             if (blockState.getValue(ACTIVE)) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (cap.getInteriorManager().isWaitingToGenerate()) {
-                        cap.getInteriorManager().cancelDesktopChange();
+                    TardisInteriorManager interiorManager = cap.getInteriorManager();
+                    if (interiorManager.isWaitingToGenerate()) {
+                        interiorManager.cancelDesktopChange();
                     }
                 });
             }

@@ -284,7 +284,6 @@ public class TardisInteriorManager extends BaseHandler {
     }
 
     public void generateDesktop(DesktopTheme theme) {
-        setCurrentTheme(theme);
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
 
@@ -302,6 +301,7 @@ public class TardisInteriorManager extends BaseHandler {
 
             // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+            setCurrentTheme(theme);
 
         }
     }

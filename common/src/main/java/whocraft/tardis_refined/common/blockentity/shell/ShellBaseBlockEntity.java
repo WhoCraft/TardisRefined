@@ -67,6 +67,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     protected void saveAdditional(CompoundTag pTag) {
         if (this.TARDIS_ID == null) {
             TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (could this be an invalid block?) [" + this.getBlockPos().toShortString() + "]");
+            return;
         }
 
         super.saveAdditional(pTag);
@@ -81,10 +82,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     public boolean shouldSetup() {
         if (!this.level.isClientSide()) {
-            if (this.TARDIS_ID != null) {
-                return false;
-            }
-            return true;
+            return this.TARDIS_ID == null;
         }
         return false;
     }
