@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +12,10 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.SoundRegistry;
+
+import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.LOCKED;
+import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.OPEN;
 
 public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityTicker<BulkHeadDoorBlockEntity> {
 
@@ -21,12 +26,8 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BulkHeadDoorBlockEntity blockEntity) {
-        if (!blockState.getValue(BulkHeadDoorBlock.LOCKED) && blockState.canSurvive(level, blockPos)) {
-            Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);
-            if (player != null) {
-                toggleDoor(level, blockPos, blockState, blockState.getValue(BulkHeadDoorBlock.OPEN));
-            }
-        }
+        Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);            toggleDoor(level, blockPos, blockState, player != null);
+        toggleDoor(level, blockPos, blockState, player != null);
     }
 
     /**
@@ -38,8 +39,16 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
      * @param isOpen     The current open state of the door.
      */
     public void toggleDoor(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
-        level.playSound(null, blockPos, SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
-        level.setBlock(blockPos, blockState.setValue(BulkHeadDoorBlock.OPEN, isOpen), Block.UPDATE_CLIENTS);
+
+       /* if(blockState.getValue(LOCKED) && !blockState.getValue(OPEN)){
+            level.playSound(null, blockPos, SoundRegistry.BULKHEAD_LOCKED.get(), SoundSource.BLOCKS, 1, 1);
+            return;
+        }*/
+
+        if(level.getBlockState(blockPos).hasProperty(OPEN) && level.getBlockState(blockPos).getValue(OPEN) != isOpen) {
+            level.playSound(null, blockPos, !isOpen ? SoundEvents.PISTON_EXTEND :  SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
+        }
+        level.setBlock(blockPos, blockState.setValue(OPEN, isOpen), Block.UPDATE_CLIENTS);
     }
 
 }
