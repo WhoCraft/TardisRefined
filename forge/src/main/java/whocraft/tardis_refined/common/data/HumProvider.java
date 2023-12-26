@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,8 +45,9 @@ public class HumProvider implements DataProvider {
 
         if (this.addDefaults) {
             TardisHums.registerDefaultHums();
-            data.putAll(TardisHums.getRegistry());
+            data.putAll(TardisHums.getDefaultHums());
             data.put(TardisHums.getDefaultHum().getIdentifier(), TardisHums.getDefaultHum());
+            data.put(new ResourceLocation(TardisRefined.MODID, "bob"), new HumEntry(new ResourceLocation(TardisRefined.MODID, "bob"), SoundRegistry.DESTINATION_DING.getId(), "Bob Hum"));
         }
 
         this.addHums();

@@ -12,7 +12,7 @@ public class TardisHums {
 
     private static final CodecJsonReloadListener<HumEntry> RELOAD_LISTENER = createReloadListener();
 
-    private static Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
+    private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
     /**
      * A factory method to create the instance of our reload listener.

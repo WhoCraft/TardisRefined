@@ -134,6 +134,7 @@ public class TardisLevelOperator {
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
             tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
             tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
+            tardisClientData.setHumEntry(interiorManager.getHumEntry());
 
             tardisClientData.sync();
         }

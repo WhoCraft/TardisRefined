@@ -11,6 +11,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
+import whocraft.tardis_refined.client.screen.selections.HumSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
@@ -86,6 +87,9 @@ public class MonitorScreen extends SelectionScreen {
         if(Upgrades.COORDINATE_INPUT.get().isUnlocked(upgradeHandler)){
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
         }
+
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> Minecraft.getInstance().setScreen(new HumSelectionScreen()), leftPos));
+
 
         if(selectionList.children().isEmpty()){
             noUpgrades = true;

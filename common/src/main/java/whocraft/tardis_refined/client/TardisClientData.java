@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
@@ -9,14 +11,19 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
@@ -31,6 +38,21 @@ public class TardisClientData {
     public AnimationState ROTOR_ANIMATION = new AnimationState();
     public AnimationState LANDING_ANIMATION = new AnimationState();
     public AnimationState TAKEOFF_ANIMATION = new AnimationState();
+
+    @Environment(EnvType.CLIENT)
+    private LoopingSound loopedHum = null;
+
+    public void setupHum() {
+        if (loopedHum != null) {
+            loopedHum.stopSound();
+        }
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+        loopedHum = new LoopingSound(SoundEvent.createVariableRangeEvent(humEntry.getSound()), SoundSource.AMBIENT);
+        loopedHum.setVolume(0.2F);
+        soundManager.play(loopedHum);
+
+    }
 
     public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
@@ -54,8 +76,20 @@ public class TardisClientData {
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
 
+    private HumEntry humEntry = TardisHums.getDefaultHum();
     public ResourceLocation getShellTheme() {
         return shellTheme;
+    }
+
+    public HumEntry getHumEntry() {
+        return humEntry;
+    }
+
+    public void setHumEntry(HumEntry humEntry) {
+        if (!humEntry.getIdentifier().equals(this.humEntry.getIdentifier())) {
+            setupHum();
+        }
+        this.humEntry = humEntry;
     }
 
     public void setShellTheme(ResourceLocation shellTheme) {
@@ -155,6 +189,8 @@ public class TardisClientData {
         compoundTag.putString("shellTheme", shellTheme.toString());
         compoundTag.putString("shellPattern", shellPattern.toString());
 
+        compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
+
         return compoundTag;
     }
 
@@ -176,6 +212,7 @@ public class TardisClientData {
         shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
         shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
 
+        setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
     }
 
     /**
@@ -218,8 +255,13 @@ public class TardisClientData {
                 }
             }
 
-            if(!soundManager.isActive(LoopingSound.HUM_TEST)){
-                soundManager.play(LoopingSound.HUM_TEST);
+            // Set up Hum if not playing or if the sound changes
+            if (loopedHum == null) {
+                setupHum();
+            }
+
+            if (loopedHum != null) {
+                loopedHum.setLocation(Minecraft.getInstance().player.position());
             }
         }
 
