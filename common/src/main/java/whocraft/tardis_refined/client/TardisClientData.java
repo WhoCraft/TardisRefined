@@ -18,6 +18,7 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.client.sounds.LoopingHumSound;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
@@ -40,16 +41,22 @@ public class TardisClientData {
     public AnimationState TAKEOFF_ANIMATION = new AnimationState();
 
     @Environment(EnvType.CLIENT)
-    private LoopingSound loopedHum = null;
+    private LoopingHumSound loopedHum = null;
 
     public void setupHum() {
-        if (loopedHum != null) {
-            loopedHum.stopSound();
-        }
 
         SoundManager soundManager = Minecraft.getInstance().getSoundManager();
-        loopedHum = new LoopingSound(SoundEvent.createVariableRangeEvent(humEntry.getSound()), SoundSource.AMBIENT);
+
+        if (loopedHum == null) {
+            loopedHum = new LoopingHumSound(SoundEvent.createVariableRangeEvent(humEntry.getSound()), SoundSource.AMBIENT);
+            soundManager.play(loopedHum);
+        }
+
         loopedHum.setVolume(0.2F);
+        loopedHum.setSoundEvent(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
+        loopedHum.resolve(soundManager);
+        loopedHum.stopSound();
+
         soundManager.play(loopedHum);
 
     }
@@ -86,9 +93,7 @@ public class TardisClientData {
     }
 
     public void setHumEntry(HumEntry humEntry) {
-        if (!humEntry.getIdentifier().equals(this.humEntry.getIdentifier())) {
-            setupHum();
-        }
+        setupHum();
         this.humEntry = humEntry;
     }
 
