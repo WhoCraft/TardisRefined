@@ -25,7 +25,10 @@ import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 
 public class GlobalDoorBlock extends InternalDoorBlock{
 
-    protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
+    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 32.0D, 0.25D);
+    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 15.75D, 16.0D, 32.0D, 16.0D);
+    protected static final VoxelShape EAST_AABB= Block.box(15.75D, 0.0D, 0.0D, 16.0D, 32.0D, 16.0D);
+    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 0.25D, 32.0D, 16.0D);
 
     public GlobalDoorBlock(Properties properties) {
         super(properties);
@@ -69,7 +72,6 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (level instanceof ServerLevel serverLevel) {
-
                 if (TardisLevelOperator.get(serverLevel).isPresent()) {
                     if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
                         entity.onRightClick(blockState, entity, player);
@@ -86,22 +88,20 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         switch(blockState.getValue(FACING)) {
             case EAST:
-            default:
-                return  EAST_AABB;
+                return EAST_AABB;
             case SOUTH:
-                return SOUTH_AABB ;
+                return SOUTH_AABB;
             case WEST:
                 return WEST_AABB;
             case NORTH:
                 return NORTH_AABB;
         }
+        return SOUTH_AABB;
     }
 
-    static {
-        NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 0.25D);
-        SOUTH_AABB = Block.box(0.0D, 0.0D, 15.75D, 16.0D, 16.0D, 16.0D);
-        EAST_AABB= Block.box(15.75D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-        WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 0.25D, 16.0D, 16.0D);
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
 }

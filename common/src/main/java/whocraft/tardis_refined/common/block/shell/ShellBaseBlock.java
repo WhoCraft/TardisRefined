@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -19,11 +18,15 @@ import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
+import whocraft.tardis_refined.common.tardis.ExteriorShell;
+import whocraft.tardis_refined.common.util.TRTeleporter;
+
+import java.util.List;
 
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
@@ -122,16 +125,24 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
                 return EAST_AABB;
             }
         }
-
         return SOUTH_AABB;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
         if (!level.isClientSide()){
-            if (level.getBlockEntity(blockPos) instanceof ShellBaseBlockEntity shellEntity) {
-                shellEntity.onAttemptEnter(blockState, level, shellEntity.getBlockPos(), entity);
+            ServerLevel serverLevel = (ServerLevel)level;
+            if (serverLevel.getBlockEntity(blockPos) instanceof ExteriorShell shellEntity) {
+                AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
+                if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
+                    shellEntity.onAttemptEnter(blockState, serverLevel, blockPos, entity);
+                }
             }
         }
     }

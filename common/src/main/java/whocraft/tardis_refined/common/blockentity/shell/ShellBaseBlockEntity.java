@@ -89,6 +89,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         return false;
     }
 
+    @Override
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos externalShellPos, Entity entity) {
         if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
             if (this.TARDIS_ID == null) {

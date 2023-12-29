@@ -63,7 +63,7 @@ public class TardisTeleportData extends SavedData {
         if (teleports.size() != 0){
             for (TeleportEntry entry : teleports) {
 
-                if (!entry.getIsCurrentTeleporting()) {
+                if (!entry.getIsCurrentTeleporting() && !entry.getSuccessfulTeleport()) {
                     entry.setIsCurrentTeleporting(true);
 
                     Entity entity = entry.getEntity();
@@ -74,13 +74,17 @@ public class TardisTeleportData extends SavedData {
                     if (entity != null && targetWorld != null && entity.level() == level) {
                         if (TRTeleporter.performTeleport(entity, targetWorld, entry.getX(), entry.getY(), entry.getZ(), entry.getyRot(), entry.getxRot(), teleportedEntities)) {
                             teleportedEntities.add(entity);
+                            entry.setIsCurrentTeleporting(true);
+                        }
+                        else {
+                            entry.setSuccessfulTeleport(false);
                         }
                     }
                 }
             }
 
-            // remove all entities that were teleported from the queue
-            teleports.removeIf(teleportEntry -> teleportedEntities.contains(teleportEntry.getEntity()));
+            // remove all entities that were successfully teleported. Also remove failed teleports to prevent a backlog from building up
+            teleports.removeIf(teleportEntry -> teleportedEntities.contains(teleportEntry.getEntity()) || !teleportEntry.getSuccessfulTeleport());
 
             eventData.queuedTeleports = teleports;
         }
@@ -112,6 +116,8 @@ public class TardisTeleportData extends SavedData {
         private final double x, y, z;
         private final float yRot, xRot;
         private boolean isCurrentTeleporting = false;
+
+        private boolean successfulTeleport = false;
 
         public TeleportEntry(Entity entity, ResourceKey<Level> destination, double x, double y, double z, float yRot, float xRot) {
             this.entity = entity;
@@ -157,6 +163,14 @@ public class TardisTeleportData extends SavedData {
 
         public void setIsCurrentTeleporting(boolean isCurrentTeleporting) {
             this.isCurrentTeleporting = isCurrentTeleporting;
+        }
+
+        public boolean getSuccessfulTeleport() {
+            return successfulTeleport;
+        }
+
+        public void setSuccessfulTeleport(boolean successfulTeleport) {
+            this.isCurrentTeleporting = successfulTeleport;
         }
     }
 }

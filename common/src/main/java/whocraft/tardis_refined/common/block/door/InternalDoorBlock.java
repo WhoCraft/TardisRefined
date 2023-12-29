@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -15,17 +16,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.door.InternalDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
+import whocraft.tardis_refined.common.util.TRTeleporter;
+
+import java.util.List;
 
 public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
-    protected static final VoxelShape COLLISION = Block.box(0, 0, 0, 16, 3, 16);
+    protected static final VoxelShape COLLISION = Block.box(0, 0, 0, 16, 32, 16);
     protected static BlockEntity blockEntity;
 
 
@@ -50,7 +56,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return COLLISION;
+        return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
     @Nullable
@@ -88,8 +94,12 @@ public class InternalDoorBlock extends BaseEntityBlock {
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
 
         if (!level.isClientSide()) {
-            if (level.getBlockEntity(blockPos) instanceof InternalDoorBlockEntity door) {
-                door.onAttemptEnter(blockState, level, blockPos, entity);
+            ServerLevel serverLevel = (ServerLevel)level;
+            if (serverLevel.getBlockEntity(blockPos) instanceof TardisInternalDoor door) {
+                AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
+                if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)){
+                    door.onAttemptEnter(blockState, serverLevel, blockPos, entity);
+                }
             }
         }
     }

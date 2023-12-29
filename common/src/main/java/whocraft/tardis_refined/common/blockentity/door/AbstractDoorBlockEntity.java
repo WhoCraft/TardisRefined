@@ -78,14 +78,14 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
     @Override
     public BlockPos getEntryPosition() {
-        Direction direction = this.getBlockState().getValue(ShellBaseBlock.FACING);
+        Direction direction = this.getBlockState().getValue(InternalDoorBlock.FACING);
         return this.getBlockPos().offset(direction.getOpposite().getNormal());
 
     }
 
     @Override
     public Direction getEntryRotation() {
-        return getBlockState().getValue(InternalDoorBlock.FACING).getOpposite();
+        return this.getBlockState().getValue(InternalDoorBlock.FACING).getOpposite();
     }
 
     @Override
@@ -134,6 +134,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
         this.isLocked = compoundTag.getBoolean(NbtConstants.DOOR_IS_LOCKED);
     }
 
+    @Override
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos doorPos, Entity entity) {
         if(!entity.level().isClientSide() && level instanceof ServerLevel serverLevel){
             Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
