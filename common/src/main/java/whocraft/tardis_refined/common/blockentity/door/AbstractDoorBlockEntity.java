@@ -7,6 +7,8 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,14 +22,15 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import java.util.Optional;
 import java.util.UUID;
 
-public class AbstractEntityBlockDoor extends BlockEntity implements TardisInternalDoor {
+public class AbstractDoorBlockEntity extends BlockEntity implements TardisInternalDoor {
+
     private boolean isLocked = false;
     private String uuid_id;
     private boolean isMainDoor = false;
 
     private TardisLevelOperator operator;
 
-    public AbstractEntityBlockDoor(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+    public AbstractDoorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.uuid_id = UUID.randomUUID().toString();
     }
@@ -55,7 +58,7 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
 
     @Override
     public boolean isOpen() {
-        return getBlockState().getValue(GlobalDoorBlock.OPEN);
+        return this.getBlockState().getValue(InternalDoorBlock.OPEN);
     }
 
     @Override
@@ -75,15 +78,8 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
 
     @Override
     public BlockPos getEntryPosition() {
-
-        int direction = getBlockState().getValue(ShellBaseBlock.FACING).get2DDataValue();
-        return switch (direction) {
-            case 3 -> new BlockPos(getBlockPos().getX() - 1, getBlockPos().getY(), getBlockPos().getZ());
-            case 2 -> new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() + 1);
-            case 1 -> new BlockPos(getBlockPos().getX() + 1, getBlockPos().getY(), getBlockPos().getZ());
-            case 0 -> new BlockPos(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ() - 1);
-            default -> getBlockPos().above();
-        };
+        Direction direction = this.getBlockState().getValue(ShellBaseBlock.FACING);
+        return this.getBlockPos().offset(direction.getOpposite().getNormal());
 
     }
 
@@ -136,6 +132,16 @@ public class AbstractEntityBlockDoor extends BlockEntity implements TardisIntern
         this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
         this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
         this.isLocked = compoundTag.getBoolean(NbtConstants.DOOR_IS_LOCKED);
+    }
+
+    public void onAttemptEnter(BlockState blockState, Level level, BlockPos doorPos, Entity entity) {
+        if(!entity.level().isClientSide() && level instanceof ServerLevel serverLevel){
+            Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
+            data.ifPresent(tardisLevelOperator -> {
+                tardisLevelOperator.setInternalDoor(this);
+                tardisLevelOperator.exitTardis(entity, serverLevel, doorPos, blockState.getValue(InternalDoorBlock.FACING));
+            });
+        }
     }
 
 }

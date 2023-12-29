@@ -15,6 +15,7 @@ import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.Collection;
@@ -22,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UpgradeArgumentType implements ArgumentType<Upgrade> {
+public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
 
     private static final Collection<String> EXAMPLES = Stream.of(Upgrades.COORDINATE_INPUT).map((upgrade) -> {
         return upgrade != null ? upgrade.getId().toString() : "";
@@ -34,13 +35,9 @@ public class UpgradeArgumentType implements ArgumentType<Upgrade> {
     }
 
     @Override
-    public Upgrade parse(StringReader reader) throws CommandSyntaxException {
-        ResourceLocation location = ResourceLocation.read(reader);
-        Upgrade upgrade = Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry().get(location);
-        if (upgrade != null) {
-            return upgrade;
-        }
-        throw INVALID_UPGRADE_EXCEPTION.create(location);    }
+    public ResourceLocation parse(StringReader reader) throws CommandSyntaxException {
+        return ResourceLocation.read(reader);
+    }
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
@@ -59,5 +56,13 @@ public class UpgradeArgumentType implements ArgumentType<Upgrade> {
             throw INVALID_UPGRADE_EXCEPTION.create(resourcelocation);
         else
             return upgrade;
+    }
+
+    public static ResourceLocation getUpgradeId(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+        ResourceLocation resourcelocation = context.getArgument(name, ResourceLocation.class);
+        if (Upgrades.UPGRADE_REGISTRY.get(resourcelocation) == null)
+            throw INVALID_UPGRADE_EXCEPTION.create(resourcelocation);
+        else
+            return resourcelocation;
     }
 }

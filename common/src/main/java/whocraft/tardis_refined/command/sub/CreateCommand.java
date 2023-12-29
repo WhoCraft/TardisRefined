@@ -19,7 +19,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.arguments.DesktopArgumentType;
 import whocraft.tardis_refined.command.arguments.ShellArgumentType;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.util.CommandHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
@@ -48,10 +47,7 @@ public class CreateCommand {
         //Create a Level Key with a randomised UUID
         ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
 
-        ResourceLocation levelId = generatedLevelKey.location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.location());
 
         context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 

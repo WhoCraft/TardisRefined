@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.client.sounds;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
@@ -16,6 +17,15 @@ public class LoopingHumSound extends LoopingSound{
 
     public void setSoundEvent(SoundEvent soundEvent) {
         this.soundEvent = soundEvent;
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        volume = 0.10F;
+        if(Minecraft.getInstance().player != null){
+            setLocation(Minecraft.getInstance().player.position());
+        }
     }
 
     // So, I don't like this. But it is necessary else we are making another Mixin, which isn't a bad thing but better to avoid

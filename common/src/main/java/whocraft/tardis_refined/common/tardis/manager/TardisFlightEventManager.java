@@ -93,6 +93,20 @@ public class TardisFlightEventManager extends BaseHandler{
         return this.requiredDangerZoneRequests <= this.dangerZoneResponses;
     }
 
+    /**
+     * @return The total required danger zone requests the player will need to complete
+     */
+    public int getRequiredDangerZoneRequests() {
+        return this.requiredDangerZoneRequests;
+    }
+
+    /**
+     * @return The total danger zone responses the player has completed so far
+     */
+    public int getDangerZoneResponses() {
+        return this.dangerZoneResponses;
+    }
+
     /*
     * Is a prompt still within the combo time.
     * */
@@ -103,10 +117,49 @@ public class TardisFlightEventManager extends BaseHandler{
     /*
     * Get the current remaining ticks of cooldown between two controls.
     * */
-    public int getControlRequestCooldown() {
+    private int getControlRequestCooldown() {
         return (isEventInComboTime() ? 20 : 60);  // This will be expanded on when Stats are added.
     }
 
+    /*
+     * Get the current remaining ticks of cooldown between two controls.
+     * */
+    public int getCurrentControlRequestCooldown() {
+        return this.controlRequestCooldown;
+    }
+
+    /**
+     * All the valid controls that can be used as a flight event and need to be interacted with
+     * @return a list of flight event capable controls.
+     */
+    public List<ConsoleControl> getPossibleControls()
+    {
+        return this.possibleControls;
+    }
+
+    // The minimum distance that the tardis needs to travel for flight events to happen.
+    public int getMinDistanceForEvents()
+    {
+        return this.MIN_DISTANCE_FOR_EVENTS;
+    }
+
+    // How many ticks since the last flight event prompt
+    public int getTicksSincePrompted()
+    {
+        return this.ticksSincePrompted;
+    }
+
+    // how many ticks the tardis has been in the danger zone for
+    public int getTicksInTheDangerZone()
+    {
+        return this.ticksInTheDangerZone;
+    }
+
+    // the danger zone shake scale
+    public float getDangerZoneShakeScale()
+    {
+        return this.dangerZoneShakeScale;
+    }
 
     /*
     * Calculates the number of required control requests based on the distance between the current and target location.
@@ -135,9 +188,9 @@ public class TardisFlightEventManager extends BaseHandler{
 
     }
 
-    private int getBlocksPerRequest(double distance) {
+    public int getBlocksPerRequest(double distance) {
         var bpd = (int) (distance / MIN_DISTANCE_FOR_EVENTS);
-        return Math.min(bpd, 25); // This will be expanded once stats are added.
+        return Math.min(bpd, 25); // TODO: This will be expanded once stats are added.
     }
 
     // All the logic related to the in-flight events of the TARDIS.
@@ -264,21 +317,21 @@ public class TardisFlightEventManager extends BaseHandler{
 
     }
 
-    private void onTargetReached(ControlEntity entity) {
+    public boolean onTargetReached(ControlEntity entity) {
 
         // Is the target acceptable?
         var targetPosition = operator.getPilotingManager().getTargetLocation();
 
         if (targetPosition.getLevel().dimension() != Level.END) {
             operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
-            return;
+            return true;
         }
 
         // Check has the dragon been beaten?
         if (targetPosition.getLevel().dragonFight != null) {
             if (((EndDragonFightAccessor) targetPosition.getLevel().dragonFight).isDragonKilled()) {
                 operator.getLevel().playSound(null, entity.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.AMBIENT, 10, 1);
-                return;
+                return true;
             }
         }
 
@@ -294,9 +347,11 @@ public class TardisFlightEventManager extends BaseHandler{
         level.playSound(null, entity.blockPosition(), SoundRegistry.TARDIS_MISC_SPARKLE.get(), SoundSource.AMBIENT, 10, 1);
         level.explode(null, entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), 0.1f, Level.ExplosionInteraction.NONE);
 
+        return false;
+
     }
 
-    private boolean dangerZoneSecondsPast(int seconds) {
+    public boolean dangerZoneSecondsPast(int seconds) {
         return (this.ticksInTheDangerZone >= seconds * 20);
     }
 

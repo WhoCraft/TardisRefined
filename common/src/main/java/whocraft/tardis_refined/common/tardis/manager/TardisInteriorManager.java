@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.ArrayList;
@@ -244,12 +245,12 @@ public class TardisInteriorManager extends BaseHandler {
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
-                        MiscHelper.performTeleport(x, level, 1000.5f + offsetPos.x(), 100.5f + offsetPos.y(), -1.5f + offsetPos.z(), x.getYRot(), x.getXRot());
+                        TRTeleporter.performTeleport(x, level, 1000.5f + offsetPos.x(), 100.5f + offsetPos.y(), -1.5f + offsetPos.z(), x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(new BlockPos(1000, 100, -2)));
-                        MiscHelper.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TRTeleporter.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
 
@@ -279,7 +280,7 @@ public class TardisInteriorManager extends BaseHandler {
         return level.getEntitiesOfClass(LivingEntity.class, new AABB(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)));
     }
 
-    private List<LivingEntity> getAirlockEntities(Level level) {
+    public List<LivingEntity> getAirlockEntities(Level level) {
 
         if (corridorAirlockCenter == null) {
             return new ArrayList<>();
@@ -299,7 +300,6 @@ public class TardisInteriorManager extends BaseHandler {
     }
 
     public void generateDesktop(DesktopTheme theme) {
-        setCurrentTheme(theme);
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
 
@@ -317,6 +317,7 @@ public class TardisInteriorManager extends BaseHandler {
 
             // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+            setCurrentTheme(theme);
 
         }
     }

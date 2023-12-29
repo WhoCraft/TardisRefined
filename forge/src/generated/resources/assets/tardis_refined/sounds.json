@@ -17,6 +17,12 @@
     ],
     "subtitle": "sound.destination_ding.subtitle"
   },
+  "hum_coral": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/humcoral"
+    ],
+    "subtitle": "sound.hum_coral.subtitle"
+  },
   "pattern_manipulator": {
     "sounds": [
       "tardis_refined:gadgets/pattern_manipulator"
@@ -58,12 +64,6 @@
       "tardis_refined:tardis/tardis_takeoff"
     ],
     "subtitle": "sound.tardis_takeoff.subtitle"
-  },
-  "test_hum": {
-    "sounds": [
-      "tardis_refined:tardis/interior_hums/hum1996"
-    ],
-    "subtitle": "sound.test_hum.subtitle"
   },
   "time_blast": {
     "sounds": [

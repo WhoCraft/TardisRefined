@@ -47,7 +47,6 @@ public class HumProvider implements DataProvider {
             TardisHums.registerDefaultHums();
             data.putAll(TardisHums.getDefaultHums());
             data.put(TardisHums.getDefaultHum().getIdentifier(), TardisHums.getDefaultHum());
-            data.put(new ResourceLocation(TardisRefined.MODID, "bob"), new HumEntry(new ResourceLocation(TardisRefined.MODID, "bob"), SoundRegistry.DESTINATION_DING.getId(), "Bob Hum"));
         }
 
         this.addHums();

@@ -1,4 +1,4 @@
-// 1.20.2	2023-12-13T15:41:19.7541757	Block States: tardis_refined
+// 1.20.2	2023-12-29T14:05:04.7353233	Block States: tardis_refined
 b8a00271e10524036c2c321dc80eb8a392301f6c assets/tardis_refined/blockstates/air_lock_generator.json
 1ec70f6d41be20660fe5a60a94426a85150e5e48 assets/tardis_refined/blockstates/ars_egg.json
 734a9a861a8cf9ce47f1daee3e848263e9810457 assets/tardis_refined/blockstates/ars_leaves.json
@@ -9,7 +9,6 @@ e3b9d3e5657ce05ec9ad52a8ca863f65b8d94550 assets/tardis_refined/blockstates/bulk_
 d3b60531f8edf549fc2f9a2fdd5a9580f7ac800f assets/tardis_refined/blockstates/flight_detector.json
 b00562c84855d8fa18e656882af1bd9f6d71df65 assets/tardis_refined/blockstates/growth_stone.json
 c3c5ee52d1573fd9db6fdc72e08f80bc2f869458 assets/tardis_refined/blockstates/hardened_growth_stone.json
-766604e205dde1ee1031a0fc73b8f18455659cae assets/tardis_refined/blockstates/internal_door_block.json
 30a33a2955de44814048c09c7e8066909fcddc08 assets/tardis_refined/blockstates/landing_pad.json
 5d3e1c7764aaff70e3769b36f95206b7c5d02ae9 assets/tardis_refined/blockstates/root_plant.json
 39ad0e8fbe71f8dcd2877502ca080122539d22fe assets/tardis_refined/blockstates/root_shell.json

@@ -55,7 +55,7 @@ public class TardisHums {
      * Gets a default HumEntry added by Tardis Refined. Useful as a fallback entry.
      */
     public static HumEntry getDefaultHum() {
-        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "default_hum"), SoundRegistry.TEST_HUM.getId(), "Default Hum");
+        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), SoundRegistry.HUM_CORAL.getId(), "Coral Hum");
     }
 
     public static Map<ResourceLocation, HumEntry> getDefaultHums() {

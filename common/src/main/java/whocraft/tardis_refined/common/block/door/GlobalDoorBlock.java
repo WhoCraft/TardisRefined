@@ -35,7 +35,8 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new GlobalDoorBlockEntity(blockPos, blockState);
+        this.setBlockEntity(new GlobalDoorBlockEntity(blockPos, blockState));
+        return super.newBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -93,18 +94,6 @@ public class GlobalDoorBlock extends InternalDoorBlock{
                 return WEST_AABB;
             case NORTH:
                 return NORTH_AABB;
-        }
-    }
-
-    @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-
-        if (!level.isClientSide()) {
-            if (level.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity door) {
-                if (entity instanceof Player player) {
-                    door.onAttemptEnter(level,player);
-                }
-            }
         }
     }
 

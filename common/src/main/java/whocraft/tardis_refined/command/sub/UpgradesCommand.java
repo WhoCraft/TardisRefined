@@ -10,12 +10,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.util.CommandHelper;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class UpgradesCommand {
@@ -43,10 +43,7 @@ public class UpgradesCommand {
         Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().lockUpgrade(upgrade);
@@ -61,10 +58,7 @@ public class UpgradesCommand {
         Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().unlockUpgrade(upgrade);

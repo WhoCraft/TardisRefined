@@ -2,25 +2,28 @@ package whocraft.tardis_refined.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Fluids;
-import whocraft.tardis_refined.TardisRefined;
+import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
@@ -28,7 +31,6 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
@@ -98,6 +100,60 @@ public class TardisHelper {
 
                 return generated.get();
             }
+        }
+        return false;
+
+    }
+
+    public static MutableComponent createTardisIdComponent(ResourceLocation levelId){
+        String id = levelId.toString();
+        String displayId = levelId.getPath().substring(0, 5);
+        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        return tardisId;
+    }
+
+    public static boolean teleportEntityTardis(TardisLevelOperator cap, Entity entity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation, boolean enterTardis){
+
+        if (entity.level() instanceof ServerLevel teleportingEntityLevel){
+
+            BlockPos destinationPos = destinationLocation.getPosition();
+            ServerLevel destinationLevel = destinationLocation.getLevel();
+            Direction destinationDirection = destinationLocation.getDirection();
+
+
+            BlockPos targetTeleportPos = destinationPos;
+
+            //Calculate entity motion and rotation, taking into account for the internal door's direction and rotation
+            float entityYRot = entity.getYRot();
+            float destinationRotationYaw = destinationDirection.toYRot();
+            //Calculate the difference between the entity's rotation and the destination direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
+            float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(destinationRotationYaw);
+
+            float adjustedRotationYaw = LevelHelper.getAngleFromDirection(destinationDirection) + diff;
+
+            if (entity.getType().getDimensions().width > 1F){
+                targetTeleportPos = destinationPos.offset(destinationDirection.getNormal());
+            }
+
+            BlockPos finalTeleportPos = targetTeleportPos;
+
+            Vec3 centredTarget = LevelHelper.centerPos(finalTeleportPos, false);
+
+            TardisTeleportData.getOrCreate(teleportingEntityLevel).scheduleEntityTeleport(entity, destinationLevel.dimension(), centredTarget.x(), centredTarget.y(), centredTarget.z(), adjustedRotationYaw, entity.getXRot());
+
+            //Fire exit or enter events
+            if (entity instanceof LivingEntity livingEntity) {
+                if (enterTardis){
+                    TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(cap, livingEntity, sourceLocation, destinationLocation);
+                }
+                else {
+                    TardisEvents.TARDIS_EXIT_EVENT.invoker().onExitTardis(cap, livingEntity, sourceLocation, destinationLocation);
+                }
+            }
+
+            cap.tardisClientData().sync();
+
+            return true;
         }
         return false;
 

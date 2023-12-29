@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerEntity;
 
+import java.util.UUID;
+
 public interface TardisInternalDoor {
 
     boolean isMainDoor();
@@ -25,4 +27,5 @@ public interface TardisInternalDoor {
     void setLocked(boolean locked);
 
     boolean locked();
+
 }

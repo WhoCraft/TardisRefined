@@ -40,27 +40,6 @@ public class TardisClientData {
     public AnimationState LANDING_ANIMATION = new AnimationState();
     public AnimationState TAKEOFF_ANIMATION = new AnimationState();
 
-    @Environment(EnvType.CLIENT)
-    private LoopingHumSound loopedHum = null;
-
-    public void setupHum() {
-
-        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
-
-        if (loopedHum == null) {
-            loopedHum = new LoopingHumSound(SoundEvent.createVariableRangeEvent(humEntry.getSound()), SoundSource.AMBIENT);
-            soundManager.play(loopedHum);
-        }
-
-        loopedHum.setVolume(0.2F);
-        loopedHum.setSoundEvent(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
-        loopedHum.resolve(soundManager);
-        loopedHum.stopSound();
-
-        soundManager.play(loopedHum);
-
-    }
-
     public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
     }
@@ -93,7 +72,6 @@ public class TardisClientData {
     }
 
     public void setHumEntry(HumEntry humEntry) {
-        setupHum();
         this.humEntry = humEntry;
     }
 
@@ -260,14 +238,11 @@ public class TardisClientData {
                 }
             }
 
-            // Set up Hum if not playing or if the sound changes
-            if (loopedHum == null) {
-                setupHum();
-            }
+        }
 
-            if (loopedHum != null) {
-                loopedHum.setLocation(Minecraft.getInstance().player.position());
-            }
+
+        if(levelKey == Minecraft.getInstance().level.dimension() && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString())){
+            HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
         }
 
 

@@ -138,7 +138,7 @@ public class MiscHelper {
         return false;
     }
 
-    public static boolean shouldCancelBreaking(Level world, Player player, BlockPos pos, BlockState state) {
+    public static boolean shouldCancelBreaking(Level world, Entity entity, BlockPos pos, BlockState state) {
 
         if (world.dimensionTypeId() == DimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();

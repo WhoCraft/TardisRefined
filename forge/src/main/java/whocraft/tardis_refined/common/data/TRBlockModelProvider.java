@@ -77,7 +77,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(BlockRegistry.ROOT_SHELL_DOOR.get());
         emptyBlockState(BlockRegistry.ROOT_PLANT_BLOCK.get());
         emptyBlockState(BlockRegistry.ROOT_SHELL_BLOCK.get());
-        emptyBlockState(BlockRegistry.INTERNAL_DOOR_BLOCK.get());
         emptyBlockState(BlockRegistry.ARS_EGG.get());
 
         threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));

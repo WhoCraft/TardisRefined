@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.client.HumSoundManager;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.DimensionTypes;
@@ -83,16 +84,6 @@ public class LoopingSound extends AbstractTickableSoundInstance {
             }
         }
 
-       /* if(this == LoopingSound.HUM_TEST){
-            delay = 40;
-            volume = TardisHelper.isInArsArea(player.blockPosition()) ? 0 : 0.2F;
-            LoopingSound.HUM_TEST.setLocation(player.position());
-            if(DimensionTypes.TARDIS == player.level().dimensionTypeId()){
-                volume = 0.2F;
-            } else {
-                volume = 0.0F;
-            }
-        }*/
     }
 
     @Override
@@ -101,7 +92,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     }
 
     public static boolean shouldMinecraftMusicStop(SoundManager soundManager){
-        return soundManager.isActive(FLIGHT_LOOP) || soundManager.isActive(ARS_HUMMING);
+        return soundManager.isActive(FLIGHT_LOOP) || soundManager.isActive(ARS_HUMMING) || soundManager.isActive(HumSoundManager.getCurrentSound());
     }
 
     public static void setupSounds(){

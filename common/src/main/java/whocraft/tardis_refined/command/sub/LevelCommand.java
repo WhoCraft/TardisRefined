@@ -11,12 +11,11 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import org.spongepowered.asm.mixin.Mutable;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.util.CommandHelper;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class LevelCommand {
@@ -54,10 +53,7 @@ public class LevelCommand {
     private static int getDimensionPoints(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             int points = tardisLevelOperator.getUpgradeHandler().getUpgradePoints();
@@ -72,10 +68,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
@@ -92,10 +85,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
@@ -112,10 +102,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
@@ -130,10 +117,7 @@ public class LevelCommand {
     private static int getDimensionXp(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             int xp = tardisLevelOperator.getUpgradeHandler().getUpgradeXP();
@@ -148,10 +132,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        ResourceLocation levelId = dimension.dimension().location();
-        String id = levelId.toString();
-        String displayId = levelId.getPath().substring(0, 5);
-        MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().setUpgradeXP(amount);

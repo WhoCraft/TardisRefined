@@ -31,7 +31,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(SoundRegistry.DESTINATION_DING.get(), basicSound("destination_ding", new ResourceLocation(TardisRefined.MODID, "tardis/destination_ding")));
         add(SoundRegistry.ARS_HUM.get(), basicSound("ars_hum", new ResourceLocation(TardisRefined.MODID, "tardis/ars/ars_hum")));
         add(SoundRegistry.BULKHEAD_LOCKED.get(), basicSound("bulkhead_locked", new ResourceLocation(TardisRefined.MODID, "blocks/bulkhead_locked")));
-        add(SoundRegistry.TEST_HUM.get(), basicSound("test_hum", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/hum1996")));
+        add(SoundRegistry.HUM_CORAL.get(), basicSound("hum_coral", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humcoral")));
     }
 
 

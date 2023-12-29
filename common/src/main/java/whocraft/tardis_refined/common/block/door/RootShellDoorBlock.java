@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.block.door;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -12,15 +11,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.blockentity.desktop.door.RootShellDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 
-public class RootShellDoorBlock extends InternalDoorBlock {
+public class RootShellDoorBlock extends GlobalDoorBlock {
 
     protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
 
 
     public RootShellDoorBlock(Properties properties) {
-
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true));
     }
@@ -28,7 +27,8 @@ public class RootShellDoorBlock extends InternalDoorBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new RootShellDoorBlockEntity(blockPos, blockState);
+        this.setBlockEntity(new RootShellDoorBlockEntity(blockPos, blockState));
+        return super.newBlockEntity(blockPos, blockState);
     }
 
     @Override
@@ -57,17 +57,6 @@ public class RootShellDoorBlock extends InternalDoorBlock {
                 return WEST_AABB;
             case NORTH:
                 return NORTH_AABB;
-        }
-    }
-
-    @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (!level.isClientSide()) {
-            if (level.getBlockEntity(blockPos) instanceof RootShellDoorBlockEntity door) {
-                if (entity instanceof Player player) {
-                    door.onAttemptEnter(level,player);
-                }
-            }
         }
     }
 
