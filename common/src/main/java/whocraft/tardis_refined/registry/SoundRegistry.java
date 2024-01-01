@@ -20,6 +20,7 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> ARS_HUM = setUpSound("ars_hum");
     public static final RegistrySupplier<SoundEvent> BULKHEAD_LOCKED = setUpSound("bulkhead_locked");
     public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
+    public static final RegistrySupplier<SoundEvent> INTERIOR_CREAKS = setUpSound("interior_creaks");
 
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
         SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(TardisRefined.MODID, soundName));

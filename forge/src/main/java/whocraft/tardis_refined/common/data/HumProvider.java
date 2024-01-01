@@ -53,6 +53,7 @@ public class HumProvider implements DataProvider {
 
         if (!data.isEmpty()) {
             data.forEach((key, hum) -> {
+                TardisRefined.LOGGER.debug("Writing Hum {}", key);
                 try {
                     JsonObject currentHum = HumEntry.codec().encodeStart(JsonOps.INSTANCE, hum).get()
                             .ifRight(right -> {

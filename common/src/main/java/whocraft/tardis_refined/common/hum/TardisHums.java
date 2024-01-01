@@ -1,10 +1,13 @@
 package whocraft.tardis_refined.common.hum;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,7 +58,9 @@ public class TardisHums {
      * Gets a default HumEntry added by Tardis Refined. Useful as a fallback entry.
      */
     public static HumEntry getDefaultHum() {
-        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), SoundRegistry.HUM_CORAL.getId(), "Coral Hum");
+        ArrayList<ResourceLocation> arrayList = new ArrayList();
+        arrayList.add(new ResourceLocation(TardisRefined.MODID, "interior_creaks"));
+        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), SoundRegistry.HUM_CORAL.getId(), arrayList, "Coral Hum");
     }
 
     public static Map<ResourceLocation, HumEntry> getDefaultHums() {
