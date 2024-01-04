@@ -131,8 +131,6 @@ public class HumSelectionScreen extends SelectionScreen {
                     }
                 }
                 entry.setChecked(true);
-                age = 0;
-                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.STATIC.get(), (float) Math.random()));
             }, leftPos));
         }
 
