@@ -1,21 +1,13 @@
 package whocraft.tardis_refined.client.sounds;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import whocraft.tardis_refined.client.HumSoundManager;
-import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.util.TardisHelper;
-import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class QuickSimpleSound extends AbstractTickableSoundInstance {
 

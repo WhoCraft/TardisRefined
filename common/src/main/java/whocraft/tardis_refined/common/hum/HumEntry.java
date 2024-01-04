@@ -2,7 +2,12 @@ package whocraft.tardis_refined.common.hum;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.util.List;
 
@@ -21,11 +26,17 @@ public class HumEntry {
     private String name;
 
     public HumEntry(ResourceLocation identifier, ResourceLocation sound, List<ResourceLocation> ambientSounds, String name) {
-        System.out.println("HELLO: " + ambientSounds.size());
         this.identifier = identifier;
         this.sound = sound;
         this.ambientSounds = ambientSounds;
         this.name = name;
+    }
+
+    public HumEntry(ResourceLocation identifier, ResourceLocation sound, List<ResourceLocation> ambientSounds) {
+        this.identifier = identifier;
+        this.sound = sound;
+        this.ambientSounds = ambientSounds;
+        this.name = TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
     }
 
     public static Codec<HumEntry> codec() {

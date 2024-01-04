@@ -1,10 +1,9 @@
-package whocraft.tardis_refined.client;
+package whocraft.tardis_refined.client.sounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import whocraft.tardis_refined.client.sounds.LoopingHumSound;
 
 public class HumSoundManager {
     private static final Minecraft MC = Minecraft.getInstance();

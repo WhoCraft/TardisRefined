@@ -60,7 +60,7 @@ public class TardisHums {
     public static HumEntry getDefaultHum() {
         ArrayList<ResourceLocation> arrayList = new ArrayList();
         arrayList.add(new ResourceLocation(TardisRefined.MODID, "interior_creaks"));
-        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), SoundRegistry.HUM_CORAL.getId(), arrayList, "Coral Hum");
+        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), SoundRegistry.HUM_CORAL.getId(), arrayList);
     }
 
     public static Map<ResourceLocation, HumEntry> getDefaultHums() {

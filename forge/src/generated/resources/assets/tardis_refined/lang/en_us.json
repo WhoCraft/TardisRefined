@@ -102,6 +102,7 @@
   "ui.tardis_refined.monitor.main.gps": "GPS",
   "ui.tardis_refined.monitor.main_title": "COMPUTER BANK",
   "ui.tardis_refined.monitor.no.waypoints": "No Waypoints Saved!",
+  "ui.tardis_refined.monitor.select.hum": "SOUNDSCAPE",
   "ui.tardis_refined.monitor.upload.coords": "COORD NAVIGATION",
   "ui.tardis_refined.monitor.upload.waypoints": "WAYPOINT NAVIGATION",
   "ui.tardis_refined.monitor.waypoint_name": "Waypoint Name:",

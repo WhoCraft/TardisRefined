@@ -18,6 +18,7 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.common.hum.HumEntry;
