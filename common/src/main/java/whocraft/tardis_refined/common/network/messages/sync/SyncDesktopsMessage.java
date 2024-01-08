@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.network.messages;
+package whocraft.tardis_refined.common.network.messages.sync;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
@@ -12,9 +12,7 @@ import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SyncDesktopsMessage extends MessageS2C {

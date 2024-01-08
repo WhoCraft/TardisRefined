@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dalight_detector": {
+    "has_daylight_detector": {
       "conditions": {
         "items": [
           {
@@ -23,7 +23,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_dalight_detector"
+      "has_daylight_detector"
     ]
   ],
   "rewards": {

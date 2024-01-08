@@ -1,17 +1,11 @@
-package whocraft.tardis_refined.common.network.messages;
+package whocraft.tardis_refined.common.network.messages.screens;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.ScreenHandler;
-import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.client.screen.CancelDesktopScreen;
-import whocraft.tardis_refined.client.screen.MonitorScreen;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;

@@ -55,10 +55,11 @@ public class ShellSelectionScreen extends SelectionScreen {
     private Button patternButton;
     public static GlobalShellBlockEntity globalShellBlockEntity;
 
-    public ShellSelectionScreen() {
+    public ShellSelectionScreen(ResourceLocation currentShellTheme) {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
         this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
         generateDummyGlobalShell();
+        this.currentShellTheme = currentShellTheme;
 
     }
 
@@ -82,7 +83,9 @@ public class ShellSelectionScreen extends SelectionScreen {
         }, () -> {
             Minecraft.getInstance().setScreen(null);
         });
-        this.currentShellTheme = this.themeList.get(0);
+        if (currentShellTheme == null) {
+            this.currentShellTheme = this.themeList.get(0);
+        }
         this.patternCollection = ShellPatterns.getPatternCollectionForTheme(this.currentShellTheme);
         this.pattern = this.patternCollection.get(0);
 
@@ -189,7 +192,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
             ShellTheme theme = shellTheme.value();
             ResourceLocation shellThemeId = shellTheme.key().location();
-            selectionList.children().add(new SelectionListEntry(theme.getDisplayName(), (entry) -> {
+            SelectionListEntry selectionListEntry = new SelectionListEntry(theme.getDisplayName(), (entry) -> {
                 this.currentShellTheme = shellThemeId;
 
                 for (Object child : selectionList.children()) {
@@ -210,7 +213,13 @@ public class ShellSelectionScreen extends SelectionScreen {
 
                 age = 0;
                 entry.setChecked(true);
-            }, leftPos));
+            }, leftPos);
+
+            if (currentShellTheme.toString().equals(shellThemeId.toString())) {
+                selectionListEntry.setChecked(true);
+            }
+
+            selectionList.children().add(selectionListEntry);
         }
 
         return selectionList;

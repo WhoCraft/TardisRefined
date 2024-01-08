@@ -9,10 +9,12 @@ import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.TardisNetwork;
-import whocraft.tardis_refined.common.network.messages.SyncConsolePatternsMessage;
-import whocraft.tardis_refined.common.network.messages.SyncDesktopsMessage;
-import whocraft.tardis_refined.common.network.messages.SyncShellPatternsMessage;
+import whocraft.tardis_refined.common.network.messages.sync.SyncConsolePatternsMessage;
+import whocraft.tardis_refined.common.network.messages.sync.SyncDesktopsMessage;
+import whocraft.tardis_refined.common.network.messages.sync.SyncHumsMessage;
+import whocraft.tardis_refined.common.network.messages.sync.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -58,10 +60,12 @@ public class TardisRefined {
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
+        TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncHumsMessage::new);
         /* Need to register a default list of entries because on Fabric Cardinal Components classloads the TardisClientData class early on, before datapack entries have been added.
         We will use these as fallback values when looking up patterns.
          */
         ConsolePatterns.registerDefaultPatterns();
         ShellPatterns.registerDefaultPatterns();
+        TardisHums.registerDefaultHums();
     }
 }

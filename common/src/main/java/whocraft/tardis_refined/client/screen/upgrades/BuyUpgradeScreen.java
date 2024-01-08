@@ -3,7 +3,6 @@ package whocraft.tardis_refined.client.screen.upgrades;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,7 +11,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import whocraft.tardis_refined.client.screen.components.BackgroundlessButton;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
-import whocraft.tardis_refined.common.network.messages.upgrades.C2SDisplayUpgradeScreen;
 import whocraft.tardis_refined.common.network.messages.upgrades.UnlockUpgradeMessage;
 import whocraft.tardis_refined.constants.ModMessages;
 
@@ -47,7 +45,6 @@ public class BuyUpgradeScreen extends Screen {
             new UnlockUpgradeMessage(this.upgrade).send();
             this.parentScreen.closeOverlayScreen();
             Objects.requireNonNull(Objects.requireNonNull(this.minecraft).player).playSound(SoundEvents.PLAYER_LEVELUP, 1F, 1F);
-            new C2SDisplayUpgradeScreen(Minecraft.getInstance().level.dimension()).send();
         }).bounds(guiLeft + 23, guiTop + 33, 54, 20).build();
         button.active = this.available;
         this.addRenderableWidget(button);

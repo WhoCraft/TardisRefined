@@ -18,6 +18,8 @@ import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -44,6 +46,8 @@ public class TardisInteriorManager extends BaseHandler {
     private boolean processingWarping = false;
     private int airlockCountdownSeconds = 3;
     private int airlockTimerSeconds = 5;
+
+    private HumEntry humEntry = TardisHums.getDefaultHum();
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
 
@@ -96,6 +100,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     }
 
+    @Override
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE, this.isWaitingToGenerate);
         tag.putBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP, this.isGeneratingDesktop);
@@ -109,6 +114,7 @@ public class TardisInteriorManager extends BaseHandler {
 
         tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
         tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
+        tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
         return tag;
     }
     @Override
@@ -120,8 +126,17 @@ public class TardisInteriorManager extends BaseHandler {
         this.preparedTheme = TardisDesktops.getDesktopById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME)));
         this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
+        this.humEntry = TardisHums.getHumById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_CURRENT_HUM)));
     }
 
+
+    public HumEntry getHumEntry() {
+        return humEntry;
+    }
+
+    public void setHumEntry(HumEntry humEntry) {
+        this.humEntry = humEntry;
+    }
 
     public void tick(ServerLevel level) {
 

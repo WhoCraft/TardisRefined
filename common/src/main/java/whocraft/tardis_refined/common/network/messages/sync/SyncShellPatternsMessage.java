@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.network.messages;
+package whocraft.tardis_refined.common.network.messages.sync;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
@@ -10,15 +10,12 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
-import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ShellPattern;
-import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class SyncShellPatternsMessage extends MessageS2C {
 

@@ -14,6 +14,8 @@ import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -29,11 +31,13 @@ public class AestheticHandler extends BaseHandler {
     // Shell
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
+    private HumEntry currentHum = TardisHums.getDefaultHum();
 
     public AestheticHandler(TardisLevelOperator tardisLevelOperator) {
         super();
         this.tardisOperator = tardisLevelOperator;
     }
+
 
     public ShellPattern shellPattern() {
         return shellPattern;

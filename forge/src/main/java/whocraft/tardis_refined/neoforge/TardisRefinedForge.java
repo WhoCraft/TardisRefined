@@ -51,6 +51,7 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
         generator.addProvider(e.includeServer(), new DesktopProvider(generator));
+        generator.addProvider(e.includeServer(), new HumProvider(generator));
         generator.addProvider(e.includeServer(), new ShellPatternProvider(generator, TardisRefined.MODID));
 
         //Tags

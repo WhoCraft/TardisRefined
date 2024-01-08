@@ -121,6 +121,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINTS, "WAYPOINTS");
         add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "WAYPOINT NAVIGATION");
         add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "COORD NAVIGATION");
+        add(ModMessages.UI_MONITOR_SELECT_HUM, "SOUNDSCAPE");
         add(ModMessages.UI_MONITOR_GPS, "GPS");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
         add(ModMessages.UI_LIST_SELECTION, "Currently selected: &s");

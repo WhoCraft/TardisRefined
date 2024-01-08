@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client.sounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.sounds.SoundEvent;
@@ -10,16 +11,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.util.TardisHelper;
-import whocraft.tardis_refined.registry.DimensionTypes;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class LoopingSound extends AbstractTickableSoundInstance {
 
     public static LoopingSound ARS_HUMMING = null;
     public static LoopingSound FLIGHT_LOOP = null;
-    public static LoopingSound HUM_TEST = null;
-
     public LoopingSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
         attenuation = Attenuation.NONE;
@@ -83,26 +80,20 @@ public class LoopingSound extends AbstractTickableSoundInstance {
             }
         }
 
-        if(this == LoopingSound.HUM_TEST){
-            delay = 40;
-            volume = TardisHelper.isInArsArea(player.blockPosition()) ? 0 : 0.2F;
-            if(DimensionTypes.TARDIS == player.level().dimensionTypeId()){
-                volume = 0.2F;
-            } else {
-                volume = 0.0F;
-            }
-        }
     }
 
+    @Override
+    public Sound getSound() {
+        return super.getSound();
+    }
 
     public static boolean shouldMinecraftMusicStop(SoundManager soundManager){
-        return soundManager.isActive(FLIGHT_LOOP) || soundManager.isActive(ARS_HUMMING) || soundManager.isActive(HUM_TEST);
+        return soundManager.isActive(FLIGHT_LOOP) || soundManager.isActive(ARS_HUMMING) || soundManager.isActive(HumSoundManager.getCurrentSound());
     }
 
     public static void setupSounds(){
         LoopingSound.ARS_HUMMING = new LoopingSound(SoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
         LoopingSound.FLIGHT_LOOP = new LoopingSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
-        LoopingSound.HUM_TEST = new LoopingSound(SoundRegistry.TEST_HUM.get(), SoundSource.AMBIENT);
     }
 
 }

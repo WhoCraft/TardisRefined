@@ -36,6 +36,7 @@ public class ModMessages {
     public static final String UI_MONITOR_WAYPOINTS = ui("monitor.waypoints");
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
+    public static final String UI_MONITOR_SELECT_HUM = ui("monitor.select.hum");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
     public static final String UI_MONITOR_WAYPOINT_UPLOAD = ui("monitor.waypoints.upload");
     public static final String UI_MONITOR_WAYPOINT_SUBMIT = ui("monitor.waypoints.submit");

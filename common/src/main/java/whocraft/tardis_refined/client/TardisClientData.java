@@ -3,23 +3,33 @@ package whocraft.tardis_refined.client;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
-import whocraft.tardis_refined.common.network.messages.SyncTardisClientDataMessage;
+import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
+import java.util.List;
 import java.util.Map;
 
 import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
@@ -51,11 +61,26 @@ public class TardisClientData {
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
+
+    //Not saved to disk, no real reason to be
+    private int nextAmbientNoiseCall = 40;
+
+
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
 
+    private HumEntry humEntry = TardisHums.getDefaultHum();
+
     public ResourceLocation getShellTheme() {
         return shellTheme;
+    }
+
+    public HumEntry getHumEntry() {
+        return humEntry;
+    }
+
+    public void setHumEntry(HumEntry humEntry) {
+        this.humEntry = humEntry;
     }
 
     public void setShellTheme(ResourceLocation shellTheme) {
@@ -155,6 +180,8 @@ public class TardisClientData {
         compoundTag.putString("shellTheme", shellTheme.toString());
         compoundTag.putString("shellPattern", shellPattern.toString());
 
+        compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
+
         return compoundTag;
     }
 
@@ -176,6 +203,7 @@ public class TardisClientData {
         shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
         shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
 
+        setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
     }
 
     /**
@@ -204,6 +232,10 @@ public class TardisClientData {
 
 
         if (Minecraft.getInstance().player.level().dimensionTypeId() == DimensionTypes.TARDIS) {
+
+            ClientLevel tardisLevel = Minecraft.getInstance().level;
+            boolean isThisTardis = levelKey == tardisLevel.dimension();
+
             createWorldAmbience(Minecraft.getInstance().player);
 
 
@@ -218,26 +250,47 @@ public class TardisClientData {
                 }
             }
 
-            if(!soundManager.isActive(LoopingSound.HUM_TEST)){
-                soundManager.play(LoopingSound.HUM_TEST);
+
+            if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
+                HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
+            }
+
+            if (isThisTardis && tardisLevel.getGameTime() % nextAmbientNoiseCall == 0) {
+                nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
+                List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
+                if (!ambientSounds.isEmpty()) {
+                    LocalPlayer player = Minecraft.getInstance().player;
+                    RandomSource randomSource = tardisLevel.random;
+
+                    ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
+                    SoundEvent randomSoundEvent = SoundEvent.createVariableRangeEvent(randomSoundLocation);
+
+                    QuickSimpleSound simpleSoundInstance = new QuickSimpleSound(randomSoundEvent, SoundSource.AMBIENT);
+                    simpleSoundInstance.setVolume(0.3F);
+
+                    double randomX = player.getX() + (randomSource.nextDouble() - 0.5) * 100;
+                    double randomY = player.getY() + (randomSource.nextDouble() - 0.5) * 100;
+                    double randomZ = player.getZ() + (randomSource.nextDouble() - 0.5) * 100;
+
+                    simpleSoundInstance.setLocation(new Vec3(randomX, randomY, randomZ));
+                    Minecraft.getInstance().getSoundManager().play(simpleSoundInstance);
+                }
+            }
+
+            if (LoopingSound.shouldMinecraftMusicStop(soundManager)) {
+                Minecraft.getInstance().getMusicManager().stopPlaying();
+            }
+
+
+            // Responsible for screen-shake. Not sure of a better solution at this point in time.
+            if (isInDangerZone || isCrashing) {
+                if (Minecraft.getInstance().player.level().dimension() == levelKey) {
+                    var player = Minecraft.getInstance().player;
+                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+                }
             }
         }
-
-
-        if (LoopingSound.shouldMinecraftMusicStop(soundManager)) {
-            Minecraft.getInstance().getMusicManager().stopPlaying();
-        }
-
-
-        // Responsible for screen-shake. Not sure of a better solution at this point in time.
-        if (isInDangerZone || isCrashing) {
-            if (Minecraft.getInstance().player.level().dimension() == levelKey) {
-                var player = Minecraft.getInstance().player;
-                player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-                player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-            }
-        }
-
 
     }
 

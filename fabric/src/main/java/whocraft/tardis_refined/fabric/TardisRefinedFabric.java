@@ -15,6 +15,7 @@ import net.neoforged.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
@@ -74,6 +75,7 @@ public class TardisRefinedFabric implements ModInitializer {
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), ShellPatterns.getReloadListener());
+        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "hums"), TardisHums.getReloadListener());
 
         if (ModCompatChecker.immersivePortals()) {
             if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {

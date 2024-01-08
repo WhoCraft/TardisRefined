@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.network.messages;
+package whocraft.tardis_refined.common.network.messages.sync;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;

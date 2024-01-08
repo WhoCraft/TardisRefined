@@ -13,6 +13,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
@@ -37,6 +38,7 @@ public class CommonBus {
 
         addReloadListenerEvent.addListener(TardisDesktops.getReloadListener());
         addReloadListenerEvent.addListener(ShellPatterns.getReloadListener());
+        addReloadListenerEvent.addListener(TardisHums.getReloadListener());
 
     }
 
