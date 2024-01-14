@@ -63,6 +63,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.KEY.get(), "Tardis Key");
         add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
+        add(ModMessages.ITEM_GROUP, "Tardis Refined");
 
         /*Entity*/
         add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
@@ -110,11 +111,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CMD_ARG_UPGRADE_INVALID, "Invalid Upgrade of ID %s");
         add(ModMessages.CMD_ARG_DESKTOP_INVALID, "Invalid Desktop of ID %s");
         add(ModMessages.CMD_ARG_SHELL_INVALID, "Invalid Shell of ID %s");
-
-
-        /*Creative Tab*/
-        add("itemGroup.tardis_refined.tardis_refined", "Tardis Refined");
-        add("itemGroup.tardis_refined", "Tardis Refined");
 
         /*GUI*/
         add(ModMessages.UI_MONITOR_MAIN_TITLE, "COMPUTER BANK");

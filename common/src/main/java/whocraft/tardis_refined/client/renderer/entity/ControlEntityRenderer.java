@@ -44,7 +44,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
     @Override
     protected void renderNameTag(ControlEntity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightCoords) {
-        MutableComponent textComponent = Component.literal(component.getString());
+        MutableComponent textComponent = component.copy();
         textComponent.withStyle(style -> style
                 .applyFormats(ChatFormatting.BOLD, (entity.level().getGameTime() % 60 == 0) ?  ChatFormatting.GOLD : ChatFormatting.YELLOW)
         );

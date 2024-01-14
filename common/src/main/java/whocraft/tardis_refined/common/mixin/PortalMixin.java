@@ -11,6 +11,7 @@ import qouteall.imm_ptl.core.portal.Portal;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.TardisPortalData;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.UUID;
 
@@ -48,14 +49,14 @@ public abstract class PortalMixin implements TardisPortalData {
     @Inject(method = "addAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
     private void addTARDISData(CompoundTag compoundTag, CallbackInfo ci) {
         if (tardisID != null) {
-            compoundTag.putUUID("tardis_id", tardisID);
+            compoundTag.putUUID(NbtConstants.TARDIS_ID, tardisID);
         }
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At(value = "INVOKE", target = "Lqouteall/q_misc_util/my_util/SignalBiArged;emit(Ljava/lang/Object;Ljava/lang/Object;)V", shift = At.Shift.AFTER), remap = true)
     private void readTARDISData(CompoundTag compoundTag, CallbackInfo ci) {
-        if (compoundTag.contains("tardis_id")) {
-            tardisID = compoundTag.getUUID("tardis_id");
+        if (compoundTag.contains(NbtConstants.TARDIS_ID)) {
+            tardisID = compoundTag.getUUID(NbtConstants.TARDIS_ID);
         }
     }
 }

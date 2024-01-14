@@ -57,7 +57,6 @@
   "item.tardis_refined.pattern_manipulator": "Pattern Manipulator",
   "item.tardis_refined.tardis_key": "Tardis Key",
   "itemGroup.tardis_refined": "Tardis Refined",
-  "itemGroup.tardis_refined.tardis_refined": "Tardis Refined",
   "message.tardis_refined.exterior_cooldown": "You must wait %s seconds",
   "message.tardis_refined.key_bound": "Key Bound to %s",
   "message.tardis_refined.key_cycled": "Main: %s",

@@ -123,7 +123,7 @@ public class TRTeleporter {
         int zRound = (int) pZ;
         BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
 
-        if (teleportedEntities.size() != 0){
+        if (!teleportedEntities.isEmpty()){
             if (teleportedEntities.contains(pEntity)){ //If we are calling this method by itself such as teleporting passengers, check if we have already teleported the entity
                 return false;
             }

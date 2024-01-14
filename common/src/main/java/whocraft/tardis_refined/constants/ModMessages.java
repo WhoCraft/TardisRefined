@@ -6,10 +6,11 @@ public class ModMessages {
 
     /* Related Links*/
 
-    public static String GITHUB_RELEASE_PAGE = "https://github.com/CommandrMoose/TardisRefined/releases";
+    public static String GITHUB_RELEASE_PAGE = "https://github.com/Suff99/TardisRefined/releases";
 
     /*Item Special cases*/
     public static String ITEM_KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";
+    public static String ITEM_GROUP = "itemGroup."+ TardisRefined.MODID;
 
     /*Messages*/
     public static String MSG_EXTERIOR_COOLDOWN = message("exterior_cooldown");

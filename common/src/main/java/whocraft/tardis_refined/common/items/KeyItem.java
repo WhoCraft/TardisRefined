@@ -30,6 +30,7 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -58,16 +59,16 @@ public class KeyItem extends Item {
         StringTag dim = StringTag.valueOf(levelResourceKey.location().toString());
 
         ListTag keychain;
-        if (!itemtag.contains("keychain", CompoundTag.TAG_LIST)) {
+        if (!itemtag.contains(NbtConstants.KEYCHAIN, CompoundTag.TAG_LIST)) {
             // Create a new keychain tag and add it to the itemtag object
             keychain = new ListTag();
-            itemtag.put("keychain", keychain);
+            itemtag.put(NbtConstants.KEYCHAIN, keychain);
         } else {
             // Get the existing keychain tag from the itemtag object
-            keychain = itemtag.getList("keychain", Tag.TAG_STRING);
+            keychain = itemtag.getList(NbtConstants.KEYCHAIN, Tag.TAG_STRING);
         }
 
-        // Add dim to the keychain, whether or not it already exists in the keychain
+        // Add dim to the keychain, whether it already exists in the keychain
         keychain.add(dim);
 
         itemStack.setTag(itemtag);
@@ -77,13 +78,13 @@ public class KeyItem extends Item {
     public static void setKeychain(ItemStack itemStack, ArrayList<ResourceKey<Level>> levels) {
         CompoundTag nbt = itemStack.getOrCreateTag();
         ListTag keychain;
-        if (!nbt.contains("keychain", CompoundTag.TAG_LIST)) {
+        if (!nbt.contains(NbtConstants.KEYCHAIN, CompoundTag.TAG_LIST)) {
             // Create a new keychain tag and add it to the itemtag object
             keychain = new ListTag();
-            nbt.put("keychain", keychain);
+            nbt.put(NbtConstants.KEYCHAIN, keychain);
         } else {
             // Get the existing keychain tag from the itemtag object
-            keychain = nbt.getList("keychain", Tag.TAG_STRING);
+            keychain = nbt.getList(NbtConstants.KEYCHAIN, Tag.TAG_STRING);
         }
 
         keychain.clear();
@@ -99,11 +100,11 @@ public class KeyItem extends Item {
         CompoundTag nbt = itemStack.getOrCreateTag();
 
 
-        if (!nbt.contains("keychain")) {
+        if (!nbt.contains(NbtConstants.KEYCHAIN)) {
             return new ArrayList<>();
         }
 
-        ListTag keychain = nbt.getList("keychain", Tag.TAG_STRING);
+        ListTag keychain = nbt.getList(NbtConstants.KEYCHAIN, Tag.TAG_STRING);
 
         ArrayList<ResourceKey<Level>> levels = new ArrayList<>();
 

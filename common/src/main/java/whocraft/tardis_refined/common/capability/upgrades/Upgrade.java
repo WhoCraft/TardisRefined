@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
@@ -19,7 +20,7 @@ public class Upgrade {
     private final UpgradeType upgradeType;
     private int cost = 1;
     private boolean posSet = false;
-    private int posX = 0, posY = 0;
+    private double posX = 0, posY = 0;
     private final Supplier<ItemStack> icon;
 
     public enum UpgradeType {
@@ -82,11 +83,11 @@ public class Upgrade {
     }
 
     @Nullable
-    public Vec2 getScreenPosition() {
+    public Vec3 getScreenPosition() {
         if (!this.posSet) {
             return null;
         }
-        return new Vec2(this.posX, this.posY);
+        return new Vec3(this.posX, this.posY, 0);
     }
 
     @Nullable

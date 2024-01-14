@@ -68,6 +68,7 @@ public class NbtConstants {
     public static final String LOCATION_ROTATION = "_location_rotation";
     public static final String LOCATION_DIMENSION_MODID = "_location_dimension_id";
     public static final String LOCATION_DIMENSION_PATH = "_location_dimension_path";
+    public static final String KEYCHAIN = "keychain";
 
 
     public static TardisNavLocation getTardisNavLocation(CompoundTag tag, String prefix, TardisLevelOperator operator) {

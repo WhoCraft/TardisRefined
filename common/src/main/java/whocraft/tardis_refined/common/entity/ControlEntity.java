@@ -290,8 +290,6 @@ public class ControlEntity extends Entity {
             } else {
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 upgradeHandler.addUpgradeXP(5);
-                upgradeHandler.setUpgradePoints(50000);
-
                 serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
             }
         });
