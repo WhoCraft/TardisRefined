@@ -68,12 +68,12 @@ public class MonitorScreen extends SelectionScreen {
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> Minecraft.getInstance().setScreen(new ShellSelectionScreen()), leftPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos));
 
-        if(isCoordTravelEnabled) {
+    /*    if(isCoordTravelEnabled) {
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos));
         // TODO OP, so disabled until we have upgrades   selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos));
             selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos));
         }
-
+*/
         return selectionList;
     }
 

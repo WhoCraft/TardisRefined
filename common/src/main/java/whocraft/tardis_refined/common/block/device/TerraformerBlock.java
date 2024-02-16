@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.registry.DimensionTypes;
 
 import java.util.stream.Stream;
@@ -29,41 +30,41 @@ import static net.minecraft.world.phys.shapes.BooleanOp.OR;
 public class TerraformerBlock extends Block {
 
     public static BooleanProperty ACTIVE = BlockStateProperties.POWERED;
-    
+
     public static VoxelShape SHAPE = Stream.of(
             Stream.of(
-            Block.box(0.5, 5, 13.5, 2.5, 10, 15.5),
-            Block.box(1.5, 10, 13.5, 1.5, 18, 15.5),
-            Block.box(0, 0, 13, 3, 5, 16)
+                    Block.box(0.5, 5, 13.5, 2.5, 10, 15.5),
+                    Block.box(1.5, 10, 13.5, 1.5, 18, 15.5),
+                    Block.box(0, 0, 13, 3, 5, 16)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(0.5, 5, 0.5, 2.5, 10, 2.5),
-            Block.box(1.5, 10, 0.5, 1.5, 18, 2.5),
-            Block.box(0, 0, 0, 3, 5, 3)
+                    Block.box(0.5, 5, 0.5, 2.5, 10, 2.5),
+                    Block.box(1.5, 10, 0.5, 1.5, 18, 2.5),
+                    Block.box(0, 0, 0, 3, 5, 3)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(13.5, 5, 0.5, 15.5, 10, 2.5),
-            Block.box(14.5, 10, 0.5, 14.5, 18, 2.5),
-            Block.box(13, 0, 0, 16, 5, 3)
+                    Block.box(13.5, 5, 0.5, 15.5, 10, 2.5),
+                    Block.box(14.5, 10, 0.5, 14.5, 18, 2.5),
+                    Block.box(13, 0, 0, 16, 5, 3)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(13.5, 5, 13.5, 15.5, 10, 15.5),
-            Block.box(14.5, 10, 13.5, 14.5, 18, 15.5),
-            Block.box(13, 0, 13, 16, 5, 16)
+                    Block.box(13.5, 5, 13.5, 15.5, 10, 15.5),
+                    Block.box(14.5, 10, 13.5, 14.5, 18, 15.5),
+                    Block.box(13, 0, 13, 16, 5, 16)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(12.5, 17.5, 12.5, 16.5, 21.5, 16.5),
-            Block.box(0, 19, 0, 16, 19, 16),
-            Block.box(12.5, 17.5, -0.5, 16.5, 21.5, 3.5),
-            Block.box(-0.5, 17.5, -0.5, 3.5, 21.5, 3.5),
-            Block.box(-0.5, 17.5, 12.5, 3.5, 21.5, 16.5),
-            Block.box(2, 17, 2, 14, 20, 14),
-            Block.box(5, 15.5, 5, 11, 17.5, 11)
+                    Block.box(12.5, 17.5, 12.5, 16.5, 21.5, 16.5),
+                    Block.box(0, 19, 0, 16, 19, 16),
+                    Block.box(12.5, 17.5, -0.5, 16.5, 21.5, 3.5),
+                    Block.box(-0.5, 17.5, -0.5, 3.5, 21.5, 3.5),
+                    Block.box(-0.5, 17.5, 12.5, 3.5, 21.5, 16.5),
+                    Block.box(2, 17, 2, 14, 20, 14),
+                    Block.box(5, 15.5, 5, 11, 17.5, 11)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Block.box(2, 0, 2, 14, 4, 14),
             Block.box(4, 4, 4, 12, 6, 12)
-            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get();
-    
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get();
+
     public TerraformerBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
@@ -85,13 +86,14 @@ public class TerraformerBlock extends Block {
         if (level instanceof ServerLevel serverLevel) {
             if (checkIfStructure(serverLevel, blockPos)) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (cap.getInteriorManager().isWaitingToGenerate()) {
+                    TardisInteriorManager interiorManager = cap.getInteriorManager();
+                    if (interiorManager.isWaitingToGenerate()) {
                         level.destroyBlock(blockPos, true);
                     } else {
-                        if (cap.getInteriorManager().isCave()) {
-                            cap.getInteriorManager().prepareDesktop(TardisDesktops.FACTORY_THEME);
+                        if (interiorManager.isCave()) {
+                            interiorManager.prepareDesktop(TardisDesktops.FACTORY_THEME);
                             destroyStructure(serverLevel, blockPos);
-                            serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
+                            serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
                         }
                     }
                 });
@@ -121,8 +123,9 @@ public class TerraformerBlock extends Block {
         if (level instanceof ServerLevel serverLevel) {
             if (blockState.getValue(ACTIVE)) {
                 TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    if (cap.getInteriorManager().isWaitingToGenerate()) {
-                        cap.getInteriorManager().cancelDesktopChange();
+                    TardisInteriorManager interiorManager = cap.getInteriorManager();
+                    if (interiorManager.isWaitingToGenerate()) {
+                        interiorManager.cancelDesktopChange();
                     }
                 });
             }
