@@ -75,7 +75,7 @@ public class Upgrade {
         return this.cost;
     }
 
-    public Upgrade setPosition(int x, int y) {
+    public Upgrade setPosition(double x, double y) {
         this.posSet = true;
         this.posX = x;
         this.posY = y;

@@ -49,10 +49,10 @@ public class Upgrades {
             .setSkillPointsRequired(50).setPosition(1, 2));
 
     public static final RegistrySupplier<Upgrade> EXPLORER_II = UPGRADE_DEFERRED_REGISTRY.register("explorer_ii", () -> new IncrementUpgrade(Items.COMPASS::getDefaultInstance, EXPLORER, RegistryHelper.makeKey("explorer_ii"), Upgrade.UpgradeType.SUB_UPGRADE).setIncrementAmount(2500)
-            .setSkillPointsRequired(50).setPosition(2, 2));
+            .setSkillPointsRequired(50).setPosition(1.5, 2));
 
     public static final RegistrySupplier<Upgrade> EXPLORER_III = UPGRADE_DEFERRED_REGISTRY.register("explorer_iii", () -> new IncrementUpgrade(Items.COMPASS::getDefaultInstance, EXPLORER_II, RegistryHelper.makeKey("explorer_iii"), Upgrade.UpgradeType.SUB_UPGRADE).setIncrementAmount(5000)
-            .setSkillPointsRequired(50).setPosition(3, 2));
+            .setSkillPointsRequired(50).setPosition(2, 2));
 
     public static final RegistrySupplier<Upgrade> DIMENSION_TRAVEL = UPGRADE_DEFERRED_REGISTRY.register("dimension_travel", () -> new Upgrade(Blocks.NETHER_BRICKS.asItem()::getDefaultInstance, NAVIGATION_SYSTEM, RegistryHelper.makeKey("dimension_travel"), Upgrade.UpgradeType.SUB_UPGRADE)
             .setSkillPointsRequired(50).setPosition(0, 3));

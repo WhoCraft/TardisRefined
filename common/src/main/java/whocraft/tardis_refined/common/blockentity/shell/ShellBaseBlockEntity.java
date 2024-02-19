@@ -15,7 +15,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -26,13 +28,14 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 
-public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell {
+public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
     protected ResourceKey<Level> TARDIS_ID;
     public AnimationState liveliness = new AnimationState();
@@ -132,5 +135,26 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     @Override
     public DesktopTheme getAssociatedTheme() {
         return TardisDesktops.FACTORY_THEME;
+    }
+
+    private final int DUPLICATION_CHECK_TIME = 1200; // A minute
+
+    @Override
+    public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
+        if(level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide){
+            ResourceKey<Level> tardisId = getTardisId();
+            if(tardisId == null) return;
+            ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
+            BlockPos myCurrentPosition = getBlockPos();
+
+            TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
+                BlockPos blockPosLastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation().getPosition();
+                BlockPos wantedDestination = tardisLevelOperator.getPilotingManager().getTargetLocation().getPosition();
+
+                if(myCurrentPosition != blockPosLastKnown && myCurrentPosition != wantedDestination && myCurrentPosition != BlockPos.ZERO){
+                    level.removeBlock(worldPosition, false);
+                }
+            });
+        }
     }
 }

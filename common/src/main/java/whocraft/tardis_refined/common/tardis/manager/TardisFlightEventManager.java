@@ -249,13 +249,14 @@ public class TardisFlightEventManager extends BaseHandler{
         ticksInTheDangerZone++;
         // Tick every second
         var scaleForDanger = 0.5f;
+        var gameTime = operator.getLevel().getGameTime();
 
-        if (operator.getLevel().getGameTime() % (10 * 20) == 0) {
+        if (gameTime % (10 * 20) == 0) {
             this.requiredDangerZoneRequests++;
         }
 
         if (dangerZoneSecondsPast(10)) {
-            if (operator.getLevel().getGameTime() % (6 * 20) == 0) {
+            if (gameTime % (6 * 20) == 0) {
                 this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.MINECART_INSIDE, SoundSource.BLOCKS, 1000f, 0.1f);
             }
 
@@ -263,7 +264,7 @@ public class TardisFlightEventManager extends BaseHandler{
         }
 
         if (dangerZoneSecondsPast(30)) {
-            if (operator.getLevel().getGameTime() % (3 * 20) == 0) {
+            if (gameTime % (3 * 20) == 0) {
                 TardisHelper.playCloisterBell(operator);
             }
 
