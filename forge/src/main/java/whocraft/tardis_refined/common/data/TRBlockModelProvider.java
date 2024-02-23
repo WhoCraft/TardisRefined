@@ -89,8 +89,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
          */
         customLocation(BlockRegistry.ARS_LEAVES.get());
         customLocation(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
-        customLocation(BlockRegistry.GROWTH_STONE.get());
-        customLocation(BlockRegistry.HARDENED_GROWTH_STONE.get());
+        customLocation(BlockRegistry.FOOLS_STONE.get());
 
         /*
          **Fences**

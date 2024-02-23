@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.WorldGenRegion;
@@ -24,13 +23,12 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
-import net.minecraft.world.level.levelgen.structure.StructureSet;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
+import whocraft.tardis_refined.constants.TardisGeneration;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -69,17 +67,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public void buildSurface(WorldGenRegion level, StructureManager structureManager, RandomState random, ChunkAccess chunk) {
-//        var bottom = chunk.getMinBuildHeight() + 70;
-//        BlockPos cornerPos = new BlockPos(chunk.getPos().getMinBlockX(), bottom, chunk.getPos().getMinBlockZ());
-//        BlockPos lastCornerPos = new BlockPos(chunk.getPos().getMaxBlockX(), chunk.getMaxBuildHeight() - 75, chunk.getPos().getMaxBlockZ());
-//        for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
-//            if (pos.getY() <= bottom + 5) {
-//                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
-//            } else {
-//                chunk.setBlockState(pos, Blocks.AIR.defaultBlockState(), false);
-//            }
-//
-//        }
+
     }
 
     @Override
@@ -92,6 +80,20 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender p_223210_, RandomState p_223211_, StructureManager p_223212_, ChunkAccess access) {
+
+        // Flatworlds appear to use this function instead of the surface.
+        BlockPos cornerPos = new BlockPos(access.getPos().getMinBlockX(), TardisGeneration.TARDIS_ROOT_GENERATION_MIN_HEIGHT -5, access.getPos().getMinBlockZ());
+        BlockPos lastCornerPos = new BlockPos(access.getPos().getMaxBlockX(), TardisGeneration.TARDIS_ROOT_GENERATION_MAX_HEIGHT + 5, access.getPos().getMaxBlockZ());
+        for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
+
+            if (pos.getY() <= TardisGeneration.TARDIS_ROOT_GENERATION_MIN_HEIGHT || pos.getY() > TardisGeneration.TARDIS_ROOT_GENERATION_MAX_HEIGHT ) {
+                access.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
+            } else {
+
+                access.setBlockState(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), false);
+            }
+        }
+
         return CompletableFuture.completedFuture(access);
     }
 
@@ -120,6 +122,8 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
         return new NoiseColumn(0, states);
     }
+
+
 
     @Override
     public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {}

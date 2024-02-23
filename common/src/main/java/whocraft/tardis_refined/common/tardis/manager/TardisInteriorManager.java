@@ -12,6 +12,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -309,14 +311,17 @@ public class TardisInteriorManager extends BaseHandler {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
 
-            // Generate Corridors
-            if (!this.hasGeneratedCorridors) {
-                TardisArchitectureHandler.generateEssentialCorridors(serverLevel);
-                this.hasGeneratedCorridors = true;
+            if (theme != TardisDesktops.DEFAULT_OVERGROWN_THEME) {
+                // Generate Corridors
+                if (!this.hasGeneratedCorridors) {
+                    TardisArchitectureHandler.generateEssentialCorridors(serverLevel); // This causes a little lag, could be worth a fix.
+                    this.hasGeneratedCorridors = true;
+                }
             }
 
             // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
+
             setCurrentTheme(theme);
 
         }

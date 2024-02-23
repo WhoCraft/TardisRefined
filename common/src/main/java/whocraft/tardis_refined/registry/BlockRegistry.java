@@ -11,7 +11,6 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
@@ -50,8 +49,7 @@ public class BlockRegistry {
     public static final RegistrySupplier<RootShellDoorBlock> ROOT_SHELL_DOOR = register("root_shell_door", () -> new RootShellDoorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000)), false, true);
 
     // Generation Blocks
-    public static final RegistrySupplier<Block> GROWTH_STONE = register("growth_stone", () -> new GrowthStoneBlock(BlockBehaviour.Properties.of().strength(3)), true, true);
-    public static final RegistrySupplier<Block> HARDENED_GROWTH_STONE = register("hardened_growth_stone", () -> new Block(BlockBehaviour.Properties.of().strength(10000, 10000)), true, true);
+    public static final RegistrySupplier<Block> FOOLS_STONE = register("fools_stone", () -> new GrowthStoneBlock(BlockBehaviour.Properties.of().strength(3)), true, true);
 
 
     // Roots

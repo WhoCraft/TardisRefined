@@ -13,12 +13,10 @@ import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.constants.TardisGeneration;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Consumer;
+import java.util.*;
 
 // Responsible for all the tedious generation of the desktop;
 public class TardisArchitectureHandler {
@@ -33,28 +31,37 @@ public class TardisArchitectureHandler {
         TardisRefined.LOGGER.debug(String.format("Attempting to generate desktop theme: %s for TARDIS.", theme.getIdentifier()));
 
         // Fill the area out.
-        BlockPos corner = new BlockPos(DESKTOP_CENTER_POS.getX() - INTERIOR_SIZE, operator.getMinBuildHeight() + 75, DESKTOP_CENTER_POS.getZ() - INTERIOR_SIZE);
-        BlockPos farCorner = new BlockPos(DESKTOP_CENTER_POS.getX() + INTERIOR_SIZE, operator.getMaxBuildHeight() - 75, DESKTOP_CENTER_POS.getZ() + INTERIOR_SIZE);
+        BlockPos corner = new BlockPos(TardisGeneration.TARDIS_CENTER_POS.getX() - TardisGeneration.DESKTOP_RADIUS, TardisGeneration.TARDIS_ROOT_GENERATION_MIN_HEIGHT, TardisGeneration.TARDIS_CENTER_POS.getZ() - TardisGeneration.DESKTOP_RADIUS);
+        BlockPos farCorner = new BlockPos(TardisGeneration.TARDIS_CENTER_POS.getX() + TardisGeneration.DESKTOP_RADIUS, TardisGeneration.TARDIS_ROOT_GENERATION_MAX_HEIGHT, TardisGeneration.TARDIS_CENTER_POS.getZ() + TardisGeneration.DESKTOP_RADIUS);
 
-        for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
-            operator.removeBlock(pos, false);
+
+        if (theme != TardisDesktops.DEFAULT_OVERGROWN_THEME) {
+
+            for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
+                if (operator.getBlockState(pos) != BlockRegistry.FOOLS_STONE.get().defaultBlockState()) {
+                    operator.setBlock(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), 3);
+                }
+
+            }
         }
-
 
         List<Entity> desktopEntities = operator.getLevel().getEntitiesOfClass(Entity.class, new AABB(corner, farCorner));
         desktopEntities.forEach(Entity::discard); //Don't teleport entities to a hard coded coordinate, that causes hanging entity out of world issues. In other cases, if another mod defines that coordinate as a safe area (possible) that will mean the entities never get killed.
 
         Optional<StructureTemplate> structureNBT = operator.getLevel().getStructureManager().get(theme.getStructureLocation());
+
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
-            structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 3);
+            structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 0);
 
             // Assign the door from the created structure.
             setInteriorDoorFromStructure(structure, operator);
             buildAirlockEntranceFromStructure(structure, operator);
         });
-    }
 
+
+
+    }
 
     public static void buildAirlockEntranceFromStructure(StructureTemplate template, ServerLevel level) {
         BlockPos minPos = calculateArcOffset(template, DESKTOP_CENTER_POS);
@@ -70,7 +77,7 @@ public class TardisArchitectureHandler {
                     Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/airlock_entrance"));
                     structureNBT.ifPresent(structure -> {
                         BlockPos offsetPosition = new BlockPos(3, 2, 0);
-                        structure.placeInWorld(level.getLevel(), pos.subtract(offsetPosition), pos.subtract(offsetPosition), new StructurePlaceSettings(), level.getLevel().random, 3);
+                        structure.placeInWorld(level.getLevel(), pos.subtract(offsetPosition), pos.subtract(offsetPosition), new StructurePlaceSettings(), level.getLevel().random, 2);
 
                         cap.getInteriorManager().setCorridorAirlockCenter(pos.south(2));
                         level.setBlock(pos, level.getBlockState(pos).setValue(BulkHeadDoorBlock.LOCKED, false), 2);
