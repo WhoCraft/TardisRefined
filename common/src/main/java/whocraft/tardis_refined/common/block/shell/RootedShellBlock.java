@@ -32,7 +32,9 @@ import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class RootedShellBlock extends ShellBaseBlock {
 
@@ -47,9 +49,12 @@ public class RootedShellBlock extends ShellBaseBlock {
 
         if(!player.getMainHandItem().is(Items.SHEARS)) return InteractionResult.FAIL;
 
+
         this.setUpTardis(blockState, level, blockPos);
 
+
         if (player != null) {
+
             player.getMainHandItem().hurtAndBreak(1, player, arg2 -> arg2.broadcastBreakEvent(interactionHand));
             level.playSound(player, player.blockPosition(), SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0f, 1.0f);
             level.playSound(player, player.blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1.0f, 1.0f);
@@ -59,32 +64,28 @@ public class RootedShellBlock extends ShellBaseBlock {
         return InteractionResult.SUCCESS; //Prevents processing the ShellBaseBlockEntity generating another UUID and causing a second dimension to be created
     }
 
+
     private boolean setUpTardis(BlockState blockState, Level level, BlockPos blockPos){
         if (level instanceof ServerLevel serverLevel) {
             if (level.getBlockEntity(blockPos) instanceof ShellBaseBlockEntity shellBaseBlockEntity) {
                 if (shellBaseBlockEntity.shouldSetup()){
+
+
                     //Create a Level Key with a randomised UUID
                     ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
 
-                    //Set the shell with this level
-                    shellBaseBlockEntity.setTardisId(generatedLevelKey);
                     //Create the Level on demand which will create our capability
-                    ServerLevel interior = DimensionHandler.getOrCreateInterior(level, shellBaseBlockEntity.getTardisId().location());
+                    ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, generatedLevelKey.location());
+
+                    // Set the UUID on the block entity.
+                    shellBaseBlockEntity.setTardisId(generatedLevelKey);
 
                     TardisLevelOperator.get(interior).ifPresent(tardisLevelOperator -> {
-                        TardisInteriorManager intManager = tardisLevelOperator.getInteriorManager();
-                        TardisExteriorManager extManager = tardisLevelOperator.getExteriorManager();
-                        TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
                         if (!tardisLevelOperator.hasInitiallyGenerated()) {
-                            intManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
-                            Direction direction = blockState.getValue(FACING).getOpposite();
-                            TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
-                            extManager.setLastKnownLocation(navLocation);
-                            pilotManager.setTargetLocation(navLocation);
-                            tardisLevelOperator.setInitiallyGenerated(true);
-                            level.setBlock(blockPos, blockState.setValue(OPEN, true), Block.UPDATE_ALL);
+                            tardisLevelOperator.setupInitialCave(serverLevel, blockState, blockPos);
                         }
                     });
+
                     return true;
                 }
             }

@@ -25,7 +25,7 @@ public class DrillItem extends Item {
     public InteractionResult useOn(UseOnContext useOnContext) {
         BlockState blockState = useOnContext.getLevel().getBlockState(useOnContext.getClickedPos());
 
-        if (blockState.getBlock() == BlockRegistry.GROWTH_STONE.get()) {
+        if (blockState.getBlock() == BlockRegistry.FOOLS_STONE.get()) {
             Player player = useOnContext.getPlayer();
             Level level = useOnContext.getLevel();
             BlockPos clickedPos = useOnContext.getClickedPos();
@@ -47,7 +47,7 @@ public class DrillItem extends Item {
 
 
     private void destroyGrowthBlock(Level level, BlockPos pos) {
-        if (level.getBlockState(pos).getBlock() == BlockRegistry.GROWTH_STONE.get()) {
+        if (level.getBlockState(pos).getBlock() == BlockRegistry.FOOLS_STONE.get()) {
             level.destroyBlock(pos, true);
         }
     }

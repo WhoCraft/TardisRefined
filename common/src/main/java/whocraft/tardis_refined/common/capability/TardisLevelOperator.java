@@ -9,21 +9,29 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
+
+import static whocraft.tardis_refined.common.block.RootPlantBlock.FACING;
+import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
 
 public class TardisLevelOperator {
 
@@ -260,6 +268,18 @@ public class TardisLevelOperator {
         if (door != null) //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
     }
+
+    public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
+        this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
+        Direction direction = shellBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
+        TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);
+        this.exteriorManager.setLastKnownLocation(navLocation);
+        this.pilotingManager.setTargetLocation(navLocation);
+        shellServerLevel.setBlock(shellBlockPos, shellBlockState.setValue(OPEN, true), Block.UPDATE_ALL);
+
+        this.setInitiallyGenerated(true);
+    }
+
 
     public TardisExteriorManager getExteriorManager() {
         return this.exteriorManager;

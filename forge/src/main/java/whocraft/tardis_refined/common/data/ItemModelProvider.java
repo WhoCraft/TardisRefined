@@ -21,8 +21,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         blockItem(BlockRegistry.ARS_LEAVES.getId());
         blockItem(BlockRegistry.ARS_LEAVES_SLAB.getId());
         blockItem(BlockRegistry.LANDING_PAD.getId());
-        blockItem(BlockRegistry.HARDENED_GROWTH_STONE.getId());
-        blockItem(BlockRegistry.GROWTH_STONE.getId());
+        blockItem(BlockRegistry.FOOLS_STONE.getId());
         blockItem(BlockRegistry.FLIGHT_DETECTOR.getId());
 
 
