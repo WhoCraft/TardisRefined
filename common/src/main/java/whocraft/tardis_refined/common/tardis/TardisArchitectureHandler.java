@@ -39,7 +39,7 @@ public class TardisArchitectureHandler {
 
             for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
                 if (operator.getBlockState(pos) != BlockRegistry.FOOLS_STONE.get().defaultBlockState()) {
-                    operator.setBlock(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), 3);
+                    operator.setBlock(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
                 }
 
             }
@@ -52,7 +52,7 @@ public class TardisArchitectureHandler {
 
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = calculateArcOffset(structure, DESKTOP_CENTER_POS);
-            structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, 0);
+            structure.placeInWorld(operator.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), operator.getLevel().random, Block.UPDATE_IMMEDIATE);
 
             // Assign the door from the created structure.
             setInteriorDoorFromStructure(structure, operator);
