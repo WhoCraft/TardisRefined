@@ -117,7 +117,9 @@ public class TardisHelper {
 
             BlockPos destinationPos = destinationLocation.getPosition();
             ServerLevel destinationLevel = destinationLocation.getLevel();
-            Direction destinationDirection = destinationLocation.getDirection();
+            Direction destinationDirection = destinationLocation.getDirection().getOpposite(); //Use the opposite facing of the destination so that when teleported, the entity faces away from the doorway
+
+            Direction sourceDirection = sourceLocation.getDirection();
 
 
             BlockPos targetTeleportPos = destinationPos;
@@ -125,10 +127,11 @@ public class TardisHelper {
             //Calculate entity motion and rotation, taking into account for the internal door's direction and rotation
             float entityYRot = entity.getYRot();
             float destinationRotationYaw = destinationDirection.toYRot();
-            //Calculate the difference between the entity's rotation and the destination direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
-            float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(destinationRotationYaw);
+            float sourceRotationYaw = sourceDirection.toYRot();
+            //Calculate the difference between the entity's rotation and the source direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
+            float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(sourceRotationYaw);
 
-            float adjustedRotationYaw = LevelHelper.getAngleFromDirection(destinationDirection) + diff;
+            float adjustedRotationYaw = destinationRotationYaw + diff;
 
             if (entity.getType().getDimensions().width > 1F){
                 targetTeleportPos = destinationPos.offset(destinationDirection.getNormal());

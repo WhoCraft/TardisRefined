@@ -25,6 +25,9 @@ public interface TardisInternalDoor {
     BlockPos getEntryPosition();
     Direction getEntryRotation();
 
+    /** The true facing of the internal door based off its blockstate*/
+    Direction getDoorRotation();
+
     void onEntityExit(ServerEntity entity);
 
     void setLocked(boolean locked);
