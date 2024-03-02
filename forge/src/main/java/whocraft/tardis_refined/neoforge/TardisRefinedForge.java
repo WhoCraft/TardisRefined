@@ -47,6 +47,7 @@ public class TardisRefinedForge {
 
         /*Data Pack*/
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
+        generator.addProvider(e.includeServer(), new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator.getPackOutput()));
         generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
@@ -59,7 +60,5 @@ public class TardisRefinedForge {
 
         generator.addProvider(e.includeServer(), new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
-        //World Gen
-        BiomeModifierProvider.genBiomeModifiers(e);
     }
 }

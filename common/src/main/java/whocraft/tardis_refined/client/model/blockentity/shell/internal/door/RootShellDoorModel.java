@@ -11,9 +11,12 @@ import net.minecraft.world.entity.Entity;
 
 public class RootShellDoorModel extends HierarchicalModel {
 
+	private final ModelPart root;
 	private final ModelPart stage7;
 
 	public RootShellDoorModel(ModelPart root) {
+
+		this.root = root;
 		this.stage7 = root.getChild("stage7");
 	}
 
@@ -35,7 +38,7 @@ public class RootShellDoorModel extends HierarchicalModel {
 
 	@Override
 	public ModelPart root() {
-		return stage7;
+		return this.root;
 	}
 
 	@Override

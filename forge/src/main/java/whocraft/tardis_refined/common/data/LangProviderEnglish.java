@@ -56,6 +56,12 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.FOOLS_STONE.get(), "Fool's Stone");
         add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
         add(BlockRegistry.GLOBAL_SHELL_BLOCK.get(), "TARDIS");
+        add(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), "Astral Manipulator");
+        add(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get(), "Zeiton Fused Iron Block");
+        add(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get(), "Zeiton Fused Copper Block");
+        add(BlockRegistry.ZEITON_ORE.get(), "Zeiton Ore");
+        add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
+        add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -63,6 +69,12 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
         add(ModMessages.ITEM_GROUP, "Tardis Refined");
+        add(ItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
+        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
+        add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
+        add(ItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
+
+
 
         /*Entity*/
         add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");

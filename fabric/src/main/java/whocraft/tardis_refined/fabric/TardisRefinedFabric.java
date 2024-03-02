@@ -2,15 +2,20 @@ package whocraft.tardis_refined.fabric;
 
 import fuzs.forgeconfigapiport.api.config.v3.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.level.levelgen.GenerationStep;
 import net.neoforged.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
@@ -85,6 +90,9 @@ public class TardisRefinedFabric implements ModInitializer {
         } else {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
+
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton")));
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton_small")));
 
     }
 }

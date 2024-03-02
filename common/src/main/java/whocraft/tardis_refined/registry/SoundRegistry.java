@@ -22,6 +22,12 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
     public static final RegistrySupplier<SoundEvent> INTERIOR_CREAKS = setUpSound("interior_creaks");
 
+
+    // Screwdriver
+    public static final RegistrySupplier<SoundEvent> SCREWDRIVER_SHORT = setUpSound("screwdriver_short");
+    public static final RegistrySupplier<SoundEvent> SCREWDRIVER_CONNECT = setUpSound("screwdriver_connect");
+    public static final RegistrySupplier<SoundEvent> SCREWDRIVER_DISCARD = setUpSound("screwdriver_discard");
+
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
         SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(TardisRefined.MODID, soundName));
         return SOUNDS.register(soundName, () -> sound);

@@ -40,6 +40,7 @@ public class BlockRegistry {
     }
 
 
+
     // Shell Blocks
     public static final RegistrySupplier<ShellBaseBlock> ROOT_SHELL_BLOCK = register("root_shell", () -> new RootedShellBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000).sound(SoundType.CORAL_BLOCK)), true, true);
     public static final RegistrySupplier<ShellBaseBlock> GLOBAL_SHELL_BLOCK = register("tardis_shell", () -> new GlobalShellBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000).sound(SoundType.STONE)), false, false);
@@ -71,14 +72,13 @@ public class BlockRegistry {
     public static final RegistrySupplier<TerraformerBlock> TERRAFORMER_BLOCK = register("terraformer", () -> new TerraformerBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
     public static final RegistrySupplier<AirLockGenerationBlock> AIR_LOCK_GENERATION_BLOCK = register("air_lock_generator", () -> new AirLockGenerationBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), false, true);
     public static final RegistrySupplier<ConsoleConfigurationBlock> CONSOLE_CONFIGURATION_BLOCK = register("console_configuration", () -> new ConsoleConfigurationBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+    public static final RegistrySupplier<AstralManipulatorBlock> ASTRAL_MANIPULATOR_BLOCK = register("astral_manipulator", () -> new AstralManipulatorBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+
 
     public static final RegistrySupplier<LandingPad> LANDING_PAD = register("landing_pad", () -> new LandingPad(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
         return 12;
     })), true, true);
-
-
     public static final RegistrySupplier<FlightDetectorBlock> FLIGHT_DETECTOR = register("flight_detector", () -> new FlightDetectorBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
-
 
     // Console
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of().strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
@@ -86,5 +86,12 @@ public class BlockRegistry {
     })), true, true);
 
 
+    // Blocks
+    public static final RegistrySupplier<Block> ZEITON_BLOCK = register("zeiton_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.METAL)), true, true);
+    public static final RegistrySupplier<Block> ZEITON_FUSED_IRON_BLOCK = register("zeiton_fused_iron_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.METAL)), true, true);
+    public static final RegistrySupplier<Block> ZEITON_FUSED_COPPER_BLOCK = register("zeiton_fused_copper_block", () -> new Block(BlockBehaviour.Properties.copy(Blocks.COPPER_BLOCK).sound(SoundType.COPPER)), true, true);
+
+    public static final RegistrySupplier<Block> ZEITON_ORE = register("zeiton_ore", () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(3.0F, 3.0F)), true, true);
+    public static final RegistrySupplier<Block> ZEITON_ORE_DEEPSLATE = register("deepslate_zeiton_ore", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_GOLD_ORE).requiresCorrectToolForDrops()), true, true);
 
 }

@@ -20,6 +20,7 @@ public class ModMessages {
     public static String HARDWARE_OFFLINE = message("hardware_offline");
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
+    public static String TOOLTIP_SCREWDRIVER_DESCRIPTION = tooltip("screwdriver_description");
 
     /*UI Messages*/
     public static final String UI_DESKTOP_CANCEL_DESKTOP = ui("monitor.cancel_desktop");

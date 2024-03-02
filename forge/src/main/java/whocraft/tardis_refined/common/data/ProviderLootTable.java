@@ -11,8 +11,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,9 @@ public class ProviderLootTable extends LootTableProvider {
             for (Block block : getKnownBlocks()) {
                 dropSelf(block);
             }
+
+            this.add(BlockRegistry.ZEITON_ORE.get(), (block) -> createOreDrop(block, ItemRegistry.RAW_ZEITON.get()));
+            this.add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), (block) -> createOreDrop(block, ItemRegistry.RAW_ZEITON.get()));
         }
 
         @Override

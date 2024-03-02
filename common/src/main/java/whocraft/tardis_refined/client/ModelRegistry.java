@@ -77,6 +77,8 @@ public class ModelRegistry {
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
 
+    public static ModelLayerLocation SCREWDRIVER_CRAFT_GLOW;
+
     public static void init() {
         ROOT_PLANT_STATE_ONE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_one"), "root_plant_one"), RootPlantStateOneModel::createBodyLayer);
         ROOT_PLANT_STATE_TWO = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_two"), "root_plant_two"), RootPlantStateTwoModel::createBodyLayer);
@@ -132,7 +134,6 @@ public class ModelRegistry {
         LIFT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_door"), "lift_door"), LiftShellDoorModel::createBodyLayer);
         HIEROGLYPH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
         CASTLE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
-
 
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);

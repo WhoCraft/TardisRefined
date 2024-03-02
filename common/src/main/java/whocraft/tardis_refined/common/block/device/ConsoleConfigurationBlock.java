@@ -100,24 +100,6 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             return InteractionResult.SUCCESS;
         }
 
-        if (player.getMainHandItem().getItem() == Items.IRON_BLOCK) {
-            if (!(consoleBlock.getBlock() instanceof GlobalConsoleBlock)) { // If there is no existing console block
-                //Spawn the console block use set its console theme using the one stored in the configurator
-                if (this.placeNewGlobalConsoleBlock(level, blockPos, consolePos)) {
-                    //Use up the iron block
-                    if (!player.isCreative()) {
-                        player.getMainHandItem().shrink(1);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-
-            } else {
-                //If we're holding an iron block but there is an existing console
-                this.changeConsoleTheme(level, blockPos, consolePos);
-                return InteractionResult.SUCCESS;
-            }
-        }
-
         if (player.isShiftKeyDown()) { //If we are destroying the console block
             this.removeGlobalConsoleBlock(consolePos, level);
             return InteractionResult.SUCCESS; //Don't try to continue interaction which will rerun the change console function
