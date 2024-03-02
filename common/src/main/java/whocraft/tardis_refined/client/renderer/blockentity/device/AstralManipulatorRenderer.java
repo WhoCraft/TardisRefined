@@ -83,7 +83,7 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
             poseStack.pushPose();
             poseStack.translate(-posAOffsetX, -posAOffsetY, -posAOffsetZ);
             VertexConsumer vertexBuilder = bufferSource.getBuffer(RenderType.lightning());
-            RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f,  height + 1.25f , width + 1.25f,  ( 162f / 255f ), ( 100f / 255f), (224f /255f),  0 + sine , 0 );
+            RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f,  height + 1.25f , width + 1.25f,  0.635f, 0.392f, 0.878f,  0 + sine , 0 );
 
             poseStack.popPose();
 

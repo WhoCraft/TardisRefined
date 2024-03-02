@@ -32,7 +32,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
             if (level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
                 ItemStack itemStack = player.getItemInHand(interactionHand);
 
-                if (itemStack.getItem() == Blocks.AIR.asItem()) {
+                if (itemStack == ItemStack.EMPTY) {
                     astralManipulatorBlockEntity.clearDisplay();
                     return InteractionResult.CONSUME;
                 } else {

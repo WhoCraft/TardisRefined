@@ -6,12 +6,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
@@ -21,19 +16,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.items.ScrewdriverMode;
-import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class AstralManipulatorBlockEntity extends BlockEntity {
 
@@ -121,12 +112,12 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
             } else {
 
-                var points = screwdriverItem.getScrewdriverPoint(itemStack);
+                List<BlockPos> points = screwdriverItem.getScrewdriverPoint(itemStack);
                 screwdriverItem.setScrewdriverMode(itemStack, ScrewdriverMode.DISABLED, getBlockPos(), null);
 
                 if (points.size() == 2) {
-                    var pointA = points.get(0);
-                    var pointB = points.get(1);
+                    BlockPos pointA = points.get(0);
+                    BlockPos pointB = points.get(1);
 
                     attemptToBuild(pointA, pointB);
                     screwdriverItem.clearBlockPosFromScrewdriver(itemStack);
@@ -138,7 +129,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         }
     }
 
-    public boolean setBlockPos(BlockPos pos, boolean isPointA) {
+    public boolean setProjectionBlockPos(BlockPos pos, boolean isPointA) {
 
         if (!this.shouldDisplay) {
             return false;
@@ -189,15 +180,15 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         var submittedBlocks = new ArrayList<ManipulatorCraftingRecipeItem>();
 
         // Grab the absolutes for these items.
-        var xDiff = Math.abs(pointA.getX() - pointB.getX());
-        var yDiff = Math.abs(pointA.getY() - pointB.getY());
-        var zDiff = Math.abs(pointA.getZ() - pointB.getZ());
+        float xDiff = Math.abs(pointA.getX() - pointB.getX());
+        float yDiff = Math.abs(pointA.getY() - pointB.getY());
+        float zDiff = Math.abs(pointA.getZ() - pointB.getZ());
 
-        var smallestPointX = pointA.getX() > pointB.getX() ? pointB.getX() : pointA.getX();
-        var smallestPointY = pointA.getY() > pointB.getY() ? pointB.getY() : pointA.getY();
-        var smallestPointZ = pointA.getZ() > pointB.getZ() ? pointB.getZ() : pointA.getZ();
+        int smallestPointX = pointA.getX() > pointB.getX() ? pointB.getX() : pointA.getX();
+        int smallestPointY = pointA.getY() > pointB.getY() ? pointB.getY() : pointA.getY();
+        int smallestPointZ = pointA.getZ() > pointB.getZ() ? pointB.getZ() : pointA.getZ();
 
-        var minPoint = new BlockPos(smallestPointX, smallestPointY, smallestPointZ);
+        BlockPos minPoint = new BlockPos(smallestPointX, smallestPointY, smallestPointZ);
 
         for (int y = 0; y < yDiff + 1; y++) {
 
@@ -213,14 +204,14 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         }
 
         // Filter recipes by the first block, will make it a LOT easier later down the line. (when I make it)
-        var firstBlock = submittedBlocks.stream().filter(x -> x.relativeBlockPos.getX() == 0 && x.relativeBlockPos.getY() == 0 && x.relativeBlockPos.getZ() == 0).findFirst();
+        Optional<ManipulatorCraftingRecipeItem> firstBlock = submittedBlocks.stream().filter(x -> x.relativeBlockPos.getX() == 0 && x.relativeBlockPos.getY() == 0 && x.relativeBlockPos.getZ() == 0).findFirst();
         if (!firstBlock.isPresent()) {
             return;
         }
 
-        var possibleRecipes = new ArrayList<ManipulatorCraftingRecipe>();
+        List<ManipulatorCraftingRecipe> possibleRecipes = new ArrayList<ManipulatorCraftingRecipe>();
 
-        for (var recipe : ManipulatorCrafting.MANIPULATOR_CRAFTING_RECIPES) {
+        for (ManipulatorCraftingRecipe recipe : ManipulatorCrafting.MANIPULATOR_CRAFTING_RECIPES) {
 
             var zeroPos = recipe.itemList.stream().filter(x -> x.relativeBlockPos.getX() == 0 && x.relativeBlockPos.getY() == 0 && x.relativeBlockPos.getZ() == 0).findFirst();
             if (zeroPos.isPresent()) {
@@ -236,12 +227,12 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
             return;
         }
 
-        for (var recipe : possibleRecipes) {
+        for (ManipulatorCraftingRecipe recipe : possibleRecipes) {
 
             if (recipe.hasSameItems(submittedBlocks)) {
 
                 // Remove the recipe blocks.
-                for (var blockPos : BlockPos.betweenClosed(pointA, pointB)) {
+                for (BlockPos blockPos : BlockPos.betweenClosed(pointA, pointB)) {
                     level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                 }
 

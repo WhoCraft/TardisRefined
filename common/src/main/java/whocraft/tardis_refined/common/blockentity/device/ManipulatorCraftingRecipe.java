@@ -6,8 +6,14 @@ import net.minecraft.world.level.block.Block;
 import java.util.Comparator;
 import java.util.List;
 
+
+/**
+ * Entry item for the Astral Manipulator.
+ * **/
 public class ManipulatorCraftingRecipe {
+    // List of ingredient blocks for the recipe to work.
     public List<ManipulatorCraftingRecipeItem> itemList;
+    // Output to be summoned when the recipe is confirmed.
     public Item recipeOutput;
 
     public ManipulatorCraftingRecipe(List<ManipulatorCraftingRecipeItem> itemList, Item recipeOutput) {
@@ -15,16 +21,11 @@ public class ManipulatorCraftingRecipe {
         this.recipeOutput = recipeOutput;
     }
 
-    public boolean isSameAs(ManipulatorCraftingRecipe manipulatorCraftingRecipe) {
 
-        if (recipeOutput != manipulatorCraftingRecipe.recipeOutput) {
-            return false;
-        }
-
-
-        return hasSameItems(manipulatorCraftingRecipe.itemList);
-    }
-
+    /**
+     * Compares a ManipulatorCraftingRecipe to another by sorting by size, then registered block entries
+     * @param comparedItemList The items of the recipe to compare to.
+     * **/
     public boolean hasSameItems(List<ManipulatorCraftingRecipeItem> comparedItemList) {
 
         if (itemList.size() != comparedItemList.size()) {

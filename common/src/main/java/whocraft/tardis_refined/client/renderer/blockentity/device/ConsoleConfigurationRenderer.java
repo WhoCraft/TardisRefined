@@ -52,7 +52,7 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
             ResourceLocation theme = blockEntity.theme();
 
             ConsoleUnit consoleModel = ConsoleModelCollection.getInstance().getConsoleModel(theme);
-            consoleModel.renderConsole(null, blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, ( 162f / 255f ), ( 100f / 255f), (224f /255f), 0.5f);
+            consoleModel.renderConsole(null, blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getDefaultTexture())), packedLight, OverlayTexture.NO_OVERLAY, 0.635f, 0.392f, 0.878f, 0.5f);
         }
 
         poseStack.popPose();

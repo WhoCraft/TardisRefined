@@ -18,6 +18,7 @@ public class RootShellDoorBlockEntity extends InternalDoorBlockEntity {
 
     @Override
     public void onBlockPlaced() {
+        // Left blank to remove parent functionality.
     }
 
 
