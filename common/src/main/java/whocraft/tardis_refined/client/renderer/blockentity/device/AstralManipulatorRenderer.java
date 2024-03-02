@@ -38,8 +38,6 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
         var pointA = blockEntity.getPointABlockPos();
         if (pointA != null && blockEntity.shouldDisplay()) {
 
-            //System.out.println("Rendering cause we have data");
-
             var pointB = blockEntity.getPointBBlockPos();
 
             float width = 1;

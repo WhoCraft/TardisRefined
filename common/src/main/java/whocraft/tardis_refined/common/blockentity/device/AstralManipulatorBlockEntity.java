@@ -163,7 +163,6 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
     private boolean checkIfDistanceIsTooGreat(BlockPos pos) {
         var distance = pos.distManhattan(getBlockPos());
-        System.out.println(distance);
         return distance > 25;
     }
 
