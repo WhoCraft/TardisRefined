@@ -13,6 +13,7 @@ import whocraft.tardis_refined.client.ParticleGallifrey;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
@@ -54,6 +55,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
 
         BlockEntityRendererRegistry.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
+        BlockEntityRendererRegistry.register(BlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
 
         /*Required to Render Transparency*/
         for (Block block : BlockRegistry.BLOCKS.getRegistry()) {

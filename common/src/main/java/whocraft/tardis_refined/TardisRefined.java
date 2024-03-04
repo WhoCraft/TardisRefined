@@ -9,6 +9,7 @@ import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.sync.SyncConsolePatternsMessage;
@@ -68,5 +69,7 @@ public class TardisRefined {
         ConsolePatterns.registerDefaultPatterns();
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
+
+        ManipulatorCrafting.registerRecipes();
     }
 }

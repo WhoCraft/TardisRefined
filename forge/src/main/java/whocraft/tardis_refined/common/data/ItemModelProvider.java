@@ -7,6 +7,7 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider {
 
@@ -24,6 +25,12 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         blockItem(BlockRegistry.FOOLS_STONE.getId());
         blockItem(BlockRegistry.FLIGHT_DETECTOR.getId());
 
+        blockItem(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.getId());
+        blockItem(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.getId());
+        blockItem(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.getId());
+        blockItem(BlockRegistry.ZEITON_ORE.getId());
+        blockItem(BlockRegistry.ZEITON_ORE_DEEPSLATE.getId());
+        blockItem(BlockRegistry.ZEITON_BLOCK.getId());
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
 
@@ -41,6 +48,12 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId());
         basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId());
         basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
+        basicItem(ItemRegistry.ZEITON_INGOT.getId());
+        basicItem(ItemRegistry.RAW_ZEITON.getId());
+
+
+
+
 
 
     }

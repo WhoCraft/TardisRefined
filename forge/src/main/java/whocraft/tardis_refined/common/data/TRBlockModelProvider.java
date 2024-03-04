@@ -79,6 +79,8 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(BlockRegistry.ROOT_SHELL_BLOCK.get());
         emptyBlockState(BlockRegistry.ARS_EGG.get());
 
+
+
         threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
         threeDeeRotating(BlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
 
@@ -90,6 +92,14 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(BlockRegistry.ARS_LEAVES.get());
         customLocation(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
         customLocation(BlockRegistry.FOOLS_STONE.get());
+
+        customLocation(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
+        customLocation(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
+        customLocation(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
+        customLocation(BlockRegistry.ZEITON_ORE.get());
+        customLocation(BlockRegistry.ZEITON_ORE_DEEPSLATE.get());
+        customLocation(BlockRegistry.ZEITON_BLOCK.get());
+
 
         /*
          **Fences**

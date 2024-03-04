@@ -27,6 +27,7 @@ public class RootShellDoorRenderer implements BlockEntityRenderer<RootShellDoorB
     @Override
     public void render(RootShellDoorBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
         poseStack.pushPose();
+
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
