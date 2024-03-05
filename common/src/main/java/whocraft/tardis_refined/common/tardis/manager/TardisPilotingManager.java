@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
@@ -32,6 +33,7 @@ public class TardisPilotingManager extends BaseHandler{
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
     private static final double MAXIMUM_FUEL = 1000;
+    private static final double FLIGHT_COST = 3;
 
     private final TardisLevelOperator operator;
 
@@ -162,6 +164,11 @@ public class TardisPilotingManager extends BaseHandler{
 
         if (isInFlight) {
             ticksInFlight++;
+
+            // Removing fuel once every 2.5 seconds, should this be here?
+            if (ticksInFlight % (2.5 * 20) == 0) {
+                this.removeFuel(this.getFlightFuelCost());
+            }
 
             // Automatically trigger the ship to land for things such as landing pads.
             if (ticksInFlight > (20 * 10) && autoLand) {
@@ -352,8 +359,11 @@ public class TardisPilotingManager extends BaseHandler{
      * @return true if able to, false if not
      */
     public boolean canBeginFlight() {
-        return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate()
-                && !isInFlight && ticksTakingOff <= 0;
+        return !operator.getInteriorManager().isGeneratingDesktop()
+                && !operator.getInteriorManager().isWaitingToGenerate()
+                && !isInFlight
+                && ticksTakingOff <= 0
+                && !this.isOutOfFuel();
     }
 
 
@@ -565,6 +575,14 @@ public class TardisPilotingManager extends BaseHandler{
     public double getMaximumFuel() {
         return MAXIMUM_FUEL;
     }
+    /**
+     * Accessor for the cost of being in flight
+     * Will be adjustable in future to allow for upgrades etc.
+     * @return private static field FLIGHT_COST
+     */
+    private double getFlightFuelCost() {
+        return FLIGHT_COST;
+    }
 
     /**
      * The percentage of fuel this Tardis has, from 0% -> 100%
@@ -580,7 +598,7 @@ public class TardisPilotingManager extends BaseHandler{
     }
 
     public void setFuel(double fuel) {
-        this.fuel = fuel;
+        this.fuel = Mth.clamp(fuel, 0, MAXIMUM_FUEL);
     }
 
     /**

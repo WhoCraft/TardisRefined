@@ -195,15 +195,17 @@ public class TardisFlightEventManager extends BaseHandler{
 
     // All the logic related to the in-flight events of the TARDIS.
     public void tick() {
-        if (this.operator.getPilotingManager().isInFlight() && !this.operator.getPilotingManager().isAutoLandSet()) {
+        TardisPilotingManager pilot = this.operator.getPilotingManager();
 
-            if (!this.operator.getPilotingManager().isCrashing()) {
+        if (pilot.isInFlight() && !pilot.isAutoLandSet()) {
+
+            if (!pilot.isCrashing()) {
                 ticksSincePrompted++;
 
                 if (controlRequestCooldown > 0) controlRequestCooldown--;
 
                 // Prepare the next control for highlighting.
-                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !operator.getPilotingManager().isAutoLandSet()) {
+                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !pilot.isAutoLandSet()) { // "&& !pilot.isAutoLandSet()" should not be necessary as it was checked above
 
                     // Record what control type needs pressing.
                     this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
@@ -235,7 +237,7 @@ public class TardisFlightEventManager extends BaseHandler{
 
                 }
 
-                if (this.isInDangerZone) {
+                if (this.isInDangerZone || pilot.isOutOfFuel()) {
                     tickDangerLevels();
                 }
             }
