@@ -31,6 +31,7 @@ public class TardisPilotingManager extends BaseHandler{
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
+    private static final double MAXIMUM_FUEL = 1000;
 
     private final TardisLevelOperator operator;
 
@@ -57,6 +58,9 @@ public class TardisPilotingManager extends BaseHandler{
     private int cordIncrementIndex = 0;
 
     private boolean autoLand = false;
+
+    // Fuel
+    private double fuel = 0;
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -96,6 +100,7 @@ public class TardisPilotingManager extends BaseHandler{
     public void endCoolDown() {
         this.ticksSinceCrash = TICKS_COOLDOWN_MAX;
     }
+
     @Override
     public void loadData(CompoundTag tag) {
         this.autoLand = tag.getBoolean(NbtConstants.CONTROL_AUTOLAND);
@@ -112,6 +117,8 @@ public class TardisPilotingManager extends BaseHandler{
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
+
+        this.fuel = tag.getDouble("fuel");
     }
 
     @Override
@@ -136,6 +143,8 @@ public class TardisPilotingManager extends BaseHandler{
         }
 
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
+
+        tag.putDouble("fuel", this.fuel);
 
         return tag;
     }
@@ -540,5 +549,60 @@ public class TardisPilotingManager extends BaseHandler{
         return isInFlight && ticksLanding == 0;
     }
 
+    /**
+     * Accessor for the amount of fuel remaining in the Tardis.
+     * @return private field fuel
+     */
+    public double getFuel() {
+        return this.fuel;
+    }
 
+    /**
+     * Accessor for the maximum amount of fuel a Tardis can hold
+     * Will be adjustable in future to allow for upgrades etc.
+     * @return private static field MAXIMUM_FUEL
+     */
+    public double getMaximumFuel() {
+        return MAXIMUM_FUEL;
+    }
+
+    /**
+     * The percentage of fuel this Tardis has, from 0% -> 100%
+     * Preferably should be rounded to the nearest whole number
+     * @return the percentage of fuel
+     */
+    public float getFuelPercentage() {
+        return (float)this.fuel / (float)MAXIMUM_FUEL;
+    }
+
+    public boolean isOutOfFuel() {
+        return this.fuel == 0;
+    }
+
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
+    }
+
+    /**
+     * Removes fuel from the Tardis.
+     * Clamps fuel to 0 if it goes below 0
+     * @param amount the amount to remove
+     */
+    public void removeFuel(double amount) {
+        this.setFuel(Math.max(0, this.fuel - amount));
+    }
+
+    /**
+     * Adds fuel to the Tardis
+     * Clamps fuel to the maximum if it goes above the maximum
+     * @param amount the amount to add
+     * @return the amount of fuel left over if it reached maximum
+     */
+    public double addFuel(double amount) {
+        this.setFuel(Math.min(MAXIMUM_FUEL, this.fuel + amount));
+
+        double remainder = this.fuel - MAXIMUM_FUEL;
+
+        return Math.max(0, remainder);
+    }
 }
