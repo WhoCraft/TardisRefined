@@ -29,12 +29,23 @@ public class FogRendererMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), cancellable = true, method = "levelFogColor()V")
+    @Inject(at = @At("HEAD"), cancellable = true, method = "setupFog")
     private static void setupColor(CallbackInfo callbackInfo) {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
+
+            TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
+
+            if (reactions.getFuel() == 0d) {
+                RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
+                RenderSystem.setShaderFogStart(-8); // This makes the fog really close to the player
+                RenderSystem.setShaderFogEnd(16);
+                RenderSystem.setShaderFogShape(FogShape.SPHERE);
+
+                callbackInfo.cancel();
+            }
+
             if (TardisHelper.isInArsArea(blockPosition)) {
-                TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
                 Vec3 fogColor = reactions.fogColor(reactions.isCrashing() || reactions.isInDangerZone());
                 RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);
                 callbackInfo.cancel();

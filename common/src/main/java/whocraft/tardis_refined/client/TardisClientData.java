@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
@@ -61,6 +62,7 @@ public class TardisClientData {
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
+    private double fuel = 0;
 
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
@@ -161,6 +163,14 @@ public class TardisClientData {
         return flightShakeScale;
     }
 
+    public double getFuel() {
+        return fuel;
+    }
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
+    }
+
+
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -181,6 +191,8 @@ public class TardisClientData {
         compoundTag.putString("shellPattern", shellPattern.toString());
 
         compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
+
+        compoundTag.putDouble("fuel", fuel);
 
         return compoundTag;
     }
@@ -204,6 +216,8 @@ public class TardisClientData {
         shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
 
         setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
+
+        fuel = compoundTag.getDouble("fuel");
     }
 
     /**
@@ -253,6 +267,11 @@ public class TardisClientData {
 
             if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
                 HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
+            }
+
+            // Stops the hum sound if there's no fuel
+            if (isThisTardis && fuel == 0 && soundManager.isActive(HumSoundManager.getCurrentSound())) {
+                HumSoundManager.playHum(SoundEvents.EMPTY);
             }
 
             if (isThisTardis && tardisLevel.getGameTime() % nextAmbientNoiseCall == 0) {

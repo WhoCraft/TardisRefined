@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -20,6 +21,7 @@ import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -32,7 +34,7 @@ public class TardisPilotingManager extends BaseHandler{
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
-    private static final double MAXIMUM_FUEL = 1000;
+    private static final double MAXIMUM_FUEL = 50; // 1000;
     private static final double FLIGHT_COST = 3;
 
     private final TardisLevelOperator operator;
@@ -209,7 +211,15 @@ public class TardisPilotingManager extends BaseHandler{
                 this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
             }
         }
-
+        /*
+        if (this.isOutOfFuel()) {
+            // i have concerns about this causing lag, lmk if it does and ill rework it
+            for (Player player : this.operator.getLevel().players()) {
+                MobEffectInstance effect = new MobEffectInstance(MobEffects.DARKNESS, 10, 2, false, false, false);
+                player.addEffect(effect);
+            }
+        }
+        */
     }
 
     public boolean isInFlight() {
@@ -598,7 +608,18 @@ public class TardisPilotingManager extends BaseHandler{
     }
 
     public void setFuel(double fuel) {
+        double previous = this.fuel;
+
         this.fuel = Mth.clamp(fuel, 0, MAXIMUM_FUEL);
+
+        if (this.isOutOfFuel() && previous > 0) {
+           this.onRunOutOfFuel();
+           return;
+        }
+        if (!this.isOutOfFuel() && previous == 0) {
+            this.onRestoreFuel();
+            return;
+        }
     }
 
     /**
@@ -622,5 +643,25 @@ public class TardisPilotingManager extends BaseHandler{
         double remainder = this.fuel - MAXIMUM_FUEL;
 
         return Math.max(0, remainder);
+    }
+
+    /**
+     * Called when the Tardis runs out of fuel
+     */
+    private void onRunOutOfFuel() {
+        this.operator.tardisClientData().sync();
+
+        // Temporary sfx
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_DEACTIVATE, SoundSource.BLOCKS, 1000f, 0.6f);
+    }
+
+    /**
+     * Called when the Tardis regains fuel after previously being out of fuel
+     */
+    private void onRestoreFuel() {
+        this.operator.tardisClientData().sync();
+
+        // Temporary sfx
+        this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1000f, 0.6f);
     }
 }
