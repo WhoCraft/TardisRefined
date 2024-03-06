@@ -1,15 +1,19 @@
 package whocraft.tardis_refined.neoforge;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import whocraft.tardis_refined.TardisRefined;
@@ -35,6 +39,23 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
+
+    @SubscribeEvent
+    public static void onItemColors(RegisterColorHandlersEvent.Item item) {
+        item.getItemColors().register(new ItemColor() {
+            @Override
+            public int getColor(ItemStack arg, int i) {
+                System.out.println(arg);
+                if (i == 0) {
+                    if (arg.getItem() instanceof DyeableLeatherItem dyeableLeatherItem) {
+                        return dyeableLeatherItem.getColor(arg);
+                    }
+                }
+                return -1;
+            }
+        }, ItemRegistry.SCREWDRIVER.get());
+    }
+
 
     @SubscribeEvent
     public static void onBuildTabsContent(BuildCreativeModeTabContentsEvent event) {

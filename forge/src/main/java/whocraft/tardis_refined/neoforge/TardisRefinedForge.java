@@ -10,6 +10,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.data.*;
 
 @Mod(TardisRefined.MODID)
@@ -37,6 +38,7 @@ public class TardisRefinedForge {
     public void onGatherData(GatherDataEvent e) {
         DataGenerator generator = e.getGenerator();
         ExistingFileHelper existingFileHelper = e.getExistingFileHelper();
+        ManipulatorCrafting.registerRecipes();
 
         /*Resource Pack*/
         generator.addProvider(e.includeClient(), new LangProviderEnglish(generator));

@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -23,7 +24,7 @@ import whocraft.tardis_refined.registry.SoundRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrewdriverItem extends Item {
+public class ScrewdriverItem extends Item implements DyeableLeatherItem {
 
     // Constants
     public static final String SCREWDRIVER_MODE = "screwdriver_mode";
@@ -36,11 +37,12 @@ public class ScrewdriverItem extends Item {
         super(properties);
     }
 
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
 
         if (context.getLevel() instanceof ServerLevel serverLevel) {
-
+            System.out.println(getColor(context.getItemInHand()));
             if (context.getPlayer().isCrouching()) {
                 setScrewdriverMode(context.getItemInHand(), ScrewdriverMode.DISABLED, context.getClickedPos(), serverLevel);
             } else {
