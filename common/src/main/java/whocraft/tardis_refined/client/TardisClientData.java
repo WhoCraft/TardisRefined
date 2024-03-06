@@ -63,6 +63,7 @@ public class TardisClientData {
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
     private double fuel = 0;
+    private double maximumFuel = 0;
 
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
@@ -169,6 +170,12 @@ public class TardisClientData {
     public void setFuel(double fuel) {
         this.fuel = fuel;
     }
+    public double getMaximumFuel() {
+        return maximumFuel;
+    }
+    public void setMaximumFuel(double fuel) {
+        this.maximumFuel = fuel;
+    }
 
 
     /**
@@ -193,6 +200,7 @@ public class TardisClientData {
         compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
 
         compoundTag.putDouble("fuel", fuel);
+        compoundTag.putDouble("MaximumFuel", maximumFuel);
 
         return compoundTag;
     }
@@ -218,6 +226,7 @@ public class TardisClientData {
         setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
 
         fuel = compoundTag.getDouble("fuel");
+        maximumFuel = compoundTag.getDouble("MaximumFuel");
     }
 
     /**

@@ -65,6 +65,7 @@ public class TardisPilotingManager extends BaseHandler{
 
     // Fuel
     private double fuel = 0;
+    private double maximumFuel = MAXIMUM_FUEL;
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -123,6 +124,11 @@ public class TardisPilotingManager extends BaseHandler{
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
 
         this.fuel = tag.getDouble("fuel");
+        this.maximumFuel = tag.getDouble("MaximumFuel");
+
+        if (!tag.contains("MaximumFuel")) {
+            this.maximumFuel = MAXIMUM_FUEL;
+        }
     }
 
     @Override
@@ -149,6 +155,7 @@ public class TardisPilotingManager extends BaseHandler{
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
 
         tag.putDouble("fuel", this.fuel);
+        tag.putDouble("MaximumFuel", this.maximumFuel);
 
         return tag;
     }
@@ -162,7 +169,6 @@ public class TardisPilotingManager extends BaseHandler{
                 this.targetLocation = TardisNavLocation.ORIGIN;
             }
         }
-
 
         if (isInFlight) {
             ticksInFlight++;
@@ -600,7 +606,7 @@ public class TardisPilotingManager extends BaseHandler{
      * @return the percentage of fuel
      */
     public float getFuelPercentage() {
-        return (float)this.fuel / (float)MAXIMUM_FUEL;
+        return (float)this.fuel / (float)this.getMaximumFuel();
     }
 
     public boolean isOutOfFuel() {
@@ -610,7 +616,7 @@ public class TardisPilotingManager extends BaseHandler{
     public void setFuel(double fuel) {
         double previous = this.fuel;
 
-        this.fuel = Mth.clamp(fuel, 0, MAXIMUM_FUEL);
+        this.fuel = Mth.clamp(fuel, 0, this.getMaximumFuel());
 
         if (this.isOutOfFuel() && previous > 0) {
            this.onRunOutOfFuel();
@@ -638,9 +644,9 @@ public class TardisPilotingManager extends BaseHandler{
      * @return the amount of fuel left over if it reached maximum
      */
     public double addFuel(double amount) {
-        this.setFuel(Math.min(MAXIMUM_FUEL, this.fuel + amount));
+        this.setFuel(Math.min(this.getMaximumFuel(), this.fuel + amount));
 
-        double remainder = this.fuel - MAXIMUM_FUEL;
+        double remainder = this.fuel - this.getMaximumFuel();
 
         return Math.max(0, remainder);
     }

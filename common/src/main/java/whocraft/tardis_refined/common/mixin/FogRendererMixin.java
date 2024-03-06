@@ -4,15 +4,20 @@ import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.registry.DimensionTypes;
 
 @Mixin(FogRenderer.class)
 public class FogRendererMixin {
@@ -34,7 +39,13 @@ public class FogRendererMixin {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
 
-            TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
+            ClientLevel level = Minecraft.getInstance().level;
+
+            if (level.dimensionTypeId() != DimensionTypes.TARDIS) return;
+
+            TardisClientData reactions = TardisClientData.getInstance(level.dimension());
+
+            System.out.println(reactions.getFuel());
 
             if (reactions.getFuel() == 0d) {
                 RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
