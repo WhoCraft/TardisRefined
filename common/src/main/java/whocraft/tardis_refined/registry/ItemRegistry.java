@@ -19,6 +19,7 @@ public class ItemRegistry {
     public static final DeferredRegistry<CreativeModeTab> TABS = DeferredRegistry.create(TardisRefined.MODID, Registries.CREATIVE_MODE_TAB);
 
     public static final RegistrySupplier<CreativeModeTab> MAIN_TAB = TABS.register("main_tab", ItemRegistry::getCreativeTab);
+    public static final RegistrySupplier<CreativeModeTab> DYED_TAB = TABS.register("dyed_tab", ItemRegistry::getDyedCreativeTab);
 
 
     public static final DeferredRegistry<Item> ITEMS = DeferredRegistry.create(TardisRefined.MODID, Registries.ITEM);
@@ -45,5 +46,11 @@ public class ItemRegistry {
     public static CreativeModeTab getCreativeTab() {
         throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
+
+    @ExpectPlatform
+    public static CreativeModeTab getDyedCreativeTab() {
+        throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
+    }
+
 
 }

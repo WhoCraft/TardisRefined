@@ -4,7 +4,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -30,6 +33,7 @@ import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
+import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
@@ -46,9 +50,18 @@ public class ClientModBus {
 
     @SubscribeEvent
     public static void onBuildTabsContent(BuildCreativeModeTabContentsEvent event) {
+
         if (event.getTab() == ItemRegistry.MAIN_TAB.get()) {
             for (RegistrySupplier<Item> item : ItemRegistry.TAB_ITEMS.stream().toList()) {
                 event.accept(item.get());
+            }
+        }
+
+        if (event.getTab() == ItemRegistry.DYED_TAB.get()) {
+            for (DyeColor value : DyeColor.values()) {
+                ItemStack stack = new ItemStack(ItemRegistry.SCREWDRIVER.get());
+                ScrewdriverItem.forceColor(stack, value.getTextColor());
+                event.accept(stack);
             }
         }
     }

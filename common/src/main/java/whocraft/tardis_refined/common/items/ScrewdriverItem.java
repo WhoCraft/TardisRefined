@@ -19,6 +19,7 @@ import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,16 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         super(properties);
     }
 
+    @Override
+    public int getColor(ItemStack itemStack) {
+        CompoundTag compoundTag = itemStack.getTagElement("display");
+        return compoundTag != null && compoundTag.contains("color", 99) ? compoundTag.getInt("color") : DyeColor.PINK.getTextColor();
+    }
+
+    public static ItemStack forceColor(ItemStack itemStack, int color){
+        itemStack.getOrCreateTagElement("display").putInt("color", color);
+        return itemStack;
+    }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
