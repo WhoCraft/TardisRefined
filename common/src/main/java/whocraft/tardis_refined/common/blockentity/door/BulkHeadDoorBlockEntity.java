@@ -26,8 +26,14 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BulkHeadDoorBlockEntity blockEntity) {
-        Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);            toggleDoor(level, blockPos, blockState, player != null);
+
+        if (blockState.getValue(LOCKED)) {
+            return;
+        }
+
+        Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);
         toggleDoor(level, blockPos, blockState, player != null);
+
     }
 
     /**

@@ -203,7 +203,7 @@ public class TardisInteriorManager extends BaseHandler {
                             level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
 
-                        BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
+                        BlockPos corridorDoorBlockPos = new BlockPos(1001, 99, 3);
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                             bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), false);
                             level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
@@ -247,7 +247,7 @@ public class TardisInteriorManager extends BaseHandler {
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
-                        TRTeleporter.performTeleport(x, level, 1000.5f + offsetPos.x(), 100.5f + offsetPos.y(), -1.5f + offsetPos.z(), x.getYRot(), x.getXRot());
+                        TRTeleporter.performTeleport(x, level, 1001.5f + offsetPos.x(), 99.5f + offsetPos.y(), -0.5f + offsetPos.z(), x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
@@ -265,7 +265,7 @@ public class TardisInteriorManager extends BaseHandler {
                         level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
 
-                    BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
+                    BlockPos corridorDoorBlockPos = new BlockPos(1001, 99, 3);
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                         bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), true);
                         level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);

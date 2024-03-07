@@ -6,11 +6,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
-import net.minecraft.world.level.LevelHeightAccessor;
-import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.StructureManager;
-import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
@@ -23,12 +21,15 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.constants.TardisGeneration;
+import whocraft.tardis_refined.registry.ARSStructurePieceRegistry;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
@@ -37,12 +38,49 @@ public class TardisChunkGenerator extends ChunkGenerator {
             instance.group(RegistryOps.retrieveElement(ChunkGenerators.TARDIS_BIOME)).apply(instance,
                     instance.stable(TardisChunkGenerator::new)));
 
+
+    public final Random random;
+
+    // Some parameter values.
+    public final int distanceBetweenRooms = 18;
+    public final int arsChunkSize = ARSStructurePiece.LOCKED_PIECE_CHUNK_SIZE;
+    private final int chunkSize = 16;
+
+
+
     public TardisChunkGenerator(Holder<Biome> holder) {
         super(new FixedBiomeSource(holder));
+        this.random = new Random();
     }
 
     @Override
     public void applyBiomeDecoration(WorldGenLevel pLevel, ChunkAccess pChunk, StructureManager pStructureManager) {
+
+        if (pChunk.getPos().x > -25 && pChunk.getPos().x < 25 && pChunk.getPos().z > -25 && pChunk.getPos().z < 25 ) {
+            return;
+        }
+
+
+        if(pChunk.getPos().x % arsChunkSize == 0 && pChunk.getPos().z % arsChunkSize == 0){
+
+           if ( random.nextBoolean()) {
+               ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
+               placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
+           } else {
+               ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+               placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
+           }
+
+
+            if ( random.nextBoolean()) {
+                ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
+                placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
+            } else {
+                ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+                placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
+            }
+
+        }
     }
 
     @Override
@@ -94,6 +132,8 @@ public class TardisChunkGenerator extends ChunkGenerator {
             }
         }
 
+
+
         return CompletableFuture.completedFuture(access);
     }
 
@@ -121,6 +161,50 @@ public class TardisChunkGenerator extends ChunkGenerator {
         }
 
         return new NoiseColumn(0, states);
+    }
+
+    /**
+     * Determines if the chunk is a room chunk
+     * @param pos the position of the chunk
+     * @return is the chunk a room chunk
+     */
+    private boolean isChunkAtRoomInterval(ChunkPos pos) {
+
+        System.out.println(pos.x % distanceBetweenRooms);
+
+        return (pos.x % distanceBetweenRooms == 0 || pos.x % distanceBetweenRooms == 3 || pos.x % distanceBetweenRooms == 15 )  && (pos.z % distanceBetweenRooms == 0 || pos.z % distanceBetweenRooms == 3 || pos.z % distanceBetweenRooms == 15 );
+    }
+
+    /**
+     * Fetch a random corridor piece to populate a chunk
+     * @return random corridor ARS piece from the registry.
+     */
+    private ARSStructurePiece getRandomCorridorPiece() {
+
+        return ARSStructurePieceRegistry.CORRIDORS.get(this.random.nextInt(ARSStructurePieceRegistry.CORRIDORS.size()));
+    }
+
+
+    /**
+     * Fetch a random room piece to populate a chunk
+     * @return random room ARS piece from the registry.
+     */
+    private ARSStructurePiece getRandomRoomPiece() {
+        return ARSStructurePieceRegistry.ROOMS.get(this.random.nextInt(ARSStructurePieceRegistry.ROOMS.size()));
+    }
+
+
+    private void placePieceInWorld(WorldGenLevel level, ResourceLocation pieceToPlace, ChunkAccess pChunk, boolean isSecondFloor) {
+        // Place the desired piece.
+
+        level.getLevel().getStructureManager().get(pieceToPlace).ifPresent(structure -> {
+
+            int height = isSecondFloor ? 125 : 97;
+
+            BlockPos pos = pChunk.getPos().getBlockAt(0, height,0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
+            StructurePlaceSettings settings = new StructurePlaceSettings();
+            structure.placeInWorld(level, pos, pos, settings, level.getRandom(), 1);
+        });
     }
 
 

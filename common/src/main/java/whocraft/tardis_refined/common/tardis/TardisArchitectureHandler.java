@@ -22,7 +22,7 @@ import java.util.*;
 public class TardisArchitectureHandler {
 
     public static final BlockPos DESKTOP_CENTER_POS = new BlockPos(0, 100, 0);
-    public static final BlockPos CORRIDOR_ENTRY_POS = new BlockPos(1000, 100, 0);
+    public static final BlockPos CORRIDOR_ENTRY_POS = new BlockPos(1001, 99, 1);
     public static final int INTERIOR_SIZE = 150;
 
     public static String currentArsStage = "one";
@@ -99,13 +99,6 @@ public class TardisArchitectureHandler {
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> generateArsTree(tardisLevelOperator, serverLevel));
 
-        // Generate workshop.
-        structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/workshop"));
-        structureNBT.ifPresent(structure -> {
-            BlockPos position = new BlockPos(977, 99, 9);
-            structure.placeInWorld(serverLevel.getLevel(), position, position, new StructurePlaceSettings(), serverLevel.getLevel().random, Block.UPDATE_ALL);
-        });
-
     }
 
     public static void generateArsTree(TardisLevelOperator tardisLevelOperator, ServerLevel level) {
@@ -116,7 +109,7 @@ public class TardisArchitectureHandler {
 
         Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/ars/room_ars_stage_" + currentArsStage));
         structureNBT.ifPresent(structure -> {
-            BlockPos position = new BlockPos(1011, 97, 3);
+            BlockPos position = new BlockPos(1012, 96, 4);
             structure.placeInWorld(level.getLevel(), position, position, new StructurePlaceSettings(), level.getLevel().random, Block.UPDATE_ALL);
         });
 
