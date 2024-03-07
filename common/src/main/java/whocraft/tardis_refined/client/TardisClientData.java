@@ -199,8 +199,8 @@ public class TardisClientData {
 
         compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
 
-        compoundTag.putDouble("fuel", fuel);
-        compoundTag.putDouble("MaximumFuel", maximumFuel);
+        compoundTag.putDouble(NbtConstants.FUEL, fuel);
+        compoundTag.putDouble(NbtConstants.MAXIMUM_FUEL, maximumFuel);
 
         return compoundTag;
     }
@@ -225,8 +225,8 @@ public class TardisClientData {
 
         setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
 
-        fuel = compoundTag.getDouble("fuel");
-        maximumFuel = compoundTag.getDouble("MaximumFuel");
+        fuel = compoundTag.getDouble(NbtConstants.FUEL);
+        maximumFuel = compoundTag.getDouble(NbtConstants.MAXIMUM_FUEL);
     }
 
     /**

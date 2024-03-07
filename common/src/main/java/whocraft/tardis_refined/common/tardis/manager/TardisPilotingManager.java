@@ -21,7 +21,6 @@ import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -34,7 +33,7 @@ public class TardisPilotingManager extends BaseHandler{
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
-    private static final double MAXIMUM_FUEL = 50; // 1000;
+    private static final double DEFAULT_MAXIMUM_FUEL = 50; // 1000;
     private static final double FLIGHT_COST = 3;
 
     private final TardisLevelOperator operator;
@@ -65,7 +64,7 @@ public class TardisPilotingManager extends BaseHandler{
 
     // Fuel
     private double fuel = 0;
-    private double maximumFuel = MAXIMUM_FUEL;
+    private double maximumFuel = DEFAULT_MAXIMUM_FUEL;
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -123,11 +122,11 @@ public class TardisPilotingManager extends BaseHandler{
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
 
-        this.fuel = tag.getDouble("fuel");
-        this.maximumFuel = tag.getDouble("MaximumFuel");
+        this.fuel = tag.getDouble(NbtConstants.FUEL);
+        this.maximumFuel = tag.getDouble(NbtConstants.MAXIMUM_FUEL);
 
-        if (!tag.contains("MaximumFuel")) {
-            this.maximumFuel = MAXIMUM_FUEL;
+        if (!tag.contains(NbtConstants.MAXIMUM_FUEL)) {
+            this.maximumFuel = DEFAULT_MAXIMUM_FUEL;
         }
     }
 
@@ -154,8 +153,8 @@ public class TardisPilotingManager extends BaseHandler{
 
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
 
-        tag.putDouble("fuel", this.fuel);
-        tag.putDouble("MaximumFuel", this.maximumFuel);
+        tag.putDouble(NbtConstants.FUEL, this.fuel);
+        tag.putDouble(NbtConstants.MAXIMUM_FUEL, this.maximumFuel);
 
         return tag;
     }

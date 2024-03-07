@@ -71,6 +71,10 @@ public class NbtConstants {
     public static final String KEYCHAIN = "keychain";
 
 
+    // Piloting Manager
+    public static final String FUEL = "fuel";
+    public static final String MAXIMUM_FUEL = "MaximumFuel";
+
     public static TardisNavLocation getTardisNavLocation(CompoundTag tag, String prefix, TardisLevelOperator operator) {
         BlockPos position = NbtUtils.readBlockPos(tag.getCompound(prefix + NbtConstants.LOCATION_POSITION));
         Direction direction = Direction.from2DDataValue(tag.getInt(prefix + NbtConstants.LOCATION_ROTATION));
