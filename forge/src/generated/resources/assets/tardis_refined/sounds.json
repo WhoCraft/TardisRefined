@@ -37,6 +37,24 @@
     ],
     "subtitle": "sound.pattern_manipulator.subtitle"
   },
+  "screwdriver_connect": {
+    "sounds": [
+      "tardis_refined:tools/screwdriver/screwdriver_connect"
+    ],
+    "subtitle": "sound.screwdriver_connect.subtitle"
+  },
+  "screwdriver_discard": {
+    "sounds": [
+      "tardis_refined:tools/screwdriver/screwdriver_discard"
+    ],
+    "subtitle": "sound.screwdriver_discard.subtitle"
+  },
+  "screwdriver_short": {
+    "sounds": [
+      "tardis_refined:tools/screwdriver/screwdriver_short"
+    ],
+    "subtitle": "sound.screwdriver_short.subtitle"
+  },
   "static": {
     "sounds": [
       "tardis_refined:ui/static"
