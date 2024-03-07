@@ -9,16 +9,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
@@ -42,7 +40,7 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     public InteractionResult useOn(UseOnContext context) {
 
         if (context.getLevel() instanceof ServerLevel serverLevel) {
-            System.out.println(getColor(context.getItemInHand()));
+
             if (context.getPlayer().isCrouching()) {
                 setScrewdriverMode(context.getItemInHand(), ScrewdriverMode.DISABLED, context.getClickedPos(), serverLevel);
             } else {

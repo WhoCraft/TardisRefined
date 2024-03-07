@@ -37,22 +37,21 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
+import java.awt.*;
+
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
 
     @SubscribeEvent
     public static void onItemColors(RegisterColorHandlersEvent.Item item) {
-        item.getItemColors().register(new ItemColor() {
-            @Override
-            public int getColor(ItemStack arg, int i) {
-                System.out.println(arg);
-                if (i == 0) {
-                    if (arg.getItem() instanceof DyeableLeatherItem dyeableLeatherItem) {
-                        return dyeableLeatherItem.getColor(arg);
-                    }
+
+        item.register((arg, i) -> {
+            if (i == 0) {
+                if (arg.getItem() instanceof DyeableLeatherItem dyeableLeatherItem) {
+                    return dyeableLeatherItem.getColor(arg);
                 }
-                return -1;
             }
+            return -1;
         }, ItemRegistry.SCREWDRIVER.get());
     }
 
