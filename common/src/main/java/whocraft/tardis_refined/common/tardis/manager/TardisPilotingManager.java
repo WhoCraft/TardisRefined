@@ -586,10 +586,10 @@ public class TardisPilotingManager extends BaseHandler{
     /**
      * Accessor for the maximum amount of fuel a Tardis can hold
      * Will be adjustable in future to allow for upgrades etc.
-     * @return private static field MAXIMUM_FUEL
+     * @return private field maximumFuel
      */
     public double getMaximumFuel() {
-        return MAXIMUM_FUEL;
+        return this.maximumFuel;
     }
     /**
      * Accessor for the cost of being in flight

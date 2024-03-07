@@ -45,8 +45,6 @@ public class FogRendererMixin {
 
             TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-            System.out.println(reactions.getFuel());
-
             if (reactions.getFuel() == 0d) {
                 RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
                 RenderSystem.setShaderFogStart(-8); // This makes the fog really close to the player
