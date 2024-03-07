@@ -11,7 +11,6 @@ public class ModMessages {
     /*Item Special cases*/
     public static String ITEM_KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";
     public static String ITEM_GROUP = "itemGroup."+ TardisRefined.MODID;
-    public static String DYED_ITEM_GROUP = "itemGroup."+ TardisRefined.MODID + ".dyed";
 
     /*Messages*/
     public static String MSG_EXTERIOR_COOLDOWN = message("exterior_cooldown");

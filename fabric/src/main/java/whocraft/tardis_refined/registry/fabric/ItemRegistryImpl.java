@@ -20,21 +20,9 @@ public class ItemRegistryImpl {
         }
     }).title(Component.translatable(ModMessages.ITEM_GROUP)).build();
 
-    public static final CreativeModeTab DYED_ITEM_GROUP = FabricItemGroup.builder().icon(() -> new ItemStack(ItemRegistry.SCREWDRIVER.get())).displayItems((enabledFeatures, entries) -> {
-
-        for (DyeColor value : DyeColor.values()) {
-            ItemStack stack = new ItemStack(ItemRegistry.SCREWDRIVER.get());
-            ScrewdriverItem.forceColor(stack, value.getTextColor());
-            entries.accept(stack);
-        }
-    }).title(Component.translatable(ModMessages.DYED_ITEM_GROUP)).build();
-
     public static CreativeModeTab getCreativeTab() {
         return ITEM_GROUP;
     }
 
-    public static CreativeModeTab getDyedCreativeTab() {
-        return DYED_ITEM_GROUP;
-    }
 
 }

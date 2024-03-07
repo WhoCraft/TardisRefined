@@ -12,8 +12,4 @@ public class ItemRegistryImpl {
         return CreativeModeTab.builder().title(Component.translatable(ModMessages.ITEM_GROUP)).icon(() -> new ItemStack(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).build();
     }
 
-    public static CreativeModeTab getDyedCreativeTab() {
-        return CreativeModeTab.builder().title(Component.translatable(ModMessages.DYED_ITEM_GROUP)).icon(() -> new ItemStack(ItemRegistry.SCREWDRIVER.get())).build();
-    }
-
 }

@@ -56,14 +56,6 @@ public class ClientModBus {
                 event.accept(item.get());
             }
         }
-
-        if (event.getTab() == ItemRegistry.DYED_TAB.get()) {
-            for (DyeColor value : DyeColor.values()) {
-                ItemStack stack = new ItemStack(ItemRegistry.SCREWDRIVER.get());
-                ScrewdriverItem.forceColor(stack, value.getTextColor());
-                event.accept(stack);
-            }
-        }
     }
 
     @SubscribeEvent

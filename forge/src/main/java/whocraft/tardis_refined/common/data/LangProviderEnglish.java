@@ -69,7 +69,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
         add(ModMessages.ITEM_GROUP, "Tardis Refined");
-        add(ModMessages.DYED_ITEM_GROUP, "Tardis Refined (Dyed)");
         add(ItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
         add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
         add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
