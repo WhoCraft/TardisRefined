@@ -1,13 +1,10 @@
 package whocraft.tardis_refined.neoforge;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
@@ -19,6 +16,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.ParticleGallifrey;
+import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.client.neoforge.ModelRegistryImpl;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
@@ -37,22 +35,12 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
-import java.awt.*;
-
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
 
     @SubscribeEvent
     public static void onItemColors(RegisterColorHandlersEvent.Item item) {
-
-        item.register((arg, i) -> {
-            if (i == 0) {
-                if (arg.getItem() instanceof DyeableLeatherItem dyeableLeatherItem) {
-                    return dyeableLeatherItem.getColor(arg);
-                }
-            }
-            return -1;
-        }, ItemRegistry.SCREWDRIVER.get());
+        item.register(TRItemColouring.SCREWDRIVER_COLORS, ItemRegistry.SCREWDRIVER.get());
     }
 
 
@@ -73,8 +61,10 @@ public class ClientModBus {
 
     @SubscribeEvent
     public static void onRegisterParticles(RegisterParticleProvidersEvent event) {
-        Minecraft.getInstance().particleEngine.register(TRParticles.GALLIFREY.get(), (ParticleEngine.SpriteParticleRegistration) (ParticleGallifrey.Provider::new));
-        Minecraft.getInstance().particleEngine.register(TRParticles.ARS_LEAVES.get(), (ParticleEngine.SpriteParticleRegistration) (ParticleGallifrey.ARSVinesParticle::new));
+        Minecraft mc = Minecraft.getInstance();
+        ParticleEngine particleEngine = mc.particleEngine;
+        particleEngine.register(TRParticles.GALLIFREY.get(), (ParticleEngine.SpriteParticleRegistration) (ParticleGallifrey.Provider::new));
+        particleEngine.register(TRParticles.ARS_LEAVES.get(), (ParticleEngine.SpriteParticleRegistration) (ParticleGallifrey.ARSVinesParticle::new));
     }
 
 

@@ -70,6 +70,6 @@ public class TardisRefined {
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
 
-      //  ManipulatorCrafting.registerRecipes();
+        ManipulatorCrafting.registerRecipes();
     }
 }

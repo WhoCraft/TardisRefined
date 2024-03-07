@@ -5,11 +5,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.DyeableLeatherItem;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -45,22 +43,7 @@ public class ModEvents {
 
     public static void addClientEvents() {
         ClientTickEvents.START_CLIENT_TICK.register(TardisClientData::tickClientData);
-
-        ColorProviderRegistry.ITEM.register(new ItemColor() {
-            @Override
-            public int getColor(ItemStack itemStack, int i) {
-                System.out.println(i);
-                if (i == 1) {
-                    if (itemStack.getItem() instanceof DyeableLeatherItem dyeableLeatherItem) {
-                        return dyeableLeatherItem.getColor(itemStack);
-                    }
-                }
-                System.out.println("errror");
-                return -1;
-            }
-        }, ItemRegistry.SCREWDRIVER.get());
-
-
+        ColorProviderRegistry.ITEM.register(TRItemColouring.SCREWDRIVER_COLORS, ItemRegistry.SCREWDRIVER.get());
     }
 
 
