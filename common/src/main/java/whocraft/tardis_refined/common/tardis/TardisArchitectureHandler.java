@@ -94,10 +94,17 @@ public class TardisArchitectureHandler {
         Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub_roomless"));
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = new BlockPos(13, 28, 5);
-            structure.placeInWorld(serverLevel.getLevel(), CORRIDOR_ENTRY_POS.subtract(offsetPosition), CORRIDOR_ENTRY_POS.subtract(offsetPosition), new StructurePlaceSettings(), serverLevel.getLevel().random, 3);
+            structure.placeInWorld(serverLevel.getLevel(), CORRIDOR_ENTRY_POS.subtract(offsetPosition), CORRIDOR_ENTRY_POS.subtract(offsetPosition), new StructurePlaceSettings(), serverLevel.getLevel().random, Block.UPDATE_NONE);
         });
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> generateArsTree(tardisLevelOperator, serverLevel));
+
+        // Generate temp eye room
+        structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/temp_eye"));
+        structureNBT.ifPresent(structure -> {
+            BlockPos offsetPosition = new BlockPos(981, 70, 28);
+            structure.placeInWorld(serverLevel.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), serverLevel.getLevel().random, 3);
+        });
 
     }
 
