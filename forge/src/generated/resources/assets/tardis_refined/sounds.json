@@ -17,6 +17,12 @@
     ],
     "subtitle": "sound.destination_ding.subtitle"
   },
+  "gravity_tunnel": {
+    "sounds": [
+      "tardis_refined:gravity_tunnel"
+    ],
+    "subtitle": "sound.gravity_tunnel.subtitle"
+  },
   "hum_coral": {
     "sounds": [
       "tardis_refined:tardis/interior_hums/humcoral"

@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
+import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
@@ -247,6 +248,12 @@ public class TardisClientData {
                 if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
                     LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
                     soundManager.play(LoopingSound.ARS_HUMMING);
+                }
+            }
+
+            if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+                if (!soundManager.isActive(LoopingSound.GRAVITY_LOOP)) {
+                    soundManager.play(LoopingSound.GRAVITY_LOOP);
                 }
             }
 

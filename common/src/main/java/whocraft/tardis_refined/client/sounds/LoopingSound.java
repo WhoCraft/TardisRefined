@@ -11,12 +11,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class LoopingSound extends AbstractTickableSoundInstance {
 
     public static LoopingSound ARS_HUMMING = null;
     public static LoopingSound FLIGHT_LOOP = null;
+    public static LoopingSound GRAVITY_LOOP = null;
     public LoopingSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
         attenuation = Attenuation.NONE;
@@ -80,6 +82,15 @@ public class LoopingSound extends AbstractTickableSoundInstance {
             }
         }
 
+        if(this == LoopingSound.GRAVITY_LOOP){
+            if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+                LoopingSound.GRAVITY_LOOP.setLocation(player.position());
+                volume = 0.5F;
+            } else {
+                volume = 0F;
+            }
+        }
+
     }
 
     @Override
@@ -94,6 +105,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     public static void setupSounds(){
         LoopingSound.ARS_HUMMING = new LoopingSound(SoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
         LoopingSound.FLIGHT_LOOP = new LoopingSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
+        LoopingSound.GRAVITY_LOOP = new LoopingSound(SoundRegistry.GRAVITY_TUNNEL.get(), SoundSource.AMBIENT);
     }
 
 }

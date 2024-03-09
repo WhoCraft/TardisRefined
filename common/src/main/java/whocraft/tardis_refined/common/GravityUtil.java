@@ -22,16 +22,18 @@ public class GravityUtil {
         Options options = minecraft.options;
 
         if (isInGravityShaft(player)) {
-            player.fallDistance = 0;
+            player.resetFallDistance();
             player.setNoGravity(true);
             player.setPose(Pose.STANDING);
 
+            double acceleration = 0.2;
+            double maxSpeed = 0.5;
+
             if (options.keyJump.isDown()) {
-                player.setDeltaMovement(deltaMovement.add(0, 0.1, 0));
+                player.setDeltaMovement(deltaMovement.add(0, easeMovement(acceleration, maxSpeed), 0));
                 info.cancel();
-            }
-            else if (options.keyShift.isDown()) {
-                player.setDeltaMovement(deltaMovement.add(0, -0.1, 0));
+            } else if (options.keyShift.isDown()) {
+                player.setDeltaMovement(deltaMovement.add(0, -easeMovement(acceleration, maxSpeed), 0));
                 info.cancel();
             } else {
                 player.setDeltaMovement(deltaMovement.x, 0, deltaMovement.z);
@@ -40,5 +42,12 @@ public class GravityUtil {
             player.setNoGravity(false);
         }
     }
+
+    private static double easeMovement(double acceleration, double maxSpeed) {
+        double smoothedMovement = Math.min(Math.abs(acceleration), maxSpeed);
+        return smoothedMovement * smoothedMovement * smoothedMovement;
+    }
+
+
 
 }
