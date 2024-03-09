@@ -9,21 +9,21 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ScrewdriverItem extends Item {
+public class ScrewdriverItem extends Item implements DyeableLeatherItem {
 
     // Constants
     public static final String SCREWDRIVER_MODE = "screwdriver_mode";
@@ -34,6 +34,17 @@ public class ScrewdriverItem extends Item {
 
     public ScrewdriverItem(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public int getColor(ItemStack itemStack) {
+        CompoundTag compoundTag = itemStack.getTagElement("display");
+        return compoundTag != null && compoundTag.contains("color", 99) ? compoundTag.getInt("color") : DyeColor.PINK.getTextColor();
+    }
+
+    public static ItemStack forceColor(ItemStack itemStack, int color){
+        itemStack.getOrCreateTagElement("display").putInt("color", color);
+        return itemStack;
     }
 
     @Override
@@ -185,6 +196,7 @@ public class ScrewdriverItem extends Item {
 
         return listOfBlockPos;
     }
+
 
     @Override
     public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {

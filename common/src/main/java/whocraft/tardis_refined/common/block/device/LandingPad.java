@@ -69,8 +69,6 @@ public class LandingPad extends Block {
                         var tardisLevel = Platform.getServer().getLevel(dimension);
 
 
-
-
                         var operatorOptional = TardisLevelOperator.get(tardisLevel);
                         if (operatorOptional.isEmpty()) {
                             return InteractionResult.PASS;

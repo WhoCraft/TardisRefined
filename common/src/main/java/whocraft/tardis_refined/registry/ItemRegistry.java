@@ -20,7 +20,6 @@ public class ItemRegistry {
 
     public static final RegistrySupplier<CreativeModeTab> MAIN_TAB = TABS.register("main_tab", ItemRegistry::getCreativeTab);
 
-
     public static final DeferredRegistry<Item> ITEMS = DeferredRegistry.create(TardisRefined.MODID, Registries.ITEM);
 
     public static final RegistrySupplier<Item> KEY = register("tardis_key", () -> new KeyItem(new Item.Properties().stacksTo(1)), true);
@@ -45,5 +44,7 @@ public class ItemRegistry {
     public static CreativeModeTab getCreativeTab() {
         throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
+
+
 
 }
