@@ -10,7 +10,7 @@
  TARDIS Refined is a Minecraft mod for Forge and Fabric which brings the TARDIS from Doctor Who to Minecraft.
  
  
- <a href="https://github.com/CommandrMoose/TardisRefined/wiki">View the wiki.</a>
+ <a href="https://github.com/Jeryn99/TardisRefined/wiki">View the wiki.</a>
 
 ## Workspace
 TARDIS Refined implements the <a href="https://github.com/architectury/architectury-plugin">Architectuary Gradle plugin</a>, allowing easy multi-modloader development via a common module. This functionality does not require any additional installation of plugins or files. It is recommended you familiarise yourself with Achitectury first before proceeding with PR submissions. 
@@ -33,7 +33,7 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
 <tr><td><a href="https://twitter.com/CommandrMoose">CommandrMoose</a></td>
          <td>Project lead and Developer</td> </tr>
       <tr>
-         <td><a href="https://twitter.com/Suff1999">Suff</a></td>
+         <td><a href="https://github.com/Jeryn99">Jeryn</a></td>
          <td>Developer</td>
       </tr>
             <tr>
