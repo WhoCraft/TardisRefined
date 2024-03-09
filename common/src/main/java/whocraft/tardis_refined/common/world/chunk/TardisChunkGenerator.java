@@ -57,6 +57,15 @@ public class TardisChunkGenerator extends ChunkGenerator {
     @Override
     public void applyBiomeDecoration(WorldGenLevel pLevel, ChunkAccess pChunk, StructureManager pStructureManager) {
 
+        if (pChunk.getPos().x == 60  && pChunk.getPos().z == 0) {
+            pLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "cave/cave_generation_one")).ifPresent(structure -> {
+
+                StructurePlaceSettings settings = new StructurePlaceSettings();
+                structure.placeInWorld(pLevel, new BlockPos(959, 9, 0), new BlockPos(959, 9, 0), settings, pLevel.getRandom(), 1);
+            });
+            return;
+        }
+
         if (pChunk.getPos().x > -25 && pChunk.getPos().x < 25 && pChunk.getPos().z > -25 && pChunk.getPos().z < 25 ) {
             return;
         }

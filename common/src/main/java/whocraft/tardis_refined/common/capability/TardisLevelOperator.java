@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -270,11 +271,20 @@ public class TardisLevelOperator {
     }
 
     public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
-        this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
+       //this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
+
+        BlockEntity rootDoor = this.getLevel().getBlockEntity(new BlockPos(961,108,17));
+        if (rootDoor instanceof TardisInternalDoor internalDoor) {
+            this.setInternalDoor(internalDoor);
+        }
+
         Direction direction = shellBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
         TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);
         this.exteriorManager.setLastKnownLocation(navLocation);
         this.pilotingManager.setTargetLocation(navLocation);
+
+
+
         shellServerLevel.setBlock(shellBlockPos, shellBlockState.setValue(OPEN, true), Block.UPDATE_ALL);
 
         this.setInitiallyGenerated(true);
