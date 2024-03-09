@@ -56,7 +56,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
                         String name = "gs_r" + level.getRandom().nextInt(1000);
                         StructureTemplateManager manager = level.getServer().getStructureManager();
                         StructureTemplate template = manager.getOrCreate(new ResourceLocation(name));
-                        template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 12, 48), false, null);
+                        template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 28, 48), false, null);
                         template.setAuthor("");
                         manager.save(new ResourceLocation(name));
 
