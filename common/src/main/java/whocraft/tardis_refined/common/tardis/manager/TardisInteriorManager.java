@@ -12,8 +12,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -27,7 +25,6 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
 
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TardisInteriorManager extends BaseHandler {
-
     private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
@@ -52,6 +48,8 @@ public class TardisInteriorManager extends BaseHandler {
     private HumEntry humEntry = TardisHums.getDefaultHum();
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
+
+    public static final double REQUIRED_FUEL_INT_CHANGE = 500; // The amount of fuel required to change interior todo - move into non static so can be changed by upgrades and such
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -346,4 +344,11 @@ public class TardisInteriorManager extends BaseHandler {
         this.isWaitingToGenerate = false;
     }
 
+    /**
+     * Returns whether a Tardis has enough fuel to perform an interior change
+     * @return true if the Tardis has enough fuel
+     */
+    public boolean hasEnoughFuel() {
+        return this.operator.getPilotingManager().getFuel() >= REQUIRED_FUEL_INT_CHANGE;
+    }
 }

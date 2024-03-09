@@ -32,6 +32,7 @@ public class AestheticHandler extends BaseHandler {
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
     private HumEntry currentHum = TardisHums.getDefaultHum();
+    public static final double REQUIRED_SHELL_FUEL = 15; // Amount of fuel required to change the shell todo - make non static
 
     public AestheticHandler(TardisLevelOperator tardisLevelOperator) {
         super();
@@ -106,6 +107,13 @@ public class AestheticHandler extends BaseHandler {
 
     }
 
+    /**
+     * Returns whether the operator has enough fuel to change the shell
+     * @return - true if the operator has enough fuel
+     */
+    public boolean hasFuelForShellChange() {
+        return this.tardisOperator.getPilotingManager().getFuel() >= REQUIRED_SHELL_FUEL;
+    }
 
     public void updateInteriorDoors(ResourceLocation theme) {
         if (tardisOperator.getInternalDoor() != null) {

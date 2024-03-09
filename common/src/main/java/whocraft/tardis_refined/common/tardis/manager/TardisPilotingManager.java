@@ -33,7 +33,7 @@ public class TardisPilotingManager extends BaseHandler{
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
-    private static final double DEFAULT_MAXIMUM_FUEL = 50; // 1000;
+    private static final double DEFAULT_MAXIMUM_FUEL = 1000;
     private static final double FLIGHT_COST = 3;
 
     private final TardisLevelOperator operator;
@@ -600,7 +600,7 @@ public class TardisPilotingManager extends BaseHandler{
     }
 
     /**
-     * The percentage of fuel this Tardis has, from 0% -> 100%
+     * The percentage of fuel this Tardis has, from 0 -> 1
      * Preferably should be rounded to the nearest whole number
      * @return the percentage of fuel
      */

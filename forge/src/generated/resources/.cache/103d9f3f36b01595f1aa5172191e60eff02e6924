@@ -1,10 +1,4 @@
-// 1.20.2	2024-03-05T13:50:47.3802402	Registries
+// 1.20.2	2024-01-01T17:33:21.0627898	Registries
 d9483eb301ed4a4fd91b5f042909997a1bc3085c data/tardis_refined/neoforge/biome_modifier/tardis_root_cluster.json
-206e04209cc94eaacc515be55e734b27a4f7825f data/tardis_refined/neoforge/biome_modifier/zeiton.json
-942677b9b623a179a85d26f8795107b8c35f6825 data/tardis_refined/neoforge/biome_modifier/zeiton_small.json
-f4fae8a2c7fdd789464a636646fd9f0774a28379 data/tardis_refined/worldgen/configured_feature/ore_zeiton.json
-59524b9f02ff95def0984ffc4c24d99e57f90e5e data/tardis_refined/worldgen/configured_feature/ore_zeiton_small.json
 b3353cf92cff570f9c4ac799f23045aa94b34968 data/tardis_refined/worldgen/configured_feature/tardis_root_cluster.json
-791b55d337d2e11af860aa32b5a4b635780c07c4 data/tardis_refined/worldgen/placed_feature/ore_zeiton.json
-25d72d6be2ec80571490b5fec4ac34f23e9e4080 data/tardis_refined/worldgen/placed_feature/ore_zeiton_small.json
 0694927b6b3eb72bf137510f370a1d6133dc7795 data/tardis_refined/worldgen/placed_feature/tardis_root_cluster.json
