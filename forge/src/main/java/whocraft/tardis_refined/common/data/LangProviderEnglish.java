@@ -17,6 +17,12 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class LangProviderEnglish extends LanguageProvider {
 
     public LangProviderEnglish(DataGenerator gen) {
@@ -199,7 +205,11 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
         addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
+
+
     }
+
+
 
     public void addControl(ConsoleControl control, String name) {
         add(control.getTranslationKey(), name);

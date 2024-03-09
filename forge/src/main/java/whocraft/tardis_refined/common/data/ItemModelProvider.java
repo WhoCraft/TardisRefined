@@ -40,6 +40,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         blockItem(BlockRegistry.ARS_LEAVES_FENCE.getId(), new ResourceLocation(TardisRefined.MODID, "item/ars_leaves_fence_inventory"));
         blockItem(BlockRegistry.TERRAFORMER_BLOCK.getId());
         blockItem(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
+        blockItem(BlockRegistry.GRAVITY_BLOCK.getId());
 
         basicItem(BlockRegistry.BULK_HEAD_DOOR.getId());
         basicItem(BlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());
