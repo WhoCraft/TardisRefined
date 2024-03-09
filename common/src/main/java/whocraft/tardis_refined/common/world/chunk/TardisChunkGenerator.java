@@ -23,6 +23,7 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.constants.TardisGeneration;
 import whocraft.tardis_refined.registry.ARSStructurePieceRegistry;
@@ -42,7 +43,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
     public final Random random;
 
     // Some parameter values.
-    public final int distanceBetweenRooms = 18;
+    public final int distanceBetweenGravityWell = 18;
     public final int arsChunkSize = ARSStructurePiece.LOCKED_PIECE_CHUNK_SIZE;
     private final int chunkSize = 16;
 
@@ -60,26 +61,33 @@ public class TardisChunkGenerator extends ChunkGenerator {
             return;
         }
 
-
         if(pChunk.getPos().x % arsChunkSize == 0 && pChunk.getPos().z % arsChunkSize == 0){
 
-           if ( random.nextBoolean()) {
-               ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
-               placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
-           } else {
-               ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-               placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
-           }
+            if (isChunkAtGravityInterval(pChunk.getPos())) {
+                ResourceLocation pieceToPlace = new ResourceLocation(TardisRefined.MODID, "corridors/corridor_connection_bottom");
+                placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
 
-
-            if ( random.nextBoolean()) {
-                ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
+                pieceToPlace = new ResourceLocation(TardisRefined.MODID, "corridors/corridor_connection_top");
                 placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
+
             } else {
-                ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-                placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            }
+                if ( random.nextBoolean()) {
+                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
+                    placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
+                } else {
+                    ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+                    placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
+                }
 
+
+                if ( random.nextBoolean()) {
+                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
+                    placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
+                } else {
+                    ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+                    placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
+                }
+            }
         }
     }
 
@@ -164,15 +172,14 @@ public class TardisChunkGenerator extends ChunkGenerator {
     }
 
     /**
-     * Determines if the chunk is a room chunk
+     * Determines if the chunk is a Gravity hallways chunk
      * @param pos the position of the chunk
-     * @return is the chunk a room chunk
+     * @return is the chunk a Gravity chunk
      */
-    private boolean isChunkAtRoomInterval(ChunkPos pos) {
 
-        System.out.println(pos.x % distanceBetweenRooms);
+    private boolean isChunkAtGravityInterval(ChunkPos pos) {
 
-        return (pos.x % distanceBetweenRooms == 0 || pos.x % distanceBetweenRooms == 3 || pos.x % distanceBetweenRooms == 15 )  && (pos.z % distanceBetweenRooms == 0 || pos.z % distanceBetweenRooms == 3 || pos.z % distanceBetweenRooms == 15 );
+        return (pos.x % distanceBetweenGravityWell == 0)  && (pos.z % distanceBetweenGravityWell == 0);
     }
 
     /**
