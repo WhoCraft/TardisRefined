@@ -1,11 +1,13 @@
 package whocraft.tardis_refined.fabric.events;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.GravityOverlay;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -40,6 +42,8 @@ public class ModEvents {
 
     public static void addClientEvents() {
         ClientTickEvents.START_CLIENT_TICK.register(TardisClientData::tickClientData);
+        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> GravityOverlay.renderOverlay(matrixStack.pose()));
+
     }
 
 

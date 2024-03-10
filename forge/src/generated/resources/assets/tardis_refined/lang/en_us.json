@@ -65,6 +65,8 @@
   "item.tardis_refined.tardis_key": "Tardis Key",
   "item.tardis_refined.zeiton_ingot": "Zeiton Ingot",
   "itemGroup.tardis_refined": "Tardis Refined",
+  "message.tardis_refined.ascend_key": "Ascend: %s",
+  "message.tardis_refined.descend_key": "Descend: %s",
   "message.tardis_refined.exterior_cooldown": "You must wait %s seconds",
   "message.tardis_refined.key_bound": "Key Bound to %s",
   "message.tardis_refined.key_cycled": "Main: %s",

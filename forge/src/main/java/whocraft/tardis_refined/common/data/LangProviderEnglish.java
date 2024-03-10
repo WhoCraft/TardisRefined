@@ -190,6 +190,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
 
+        /*Overlay Messages*/
+        add(ModMessages.ASCEND_KEY, "Ascend: %s");
+        add(ModMessages.DESCEND_KEY, "Descend: %s");
+
         /*Upgrades*/
         addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
         addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
