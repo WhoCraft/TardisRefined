@@ -36,7 +36,8 @@ import java.util.Map;
 import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
 
 public class TardisClientData {
-
+    public static int FOG_TICK_DELTA = 0; // This is for the fading in and out of the fog.
+    private static int MAX_FOG_TICK_DELTA = 2 * 20; // This is for adjusting how fast the fog will fade in and out.
 
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
@@ -177,6 +178,24 @@ public class TardisClientData {
         this.maximumFuel = fuel;
     }
 
+    /**
+     * Higher means more fog, lower means less fog
+     * @return 0 -> 1 float based off fog tick delta
+     */
+    public static float getFogTickDelta() {
+        return 1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
+    }
+    public static void tickFog(boolean hasFuel) {
+        if (!hasFuel && (FOG_TICK_DELTA <= MAX_FOG_TICK_DELTA) && (FOG_TICK_DELTA > 0)) {
+            FOG_TICK_DELTA--; // Fading in the fog
+            return;
+        }
+
+        if (hasFuel && (FOG_TICK_DELTA != MAX_FOG_TICK_DELTA)) {
+            FOG_TICK_DELTA++; // Fading out the fog
+            return;
+        }
+    }
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -317,6 +336,10 @@ public class TardisClientData {
                     player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                     player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                 }
+            }
+
+            if (isThisTardis) {
+                tickFog(fuel != 0);
             }
         }
 

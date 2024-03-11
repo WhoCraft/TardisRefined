@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,9 +46,11 @@ public class FogRendererMixin {
 
             TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-            if (reactions.getFuel() == 0d) {
+            if (TardisClientData.getFogTickDelta() > 0.0f) {
+                float delta = TardisClientData.getFogTickDelta();
+
                 RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
-                RenderSystem.setShaderFogStart(-8); // This makes the fog really close to the player
+                RenderSystem.setShaderFogStart(Mth.lerp(delta, 16f, -8f)); // This positions the fog based off the delta
                 RenderSystem.setShaderFogEnd(16);
                 RenderSystem.setShaderFogShape(FogShape.SPHERE);
 
