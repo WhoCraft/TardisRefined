@@ -26,6 +26,11 @@ import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class TardisRefined {
 
     // DEBUG DEV STUFF THAT MUST BE DISABLED FOR PROD
@@ -74,5 +79,7 @@ public class TardisRefined {
         ARSStructurePieceRegistry.register();
 
        // ManipulatorCrafting.registerRecipes();
+
     }
+
 }

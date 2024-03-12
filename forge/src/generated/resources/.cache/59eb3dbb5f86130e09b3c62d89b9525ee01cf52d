@@ -1,4 +1,4 @@
-// 1.20.2	2024-03-09T22:52:26.3168973	Loot Tables
+// 1.20.2	2024-03-12T23:34:09.6022469	Loot Tables
 84db98a0dc5acd311a33c78da97d0f550b5a6b99 data/tardis_refined/loot_tables/blocks/air_lock_generator.json
 44f9a22dab47fde18e68a272e5432a2ea1896f8f data/tardis_refined/loot_tables/blocks/ars_egg.json
 4252a1599ca37433695f202fd304bf55237ed1dd data/tardis_refined/loot_tables/blocks/ars_leaves.json
@@ -10,7 +10,7 @@ fde1a46c75c8414fdf331b7390bd594226bfaba4 data/tardis_refined/loot_tables/blocks/
 b5037c7768296986e0e31c53752e7c9bfbad2c88 data/tardis_refined/loot_tables/blocks/deepslate_zeiton_ore.json
 69b9ccd0fdff14479cf3d7097975f13ebfd5dcdd data/tardis_refined/loot_tables/blocks/flight_detector.json
 d10e5d00a3930a5f1cff353a35d4016b675b6184 data/tardis_refined/loot_tables/blocks/fools_stone.json
-bec1664de9db6b934005abc51ad5f0693de443ce data/tardis_refined/loot_tables/blocks/gravity_block.json
+85ec82b33e3c656f2ac41d44a3d6d631aeb2c8d6 data/tardis_refined/loot_tables/blocks/gravity_well.json
 81ded436d38a9cf26bd58d10162ac494951f24e1 data/tardis_refined/loot_tables/blocks/landing_pad.json
 30a30314f2504439b04d07ec51ce03b1ab1c5cd3 data/tardis_refined/loot_tables/blocks/root_plant.json
 c2ee9e06adc9cc276ca618d76e1406cc60a25ddc data/tardis_refined/loot_tables/blocks/root_shell.json

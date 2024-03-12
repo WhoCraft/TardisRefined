@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "tardis_refined:block/gravity_well_bottom_on",
+    "side": "tardis_refined:block/gravity_well_side_5",
+    "top": "tardis_refined:block/gravity_well_top_5"
+  }
+}

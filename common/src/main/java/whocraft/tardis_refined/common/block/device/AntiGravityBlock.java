@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.common.items.ScrewdriverItem;
 
 public class AntiGravityBlock extends Block {
 
@@ -48,7 +49,7 @@ public class AntiGravityBlock extends Block {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if(!level.isClientSide && interactionHand == InteractionHand.MAIN_HAND) {
+        if(!level.isClientSide && interactionHand == InteractionHand.MAIN_HAND && player.getItemInHand(interactionHand).getItem() instanceof ScrewdriverItem) {
             int space = blockState.getValue(SPACE);
             int newSpace = space + 1;
             if (newSpace > 5) {

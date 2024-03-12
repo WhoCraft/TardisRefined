@@ -1,7 +1,0 @@
-{
-  "textures": {
-    "particle": "tardis_refined:block/anti_gravity_3",
-    "all": "tardis_refined:block/anti_gravity_3"
-  },
-  "parent": "block/cube_all"
-}

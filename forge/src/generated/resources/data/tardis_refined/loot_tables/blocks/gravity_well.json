@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "tardis_refined:gravity_block"
+          "name": "tardis_refined:gravity_well"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "tardis_refined:blocks/gravity_block"
+  "random_sequence": "tardis_refined:blocks/gravity_well"
 }

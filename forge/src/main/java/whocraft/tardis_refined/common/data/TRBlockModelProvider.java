@@ -68,7 +68,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
     public JsonObject antiGravityBlock(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block);
         for (int space = 0; space <= 5; space++) {
-            ResourceLocation modelLocation = new ResourceLocation(TardisRefined.MODID, "block/anti_gravity_" + space);
+            ResourceLocation modelLocation = new ResourceLocation(TardisRefined.MODID, "block/gravity_well_" + space);
             builder.partialState().with(AntiGravityBlock.SPACE, space).modelForState()
                     .modelFile(models().getExistingFile(modelLocation))
                     .addModel();
@@ -116,7 +116,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(BlockRegistry.ZEITON_ORE_DEEPSLATE.get());
         customLocation(BlockRegistry.ZEITON_BLOCK.get());
 
-        antiGravityBlock(BlockRegistry.GRAVITY_BLOCK.get());
+        antiGravityBlock(BlockRegistry.GRAVITY_WELL.get());
 
         /*
          **Fences**

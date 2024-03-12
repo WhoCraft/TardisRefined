@@ -1,0 +1,22 @@
+{
+  "variants": {
+    "space=0": {
+      "model": "tardis_refined:block/gravity_well_0"
+    },
+    "space=1": {
+      "model": "tardis_refined:block/gravity_well_1"
+    },
+    "space=2": {
+      "model": "tardis_refined:block/gravity_well_2"
+    },
+    "space=3": {
+      "model": "tardis_refined:block/gravity_well_3"
+    },
+    "space=4": {
+      "model": "tardis_refined:block/gravity_well_4"
+    },
+    "space=5": {
+      "model": "tardis_refined:block/gravity_well_5"
+    }
+  }
+}
