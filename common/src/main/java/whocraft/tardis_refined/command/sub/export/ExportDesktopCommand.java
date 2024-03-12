@@ -30,7 +30,7 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
         return Commands.literal("desktop")
                 .then(Commands.argument("pos1", BlockPosArgument.blockPos())
                         .then(Commands.argument("pos2", BlockPosArgument.blockPos())
-                                .then(Commands.argument("ignore_entities", BoolArgumentType.bool())
+                                .then(Commands.argument("include_entities", BoolArgumentType.bool())
                                         .then(Commands.argument("namespace", StringArgumentType.word())
                                                 .then(Commands.argument("desktop_id", StringArgumentType.word())
                                                         .then(Commands.argument("datapack_name", StringArgumentType.string())
