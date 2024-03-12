@@ -172,7 +172,7 @@ public class TardisPilotingManager extends BaseHandler{
         if (isInFlight) {
             ticksInFlight++;
 
-            // Removing fuel once every 2.5 seconds, should this be here?
+            // Removing fuel once every 2.5 seconds
             if (ticksInFlight % (2.5 * 20) == 0) {
                 this.removeFuel(this.getFlightFuelCost());
             }
@@ -216,15 +216,6 @@ public class TardisPilotingManager extends BaseHandler{
                 this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
             }
         }
-        /*
-        if (this.isOutOfFuel()) {
-            // i have concerns about this causing lag, lmk if it does and ill rework it
-            for (Player player : this.operator.getLevel().players()) {
-                MobEffectInstance effect = new MobEffectInstance(MobEffects.DARKNESS, 10, 2, false, false, false);
-                player.addEffect(effect);
-            }
-        }
-        */
     }
 
     public boolean isInFlight() {

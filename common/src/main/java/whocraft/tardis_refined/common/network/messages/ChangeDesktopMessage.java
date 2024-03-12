@@ -4,6 +4,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -55,11 +56,18 @@ public class ChangeDesktopMessage extends MessageC2S {
                 TardisPilotingManager pilotManager = operator.getPilotingManager();
                 TardisInteriorManager interiorManager = operator.getInteriorManager();
 
-                if (!pilotManager.isInFlight() && interiorManager.hasEnoughFuel()) {
+                boolean inFlight = pilotManager.isInFlight();
+                boolean hasFuel = interiorManager.hasEnoughFuel();
+
+                if (!inFlight && hasFuel) {
                     interiorManager.prepareDesktop(desktopTheme);
-                    pilotManager.removeFuel(TardisInteriorManager.REQUIRED_FUEL_INT_CHANGE);
+                    pilotManager.removeFuel(interiorManager.getRequiredFuel());
                 } else {
-                    x.playSound(null, context.getPlayer(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.BLOCKS, 10f, 0.25f);
+                    if (inFlight)
+                        x.playSound(null, context.getPlayer(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.BLOCKS, 10f, 0.25f);
+
+                    if (!hasFuel)
+                        x.playSound(null, context.getPlayer(), SoundRegistry.SCREWDRIVER_CONNECT.get(), SoundSource.BLOCKS, 10f, 0.25f); // Sound should be changed
                 }
             });
         });

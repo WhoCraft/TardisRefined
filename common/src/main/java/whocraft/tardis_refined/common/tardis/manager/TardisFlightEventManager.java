@@ -205,7 +205,7 @@ public class TardisFlightEventManager extends BaseHandler{
                 if (controlRequestCooldown > 0) controlRequestCooldown--;
 
                 // Prepare the next control for highlighting.
-                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests && !pilot.isAutoLandSet()) { // "&& !pilot.isAutoLandSet()" should not be necessary as it was checked above
+                if (!isWaitingForControlResponse && controlRequestCooldown == 0 && this.controlResponses < this.requiredControlRequests) {
 
                     // Record what control type needs pressing.
                     this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));

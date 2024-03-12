@@ -49,7 +49,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
 
-    public static final double REQUIRED_FUEL_INT_CHANGE = 500; // The amount of fuel required to change interior todo - move into non static so can be changed by upgrades and such
+    private double fuelForIntChange = 500; // The amount of fuel required to change interior
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -115,6 +115,9 @@ public class TardisInteriorManager extends BaseHandler {
         tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
         tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
+
+        tag.putDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE, this.fuelForIntChange);
+
         return tag;
     }
     @Override
@@ -127,6 +130,11 @@ public class TardisInteriorManager extends BaseHandler {
         this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
         this.humEntry = TardisHums.getHumById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_CURRENT_HUM)));
+
+        this.fuelForIntChange = tag.getDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE);
+        if (!tag.contains(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE)) {
+            this.fuelForIntChange = 500; // Default
+        }
     }
 
 
@@ -349,6 +357,22 @@ public class TardisInteriorManager extends BaseHandler {
      * @return true if the Tardis has enough fuel
      */
     public boolean hasEnoughFuel() {
-        return this.operator.getPilotingManager().getFuel() >= REQUIRED_FUEL_INT_CHANGE;
+        return this.operator.getPilotingManager().getFuel() >= this.getRequiredFuel();
+    }
+
+    /**
+     * The amount of fuel required to change the interior
+     * @return double amount of fuel to be removed
+     */
+    public double getRequiredFuel() {
+        return this.fuelForIntChange;
+    }
+
+    /**
+     * Sets the amount of fuel required to change the interior
+     * @param fuel the amount of fuel
+     */
+    private void setRequiredFuel(double fuel) {
+        this.fuelForIntChange = fuel;
     }
 }

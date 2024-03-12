@@ -29,8 +29,7 @@ public class MonitorControl extends Control {
             }
 
             boolean isSyncingKey = false;
-            if (PlayerUtil.isInMainHand(player, ItemRegistry.KEY.get())){
-                KeyItem key = (KeyItem)hand.getItem();
+            if (hand.getItem() instanceof KeyItem key){
                 if (key.interactMonitor(hand,player, controlEntity, player.getUsedItemHand()))
                     isSyncingKey = true;
             }
