@@ -36,7 +36,6 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         ModelRegistry.init();
         ModEvents.addClientEvents();
         particles();
-
     }
 
     private void particles() {

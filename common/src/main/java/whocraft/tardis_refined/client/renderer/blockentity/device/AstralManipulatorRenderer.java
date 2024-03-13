@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client.renderer.blockentity.device;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Vector3f;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
@@ -21,6 +23,9 @@ import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
+import whocraft.tardis_refined.common.items.ScrewdriverItem;
+
+import java.awt.*;
 
 public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralManipulatorBlockEntity>, BlockEntityRendererProvider<AstralManipulatorBlockEntity> {
 
@@ -51,9 +56,9 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
                 float yDiff = Math.abs(pointA.getY() - pointB.getY());
                 float zDiff = Math.abs(pointA.getZ() - pointB.getZ());
 
-                var smallestPointX = pointA.getX() > pointB.getX() ? pointB.getX() : pointA.getX();
-                var smallestPointY = pointA.getY() > pointB.getY() ? pointB.getY() : pointA.getY();
-                var smallestPointZ = pointA.getZ() > pointB.getZ() ? pointB.getZ() : pointA.getZ();
+                var smallestPointX = Math.min(pointA.getX(), pointB.getX());
+                var smallestPointY = Math.min(pointA.getY(), pointB.getY());
+                var smallestPointZ = Math.min(pointA.getZ(), pointB.getZ());
 
                 var xCenter = smallestPointX + (xDiff * 0.5f);
                 var yCenter = smallestPointY + (yDiff * 0.5f);
@@ -83,7 +88,13 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
             poseStack.pushPose();
             poseStack.translate(-posAOffsetX, -posAOffsetY, -posAOffsetZ);
             VertexConsumer vertexBuilder = bufferSource.getBuffer(RenderType.lightning());
-            RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f,  height + 1.25f , width + 1.25f,  0.635f, 0.392f, 0.878f,  0 + sine , 0 );
+
+            if(Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof ScrewdriverItem screwdriverItem) {
+                Color color = new Color(screwdriverItem.getColor(Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND)));
+                RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f, height + 1.25f, width + 1.25f, (float) color.getRed() / 255, (float) color.getGreen() / 255, (float) color.getBlue() / 255, 0 + sine, 0);
+            } else {
+                RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f,  height + 1.25f , width + 1.25f,  0.635f, 0.392f, 0.878f,  0 + sine , 0 );
+            }
 
             poseStack.popPose();
 
