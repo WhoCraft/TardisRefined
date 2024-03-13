@@ -1,24 +1,17 @@
 package whocraft.tardis_refined.common.blockentity.door;
 
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.OPEN;

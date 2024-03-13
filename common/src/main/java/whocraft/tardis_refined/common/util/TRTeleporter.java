@@ -204,6 +204,7 @@ public class TRTeleporter {
         newEntity.moveTo(pX, pY, pZ, yRot, xRot);
         newEntity.setYHeadRot(yRot);
         newEntity.setPortalCooldown();
+        newEntity.setDeltaMovement(Vec3.ZERO);
 
         pEntity.remove(Entity.RemovalReason.CHANGED_DIMENSION);
         destination.addDuringTeleport(newEntity); //DO NOT add the entity to the destination before removing them, else we will teleport them to the coordinates from the source world

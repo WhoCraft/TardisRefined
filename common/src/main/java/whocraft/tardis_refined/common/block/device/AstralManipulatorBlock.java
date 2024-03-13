@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,6 +15,7 @@ import net.minecraft.world.item.DebugStickItem;
 import net.minecraft.world.item.InkSacItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -71,8 +73,6 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
                 }
 
             }
-
-
 
 
         }

@@ -5,6 +5,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class ItemRegistryImpl {
     public static CreativeModeTab getCreativeTab() {

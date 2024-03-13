@@ -6,7 +6,7 @@ public class ModMessages {
 
     /* Related Links*/
 
-    public static String GITHUB_RELEASE_PAGE = "https://github.com/Suff99/TardisRefined/releases";
+    public static String GITHUB_RELEASE_PAGE = "https://github.com/Jeryn99/TardisRefined/releases";
 
     /*Item Special cases*/
     public static String ITEM_KEYCHAIN = "item."+ TardisRefined.MODID + ".keychain";

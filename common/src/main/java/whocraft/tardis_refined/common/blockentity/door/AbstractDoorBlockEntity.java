@@ -89,6 +89,11 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     }
 
     @Override
+    public Direction getDoorRotation() {
+        return this.getBlockState().getValue(InternalDoorBlock.FACING);
+    }
+
+    @Override
     public void onEntityExit(ServerEntity entity) {
 
     }

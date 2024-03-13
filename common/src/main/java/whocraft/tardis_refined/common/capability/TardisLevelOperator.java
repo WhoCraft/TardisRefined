@@ -166,7 +166,7 @@ public class TardisLevelOperator {
             if (this.level instanceof ServerLevel targetServerLevel){
 
                 BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
-                Direction doorDirection = internalDoor != null ? internalDoor.getEntryRotation() : entity.getDirection();
+                Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
 
                 TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
                 TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
