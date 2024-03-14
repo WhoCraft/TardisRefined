@@ -51,7 +51,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     private HumEntry humEntry = TardisHums.getDefaultHum();
 
-    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
+    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -79,7 +79,7 @@ public class TardisInteriorManager extends BaseHandler {
 
         ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
-        ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1009, 97, -2), new BlockPos(1041, 118, 30), "ars_room");
+        ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1051, 97, 6), new BlockPos(1023, 118, 36), "ars_room");
 
         return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, arsRoom};
     }
@@ -203,7 +203,7 @@ public class TardisInteriorManager extends BaseHandler {
                             level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
 
-                        BlockPos corridorDoorBlockPos = new BlockPos(1001, 99, 3);
+                        BlockPos corridorDoorBlockPos = new BlockPos(1013, 99, 7);
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                             bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), false);
                             level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
@@ -247,11 +247,11 @@ public class TardisInteriorManager extends BaseHandler {
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
-                        TRTeleporter.performTeleport(x, level, 1001.5f + offsetPos.x(), 99.5f + offsetPos.y(), -0.5f + offsetPos.z(), x.getYRot(), x.getXRot());
+                        TRTeleporter.performTeleport(x, level, 1013.5f + offsetPos.x(), 99.5f + offsetPos.y(), -4.5f + offsetPos.z(), x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
-                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(new BlockPos(1000, 100, -2)));
+                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(STATIC_CORRIDOR_POSITION));
                         TRTeleporter.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
@@ -265,7 +265,7 @@ public class TardisInteriorManager extends BaseHandler {
                         level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
 
-                    BlockPos corridorDoorBlockPos = new BlockPos(1001, 99, 3);
+                    BlockPos corridorDoorBlockPos = new BlockPos(1013, 99, 7);
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                         bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), true);
                         level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);

@@ -90,17 +90,8 @@ public class TardisArchitectureHandler {
     }
 
     public static void generateEssentialCorridors(ServerLevel serverLevel) {
-        // Generate corridor hub
-        Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub_roomless"));
-        structureNBT.ifPresent(structure -> {
-            BlockPos offsetPosition = new BlockPos(13, 28, 5);
-            structure.placeInWorld(serverLevel.getLevel(), CORRIDOR_ENTRY_POS.subtract(offsetPosition), CORRIDOR_ENTRY_POS.subtract(offsetPosition), new StructurePlaceSettings(), serverLevel.getLevel().random, Block.UPDATE_NONE);
-        });
-
-        TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> generateArsTree(tardisLevelOperator, serverLevel));
-
         // Generate temp eye room
-        structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/temp_eye"));
+        Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/temp_eye"));
         structureNBT.ifPresent(structure -> {
             BlockPos offsetPosition = new BlockPos(981, 70, 28);
             structure.placeInWorld(serverLevel.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), serverLevel.getLevel().random, 3);
@@ -116,7 +107,7 @@ public class TardisArchitectureHandler {
 
         Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/ars/room_ars_stage_" + currentArsStage));
         structureNBT.ifPresent(structure -> {
-            BlockPos position = new BlockPos(1012, 96, 4);
+            BlockPos position = new BlockPos(1024,96,8);
             structure.placeInWorld(level.getLevel(), position, position, new StructurePlaceSettings(), level.getLevel().random, Block.UPDATE_ALL);
         });
 
