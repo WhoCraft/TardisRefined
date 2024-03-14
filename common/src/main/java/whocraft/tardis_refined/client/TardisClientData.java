@@ -246,7 +246,7 @@ public class TardisClientData {
 
             if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
                 if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
-                    LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
+                    LoopingSound.ARS_HUMMING.setLocation(new Vec3(1037, 102, 21));
                     soundManager.play(LoopingSound.ARS_HUMMING);
                 }
             }

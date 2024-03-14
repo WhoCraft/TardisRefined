@@ -44,8 +44,8 @@ public class TardisHelper {
 
     public static boolean isInArsArea(BlockPos blockPos) {
 
-        BlockPos corner1 = new BlockPos(1009, 97, -2);
-        BlockPos corner2 = new BlockPos(1041, 118, 30);
+        BlockPos corner1 = new BlockPos(1051, 97, 6);
+        BlockPos corner2 = new BlockPos(1023, 118, 36);
 
         int minX = Math.min(corner1.getX(), corner2.getX());
         int maxX = Math.max(corner1.getX(), corner2.getX());

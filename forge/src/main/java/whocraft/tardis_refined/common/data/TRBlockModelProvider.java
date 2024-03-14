@@ -109,7 +109,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
         customLocation(BlockRegistry.FOOLS_STONE.get());
 
-        customLocation(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
+        customLocation(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/astral_manipulator"));
         customLocation(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
         customLocation(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
         customLocation(BlockRegistry.ZEITON_ORE.get());
