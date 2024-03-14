@@ -251,12 +251,6 @@ public class TardisClientData {
                 }
             }
 
-            if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
-                if (!soundManager.isActive(LoopingSound.GRAVITY_LOOP)) {
-                    soundManager.play(LoopingSound.GRAVITY_LOOP);
-                }
-            }
-
 
             if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
                 HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
@@ -394,6 +388,18 @@ public class TardisClientData {
                 TardisClientData.clearAll();
             }
             return;
+        }
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+        if (LoopingSound.ARS_HUMMING == null) {
+            LoopingSound.setupSounds();
+        }
+
+        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+            if (!soundManager.isActive(LoopingSound.GRAVITY_LOOP)) {
+                soundManager.play(LoopingSound.GRAVITY_LOOP);
+            }
         }
 
         TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());

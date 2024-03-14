@@ -1,4 +1,4 @@
-// 1.20.2	2024-03-12T23:34:09.6052498	Block States: tardis_refined
+// 1.20.2	2024-03-14T11:22:35.8090434	Block States: tardis_refined
 b8a00271e10524036c2c321dc80eb8a392301f6c assets/tardis_refined/blockstates/air_lock_generator.json
 1ec70f6d41be20660fe5a60a94426a85150e5e48 assets/tardis_refined/blockstates/ars_egg.json
 734a9a861a8cf9ce47f1daee3e848263e9810457 assets/tardis_refined/blockstates/ars_leaves.json
@@ -29,7 +29,6 @@ c9915f2b6a3a8dd92d86890b9530180e74603283 assets/tardis_refined/models/block/ars_
 fec722105f03cbcf40e138dd890f24c112ecf71f assets/tardis_refined/models/block/ars_leaves_fence_side.json
 00e3db905931e09813ee09c46cde0af0a85b5d25 assets/tardis_refined/models/block/ars_leaves_slab.json
 69d9da70cd52c4c859aa481c88699ad3594e3fc3 assets/tardis_refined/models/block/ars_leaves_slab_top.json
-ba088f4f32601991a03b884ad1a785463b14f244 assets/tardis_refined/models/block/astral_manipulator.json
 eddaf2263e26c99ee8cfa58a0d4fe6abe74a02f1 assets/tardis_refined/models/block/deepslate_zeiton_ore.json
 0d09686f2445f7343ab821caf9f1cb83d524183c assets/tardis_refined/models/block/fools_stone.json
 1dbf65a81624eba5ac44d7b36102856f1546632f assets/tardis_refined/models/block/zeiton_block.json
