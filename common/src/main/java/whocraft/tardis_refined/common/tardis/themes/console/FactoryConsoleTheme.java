@@ -22,7 +22,7 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(-0.6562500000000002f , 0.5f, -0.84375f), EntityDimensions.scalable(0.125f , 0.125f)),
                 new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.675f , 0.625f, -0.7f), EntityDimensions.scalable(0.125f , 0.125f)),
 
-                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.7874999999999993f , 0.6875f, 0.16875000000000034f), EntityDimensions.scalable(0.125f , 0.125f)),
+                new ControlSpecification(ConsoleControl.READOUT, new Vector3f(0.7874999999999993f , 0.6875f, 0.16875000000000034f), EntityDimensions.scalable(0.125f , 0.125f)),
                 new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.6875000000000002f , 0.625f, 0.6875000000000003f), EntityDimensions.scalable(0.125f , 0.125f)),
                 new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.6875000000000002f , 0.5625f, 0.8750000000000003f), EntityDimensions.scalable(0.125f , 0.125f)),
                 new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(-0.6718749999999998f , 0.625f, 0.4687500000000003f), EntityDimensions.scalable(0.125f , 0.125f)),

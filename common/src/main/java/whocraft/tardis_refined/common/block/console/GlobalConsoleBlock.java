@@ -97,16 +97,20 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         TardisClientData clientData = TardisClientData.getInstance(level.dimension());
         if (clientData != null) {
 
-            var xCord = (double) blockPos.getX() + randomSource.nextFloat() * 1.25;
-            var yCord = (double) blockPos.getY() + randomSource.nextDouble() + 1D;
-            var zCord = (double) blockPos.getZ() + randomSource.nextFloat() * 1.25;
+            var xCord = (double) blockPos.getX() + randomSource.nextFloat() * 1.5;
+            var yCord = (double) blockPos.getY() + randomSource.nextDouble() + 0.5D;
+            var zCord = (double) blockPos.getZ() + randomSource.nextFloat() * 1.5;
 
-            if (clientData.isFlying() && level.random.nextInt(4) == 0) {
-
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+            if (level.random.nextInt(5) == 0) {
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.05D, 0.0D);
             }
 
-            if (clientData.isOnCooldown() || clientData.isCrashing()) {
+            if (clientData.isFlying() && level.random.nextInt(1) == 0) {
+
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.05D, 0.0D);
+            }
+
+            if (clientData.isOnCooldown() || clientData.isCrashing() || clientData.isInDangerZone()) {
 
                 ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CAMPFIRE_COSY_SMOKE, new Vec3(xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
 

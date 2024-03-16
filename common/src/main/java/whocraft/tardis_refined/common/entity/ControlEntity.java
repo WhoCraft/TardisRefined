@@ -48,16 +48,30 @@ public class ControlEntity extends Entity {
     private ConsoleTheme consoleTheme;
     private BlockPos consoleBlockPos;
 
+    private boolean tickingDown = false;
+
     public ControlEntity(EntityType<?> entityTypeIn, Level level) {
         super(entityTypeIn, level);
     }
 
+    private static final EntityDataAccessor<Boolean> TICKING_DOWN = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> SCALE_WIDTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SCALE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
 
     public ControlEntity(Level level) {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
+    }
+
+    public GlobalConsoleBlockEntity getConsoleBlockEntity() {
+
+        if (consoleBlockPos != null) {
+            if (level().getBlockEntity(consoleBlockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+                return consoleBlockEntity;
+            }
+        }
+
+        return null;
     }
 
     public void assignControlData(ConsoleTheme theme, ControlSpecification specification, BlockPos consoleBlockPos){
@@ -103,12 +117,20 @@ public class ControlEntity extends Entity {
         if (this.controlSpecification == null) {
             return super.getName();
         }
+
         return Component.translatable(this.controlSpecification.control().getTranslationKey());
+    }
+
+    public void setTickingDown() {
+        this.tickingDown = true;
+        this.entityData.set(TICKING_DOWN, true);
+        this.setCustomName(Component.translatable("!"));
     }
 
     @Override
     protected void defineSynchedData() {
         getEntityData().define(SHOW_PARTICLE, false);
+        getEntityData().define(TICKING_DOWN, false);
         getEntityData().define(SCALE_WIDTH, 1F);
         getEntityData().define(SCALE_HEIGHT, 1F);
 
@@ -196,21 +218,25 @@ public class ControlEntity extends Entity {
                     }
                     discard();
                 }
+
+                return;
             } else {
-                TardisLevelOperator.get(serverLevel).ifPresent(x -> {
-                    var shouldShowParticle = x.getTardisFlightEventManager().isWaitingForControlResponse() && x.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control();
-                    if (getEntityData().get(SHOW_PARTICLE) != shouldShowParticle) {
-                        getEntityData().set(SHOW_PARTICLE, shouldShowParticle);
-                    }
-                });
+
+
+                onServerTick(serverLevel);
+
             }
         } else {
             if (getEntityData().get(SHOW_PARTICLE)) {
                 if (level().random.nextInt(5) == 0) {
-                    this.level().addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), blockPosition().getY(), this.getRandomZ(0.1), 0.0, 0.0, 0.0);
+                    this.level().addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), position().y, this.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         }
+
+    }
+
+    private void onServerTick(ServerLevel serverLevel) {
 
     }
 

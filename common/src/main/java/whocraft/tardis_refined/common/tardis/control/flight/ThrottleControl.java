@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.world.entity.player.Player;
+import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
@@ -11,7 +12,20 @@ public class ThrottleControl extends Control {
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        return this.engageThrottle(operator, theme, controlEntity, player);
+
+        // We're going to need to change how the starting flight logic works, but we'll get there.
+
+        // Find console
+        GlobalConsoleBlockEntity console = controlEntity.getConsoleBlockEntity();
+        if (console != null) {
+            operator.getFlightDanceManager().startFlightDance(console);
+            return true;
+        }
+
+
+
+        return false;
+        //return this.engageThrottle(operator, theme, controlEntity, player);
     }
 
     @Override

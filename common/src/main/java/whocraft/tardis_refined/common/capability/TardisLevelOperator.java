@@ -46,6 +46,8 @@ public class TardisLevelOperator {
     private final TardisPilotingManager pilotingManager;
     private final TardisWaypointManager tardisWaypointManager;
     private final TardisFlightEventManager tardisFlightEventManager;
+
+    private final FlightDanceManager flightDanceManager;
     private final TardisClientData tardisClientData;
     private final UpgradeHandler upgradeHandler;
     private final AestheticHandler aestheticHandler;
@@ -61,6 +63,7 @@ public class TardisLevelOperator {
         this.tardisClientData = new TardisClientData(level.dimension());
         this.upgradeHandler = new UpgradeHandler(this);
         this.aestheticHandler = new AestheticHandler(this);
+        this.flightDanceManager = new FlightDanceManager(this);
     }
 
     public UpgradeHandler getUpgradeHandler() {
@@ -74,6 +77,8 @@ public class TardisLevelOperator {
     public AestheticHandler getAestheticHandler() {
         return aestheticHandler;
     }
+
+    public FlightDanceManager getFlightDanceManager() { return this.flightDanceManager;}
 
     @ExpectPlatform
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
@@ -130,6 +135,7 @@ public class TardisLevelOperator {
         interiorManager.tick(level);
         pilotingManager.tick(level);
         tardisFlightEventManager.tick();
+        flightDanceManager.tick();
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {

@@ -289,6 +289,12 @@ public class TardisClientData {
                     player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                     player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                 }
+            } else {
+                if ( isFlying() && Minecraft.getInstance().player.level().dimension() == levelKey) {
+                    var player = Minecraft.getInstance().player;
+                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                }
             }
         }
 

@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -19,10 +20,12 @@ import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.BlockStateBlockPos;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -226,7 +229,7 @@ public class TardisPilotingManager extends BaseHandler{
     public TardisNavLocation findClosestValidPosition(TardisNavLocation location) {
         ServerLevel level = location.getLevel();
 
-        var height = level.getMaxBuildHeight();
+        var maxBuildHeight = level.getMaxBuildHeight();
         var minHeight = level.getMinBuildHeight();
 
         var failOffset = 1;
@@ -238,7 +241,7 @@ public class TardisPilotingManager extends BaseHandler{
         //TODO: Handle dimension checks in a dedicated function, we already have duplicated codfein #getLegalPosition
         if (level.dimension() == Level.NETHER) {
             if (location.getPosition().getY() > 127) {
-                height = 125;
+                maxBuildHeight = 125;
                 failOffset = 10;
                 location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ())); //TODO: Remove this hardcoding to continue searching for a spot
             }
@@ -251,15 +254,22 @@ public class TardisPilotingManager extends BaseHandler{
         }
 
         for (int i = 0; i < attempts; i++) {
+
+
+            // We're doing this wrong. So wrong.
+
+
             location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
-            var result = scanUpwardsFromCord(location, height);
-            if (result != null && location.getPosition().getY() < height && location.getPosition().getY() > minHeight) {
+
+
+            var result = scanUpwardsFromCord(location, maxBuildHeight);
+            if (result != null && location.getPosition().getY() < maxBuildHeight && location.getPosition().getY() > minHeight) {
                 return result;
             }
 
             location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
             result = scanDownwardsFromCord(location, minHeight);
-            if (result != null && location.getPosition().getY() < height && location.getPosition().getY() > minHeight) {
+            if (result != null && location.getPosition().getY() < maxBuildHeight && location.getPosition().getY() > minHeight) {
                 return result;
             }
 
@@ -296,22 +306,25 @@ public class TardisPilotingManager extends BaseHandler{
     }
 
     public TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
-        while (location.getPosition().getY() <= maxHeight) {
+
+        int startingHeight = location.getPosition().getY();
+        for (int i = startingHeight; i < maxHeight; i++) {
             if (isSafeToLand(location)) {
                 return findSafeDirection(location);
             }
 
             location.setPosition(location.getPosition().above(1));
         }
+
         return null;
     }
 
 
     public TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
-        while (location.getPosition().getY() >= minHeight) {
 
+        int startingHeight = location.getPosition().getY();
+        for (int i = startingHeight; i >= minHeight; i--) {
             if (isSafeToLand(location)) {
-
                 return findSafeDirection(location);
             }
 

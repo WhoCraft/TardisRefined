@@ -141,20 +141,20 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
-        if(level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide){
-            ResourceKey<Level> tardisId = getTardisId();
-            if(tardisId == null) return;
-            ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
-            BlockPos myCurrentPosition = getBlockPos();
-
-            TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
-                BlockPos blockPosLastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation().getPosition();
-                BlockPos wantedDestination = tardisLevelOperator.getPilotingManager().getTargetLocation().getPosition();
-
-                if(myCurrentPosition != blockPosLastKnown && myCurrentPosition != wantedDestination && myCurrentPosition != BlockPos.ZERO){
-                    level.removeBlock(worldPosition, false);
-                }
-            });
-        }
+//        if(level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide){
+//            ResourceKey<Level> tardisId = getTardisId();
+//            if(tardisId == null) return;
+//            ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
+//            BlockPos myCurrentPosition = getBlockPos();
+//
+//            TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
+//                BlockPos blockPosLastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation().getPosition();
+//                BlockPos wantedDestination = tardisLevelOperator.getPilotingManager().getTargetLocation().getPosition();
+//
+//                if(myCurrentPosition != blockPosLastKnown && myCurrentPosition != wantedDestination && myCurrentPosition != BlockPos.ZERO){
+//                    level.removeBlock(worldPosition, false);
+//                }
+//            });
+//        }
     }
 }
