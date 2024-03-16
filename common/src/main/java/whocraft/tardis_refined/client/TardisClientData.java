@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
+import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CENTER;
 
 public class TardisClientData {
 
@@ -245,7 +246,7 @@ public class TardisClientData {
 
             if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
                 if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
-                    LoopingSound.ARS_HUMMING.setLocation(new Vec3(1037, 102, 21));
+                    LoopingSound.ARS_HUMMING.setLocation(ARS_TREE_CENTER);
                     soundManager.play(LoopingSound.ARS_HUMMING);
                 }
             }

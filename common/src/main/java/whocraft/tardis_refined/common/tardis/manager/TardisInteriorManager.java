@@ -30,6 +30,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.constants.TardisDimensionConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,6 +120,7 @@ public class TardisInteriorManager extends BaseHandler {
         tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
         return tag;
     }
+
     @Override
     public void loadData(CompoundTag tag) {
         this.isWaitingToGenerate = tag.getBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE);
@@ -169,7 +171,7 @@ public class TardisInteriorManager extends BaseHandler {
 
             if (interiorGenerationCooldown == 0) {
                 this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.FACTORY.getId(), true);
-                this.operator.getExteriorManager().placeExteriorBlock(operator,operator.getExteriorManager().getLastKnownLocation());
+                this.operator.getExteriorManager().placeExteriorBlock(operator, operator.getExteriorManager().getLastKnownLocation());
                 this.isGeneratingDesktop = false;
             }
 
@@ -203,7 +205,7 @@ public class TardisInteriorManager extends BaseHandler {
                             level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
 
-                        BlockPos corridorDoorBlockPos = new BlockPos(1013, 99, 7);
+                        BlockPos corridorDoorBlockPos = TardisDimensionConstants.CORRIDOR_AIRLOCK_DOOR_POS;
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                             bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), false);
                             level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
@@ -225,7 +227,7 @@ public class TardisInteriorManager extends BaseHandler {
 
                 RandomSource rand = level.getRandom();
                 for (ProtectedZone protectedZone : unbreakableZones()) {
-                    if(!protectedZone.getName().contains("_airlock")) continue;
+                    if (!protectedZone.getName().contains("_airlock")) continue;
                     BlockPos.betweenClosedStream(protectedZone.getArea()).forEach(position -> {
                         double velocityX = (rand.nextDouble() - 0.5) * 0.02;
                         double velocityY = (rand.nextDouble() - 0.5) * 0.02;
@@ -247,7 +249,7 @@ public class TardisInteriorManager extends BaseHandler {
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter));
-                        TRTeleporter.performTeleport(x, level, STATIC_CORRIDOR_POSITION.getX() + offsetPos.x()  + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y()  + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TRTeleporter.performTeleport(x, level, STATIC_CORRIDOR_POSITION.getX() + offsetPos.x() + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y() + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
@@ -265,7 +267,7 @@ public class TardisInteriorManager extends BaseHandler {
                         level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
 
-                    BlockPos corridorDoorBlockPos = new BlockPos(1013, 99, 7);
+                    BlockPos corridorDoorBlockPos = TardisDimensionConstants.CORRIDOR_AIRLOCK_DOOR_POS;
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                         bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), true);
                         level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);

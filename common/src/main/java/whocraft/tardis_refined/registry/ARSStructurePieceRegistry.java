@@ -31,6 +31,7 @@ public class ARSStructurePieceRegistry {
         registerCorridorPiece(new ARSStructurePiece(createCorridorResourceLocation("gs_r836")));
         registerCorridorPiece(new ARSStructurePiece(createCorridorResourceLocation("gs_r9")));
     }
+
     public static void registerRooms() {
         registerRoomPiece(new ARSStructurePiece(createRoomResourceLocation("gs_r144")));
         registerRoomPiece(new ARSStructurePiece(createRoomResourceLocation("gs_r145")));
@@ -79,19 +80,21 @@ public class ARSStructurePieceRegistry {
 
     /**
      * Register a new corridor to be featured in corridor generation.
+     *
      * @param corridorPiece ARSStructurePiece to be placed.
      */
 
-    private static void registerCorridorPiece(ARSStructurePiece corridorPiece) {
+    public static void registerCorridorPiece(ARSStructurePiece corridorPiece) {
         CORRIDORS.add(corridorPiece);
     }
 
     /**
      * Register a new room to be featured in corridor generation.
+     *
      * @param roomPiece ARSStructurePiece to be placed.
      */
 
-    private static void registerRoomPiece(ARSStructurePiece roomPiece) {
+    public static void registerRoomPiece(ARSStructurePiece roomPiece) {
         ROOMS.add(roomPiece);
     }
 
@@ -102,7 +105,6 @@ public class ARSStructurePieceRegistry {
     private static ResourceLocation createRoomResourceLocation(String id) {
         return new ResourceLocation(TardisRefined.MODID, "rooms/" + id);
     }
-
 
 
 }
