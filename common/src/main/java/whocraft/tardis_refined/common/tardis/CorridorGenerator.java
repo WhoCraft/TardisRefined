@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -26,6 +27,14 @@ public class CorridorGenerator {
                 hasBlockVector[x][z] = level.getBlockState(new BlockPos(corner.getX() + 1 + x, corner.getY(), corner.getZ() + 1 + z));
             }
         }
+
+        for (var blockPos:
+             BlockPos.betweenClosed(corner.above(9),  new BlockPos( corner.above(9).getX() + 48, corner.above(9).getY() +28, corner.above(9).getZ() + 48))) {
+
+            level.setBlock(blockPos, Blocks.STRUCTURE_VOID.defaultBlockState(), Block.UPDATE_ALL);
+
+        }
+
 
         // Place structures if the position is correct.
         for (int x = 0; x < TEMPLATE_SIZE; x++) {

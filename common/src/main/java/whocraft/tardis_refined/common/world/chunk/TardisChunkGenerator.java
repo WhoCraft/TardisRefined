@@ -13,6 +13,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.StructureBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -64,36 +65,51 @@ public class TardisChunkGenerator extends ChunkGenerator {
                 StructurePlaceSettings settings = new StructurePlaceSettings();
                 structure.placeInWorld(pLevel, pos, pos, settings, pLevel.getRandom(), 1);
             });
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
         if (pChunk.getPos().x == 63  && pChunk.getPos().z == 3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
         if (pChunk.getPos().x == 66  && pChunk.getPos().z == 3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south_east"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
         if (pChunk.getPos().x == 66  && pChunk.getPos().z == 0) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_east"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
         if (pChunk.getPos().x == 66  && pChunk.getPos().z == -3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north_east"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
         if (pChunk.getPos().x == 63  && pChunk.getPos().z == -3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
         if (pChunk.getPos().x == 60  && pChunk.getPos().z == 0) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_west"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
+
 
         if (pChunk.getPos().x > -25 && pChunk.getPos().x < 25 && pChunk.getPos().z > -25 && pChunk.getPos().z < 25 ) {
             return;
@@ -250,6 +266,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
             StructurePlaceSettings settings = new StructurePlaceSettings();
             structure.placeInWorld(level, pos, pos, settings, level.getRandom(), 1);
         });
+
     }
 
 

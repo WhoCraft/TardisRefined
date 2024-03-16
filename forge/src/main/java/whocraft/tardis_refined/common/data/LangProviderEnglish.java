@@ -91,6 +91,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.MONITOR, "Computer Bank");
         addControl(ConsoleControl.FAST_RETURN, "Fast Return");
         addControl(ConsoleControl.DIMENSION, "Dimension");
+        addControl(ConsoleControl.GENERIC_NO_SHOW, "Switch");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");

@@ -211,7 +211,7 @@ public class TardisInteriorManager extends BaseHandler {
                     }
                 } else {
                     this.processingWarping = false;
-                    this.airlockCountdownSeconds = 6;
+                    this.airlockCountdownSeconds = 3;
                     this.airlockTimerSeconds = 0;
                 }
 
@@ -241,22 +241,22 @@ public class TardisInteriorManager extends BaseHandler {
                     level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
                 }
 
-                if (airlockTimerSeconds == 5) {
+                if (airlockTimerSeconds == 3) {
                     List<LivingEntity> desktopEntities = getAirlockEntities(level);
                     List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
                     desktopEntities.forEach(x -> {
-                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
-                        TRTeleporter.performTeleport(x, level, 1013.5f + offsetPos.x(), 99.5f + offsetPos.y(), -4.5f + offsetPos.z(), x.getYRot(), x.getXRot());
+                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter));
+                        TRTeleporter.performTeleport(x, level, STATIC_CORRIDOR_POSITION.getX() + offsetPos.x()  + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y()  + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(STATIC_CORRIDOR_POSITION));
-                        TRTeleporter.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TRTeleporter.performTeleport(x, level, corridorAirlockCenter.getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
 
-                if (airlockTimerSeconds == 7) {
+                if (airlockTimerSeconds == 5) {
                     this.processingWarping = false;
                     this.airlockTimerSeconds = 20;
                     BlockPos desktopDoorPos = corridorAirlockCenter.north(2);

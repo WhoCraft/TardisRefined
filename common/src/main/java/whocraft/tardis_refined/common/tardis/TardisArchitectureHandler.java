@@ -90,12 +90,12 @@ public class TardisArchitectureHandler {
     }
 
     public static void generateEssentialCorridors(ServerLevel serverLevel) {
-        // Generate temp eye room
-        Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/temp_eye"));
-        structureNBT.ifPresent(structure -> {
-            BlockPos offsetPosition = new BlockPos(981, 70, 28);
-            structure.placeInWorld(serverLevel.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), serverLevel.getLevel().random, 3);
-        });
+        // To be placed back again later.
+//        Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/temp_eye"));
+//        structureNBT.ifPresent(structure -> {
+//            BlockPos offsetPosition = new BlockPos(981, 70, 28);
+//            structure.placeInWorld(serverLevel.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), serverLevel.getLevel().random, 3);
+//        });
 
     }
 

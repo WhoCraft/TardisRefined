@@ -5,10 +5,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.joml.Matrix4f;
@@ -44,13 +47,11 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
     @Override
     protected void renderNameTag(ControlEntity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightCoords) {
-        MutableComponent textComponent = component.copy();
-        textComponent.withStyle(style -> style
-                .applyFormats(ChatFormatting.BOLD, (entity.level().getGameTime() % 60 == 0) ?  ChatFormatting.GOLD : ChatFormatting.YELLOW)
-        );
+
 
         double distanceSquared = this.entityRenderDispatcher.distanceToSqr(entity);
         if (!(distanceSquared > 4096.0)) {
+
             boolean isSolid = !entity.isDiscrete();
             float boundingBoxHeight = entity.getNameTagOffsetY();
             int verticalTextOffset = 35;
@@ -62,15 +63,18 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             poseStack.scale(-scale, -scale, scale);
 
             Matrix4f textMatrix = poseStack.last().pose();
-            float textBackgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.5F);
 
-            int textColor = (int) (textBackgroundOpacity * 255.0F) << 24;
+
+
             Font font = this.getFont();
             float textHorizontalPosition = (float) (-font.width(component) / 2);
 
-            font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, 553648127, false, textMatrix, multiBufferSource, Font.DisplayMode.SEE_THROUGH, textColor, packedLightCoords);
+            FormattedCharSequence sequence = component.getVisualOrderText();
+
+            font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
+
             if (isSolid) {
-                font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, -1, false, textMatrix, multiBufferSource, Font.DisplayMode.NORMAL, 0, packedLightCoords);
+                font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
             }
 
             poseStack.popPose();
