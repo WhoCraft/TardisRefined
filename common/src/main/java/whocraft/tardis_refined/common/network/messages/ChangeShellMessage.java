@@ -13,6 +13,8 @@ import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
+import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
@@ -55,9 +57,10 @@ public class ChangeShellMessage extends MessageC2S {
     public void handle(MessageContext context) {
         Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
         level.flatMap(TardisLevelOperator::get).ifPresent(y -> {
-            if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(y.getUpgradeHandler())) {
+            if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(y.getUpgradeHandler()) && y.getExteriorManager().hasEnoughFuelForShellChange()) {
                 y.setShellTheme(this.shellTheme, false);
                 y.getAestheticHandler().setShellPattern(pattern);
+                y.getPilotingManager().removeFuel(y.getExteriorManager().getFuelForShellChange());
             } else {
                 PlayerUtil.sendMessage(context.getPlayer(), ModMessages.HARDWARE_OFFLINE, true);
             }

@@ -80,6 +80,9 @@ public class LoopingSound extends AbstractTickableSoundInstance {
             }
         }
 
+        if (tardisClientData.getFuel() == 0f) {
+            volume = 0F;
+        }
     }
 
     @Override
