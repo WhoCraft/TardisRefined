@@ -1,11 +1,14 @@
 package whocraft.tardis_refined.client.sounds;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.client.TardisClientData;
 
 public class LoopingHumSound extends LoopingSound{
     private SoundEvent soundEvent;
@@ -22,9 +25,15 @@ public class LoopingHumSound extends LoopingSound{
     @Override
     public void tick() {
         super.tick();
-        volume = 0.10F;
-        if(Minecraft.getInstance().player != null){
-            setLocation(Minecraft.getInstance().player.position());
+
+
+        LocalPlayer player = Minecraft.getInstance().player;
+        if(player != null){
+            setLocation(player.position());
+
+            // Assume we're in the Tardis
+            TardisClientData data = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
+            volume = (data.getFuel() == 0) ? 0 : 0.10F;
         }
     }
 

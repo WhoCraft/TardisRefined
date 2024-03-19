@@ -297,11 +297,6 @@ public class TardisClientData {
                 HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
             }
 
-            // Stops the hum sound if there's no fuel
-            if (isThisTardis && fuel == 0 && HumSoundManager.getCurrentSound().getVolume() > 0.0f) {
-                HumSoundManager.getCurrentSound().setVolume(0f);
-            }
-
             if (isThisTardis && tardisLevel.getGameTime() % nextAmbientNoiseCall == 0) {
                 nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
                 List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
