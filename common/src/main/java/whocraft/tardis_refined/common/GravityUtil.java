@@ -19,13 +19,16 @@ import static net.minecraft.core.BlockPos.betweenClosed;
 public class GravityUtil {
 
 
-    public static boolean isInAntiGrav(AABB playerBox, AABB box, Level level) {
+    private static final int MAX_Y = 30; // The most a shaft can carry a player up
+    private static final double acceleration = 0.2;
+    private static final double maxSpeed = 0.5;
+    public static boolean isInAntiGrav(Player playerBox, AABB box, Level level) {
         for (BlockPos pos : betweenClosed(new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ), new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ))) {
             BlockState blockState = level.getBlockState(pos);
             if (blockState.getBlock() instanceof AntiGravityBlock) {
                 int space = blockState.getValue(AntiGravityBlock.SPACE);
                 if (space > 0 && level.getBlockState(pos.above()).isAir()) {
-                    if (GravityUtil.createGravityBoxFromLevel(level, pos, space).intersects(playerBox)) {
+                    if (GravityUtil.createGravityBoxFromLevel(level, pos, space).intersects(playerBox.getBoundingBox()) && playerBox.blockPosition().getY() >= pos.getY()) {
                         return true;
                     }
                 }
@@ -37,15 +40,14 @@ public class GravityUtil {
 
     public static AABB createGravityBoxFromLevel(Level level, BlockPos blockPos, int range) {
         if (level != null) {
-            return new AABB(blockPos).inflate(range, level.getHeight(), range);
+            return new AABB(blockPos).inflate(range, MAX_Y, range);
         }
         return null;
     }
 
 
     public static boolean isInGravityShaft(Player player) {
-        AABB aabb = new AABB(new BlockPos( 999, 101, 19), new BlockPos(1002, 70, 17));
-        return player.getBoundingBox().intersects(aabb) || isInAntiGrav(player.getBoundingBox(), player.getBoundingBox().inflate(20, 20, 20), player.level());
+        return isInAntiGrav(player, player.getBoundingBox().inflate(20, MAX_Y, 20), player.level());
     }
 
     public static void moveGravity(Player player, CallbackInfo info) {
@@ -57,9 +59,6 @@ public class GravityUtil {
             player.resetFallDistance();
             player.setNoGravity(true);
             player.setPose(Pose.STANDING);
-
-            double acceleration = 0.2;
-            double maxSpeed = 0.5;
 
             if (options.keyJump.isDown()) {
                 player.setDeltaMovement(deltaMovement.add(0, easeMovement(acceleration, maxSpeed), 0));

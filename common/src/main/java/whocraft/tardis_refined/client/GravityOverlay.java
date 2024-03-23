@@ -18,7 +18,7 @@ public class GravityOverlay {
         Minecraft mc = Minecraft.getInstance();
         Font fontRenderer = mc.font;
 
-        if (GravityUtil.isInGravityShaft(mc.player)) {
+        if (GravityUtil.isInGravityShaft(mc.player) && !mc.getDebugOverlay().showDebugScreen()) {
             poseStack.pushPose();
             poseStack.scale(1.2f, 1.2f, 1.2f);
 

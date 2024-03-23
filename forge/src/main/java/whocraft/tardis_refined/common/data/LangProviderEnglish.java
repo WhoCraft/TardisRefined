@@ -68,6 +68,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ZEITON_ORE.get(), "Zeiton Ore");
         add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
         add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
+        add(BlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");

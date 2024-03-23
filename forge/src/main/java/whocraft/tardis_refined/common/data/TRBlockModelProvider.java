@@ -67,8 +67,10 @@ public class TRBlockModelProvider extends BlockStateProvider {
 
     public JsonObject antiGravityBlock(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block);
+        ResourceLocation modelLocation0 = new ResourceLocation(TardisRefined.MODID, "block/gravity_well");
+
         for (int space = 0; space <= 5; space++) {
-            ResourceLocation modelLocation = new ResourceLocation(TardisRefined.MODID, "block/gravity_well_" + space);
+            ResourceLocation modelLocation = space == 0 ? modelLocation0 : new ResourceLocation(TardisRefined.MODID, "block/gravity_well_" + space);
             builder.partialState().with(AntiGravityBlock.SPACE, space).modelForState()
                     .modelFile(models().getExistingFile(modelLocation))
                     .addModel();

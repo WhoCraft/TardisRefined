@@ -22,6 +22,7 @@ public class AntiGravityBlock extends Block {
     public static final IntegerProperty SPACE = IntegerProperty.create("space", 0, 5);
 
     public static final int DISABLED_SPACE = 0;
+    public static final int MAX_SPACE = 5;
     public AntiGravityBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(SPACE, DISABLED_SPACE));
@@ -52,7 +53,7 @@ public class AntiGravityBlock extends Block {
         if(!level.isClientSide && interactionHand == InteractionHand.MAIN_HAND && player.getItemInHand(interactionHand).getItem() instanceof ScrewdriverItem) {
             int space = blockState.getValue(SPACE);
             int newSpace = space + 1;
-            if (newSpace > 5) {
+            if (newSpace > MAX_SPACE) {
                 newSpace = DISABLED_SPACE;
             }
             player.swing(interactionHand, true);
