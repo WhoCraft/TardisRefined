@@ -51,6 +51,7 @@
   "control.tardis_refined.dimension": "Dimension",
   "control.tardis_refined.door_toggle": "Door Toggle",
   "control.tardis_refined.fast_return": "Fast Return",
+  "control.tardis_refined.generic_control": "Switch",
   "control.tardis_refined.increment": "Increment",
   "control.tardis_refined.monitor": "Computer Bank",
   "control.tardis_refined.random": "Randomizer",

@@ -8,6 +8,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
@@ -25,7 +26,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
-import whocraft.tardis_refined.constants.TardisGeneration;
+import whocraft.tardis_refined.constants.TardisDimensionConstants;
 import whocraft.tardis_refined.registry.ARSStructurePieceRegistry;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
@@ -35,12 +36,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class TardisChunkGenerator extends ChunkGenerator {
-    public static final Codec<TardisChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
-            instance.group(RegistryOps.retrieveElement(ChunkGenerators.TARDIS_BIOME)).apply(instance,
-                    instance.stable(TardisChunkGenerator::new)));
+    public static final Codec<TardisChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(RegistryOps.retrieveElement(ChunkGenerators.TARDIS_BIOME)).apply(instance, instance.stable(TardisChunkGenerator::new)));
 
 
-    public final Random random;
+    public final RandomSource random;
 
     // Some parameter values.
     public final int distanceBetweenGravityWell = 18;
@@ -48,58 +47,72 @@ public class TardisChunkGenerator extends ChunkGenerator {
     private final int chunkSize = 16;
 
 
-
     public TardisChunkGenerator(Holder<Biome> holder) {
         super(new FixedBiomeSource(holder));
-        this.random = new Random();
+        this.random = RandomSource.create();
     }
 
     @Override
     public void applyBiomeDecoration(WorldGenLevel pLevel, ChunkAccess pChunk, StructureManager pStructureManager) {
 
-        if (pChunk.getPos().x == 63  && pChunk.getPos().z == 0) {
+        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 0) {
             pLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_center")).ifPresent(structure -> {
-                int height = 97 - 21;
-                BlockPos pos = pChunk.getPos().getBlockAt(0, height,0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
+                int height = 76;
+                BlockPos pos = pChunk.getPos().getBlockAt(0, height, 0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
                 StructurePlaceSettings settings = new StructurePlaceSettings();
                 structure.placeInWorld(pLevel, pos, pos, settings, pLevel.getRandom(), 1);
             });
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
-        if (pChunk.getPos().x == 63  && pChunk.getPos().z == 3) {
+        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
-        if (pChunk.getPos().x == 66  && pChunk.getPos().z == 3) {
+        if (pChunk.getPos().x == 66 && pChunk.getPos().z == 3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south_east"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
-        if (pChunk.getPos().x == 66  && pChunk.getPos().z == 0) {
+        if (pChunk.getPos().x == 66 && pChunk.getPos().z == 0) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_east"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
-        if (pChunk.getPos().x == 66  && pChunk.getPos().z == -3) {
+        if (pChunk.getPos().x == 66 && pChunk.getPos().z == -3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north_east"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
-        if (pChunk.getPos().x == 63  && pChunk.getPos().z == -3) {
+        if (pChunk.getPos().x == 63 && pChunk.getPos().z == -3) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
-        if (pChunk.getPos().x == 60  && pChunk.getPos().z == 0) {
+        if (pChunk.getPos().x == 60 && pChunk.getPos().z == 0) {
             placePieceInWorld(pLevel, new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_west"), pChunk, false);
+            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
             return;
         }
 
-        if (pChunk.getPos().x > -25 && pChunk.getPos().x < 25 && pChunk.getPos().z > -25 && pChunk.getPos().z < 25 ) {
+
+        if (pChunk.getPos().x > -25 && pChunk.getPos().x < 25 && pChunk.getPos().z > -25 && pChunk.getPos().z < 25) {
             return;
         }
 
-        if(pChunk.getPos().x % arsChunkSize == 0 && pChunk.getPos().z % arsChunkSize == 0){
+        if (pChunk.getPos().x % arsChunkSize == 0 && pChunk.getPos().z % arsChunkSize == 0) {
 
             if (isChunkAtGravityInterval(pChunk.getPos())) {
                 ResourceLocation pieceToPlace = new ResourceLocation(TardisRefined.MODID, "corridors/corridor_connection_bottom");
@@ -109,7 +122,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
                 placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
 
             } else {
-                if ( random.nextBoolean()) {
+                if (random.nextBoolean()) {
                     ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
                     placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
                 } else {
@@ -118,7 +131,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
                 }
 
 
-                if ( random.nextBoolean()) {
+                if (random.nextBoolean()) {
                     ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
                     placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
                 } else {
@@ -155,7 +168,8 @@ public class TardisChunkGenerator extends ChunkGenerator {
     }
 
     @Override
-    public void spawnOriginalMobs(WorldGenRegion p_62167_) {}
+    public void spawnOriginalMobs(WorldGenRegion p_62167_) {
+    }
 
     @Override
     public int getGenDepth() {
@@ -166,18 +180,17 @@ public class TardisChunkGenerator extends ChunkGenerator {
     public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender p_223210_, RandomState p_223211_, StructureManager p_223212_, ChunkAccess access) {
 
         // Flatworlds appear to use this function instead of the surface.
-        BlockPos cornerPos = new BlockPos(access.getPos().getMinBlockX(), TardisGeneration.TARDIS_ROOT_GENERATION_MIN_HEIGHT -5, access.getPos().getMinBlockZ());
-        BlockPos lastCornerPos = new BlockPos(access.getPos().getMaxBlockX(), TardisGeneration.TARDIS_ROOT_GENERATION_MAX_HEIGHT + 5, access.getPos().getMaxBlockZ());
+        BlockPos cornerPos = new BlockPos(access.getPos().getMinBlockX(), TardisDimensionConstants.TARDIS_ROOT_GENERATION_MIN_HEIGHT - 5, access.getPos().getMinBlockZ());
+        BlockPos lastCornerPos = new BlockPos(access.getPos().getMaxBlockX(), TardisDimensionConstants.TARDIS_ROOT_GENERATION_MAX_HEIGHT + 5, access.getPos().getMaxBlockZ());
         for (BlockPos pos : BlockPos.betweenClosed(cornerPos, lastCornerPos)) {
 
-            if (pos.getY() <= TardisGeneration.TARDIS_ROOT_GENERATION_MIN_HEIGHT || pos.getY() > TardisGeneration.TARDIS_ROOT_GENERATION_MAX_HEIGHT ) {
+            if (pos.getY() <= TardisDimensionConstants.TARDIS_ROOT_GENERATION_MIN_HEIGHT || pos.getY() > TardisDimensionConstants.TARDIS_ROOT_GENERATION_MAX_HEIGHT) {
                 access.setBlockState(pos, Blocks.BEDROCK.defaultBlockState(), false);
             } else {
 
                 access.setBlockState(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), false);
             }
         }
-
 
 
         return CompletableFuture.completedFuture(access);
@@ -202,7 +215,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
     public NoiseColumn getBaseColumn(int p_223028_, int p_223029_, LevelHeightAccessor level, RandomState p_223031_) {
 
         BlockState[] states = new BlockState[level.getHeight()];
-        for(int i = 0; i < states.length; ++i){
+        for (int i = 0; i < states.length; ++i) {
             states[i] = Blocks.STONE.defaultBlockState();
         }
 
@@ -211,17 +224,19 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     /**
      * Determines if the chunk is a Gravity hallways chunk
+     *
      * @param pos the position of the chunk
      * @return is the chunk a Gravity chunk
      */
 
     private boolean isChunkAtGravityInterval(ChunkPos pos) {
 
-        return (pos.x % distanceBetweenGravityWell == 0)  && (pos.z % distanceBetweenGravityWell == 0);
+        return (pos.x % distanceBetweenGravityWell == 0) && (pos.z % distanceBetweenGravityWell == 0);
     }
 
     /**
      * Fetch a random corridor piece to populate a chunk
+     *
      * @return random corridor ARS piece from the registry.
      */
     private ARSStructurePiece getRandomCorridorPiece() {
@@ -232,6 +247,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     /**
      * Fetch a random room piece to populate a chunk
+     *
      * @return random room ARS piece from the registry.
      */
     private ARSStructurePiece getRandomRoomPiece() {
@@ -246,14 +262,15 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
             int height = isSecondFloor ? 125 : 97;
 
-            BlockPos pos = pChunk.getPos().getBlockAt(0, height,0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
+            BlockPos pos = pChunk.getPos().getBlockAt(0, height, 0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
             StructurePlaceSettings settings = new StructurePlaceSettings();
             structure.placeInWorld(level, pos, pos, settings, level.getRandom(), 1);
         });
+
     }
 
 
-
     @Override
-    public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {}
+    public void addDebugScreenInfo(List<String> p_223175_, RandomState p_223176_, BlockPos p_223177_) {
+    }
 }
