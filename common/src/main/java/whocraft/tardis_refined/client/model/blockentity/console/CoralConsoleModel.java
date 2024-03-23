@@ -21,6 +21,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.util.List;
@@ -3585,9 +3586,8 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 		}
 
 
-
-
-		this.throttle.xRot = (reactions.isThrottleDown()) ? 2f : 0f;
+		float rot = 0f + ( 2f * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+		this.throttle.xRot = rot;
 
 		base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

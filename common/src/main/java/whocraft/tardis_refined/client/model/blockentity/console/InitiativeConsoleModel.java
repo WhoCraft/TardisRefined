@@ -20,6 +20,7 @@ import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 public class InitiativeConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -2489,7 +2490,8 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 			}
 		}
 
-		throttle.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
+		float rot = -1f + ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+		throttle.xRot = rot;
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

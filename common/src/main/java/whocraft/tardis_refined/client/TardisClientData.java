@@ -54,8 +54,12 @@ public class TardisClientData {
     }
 
     private boolean flying = false;
-    private boolean throttleDown = false;
+
+    // Control specifics
+    private int throttleStage = 0;
     private boolean isLanding = false;
+    private boolean isHandbrakeEngaged = false;
+
     private boolean isTakingOff = false;
     private boolean isInDangerZone = false;
     private boolean isCrashing = false;
@@ -77,6 +81,14 @@ public class TardisClientData {
 
     public HumEntry getHumEntry() {
         return humEntry;
+    }
+
+    public void setThrottleStage(int stage) {
+        this.throttleStage = stage;
+    }
+
+    public int getThrottleStage() {
+        return this.throttleStage;
     }
 
     public void setHumEntry(HumEntry humEntry) {
@@ -105,13 +117,6 @@ public class TardisClientData {
         return flying;
     }
 
-    public void setThrottleDown(boolean throttleDown) {
-        this.throttleDown = throttleDown;
-    }
-
-    public boolean isThrottleDown() {
-        return throttleDown;
-    }
 
     public void setIsLanding(boolean landing) {
         this.isLanding = landing;
@@ -128,6 +133,7 @@ public class TardisClientData {
     public boolean isTakingOff() {
         return isTakingOff;
     }
+
 
     public void setInDangerZone(boolean isInDangerZone) {
         this.isInDangerZone = isInDangerZone;
@@ -170,7 +176,8 @@ public class TardisClientData {
         CompoundTag compoundTag = new CompoundTag();
 
         compoundTag.putBoolean("flying", flying);
-        compoundTag.putBoolean("throttleDown", throttleDown);
+        compoundTag.putInt(NbtConstants.THROTTLE_STAGE, throttleStage);
+        compoundTag.putBoolean(NbtConstants.HANDBRAKE_ENGAGED, isHandbrakeEngaged);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
@@ -192,7 +199,8 @@ public class TardisClientData {
      */
     public void deserializeNBT(CompoundTag compoundTag) {
         flying = compoundTag.getBoolean("flying");
-        throttleDown = compoundTag.getBoolean("throttleDown");
+        throttleStage = compoundTag.getInt(NbtConstants.THROTTLE_STAGE);
+        isHandbrakeEngaged = compoundTag.getBoolean(NbtConstants.HANDBRAKE_ENGAGED);
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
@@ -247,6 +255,12 @@ public class TardisClientData {
                 if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
                     LoopingSound.ARS_HUMMING.setLocation(new Vec3(1037, 102, 21));
                     soundManager.play(LoopingSound.ARS_HUMMING);
+                }
+            }
+
+            if (isThisTardis && isFlying()) {
+                if (!soundManager.isActive(LoopingSound.FLIGHT_LOOP)) {
+                    soundManager.play(LoopingSound.FLIGHT_LOOP);
                 }
             }
 
@@ -426,4 +440,11 @@ public class TardisClientData {
         return new Vec3(0.14F, 0.15F, 0.22F);
     }
 
+    public boolean isHandbrakeEngaged() {
+        return isHandbrakeEngaged;
+    }
+
+    public void setHandbrakeEngaged(boolean handbrakeEngaged) {
+        isHandbrakeEngaged = handbrakeEngaged;
+    }
 }

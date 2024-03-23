@@ -20,11 +20,13 @@ import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 	private final ModelPart root;
 	private final ModelPart throttleLever;
+	private final ModelPart handbrake;
 
 	private static final ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
 
@@ -1660,6 +1662,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 		this.console_factory = root.getChild("console_factory");
 		this.root = root;
 		this.throttleLever = findPart(this, "lever2");
+		this.handbrake = (ModelPart) getAnyDescendantWithName("lever3").get();
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -2264,7 +2267,11 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 			}
 		}
 
-		this.throttleLever.xRot = (reactions.isThrottleDown()) ? -155: -125;
+		float rot = -125 - ( 30 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+		this.throttleLever.xRot = rot;
+
+		this.handbrake.xRot = reactions.isHandbrakeEngaged() ? -155f : -125f;
+
 		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

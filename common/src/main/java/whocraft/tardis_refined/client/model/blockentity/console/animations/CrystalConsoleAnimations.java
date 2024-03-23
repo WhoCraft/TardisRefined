@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.client.model.blockentity.console;
+package whocraft.tardis_refined.client.model.blockentity.console.animations;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;

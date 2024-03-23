@@ -210,7 +210,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                     serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(), 120, 2.0, 1.0, 2.0, 0.01);
                 }
 
-                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
+                if (x.getLevel().getGameTime() % (20) == 0) {
 
                 // Check if we're crashing and if its okay to explode the TARDIS a little.
                 if (x.getPilotingManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
@@ -221,9 +221,9 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                         intManager.setCurrentTheme(intManager.preparedTheme());
                     }
 
-                    if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
-                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
-                    }
+//                    if (x.getLevel().getGameTime() % (20) == 0) {
+//                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
+//                    }
 
                 }
             });

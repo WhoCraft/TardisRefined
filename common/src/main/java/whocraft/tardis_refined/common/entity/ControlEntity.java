@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.entity;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -11,6 +12,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -27,16 +29,17 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
+import whocraft.tardis_refined.common.tardis.manager.FlightDanceManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
+import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -44,17 +47,20 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 
 public class ControlEntity extends Entity {
 
+    public static int TotalControlHealth = 10;
+
     private ControlSpecification controlSpecification;
     private ConsoleTheme consoleTheme;
     private BlockPos consoleBlockPos;
-
-    private boolean tickingDown = false;
+    private FlightDanceManager flightDanceManager;
 
     public ControlEntity(EntityType<?> entityTypeIn, Level level) {
         super(entityTypeIn, level);
     }
 
     private static final EntityDataAccessor<Boolean> TICKING_DOWN = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_DEAD = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> CONTROL_HEALTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> SCALE_WIDTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SCALE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
@@ -62,6 +68,7 @@ public class ControlEntity extends Entity {
     public ControlEntity(Level level) {
         super(EntityRegistry.CONTROL_ENTITY.get(), level);
     }
+
 
     public GlobalConsoleBlockEntity getConsoleBlockEntity() {
 
@@ -72,6 +79,10 @@ public class ControlEntity extends Entity {
         }
 
         return null;
+    }
+
+    public int getControlHealth() {
+        return entityData.get(CONTROL_HEALTH);
     }
 
     public void assignControlData(ConsoleTheme theme, ControlSpecification specification, BlockPos consoleBlockPos){
@@ -121,9 +132,16 @@ public class ControlEntity extends Entity {
         return Component.translatable(this.controlSpecification.control().getTranslationKey());
     }
 
-    public void setTickingDown() {
-        this.tickingDown = true;
+    public void setTickingDown(FlightDanceManager manager) {
+
+        if (this.getEntityData().get(IS_DEAD)) {
+            return;
+        }
+
         this.entityData.set(TICKING_DOWN, true);
+        this.flightDanceManager = manager;
+        this.level().playSound(null, this.blockPosition(), SoundEvents.ARROW_HIT, SoundSource.BLOCKS, 0.5f, 2f);
+
         this.setCustomName(Component.translatable("!"));
     }
 
@@ -131,8 +149,10 @@ public class ControlEntity extends Entity {
     protected void defineSynchedData() {
         getEntityData().define(SHOW_PARTICLE, false);
         getEntityData().define(TICKING_DOWN, false);
+        getEntityData().define(IS_DEAD, false);
         getEntityData().define(SCALE_WIDTH, 1F);
         getEntityData().define(SCALE_HEIGHT, 1F);
+        getEntityData().define(CONTROL_HEALTH, 10);
 
     }
 
@@ -163,6 +183,14 @@ public class ControlEntity extends Entity {
         float height = compound.getFloat(NbtConstants.CONTROL_SIZE_HEIGHT);
 
         this.setSizeData(width, height);
+
+        if (level() instanceof ServerLevel serverLevel) {
+            TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {
+                this.flightDanceManager = operator.getFlightDanceManager();
+            });
+        }
+
+
     }
 
     @Override
@@ -185,7 +213,18 @@ public class ControlEntity extends Entity {
     public boolean hurt(DamageSource damageSource, float f) {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
             if (this.level() instanceof ServerLevel serverLevel) {
-                handleLeftClick(player, serverLevel);
+
+                if (entityData.get(IS_DEAD)) {
+                    return false;
+                }
+
+                if (this.entityData.get(TICKING_DOWN)) {
+                    realignControl();
+                } else {
+                    handleLeftClick(player, serverLevel);
+                }
+
+
                 return true;
             }
         }
@@ -203,13 +242,45 @@ public class ControlEntity extends Entity {
             return InteractionResult.SUCCESS;
         }
 
-        this.handleRightClick(player, serverLevel, interactionHand);
+        if (entityData.get(IS_DEAD)) {
+            return InteractionResult.FAIL;
+        }
+
+        if (this.entityData.get(TICKING_DOWN)) {
+            realignControl();
+        } else {
+            this.handleRightClick(player, serverLevel, interactionHand);
+        }
+
         return InteractionResult.SUCCESS;
+    }
+
+    private void realignControl() {
+        int currentHealth = this.entityData.get(CONTROL_HEALTH);
+        int nextHealth = currentHealth + 2;
+
+        if (nextHealth >= TotalControlHealth) {
+            this.entityData.set(TICKING_DOWN, false);
+            this.entityData.set(CONTROL_HEALTH, TotalControlHealth);
+            this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
+
+        } else {
+
+            this.entityData.set(CONTROL_HEALTH, nextHealth);
+        }
     }
 
     @Override
     public void tick() {
         if (level() instanceof ServerLevel serverLevel) {
+
+            if (this.flightDanceManager == null) {
+
+                TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {
+                    this.flightDanceManager = operator.getFlightDanceManager();
+                });
+            }
+
             if (this.controlSpecification == null) {
                 if (this.consoleBlockPos != null) {
                     if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
@@ -221,33 +292,78 @@ public class ControlEntity extends Entity {
 
                 return;
             } else {
-
-
                 onServerTick(serverLevel);
-
             }
         } else {
-            if (getEntityData().get(SHOW_PARTICLE)) {
-                if (level().random.nextInt(5) == 0) {
-                    this.level().addParticle(TRParticles.GALLIFREY.get(), this.getRandomX(0.1), position().y, this.getRandomZ(0.1), 0.0, 0.0, 0.0);
-                }
-            }
+            onClientTick(this.level());
         }
 
     }
 
     private void onServerTick(ServerLevel serverLevel) {
 
+        boolean isTickingDown = getEntityData().get(TICKING_DOWN);
+        boolean isDead = getEntityData().get(IS_DEAD);
+
+        if (this.flightDanceManager != null) {
+            TardisLevelOperator operator = this.flightDanceManager.getOperator();
+
+            if (this.controlSpecification.control() == ConsoleControl.MONITOR) {
+
+                if (operator.getPilotingManager().isInFlight() && !operator.getPilotingManager().isLanding()) {
+                    float percentageCompleted =  (this.flightDanceManager.getOperator().getPilotingManager().getFlightPercentageCovered() * 100f);
+                    if (percentageCompleted > 100) {
+                        percentageCompleted = 100;
+                    }
+                    this.setCustomName(Component.translatable(this.controlSpecification.control().getTranslationKey()).append(" (" + (int)percentageCompleted + "%)"));
+                }
+            }
+
+            if (this.controlSpecification.control() == ConsoleControl.READOUT) {
+                TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
+                if (targetLocation != null) {
+                    this.setCustomName(Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY()+ " Z: " + targetLocation.getPosition().getZ() +  " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()));
+                }
+
+            }
+        }
+
+
+        if (!isDead && isTickingDown && serverLevel.getGameTime() % (5 * 20) == 0) {
+            int controlHealth = getEntityData().get(CONTROL_HEALTH)  - 1;
+
+            getEntityData().set(CONTROL_HEALTH, controlHealth);
+            System.out.println(controlSpecification.control().name() + ": Taken damage down to " + getEntityData().get(CONTROL_HEALTH));
+
+            if (controlHealth == 0) {
+                this.onControlDead();
+            }
+        }
+
     }
 
-    // Whilst in flight, the TARDIS will have waiting controls for the player to interact with. If this control is of that type, tell the control manager.
-    private boolean interactWaitingControl(TardisLevelOperator operator) {
-        if (operator.getTardisFlightEventManager().isWaitingForControlResponse() && operator.getTardisFlightEventManager().getWaitingControlPrompt() == this.controlSpecification.control()) {
-            operator.getTardisFlightEventManager().respondToWaitingControl(this, this.controlSpecification.control());
-            return true;
+    public void onControlDead() {
+
+        this.entityData.set(TICKING_DOWN, false);
+        this.entityData.set(IS_DEAD, true);
+
+        System.out.println("I AM DEAD!!");
+
+        if (this.flightDanceManager != null) {
+            this.flightDanceManager.updateDamageList(this);
         }
-        return false;
     }
+
+    private void onClientTick(Level level) {
+        if (getEntityData().get(CONTROL_HEALTH) <= 5) {
+            if (level.random.nextInt(25) == 0) {
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA, this.position(), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+
+                level.playLocalSound(BlockPos.containing(this.position()), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.25f, level.getRandom().nextFloat() + 1f, false);
+            }
+        }
+    }
+
 
     private void handleControlSizeAndPositionAdjustment(Player player){
         float width = this.getEntityData().get(SCALE_WIDTH);
@@ -304,25 +420,34 @@ public class ControlEntity extends Entity {
     private void handleLeftClick(Player player, ServerLevel serverLevel){
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
+            if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
+                cap.getPilotingManager().setCurrentConsole(getConsoleBlockEntity());
+            }
+
             if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
-            if (!interactWaitingControl(cap)) {
+//            if (!true) {
                 Control control = this.controlSpecification.control().getControl();
-
+//
                 boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
                 control.playControlPitchedSound(cap, this, playedSound);
-            } else {
-                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
-                upgradeHandler.addUpgradeXP(5);
-                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
-            }
+//            } else {
+//                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
+//                upgradeHandler.addUpgradeXP(5);
+//                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
+//            }
         });
     }
 
     private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand){
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+
+            if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
+                cap.getPilotingManager().setCurrentConsole(getConsoleBlockEntity());
+            }
+
 
             if (!cap.getPilotingManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
                 if (player.isCreative()) {
@@ -337,16 +462,16 @@ public class ControlEntity extends Entity {
             if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
-            if (!interactWaitingControl(cap)) {
+//            if (!true) {
                 Control control = this.controlSpecification.control().getControl();
                 boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
                 PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
                 control.playControlPitchedSound(cap, this, playedSound);
-            } else {
-                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
-                upgradeHandler.addUpgradeXP(5);
-                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
-            }
+//            } else {
+//                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
+//                upgradeHandler.addUpgradeXP(5);
+//                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
+//            }
         });
     }
 

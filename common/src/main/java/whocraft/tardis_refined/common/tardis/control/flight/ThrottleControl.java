@@ -8,54 +8,40 @@ import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
+import java.util.Optional;
+
 public class ThrottleControl extends Control {
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
-        // We're going to need to change how the starting flight logic works, but we'll get there.
+        if (player.isCrouching()) {
+            operator.getPilotingManager().setThrottleStage(TardisPilotingManager.MAX_THROTTLE_STAGE);
 
-        // Find console
-        GlobalConsoleBlockEntity console = controlEntity.getConsoleBlockEntity();
-        if (console != null) {
-            operator.getFlightDanceManager().startFlightDance(console);
-            return true;
+        } else {
+
+            int nextStage = operator.getPilotingManager().getThrottleStage() + 1;
+            if (nextStage <= TardisPilotingManager.MAX_THROTTLE_STAGE) {
+                operator.getPilotingManager().setThrottleStage(nextStage);
+            }
         }
 
+        return true;
 
-
-        return false;
-        //return this.engageThrottle(operator, theme, controlEntity, player);
     }
 
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        return false;
-    }
 
-    private boolean engageThrottle(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        if (!operator.getLevel().isClientSide()){
-            TardisPilotingManager pilotManager = operator.getPilotingManager();
-            if (pilotManager.isInFlight()) {
-                if (pilotManager.canEndFlight()) {
-                    var pitchedSound = theme.getSoundProfile().getThrottleDisable().getRightClick();
-                    if (pitchedSound != null) {
-                        this.setSuccessSound(pitchedSound);
-                    }
-                    return pilotManager.endFlight();
-                }
+        if (player.isCrouching()) {
+            operator.getPilotingManager().setThrottleStage(0);
+        } else {
+            int nextStage = operator.getPilotingManager().getThrottleStage() - 1;
+            if (nextStage >= 0) {
+                operator.getPilotingManager().setThrottleStage(nextStage);
             }
-
-            if (pilotManager.canBeginFlight()) {
-                var pitchedSound = theme.getSoundProfile().getThrottleEnable().getRightClick();
-                if (pitchedSound != null) {
-                    this.setSuccessSound(pitchedSound);
-                }
-                return pilotManager.beginFlight(false);
-            }
-            return false;
         }
-        return false;
-    }
 
+        return true;
+    }
 }

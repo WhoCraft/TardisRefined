@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.SignRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.FormattedCharSequence;
@@ -17,6 +18,7 @@ import net.minecraft.world.phys.HitResult;
 import org.joml.Matrix4f;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+
 
 public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
@@ -42,40 +44,52 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
     public void render(ControlEntity entity, float f, float g, PoseStack poseStack, MultiBufferSource multiBufferSource, int i) {
         if (this.shouldShowName(entity)) {
             this.renderNameTag(entity, entity.getDisplayName(), poseStack, multiBufferSource, i);
+
+
+
         }
     }
 
     @Override
     protected void renderNameTag(ControlEntity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightCoords) {
 
+        //super.renderNameTag(entity, component, poseStack, multiBufferSource, packedLightCoords);
 
         double distanceSquared = this.entityRenderDispatcher.distanceToSqr(entity);
-        if (!(distanceSquared > 4096.0)) {
+        if (!(distanceSquared > 2050.0)) {
 
             boolean isSolid = !entity.isDiscrete();
-            float boundingBoxHeight = entity.getNameTagOffsetY();
-            int verticalTextOffset = 35;
+            float boundingBoxHeight = entity.getNameTagOffsetY() - 0.3f;
+            int verticalTextOffset = 10;
             poseStack.pushPose();
             poseStack.translate(0.0, boundingBoxHeight, 0.0);
 
             poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-            float scale = 0.010F;
+            float scale = 0.007F;
             poseStack.scale(-scale, -scale, scale);
 
             Matrix4f textMatrix = poseStack.last().pose();
 
-
-
             Font font = this.getFont();
+
             float textHorizontalPosition = (float) (-font.width(component) / 2);
 
             FormattedCharSequence sequence = component.getVisualOrderText();
 
             font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
 
+            int entityHealth = entity.getControlHealth();
+
+            String currentHealth = entityHealth + " HP";
+            FormattedCharSequence healthSequence = Component.translatable(currentHealth).getVisualOrderText();
+
+            font.drawInBatch8xOutline(healthSequence, textHorizontalPosition, (float) verticalTextOffset - 10, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
+
             if (isSolid) {
                 font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
             }
+
+
 
             poseStack.popPose();
         }

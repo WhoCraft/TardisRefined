@@ -19,6 +19,8 @@ public class ModMessages {
     public static String CONTROL_DIMENSION_SELECTED = message("selected");
     public static String HARDWARE_OFFLINE = message("hardware_offline");
 
+    public static String CONSOLE_CONFIGURATION_NOT_IN_FLIGHT = message("console_config_not_in_flight");
+
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
     public static String TOOLTIP_SCREWDRIVER_DESCRIPTION = tooltip("screwdriver_description");
 
@@ -92,6 +94,8 @@ public class ModMessages {
     public static final String CMD_ARG_DESKTOP_INVALID = cmdArgInvalid("desktop");
 
     public static final String CMD_ARG_SHELL_INVALID = cmdArgInvalid("shell");
+
+
 
     public static String message(String translationKey){
         return "message." + TardisRefined.MODID + "." + translationKey;

@@ -4,6 +4,8 @@ public abstract class ConsoleSoundProfile {
 
     private ConsoleSound throttleEnable;
     private ConsoleSound throttleDisable;
+    private ConsoleSound handbrakeEnable;
+    private ConsoleSound handbrakeDisable;
     private ConsoleSound doorOpen;
     private ConsoleSound doorClose;
     private ConsoleSound doorLocked;
@@ -24,6 +26,22 @@ public abstract class ConsoleSoundProfile {
 
     public void setThrottleDisable(ConsoleSound throttleDisable) {
         this.throttleDisable = throttleDisable;
+    }
+
+    public ConsoleSound getHandbrakeEnable() {
+        return handbrakeEnable;
+    }
+
+    public void setHandbrakeEnable(ConsoleSound handbrakeEnable) {
+        this.handbrakeEnable = handbrakeEnable;
+    }
+
+    public ConsoleSound getHandbrakeDisable() {
+        return handbrakeDisable;
+    }
+
+    public void setHandbrakeDisable(ConsoleSound handbrakeDisable) {
+        this.handbrakeDisable = handbrakeDisable;
     }
 
     public ConsoleSound getDoorOpen() {

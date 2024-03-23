@@ -92,11 +92,14 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.FAST_RETURN, "Fast Return");
         addControl(ConsoleControl.DIMENSION, "Dimension");
         addControl(ConsoleControl.GENERIC_NO_SHOW, "Switch");
+        addControl(ConsoleControl.HANDBRAKE, "Handbrake");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
+        add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, "Cannot update console block whilst in flight.");
+        add(ModMessages.HARDWARE_OFFLINE, "Hardware offline.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");

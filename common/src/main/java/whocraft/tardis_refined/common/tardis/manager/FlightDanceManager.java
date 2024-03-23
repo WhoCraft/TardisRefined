@@ -6,16 +6,18 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FlightDanceManager extends BaseHandler {
 
-    private GlobalConsoleBlockEntity currentConsole;
+
     private TardisLevelOperator operator;
     private TardisPilotingManager pilotingManager;
     private List<ControlEntity> controlEntityList = new ArrayList<>();
+    private int damagedControlCount = 0;
 
     private boolean weAreDancing = false;
 
@@ -24,10 +26,21 @@ public class FlightDanceManager extends BaseHandler {
         this.pilotingManager = this.operator.getPilotingManager();
     }
 
+    public TardisLevelOperator getOperator() {
+        return this.operator;
+    }
+
+    public boolean isDancing() {
+        return this.weAreDancing;
+    }
+
+    private List<ControlEntity> getNonCriticalControls(GlobalConsoleBlockEntity controllerConsole) {
+        var controls = controllerConsole.getControlEnttityList();
+        return controls.stream().filter(x -> x.controlSpecification().control() != ConsoleControl.THROTTLE || x.controlSpecification().control() != ConsoleControl.HANDBRAKE || x.controlSpecification().control() != ConsoleControl.MONITOR ).toList();
+    }
 
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {
-        this.currentConsole = controllerConsole;
-        this.controlEntityList = controllerConsole.getControlEnttityList();
+        this.controlEntityList = getNonCriticalControls(controllerConsole);
 
         System.out.println("Prepping for the dance");
 
@@ -57,11 +70,26 @@ public class FlightDanceManager extends BaseHandler {
         }
     }
 
+    public void stopDancing() {
+        this.updateControlsAfterDance();
+        this.controlEntityList = new ArrayList<>();
+        this.damagedControlCount = 0;
+        this.weAreDancing = false;
+    }
+
     // A dance tick that runs every 20 ticks.
     private void onDanceTick() {
         // At a random time, run an event.
 
-        if (this.operator.getLevel().random.nextInt(5) == 0) {
+        if (damagedControlCount >= 5) {
+            System.out.println("TARDIS HAS CRASHED!!!!!!");
+            this.stopDancing();
+            this.operator.getPilotingManager().crash();
+            return;
+        }
+
+        int chance = 20 - this.operator.getPilotingManager().getThrottleStage() * 2;
+        if (this.operator.getLevel().random.nextInt(chance) == 0) {
             System.out.println("New event!!");
             this.triggerNextEvent();
         }
@@ -73,9 +101,19 @@ public class FlightDanceManager extends BaseHandler {
 
     private void triggerNextEvent() {
         ControlEntity randomControl = controlEntityList.get(this.operator.getLevel().random.nextInt(controlEntityList.size() - 1));
-        randomControl.setTickingDown();
+        randomControl.setTickingDown(this);
 
         System.out.println("Determined the next random control is: " + randomControl.getName() + ". Type of: " + randomControl.controlSpecification().control().name());
+    }
+
+    public void updateDamageList(ControlEntity entity) {
+        this.damagedControlCount += 1;
+        System.out.println("Damaged count is now " + this.damagedControlCount);
+    }
+
+    private void updateControlsAfterDance() {
+        this.pilotingManager.getCurrentConsole().killControls();
+        this.pilotingManager.getCurrentConsole().spawnControlEntities();
     }
 
     @Override

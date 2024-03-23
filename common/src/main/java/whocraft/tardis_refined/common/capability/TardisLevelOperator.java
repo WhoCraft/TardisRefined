@@ -45,7 +45,7 @@ public class TardisLevelOperator {
     private final TardisInteriorManager interiorManager;
     private final TardisPilotingManager pilotingManager;
     private final TardisWaypointManager tardisWaypointManager;
-    private final TardisFlightEventManager tardisFlightEventManager;
+    //private final TardisFlightEventManager tardisFlightEventManager;
 
     private final FlightDanceManager flightDanceManager;
     private final TardisClientData tardisClientData;
@@ -59,7 +59,6 @@ public class TardisLevelOperator {
         this.interiorManager = new TardisInteriorManager(this);
         this.pilotingManager = new TardisPilotingManager(this);
         this.tardisWaypointManager = new TardisWaypointManager(this);
-        this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
         this.upgradeHandler = new UpgradeHandler(this);
         this.aestheticHandler = new AestheticHandler(this);
@@ -98,7 +97,6 @@ public class TardisLevelOperator {
         compoundTag = this.interiorManager.saveData(compoundTag);
         compoundTag = this.pilotingManager.saveData(compoundTag);
         compoundTag = this.tardisWaypointManager.saveData(compoundTag);
-        compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
         compoundTag = this.upgradeHandler.saveData(compoundTag);
         compoundTag = this.aestheticHandler.saveData(compoundTag);
 
@@ -120,7 +118,6 @@ public class TardisLevelOperator {
         this.exteriorManager.loadData(tag);
         this.interiorManager.loadData(tag);
         this.pilotingManager.loadData(tag);
-        this.tardisFlightEventManager.loadData(tag);
         this.tardisWaypointManager.loadData(tag);
         this.upgradeHandler.loadData(tag);
         this.aestheticHandler.loadData(tag);
@@ -134,24 +131,29 @@ public class TardisLevelOperator {
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         pilotingManager.tick(level);
-        tardisFlightEventManager.tick();
         flightDanceManager.tick();
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
-            tardisClientData.setFlying(pilotingManager.isInFlight());
-            tardisClientData.setThrottleDown(pilotingManager.shouldThrottleBeDown());
-            tardisClientData.setIsLanding(exteriorManager.isLanding());
-            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
-            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
+
+            // tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
+            // tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
             tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
             tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
             tardisClientData.setHumEntry(interiorManager.getHumEntry());
 
             tardisClientData.sync();
+        } else {
+            tardisClientData.setFlying(pilotingManager.isInFlight());
+            tardisClientData.setIsLanding(exteriorManager.isLanding());
+            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+            tardisClientData.setThrottleStage(pilotingManager.getThrottleStage());
+            tardisClientData.setHandbrakeEngaged(pilotingManager.isHandbrakeOn());
+            tardisClientData.sync();
         }
+
+
     }
 
     public boolean hasInitiallyGenerated() {
@@ -307,9 +309,6 @@ public class TardisLevelOperator {
         return this.pilotingManager;
     }
 
-    public TardisFlightEventManager getTardisFlightEventManager() {
-        return this.tardisFlightEventManager;
-    }
 
     public TardisWaypointManager getTardisWaypointManager() {
         return tardisWaypointManager;

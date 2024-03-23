@@ -33,6 +33,7 @@ public class ModelRegistry {
     public static ModelLayerLocation VICTORIAN_CONSOLE;
     public static ModelLayerLocation MYST_CONSOLE;
     public static ModelLayerLocation INITIATIVE_CONSOLE;
+    public static ModelLayerLocation REFURBISHED_CONSOLE;
 
     public static ModelLayerLocation ROOT_SHELL;
     public static ModelLayerLocation FACTORY_SHELL;
@@ -95,6 +96,7 @@ public class ModelRegistry {
         VICTORIAN_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "victorian_console"), "victorian_console"), VictorianConsoleModel::createBodyLayer);
         MYST_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "myst_console"), "myst_console"), MystConsoleModel::createBodyLayer);
         INITIATIVE_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "initiative_console"), "initiative_console"), InitiativeConsoleModel::createBodyLayer);
+        REFURBISHED_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "refurbished_console"), "refurbished_console"), RefurbishedConsoleModel::createBodyLayer);
 
         ROOT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
         FACTORY_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_shell"), "factory_shell"), FactoryShellModel::createBodyLayer);

@@ -208,7 +208,7 @@ public class TardisFlightEventManager extends BaseHandler{
                     // Record what control type needs pressing.
                     this.controlPrompt = possibleControls.get(operator.getLevel().random.nextInt(possibleControls.size()-1));
 
-                    // Set what control needs to be good
+                    // Set what control needs to be good++
                     isWaitingForControlResponse = true;
 
                     this.ticksSincePrompted = 0;
