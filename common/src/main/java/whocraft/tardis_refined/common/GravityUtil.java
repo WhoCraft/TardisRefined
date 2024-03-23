@@ -45,7 +45,7 @@ public class GravityUtil {
 
     public static boolean isInGravityShaft(Player player) {
         AABB aabb = new AABB(new BlockPos( 999, 101, 19), new BlockPos(1002, 70, 17));
-        return player.getBoundingBox().intersects(aabb) || isInAntiGrav(player.getBoundingBox(), player.getBoundingBox().inflate(20, 120, 20), player.level());
+        return player.getBoundingBox().intersects(aabb) || isInAntiGrav(player.getBoundingBox(), player.getBoundingBox().inflate(20, 20, 20), player.level());
     }
 
     public static void moveGravity(Player player, CallbackInfo info) {

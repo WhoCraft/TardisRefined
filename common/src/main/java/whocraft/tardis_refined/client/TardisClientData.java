@@ -251,6 +251,11 @@ public class TardisClientData {
                 }
             }
 
+            if (isThisTardis && isFlying()) {
+                if (!soundManager.isActive(LoopingSound.FLIGHT_LOOP)) {
+                    soundManager.play(LoopingSound.FLIGHT_LOOP);
+                }
+            }
 
             if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
                 HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
