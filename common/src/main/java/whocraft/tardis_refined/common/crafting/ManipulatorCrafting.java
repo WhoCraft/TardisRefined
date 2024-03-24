@@ -18,6 +18,8 @@ public class ManipulatorCrafting {
 
     public static void registerRecipes() {
 
+        MANIPULATOR_CRAFTING_RECIPES.clear();
+
         register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), Blocks.SMOOTH_STONE_SLAB),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),

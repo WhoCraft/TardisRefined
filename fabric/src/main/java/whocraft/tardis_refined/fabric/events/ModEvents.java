@@ -1,10 +1,9 @@
 package whocraft.tardis_refined.fabric.events;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.server.level.ServerLevel;
@@ -14,6 +13,7 @@ import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -36,8 +36,13 @@ public class ModEvents {
             }
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+
+            // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
             DimensionHandlerImpl.loadLevels(world);
+
+            //Register Recipes
+            ManipulatorCrafting.registerRecipes();
         });
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());

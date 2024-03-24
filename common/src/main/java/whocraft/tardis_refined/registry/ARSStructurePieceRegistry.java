@@ -13,10 +13,8 @@ public class ARSStructurePieceRegistry {
     public static List<ARSStructurePiece> ROOMS = new ArrayList<>();
 
     public static void register() {
-
         registerCorridors();
         registerRooms();
-
     }
 
     public static void registerCorridors() {
