@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.crafting;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.device.ManipulatorCraftingRecipe;
 import whocraft.tardis_refined.common.blockentity.device.ManipulatorCraftingRecipeItem;
 import whocraft.tardis_refined.registry.BlockRegistry;
@@ -17,7 +18,7 @@ public class ManipulatorCrafting {
 
     public static void registerRecipes() {
 
-        register(new ManipulatorCraftingRecipe( Arrays.asList(
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), Blocks.SMOOTH_STONE_SLAB),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), Blocks.SMOOTH_STONE_SLAB),
@@ -39,7 +40,7 @@ public class ManipulatorCrafting {
 
         ), BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().asItem()));
 
-        register(new ManipulatorCraftingRecipe( Arrays.asList(
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), Blocks.STONE),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), Blocks.STONE),
@@ -72,33 +73,49 @@ public class ManipulatorCrafting {
 
         ), BlockRegistry.TERRAFORMER_BLOCK.get().asItem()));
 
-        register(new ManipulatorCraftingRecipe( Arrays.asList(
+
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2),  BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 0), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), Blocks.OBSERVER),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), Blocks.PISTON),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 2), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0),  BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 1), Blocks.AMETHYST_BLOCK),
                 new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
 
-        ), BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem()));
+        ), BlockRegistry.GRAVITY_WELL.get().asItem()));
 
-        register(new ManipulatorCraftingRecipe( Arrays.asList(
-                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0),  BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
+
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2),   BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 0), Blocks.AMETHYST_BLOCK),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), Blocks.DAYLIGHT_DETECTOR),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 2), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0),   BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 1), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2),   BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
 
         ), BlockRegistry.FLIGHT_DETECTOR.get().asItem()));
 
-        register(new ManipulatorCraftingRecipe( Arrays.asList(
+
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), Blocks.AMETHYST_BLOCK),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 0), Blocks.AMETHYST_BLOCK),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), Blocks.PISTON),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 2), Blocks.AMETHYST_BLOCK),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 1), Blocks.AMETHYST_BLOCK),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
+
+        ), BlockRegistry.GRAVITY_WELL.get().asItem()));
+
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), Blocks.AMETHYST_BLOCK),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
@@ -127,7 +144,6 @@ public class ManipulatorCrafting {
         ;
         return manipulatorCraftingRecipe;
     }
-
 
 
 }

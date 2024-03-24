@@ -33,6 +33,7 @@ public class GravityUtil {
                 int space = blockState.getValue(AntiGravityBlock.SPACE);
                 if (space > 0 && level.getBlockState(pos.above()).isAir()) {
                     AABB myGravBox = GravityUtil.createGravityBoxFromLevel(level, pos, space);
+                    spawnParticlesWithinAABB(level, myGravBox);
                     if (myGravBox.intersects(playerBox.getBoundingBox()) && playerBox.blockPosition().getY() >= pos.getY()) {
                         return true;
                     }
@@ -40,6 +41,17 @@ public class GravityUtil {
             }
         }
         return false;
+    }
+
+
+    private static void spawnParticlesWithinAABB(Level level, AABB box) {
+        RandomSource randomSource = level.random;
+        for (int i = 0; i < 2; i++) {
+            double x = box.minX + (box.maxX - box.minX) * randomSource.nextDouble();
+            double y = box.minY + (box.maxY - box.minY) * randomSource.nextDouble();
+            double z = box.minZ + (box.maxZ - box.minZ) * randomSource.nextDouble();
+            level.addParticle(ParticleTypes.ASH, x, y, z, 0, 0.2, 0);
+        }
     }
 
 
