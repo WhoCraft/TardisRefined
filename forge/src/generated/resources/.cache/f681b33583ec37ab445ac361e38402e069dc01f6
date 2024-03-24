@@ -1,8 +1,0 @@
-// 1.20.2	2024-03-03T15:13:42.5184128	Tags for minecraft:block mod id tardis_refined
-0e47996afffcdda5ea92f1f1147ef01691440a6e data/minecraft/tags/blocks/dragon_immune.json
-870aa664161fb6f022473fecdd8e1e1105b476ac data/minecraft/tags/blocks/fences.json
-1be1c1975b768bb05f7b50c206454433f0d615d1 data/minecraft/tags/blocks/leaves.json
-052766477aabdbe3229519bf143db5d427c6155a data/minecraft/tags/blocks/mineable/pickaxe.json
-93c21f2f0985a9579187fe0a9e4b66d4e1889059 data/minecraft/tags/blocks/needs_iron_tool.json
-8615de07fd2fa07b903c95f462bedde3df5f96f5 data/minecraft/tags/blocks/slabs.json
-0e47996afffcdda5ea92f1f1147ef01691440a6e data/minecraft/tags/blocks/wither_immune.json

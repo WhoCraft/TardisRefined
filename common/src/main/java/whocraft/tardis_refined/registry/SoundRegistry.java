@@ -27,6 +27,7 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> SCREWDRIVER_SHORT = setUpSound("screwdriver_short");
     public static final RegistrySupplier<SoundEvent> SCREWDRIVER_CONNECT = setUpSound("screwdriver_connect");
     public static final RegistrySupplier<SoundEvent> SCREWDRIVER_DISCARD = setUpSound("screwdriver_discard");
+    public static final RegistrySupplier<SoundEvent> GRAVITY_TUNNEL = setUpSound("gravity_tunnel");
 
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
         SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(TardisRefined.MODID, soundName));

@@ -58,11 +58,13 @@ public class ProviderBlockTags extends BlockTagsProvider {
                 .add(BlockRegistry.ZEITON_ORE.get())
                 .add(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
                 .add(BlockRegistry.ZEITON_BLOCK.get())
+                .add(BlockRegistry.GRAVITY_WELL.get())
                 .add(BlockRegistry.ROOT_PLANT_BLOCK.get());
 
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
                 .add(BlockRegistry.LANDING_PAD.get())
+                .add(BlockRegistry.GRAVITY_WELL.get())
                 .add(BlockRegistry.FLIGHT_DETECTOR.get())
                 .add(BlockRegistry.TERRAFORMER_BLOCK.get())
                 .add(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())

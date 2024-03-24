@@ -17,6 +17,12 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
 public class LangProviderEnglish extends LanguageProvider {
 
     public LangProviderEnglish(DataGenerator gen) {
@@ -62,6 +68,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ZEITON_ORE.get(), "Zeiton Ore");
         add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
         add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
+        add(BlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -185,6 +192,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
 
+        /*Overlay Messages*/
+        add(ModMessages.ASCEND_KEY, "Ascend: %s");
+        add(ModMessages.DESCEND_KEY, "Descend: %s");
+
         /*Upgrades*/
         addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
         addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
@@ -200,7 +211,11 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
         addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
+
+
     }
+
+
 
     public void addControl(ConsoleControl control, String name) {
         add(control.getTranslationKey(), name);

@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
+import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
@@ -251,6 +252,11 @@ public class TardisClientData {
                 }
             }
 
+            if (isThisTardis && isFlying()) {
+                if (!soundManager.isActive(LoopingSound.FLIGHT_LOOP)) {
+                    soundManager.play(LoopingSound.FLIGHT_LOOP);
+                }
+            }
 
             if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
                 HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
@@ -388,6 +394,18 @@ public class TardisClientData {
                 TardisClientData.clearAll();
             }
             return;
+        }
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+        if (LoopingSound.ARS_HUMMING == null) {
+            LoopingSound.setupSounds();
+        }
+
+        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+            if (!soundManager.isActive(LoopingSound.GRAVITY_LOOP)) {
+                soundManager.play(LoopingSound.GRAVITY_LOOP);
+            }
         }
 
         TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());

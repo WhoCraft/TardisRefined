@@ -11,8 +11,11 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.BlockRegistry;
+
+import java.io.IOException;
 
 import static whocraft.tardis_refined.registry.BlockRegistry.BLOCKS;
 
@@ -62,6 +65,21 @@ public class TRBlockModelProvider extends BlockStateProvider {
         return getVariantBuilder(block).partialState().modelForState().modelFile(cubeAll(block)).addModel().toJson();
     }
 
+    public JsonObject antiGravityBlock(Block block) {
+        VariantBlockStateBuilder builder = getVariantBuilder(block);
+        ResourceLocation modelLocation0 = new ResourceLocation(TardisRefined.MODID, "block/gravity_well");
+
+        for (int space = 0; space <= 5; space++) {
+            ResourceLocation modelLocation = space == 0 ? modelLocation0 : new ResourceLocation(TardisRefined.MODID, "block/gravity_well_" + space);
+            builder.partialState().with(AntiGravityBlock.SPACE, space).modelForState()
+                    .modelFile(models().getExistingFile(modelLocation))
+                    .addModel();
+        }
+        return builder.toJson();
+    }
+
+
+
     @Override
     protected void registerStatesAndModels() {
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
@@ -100,6 +118,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(BlockRegistry.ZEITON_ORE_DEEPSLATE.get());
         customLocation(BlockRegistry.ZEITON_BLOCK.get());
 
+        antiGravityBlock(BlockRegistry.GRAVITY_WELL.get());
 
         /*
          **Fences**
