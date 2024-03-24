@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -36,6 +37,7 @@ import java.util.List;
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
 
     private boolean shouldSpawnControls = true;
+
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
@@ -89,7 +91,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (this.basePattern != null) {
             compoundTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
         }
-
     }
 
     @Override
@@ -115,6 +116,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (this.basePattern == null) {
             this.basePattern = this.pattern();
         }
+
 
         super.load(tag);
 
@@ -191,7 +193,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
 
-        if (this.shouldSpawnControls) {
+        if (this.shouldSpawnControls && blockState.getValue(GlobalConsoleBlock.POWERED)) {
             spawnControlEntities();
         }
 

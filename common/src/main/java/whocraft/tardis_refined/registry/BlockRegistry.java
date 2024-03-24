@@ -82,7 +82,7 @@ public class BlockRegistry {
 
     // Console
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of().strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
-        return 15;
+        return x.getValue(GlobalConsoleBlock.POWERED) ? 15 : 0;
     })), true, true);
 
 

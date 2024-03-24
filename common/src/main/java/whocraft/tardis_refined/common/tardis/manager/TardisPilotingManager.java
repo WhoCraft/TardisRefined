@@ -4,7 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -13,15 +15,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.common.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -107,8 +113,17 @@ public class TardisPilotingManager extends BaseHandler {
 
 
     public void setCurrentConsole(GlobalConsoleBlockEntity newConsole) {
+
+        if (this.currentConsole != null) {
+            this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
+        }
+
         this.currentConsole = newConsole;
         this.currentConsoleBlockPos = newConsole.getBlockPos();
+
+        this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
+        this.currentConsole.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
+
         System.out.println("Send new console at position " + this.currentConsoleBlockPos);
     }
 
@@ -235,13 +250,13 @@ public class TardisPilotingManager extends BaseHandler {
                     }
                 }
 
-                if (this.isHandbrakeOn && this.ticksCrashing == 0) {
-                    this.crash();
+                if (this.isHandbrakeOn && !this.isLanding() && !this.isTakingOff() && this.ticksCrashing == 0) {
+                    this.endFlightEarly(true);
                 }
 
                 // Automatically trigger the ship to land for things such as landing pads.
                 if (ticksInFlight > (20 * 10) && autoLand) {
-                    this.endFlight();
+                    this.endFlight(false);
                 }
             }
 
@@ -268,15 +283,26 @@ public class TardisPilotingManager extends BaseHandler {
             if (ticksCrashing == 1) {
                 onCrashEnd();
             }
-
-
         }
 
         if (!isInFlight && !this.isHandbrakeOn && this.throttleStage != 0 && this.canBeginFlight()) {
             this.beginFlight(false, null);
         }
-        if (isInFlight && this.canEndFlight() && (this.isHandbrakeOn || this.throttleStage == 0)) {
-            this.endFlight();
+
+        // End the flight if the TARDIS is peacefully gliding.
+        if (isInFlight && !this.canEndFlight() && this.isHandbrakeOn && this.throttleStage == 0 && !this.isLanding() && !this.isTakingOff()) {
+            this.endFlightEarly(false);
+        }
+
+        if (isInFlight && this.canEndFlight()  && !this.isLanding() && !this.isTakingOff() && (this.isHandbrakeOn || this.throttleStage == 0)) {
+            this.endFlight(false);
+        }
+
+        // If the flight has been completed, then make sure that we're not still dancing.
+        if (getFlightPercentageCovered() == 1) {
+            if (this.operator.getFlightDanceManager().isDancing()) {
+                this.operator.getFlightDanceManager().stopDancing();
+            }
         }
 
 
@@ -403,7 +429,6 @@ public class TardisPilotingManager extends BaseHandler {
         }
         return false;
     }
-
     public TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
 
         int startingHeight = location.getPosition().getY();
@@ -417,8 +442,6 @@ public class TardisPilotingManager extends BaseHandler {
 
         return null;
     }
-
-
     public TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
 
         int startingHeight = location.getPosition().getY();
@@ -432,7 +455,6 @@ public class TardisPilotingManager extends BaseHandler {
 
         return null;
     }
-
     public TardisNavLocation findSafeDirection(TardisNavLocation location) {
 
         Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
@@ -466,6 +488,25 @@ public class TardisPilotingManager extends BaseHandler {
      * @return false if didn't start flight, true if flight was started
      */
     public boolean beginFlight(boolean autoLand, Optional<GlobalConsoleBlockEntity> consoleBlockEntity) {
+
+        if (this.targetLocation.getLevel().dimension() == Level.END) {
+
+            if (!TardisHelper.hasTheEndBeenCompleted(this.targetLocation.getLevel())) {
+                if (this.currentConsole != null) {
+                    this.operator.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
+                }
+
+                System.out.println("Should be playing");
+
+                for (Player player:
+                        this.operator.getLevel().players()) {
+                    PlayerUtil.sendMessage(player, Component.translatable("A dragon prevents you from progressing to The End."), true);
+                }
+
+                this.setThrottleStage(0);
+                return false;
+            }
+        }
 
         if (this.canBeginFlight()) {
             this.autoLand = autoLand;
@@ -526,11 +567,11 @@ public class TardisPilotingManager extends BaseHandler {
 
     /**
      * Logic to handle ending flight
-     *
+     * @param forceFlightEnd Ignores the required flight time conditions for the TARDIS to land and lands.
      * @return false if didn't end flight, true if flight was ended
      */
-    public boolean endFlight() {
-        if (this.canEndFlight()) {
+    public boolean endFlight(boolean forceFlightEnd) {
+        if (forceFlightEnd || this.canEndFlight()) {
             this.ticksInFlight = 0;
 
             this.ticksLanding = TICKS_LANDING_MAX;
@@ -557,6 +598,37 @@ public class TardisPilotingManager extends BaseHandler {
         }
         return false;
 
+    }
+
+    /**
+     * Ends a flight earlier than intended, setting the target position at the percent completed of flight.
+     * @param dramatic Play sounds to show the TARDIS doesn't like it.
+     */
+    private void endFlightEarly(boolean dramatic) {
+        BlockPos targetPosition = this.targetLocation.getPosition();
+        BlockPos startingPosition = this.operator.getExteriorManager().getLastKnownLocation().getPosition();
+        float percentage = this.getFlightPercentageCovered();
+        float percentageX = (targetPosition.getX() - startingPosition.getX()) * percentage;
+        float percentageY = (targetPosition.getY() - startingPosition.getY()) * percentage;
+        float percentageZ = (targetPosition.getZ() - startingPosition.getZ()) * percentage;
+
+        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX,(int) percentageY, (int)percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.operator.getExteriorManager().getLastKnownLocation().getLevel() );
+        this.targetLocation = newLocation;
+
+        if (dramatic) {
+            for (Player player : this.operator.getLevel().players()) {
+                MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DARKNESS, 180, 180, false, false);
+                player.addEffect(mobEffectInstance);
+            }
+            if (this.currentConsole != null) {
+                this.operator.getLevel().explode(null, this.currentConsole.getBlockPos().getX(), this.currentConsole.getBlockPos().getY(), this.currentConsole.getBlockPos().getZ(), 2f, Level.ExplosionInteraction.NONE);
+            }
+
+
+
+        }
+
+        this.endFlight(true);
     }
 
     /**
@@ -605,7 +677,7 @@ public class TardisPilotingManager extends BaseHandler {
             this.targetLocation.setLevel(this.operator.getLevel().getServer().overworld());
         }
 
-        float progress = 0.5f;
+        float progress = getFlightPercentageCovered();
 
         Vec3 targetPos = new Vec3(this.targetLocation.getPosition().getX(), this.targetLocation.getPosition().getY(), this.targetLocation.getPosition().getZ());
         BlockPos currentLoc = tardisExteriorManager.getLastKnownLocation().getPosition();

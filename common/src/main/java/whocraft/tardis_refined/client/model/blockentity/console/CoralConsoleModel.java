@@ -3577,14 +3577,15 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-		if (reactions.isFlying()) {
-			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
-		} else {
-			if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
-				this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+		if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
+			if (reactions.isFlying()) {
+				this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+			} else {
+				if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
+					this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+				}
 			}
 		}
-
 
 		float rot = 0f + ( 2f * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		this.throttle.xRot = rot;

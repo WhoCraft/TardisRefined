@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,6 +24,7 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
+import whocraft.tardis_refined.common.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
@@ -29,6 +32,7 @@ import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -160,4 +164,18 @@ public class TardisHelper {
         return false;
 
     }
+
+    public static boolean hasTheEndBeenCompleted(ServerLevel serverLevel) {
+
+        if (serverLevel.dimension() == Level.END) {
+            if (serverLevel.dragonFight != null) {
+               return ((EndDragonFightAccessor) serverLevel.dragonFight).isDragonKilled();
+            }
+
+            return false; // Better safe than sorry.
+        }
+
+        return false;
+    }
+
 }

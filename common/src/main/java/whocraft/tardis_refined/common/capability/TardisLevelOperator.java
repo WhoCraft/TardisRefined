@@ -135,9 +135,6 @@ public class TardisLevelOperator {
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
-
-            // tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
-            // tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
             tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
             tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());

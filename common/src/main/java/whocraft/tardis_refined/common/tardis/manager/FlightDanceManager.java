@@ -112,8 +112,11 @@ public class FlightDanceManager extends BaseHandler {
     }
 
     private void updateControlsAfterDance() {
-        this.pilotingManager.getCurrentConsole().killControls();
-        this.pilotingManager.getCurrentConsole().spawnControlEntities();
+        if (this.pilotingManager.getCurrentConsole() != null) {
+            this.pilotingManager.getCurrentConsole().killControls();
+            this.pilotingManager.getCurrentConsole().spawnControlEntities();
+        }
+
     }
 
     @Override

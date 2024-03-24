@@ -14,6 +14,12 @@ public class HandbrakeControl extends Control {
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         if (operator.getPilotingManager().isInFlight()) {
+
+            if (operator.getPilotingManager().isTakingOff() || operator.getPilotingManager().isLanding()) {
+                PlayerUtil.sendMessage(player, Component.translatable("Cannot use handbrake when in a transitivie state."), true); // MAKE THIS IS A TRANSLATION
+                return false;
+            }
+
             operator.getPilotingManager().setHandbrakeOn(true);
             System.out.println("Handbrake: " + operator.getPilotingManager().isHandbrakeOn() );
             PlayerUtil.sendMessage(player, Component.translatable("Handbrake: ").append(operator.getPilotingManager().isHandbrakeOn() ? "Engaged" : "Disengaged"), true);
@@ -30,6 +36,7 @@ public class HandbrakeControl extends Control {
         this.setSuccessSound(pitchedSound);
 
         if (operator.getPilotingManager().isInFlight()) {
+
             PlayerUtil.sendMessage(player, Component.translatable("Ship is in flight. Left click the handbrake to engage."), true); // MAKE THIS IS A TRANSLATION
             return false;
         } else {

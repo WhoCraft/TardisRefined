@@ -104,7 +104,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
 
-                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().endFlight() && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().endFlight(false) && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
                     if (cap.getAestheticHandler().getShellTheme() != null) {
                         ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 

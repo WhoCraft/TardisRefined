@@ -61,10 +61,8 @@ public class TardisClientData {
     private boolean isHandbrakeEngaged = false;
 
     private boolean isTakingOff = false;
-    private boolean isInDangerZone = false;
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
-    private float flightShakeScale = 0;
 
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
@@ -135,14 +133,6 @@ public class TardisClientData {
     }
 
 
-    public void setInDangerZone(boolean isInDangerZone) {
-        this.isInDangerZone = isInDangerZone;
-    }
-
-    public boolean isInDangerZone() {
-        return isInDangerZone;
-    }
-
     public void setIsCrashing(boolean isCrashing) {
         this.isCrashing = isCrashing;
     }
@@ -159,14 +149,6 @@ public class TardisClientData {
         return isOnCooldown;
     }
 
-    public void setFlightShakeScale(float scale) {
-        this.flightShakeScale = scale;
-    }
-
-    public float flightShakeScale() {
-        return flightShakeScale;
-    }
-
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -180,8 +162,6 @@ public class TardisClientData {
         compoundTag.putBoolean(NbtConstants.HANDBRAKE_ENGAGED, isHandbrakeEngaged);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
-        compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
-        compoundTag.putFloat("flightShakeScale", this.flightShakeScale);
         compoundTag.putBoolean("isOnCooldown", this.isOnCooldown);
         // Save shellTheme and shellPattern
         compoundTag.putString("shellTheme", shellTheme.toString());
@@ -203,8 +183,6 @@ public class TardisClientData {
         isHandbrakeEngaged = compoundTag.getBoolean(NbtConstants.HANDBRAKE_ENGAGED);
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
-        isInDangerZone = compoundTag.getBoolean("isInDangerZone");
-        flightShakeScale = compoundTag.getFloat("flightShakeScale");
         isOnCooldown = compoundTag.getBoolean("isOnCooldown");
 
         // Load shellTheme and shellPattern
@@ -297,19 +275,20 @@ public class TardisClientData {
 
 
             // Responsible for screen-shake. Not sure of a better solution at this point in time.
-            if (isInDangerZone || isCrashing) {
-                if (Minecraft.getInstance().player.level().dimension() == levelKey) {
-                    var player = Minecraft.getInstance().player;
-                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-                }
-            } else {
-                if ( isFlying() && Minecraft.getInstance().player.level().dimension() == levelKey) {
-                    var player = Minecraft.getInstance().player;
+
+            if (Minecraft.getInstance().player.level().dimension() == levelKey) {
+                var player = Minecraft.getInstance().player;
+                if (isCrashing) {
                     player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) *  0.5f);
+                } else {
+                    if (isFlying()) {
+                        player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (throttleStage * 0.1f));
+                        player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (throttleStage * 0.1f));
+                    }
                 }
             }
+
         }
 
     }

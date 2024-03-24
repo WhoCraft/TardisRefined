@@ -35,7 +35,7 @@ public class FogRendererMixin {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
             if (TardisHelper.isInArsArea(blockPosition)) {
                 TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
-                Vec3 fogColor = reactions.fogColor(reactions.isCrashing() || reactions.isInDangerZone());
+                Vec3 fogColor = reactions.fogColor(reactions.isCrashing());
                 RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);
                 callbackInfo.cancel();
             }
