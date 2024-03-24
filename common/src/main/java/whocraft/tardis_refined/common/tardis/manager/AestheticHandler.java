@@ -33,6 +33,7 @@ public class AestheticHandler extends BaseHandler {
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
     private HumEntry currentHum = TardisHums.getDefaultHum();
 
+
     public AestheticHandler(TardisLevelOperator tardisLevelOperator) {
         super();
         this.tardisOperator = tardisLevelOperator;
@@ -105,7 +106,6 @@ public class AestheticHandler extends BaseHandler {
         }
 
     }
-
 
     public void updateInteriorDoors(ResourceLocation theme) {
         if (tardisOperator.getInternalDoor() != null) {

@@ -12,8 +12,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -27,7 +25,6 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
@@ -36,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TardisInteriorManager extends BaseHandler {
-
     private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
@@ -53,6 +49,8 @@ public class TardisInteriorManager extends BaseHandler {
     private HumEntry humEntry = TardisHums.getDefaultHum();
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
+
+    private double fuelForIntChange = 500; // The amount of fuel required to change interior
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -118,6 +116,9 @@ public class TardisInteriorManager extends BaseHandler {
         tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
         tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
+
+        tag.putDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE, this.fuelForIntChange);
+
         return tag;
     }
 
@@ -131,6 +132,11 @@ public class TardisInteriorManager extends BaseHandler {
         this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
         this.humEntry = TardisHums.getHumById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_CURRENT_HUM)));
+
+        this.fuelForIntChange = tag.getDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE);
+        if (!tag.contains(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE)) {
+            this.fuelForIntChange = 500; // Default
+        }
     }
 
 
@@ -348,4 +354,27 @@ public class TardisInteriorManager extends BaseHandler {
         this.isWaitingToGenerate = false;
     }
 
+    /**
+     * Returns whether a Tardis has enough fuel to perform an interior change
+     * @return true if the Tardis has enough fuel
+     */
+    public boolean hasEnoughFuel() {
+        return this.operator.getPilotingManager().getFuel() >= this.getRequiredFuel();
+    }
+
+    /**
+     * The amount of fuel required to change the interior
+     * @return double amount of fuel to be removed
+     */
+    public double getRequiredFuel() {
+        return this.fuelForIntChange;
+    }
+
+    /**
+     * Sets the amount of fuel required to change the interior
+     * @param fuel the amount of fuel
+     */
+    private void setRequiredFuel(double fuel) {
+        this.fuelForIntChange = fuel;
+    }
 }

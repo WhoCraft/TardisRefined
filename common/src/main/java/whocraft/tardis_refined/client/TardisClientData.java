@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
@@ -37,7 +38,8 @@ import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
 import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CENTER;
 
 public class TardisClientData {
-
+    public static int FOG_TICK_DELTA = 0; // This is for the fading in and out of the fog.
+    private static int MAX_FOG_TICK_DELTA = 2 * 20; // This is for adjusting how fast the fog will fade in and out.
 
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
@@ -63,6 +65,8 @@ public class TardisClientData {
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
+    private double fuel = 0;
+    private double maximumFuel = 0;
 
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
@@ -163,6 +167,38 @@ public class TardisClientData {
         return flightShakeScale;
     }
 
+    public double getFuel() {
+        return fuel;
+    }
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
+    }
+    public double getMaximumFuel() {
+        return maximumFuel;
+    }
+    public void setMaximumFuel(double fuel) {
+        this.maximumFuel = fuel;
+    }
+
+    /**
+     * Higher means more fog, lower means less fog
+     * @return 0 -> 1 float based off fog tick delta
+     */
+    public static float getFogTickDelta() {
+        return 1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
+    }
+    public static void tickFog(boolean hasFuel) {
+        if (!hasFuel && (FOG_TICK_DELTA <= MAX_FOG_TICK_DELTA) && (FOG_TICK_DELTA > 0)) {
+            FOG_TICK_DELTA--; // Fading in the fog
+            return;
+        }
+
+        if (hasFuel && (FOG_TICK_DELTA != MAX_FOG_TICK_DELTA)) {
+            FOG_TICK_DELTA++; // Fading out the fog
+            return;
+        }
+    }
+
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -183,6 +219,9 @@ public class TardisClientData {
         compoundTag.putString("shellPattern", shellPattern.toString());
 
         compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
+
+        compoundTag.putDouble(NbtConstants.FUEL, fuel);
+        compoundTag.putDouble(NbtConstants.MAXIMUM_FUEL, maximumFuel);
 
         return compoundTag;
     }
@@ -206,6 +245,9 @@ public class TardisClientData {
         shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
 
         setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
+
+        fuel = compoundTag.getDouble(NbtConstants.FUEL);
+        maximumFuel = compoundTag.getDouble(NbtConstants.MAXIMUM_FUEL);
     }
 
     /**
@@ -296,6 +338,10 @@ public class TardisClientData {
                     player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                     player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
                 }
+            }
+
+            if (isThisTardis) {
+                tickFog(fuel != 0);
             }
         }
 
