@@ -1,7 +1,10 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.items.KeyItem;
@@ -16,10 +19,18 @@ public class MonitorControl extends Control {
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!player.level().isClientSide()){
+            ItemStack hand = player.getMainHandItem();
+
+            // Temporary for testing purposes
+            if (hand.is(Items.EXPERIENCE_BOTTLE)) {
+                operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
+                player.sendSystemMessage(Component.literal("Fueled up!"));
+                return true;
+            }
+
             boolean isSyncingKey = false;
-            if (PlayerUtil.isInMainHand(player, ItemRegistry.KEY.get())){
-                KeyItem key = (KeyItem)player.getMainHandItem().getItem();
-                if (key.interactMonitor(player.getMainHandItem(),player, controlEntity, player.getUsedItemHand()))
+            if (hand.getItem() instanceof KeyItem key){
+                if (key.interactMonitor(hand,player, controlEntity, player.getUsedItemHand()))
                     isSyncingKey = true;
             }
             if (!isSyncingKey)

@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;;
 import net.minecraft.world.phys.BlockHitResult;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
+import whocraft.tardis_refined.common.tardis.CorridorGenerator;
 
 
 public class AstralManipulatorBlock extends Block implements EntityBlock {
@@ -24,7 +25,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if (level instanceof ServerLevel && interactionHand == InteractionHand.MAIN_HAND) {
+        if (level instanceof ServerLevel serverLevel && interactionHand == InteractionHand.MAIN_HAND) {
 
             if (level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
                 ItemStack itemStack = player.getItemInHand(interactionHand);
@@ -36,28 +37,10 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
 
                     if (itemStack.getItem() instanceof ScrewdriverItem) {
 
-                        astralManipulatorBlockEntity.OnRightClick(itemStack);
+                        astralManipulatorBlockEntity.onRightClick(itemStack);
                     }
 
-                    // TO BE LEFT ALONE FOR WHEN CORRIDORS NEED TO BE GENERATED.
-
-//                    if (itemStack.getItem() == Items.COMMAND_BLOCK_MINECART) {
-//
-//                        String name = "gs_r" + level.getRandom().nextInt(1000);
-//                        StructureTemplateManager manager = level.getServer().getStructureManager();
-//                        StructureTemplate template = manager.getOrCreate(new ResourceLocation(name));
-//                        template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 28, 48), false, Blocks.STRUCTURE_VOID);
-//                        template.setAuthor("");
-//                        manager.save(new ResourceLocation(name));
-//
-//                        player.displayClientMessage(Component.translatable("Generated structure at: " + name), false);
-//                    }
-//
-//                    if (itemStack.getItem() instanceof InkSacItem) {
-//                        player.displayClientMessage(Component.translatable("Attempting to generate structure."), false);
-//                        CorridorGenerator.generateFromPosition(level, blockPos, blockPos);
-//
-//                    }
+                    CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player);
                 }
 
             }

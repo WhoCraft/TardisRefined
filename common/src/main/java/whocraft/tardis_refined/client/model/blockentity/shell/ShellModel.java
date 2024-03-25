@@ -36,7 +36,6 @@ public abstract class ShellModel extends HierarchicalModel {
         return isEmmissive ? pattern.exteriorDoorTexture().emissiveTexture() : pattern.exteriorDoorTexture().texture();
     }
 
-
     ModelPart fade_value;
 
     float initAlpha = 0;

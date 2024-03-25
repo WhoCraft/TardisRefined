@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class PatternReloadListenerImpl{
+public class PatternReloadListenerImpl {
 
     public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger) {
         return new Impl(folderName, codec, merger);
@@ -32,8 +32,10 @@ public class PatternReloadListenerImpl{
             return this;
         }
 
-        /** Generate an event listener function for Forge's dedicated on-datapack-sync event which is timed at the correct point when datapack registries are synced.
-         * The event is fired when a player logs in or if server resources were reloaded successfully, so there is no need to add it in the login event **/
+        /**
+         * Generate an event listener function for Forge's dedicated on-datapack-sync event which is timed at the correct point when datapack registries are synced.
+         * The event is fired when a player logs in or if server resources were reloaded successfully, so there is no need to add it in the login event
+         **/
         private Consumer<OnDatapackSyncEvent> getDatapackSyncListener(final NetworkManager networkManager, final Function<Map<ResourceLocation, List<B>>, MessageS2C> packetFactory) {
             return event -> {
                 this.handleSyncPacket(event.getPlayer(), networkManager, packetFactory);

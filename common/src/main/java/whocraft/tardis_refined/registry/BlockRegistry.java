@@ -12,6 +12,7 @@ import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
+import whocraft.tardis_refined.common.block.life.ARSLeavesBlock;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
@@ -62,7 +63,7 @@ public class BlockRegistry {
 
     // ARS Tree
     public static final RegistrySupplier<ArsEggBlock> ARS_EGG = register("ars_egg", () -> new ArsEggBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES).lightLevel((x) -> 12)), true, true);
-    public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new LeavesBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), false, true);
+    public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new ARSLeavesBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), false, true);
     public static final RegistrySupplier<SlabBlock> ARS_LEAVES_SLAB = register("ars_leaves_slab", () -> new SlabBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), false, true);
     public static final RegistrySupplier<FenceBlock> ARS_LEAVES_FENCE = register("ars_leaves_fence", () -> new FenceBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), false, true);
 
@@ -73,6 +74,7 @@ public class BlockRegistry {
     public static final RegistrySupplier<AirLockGenerationBlock> AIR_LOCK_GENERATION_BLOCK = register("air_lock_generator", () -> new AirLockGenerationBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), false, true);
     public static final RegistrySupplier<ConsoleConfigurationBlock> CONSOLE_CONFIGURATION_BLOCK = register("console_configuration", () -> new ConsoleConfigurationBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
     public static final RegistrySupplier<AstralManipulatorBlock> ASTRAL_MANIPULATOR_BLOCK = register("astral_manipulator", () -> new AstralManipulatorBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+    public static final RegistrySupplier<AntiGravityBlock> GRAVITY_WELL = register("gravity_well", () -> new AntiGravityBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
 
 
     public static final RegistrySupplier<LandingPad> LANDING_PAD = register("landing_pad", () -> new LandingPad(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {

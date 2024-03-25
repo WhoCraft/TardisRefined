@@ -40,6 +40,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(SoundRegistry.SCREWDRIVER_SHORT.get(), basicSound("screwdriver_short", new ResourceLocation(TardisRefined.MODID, "tools/screwdriver/screwdriver_short")));
         add(SoundRegistry.SCREWDRIVER_CONNECT.get(), basicSound("screwdriver_connect", new ResourceLocation(TardisRefined.MODID, "tools/screwdriver/screwdriver_connect")));
         add(SoundRegistry.SCREWDRIVER_DISCARD.get(), basicSound("screwdriver_discard", new ResourceLocation(TardisRefined.MODID, "tools/screwdriver/screwdriver_discard")));
+        add(SoundRegistry.GRAVITY_TUNNEL.get(), basicSound("gravity_tunnel", new ResourceLocation(TardisRefined.MODID, "gravity_tunnel")));
     }
 
 

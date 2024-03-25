@@ -29,6 +29,7 @@ import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
  * External Shell data.
  **/
 public class TardisExteriorManager extends BaseHandler {
+    private double fuelForShellChange = 15; // Amount of fuel required to change the shell
 
     private final TardisLevelOperator operator;
     private TardisNavLocation lastKnownLocation = TardisNavLocation.ORIGIN;
@@ -216,4 +217,28 @@ public class TardisExteriorManager extends BaseHandler {
         return false;
     }
 
+
+    /**
+     * Returns whether a Tardis has enough fuel to perform an interior change
+     * @return true if the Tardis has enough fuel
+     */
+    public boolean hasEnoughFuelForShellChange() {
+        return this.operator.getPilotingManager().getFuel() >= this.getFuelForShellChange();
+    }
+
+    /**
+     * The amount of fuel required to change the exterior shell
+     * @return double amount of fuel to be removed
+     */
+    public double getFuelForShellChange() {
+        return this.fuelForShellChange;
+    }
+
+    /**
+     * Sets the amount of fuel required to change the exterior shell
+     * @param fuel the amount of fuel
+     */
+    private void setFuelForShellChange(double fuel) {
+        this.fuelForShellChange = fuel;
+    }
 }

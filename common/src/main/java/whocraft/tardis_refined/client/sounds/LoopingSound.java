@@ -11,12 +11,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 public class LoopingSound extends AbstractTickableSoundInstance {
 
     public static LoopingSound ARS_HUMMING = null;
     public static LoopingSound FLIGHT_LOOP = null;
+    public static LoopingSound GRAVITY_LOOP = null;
     public LoopingSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
         attenuation = Attenuation.NONE;
@@ -74,6 +76,21 @@ public class LoopingSound extends AbstractTickableSoundInstance {
         if(this == LoopingSound.FLIGHT_LOOP){
             if (tardisClientData.isFlying() && !tardisClientData.isCrashing()) {
                 LoopingSound.FLIGHT_LOOP.setLocation(player.position());
+                volume = 0.5F;
+            } else {
+                volume = 0F;
+            }
+
+            if (tardisClientData.getFuel() == 0f) {
+                volume = 0F;
+            }
+
+        }
+
+
+        if(this == LoopingSound.GRAVITY_LOOP){
+            if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+                LoopingSound.GRAVITY_LOOP.setLocation(player.position());
                 volume = 0.5F;
             } else {
                 volume = 0F;

@@ -32,11 +32,12 @@ import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
+import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CORNER_A;
+import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CORNER_B;
 
 public class TardisHelper {
 
@@ -48,8 +49,8 @@ public class TardisHelper {
 
     public static boolean isInArsArea(BlockPos blockPos) {
 
-        BlockPos corner1 = new BlockPos(1051, 97, 6);
-        BlockPos corner2 = new BlockPos(1023, 118, 36);
+        BlockPos corner1 = ARS_TREE_CORNER_A;
+        BlockPos corner2 = ARS_TREE_CORNER_B;
 
         int minX = Math.min(corner1.getX(), corner2.getX());
         int maxX = Math.max(corner1.getX(), corner2.getX());
@@ -58,26 +59,20 @@ public class TardisHelper {
         int minZ = Math.min(corner1.getZ(), corner2.getZ());
         int maxZ = Math.max(corner1.getZ(), corner2.getZ());
 
-        return blockPos.getX() >= minX && blockPos.getX() <= maxX &&
-                blockPos.getY() >= minY && blockPos.getY() <= maxY &&
-                blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
+        return blockPos.getX() >= minX && blockPos.getX() <= maxX && blockPos.getY() >= minY && blockPos.getY() <= maxY && blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
     }
 
-    public static boolean createTardis(BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme){
+    public static boolean createTardis(BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme) {
 
         AtomicBoolean generated = new AtomicBoolean(false);
 
         //Set global shell block
-        BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
-                .setValue(GlobalShellBlock.FACING, Direction.NORTH)
-                .setValue(GlobalShellBlock.REGEN, false)
-                .setValue(LOCKED, false)
-                .setValue(GlobalShellBlock.WATERLOGGED, serverLevel.getBlockState(blockPos).getFluidState().getType() == Fluids.WATER);
+        BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.FACING, Direction.NORTH).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, false).setValue(GlobalShellBlock.WATERLOGGED, serverLevel.getBlockState(blockPos).getFluidState().getType() == Fluids.WATER);
 
         serverLevel.setBlock(blockPos, targetBlockState, Block.UPDATE_ALL);
 
         if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBaseBlockEntity) {
-            if (shellBaseBlockEntity.shouldSetup()){
+            if (shellBaseBlockEntity.shouldSetup()) {
 
                 //Set the shell with this level
                 shellBaseBlockEntity.setTardisId(generatedLevelKey);
@@ -108,16 +103,16 @@ public class TardisHelper {
 
     }
 
-    public static MutableComponent createTardisIdComponent(ResourceLocation levelId){
+    public static MutableComponent createTardisIdComponent(ResourceLocation levelId) {
         String id = levelId.toString();
         String displayId = levelId.getPath().substring(0, 5);
         MutableComponent tardisId = CommandHelper.createComponentWithTooltip(displayId, id);
         return tardisId;
     }
 
-    public static boolean teleportEntityTardis(TardisLevelOperator cap, Entity entity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation, boolean enterTardis){
+    public static boolean teleportEntityTardis(TardisLevelOperator cap, Entity entity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation, boolean enterTardis) {
 
-        if (entity.level() instanceof ServerLevel teleportingEntityLevel){
+        if (entity.level() instanceof ServerLevel teleportingEntityLevel) {
 
             BlockPos destinationPos = destinationLocation.getPosition();
             ServerLevel destinationLevel = destinationLocation.getLevel();
@@ -137,7 +132,7 @@ public class TardisHelper {
 
             float adjustedRotationYaw = destinationRotationYaw + diff;
 
-            if (entity.getType().getDimensions().width > 1F){
+            if (entity.getType().getDimensions().width > 1F) {
                 targetTeleportPos = destinationPos.offset(destinationDirection.getNormal());
             }
 
@@ -149,10 +144,9 @@ public class TardisHelper {
 
             //Fire exit or enter events
             if (entity instanceof LivingEntity livingEntity) {
-                if (enterTardis){
+                if (enterTardis) {
                     TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(cap, livingEntity, sourceLocation, destinationLocation);
-                }
-                else {
+                } else {
                     TardisEvents.TARDIS_EXIT_EVENT.invoker().onExitTardis(cap, livingEntity, sourceLocation, destinationLocation);
                 }
             }

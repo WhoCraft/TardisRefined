@@ -38,6 +38,7 @@ public class NbtConstants {
     public static final String TARDIS_IM_GENERATED_CORRIDORS = "im_generated_corridors";
     public static final String TARDIS_IM_AIRLOCK_CENTER = "im_generated_airlock_center";
     public static final String TARDIS_CURRENT_HUM = "tardis_current_hum";
+    public static final String TARDIS_IM_FUEL_FOR_INT_CHANGE = "tardis_fuel_for_int_change";
 
     // External Readings Data
     public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
@@ -79,6 +80,10 @@ public class NbtConstants {
     public static final String FLIGHT_DISTANCE = "flight_distance";
     public static final String DISTANCE_COVERED = "distance_covered";
 
+
+    // Piloting Manager
+    public static final String FUEL = "fuel";
+    public static final String MAXIMUM_FUEL = "MaximumFuel";
 
     public static TardisNavLocation getTardisNavLocation(CompoundTag tag, String prefix, TardisLevelOperator operator) {
         BlockPos position = NbtUtils.readBlockPos(tag.getCompound(prefix + NbtConstants.LOCATION_POSITION));
