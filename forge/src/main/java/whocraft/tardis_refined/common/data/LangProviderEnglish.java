@@ -17,12 +17,6 @@ import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 public class LangProviderEnglish extends LanguageProvider {
 
     public LangProviderEnglish(DataGenerator gen) {
@@ -214,7 +208,6 @@ public class LangProviderEnglish extends LanguageProvider {
 
 
     }
-
 
 
     public void addControl(ConsoleControl control, String name) {

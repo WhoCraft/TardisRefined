@@ -23,7 +23,7 @@ public class ClientForgeBus {
     }
 
     @SubscribeEvent
-    public static void onRenderOverlay(RenderGuiOverlayEvent.Post guiOverlayEvent){
+    public static void onRenderOverlay(RenderGuiOverlayEvent.Post guiOverlayEvent) {
         GravityOverlay.renderOverlay(guiOverlayEvent.getGuiGraphics().pose());
     }
 }

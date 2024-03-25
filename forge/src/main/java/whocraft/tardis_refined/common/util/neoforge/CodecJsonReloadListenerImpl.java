@@ -12,13 +12,13 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class CodecJsonReloadListenerImpl{
+public class CodecJsonReloadListenerImpl {
 
     public static <T> CodecJsonReloadListener<T> create(String folderName, Codec<T> codec) {
         return new Impl(folderName, codec);
     }
 
-    public static class Impl<T> extends CodecJsonReloadListener<T>{
+    public static class Impl<T> extends CodecJsonReloadListener<T> {
         public Impl(String folderName, Codec<T> codec) {
             super(folderName, codec);
         }
@@ -29,8 +29,10 @@ public class CodecJsonReloadListenerImpl{
             return this;
         }
 
-        /** Generate an event listener function for Forge's dedicated on-datapack-sync event which is timed at the correct point when datapack registries are synced.
-         * The event is fired when a player logs in or if server resources were reloaded successfully, so there is no need to add it in the login event **/
+        /**
+         * Generate an event listener function for Forge's dedicated on-datapack-sync event which is timed at the correct point when datapack registries are synced.
+         * The event is fired when a player logs in or if server resources were reloaded successfully, so there is no need to add it in the login event
+         **/
         private Consumer<OnDatapackSyncEvent> getDatapackSyncListener(final NetworkManager networkManager, final Function<Map<ResourceLocation, T>, MessageS2C> packetFactory) {
             return event -> {
                 this.handleSyncPacket(event.getPlayer(), networkManager, packetFactory);

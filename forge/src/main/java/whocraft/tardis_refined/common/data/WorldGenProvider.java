@@ -11,7 +11,6 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
 
-
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 

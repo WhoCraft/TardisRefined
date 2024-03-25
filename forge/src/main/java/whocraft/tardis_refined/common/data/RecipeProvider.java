@@ -36,7 +36,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()).requires(ItemRegistry.ZEITON_INGOT.get()).requires(Items.COPPER_BLOCK).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()).requires(ItemRegistry.ZEITON_INGOT.get()).requires(Items.IRON_BLOCK).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.ZEITON_BLOCK.get()).pattern("ZZZ").pattern("ZZZ").pattern("ZZZ").define('Z',  ItemRegistry.ZEITON_INGOT.get()).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.ZEITON_BLOCK.get()).pattern("ZZZ").pattern("ZZZ").pattern("ZZZ").define('Z', ItemRegistry.ZEITON_INGOT.get()).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
 
         // Smelting
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemRegistry.RAW_ZEITON.get()), RecipeCategory.MISC, ItemRegistry.ZEITON_INGOT.get(), 0.7F, 300).unlockedBy("has_any_zeiton", has(ItemRegistry.RAW_ZEITON.get())).save(consumer, new ResourceLocation(TardisRefined.MODID, "smelt_zeiton"));

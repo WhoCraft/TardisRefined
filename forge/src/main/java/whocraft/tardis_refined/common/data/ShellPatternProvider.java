@@ -13,15 +13,18 @@ import whocraft.tardis_refined.patterns.ShellPatternCollection;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ShellPatternProvider implements DataProvider {
 
     protected final DataGenerator generator;
     private final boolean addDefaults;
-    protected Map<ResourceLocation, ShellPatternCollection> data = new HashMap<>();
     private final String modid;
+    protected Map<ResourceLocation, ShellPatternCollection> data = new HashMap<>();
 
     public ShellPatternProvider(DataGenerator generator, String modid) {
         this(generator, modid, true);

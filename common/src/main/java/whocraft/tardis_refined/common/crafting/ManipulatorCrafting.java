@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.crafting;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.device.ManipulatorCraftingRecipe;
 import whocraft.tardis_refined.common.blockentity.device.ManipulatorCraftingRecipeItem;
 import whocraft.tardis_refined.registry.BlockRegistry;
@@ -17,6 +16,8 @@ public class ManipulatorCrafting {
     public static List<ManipulatorCraftingRecipe> MANIPULATOR_CRAFTING_RECIPES = new ArrayList<ManipulatorCraftingRecipe>();
 
     public static void registerRecipes() {
+
+        MANIPULATOR_CRAFTING_RECIPES.clear();
 
         register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), Blocks.SMOOTH_STONE_SLAB),
