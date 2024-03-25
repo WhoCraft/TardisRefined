@@ -78,7 +78,6 @@ public class ModelRegistry {
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
 
-    public static ModelLayerLocation SCREWDRIVER_CRAFT_GLOW;
 
     public static void init() {
         ROOT_PLANT_STATE_ONE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_one"), "root_plant_one"), RootPlantStateOneModel::createBodyLayer);
@@ -140,6 +139,7 @@ public class ModelRegistry {
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
         BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
+
     }
 
     @ExpectPlatform

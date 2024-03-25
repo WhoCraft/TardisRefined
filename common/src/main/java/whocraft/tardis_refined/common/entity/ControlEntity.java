@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.entity;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,6 +30,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -255,6 +257,10 @@ public class ControlEntity extends Entity {
         return InteractionResult.SUCCESS;
     }
 
+    public boolean isTickingDown() {
+        return getEntityData().get(TICKING_DOWN);
+    }
+
     private void realignControl() {
         int currentHealth = this.entityData.get(CONTROL_HEALTH);
         int nextHealth = currentHealth + 2;
@@ -355,6 +361,7 @@ public class ControlEntity extends Entity {
     }
 
     private void onClientTick(Level level) {
+
         if (getEntityData().get(CONTROL_HEALTH) <= 5) {
             if (level.random.nextInt(25) == 0) {
                 ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA, this.position(), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());

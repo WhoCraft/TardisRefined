@@ -5,10 +5,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.items.DrillItem;
-import whocraft.tardis_refined.common.items.KeyItem;
-import whocraft.tardis_refined.common.items.ScrewdriverItem;
-import whocraft.tardis_refined.common.items.ZeitonIngotItem;
+import whocraft.tardis_refined.common.items.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,7 @@ public class ItemRegistry {
 
     public static final RegistrySupplier<Item> RAW_ZEITON = register("raw_zeiton", () -> new Item(new Item.Properties()), true);
     public static final RegistrySupplier<ZeitonIngotItem> ZEITON_INGOT = register("zeiton_ingot", () -> new ZeitonIngotItem(new Item.Properties()), true);
+    public static final RegistrySupplier<GlassesItem> GLASSES = register("glasses", () -> new GlassesItem(new Item.Properties()), true);
 
 
 

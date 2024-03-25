@@ -75,6 +75,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
         add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(ItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
+        add(ItemRegistry.GLASSES.get(), "AR Glasses");
 
 
 

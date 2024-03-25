@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.block.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -22,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.FlightDetectorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.manager.TardisFlightEventManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 public class FlightDetectorBlock extends HorizontalDirectionalBlock implements EntityBlock {
 

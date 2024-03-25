@@ -59,10 +59,6 @@ public class TardisPilotingManager extends BaseHandler {
 
     private boolean isCrashing = false;
 
-    public boolean isCrashing() {
-        return isCrashing;
-    }
-
     private boolean canUseControls = true;
 
     private int cordIncrementIndex = 0;
@@ -77,74 +73,6 @@ public class TardisPilotingManager extends BaseHandler {
 
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
-    }
-
-    public boolean isHandbrakeOn() {
-        return this.isHandbrakeOn;
-    }
-
-    public void setHandbrakeOn(boolean handbrakeOn) {
-        this.isHandbrakeOn = handbrakeOn;
-    }
-
-    public void setAutoLand(boolean autoLand) {
-        this.autoLand = autoLand;
-    }
-
-    public boolean isAutoLandSet() {
-        return this.autoLand;
-    }
-
-
-    public boolean isOnCooldown() {
-        return (ticksSinceCrash > 0);
-    }
-
-    public GlobalConsoleBlockEntity getCurrentConsole() {
-
-        if (this.currentConsole == null && this.currentConsoleBlockPos != null) {
-            if (operator.getLevel().getBlockEntity(this.currentConsoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
-                this.currentConsole = globalConsoleBlockEntity;
-            }
-        }
-
-        return this.currentConsole;
-    }
-
-
-    public void setCurrentConsole(GlobalConsoleBlockEntity newConsole) {
-
-        if (this.currentConsole != null) {
-            this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
-        }
-
-        this.currentConsole = newConsole;
-        this.currentConsoleBlockPos = newConsole.getBlockPos();
-
-        this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
-        this.currentConsole.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
-
-        System.out.println("Send new console at position " + this.currentConsoleBlockPos);
-    }
-
-    /**
-     * Accessor for the number of ticks since the Tardis crashed.
-     *
-     * @return private field ticksSinceCrash
-     */
-    public int getCooldownTicks() {
-        return ticksSinceCrash;
-    }
-
-
-    /**
-     * A progress value after crashing that determines how long until cooldown has finished.
-     * Zero means it has only started, 1 means that cooldown has finished.
-     *
-     * @return a percentage value between 0 - 1.
-     */
-    public float getCooldownDuration() {
-        return (float) ticksSinceCrash / (float) TICKS_COOLDOWN_MAX;
     }
 
     public void endCoolDown() {
@@ -226,65 +154,82 @@ public class TardisPilotingManager extends BaseHandler {
 
 
         if (isInFlight) {
+            onFlightTick(level);
+        }
 
-           // System.out.println("Distance covered: " + distanceCovered + ". Total to cover: " + this.flightDistance + ". Throttle speed: " + throttleStage);
+        checkThrottleStatesForFlight();
 
-            // Don't continue the flight if the throttle isn't active!!!
-            if (this.throttleStage != 0) {
-                    ticksInFlight++;
-
-
-                if (this.operator.getLevel().getGameTime() % (20) == 0) {
-                    if (distanceCovered <= flightDistance) {
-                        distanceCovered += throttleStage + (0.5 * throttleStage);
-
-                        // If this tick was enough to push us over.
-                        if (distanceCovered >= flightDistance) {
-                            if (distanceCovered >= flightDistance && this.currentConsole != null) {
-                                System.out.println("The sound plays!!!!");
-                                System.out.println(distanceCovered + " / " + flightDistance);
-                                level.playSound(null, currentConsole.getBlockPos(), SoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
-                                this.operator.getFlightDanceManager().stopDancing();
-                            }
-                        }
-                    }
-                }
-
-                if (this.isHandbrakeOn && !this.isLanding() && !this.isTakingOff() && this.ticksCrashing == 0) {
-                    this.endFlightEarly(true);
-                }
-
-                // Automatically trigger the ship to land for things such as landing pads.
-                if (ticksInFlight > (20 * 10) && autoLand) {
-                    this.endFlight(false);
-                }
-            }
-
-            if (ticksTakingOff > 0) {
-                ticksTakingOff++;
-            }
-
-            if (ticksTakingOff == (11 * 20)) {
-                this.enterTimeVortex();
-            }
-
-            if (ticksLanding > 0) {
-                ticksLanding--;
-            }
-
-            if (ticksLanding == 1) {
-                this.onFlightEnd();
-            }
-
-            if (ticksCrashing > 1) {
-                ticksCrashing--;
-            }
-
-            if (ticksCrashing == 1) {
-                onCrashEnd();
+        // If the flight has been completed, then make sure that we're not still dancing.
+        if (getFlightPercentageCovered() == 1) {
+            if (this.operator.getFlightDanceManager().isDancing()) {
+                this.operator.getFlightDanceManager().stopDancing();
             }
         }
 
+
+        if (ticksSinceCrash > 0) {
+            onCrashCooldownTick();
+        }
+
+    }
+
+    private void onFlightTick(Level level) {
+        // Don't continue the flight if the throttle isn't active!!!
+        if (this.throttleStage != 0) {
+            ticksInFlight++;
+
+            if (this.operator.getLevel().getGameTime() % (20) == 0) {
+                if (distanceCovered <= flightDistance) {
+                    distanceCovered += throttleStage + (0.5 * throttleStage);
+
+                    // If this tick was enough to push us over.
+                    if (distanceCovered >= flightDistance) {
+                        if (distanceCovered >= flightDistance && this.currentConsole != null) {
+                            System.out.println("The sound plays!!!!");
+                            System.out.println(distanceCovered + " / " + flightDistance);
+                            level.playSound(null, currentConsole.getBlockPos(), SoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
+                            this.operator.getFlightDanceManager().stopDancing();
+                        }
+                    }
+                }
+            }
+
+            if (this.isHandbrakeOn && !this.isLanding() && !this.isTakingOff() && this.ticksCrashing == 0) {
+                this.endFlightEarly(true);
+            }
+
+            // Automatically trigger the ship to land for things such as landing pads.
+            if (ticksInFlight > (20 * 10) && autoLand) {
+                this.endFlight(false);
+            }
+        }
+
+        if (ticksTakingOff > 0) {
+            ticksTakingOff++;
+        }
+
+        if (ticksTakingOff == (11 * 20)) {
+            this.enterTimeVortex();
+        }
+
+        if (ticksLanding > 0) {
+            ticksLanding--;
+        }
+
+        if (ticksLanding == 1) {
+            this.onFlightEnd();
+        }
+
+        if (ticksCrashing > 1) {
+            ticksCrashing--;
+        }
+
+        if (ticksCrashing == 1) {
+            onCrashEnd();
+        }
+    }
+
+    private void checkThrottleStatesForFlight() {
         if (!isInFlight && !this.isHandbrakeOn && this.throttleStage != 0 && this.canBeginFlight()) {
             this.beginFlight(false, null);
         }
@@ -297,44 +242,16 @@ public class TardisPilotingManager extends BaseHandler {
         if (isInFlight && this.canEndFlight()  && !this.isLanding() && !this.isTakingOff() && (this.isHandbrakeOn || this.throttleStage == 0)) {
             this.endFlight(false);
         }
+    }
 
-        // If the flight has been completed, then make sure that we're not still dancing.
-        if (getFlightPercentageCovered() == 1) {
-            if (this.operator.getFlightDanceManager().isDancing()) {
-                this.operator.getFlightDanceManager().stopDancing();
-            }
+    private void onCrashCooldownTick() {
+        ticksSinceCrash++;
+        // After 10 minutes
+        if (ticksSinceCrash >= TICKS_COOLDOWN_MAX) {
+            this.canUseControls = true;
+            ticksSinceCrash = 0;
+            this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
         }
-
-
-        if (ticksSinceCrash > 0) {
-            ticksSinceCrash++;
-            // After 10 minutes
-            if (ticksSinceCrash >= TICKS_COOLDOWN_MAX) {
-                this.canUseControls = true;
-                ticksSinceCrash = 0;
-                this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
-            }
-        }
-
-    }
-
-
-
-
-    public boolean isInFlight() {
-        return this.isInFlight;
-    }
-
-    public boolean isLanding() {
-        return (ticksLanding > 0);
-    }
-
-    public boolean isTakingOff() {
-        return (ticksTakingOff > 0);
-    }
-
-    public boolean canUseControls() {
-        return canUseControls;
     }
 
     /**
@@ -481,7 +398,6 @@ public class TardisPilotingManager extends BaseHandler {
         return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate() && !isInFlight && ticksTakingOff <= 0 && !this.isHandbrakeOn && !this.isCrashing;
     }
 
-
     /**
      * Logic to handle starting flight
      *
@@ -560,9 +476,11 @@ public class TardisPilotingManager extends BaseHandler {
 
         int distance = startingPointPos.distManhattan(endingPointPos);
 
-        System.out.println("Distance calculated: " + distance);
+        if (startingPoint.getLevel() != endingPoint.getLevel()) {
+            distance += 500 + this.operator.getLevel().random.nextInt(250);
+        }
 
-        return  distance;
+        return distance;
     }
 
     /**
@@ -782,6 +700,92 @@ public class TardisPilotingManager extends BaseHandler {
 
     public void setThrottleStage(int stage) {
         this.throttleStage = stage;
+    }
+
+    public boolean isInFlight() {
+        return this.isInFlight;
+    }
+
+    public boolean isLanding() {
+        return (ticksLanding > 0);
+    }
+
+    public boolean isTakingOff() {
+        return (ticksTakingOff > 0);
+    }
+
+    public boolean canUseControls() {
+        return canUseControls;
+    }
+
+    public boolean isHandbrakeOn() {
+        return this.isHandbrakeOn;
+    }
+
+    public void setHandbrakeOn(boolean handbrakeOn) {
+        this.isHandbrakeOn = handbrakeOn;
+    }
+
+    public void setAutoLand(boolean autoLand) {
+        this.autoLand = autoLand;
+    }
+
+    public boolean isAutoLandSet() {
+        return this.autoLand;
+    }
+
+    public boolean isOnCooldown() {
+        return (ticksSinceCrash > 0);
+    }
+    public GlobalConsoleBlockEntity getCurrentConsole() {
+
+        if (this.currentConsole == null && this.currentConsoleBlockPos != null) {
+            if (operator.getLevel().getBlockEntity(this.currentConsoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+                this.currentConsole = globalConsoleBlockEntity;
+            }
+        }
+
+        return this.currentConsole;
+    }
+
+
+    public void setCurrentConsole(GlobalConsoleBlockEntity newConsole) {
+
+        if (this.currentConsole != null) {
+            this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
+        }
+
+        this.currentConsole = newConsole;
+        this.currentConsoleBlockPos = newConsole.getBlockPos();
+
+        this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
+        this.currentConsole.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
+
+        System.out.println("Send new console at position " + this.currentConsoleBlockPos);
+    }
+
+    /**
+     * Accessor for the number of ticks since the Tardis crashed.
+     *
+     * @return private field ticksSinceCrash
+     */
+    public int getCooldownTicks() {
+        return ticksSinceCrash;
+    }
+
+
+    /**
+     * A progress value after crashing that determines how long until cooldown has finished.
+     * Zero means it has only started, 1 means that cooldown has finished.
+     *
+     * @return a percentage value between 0 - 1.
+     */
+    public float getCooldownDuration() {
+        return (float) ticksSinceCrash / (float) TICKS_COOLDOWN_MAX;
+    }
+
+    public boolean isCrashing() {
+        return isCrashing;
     }
 
 
