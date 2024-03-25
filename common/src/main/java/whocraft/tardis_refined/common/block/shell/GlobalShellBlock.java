@@ -37,6 +37,11 @@ public class GlobalShellBlock extends ShellBaseBlock{
     }
 
     @Override
+    public int getLightBlock(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
+        return super.getLightBlock(blockState, blockGetter, blockPos);
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
     }

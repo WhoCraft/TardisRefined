@@ -1,8 +1,0 @@
-{
-  "ambient_sounds": [
-    "tardis_refined:interior_creaks"
-  ],
-  "hum_sound": "tardis_refined:hum_coral",
-  "id": "tardis_refined:coral_hum",
-  "name_component": "{\"color\":\"gold\",\"text\":\"Coral Hum\"}"
-}

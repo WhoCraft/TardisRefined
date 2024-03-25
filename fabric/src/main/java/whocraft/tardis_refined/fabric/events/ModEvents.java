@@ -1,12 +1,15 @@
 package whocraft.tardis_refined.fabric.events;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.GravityOverlay;
 import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
@@ -44,6 +47,7 @@ public class ModEvents {
     public static void addClientEvents() {
         ClientTickEvents.START_CLIENT_TICK.register(TardisClientData::tickClientData);
         ColorProviderRegistry.ITEM.register(TRItemColouring.SCREWDRIVER_COLORS, ItemRegistry.SCREWDRIVER.get());
+        HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> GravityOverlay.renderOverlay(matrixStack.pose()));
     }
 
 

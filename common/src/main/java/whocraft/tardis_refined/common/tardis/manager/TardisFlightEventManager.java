@@ -41,7 +41,7 @@ public class TardisFlightEventManager extends BaseHandler{
 
     public TardisFlightEventManager(TardisLevelOperator operator) {
         this.operator = operator;
-        this.possibleControls = Arrays.stream(ConsoleControl.values()).filter(x -> x != ConsoleControl.MONITOR && x != ConsoleControl.THROTTLE).toList();
+        this.possibleControls = Arrays.stream(ConsoleControl.values()).filter(x -> x != ConsoleControl.MONITOR && x != ConsoleControl.THROTTLE && x != ConsoleControl.GENERIC_NO_SHOW).toList();
     }
     @Override
     public void loadData(CompoundTag tag) {
