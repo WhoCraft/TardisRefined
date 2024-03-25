@@ -19,6 +19,11 @@ public class ModMessages {
     public static String CONTROL_DIMENSION_SELECTED = message("selected");
     public static String HARDWARE_OFFLINE = message("hardware_offline");
 
+    public static String NO_FLIGHT_TRANSITIVE = message("no_flight_transitive");
+    public static String HANDBRAKE_ENGAGED = message("handbrake_engaged");
+    public static String HANDBRAKE_DISENGAGED = message("handbrake_disengaged");
+    public static String HANDBRAKE = message("handbrake");
+    public static String HANDBRAKE_WARNING = message("handbrake_warning");
     public static String CONSOLE_CONFIGURATION_NOT_IN_FLIGHT = message("console_config_not_in_flight");
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");

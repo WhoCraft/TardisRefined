@@ -103,6 +103,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
         add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, "Cannot update console block whilst in flight.");
         add(ModMessages.HARDWARE_OFFLINE, "Hardware offline.");
+        add(ModMessages.HANDBRAKE_ENGAGED, "Engaged.");
+        add(ModMessages.HANDBRAKE_DISENGAGED, "Disengaged.");
+        add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight.");
+        add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");

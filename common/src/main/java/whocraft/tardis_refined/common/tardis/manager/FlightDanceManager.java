@@ -41,20 +41,6 @@ public class FlightDanceManager extends BaseHandler {
 
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {
         this.controlEntityList = getNonCriticalControls(controllerConsole);
-
-        System.out.println("Prepping for the dance");
-
-        TardisNavLocation locationAtStart = this.operator.getExteriorManager().getLastKnownLocation();
-        TardisNavLocation targetLocation = this.operator.getPilotingManager().getTargetLocation();
-
-        if (locationAtStart.getPosition() != null && targetLocation.getPosition() != null) {
-
-            double distance = locationAtStart.getPosition().distSqr(targetLocation.getPosition());
-            System.out.println("Distance between two points is (not including dimensions) " + distance + " blocks.");
-        }
-
-
-
         this.weAreDancing = true;
 
 

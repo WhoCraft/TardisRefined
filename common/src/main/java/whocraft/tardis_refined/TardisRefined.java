@@ -69,6 +69,6 @@ public class TardisRefined {
         TardisHums.registerDefaultHums();
 
         ARSStructurePieceRegistry.register();
-        //ManipulatorCrafting.registerRecipes();
+        ManipulatorCrafting.registerRecipes();
     }
 }

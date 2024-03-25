@@ -8,6 +8,7 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 public class HandbrakeControl extends Control {
     @Override
@@ -16,13 +17,12 @@ public class HandbrakeControl extends Control {
         if (operator.getPilotingManager().isInFlight()) {
 
             if (operator.getPilotingManager().isTakingOff() || operator.getPilotingManager().isLanding()) {
-                PlayerUtil.sendMessage(player, Component.translatable("Cannot use handbrake when in a transitivie state."), true); // MAKE THIS IS A TRANSLATION
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.NO_FLIGHT_TRANSITIVE), true); // MAKE THIS IS A TRANSLATION
                 return false;
             }
 
             operator.getPilotingManager().setHandbrakeOn(true);
-            System.out.println("Handbrake: " + operator.getPilotingManager().isHandbrakeOn() );
-            PlayerUtil.sendMessage(player, Component.translatable("Handbrake: ").append(operator.getPilotingManager().isHandbrakeOn() ? "Engaged" : "Disengaged"), true);
+            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HANDBRAKE).append(operator.getPilotingManager().isHandbrakeOn() ? ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED ), true);
             return true;
         }
 
@@ -37,12 +37,11 @@ public class HandbrakeControl extends Control {
 
         if (operator.getPilotingManager().isInFlight()) {
 
-            PlayerUtil.sendMessage(player, Component.translatable("Ship is in flight. Left click the handbrake to engage."), true); // MAKE THIS IS A TRANSLATION
+            PlayerUtil.sendMessage(player, Component.translatable( ModMessages.HANDBRAKE_WARNING), true); // MAKE THIS IS A TRANSLATION
             return false;
         } else {
             operator.getPilotingManager().setHandbrakeOn(!operator.getPilotingManager().isHandbrakeOn());
-            System.out.println("Handbrake: " + operator.getPilotingManager().isHandbrakeOn() );
-            PlayerUtil.sendMessage(player, Component.translatable("Handbrake: ").append(operator.getPilotingManager().isHandbrakeOn() ? "Engaged" : "Disengaged"), true); // MAKE THIS IS A TRANSLATION
+            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HANDBRAKE).append(operator.getPilotingManager().isHandbrakeOn() ?  ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED), true);
             return true;
         }
 
