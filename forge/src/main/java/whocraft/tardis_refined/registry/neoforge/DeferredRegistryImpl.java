@@ -8,8 +8,8 @@ import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import whocraft.tardis_refined.registry.DeferredRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 import whocraft.tardis_refined.registry.RegistrySupplier;
+import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -67,7 +67,7 @@ public class DeferredRegistryImpl {
         @Override
         public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
             DeferredHolder<T, I> deferredHolder = this.register.register(id, sup);
-            RegistrySupplierHolder<T,I> registryHolder = RegistrySupplierHolder.create(this.registryKey, deferredHolder.getId());
+            RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.registryKey, deferredHolder.getId());
             return registryHolder;
         }
 

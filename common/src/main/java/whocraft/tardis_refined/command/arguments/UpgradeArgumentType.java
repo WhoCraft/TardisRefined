@@ -13,9 +13,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
-import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.Collection;
@@ -28,6 +25,7 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
     private static final Collection<String> EXAMPLES = Stream.of(Upgrades.COORDINATE_INPUT).map((upgrade) -> {
         return upgrade != null ? upgrade.getId().toString() : "";
     }).collect(Collectors.toList());
+
     public static final DynamicCommandExceptionType INVALID_UPGRADE_EXCEPTION = new DynamicCommandExceptionType((upgrade) -> Component.translatable(ModMessages.CMD_ARG_UPGRADE_INVALID, upgrade));
 
     public static UpgradeArgumentType upgradeArgumentType() {
@@ -41,11 +39,13 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+
         return SharedSuggestionProvider.suggestResource(Upgrades.UPGRADE_REGISTRY.keySet(), builder);
     }
 
     @Override
     public Collection<String> getExamples() {
+        EXAMPLES.add("*");
         return EXAMPLES;
     }
 

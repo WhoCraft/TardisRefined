@@ -12,7 +12,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.concurrent.CompletableFuture;
 

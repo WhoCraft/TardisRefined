@@ -15,8 +15,6 @@ import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
-import java.io.IOException;
-
 import static whocraft.tardis_refined.registry.BlockRegistry.BLOCKS;
 
 public class TRBlockModelProvider extends BlockStateProvider {
@@ -29,7 +27,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer"))).build());
         return builder.toJson();
     }
-
 
 
     public JsonObject terraformer(Block block) {
@@ -79,7 +76,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
     }
 
 
-
     @Override
     protected void registerStatesAndModels() {
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
@@ -96,7 +92,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(BlockRegistry.ROOT_PLANT_BLOCK.get());
         emptyBlockState(BlockRegistry.ROOT_SHELL_BLOCK.get());
         emptyBlockState(BlockRegistry.ARS_EGG.get());
-
 
 
         threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
@@ -135,7 +130,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
 
 
     }
-
 
 
 }

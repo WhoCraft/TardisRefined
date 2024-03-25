@@ -64,12 +64,12 @@ public class CommonBus {
     }
 
     @SubscribeEvent
-    public static void onEntityBlockBreak(LivingDestroyBlockEvent event){
+    public static void onEntityBlockBreak(LivingDestroyBlockEvent event) {
         event.setCanceled(MiscHelper.shouldCancelBreaking(event.getEntity().level(), event.getEntity(), event.getPos(), event.getState()));
     }
 
     @SubscribeEvent
-    public static void onServerStart(ServerStartedEvent event){
+    public static void onServerStart(ServerStartedEvent event) {
         ManipulatorCrafting.registerRecipes();
     }
 

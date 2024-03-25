@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.crafting;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Blocks;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.device.ManipulatorCraftingRecipe;
 import whocraft.tardis_refined.common.blockentity.device.ManipulatorCraftingRecipeItem;
 import whocraft.tardis_refined.registry.BlockRegistry;
