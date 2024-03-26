@@ -97,7 +97,6 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.DIMENSION, "Dimension");
         addControl(ConsoleControl.HANDBRAKE, "Handbrake");;
         addControl(ConsoleControl.GENERIC_NO_SHOW, "Switch");
-        addControl(ConsoleControl.HANDBRAKE, "Handbrake");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -109,6 +108,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.HANDBRAKE_DISENGAGED, "Disengaged.");
         add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight.");
         add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage.");
+        add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");

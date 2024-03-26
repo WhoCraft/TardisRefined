@@ -37,6 +37,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 
@@ -75,8 +76,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     }
 
 
-
-
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
@@ -99,8 +98,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
             }
         };
     }
-
-
 
 
     @Override
@@ -174,7 +171,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
                                 pilotingManager.setCurrentConsole(consoleBlockEntity);
 
                             } else {
-                                PlayerUtil.sendMessage(player, "Cannot switch console units whilst in flight", true);
+                                PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
                             }
 
                         }

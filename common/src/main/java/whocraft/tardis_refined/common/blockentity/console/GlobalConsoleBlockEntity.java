@@ -52,14 +52,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         this.basePattern = this.pattern();
     }
 
-    public ResourceLocation theme(){
-        if (this.consoleTheme == null){
+    public ResourceLocation theme() {
+        if (this.consoleTheme == null) {
             this.consoleTheme = ConsoleTheme.FACTORY.getId();
         }
         return this.consoleTheme;
     }
 
-    public void setConsoleTheme(ResourceLocation themeId){
+    public void setConsoleTheme(ResourceLocation themeId) {
         this.consoleTheme = themeId;
         this.setChanged();
         this.sendUpdates();
@@ -109,7 +109,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             }
         }
 
-        if (this.consoleTheme == null){
+        if (this.consoleTheme == null) {
             this.consoleTheme = this.theme();
         }
 
@@ -214,19 +214,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
                 if (x.getLevel().getGameTime() % (20) == 0) {
 
-                // Check if we're crashing and if its okay to explode the TARDIS a little.
-                if (x.getPilotingManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
-                }
+                    // Check if we're crashing and if its okay to explode the TARDIS a little.
+                    if (x.getPilotingManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                        level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
+                    }
                     TardisInteriorManager intManager = x.getInteriorManager();
                     if (intManager.isCave()) {
                         intManager.setCurrentTheme(intManager.preparedTheme());
                     }
-
-//                    if (x.getLevel().getGameTime() % (20) == 0) {
-//                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
-//                    }
-
                 }
             });
         }

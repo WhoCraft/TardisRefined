@@ -45,7 +45,6 @@ public class TardisLevelOperator {
     private final TardisInteriorManager interiorManager;
     private final TardisPilotingManager pilotingManager;
     private final TardisWaypointManager tardisWaypointManager;
-    //private final TardisFlightEventManager tardisFlightEventManager;
 
     private final FlightDanceManager flightDanceManager;
     private final TardisClientData tardisClientData;
@@ -77,7 +76,9 @@ public class TardisLevelOperator {
         return aestheticHandler;
     }
 
-    public FlightDanceManager getFlightDanceManager() { return this.flightDanceManager;}
+    public FlightDanceManager getFlightDanceManager() {
+        return this.flightDanceManager;
+    }
 
     @ExpectPlatform
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
@@ -165,12 +166,11 @@ public class TardisLevelOperator {
 
     /**
      * Moves the entity into the TARDIS. If the TARDIS has no door established, the entity is sent to 0,100,0.
-     *
      **/
     public boolean enterTardis(Entity entity, BlockPos externalShellPos, ServerLevel shellLevel, Direction shellDirection) {
 
         if (!entity.level().isClientSide()) {
-            if (this.level instanceof ServerLevel targetServerLevel){
+            if (this.level instanceof ServerLevel targetServerLevel) {
 
                 BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
                 Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
@@ -193,15 +193,15 @@ public class TardisLevelOperator {
 
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
 
-        if (!entity.level().isClientSide()){
+        if (!entity.level().isClientSide()) {
             if (!this.internalDoor.isOpen()) {
                 return false;
             }
 
-            if(aestheticHandler.getShellTheme() != null) {
+            if (aestheticHandler.getShellTheme() != null) {
                 ResourceLocation theme = aestheticHandler.getShellTheme();
-                if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                    if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
+                    if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
                         return false;
                     }
                 }
@@ -233,8 +233,6 @@ public class TardisLevelOperator {
     }
 
 
-
-
     public void setDoorClosed(boolean closeDoor) {
         TardisExteriorManager extManager = getExteriorManager();
         TardisInternalDoor intDoor = getInternalDoor();
@@ -242,7 +240,7 @@ public class TardisLevelOperator {
         if (intDoor != null) {
             intDoor.setClosed(closeDoor);
         }
-        if(closeDoor) {
+        if (closeDoor) {
             TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
         } else {
             TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
@@ -278,7 +276,7 @@ public class TardisLevelOperator {
     }
 
     public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
-       this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
+        this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
 
         Direction direction = shellBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
         TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);

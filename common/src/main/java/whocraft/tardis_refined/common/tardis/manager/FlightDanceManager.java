@@ -36,7 +36,7 @@ public class FlightDanceManager extends BaseHandler {
 
     private List<ControlEntity> getNonCriticalControls(GlobalConsoleBlockEntity controllerConsole) {
         var controls = controllerConsole.getControlEnttityList();
-        return controls.stream().filter(x -> x.controlSpecification().control() != ConsoleControl.THROTTLE || x.controlSpecification().control() != ConsoleControl.HANDBRAKE || x.controlSpecification().control() != ConsoleControl.MONITOR ).toList();
+        return controls.stream().filter(x -> x.controlSpecification().control() != ConsoleControl.THROTTLE || x.controlSpecification().control() != ConsoleControl.HANDBRAKE || x.controlSpecification().control() != ConsoleControl.MONITOR).toList();
     }
 
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {
@@ -52,7 +52,6 @@ public class FlightDanceManager extends BaseHandler {
             if (this.operator.getLevel().getGameTime() % (1 * 20) == 0) {
                 this.onDanceTick();
             }
-
         }
     }
 
@@ -65,10 +64,8 @@ public class FlightDanceManager extends BaseHandler {
 
     // A dance tick that runs every 20 ticks.
     private void onDanceTick() {
-        // At a random time, run an event.
 
         if (damagedControlCount >= 5) {
-            System.out.println("TARDIS HAS CRASHED!!!!!!");
             this.stopDancing();
             this.operator.getPilotingManager().crash();
             return;
@@ -76,25 +73,18 @@ public class FlightDanceManager extends BaseHandler {
 
         int chance = 20 - this.operator.getPilotingManager().getThrottleStage() * 2;
         if (this.operator.getLevel().random.nextInt(chance) == 0) {
-            System.out.println("New event!!");
             this.triggerNextEvent();
         }
 
-        // Have that event target controls, either randomly or from a specific list.
-
-        // Tell that control to start ticking down.
     }
 
     private void triggerNextEvent() {
         ControlEntity randomControl = controlEntityList.get(this.operator.getLevel().random.nextInt(controlEntityList.size() - 1));
         randomControl.setTickingDown(this);
-
-        System.out.println("Determined the next random control is: " + randomControl.getName() + ". Type of: " + randomControl.controlSpecification().control().name());
     }
 
-    public void updateDamageList(ControlEntity entity) {
+    public void updateDamageList() {
         this.damagedControlCount += 1;
-        System.out.println("Damaged count is now " + this.damagedControlCount);
     }
 
     private void updateControlsAfterDance() {
@@ -107,10 +97,7 @@ public class FlightDanceManager extends BaseHandler {
 
     @Override
     CompoundTag saveData(CompoundTag tag) {
-
-        // Save the position of the current console unit.
-
-        return null;
+        return tag;
     }
 
     @Override

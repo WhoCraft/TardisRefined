@@ -259,7 +259,7 @@ public class TardisPilotingManager extends BaseHandler {
             this.endFlightEarly(false);
         }
 
-        if (isInFlight && this.canEndFlight()  && !this.isLanding() && !this.isTakingOff() && (this.isHandbrakeOn || this.throttleStage == 0)) {
+        if (isInFlight && this.canEndFlight() && !this.isLanding() && !this.isTakingOff() && (this.isHandbrakeOn || this.throttleStage == 0)) {
             this.endFlight(false);
         }
     }
@@ -364,6 +364,7 @@ public class TardisPilotingManager extends BaseHandler {
         }
         return false;
     }
+
     public TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
 
         int startingHeight = location.getPosition().getY();
@@ -377,6 +378,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         return null;
     }
+
     public TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
 
         int startingHeight = location.getPosition().getY();
@@ -390,6 +392,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         return null;
     }
+
     public TardisNavLocation findSafeDirection(TardisNavLocation location) {
 
         Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
@@ -432,8 +435,7 @@ public class TardisPilotingManager extends BaseHandler {
                 }
 
 
-                for (Player player:
-                        this.operator.getLevel().players()) {
+                for (Player player : this.operator.getLevel().players()) {
                     PlayerUtil.sendMessage(player, Component.translatable("A dragon prevents you from progressing to The End."), true);
                 }
 
@@ -502,6 +504,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     /**
      * Logic to handle ending flight
+     *
      * @param forceFlightEnd Ignores the required flight time conditions for the TARDIS to land and lands.
      * @return false if didn't end flight, true if flight was ended
      */
@@ -537,6 +540,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     /**
      * Ends a flight earlier than intended, setting the target position at the percent completed of flight.
+     *
      * @param dramatic Play sounds to show the TARDIS doesn't like it.
      */
     private void endFlightEarly(boolean dramatic) {
@@ -547,7 +551,7 @@ public class TardisPilotingManager extends BaseHandler {
         float percentageY = (targetPosition.getY() - startingPosition.getY()) * percentage;
         float percentageZ = (targetPosition.getZ() - startingPosition.getZ()) * percentage;
 
-        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX,(int) percentageY, (int)percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.operator.getExteriorManager().getLastKnownLocation().getLevel() );
+        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.operator.getExteriorManager().getLastKnownLocation().getLevel());
         this.targetLocation = newLocation;
 
         if (dramatic) {
@@ -558,9 +562,6 @@ public class TardisPilotingManager extends BaseHandler {
             if (this.currentConsole != null) {
                 this.operator.getLevel().explode(null, this.currentConsole.getBlockPos().getX(), this.currentConsole.getBlockPos().getY(), this.currentConsole.getBlockPos().getZ(), 2f, Level.ExplosionInteraction.NONE);
             }
-
-
-
         }
 
         this.endFlight(true);
@@ -626,7 +627,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         this.setTargetPosition(landingLocation);
         TardisNavLocation landing = this.targetLocation;
-        var location =  findClosestValidPosition(landing);
+        var location = findClosestValidPosition(landing);
 
         tardisExteriorManager.placeExteriorBlock(operator, location);
 
@@ -754,6 +755,7 @@ public class TardisPilotingManager extends BaseHandler {
     public boolean isOnCooldown() {
         return (ticksSinceCrash > 0);
     }
+
     public GlobalConsoleBlockEntity getCurrentConsole() {
 
         if (this.currentConsole == null && this.currentConsoleBlockPos != null) {
@@ -769,7 +771,9 @@ public class TardisPilotingManager extends BaseHandler {
     public void setCurrentConsole(GlobalConsoleBlockEntity newConsole) {
 
         if (this.currentConsole != null) {
-            this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
+            if (this.currentConsole.getLevel().getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock) {
+                this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
+            }
         }
 
         this.currentConsole = newConsole;
@@ -777,8 +781,6 @@ public class TardisPilotingManager extends BaseHandler {
 
         this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
         this.currentConsole.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
-
-        System.out.println("Send new console at position " + this.currentConsoleBlockPos);
     }
 
     /**
@@ -807,6 +809,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     /**
      * Accessor for the amount of fuel remaining in the Tardis.
+     *
      * @return private field fuel
      */
     public double getFuel() {
@@ -816,14 +819,17 @@ public class TardisPilotingManager extends BaseHandler {
     /**
      * Accessor for the maximum amount of fuel a Tardis can hold
      * Will be adjustable in future to allow for upgrades etc.
+     *
      * @return private field maximumFuel
      */
     public double getMaximumFuel() {
         return this.maximumFuel;
     }
+
     /**
      * Accessor for the cost of being in flight
      * Will be adjustable in future to allow for upgrades etc.
+     *
      * @return private static field FLIGHT_COST
      */
     private double getFlightFuelCost() {
@@ -833,10 +839,11 @@ public class TardisPilotingManager extends BaseHandler {
     /**
      * The percentage of fuel this Tardis has, from 0 -> 1
      * Preferably should be rounded to the nearest whole number
+     *
      * @return the percentage of fuel
      */
     public float getFuelPercentage() {
-        return (float)this.fuel / (float)this.getMaximumFuel();
+        return (float) this.fuel / (float) this.getMaximumFuel();
     }
 
     public boolean isOutOfFuel() {
@@ -849,8 +856,8 @@ public class TardisPilotingManager extends BaseHandler {
         this.fuel = Mth.clamp(fuel, 0, this.getMaximumFuel());
 
         if (this.isOutOfFuel() && previous > 0) {
-           this.onRunOutOfFuel();
-           return;
+            this.onRunOutOfFuel();
+            return;
         }
         if (!this.isOutOfFuel() && previous == 0) {
             this.onRestoreFuel();
@@ -861,6 +868,7 @@ public class TardisPilotingManager extends BaseHandler {
     /**
      * Removes fuel from the Tardis.
      * Clamps fuel to 0 if it goes below 0
+     *
      * @param amount the amount to remove
      */
     public void removeFuel(double amount) {
@@ -870,6 +878,7 @@ public class TardisPilotingManager extends BaseHandler {
     /**
      * Adds fuel to the Tardis
      * Clamps fuel to the maximum if it goes above the maximum
+     *
      * @param amount the amount to add
      * @return the amount of fuel left over if it reached maximum
      */

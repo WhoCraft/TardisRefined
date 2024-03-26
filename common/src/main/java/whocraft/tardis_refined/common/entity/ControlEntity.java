@@ -33,6 +33,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.control.Control;
@@ -87,11 +88,11 @@ public class ControlEntity extends Entity {
         return entityData.get(CONTROL_HEALTH);
     }
 
-    public void assignControlData(ConsoleTheme theme, ControlSpecification specification, BlockPos consoleBlockPos){
+    public void assignControlData(ConsoleTheme theme, ControlSpecification specification, BlockPos consoleBlockPos) {
         this.consoleBlockPos = consoleBlockPos;
         this.controlSpecification = specification;
         this.consoleTheme = theme;
-        if(this.controlSpecification != null) {
+        if (this.controlSpecification != null) {
             float width = controlSpecification.scale().width;
             float height = controlSpecification.scale().height;
             this.setSizeData(width, height);
@@ -99,14 +100,18 @@ public class ControlEntity extends Entity {
         }
     }
 
-    /** Sets the Entity size to an EntityDataAccessor which gets synced to the client next time it updates*/
-    protected void setSizeData(float width, float height){
+    /**
+     * Sets the Entity size to an EntityDataAccessor which gets synced to the client next time it updates
+     */
+    protected void setSizeData(float width, float height) {
         this.getEntityData().set(SCALE_WIDTH, width);
         this.getEntityData().set(SCALE_HEIGHT, height);
     }
 
-    /** Sets the Entity Size and makes an immediate size update*/
-    public void setSizeAndUpdate(float width, float height){
+    /**
+     * Sets the Entity Size and makes an immediate size update
+     */
+    public void setSizeAndUpdate(float width, float height) {
         this.setSizeData(width, height);
         this.refreshDimensions();
     }
@@ -115,11 +120,13 @@ public class ControlEntity extends Entity {
         return this.controlSpecification;
     }
 
-    public ConsoleTheme consoleTheme() {return this.consoleTheme;}
+    public ConsoleTheme consoleTheme() {
+        return this.consoleTheme;
+    }
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        if (this.getEntityData().get(SCALE_WIDTH) != null && this.getEntityData().get(SCALE_HEIGHT) != null){
+        if (this.getEntityData().get(SCALE_WIDTH) != null && this.getEntityData().get(SCALE_HEIGHT) != null) {
             return EntityDimensions.scalable(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
         }
         return super.getDimensions(pose);
@@ -166,7 +173,7 @@ public class ControlEntity extends Entity {
 
     @Override
     public boolean save(CompoundTag compound) {
-        if(consoleBlockPos != null){
+        if (consoleBlockPos != null) {
             compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
         }
         compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SCALE_WIDTH));
@@ -197,7 +204,7 @@ public class ControlEntity extends Entity {
 
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
-        if(consoleBlockPos != null){
+        if (consoleBlockPos != null) {
             compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
         }
 
@@ -272,6 +279,10 @@ public class ControlEntity extends Entity {
 
         } else {
 
+            UpgradeHandler upgradeHandler = this.flightDanceManager.getOperator().getUpgradeHandler();
+            upgradeHandler.addUpgradeXP(5);
+            this.level().addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
+
             this.entityData.set(CONTROL_HEALTH, nextHealth);
         }
     }
@@ -296,7 +307,6 @@ public class ControlEntity extends Entity {
                     discard();
                 }
 
-                return;
             } else {
                 onServerTick(serverLevel);
             }
@@ -317,18 +327,18 @@ public class ControlEntity extends Entity {
             if (this.controlSpecification.control() == ConsoleControl.MONITOR) {
 
                 if (operator.getPilotingManager().isInFlight() && !operator.getPilotingManager().isLanding()) {
-                    float percentageCompleted =  (this.flightDanceManager.getOperator().getPilotingManager().getFlightPercentageCovered() * 100f);
+                    float percentageCompleted = (this.flightDanceManager.getOperator().getPilotingManager().getFlightPercentageCovered() * 100f);
                     if (percentageCompleted > 100) {
                         percentageCompleted = 100;
                     }
-                    this.setCustomName(Component.translatable(this.controlSpecification.control().getTranslationKey()).append(" (" + (int)percentageCompleted + "%)"));
+                    this.setCustomName(Component.translatable(this.controlSpecification.control().getTranslationKey()).append(" (" + (int) percentageCompleted + "%)"));
                 }
             }
 
             if (this.controlSpecification.control() == ConsoleControl.READOUT) {
                 TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
                 if (targetLocation != null) {
-                    this.setCustomName(Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY()+ " Z: " + targetLocation.getPosition().getZ() +  " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()));
+                    this.setCustomName(Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()));
                 }
 
             }
@@ -336,10 +346,9 @@ public class ControlEntity extends Entity {
 
 
         if (!isDead && isTickingDown && serverLevel.getGameTime() % (5 * 20) == 0) {
-            int controlHealth = getEntityData().get(CONTROL_HEALTH)  - 1;
+            int controlHealth = getEntityData().get(CONTROL_HEALTH) - 1;
 
             getEntityData().set(CONTROL_HEALTH, controlHealth);
-            System.out.println(controlSpecification.control().name() + ": Taken damage down to " + getEntityData().get(CONTROL_HEALTH));
 
             if (controlHealth == 0) {
                 this.onControlDead();
@@ -353,10 +362,8 @@ public class ControlEntity extends Entity {
         this.entityData.set(TICKING_DOWN, false);
         this.entityData.set(IS_DEAD, true);
 
-        System.out.println("I AM DEAD!!");
-
         if (this.flightDanceManager != null) {
-            this.flightDanceManager.updateDamageList(this);
+            this.flightDanceManager.updateDamageList();
         }
     }
 
@@ -372,7 +379,7 @@ public class ControlEntity extends Entity {
     }
 
 
-    private void handleControlSizeAndPositionAdjustment(Player player){
+    private void handleControlSizeAndPositionAdjustment(Player player) {
         float width = this.getEntityData().get(SCALE_WIDTH);
         float height = this.getEntityData().get(SCALE_HEIGHT);
         float incrementAmount = 0.05F;
@@ -382,7 +389,7 @@ public class ControlEntity extends Entity {
         if (offhandItem == Items.REDSTONE) { //Print position output to console
             if (this.controlSpecification != null)
                 TardisRefined.LOGGER.info("Control Info for: " + this.controlSpecification.control().getSerializedName());
-            if (this.consoleBlockPos != null){
+            if (this.consoleBlockPos != null) {
                 Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, true);
                 double x = this.position().x() - centre.x;
                 double y = this.position().y() - centre.y;
@@ -392,29 +399,28 @@ public class ControlEntity extends Entity {
             float finalWidth = this.getEntityData().get(SCALE_WIDTH);
             float finalHeight = this.getEntityData().get(SCALE_HEIGHT);
             TardisRefined.LOGGER.info("Size (Width, Height): " + finalWidth + "F, " + finalHeight + "F");
-        }
-        else {
-            if (offhandItem == Items.EMERALD){ //Adjust X
+        } else {
+            if (offhandItem == Items.EMERALD) { //Adjust X
                 this.setPos(this.position().add(player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0, 0));
             }
             if (offhandItem == Items.DIAMOND) { //Adjust Y
                 this.setPos(this.position().add(0, player.isShiftKeyDown() ? -posIncrementAmount : posIncrementAmount, 0));
             }
-            if (offhandItem == Items.GOLD_INGOT){ //Adjust Z
+            if (offhandItem == Items.GOLD_INGOT) { //Adjust Z
                 this.setPos(this.position().add(0, 0, player.isShiftKeyDown() ? posIncrementAmount : -posIncrementAmount));
             }
-            if (offhandItem == Items.IRON_INGOT){ //Adjust Size Width
+            if (offhandItem == Items.IRON_INGOT) { //Adjust Size Width
                 float newWidth = player.isShiftKeyDown() ? width - incrementAmount : width + incrementAmount;
                 this.setSizeAndUpdate(newWidth, height);
             }
-            if (offhandItem == Items.COPPER_INGOT){ //Adjust Size Height
+            if (offhandItem == Items.COPPER_INGOT) { //Adjust Size Height
                 float newHeight = player.isShiftKeyDown() ? height - incrementAmount : height + incrementAmount;
                 this.setSizeAndUpdate(width, newHeight);
             }
         }
     }
 
-    public boolean isDesktopWaitingToGenerate(TardisLevelOperator operator){
+    public boolean isDesktopWaitingToGenerate(TardisLevelOperator operator) {
         if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
             if (operator.getInteriorManager().isWaitingToGenerate()) {
                 operator.getLevel().playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100F, (float) (0.1 + (level().getRandom().nextFloat() * 0.5)));
@@ -424,7 +430,7 @@ public class ControlEntity extends Entity {
         return false;
     }
 
-    private void handleLeftClick(Player player, ServerLevel serverLevel){
+    private void handleLeftClick(Player player, ServerLevel serverLevel) {
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
             if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
@@ -434,21 +440,16 @@ public class ControlEntity extends Entity {
             if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
-//            if (!true) {
-                Control control = this.controlSpecification.control().getControl();
-//
-                boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
-                PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
-                control.playControlPitchedSound(cap, this, playedSound);
-//            } else {
-//                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
-//                upgradeHandler.addUpgradeXP(5);
-//                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
-//            }
+
+            Control control = this.controlSpecification.control().getControl();
+
+            boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
+            PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
+            control.playControlPitchedSound(cap, this, playedSound);
         });
     }
 
-    private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand){
+    private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand) {
         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
 
             if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
@@ -469,16 +470,12 @@ public class ControlEntity extends Entity {
             if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
                 return;
 
-//            if (!true) {
-                Control control = this.controlSpecification.control().getControl();
-                boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
-                PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
-                control.playControlPitchedSound(cap, this, playedSound);
-//            } else {
-//                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
-//                upgradeHandler.addUpgradeXP(5);
-//                serverLevel.addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
-//            }
+
+            Control control = this.controlSpecification.control().getControl();
+            boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
+            PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
+            control.playControlPitchedSound(cap, this, playedSound);
+
         });
     }
 
