@@ -136,9 +136,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
-
                 ControlEntity controlEntity = new ControlEntity(getLevel());
-
 
                 Vec3 location = LevelHelper.centerPos(currentBlockPos, true).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
                 controlEntity.setPos(location.x(), location.y(), location.z());

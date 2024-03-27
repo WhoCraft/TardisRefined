@@ -109,6 +109,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight.");
         add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage.");
         add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight.");
+        add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");

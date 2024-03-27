@@ -27,6 +27,7 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
@@ -436,7 +437,7 @@ public class TardisPilotingManager extends BaseHandler {
 
 
                 for (Player player : this.operator.getLevel().players()) {
-                    PlayerUtil.sendMessage(player, Component.translatable("A dragon prevents you from progressing to The End."), true);
+                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.NO_END_DRAGON_PREVENTS), true);
                 }
 
                 this.setThrottleStage(0);
@@ -627,7 +628,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         this.setTargetPosition(landingLocation);
         TardisNavLocation landing = this.targetLocation;
-        var location = findClosestValidPosition(landing);
+        TardisNavLocation location = findClosestValidPosition(landing);
 
         tardisExteriorManager.placeExteriorBlock(operator, location);
 
@@ -771,16 +772,22 @@ public class TardisPilotingManager extends BaseHandler {
     public void setCurrentConsole(GlobalConsoleBlockEntity newConsole) {
 
         if (this.currentConsole != null) {
-            if (this.currentConsole.getLevel().getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock) {
-                this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
+
+            Level level = this.currentConsole.getLevel();
+
+            if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock) {
+                level.setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false));
             }
         }
+
 
         this.currentConsole = newConsole;
         this.currentConsoleBlockPos = newConsole.getBlockPos();
 
-        this.currentConsole.getLevel().setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
-        this.currentConsole.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
+        Level level = this.currentConsole.getLevel();
+
+        level.setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
+        level.playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
     }
 
     /**

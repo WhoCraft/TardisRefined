@@ -55,6 +55,16 @@ public class FlightDanceManager extends BaseHandler {
         }
     }
 
+    @Override
+    CompoundTag saveData(CompoundTag tag) {
+        return tag;
+    }
+
+    @Override
+    void loadData(CompoundTag tag) {
+
+    }
+
     public void stopDancing() {
         this.updateControlsAfterDance();
         this.controlEntityList = new ArrayList<>();
@@ -92,16 +102,6 @@ public class FlightDanceManager extends BaseHandler {
             this.pilotingManager.getCurrentConsole().killControls();
             this.pilotingManager.getCurrentConsole().spawnControlEntities();
         }
-
-    }
-
-    @Override
-    CompoundTag saveData(CompoundTag tag) {
-        return tag;
-    }
-
-    @Override
-    void loadData(CompoundTag tag) {
 
     }
 }

@@ -54,9 +54,7 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
             if (level1.getGameTime() % 20L == 0L) {
                 if (level1 instanceof ServerLevel serverLevel) {
                     TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
-
                         TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
-
                         int powerLevel = pilotManager.isInFlight() ? Mth.clamp((int) (pilotManager.getFlightPercentageCovered() * 16), 1, 16) : 0;
                         serverLevel.setBlock(blockPos, blockState1.setValue(LEVEL, powerLevel), Block.UPDATE_ALL);
                     });

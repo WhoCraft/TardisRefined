@@ -28,6 +28,8 @@ public class ModMessages {
     public static String HANDBRAKE_WARNING = message("handbrake_warning");
     public static String CONSOLE_CONFIGURATION_NOT_IN_FLIGHT = message("console_config_not_in_flight");
     public static String CONSOLE_NOT_IN_FLIGHT = message("cannot_switch_console_units_whilst_in_flight");
+    public static String NO_END_DRAGON_PREVENTS = message("no_end_dragon_prevents");
+
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
     public static String TOOLTIP_SCREWDRIVER_DESCRIPTION = tooltip("screwdriver_description");

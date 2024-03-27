@@ -169,20 +169,18 @@ public class TardisLevelOperator {
      **/
     public boolean enterTardis(Entity entity, BlockPos externalShellPos, ServerLevel shellLevel, Direction shellDirection) {
 
-        if (!entity.level().isClientSide()) {
-            if (this.level instanceof ServerLevel targetServerLevel) {
+        if (this.level instanceof ServerLevel targetServerLevel) {
 
-                BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
-                Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
+            BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
+            Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
 
-                TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
-                TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
+            TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
+            TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
 
-                TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
-                return true;
-            }
-
+            TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
+            return true;
         }
+
         return false;
 
     }
@@ -193,39 +191,37 @@ public class TardisLevelOperator {
 
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
 
-        if (!entity.level().isClientSide()) {
-            if (!this.internalDoor.isOpen()) {
-                return false;
-            }
+        if (!this.internalDoor.isOpen()) {
+            return false;
+        }
 
-            if (aestheticHandler.getShellTheme() != null) {
-                ResourceLocation theme = aestheticHandler.getShellTheme();
-                if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                    if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
-                        return false;
-                    }
+        if (aestheticHandler.getShellTheme() != null) {
+            ResourceLocation theme = aestheticHandler.getShellTheme();
+            if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
+                if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                    return false;
                 }
             }
+        }
 
-            if (this.exteriorManager != null) {
-                if (this.exteriorManager.getLastKnownLocation() != null) {
+        if (this.exteriorManager != null) {
+            if (this.exteriorManager.getLastKnownLocation() != null) {
 
-                    TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
-                    BlockPos exteriorPos = targetLocation.getPosition();
-                    ServerLevel targetLevel = targetLocation.getLevel();
-                    Direction exteriorDirection = targetLocation.getDirection();
+                TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
+                BlockPos exteriorPos = targetLocation.getPosition();
+                ServerLevel targetLevel = targetLocation.getLevel();
+                Direction exteriorDirection = targetLocation.getDirection();
 
-                    BlockPos teleportPos = exteriorPos;
+                BlockPos teleportPos = exteriorPos;
 
-                    if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
-                        teleportPos = exteriorShell.getExitPosition();
-                    }
-
-                    TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-                    TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
-
-                    TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
+                if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
+                    teleportPos = exteriorShell.getExitPosition();
                 }
+
+                TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
+                TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
+
+                TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
             }
         }
 
