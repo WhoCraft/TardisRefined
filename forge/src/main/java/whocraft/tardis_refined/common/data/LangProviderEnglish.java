@@ -175,6 +175,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.LIFT.getId(), "Lift");
         addShell(ShellTheme.HIEROGLYPH.getId(), "Hieroglyph");
         addShell(ShellTheme.CASTLE.getId(), "Castle");
+        addShell(ShellTheme.PATHFINDER.getId(), "Pathfinder");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");

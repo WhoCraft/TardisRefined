@@ -52,6 +52,7 @@ public class ModelRegistry {
     public static ModelLayerLocation LIFT_SHELL;
     public static ModelLayerLocation HIEROGLYPH_SHELL;
     public static ModelLayerLocation CASTLE_SHELL;
+    public static ModelLayerLocation PATHFINDER_SHELL;
 
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -72,6 +73,7 @@ public class ModelRegistry {
     public static ModelLayerLocation LIFT_DOOR;
     public static ModelLayerLocation HIEROGLYPH_DOOR;
     public static ModelLayerLocation CASTLE_DOOR;
+    public static ModelLayerLocation PATHFINDER_DOOR;
 
 
     public static ModelLayerLocation ARS_EGG;
@@ -114,6 +116,7 @@ public class ModelRegistry {
         LIFT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_shell"), "lift_shell"), LiftShellModel::createBodyLayer);
         HIEROGLYPH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_shell"), "hieroglyph_shell"), HieroglyphModel::createBodyLayer);
         CASTLE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_shell"), "castle_shell"), CastleShellModel::createBodyLayer);
+        PATHFINDER_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pathfinder_shell"), "pathfinder_shell"), PathfinderShellModel::createBodyLayer);
 
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
@@ -134,7 +137,7 @@ public class ModelRegistry {
         LIFT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_door"), "lift_door"), LiftShellDoorModel::createBodyLayer);
         HIEROGLYPH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
         CASTLE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
-
+        PATHFINDER_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pathfinder_door"), "pathfinder_door"), PathfinderShellModel::createBodyLayer);
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
         BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
