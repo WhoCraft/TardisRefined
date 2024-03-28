@@ -38,6 +38,7 @@ public class ConsoleTheme implements Theme {
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> MYST = registerConsoleTheme("myst", new MystConsoleTheme());
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> NUKA = registerConsoleTheme("nuka", new NukaConsoleTheme());
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> INITIATIVE = registerConsoleTheme("initiative", new InitiativeConsoleTheme());
+    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> REFURBISHED = registerConsoleTheme("refurbished", new RefurbishedConsoleTheme());
 
     private ResourceLocation translationKey;
     private final ConsoleThemeDetails consoleThemeDetails;

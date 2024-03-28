@@ -19,6 +19,7 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -601,7 +602,8 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 		this.animate(reactions.ROTOR_ANIMATION, MODEL_ROTOR_LOOP, Minecraft.getInstance().player.tickCount);
 
-		throttle_control.xRot = (reactions.isThrottleDown()) ? 1f : -1f;
+		float rot = -1f + ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+		throttle_control.xRot = rot;
 
 		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}

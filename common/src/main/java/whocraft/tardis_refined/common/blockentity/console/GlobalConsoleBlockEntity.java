@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
@@ -36,6 +37,7 @@ import java.util.List;
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
 
     private boolean shouldSpawnControls = true;
+
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
 
     public AnimationState liveliness = new AnimationState();
@@ -50,14 +52,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         this.basePattern = this.pattern();
     }
 
-    public ResourceLocation theme(){
-        if (this.consoleTheme == null){
+    public ResourceLocation theme() {
+        if (this.consoleTheme == null) {
             this.consoleTheme = ConsoleTheme.FACTORY.getId();
         }
         return this.consoleTheme;
     }
 
-    public void setConsoleTheme(ResourceLocation themeId){
+    public void setConsoleTheme(ResourceLocation themeId) {
         this.consoleTheme = themeId;
         this.setChanged();
         this.sendUpdates();
@@ -65,6 +67,10 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public ConsolePattern pattern() {
         return basePattern == null ? ConsolePatterns.DEFAULT : basePattern;
+    }
+
+    public List<ControlEntity> getControlEnttityList() {
+        return this.controlEntityList;
     }
 
     public GlobalConsoleBlockEntity setPattern(ConsolePattern basePattern) {
@@ -85,7 +91,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (this.basePattern != null) {
             compoundTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
         }
-
     }
 
     @Override
@@ -104,13 +109,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             }
         }
 
-        if (this.consoleTheme == null){
+        if (this.consoleTheme == null) {
             this.consoleTheme = this.theme();
         }
 
         if (this.basePattern == null) {
             this.basePattern = this.pattern();
         }
+
 
         super.load(tag);
 
@@ -130,9 +136,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!
-
                 ControlEntity controlEntity = new ControlEntity(getLevel());
-
 
                 Vec3 location = LevelHelper.centerPos(currentBlockPos, true).add(control.offsetPosition().x(), control.offsetPosition().y(), control.offsetPosition().z());
                 controlEntity.setPos(location.x(), location.y(), location.z());
@@ -187,7 +191,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
 
-        if (this.shouldSpawnControls) {
+        if (this.shouldSpawnControls && blockState.getValue(GlobalConsoleBlock.POWERED)) {
             spawnControlEntities();
         }
 
@@ -206,21 +210,16 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
                     serverLevel.sendParticles(ParticleTypes.CAMPFIRE_COSY_SMOKE, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(), 120, 2.0, 1.0, 2.0, 0.01);
                 }
 
-                if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
+                if (x.getLevel().getGameTime() % (20) == 0) {
 
-                // Check if we're crashing and if its okay to explode the TARDIS a little.
-                if (x.getPilotingManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
-                    level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
-                }
+                    // Check if we're crashing and if its okay to explode the TARDIS a little.
+                    if (x.getPilotingManager().isCrashing() && x.getLevel().getRandom().nextInt(15) == 0) {
+                        level.explode(null, blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2f, Level.ExplosionInteraction.NONE);
+                    }
                     TardisInteriorManager intManager = x.getInteriorManager();
                     if (intManager.isCave()) {
                         intManager.setCurrentTheme(intManager.preparedTheme());
                     }
-
-                    if (x.getTardisFlightEventManager().isInDangerZone() && x.getLevel().getGameTime() % (20) == 0) {
-                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BELL.value(), SoundSource.BLOCKS, 10f, 2f);
-                    }
-
                 }
             });
         }

@@ -21,6 +21,8 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> BULKHEAD_LOCKED = setUpSound("bulkhead_locked");
     public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
     public static final RegistrySupplier<SoundEvent> INTERIOR_CREAKS = setUpSound("interior_creaks");
+    public static final RegistrySupplier<SoundEvent> FLIGHT_FAIL_START = setUpSound("flight_fail_start");
+    public static final RegistrySupplier<SoundEvent> CONSOLE_POWER_ON = setUpSound("console_power_on");
 
 
     // Screwdriver

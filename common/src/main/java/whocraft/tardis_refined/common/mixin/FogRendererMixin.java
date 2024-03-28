@@ -58,7 +58,8 @@ public class FogRendererMixin {
             }
 
             if (TardisHelper.isInArsArea(blockPosition)) {
-                Vec3 fogColor = reactions.fogColor(reactions.isCrashing() || reactions.isInDangerZone());
+
+                Vec3 fogColor = reactions.fogColor(reactions.isCrashing());
                 RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);
                 callbackInfo.cancel();
             }
