@@ -111,6 +111,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     public static void setupSounds(){
         LoopingSound.ARS_HUMMING = new LoopingSound(SoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
         LoopingSound.FLIGHT_LOOP = new LoopingSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
+        LoopingSound.GRAVITY_LOOP = new LoopingSound(SoundRegistry.GRAVITY_TUNNEL.get(), SoundSource.AMBIENT);
     }
 
 }

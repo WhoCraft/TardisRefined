@@ -2260,8 +2260,6 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-
-
 		if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
 			if (reactions.isFlying()) {
 				this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
@@ -2271,8 +2269,6 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 				}
 			}
 		}
-
-
 
 		float rot = -125 - ( 30 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		this.throttleLever.xRot = rot;
