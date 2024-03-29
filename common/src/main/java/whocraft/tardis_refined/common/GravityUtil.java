@@ -64,7 +64,7 @@ public class GravityUtil {
 
 
     public static boolean isInGravityShaft(Player player) {
-        return isInAntiGrav(player, player.getBoundingBox().inflate(20, MAX_Y, 20), player.level());
+        return isInAntiGrav(player, player.getBoundingBox().inflate(8, MAX_Y, 8), player.level());
     }
 
     @Environment(EnvType.CLIENT)
