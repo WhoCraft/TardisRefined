@@ -18,7 +18,9 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 import java.util.Calendar;
 
@@ -1490,16 +1492,18 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-
-		if (reactions.isFlying()) {
-			this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
-		} else {
-			if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
-				this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
+		if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
+			if (reactions.isFlying()) {
+				this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+			} else {
+				if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
+					this.animate(globalConsoleBlock.liveliness, LOOP, Minecraft.getInstance().player.tickCount);
+				}
 			}
 		}
-		;
-		this.throttle.xRot = (reactions.isThrottleDown()) ? -1f : 1f;
+
+		float rot = 1f - ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+		this.throttle.xRot = rot;
 		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

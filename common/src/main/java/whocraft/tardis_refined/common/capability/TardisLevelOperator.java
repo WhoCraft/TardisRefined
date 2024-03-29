@@ -45,7 +45,8 @@ public class TardisLevelOperator {
     private final TardisInteriorManager interiorManager;
     private final TardisPilotingManager pilotingManager;
     private final TardisWaypointManager tardisWaypointManager;
-    private final TardisFlightEventManager tardisFlightEventManager;
+
+    private final FlightDanceManager flightDanceManager;
     private final TardisClientData tardisClientData;
     private final UpgradeHandler upgradeHandler;
     private final AestheticHandler aestheticHandler;
@@ -57,10 +58,10 @@ public class TardisLevelOperator {
         this.interiorManager = new TardisInteriorManager(this);
         this.pilotingManager = new TardisPilotingManager(this);
         this.tardisWaypointManager = new TardisWaypointManager(this);
-        this.tardisFlightEventManager = new TardisFlightEventManager(this);
         this.tardisClientData = new TardisClientData(level.dimension());
         this.upgradeHandler = new UpgradeHandler(this);
         this.aestheticHandler = new AestheticHandler(this);
+        this.flightDanceManager = new FlightDanceManager(this);
     }
 
     public UpgradeHandler getUpgradeHandler() {
@@ -73,6 +74,10 @@ public class TardisLevelOperator {
 
     public AestheticHandler getAestheticHandler() {
         return aestheticHandler;
+    }
+
+    public FlightDanceManager getFlightDanceManager() {
+        return this.flightDanceManager;
     }
 
     @ExpectPlatform
@@ -93,7 +98,6 @@ public class TardisLevelOperator {
         compoundTag = this.interiorManager.saveData(compoundTag);
         compoundTag = this.pilotingManager.saveData(compoundTag);
         compoundTag = this.tardisWaypointManager.saveData(compoundTag);
-        compoundTag = this.tardisFlightEventManager.saveData(compoundTag);
         compoundTag = this.upgradeHandler.saveData(compoundTag);
         compoundTag = this.aestheticHandler.saveData(compoundTag);
 
@@ -115,7 +119,6 @@ public class TardisLevelOperator {
         this.exteriorManager.loadData(tag);
         this.interiorManager.loadData(tag);
         this.pilotingManager.loadData(tag);
-        this.tardisFlightEventManager.loadData(tag);
         this.tardisWaypointManager.loadData(tag);
         this.upgradeHandler.loadData(tag);
         this.aestheticHandler.loadData(tag);
@@ -129,16 +132,10 @@ public class TardisLevelOperator {
     public void tick(ServerLevel level) {
         interiorManager.tick(level);
         pilotingManager.tick(level);
-        tardisFlightEventManager.tick();
+        flightDanceManager.tick();
 
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
-            tardisClientData.setFlying(pilotingManager.isInFlight());
-            tardisClientData.setThrottleDown(pilotingManager.shouldThrottleBeDown());
-            tardisClientData.setIsLanding(exteriorManager.isLanding());
-            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setInDangerZone(tardisFlightEventManager.isInDangerZone());
-            tardisClientData.setFlightShakeScale(tardisFlightEventManager.dangerZoneShakeScale());
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
             tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
             tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
@@ -147,7 +144,16 @@ public class TardisLevelOperator {
             tardisClientData.setMaximumFuel(pilotingManager.getMaximumFuel());
 
             tardisClientData.sync();
+        } else {
+            tardisClientData.setFlying(pilotingManager.isInFlight());
+            tardisClientData.setIsLanding(exteriorManager.isLanding());
+            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+            tardisClientData.setThrottleStage(pilotingManager.getThrottleStage());
+            tardisClientData.setHandbrakeEngaged(pilotingManager.isHandbrakeOn());
+            tardisClientData.sync();
         }
+
+
     }
 
     public boolean hasInitiallyGenerated() {
@@ -160,24 +166,21 @@ public class TardisLevelOperator {
 
     /**
      * Moves the entity into the TARDIS. If the TARDIS has no door established, the entity is sent to 0,100,0.
-     *
      **/
     public boolean enterTardis(Entity entity, BlockPos externalShellPos, ServerLevel shellLevel, Direction shellDirection) {
 
-        if (!entity.level().isClientSide()) {
-            if (this.level instanceof ServerLevel targetServerLevel){
+        if (this.level instanceof ServerLevel targetServerLevel) {
 
-                BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
-                Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
+            BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
+            Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
 
-                TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
-                TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
+            TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
+            TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
 
-                TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
-                return true;
-            }
-
+            TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
+            return true;
         }
+
         return false;
 
     }
@@ -188,46 +191,42 @@ public class TardisLevelOperator {
 
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
 
-        if (!entity.level().isClientSide()){
-            if (!this.internalDoor.isOpen()) {
-                return false;
-            }
+        if (!this.internalDoor.isOpen()) {
+            return false;
+        }
 
-            if(aestheticHandler.getShellTheme() != null) {
-                ResourceLocation theme = aestheticHandler.getShellTheme();
-                if(ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                    if(ImmersivePortals.exteriorHasPortalSupport(theme)) {
-                        return false;
-                    }
+        if (aestheticHandler.getShellTheme() != null) {
+            ResourceLocation theme = aestheticHandler.getShellTheme();
+            if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
+                if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                    return false;
                 }
             }
+        }
 
-            if (this.exteriorManager != null) {
-                if (this.exteriorManager.getLastKnownLocation() != null) {
+        if (this.exteriorManager != null) {
+            if (this.exteriorManager.getLastKnownLocation() != null) {
 
-                    TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
-                    BlockPos exteriorPos = targetLocation.getPosition();
-                    ServerLevel targetLevel = targetLocation.getLevel();
-                    Direction exteriorDirection = targetLocation.getDirection();
+                TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
+                BlockPos exteriorPos = targetLocation.getPosition();
+                ServerLevel targetLevel = targetLocation.getLevel();
+                Direction exteriorDirection = targetLocation.getDirection();
 
-                    BlockPos teleportPos = exteriorPos;
+                BlockPos teleportPos = exteriorPos;
 
-                    if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
-                        teleportPos = exteriorShell.getExitPosition();
-                    }
-
-                    TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-                    TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
-
-                    TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
+                if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
+                    teleportPos = exteriorShell.getExitPosition();
                 }
+
+                TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
+                TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
+
+                TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
             }
         }
 
         return true;
     }
-
-
 
 
     public void setDoorClosed(boolean closeDoor) {
@@ -237,7 +236,7 @@ public class TardisLevelOperator {
         if (intDoor != null) {
             intDoor.setClosed(closeDoor);
         }
-        if(closeDoor) {
+        if (closeDoor) {
             TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
         } else {
             TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
@@ -273,7 +272,7 @@ public class TardisLevelOperator {
     }
 
     public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
-       this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
+        this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
 
         Direction direction = shellBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
         TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);
@@ -303,9 +302,6 @@ public class TardisLevelOperator {
         return this.pilotingManager;
     }
 
-    public TardisFlightEventManager getTardisFlightEventManager() {
-        return this.tardisFlightEventManager;
-    }
 
     public TardisWaypointManager getTardisWaypointManager() {
         return tardisWaypointManager;

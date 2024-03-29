@@ -25,6 +25,11 @@ public class RandomControl extends Control {
                             (currentExLoc.getZ() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2)
                     )
             );
+
+            if (pilotManager.isInFlight()) {
+                operator.getPilotingManager().recalculateFlightDistance();
+            }
+
             PlayerUtil.sendMessage(player, Component.translatable(pilotManager.getTargetLocation().getPosition().toShortString()), true);
             return true;
         }

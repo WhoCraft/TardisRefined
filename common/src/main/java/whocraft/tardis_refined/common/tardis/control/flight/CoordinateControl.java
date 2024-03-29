@@ -48,7 +48,7 @@ public class CoordinateControl extends Control {
                 pilotManager.setTargetPosition(potentialPos); //Only update target position if it is within both vertical and horizontal bounds.
 
                 if (pilotManager.isInFlight()) {
-                    operator.getTardisFlightEventManager().calculateTravelLogic();
+                    operator.getPilotingManager().recalculateFlightDistance();
                 }
 
                 PlayerUtil.sendMessage(player, Component.translatable(pilotManager.getTargetLocation().getPosition().toShortString()), true);

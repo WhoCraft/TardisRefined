@@ -58,8 +58,12 @@ public class TardisClientData {
     }
 
     private boolean flying = false;
-    private boolean throttleDown = false;
+
+    // Control specifics
+    private int throttleStage = 0;
     private boolean isLanding = false;
+    private boolean isHandbrakeEngaged = false;
+
     private boolean isTakingOff = false;
     private boolean isInDangerZone = false;
     private boolean isCrashing = false;
@@ -83,6 +87,14 @@ public class TardisClientData {
 
     public HumEntry getHumEntry() {
         return humEntry;
+    }
+
+    public void setThrottleStage(int stage) {
+        this.throttleStage = stage;
+    }
+
+    public int getThrottleStage() {
+        return this.throttleStage;
     }
 
     public void setHumEntry(HumEntry humEntry) {
@@ -111,14 +123,6 @@ public class TardisClientData {
         return flying;
     }
 
-    public void setThrottleDown(boolean throttleDown) {
-        this.throttleDown = throttleDown;
-    }
-
-    public boolean isThrottleDown() {
-        return throttleDown;
-    }
-
     public void setIsLanding(boolean landing) {
         this.isLanding = landing;
     }
@@ -135,14 +139,6 @@ public class TardisClientData {
         return isTakingOff;
     }
 
-    public void setInDangerZone(boolean isInDangerZone) {
-        this.isInDangerZone = isInDangerZone;
-    }
-
-    public boolean isInDangerZone() {
-        return isInDangerZone;
-    }
-
     public void setIsCrashing(boolean isCrashing) {
         this.isCrashing = isCrashing;
     }
@@ -157,14 +153,6 @@ public class TardisClientData {
 
     public boolean isOnCooldown() {
         return isOnCooldown;
-    }
-
-    public void setFlightShakeScale(float scale) {
-        this.flightShakeScale = scale;
-    }
-
-    public float flightShakeScale() {
-        return flightShakeScale;
     }
 
     public double getFuel() {
@@ -187,6 +175,7 @@ public class TardisClientData {
     public static float getFogTickDelta() {
         return 1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
     }
+
     public static void tickFog(boolean hasFuel) {
         if (!hasFuel && (FOG_TICK_DELTA <= MAX_FOG_TICK_DELTA) && (FOG_TICK_DELTA > 0)) {
             FOG_TICK_DELTA--; // Fading in the fog
@@ -208,7 +197,8 @@ public class TardisClientData {
         CompoundTag compoundTag = new CompoundTag();
 
         compoundTag.putBoolean("flying", flying);
-        compoundTag.putBoolean("throttleDown", throttleDown);
+        compoundTag.putInt(NbtConstants.THROTTLE_STAGE, throttleStage);
+        compoundTag.putBoolean(NbtConstants.HANDBRAKE_ENGAGED, isHandbrakeEngaged);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
@@ -233,7 +223,8 @@ public class TardisClientData {
      */
     public void deserializeNBT(CompoundTag compoundTag) {
         flying = compoundTag.getBoolean("flying");
-        throttleDown = compoundTag.getBoolean("throttleDown");
+        throttleStage = compoundTag.getInt(NbtConstants.THROTTLE_STAGE);
+        isHandbrakeEngaged = compoundTag.getBoolean(NbtConstants.HANDBRAKE_ENGAGED);
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
@@ -332,11 +323,17 @@ public class TardisClientData {
 
 
             // Responsible for screen-shake. Not sure of a better solution at this point in time.
-            if (isInDangerZone || isCrashing) {
-                if (Minecraft.getInstance().player.level().dimension() == levelKey) {
-                    var player = Minecraft.getInstance().player;
-                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+
+            if (Minecraft.getInstance().player.level().dimension() == levelKey) {
+                var player = Minecraft.getInstance().player;
+                if (isCrashing) {
+                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) *  0.5f);
+                } else {
+                    if (isFlying()) {
+                        player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (throttleStage * 0.1f));
+                        player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (throttleStage * 0.1f));
+                    }
                 }
             }
 
@@ -485,4 +482,11 @@ public class TardisClientData {
         return new Vec3(0.14F, 0.15F, 0.22F);
     }
 
+    public boolean isHandbrakeEngaged() {
+        return isHandbrakeEngaged;
+    }
+
+    public void setHandbrakeEngaged(boolean handbrakeEngaged) {
+        isHandbrakeEngaged = handbrakeEngaged;
+    }
 }

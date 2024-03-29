@@ -145,32 +145,13 @@ public class KeyItem extends Item {
     public InteractionResult useOn(UseOnContext context) {
 
         if (context.getLevel() instanceof ServerLevel) {
-            if (TardisRefined.KeySummonsItem) {
-                if (context.getPlayer().getAbilities().instabuild && context.getPlayer().isShiftKeyDown()) {
-
-                    var keychain = getKeychain(context.getItemInHand());
-                    if (keychain.size() > 0) {
-                        ResourceKey<Level> tardis = keychain.get(0);
-                        var tardisLevel = Platform.getServer().levels.get(tardis);
-                        TardisLevelOperator.get(tardisLevel).ifPresent(cap -> {
-                            TardisPilotingManager pilotManager = cap.getPilotingManager();
-
-                            pilotManager.setTargetPosition(context.getClickedPos().above());
-                            pilotManager.getTargetLocation().setDirection(context.getHorizontalDirection().getOpposite());
-                            pilotManager.beginFlight(true);
-                            PlayerUtil.sendMessage(context.getPlayer(), "TARDIS ON ITS WAY", true);
-                        });
-                    }
-                }
-            } else {
-                if (context.getPlayer().isShiftKeyDown()) {
-                    var keychain = getKeychain(context.getItemInHand());
-                    if (!keychain.isEmpty()) {
-                        Collections.rotate(keychain.subList(0, keychain.size()), -1);
-                        setKeychain(context.getItemInHand(), keychain);
-                        context.getPlayer().displayClientMessage(Component.translatable(ModMessages.MSG_KEY_CYCLED, keychain.get(0).location().getPath()), true);
-                        context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 1,2);
-                    }
+            if (context.getPlayer().isShiftKeyDown()) {
+                var keychain = getKeychain(context.getItemInHand());
+                if (!keychain.isEmpty()) {
+                    Collections.rotate(keychain.subList(0, keychain.size()), -1);
+                    setKeychain(context.getItemInHand(), keychain);
+                    context.getPlayer().displayClientMessage(Component.translatable(ModMessages.MSG_KEY_CYCLED, keychain.get(0).location().getPath()), true);
+                    context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 1,2);
                 }
             }
         }

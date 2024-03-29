@@ -22,6 +22,8 @@ public class NbtConstants {
 
     public static final String PATTERN = "pattern";
 
+    public static final String POWERED = "powered";
+
     public static final String TARDIS_IS_SETUP = "has_setup";
     public static final String TARDIS_INTERNAL_DOOR_ID = "internal_door_id";
     public static final String TARDIS_INTERNAL_DOOR_POSITION = "internal_door_pos";
@@ -60,6 +62,9 @@ public class NbtConstants {
     public static final String CONTROL_SIZE_HEIGHT = "console_size_height";
 
     public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
+    public static final String IS_HANDBRAKE_ON = "is_handbrake_on";
+    public static final String THROTTLE_STAGE = "throttle_stage";
+    public static final String HANDBRAKE_ENGAGED = "handbrake_engaged";
     public static final String CONTROL_INCREMENT_INDEX = "ctrl_increment_index";
     public static final String CONTROL_CURRENT_EXT = "ctrl_current_ext";
     public static final String CONTROL_AUTOLAND = "ctrl_autoland";
@@ -70,6 +75,10 @@ public class NbtConstants {
     public static final String LOCATION_DIMENSION_MODID = "_location_dimension_id";
     public static final String LOCATION_DIMENSION_PATH = "_location_dimension_path";
     public static final String KEYCHAIN = "keychain";
+
+    // Flight
+    public static final String FLIGHT_DISTANCE = "flight_distance";
+    public static final String DISTANCE_COVERED = "distance_covered";
 
 
     // Piloting Manager

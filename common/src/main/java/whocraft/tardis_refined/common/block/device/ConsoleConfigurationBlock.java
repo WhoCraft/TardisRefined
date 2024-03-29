@@ -6,12 +6,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -26,12 +26,12 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
@@ -40,6 +40,7 @@ import whocraft.tardis_refined.registry.ItemRegistry;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import static net.minecraft.world.phys.shapes.BooleanOp.OR;
@@ -92,20 +93,26 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
         var offset = blockState.getValue(FACING).getNormal();
         BlockPos consolePos = blockPos.offset(offset);
-        BlockState consoleBlock = level.getBlockState(consolePos);
-
 
         if (player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get()) {
             this.changePattern(level, blockPos, consolePos, player);
             return InteractionResult.SUCCESS;
         }
 
-        if (player.isShiftKeyDown()) { //If we are destroying the console block
-            this.removeGlobalConsoleBlock(consolePos, level);
-            return InteractionResult.SUCCESS; //Don't try to continue interaction which will rerun the change console function
-        } else {
-            this.changeConsoleTheme(level, blockPos, consolePos);
+        if (level instanceof ServerLevel serverLevel) {
+            TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
+                if (!operator.getPilotingManager().isInFlight()) {
+                    if (player.isShiftKeyDown()) { //If we are destroying the console block
+                        this.removeGlobalConsoleBlock(consolePos, level);
+                    } else {
+                        this.changeConsoleTheme(level, blockPos, consolePos);
+                    }
+                } else {
+                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT), true);
+                }
+            });
         }
+
         return InteractionResult.SUCCESS;
     }
 
