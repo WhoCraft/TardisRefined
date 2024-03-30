@@ -13,7 +13,6 @@ import whocraft.tardis_refined.client.model.blockentity.door.interior.ShellDoorM
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
 
@@ -39,12 +38,6 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         // Render slightly off the wall to prevent z-fighting.
         poseStack.translate(0, 0, -0.01);
         currentModel = ShellModelCollection.getInstance().getShellEntry(theme).getShellDoorModel(blockEntity.pattern());
-
-        if(theme == ShellTheme.POLICE_BOX.getId()){
-            poseStack.scale(1.05f, 1.05f, 1.05f);
-            poseStack.translate(0, -0.07, 0);
-        }
-
 
         currentModel.setDoorPosition(isOpen);
         currentModel.renderInteriorDoor(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
