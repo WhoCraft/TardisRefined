@@ -44,7 +44,9 @@ public class BlockRegistry {
 
     // Shell Blocks
     public static final RegistrySupplier<ShellBaseBlock> ROOT_SHELL_BLOCK = register("root_shell", () -> new RootedShellBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000).sound(SoundType.CORAL_BLOCK)), true, true);
-    public static final RegistrySupplier<ShellBaseBlock> GLOBAL_SHELL_BLOCK = register("tardis_shell", () -> new GlobalShellBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000).sound(SoundType.STONE)), false, false);
+    public static final RegistrySupplier<ShellBaseBlock> GLOBAL_SHELL_BLOCK = register("tardis_shell", () -> new GlobalShellBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000).sound(SoundType.STONE).lightLevel((blocksState) -> {
+        return blocksState.getValue(GlobalShellBlock.LIT) ? 13 : 0;
+    })), false, false);
 
     // Interior
     public static final RegistrySupplier<GlobalDoorBlock> GLOBAL_DOOR_BLOCK = register("tardis_door", () -> new GlobalDoorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(10, 10).sound(SoundType.STONE)), true, true);
