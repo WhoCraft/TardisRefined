@@ -98,7 +98,11 @@ public class AestheticHandler extends BaseHandler {
 
         // Check if its our default global shell.
         if (state.getBlock() instanceof GlobalShellBlock globalShellBlock) {
-            lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_CLIENTS);
+
+            ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
+            boolean shouldProduceLight = shellTheme.producesLight();
+
+            lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false).setValue(GlobalShellBlock.LIT, shouldProduceLight), Block.UPDATE_CLIENTS);
 
             // Update Exterior (We should make this a method tbh)
             updateShellBlock(theme, lastKnownLocationLevel, lastKnownLocationPosition);
