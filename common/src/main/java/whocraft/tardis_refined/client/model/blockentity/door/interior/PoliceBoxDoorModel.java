@@ -13,57 +13,67 @@ import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 public class PoliceBoxDoorModel extends ShellDoorModel {
 
 	private final ModelPart left_door;
-	private final ModelPart right_door;
-	private final ModelPart frame;
+	private final ModelPart root;
 
 	public PoliceBoxDoorModel(ModelPart root) {
-		this.frame = root.getChild("frame");
-		this.left_door = root.getChild("left_door");
-		this.right_door = root.getChild("right_door");
-
+		this.root = root;
+		this.left_door =  (ModelPart) getAnyDescendantWithName("left_door").get();
 	}
 
 	public static LayerDefinition createBodyLayer() {
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition left_door = partdefinition.addOrReplaceChild("left_door", CubeListBuilder.create().texOffs(43, 9).addBox(-6.25F, -8.0F, -0.25F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(43, 9).addBox(-6.25F, -22.0F, -0.25F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(43, 9).addBox(-6.25F, -15.0F, -0.25F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 70).mirror().addBox(-8.0F, -30.0F, 0.0F, 8.0F, 30.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
-				.texOffs(28, 46).addBox(-8.5F, -30.0F, -0.525F, 1.0F, 30.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(8.0F, 23.5F, 6.5F));
+		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create().texOffs(19, 41).mirror().addBox(8.5F, -32.0F, 5.5F, 2.0F, 32.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(0, 0).addBox(-8.5F, -32.0F, 6.5F, 17.0F, 32.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(19, 41).addBox(-10.5F, -32.0F, 5.5F, 2.0F, 32.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 34).addBox(-10.5F, -35.25F, 5.5F, 21.0F, 4.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.5F));
 
-		PartDefinition bone5 = left_door.addOrReplaceChild("bone5", CubeListBuilder.create().texOffs(43, 17).mirror().addBox(-2.5F, -6.0F, 0.4F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(-3.75F, -23.0F, -0.75F));
+		PartDefinition right_door = root.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(50, 51).mirror().addBox(-7.0F, -8.0F, -0.5F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(28, 41).addBox(-9.0F, -31.25F, -0.775F, 1.0F, 31.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 27).addBox(-9.0F, -0.75F, -1.025F, 1.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 51).addBox(-7.0F, -15.5F, -0.5F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(35, 41).addBox(-7.0F, -23.0F, -2.475F, 6.0F, 7.0F, 2.0F, new CubeDeformation(0.0F))
+				.texOffs(0, 41).addBox(-8.0F, -31.25F, -0.475F, 8.0F, 31.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 0).mirror().addBox(-8.0F, -1.0F, -0.475F, 8.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(52, 42).addBox(-7.0F, -30.75F, -0.5F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 33).addBox(-7.0F, -8.0F, 0.025F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 33).mirror().addBox(-7.0F, -15.5F, 0.025F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(50, 33).mirror().addBox(-7.0F, -23.0F, 0.025F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(56, 3).addBox(-6.5F, -22.5F, 0.05F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 23).addBox(-6.0F, -28.25F, -0.525F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(8.5F, 0.0F, 6.25F));
 
-		PartDefinition right_door = partdefinition.addOrReplaceChild("right_door", CubeListBuilder.create().texOffs(43, 9).addBox(1.25F, -7.5F, -0.25F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(43, 9).addBox(1.25F, -21.5F, -0.25F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(43, 9).addBox(1.25F, -14.5F, -0.25F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 38).addBox(0.0F, -29.5F, 0.0F, 8.0F, 30.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(43, 17).addBox(1.25F, -28.5F, -0.35F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-8.0F, 23.0F, 6.5F));
+		PartDefinition bone3 = right_door.addOrReplaceChild("bone3", CubeListBuilder.create().texOffs(35, 51).addBox(-3.25F, -6.25F, 18.975F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 19).addBox(-2.25F, -3.75F, 19.05F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-3.75F, -24.5F, -19.0F));
 
-		PartDefinition frame = partdefinition.addOrReplaceChild("frame", CubeListBuilder.create().texOffs(43, 4).addBox(-8.0F, -33.5F, -11.0F, 16.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(19, 38).addBox(-9.0F, -37.1F, -12.0F, 18.0F, 4.0F, 3.0F, new CubeDeformation(0.0F))
-				.texOffs(43, 0).addBox(-10.0F, -2.0F, -11.0F, 20.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(0, 0).addBox(-10.0F, -37.0F, -9.75F, 20.0F, 36.0F, 1.0F, new CubeDeformation(0.0F))
-				.texOffs(19, 46).addBox(-10.0F, -37.0F, -11.0F, 2.0F, 35.0F, 2.0F, new CubeDeformation(0.0F))
-				.texOffs(19, 46).mirror().addBox(8.0F, -37.0F, -11.0F, 2.0F, 35.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(0.0F, 25.0F, 16.75F));
+		PartDefinition left_door = root.addOrReplaceChild("left_door", CubeListBuilder.create().texOffs(50, 51).addBox(1.0F, -8.0F, -0.5F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 51).addBox(1.0F, -15.5F, -0.5F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 51).addBox(1.0F, -23.0F, -0.5F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(37, 0).addBox(0.0F, -31.25F, -0.475F, 8.0F, 31.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 0).addBox(0.0F, -1.0F, -0.475F, 8.0F, 1.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(56, 11).addBox(1.5F, -22.5F, 0.05F, 5.0F, 6.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 33).addBox(1.0F, -23.0F, 0.025F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 33).addBox(1.0F, -15.5F, 0.025F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F))
+				.texOffs(50, 33).mirror().addBox(1.0F, -8.0F, 0.025F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(44, 60).addBox(4.0F, -21.0F, -1.475F, 4.0F, 3.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(-8.5F, 0.0F, 6.25F));
 
-		ShellModel.addMaterializationPart(partdefinition);
+		PartDefinition bone2 = left_door.addOrReplaceChild("bone2", CubeListBuilder.create().texOffs(35, 51).mirror().addBox(-2.75F, -6.25F, 18.975F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(56, 19).mirror().addBox(-1.75F, -3.75F, 19.05F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(3.75F, -24.5F, -19.0F));
 
+		PartDefinition bone5 = left_door.addOrReplaceChild("bone5", CubeListBuilder.create().texOffs(52, 42).mirror().addBox(-3.25F, -8.25F, 1.0F, 6.0F, 7.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+				.texOffs(56, 23).mirror().addBox(-2.25F, -5.75F, 0.975F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offset(4.25F, -22.5F, -1.5F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 
 	@Override
 	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
 	@Override
 	public ModelPart root() {
-		return this.frame;
+		return this.root;
 	}
 
 	@Override
@@ -73,7 +83,7 @@ public class PoliceBoxDoorModel extends ShellDoorModel {
 
 	@Override
 	public void setDoorPosition(boolean open) {
-		this.right_door.yRot = (open) ? -275f : 0;
+		this.left_door.yRot = (open) ? -300f : 0;
 	}
 
 }
