@@ -12,7 +12,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
@@ -30,6 +29,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -74,6 +74,10 @@ public class TardisClientData {
 
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
+
+    // Independent of the hums logic
+    private int nextVoiceAmbientCall = 12000;
+    private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(SoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
 
 
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
@@ -299,7 +303,6 @@ public class TardisClientData {
                 nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
                 List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
                 if (!ambientSounds.isEmpty()) {
-                    LocalPlayer player = Minecraft.getInstance().player;
                     RandomSource randomSource = tardisLevel.random;
 
                     ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
@@ -308,17 +311,22 @@ public class TardisClientData {
                     QuickSimpleSound simpleSoundInstance = new QuickSimpleSound(randomSoundEvent, SoundSource.AMBIENT);
                     simpleSoundInstance.setVolume(0.3F);
 
-                    double randomX = player.getX() + (randomSource.nextDouble() - 0.5) * 100;
-                    double randomY = player.getY() + (randomSource.nextDouble() - 0.5) * 100;
-                    double randomZ = player.getZ() + (randomSource.nextDouble() - 0.5) * 100;
+                    playAmbientSound(simpleSoundInstance, randomSource, 0.3f);
 
-                    simpleSoundInstance.setLocation(new Vec3(randomX, randomY, randomZ));
-                    Minecraft.getInstance().getSoundManager().play(simpleSoundInstance);
                 }
             }
 
             if (LoopingSound.shouldMinecraftMusicStop(soundManager)) {
                 Minecraft.getInstance().getMusicManager().stopPlaying();
+            }
+
+
+
+            if (isThisTardis && tardisLevel.getGameTime() % nextVoiceAmbientCall == 0) {
+                nextVoiceAmbientCall = tardisLevel.random.nextInt(6000, 36000);
+
+                RandomSource randomSource = tardisLevel.random;
+                playAmbientSound(voiceQuickSound, randomSource, 0.3f);
             }
 
 
@@ -344,6 +352,15 @@ public class TardisClientData {
 
     }
 
+    public void playAmbientSound(QuickSimpleSound sound, RandomSource randomSource, float volume) {
+        sound.setVolume(volume);
+        LocalPlayer player = Minecraft.getInstance().player;
+        double randomX = player.getX() + (randomSource.nextDouble() - 0.5) * 100;
+        double randomY = player.getY() + (randomSource.nextDouble() - 0.5) * 100;
+        double randomZ = player.getZ() + (randomSource.nextDouble() - 0.5) * 100;
+        sound.setLocation(new Vec3(randomX, randomY, randomZ));
+        Minecraft.getInstance().getSoundManager().play(sound);
+    }
 
     /**
      * Updates the Tardis instance. This method is called manually from the SyncIntReactionsMessage message.
