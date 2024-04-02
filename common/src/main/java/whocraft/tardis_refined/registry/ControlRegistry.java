@@ -31,6 +31,9 @@ public class ControlRegistry {
 	public static final RegistrySupplier<Control> MONITOR = register(new MonitorControl());
 	public static final RegistrySupplier<Control> DIMENSION = register(new DimensionalControl());
 	public static final RegistrySupplier<Control> FAST_RETURN = register(new FastReturnControl());
+	public static final RegistrySupplier<Control> READOUT = register(new ReadoutControl());
+	public static final RegistrySupplier<Control> GENERIC_NO_SHOW = register(new GenericControl());
+	public static final RegistrySupplier<Control> HANDBRAKE = register(new HandbrakeControl());
 
 	public static Control get(ResourceLocation id){
 		Control potentialTheme = CONTROL_REGISTRY.get(id);

@@ -46,6 +46,7 @@ import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.registry.ControlRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 
 public class ControlEntity extends Entity {
@@ -324,7 +325,7 @@ public class ControlEntity extends Entity {
         if (this.flightDanceManager != null) {
             TardisLevelOperator operator = this.flightDanceManager.getOperator();
 
-            if (this.controlSpecification.control() == ConsoleControl.MONITOR) {
+            if (this.controlSpecification.control().equals(ControlRegistry.MONITOR.get())) {
 
                 if (operator.getPilotingManager().isInFlight() && !operator.getPilotingManager().isLanding()) {
                     float percentageCompleted = (this.flightDanceManager.getOperator().getPilotingManager().getFlightPercentageCovered() * 100f);
@@ -335,7 +336,7 @@ public class ControlEntity extends Entity {
                 }
             }
 
-            if (this.controlSpecification.control() == ConsoleControl.READOUT) {
+            if (this.controlSpecification.control().equals(ControlRegistry.READOUT.get())) {
                 TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
                 if (targetLocation != null) {
                     this.setCustomName(Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()));
@@ -421,7 +422,7 @@ public class ControlEntity extends Entity {
     }
 
     public boolean isDesktopWaitingToGenerate(TardisLevelOperator operator) {
-        if (!(this.controlSpecification.control().getControl() instanceof MonitorControl)) {
+        if (!(this.controlSpecification.control() instanceof MonitorControl)) {
             if (operator.getInteriorManager().isWaitingToGenerate()) {
                 operator.getLevel().playSound(null, this.blockPosition(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100F, (float) (0.1 + (level().getRandom().nextFloat() * 0.5)));
                 return true;
@@ -437,11 +438,11 @@ public class ControlEntity extends Entity {
                 cap.getPilotingManager().setCurrentConsole(getConsoleBlockEntity());
             }
 
-            if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
+            if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this))
                 return;
 
 
-            Control control = this.controlSpecification.control().getControl();
+            Control control = this.controlSpecification.control();
 
             boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
             PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
@@ -457,7 +458,7 @@ public class ControlEntity extends Entity {
             }
 
 
-            if (!cap.getPilotingManager().canUseControls() && controlSpecification.control() != ConsoleControl.MONITOR) {
+            if (!cap.getPilotingManager().canUseControls() && !(controlSpecification.control().equals(ControlRegistry.MONITOR.get()))) {
                 if (player.isCreative()) {
                     serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                 } else {
@@ -467,11 +468,11 @@ public class ControlEntity extends Entity {
                 return;
             }
 
-            if (!controlSpecification.control().getControl().canUseControl(cap, controlSpecification.control().getControl(), this))
+            if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this))
                 return;
 
 
-            Control control = this.controlSpecification.control().getControl();
+            Control control = this.controlSpecification.control();
             boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
             PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
             control.playControlPitchedSound(cap, this, playedSound);

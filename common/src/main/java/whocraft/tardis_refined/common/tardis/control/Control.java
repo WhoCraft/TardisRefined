@@ -81,4 +81,23 @@ public abstract class Control {
         return this.id;
     }
     public String getTranslationKey() {return this.langId;}
+    public String getSerializedName() {
+        // todo Temporary - is bad :(
+        return this.getId().getPath();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Control control = (Control) o;
+
+        return getId().equals(control.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }
