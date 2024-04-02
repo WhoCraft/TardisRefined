@@ -9,13 +9,10 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
-import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.*;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -85,19 +82,19 @@ public class LangProviderEnglish extends LanguageProvider {
         add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
 
         /*Controls*/
-        addControl(ConsoleControl.DOOR_TOGGLE, "Door Toggle");
-        addControl(ConsoleControl.X, "X");
-        addControl(ConsoleControl.Y, "Y");
-        addControl(ConsoleControl.Z, "Z");
-        addControl(ConsoleControl.INCREMENT, "Increment");
-        addControl(ConsoleControl.ROTATE, "Direction");
-        addControl(ConsoleControl.RANDOM, "Randomizer");
-        addControl(ConsoleControl.THROTTLE, "Throttle");
-        addControl(ConsoleControl.MONITOR, "Computer Bank");
-        addControl(ConsoleControl.FAST_RETURN, "Fast Return");
-        addControl(ConsoleControl.DIMENSION, "Dimension");
-        addControl(ConsoleControl.HANDBRAKE, "Handbrake");;
-        addControl(ConsoleControl.GENERIC_NO_SHOW, "Switch");
+        addControl(ControlRegistry.DOOR_TOGGLE.get(), "Door Toggle");
+        addControl(ControlRegistry.X.get(), "X");
+        addControl(ControlRegistry.Y.get(), "Y");
+        addControl(ControlRegistry.Z.get(), "Z");
+        addControl(ControlRegistry.INCREMENT.get(), "Increment");
+        addControl(ControlRegistry.ROTATE.get(), "Direction");
+        addControl(ControlRegistry.RANDOM.get(), "Randomizer");
+        addControl(ControlRegistry.THROTTLE.get(), "Throttle");
+        addControl(ControlRegistry.MONITOR.get(), "Computer Bank");
+        addControl(ControlRegistry.FAST_RETURN.get(), "Fast Return");
+        addControl(ControlRegistry.DIMENSION.get(), "Dimension");
+        addControl(ControlRegistry.HANDBRAKE.get(), "Handbrake");;
+        addControl(ControlRegistry.GENERIC_NO_SHOW.get(), "Switch");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -224,7 +221,7 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
 
-    public void addControl(ConsoleControl control, String name) {
+    public void addControl(Control control, String name) {
         add(control.getTranslationKey(), name);
     }
 

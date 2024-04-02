@@ -1,12 +1,9 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
-import net.minecraft.BlockUtil;
 import net.minecraft.nbt.CompoundTag;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.registry.ControlRegistry;
 
 import java.util.ArrayList;

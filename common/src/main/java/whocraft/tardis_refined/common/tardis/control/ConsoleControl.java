@@ -7,6 +7,7 @@ import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
 import java.util.Locale;
 
+@Deprecated(forRemoval = true) // Use ControlRegistry instead
 public enum ConsoleControl implements StringRepresentable {
 
     // DON'T MANUALLY UPDATE THE CONSOLE UNITS! UPDATE THE PLUGIN WITH YOUR NEW CONTROL AND GENERATE NEW CONTROL DATA.
