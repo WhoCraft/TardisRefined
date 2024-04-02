@@ -12,8 +12,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 
 public class GenericControl extends Control {
-    public GenericControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "generic_no_show"), "control.tardis_refined.generic_control");
+    public GenericControl(ResourceLocation id) {
+        super(id);
+    }
+    public GenericControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

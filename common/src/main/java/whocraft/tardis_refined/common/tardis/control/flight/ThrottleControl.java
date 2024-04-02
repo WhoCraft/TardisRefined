@@ -13,9 +13,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import java.util.Optional;
 
 public class ThrottleControl extends Control {
-
-    public ThrottleControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "throttle"));
+    public ThrottleControl(ResourceLocation id) {
+        super(id);
+    }
+    public ThrottleControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

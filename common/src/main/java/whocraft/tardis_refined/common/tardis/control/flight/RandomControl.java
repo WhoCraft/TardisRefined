@@ -13,9 +13,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
 public class RandomControl extends Control {
-
-    public RandomControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "random"));
+    public RandomControl(ResourceLocation id) {
+        super(id);
+    }
+    public RandomControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

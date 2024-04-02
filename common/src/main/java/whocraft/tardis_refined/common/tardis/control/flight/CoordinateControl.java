@@ -17,15 +17,15 @@ public class CoordinateControl extends Control {
 
     private CoordinateButton button;
 
-    private CoordinateControl(CoordinateButton button, ResourceLocation id, String langId) {
+    protected CoordinateControl(CoordinateButton button, ResourceLocation id, String langId) {
         super(id, langId);
         this.button = button;
     }
-    private CoordinateControl(CoordinateButton button, ResourceLocation id) {
-        this(button, id, "control.tardis_refined.cord_" + button.name().toLowerCase());
+    protected CoordinateControl(CoordinateButton button, ResourceLocation id) {
+        this(button, id, "control." + id.getNamespace() + ".cord_" + button.name().toLowerCase());
     }
-    public CoordinateControl(CoordinateButton button) {
-        this(button, new ResourceLocation(TardisRefined.MODID, button.name().toLowerCase() + "_cord"));
+    public CoordinateControl(CoordinateButton button, String modid) {
+        this(button, new ResourceLocation(modid, button.name().toLowerCase() + "_cord"));
     }
 
     @Override

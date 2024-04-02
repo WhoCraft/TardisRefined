@@ -13,9 +13,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
 public class RotationControl extends Control {
-
-    public RotationControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "rotate"));
+    public RotationControl(ResourceLocation id) {
+        super(id);
+    }
+    public RotationControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

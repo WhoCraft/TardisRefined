@@ -17,10 +17,13 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class MonitorControl extends Control {
-
-    public MonitorControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "monitor"));
+    public MonitorControl(ResourceLocation id) {
+        super(id);
     }
+    public MonitorControl(ResourceLocation id, String langId){
+        super(id, langId);
+    }
+
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!player.level().isClientSide()){

@@ -12,9 +12,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 
 public class ToggleDoorControl extends Control {
-
-    public ToggleDoorControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "door_toggle"));
+    public ToggleDoorControl(ResourceLocation id) {
+        super(id);
+    }
+    public ToggleDoorControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

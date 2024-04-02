@@ -12,6 +12,7 @@ public enum ConsoleControl implements StringRepresentable {
 
     // DON'T MANUALLY UPDATE THE CONSOLE UNITS! UPDATE THE PLUGIN WITH YOUR NEW CONTROL AND GENERATE NEW CONTROL DATA.
 
+    /*
     DOOR_TOGGLE("door_toggle", new ToggleDoorControl(), "control.tardis_refined.door_toggle"),
     X("x_cord", new CoordinateControl(CoordinateButton.X), "control.tardis_refined.cord_x"),
     Y("y_cord", new CoordinateControl(CoordinateButton.Y), "control.tardis_refined.cord_y"),
@@ -25,7 +26,9 @@ public enum ConsoleControl implements StringRepresentable {
     GENERIC_NO_SHOW("generic_no_show", new GenericControl(), "control.tardis_refined.generic_control"),
     READOUT("read_out", new ReadoutControl(), "control.tardis_refined.read_out"),
     HANDBRAKE("hand_brake", new HandbrakeControl(), "control.tardis_refined.hand_brake"),
-    FAST_RETURN("fast_return", new FastReturnControl(), "control.tardis_refined.fast_return");
+    FAST_RETURN("fast_return", new FastReturnControl(), "control.tardis_refined.fast_return")
+    */
+    ;
 
     private final String id;
     private final Control control;

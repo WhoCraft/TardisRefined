@@ -12,9 +12,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 
 public class FastReturnControl extends Control {
-
-    public FastReturnControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "fast_return"));
+    public FastReturnControl(ResourceLocation id) {
+        super(id);
+    }
+    public FastReturnControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

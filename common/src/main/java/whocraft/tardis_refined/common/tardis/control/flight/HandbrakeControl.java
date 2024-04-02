@@ -13,8 +13,11 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class HandbrakeControl extends Control {
-    public HandbrakeControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "hand_brake"));
+    public HandbrakeControl(ResourceLocation id) {
+        super(id);
+    }
+    public HandbrakeControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

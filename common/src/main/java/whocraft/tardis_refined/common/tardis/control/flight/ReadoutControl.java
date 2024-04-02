@@ -12,8 +12,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
 public class ReadoutControl extends Control {
-    public ReadoutControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "read_out"));
+    public ReadoutControl(ResourceLocation id) {
+        super(id);
+    }
+    public ReadoutControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
 
     @Override

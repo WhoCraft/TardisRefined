@@ -28,9 +28,11 @@ import java.util.List;
 import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
-
-    public DimensionalControl() {
-        super(new ResourceLocation(TardisRefined.MODID, "dimension"));
+    public DimensionalControl(ResourceLocation id) {
+        super(id);
+    }
+    public DimensionalControl(ResourceLocation id, String langId){
+        super(id, langId);
     }
     private List<ServerLevel> getAllowedDimensions(MinecraftServer server) {
         var filteredDimensions = new ArrayList<ServerLevel>();
