@@ -40,8 +40,8 @@ public class ProviderConfiguredFeatures {
         ConfiguredFeature<NbtTemplateFeatureConfig, NbtTemplateFeature> tardisRootCluster = new ConfiguredFeature<>(Features.NBT_FEATURE.get(), new NbtTemplateFeatureConfig(templateLocation, 0));
 
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
-        register(context, ORE_ZEITON, Feature.ORE,  new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, BlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, BlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 9));
-        register(context, ORE_ZEITON_SMALL, Feature.ORE,  new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable,BlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, BlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 4));
+        register(context, ORE_ZEITON, Feature.ORE, new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, BlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, BlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 9));
+        register(context, ORE_ZEITON_SMALL, Feature.ORE, new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, BlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, BlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 4));
         context.register(TARDIS_ROOT_CLUSTER_CONF_FEATURE, tardisRootCluster);
     }
 

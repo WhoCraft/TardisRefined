@@ -12,8 +12,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -27,15 +25,14 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.constants.TardisDimensionConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TardisInteriorManager extends BaseHandler {
-
     private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
@@ -51,7 +48,9 @@ public class TardisInteriorManager extends BaseHandler {
 
     private HumEntry humEntry = TardisHums.getDefaultHum();
 
-    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1000, 100, 0);
+    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
+
+    private double fuelForIntChange = 500; // The amount of fuel required to change interior
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -79,7 +78,7 @@ public class TardisInteriorManager extends BaseHandler {
 
         ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
-        ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1009, 97, -2), new BlockPos(1041, 118, 30), "ars_room");
+        ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1051, 97, 6), new BlockPos(1023, 118, 36), "ars_room");
 
         return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, arsRoom};
     }
@@ -117,8 +116,12 @@ public class TardisInteriorManager extends BaseHandler {
         tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
         tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
+
+        tag.putDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE, this.fuelForIntChange);
+
         return tag;
     }
+
     @Override
     public void loadData(CompoundTag tag) {
         this.isWaitingToGenerate = tag.getBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE);
@@ -129,6 +132,11 @@ public class TardisInteriorManager extends BaseHandler {
         this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
         this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
         this.humEntry = TardisHums.getHumById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_CURRENT_HUM)));
+
+        this.fuelForIntChange = tag.getDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE);
+        if (!tag.contains(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE)) {
+            this.fuelForIntChange = 500; // Default
+        }
     }
 
 
@@ -169,7 +177,7 @@ public class TardisInteriorManager extends BaseHandler {
 
             if (interiorGenerationCooldown == 0) {
                 this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.FACTORY.getId(), true);
-                this.operator.getExteriorManager().placeExteriorBlock(operator,operator.getExteriorManager().getLastKnownLocation());
+                this.operator.getExteriorManager().placeExteriorBlock(operator, operator.getExteriorManager().getLastKnownLocation());
                 this.isGeneratingDesktop = false;
             }
 
@@ -203,7 +211,7 @@ public class TardisInteriorManager extends BaseHandler {
                             level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
                         }
 
-                        BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
+                        BlockPos corridorDoorBlockPos = TardisDimensionConstants.CORRIDOR_AIRLOCK_DOOR_POS;
                         if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                             bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), false);
                             level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, true), Block.UPDATE_CLIENTS);
@@ -211,7 +219,7 @@ public class TardisInteriorManager extends BaseHandler {
                     }
                 } else {
                     this.processingWarping = false;
-                    this.airlockCountdownSeconds = 6;
+                    this.airlockCountdownSeconds = 3;
                     this.airlockTimerSeconds = 0;
                 }
 
@@ -225,7 +233,7 @@ public class TardisInteriorManager extends BaseHandler {
 
                 RandomSource rand = level.getRandom();
                 for (ProtectedZone protectedZone : unbreakableZones()) {
-                    if(!protectedZone.getName().contains("_airlock")) continue;
+                    if (!protectedZone.getName().contains("_airlock")) continue;
                     BlockPos.betweenClosedStream(protectedZone.getArea()).forEach(position -> {
                         double velocityX = (rand.nextDouble() - 0.5) * 0.02;
                         double velocityY = (rand.nextDouble() - 0.5) * 0.02;
@@ -241,22 +249,22 @@ public class TardisInteriorManager extends BaseHandler {
                     level.playSound(null, STATIC_CORRIDOR_POSITION, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 5, 0.25f);
                 }
 
-                if (airlockTimerSeconds == 5) {
+                if (airlockTimerSeconds == 3) {
                     List<LivingEntity> desktopEntities = getAirlockEntities(level);
                     List<LivingEntity> corridorEntities = getCorridorEntities(level);
 
                     desktopEntities.forEach(x -> {
-                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter.north(2)));
-                        TRTeleporter.performTeleport(x, level, 1000.5f + offsetPos.x(), 100.5f + offsetPos.y(), -1.5f + offsetPos.z(), x.getYRot(), x.getXRot());
+                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter));
+                        TRTeleporter.performTeleport(x, level, STATIC_CORRIDOR_POSITION.getX() + offsetPos.x() + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y() + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
-                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(new BlockPos(1000, 100, -2)));
-                        TRTeleporter.performTeleport(x, level, corridorAirlockCenter.north(2).getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.north(2).getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.north(2).getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(STATIC_CORRIDOR_POSITION));
+                        TRTeleporter.performTeleport(x, level, corridorAirlockCenter.getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
 
-                if (airlockTimerSeconds == 7) {
+                if (airlockTimerSeconds == 5) {
                     this.processingWarping = false;
                     this.airlockTimerSeconds = 20;
                     BlockPos desktopDoorPos = corridorAirlockCenter.north(2);
@@ -265,7 +273,7 @@ public class TardisInteriorManager extends BaseHandler {
                         level.setBlock(desktopDoorPos, level.getBlockState(desktopDoorPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
                     }
 
-                    BlockPos corridorDoorBlockPos = new BlockPos(1000, 100, 2);
+                    BlockPos corridorDoorBlockPos = TardisDimensionConstants.CORRIDOR_AIRLOCK_DOOR_POS;
                     if (level.getBlockEntity(corridorDoorBlockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
                         bulkHeadDoorBlockEntity.toggleDoor(level, corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos), true);
                         level.setBlock(corridorDoorBlockPos, level.getBlockState(corridorDoorBlockPos).setValue(BulkHeadDoorBlock.LOCKED, false), Block.UPDATE_CLIENTS);
@@ -346,4 +354,27 @@ public class TardisInteriorManager extends BaseHandler {
         this.isWaitingToGenerate = false;
     }
 
+    /**
+     * Returns whether a Tardis has enough fuel to perform an interior change
+     * @return true if the Tardis has enough fuel
+     */
+    public boolean hasEnoughFuel() {
+        return this.operator.getPilotingManager().getFuel() >= this.getRequiredFuel();
+    }
+
+    /**
+     * The amount of fuel required to change the interior
+     * @return double amount of fuel to be removed
+     */
+    public double getRequiredFuel() {
+        return this.fuelForIntChange;
+    }
+
+    /**
+     * Sets the amount of fuel required to change the interior
+     * @param fuel the amount of fuel
+     */
+    private void setRequiredFuel(double fuel) {
+        this.fuelForIntChange = fuel;
+    }
 }

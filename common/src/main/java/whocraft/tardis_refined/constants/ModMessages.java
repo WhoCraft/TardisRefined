@@ -18,6 +18,18 @@ public class ModMessages {
     public static String MSG_KEY_CYCLED = message("key_cycled");
     public static String CONTROL_DIMENSION_SELECTED = message("selected");
     public static String HARDWARE_OFFLINE = message("hardware_offline");
+    public static String ASCEND_KEY = message("ascend_key");
+    public static String DESCEND_KEY = message("descend_key");
+
+    public static String NO_FLIGHT_TRANSITIVE = message("no_flight_transitive");
+    public static String HANDBRAKE_ENGAGED = message("handbrake_engaged");
+    public static String HANDBRAKE_DISENGAGED = message("handbrake_disengaged");
+    public static String HANDBRAKE = message("handbrake");
+    public static String HANDBRAKE_WARNING = message("handbrake_warning");
+    public static String CONSOLE_CONFIGURATION_NOT_IN_FLIGHT = message("console_config_not_in_flight");
+    public static String CONSOLE_NOT_IN_FLIGHT = message("cannot_switch_console_units_whilst_in_flight");
+    public static String NO_END_DRAGON_PREVENTS = message("no_end_dragon_prevents");
+
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
     public static String TOOLTIP_SCREWDRIVER_DESCRIPTION = tooltip("screwdriver_description");
@@ -92,6 +104,8 @@ public class ModMessages {
     public static final String CMD_ARG_DESKTOP_INVALID = cmdArgInvalid("desktop");
 
     public static final String CMD_ARG_SHELL_INVALID = cmdArgInvalid("shell");
+
+
 
     public static String message(String translationKey){
         return "message." + TardisRefined.MODID + "." + translationKey;

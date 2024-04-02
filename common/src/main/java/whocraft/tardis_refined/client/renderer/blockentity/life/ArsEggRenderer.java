@@ -54,9 +54,9 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
 
         if(blockState.getValue(ArsEggBlock.HANGING)){
             TardisClientData tardisClientData = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
-            boolean crashingOrDanger = tardisClientData.isCrashing() || tardisClientData.isInDangerZone();
+            boolean crashing = tardisClientData.isCrashing();
             int animationCounter = Minecraft.getInstance().player.tickCount;
-            arsEggModel.doAnimation(blockEntity.getLiveliness(), crashingOrDanger ? CRASHING : SWINGING, animationCounter);
+            arsEggModel.doAnimation(blockEntity.getLiveliness(), crashing ? CRASHING : SWINGING, animationCounter);
         }
 
         arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(arsEggTexture)),

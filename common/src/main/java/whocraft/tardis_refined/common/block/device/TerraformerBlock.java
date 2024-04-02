@@ -6,6 +6,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -14,14 +17,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.stream.Stream;
 
@@ -83,24 +89,6 @@ public class TerraformerBlock extends Block {
             return;
         }
 
-        if (level instanceof ServerLevel serverLevel) {
-            if (checkIfStructure(serverLevel, blockPos)) {
-                TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
-                    TardisInteriorManager interiorManager = cap.getInteriorManager();
-                    if (interiorManager.isWaitingToGenerate()) {
-                        level.destroyBlock(blockPos, true);
-                    } else {
-                        if (interiorManager.isCave()) {
-                            interiorManager.prepareDesktop(TardisDesktops.FACTORY_THEME);
-                            destroyStructure(serverLevel, blockPos);
-                            serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
-                        }
-                    }
-                });
-            } else {
-                blockState.setValue(ACTIVE, false);
-            }
-        }
     }
 
     @Override
@@ -130,8 +118,41 @@ public class TerraformerBlock extends Block {
                 });
             }
         }
+    }
+
+    @Override
+    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+
+        if (level instanceof ServerLevel serverLevel) {
+            if (interactionHand == InteractionHand.MAIN_HAND) {
+                if (player.getMainHandItem().getItem() instanceof ScrewdriverItem screwdriverItem) {
+                    screwdriverItem.playScrewdriverSound(serverLevel, blockPos, SoundRegistry.SCREWDRIVER_SHORT.get());
+
+                    if (checkIfStructure(serverLevel, blockPos)) {
+                        TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                            TardisInteriorManager interiorManager = cap.getInteriorManager();
+                            if (interiorManager.isWaitingToGenerate()) {
+                                level.destroyBlock(blockPos, true);
+                            } else {
+                                if (interiorManager.isCave()) {
+                                    interiorManager.prepareDesktop(TardisDesktops.FACTORY_THEME);
+                                    destroyStructure(serverLevel, blockPos);
+                                    serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
+                                }
+                            }
+                        });
+                    } else {
+                        blockState.setValue(ACTIVE, false);
+                    }
+
+                }
+            }
+        }
 
 
+
+
+        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
     private boolean checkIfStructure(Level level, BlockPos blockPos) {

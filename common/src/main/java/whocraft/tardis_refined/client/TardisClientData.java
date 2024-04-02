@@ -21,6 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
+import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
@@ -28,14 +29,17 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.List;
 import java.util.Map;
 
 import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
+import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CENTER;
 
 public class TardisClientData {
-
+    public static int FOG_TICK_DELTA = 0; // This is for the fading in and out of the fog.
+    private static int MAX_FOG_TICK_DELTA = 2 * 20; // This is for adjusting how fast the fog will fade in and out.
 
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
@@ -54,16 +58,26 @@ public class TardisClientData {
     }
 
     private boolean flying = false;
-    private boolean throttleDown = false;
+
+    // Control specifics
+    private int throttleStage = 0;
     private boolean isLanding = false;
+    private boolean isHandbrakeEngaged = false;
+
     private boolean isTakingOff = false;
     private boolean isInDangerZone = false;
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
     private float flightShakeScale = 0;
+    private double fuel = 0;
+    private double maximumFuel = 0;
 
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
+
+    // Independent of the hums logic
+    private int nextVoiceAmbientCall = 12000;
+    private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(SoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
 
 
     private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
@@ -77,6 +91,14 @@ public class TardisClientData {
 
     public HumEntry getHumEntry() {
         return humEntry;
+    }
+
+    public void setThrottleStage(int stage) {
+        this.throttleStage = stage;
+    }
+
+    public int getThrottleStage() {
+        return this.throttleStage;
     }
 
     public void setHumEntry(HumEntry humEntry) {
@@ -105,14 +127,6 @@ public class TardisClientData {
         return flying;
     }
 
-    public void setThrottleDown(boolean throttleDown) {
-        this.throttleDown = throttleDown;
-    }
-
-    public boolean isThrottleDown() {
-        return throttleDown;
-    }
-
     public void setIsLanding(boolean landing) {
         this.isLanding = landing;
     }
@@ -127,14 +141,6 @@ public class TardisClientData {
 
     public boolean isTakingOff() {
         return isTakingOff;
-    }
-
-    public void setInDangerZone(boolean isInDangerZone) {
-        this.isInDangerZone = isInDangerZone;
-    }
-
-    public boolean isInDangerZone() {
-        return isInDangerZone;
     }
 
     public void setIsCrashing(boolean isCrashing) {
@@ -153,12 +159,37 @@ public class TardisClientData {
         return isOnCooldown;
     }
 
-    public void setFlightShakeScale(float scale) {
-        this.flightShakeScale = scale;
+    public double getFuel() {
+        return fuel;
+    }
+    public void setFuel(double fuel) {
+        this.fuel = fuel;
+    }
+    public double getMaximumFuel() {
+        return maximumFuel;
+    }
+    public void setMaximumFuel(double fuel) {
+        this.maximumFuel = fuel;
     }
 
-    public float flightShakeScale() {
-        return flightShakeScale;
+    /**
+     * Higher means more fog, lower means less fog
+     * @return 0 -> 1 float based off fog tick delta
+     */
+    public static float getFogTickDelta() {
+        return 1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
+    }
+
+    public static void tickFog(boolean hasFuel) {
+        if (!hasFuel && (FOG_TICK_DELTA <= MAX_FOG_TICK_DELTA) && (FOG_TICK_DELTA > 0)) {
+            FOG_TICK_DELTA--; // Fading in the fog
+            return;
+        }
+
+        if (hasFuel && (FOG_TICK_DELTA != MAX_FOG_TICK_DELTA)) {
+            FOG_TICK_DELTA++; // Fading out the fog
+            return;
+        }
     }
 
     /**
@@ -170,7 +201,8 @@ public class TardisClientData {
         CompoundTag compoundTag = new CompoundTag();
 
         compoundTag.putBoolean("flying", flying);
-        compoundTag.putBoolean("throttleDown", throttleDown);
+        compoundTag.putInt(NbtConstants.THROTTLE_STAGE, throttleStage);
+        compoundTag.putBoolean(NbtConstants.HANDBRAKE_ENGAGED, isHandbrakeEngaged);
         compoundTag.putBoolean("isLanding", isLanding);
         compoundTag.putBoolean("isTakingOff", isTakingOff);
         compoundTag.putBoolean("isInDangerZone", this.isInDangerZone);
@@ -182,6 +214,9 @@ public class TardisClientData {
 
         compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
 
+        compoundTag.putDouble(NbtConstants.FUEL, fuel);
+        compoundTag.putDouble(NbtConstants.MAXIMUM_FUEL, maximumFuel);
+
         return compoundTag;
     }
 
@@ -192,7 +227,8 @@ public class TardisClientData {
      */
     public void deserializeNBT(CompoundTag compoundTag) {
         flying = compoundTag.getBoolean("flying");
-        throttleDown = compoundTag.getBoolean("throttleDown");
+        throttleStage = compoundTag.getInt(NbtConstants.THROTTLE_STAGE);
+        isHandbrakeEngaged = compoundTag.getBoolean(NbtConstants.HANDBRAKE_ENGAGED);
         isLanding = compoundTag.getBoolean("isLanding");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
@@ -204,6 +240,9 @@ public class TardisClientData {
         shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
 
         setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
+
+        fuel = compoundTag.getDouble(NbtConstants.FUEL);
+        maximumFuel = compoundTag.getDouble(NbtConstants.MAXIMUM_FUEL);
     }
 
     /**
@@ -245,11 +284,16 @@ public class TardisClientData {
 
             if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
                 if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
-                    LoopingSound.ARS_HUMMING.setLocation(new Vec3(1024, 100, 16));
+                    LoopingSound.ARS_HUMMING.setLocation(ARS_TREE_CENTER);
                     soundManager.play(LoopingSound.ARS_HUMMING);
                 }
             }
 
+            if (isThisTardis && isFlying()) {
+                if (!soundManager.isActive(LoopingSound.FLIGHT_LOOP)) {
+                    soundManager.play(LoopingSound.FLIGHT_LOOP);
+                }
+            }
 
             if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
                 HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
@@ -259,7 +303,6 @@ public class TardisClientData {
                 nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
                 List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
                 if (!ambientSounds.isEmpty()) {
-                    LocalPlayer player = Minecraft.getInstance().player;
                     RandomSource randomSource = tardisLevel.random;
 
                     ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
@@ -268,12 +311,8 @@ public class TardisClientData {
                     QuickSimpleSound simpleSoundInstance = new QuickSimpleSound(randomSoundEvent, SoundSource.AMBIENT);
                     simpleSoundInstance.setVolume(0.3F);
 
-                    double randomX = player.getX() + (randomSource.nextDouble() - 0.5) * 100;
-                    double randomY = player.getY() + (randomSource.nextDouble() - 0.5) * 100;
-                    double randomZ = player.getZ() + (randomSource.nextDouble() - 0.5) * 100;
+                    playAmbientSound(simpleSoundInstance, randomSource, 0.3f);
 
-                    simpleSoundInstance.setLocation(new Vec3(randomX, randomY, randomZ));
-                    Minecraft.getInstance().getSoundManager().play(simpleSoundInstance);
                 }
             }
 
@@ -282,18 +321,46 @@ public class TardisClientData {
             }
 
 
+
+            if (isThisTardis && tardisLevel.getGameTime() % nextVoiceAmbientCall == 0) {
+                nextVoiceAmbientCall = tardisLevel.random.nextInt(6000, 36000);
+
+                RandomSource randomSource = tardisLevel.random;
+                playAmbientSound(voiceQuickSound, randomSource, 0.3f);
+            }
+
+
             // Responsible for screen-shake. Not sure of a better solution at this point in time.
-            if (isInDangerZone || isCrashing) {
-                if (Minecraft.getInstance().player.level().dimension() == levelKey) {
-                    var player = Minecraft.getInstance().player;
-                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * flightShakeScale);
+
+            if (Minecraft.getInstance().player.level().dimension() == levelKey) {
+                var player = Minecraft.getInstance().player;
+                if (isCrashing) {
+                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) *  0.5f);
+                } else {
+                    if (isFlying()) {
+                        player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (throttleStage * 0.1f));
+                        player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (throttleStage * 0.1f));
+                    }
                 }
+            }
+
+            if (isThisTardis) {
+                tickFog(fuel != 0);
             }
         }
 
     }
 
+    public void playAmbientSound(QuickSimpleSound sound, RandomSource randomSource, float volume) {
+        sound.setVolume(volume);
+        LocalPlayer player = Minecraft.getInstance().player;
+        double randomX = player.getX() + (randomSource.nextDouble() - 0.5) * 100;
+        double randomY = player.getY() + (randomSource.nextDouble() - 0.5) * 100;
+        double randomZ = player.getZ() + (randomSource.nextDouble() - 0.5) * 100;
+        sound.setLocation(new Vec3(randomX, randomY, randomZ));
+        Minecraft.getInstance().getSoundManager().play(sound);
+    }
 
     /**
      * Updates the Tardis instance. This method is called manually from the SyncIntReactionsMessage message.
@@ -389,6 +456,18 @@ public class TardisClientData {
             return;
         }
 
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+        if (LoopingSound.ARS_HUMMING == null) {
+            LoopingSound.setupSounds();
+        }
+
+        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+            if (!soundManager.isActive(LoopingSound.GRAVITY_LOOP)) {
+                soundManager.play(LoopingSound.GRAVITY_LOOP);
+            }
+        }
+
         TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> tardisClientData.tickClientside());
     }
 
@@ -420,4 +499,11 @@ public class TardisClientData {
         return new Vec3(0.14F, 0.15F, 0.22F);
     }
 
+    public boolean isHandbrakeEngaged() {
+        return isHandbrakeEngaged;
+    }
+
+    public void setHandbrakeEngaged(boolean handbrakeEngaged) {
+        isHandbrakeEngaged = handbrakeEngaged;
+    }
 }

@@ -4,15 +4,21 @@ import com.mojang.blaze3d.shaders.FogShape;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.registry.DimensionTypes;
 
 @Mixin(FogRenderer.class)
 public class FogRendererMixin {
@@ -29,13 +35,31 @@ public class FogRendererMixin {
         }
     }
 
-    @Inject(at = @At("HEAD"), cancellable = true, method = "levelFogColor()V")
+    @Inject(at = @At("HEAD"), cancellable = true, method = "setupFog")
     private static void setupColor(CallbackInfo callbackInfo) {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
+
+            ClientLevel level = Minecraft.getInstance().level;
+
+            if (level.dimensionTypeId() != DimensionTypes.TARDIS) return;
+
+            TardisClientData reactions = TardisClientData.getInstance(level.dimension());
+
+            if (TardisClientData.getFogTickDelta() > 0.0f) {
+                float delta = TardisClientData.getFogTickDelta();
+
+                RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
+                RenderSystem.setShaderFogStart(Mth.lerp(delta, 16f, -8f)); // This positions the fog based off the delta
+                RenderSystem.setShaderFogEnd(16);
+                RenderSystem.setShaderFogShape(FogShape.SPHERE);
+
+                callbackInfo.cancel();
+            }
+
             if (TardisHelper.isInArsArea(blockPosition)) {
-                TardisClientData reactions = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
-                Vec3 fogColor = reactions.fogColor(reactions.isCrashing() || reactions.isInDangerZone());
+
+                Vec3 fogColor = reactions.fogColor(reactions.isCrashing());
                 RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);
                 callbackInfo.cancel();
             }

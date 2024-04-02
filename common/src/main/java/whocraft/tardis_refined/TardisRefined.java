@@ -9,7 +9,6 @@ import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
-import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.sync.SyncConsolePatternsMessage;
@@ -21,14 +20,12 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
+import whocraft.tardis_refined.registry.ARSStructurePieceRegistry;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
-
-    // DEBUG DEV STUFF THAT MUST BE DISABLED FOR PROD
-    public static final boolean KeySummonsItem = false;
 
     public static final String MODID = "tardis_refined";
     public static final String NAME = "Tardis Refined";
@@ -71,6 +68,7 @@ public class TardisRefined {
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
 
-        ManipulatorCrafting.registerRecipes();
+        ARSStructurePieceRegistry.register();
     }
+
 }

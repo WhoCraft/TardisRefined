@@ -21,22 +21,23 @@ public class ShellTheme implements Theme {
     public static final Registry<ShellTheme> SHELL_THEME_REGISTRY = SHELL_THEMES.getRegistry();
 
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> FACTORY = registerShellTheme("factory");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> POLICE_BOX = registerShellTheme("police_box");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PHONE_BOOTH = registerShellTheme("phone_booth");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> MYSTIC = registerShellTheme("mystic");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> POLICE_BOX = registerShellTheme("police_box", true);
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PHONE_BOOTH = registerShellTheme("phone_booth", true);
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> MYSTIC = registerShellTheme("mystic", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PRESENT = registerShellTheme("present");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> DRIFTER = registerShellTheme("drifter");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> VENDING = registerShellTheme("vending");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> VENDING = registerShellTheme("vending", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> BRIEFCASE = registerShellTheme("briefcase");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROENING = registerShellTheme("groening");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> BIG_BEN = registerShellTheme("big_ben");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> NUKA = registerShellTheme("nuka");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROENING = registerShellTheme("groening", true);
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> BIG_BEN = registerShellTheme("big_ben", true);
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> NUKA = registerShellTheme("nuka", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROWTH = registerShellTheme("growth");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PORTALOO = registerShellTheme("portaloo");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PAGODA = registerShellTheme("pagoda");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> LIFT = registerShellTheme("lift");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> LIFT = registerShellTheme("lift", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> CASTLE = registerShellTheme("castle");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
 
 
     public static ShellTheme getShellTheme(ResourceLocation resourceLocation){
@@ -52,11 +53,22 @@ public class ShellTheme implements Theme {
     }
 
     private ResourceLocation translationKey;
+    private boolean producesLight;
 
-    public ShellTheme(ResourceLocation translationKey){ this.translationKey = translationKey;}
+    public ShellTheme(ResourceLocation translationKey) {
+        this.translationKey = translationKey;
+    }
+    public ShellTheme(ResourceLocation translationKey, boolean producesLight) {
+        this.translationKey = translationKey;
+        this.producesLight = producesLight;
+    }
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
         return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+    }
+
+    private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, boolean producesLight){
+        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
     }
 
     @Override
@@ -67,6 +79,10 @@ public class ShellTheme implements Theme {
     @Override
     public Component getDisplayName() {
         return Component.translatable(this.getTranslationKey());
+    }
+
+    public boolean producesLight() {
+        return producesLight;
     }
 
 }

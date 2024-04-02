@@ -18,7 +18,10 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.model.blockentity.console.animations.CrystalConsoleAnimations;
+import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
 public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -796,15 +799,21 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
 
-        if (reactions.isFlying()) {
-            this.animate(reactions.ROTOR_ANIMATION, CrystalConsoleAnimations.FLIGHT, Minecraft.getInstance().player.tickCount);
-        } else {
-            if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
-                this.animate(globalConsoleBlock.liveliness, CrystalConsoleAnimations.IDLE, Minecraft.getInstance().player.tickCount);
+        if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
+            if (reactions.isFlying()) {
+                this.animate(reactions.ROTOR_ANIMATION, CrystalConsoleAnimations.FLIGHT, Minecraft.getInstance().player.tickCount);
+            } else {
+                if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
+                    this.animate(globalConsoleBlock.liveliness, CrystalConsoleAnimations.IDLE, Minecraft.getInstance().player.tickCount);
+                }
             }
         }
 
-        this.throttle.xRot = (reactions.isThrottleDown()) ? -25f : -32f;
+
+
+        float rot = -0.5f + ( 0.5f * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+
+        this.throttle.xRot = rot;
 
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

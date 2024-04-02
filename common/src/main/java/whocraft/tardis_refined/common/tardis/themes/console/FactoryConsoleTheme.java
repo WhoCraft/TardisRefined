@@ -10,17 +10,36 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
     @Override
     public ControlSpecification[] getControlSpecification() {
         return new ControlSpecification[] {
-                new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(0,0.6f,-1), EntityDimensions.scalable(0.125f, 0.1875f)),
-                new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.85f,0.55f,-0.425f), EntityDimensions.scalable(0.15F, 0.15F)),
-                new ControlSpecification(ConsoleControl.X, new Vector3f(-.275f, .575f, 0.75f), EntityDimensions.scalable(0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.Y, new Vector3f(-.275f, .54f, 0.875f), EntityDimensions.scalable(0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.Z, new Vector3f(-.275f, .5f, 1), EntityDimensions.scalable(0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(0.2750000059604645F, 0.6249999888241291F, 0.75F), EntityDimensions.scalable(0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(1f, 0.525f, 0.215f), EntityDimensions.scalable(0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(-0.06f, .5f, 1f), EntityDimensions.scalable(0.1f, 0.1f)),
-                new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.6000000238418579F, 0.6249999757856131F, -0.5750000234693289F), EntityDimensions.scalable(0.2F, 0.1F)),
-                new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(0.849999975413084F, 0.5250015258789062F, 0.41500015184283257F), EntityDimensions.scalable(0.15F, 0.1F)),
-                new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(-0.6250000353902578F, 0.550000011920929F, -0.8599998597055674F), EntityDimensions.scalable(0.1f, 0.1f))
+                new ControlSpecification(ConsoleControl.THROTTLE, new Vector3f(0.87f, 0.58f, -0.45f), EntityDimensions.scalable(0.13f, 0.12f)),
+                new ControlSpecification(ConsoleControl.X, new Vector3f(-0.29f, 0.65f, 0.73f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.Y, new Vector3f(-0.29f, 0.59f, 0.86f), EntityDimensions.scalable(0.13f, 0.12f)),
+                new ControlSpecification(ConsoleControl.Z, new Vector3f(-0.29f, 0.53f, 0.99f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.INCREMENT, new Vector3f(-0.07f, 0.54f, 1.00f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.ROTATE, new Vector3f(0.13f, 0.56f, 0.91f), EntityDimensions.scalable(0.13f, 0.12f)),
+                new ControlSpecification(ConsoleControl.RANDOM, new Vector3f(0.86f, 0.56f, 0.42f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.DOOR_TOGGLE, new Vector3f(-0.01f, 0.63f, -1.00f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.MONITOR, new Vector3f(-0.65f, 0.53f, -0.65f), EntityDimensions.scalable(0.25f, 0.25f)),
+                new ControlSpecification(ConsoleControl.DIMENSION, new Vector3f(-0.65f, 0.53f, -0.87f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.FAST_RETURN, new Vector3f(-1.04f, 0.55f, -0.16f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.READOUT, new Vector3f(-0.90f, 0.50f, 0.44f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.HANDBRAKE, new Vector3f(1.02f, 0.58f, -0.17f), EntityDimensions.scalable(0.13f, 0.13f)),
+
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.78f, 0.67f, 0.16f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.54f, 0.67f, 0.58f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.69f, 0.61f, 0.68f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.69f, 0.57f, 0.85f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.58f, 0.67f, 0.33f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(-0.04f, 0.70f, 0.71f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.12f, 0.70f, 0.71f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.27f, 0.65f, 0.72f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(-0.69f, 0.63f, 0.47f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(-0.75f, 0.63f, 0.33f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(-0.10f, 0.69f, -0.80f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.05f, 0.69f, -0.80f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.62f, 0.58f, -0.78f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.70f, 0.58f, -0.63f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(1.00f, 0.55f, 0.20f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ConsoleControl.GENERIC_NO_SHOW, new Vector3f(0.92f, 0.56f, -0.30f), EntityDimensions.scalable(0.13f, 0.13f))
         };
     }
 }

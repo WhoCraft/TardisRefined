@@ -22,6 +22,8 @@ public class NbtConstants {
 
     public static final String PATTERN = "pattern";
 
+    public static final String POWERED = "powered";
+
     public static final String TARDIS_IS_SETUP = "has_setup";
     public static final String TARDIS_INTERNAL_DOOR_ID = "internal_door_id";
     public static final String TARDIS_INTERNAL_DOOR_POSITION = "internal_door_pos";
@@ -36,6 +38,7 @@ public class NbtConstants {
     public static final String TARDIS_IM_GENERATED_CORRIDORS = "im_generated_corridors";
     public static final String TARDIS_IM_AIRLOCK_CENTER = "im_generated_airlock_center";
     public static final String TARDIS_CURRENT_HUM = "tardis_current_hum";
+    public static final String TARDIS_IM_FUEL_FOR_INT_CHANGE = "tardis_fuel_for_int_change";
 
     // External Readings Data
     public static final String TARDIS_EXT_CURRENT_THEME = "terd_current_theme";
@@ -59,6 +62,9 @@ public class NbtConstants {
     public static final String CONTROL_SIZE_HEIGHT = "console_size_height";
 
     public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
+    public static final String IS_HANDBRAKE_ON = "is_handbrake_on";
+    public static final String THROTTLE_STAGE = "throttle_stage";
+    public static final String HANDBRAKE_ENGAGED = "handbrake_engaged";
     public static final String CONTROL_INCREMENT_INDEX = "ctrl_increment_index";
     public static final String CONTROL_CURRENT_EXT = "ctrl_current_ext";
     public static final String CONTROL_AUTOLAND = "ctrl_autoland";
@@ -70,6 +76,14 @@ public class NbtConstants {
     public static final String LOCATION_DIMENSION_PATH = "_location_dimension_path";
     public static final String KEYCHAIN = "keychain";
 
+    // Flight
+    public static final String FLIGHT_DISTANCE = "flight_distance";
+    public static final String DISTANCE_COVERED = "distance_covered";
+
+
+    // Piloting Manager
+    public static final String FUEL = "fuel";
+    public static final String MAXIMUM_FUEL = "MaximumFuel";
 
     public static TardisNavLocation getTardisNavLocation(CompoundTag tag, String prefix, TardisLevelOperator operator) {
         BlockPos position = NbtUtils.readBlockPos(tag.getCompound(prefix + NbtConstants.LOCATION_POSITION));

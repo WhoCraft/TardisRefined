@@ -1,19 +1,25 @@
 package whocraft.tardis_refined.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.joml.Matrix4f;
 import whocraft.tardis_refined.TRConfig;
+
+import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.items.GlassesItem;
+import whocraft.tardis_refined.registry.ItemRegistry;
+
 
 public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
@@ -40,37 +46,48 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
         if (this.shouldShowName(entity)) {
             this.renderNameTag(entity, entity.getDisplayName(), poseStack, multiBufferSource, i);
         }
+
+        Level entityLevel = entity.level();
+        if (Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof GlassesItem) {
+            if (entity.isTickingDown()) {
+                if (entityLevel.random.nextInt(20) == 0) {
+                    entityLevel.addParticle(TRParticles.GALLIFREY.get(), entity.getRandomX(0.1), entity.blockPosition().getY(), entity.getRandomZ(0.1), 0.0, 0.0, 0.0);
+                }
+            }
+        }
     }
 
     @Override
     protected void renderNameTag(ControlEntity entity, Component component, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLightCoords) {
-        MutableComponent textComponent = component.copy();
-        textComponent.withStyle(style -> style
-                .applyFormats(ChatFormatting.BOLD, (entity.level().getGameTime() % 60 == 0) ?  ChatFormatting.GOLD : ChatFormatting.YELLOW)
-        );
 
         double distanceSquared = this.entityRenderDispatcher.distanceToSqr(entity);
-        if (!(distanceSquared > 4096.0)) {
+        if (!(distanceSquared > 2050.0)) {
+
             boolean isSolid = !entity.isDiscrete();
-            float boundingBoxHeight = entity.getNameTagOffsetY();
-            int verticalTextOffset = 35;
+            float boundingBoxHeight = entity.getNameTagOffsetY() - 0.3f;
+            int verticalTextOffset = 10;
             poseStack.pushPose();
             poseStack.translate(0.0, boundingBoxHeight, 0.0);
 
             poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-            float scale = 0.010F;
+            float scale = 0.007F;
             poseStack.scale(-scale, -scale, scale);
 
             Matrix4f textMatrix = poseStack.last().pose();
-            float textBackgroundOpacity = Minecraft.getInstance().options.getBackgroundOpacity(0.5F);
 
-            int textColor = (int) (textBackgroundOpacity * 255.0F) << 24;
             Font font = this.getFont();
+
             float textHorizontalPosition = (float) (-font.width(component) / 2);
 
-            font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, 553648127, false, textMatrix, multiBufferSource, Font.DisplayMode.SEE_THROUGH, textColor, packedLightCoords);
+            FormattedCharSequence sequence = component.getVisualOrderText();
+
+            font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
+
+            // Damage used for the icon later on. Left for Jeryn.
+            int entityHealth = entity.getControlHealth();
+
             if (isSolid) {
-                font.drawInBatch(textComponent, textHorizontalPosition, (float) verticalTextOffset, -1, false, textMatrix, multiBufferSource, Font.DisplayMode.NORMAL, 0, packedLightCoords);
+                font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
             }
 
             poseStack.popPose();

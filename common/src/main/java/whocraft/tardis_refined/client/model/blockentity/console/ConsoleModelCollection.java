@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ConsoleModelCollection {
 
-    ConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel;
+    ConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel, refurbishedConsoleModel;
 
     public static Map<ResourceLocation, ConsoleUnit> CONSOLE_MODELS = new HashMap<>();
     
@@ -36,6 +36,7 @@ public class ConsoleModelCollection {
         victorianConsoleModel = new VictorianConsoleModel(context.bakeLayer((ModelRegistry.VICTORIAN_CONSOLE)));
         mystConsoleModel = new MystConsoleModel(context.bakeLayer((ModelRegistry.MYST_CONSOLE)));
         initiativeConsoleModel = new InitiativeConsoleModel(context.bakeLayer((ModelRegistry.INITIATIVE_CONSOLE)));
+        refurbishedConsoleModel = new RefurbishedConsoleModel(context.bakeLayer((ModelRegistry.REFURBISHED_CONSOLE)));
 
         CONSOLE_MODELS.put(ConsoleTheme.FACTORY.getId(), factoryConsoleModel);
         CONSOLE_MODELS.put(ConsoleTheme.NUKA.getId(), nukaConsoleModel);
@@ -46,6 +47,7 @@ public class ConsoleModelCollection {
         CONSOLE_MODELS.put(ConsoleTheme.VICTORIAN.getId(), victorianConsoleModel);
         CONSOLE_MODELS.put(ConsoleTheme.MYST.getId(), mystConsoleModel);
         CONSOLE_MODELS.put(ConsoleTheme.INITIATIVE.getId(), initiativeConsoleModel);
+        CONSOLE_MODELS.put(ConsoleTheme.REFURBISHED.getId(), refurbishedConsoleModel);
 
     }
 

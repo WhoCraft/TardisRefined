@@ -1,6 +1,0 @@
-{
-  "type": "neoforge:add_features",
-  "biomes": "#tardis_refined:has_structure/tardis_root_cluster",
-  "features": "tardis_refined:tardis_root_cluster",
-  "step": "local_modifications"
-}

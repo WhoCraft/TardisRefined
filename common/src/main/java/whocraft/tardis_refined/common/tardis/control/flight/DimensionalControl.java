@@ -4,8 +4,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
@@ -16,7 +16,9 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,8 +56,6 @@ public class DimensionalControl extends Control {
     private boolean changeDim(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean forward) {
         if (!operator.getLevel().isClientSide()) {
 
-
-
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
@@ -70,11 +70,23 @@ public class DimensionalControl extends Control {
             var currentIndex = dimensions.indexOf(pilotManager.getTargetLocation().getLevel());
             var nextIndex = forward ? ( (currentIndex >= dimensions.size()-1) ? 0 : currentIndex + 1) : ((currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1);
 
+            var nextDimension = dimensions.get(nextIndex);
+
+            // We want to filter out the end if the end hasn't been completed whilst the player is in flight. We can keep it pre-flight because we do some fancy sounds to tell the player
+            // it's not an option.
+            if (nextDimension.dimension() == Level.END && pilotManager.isInFlight()) {
+                if (!TardisHelper.hasTheEndBeenCompleted(pilotManager.getTargetLocation().getLevel())) {
+                    nextIndex += forward ? 1 : -1;
+                }
+            }
+
             pilotManager.getTargetLocation().setLevel(dimensions.get(nextIndex));
 
             PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);
 
-            operator.getTardisFlightEventManager().calculateTravelLogic();
+            if (pilotManager.isInFlight()) {
+                operator.getPilotingManager().recalculateFlightDistance();
+            }
             return true;
         }
         return false;

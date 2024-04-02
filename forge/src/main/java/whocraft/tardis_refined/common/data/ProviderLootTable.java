@@ -11,7 +11,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.BlockRegistry;
 import whocraft.tardis_refined.registry.EntityRegistry;
 import whocraft.tardis_refined.registry.ItemRegistry;
@@ -48,7 +47,7 @@ public class ProviderLootTable extends LootTableProvider {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
             for (Block entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
                 ResourceLocation blockId = BlockRegistry.BLOCKS.getRegistry().getKey(entry);
-                if(!blockId.toString().contains("minecraft")) {
+                if (!blockId.toString().contains("minecraft")) {
                     blocks.add(entry);
                 }
             }

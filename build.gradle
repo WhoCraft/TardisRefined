@@ -26,24 +26,6 @@ subprojects {
     }
 }
 
-def gitHash = { ->
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'rev-parse', '--short', 'HEAD'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
-}
-
-def gitBranch() {
-    def branch = ""
-    def proc = "git rev-parse --abbrev-ref HEAD".execute()
-    proc.in.eachLine { line -> branch = line.replace('/', '~') }
-    proc.err.eachLine { line -> println line }
-    proc.waitFor()
-    branch
-}
-
 
 allprojects {
     apply plugin: "java"
@@ -51,7 +33,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     archivesBaseName = rootProject.jar_name
-    version = "${rootProject.minecraft_version}-${rootProject.mod_version}-${gitHash()}-${gitBranch()}"
+    version = "${rootProject.minecraft_version}-${rootProject.mod_version}"
     group = rootProject.maven_group
 
     repositories {

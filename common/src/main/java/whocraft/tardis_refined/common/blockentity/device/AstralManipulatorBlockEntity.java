@@ -103,7 +103,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     }
 
 
-    public void OnRightClick(ItemStack itemStack) {
+    public void onRightClick(ItemStack itemStack) {
         if (itemStack.getItem() instanceof ScrewdriverItem screwdriverItem) {
             if (!screwdriverItem.isScrewdriverMode(itemStack, ScrewdriverMode.DRAWING)) {
                 screwdriverItem.setScrewdriverMode(itemStack, ScrewdriverMode.DRAWING, getBlockPos(), null);

@@ -11,6 +11,7 @@ import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.BlockRegistry;
 
@@ -26,7 +27,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer"))).build());
         return builder.toJson();
     }
-
 
 
     public JsonObject terraformer(Block block) {
@@ -62,6 +62,20 @@ public class TRBlockModelProvider extends BlockStateProvider {
         return getVariantBuilder(block).partialState().modelForState().modelFile(cubeAll(block)).addModel().toJson();
     }
 
+    public JsonObject antiGravityBlock(Block block) {
+        VariantBlockStateBuilder builder = getVariantBuilder(block);
+        ResourceLocation modelLocation0 = new ResourceLocation(TardisRefined.MODID, "block/gravity_well");
+
+        for (int space = 0; space <= 5; space++) {
+            ResourceLocation modelLocation = space == 0 ? modelLocation0 : new ResourceLocation(TardisRefined.MODID, "block/gravity_well_" + space);
+            builder.partialState().with(AntiGravityBlock.SPACE, space).modelForState()
+                    .modelFile(models().getExistingFile(modelLocation))
+                    .addModel();
+        }
+        return builder.toJson();
+    }
+
+
     @Override
     protected void registerStatesAndModels() {
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
@@ -80,7 +94,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(BlockRegistry.ARS_EGG.get());
 
 
-
         threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
         threeDeeRotating(BlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
 
@@ -93,13 +106,14 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
         customLocation(BlockRegistry.FOOLS_STONE.get());
 
-        customLocation(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
+        customLocation(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/astral_manipulator"));
         customLocation(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
         customLocation(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
         customLocation(BlockRegistry.ZEITON_ORE.get());
         customLocation(BlockRegistry.ZEITON_ORE_DEEPSLATE.get());
         customLocation(BlockRegistry.ZEITON_BLOCK.get());
 
+        antiGravityBlock(BlockRegistry.GRAVITY_WELL.get());
 
         /*
          **Fences**
@@ -116,7 +130,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
 
 
     }
-
 
 
 }

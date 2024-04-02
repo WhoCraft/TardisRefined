@@ -33,11 +33,13 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(SoundRegistry.BULKHEAD_LOCKED.get(), basicSound("bulkhead_locked", new ResourceLocation(TardisRefined.MODID, "blocks/bulkhead_locked")));
         add(SoundRegistry.HUM_CORAL.get(), basicSound("hum_coral", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humcoral")));
         add(SoundRegistry.INTERIOR_CREAKS.get(), basicSound("interior_creaks", new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_1"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_2"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_3")));
-
-
+        add(SoundRegistry.FLIGHT_FAIL_START.get(), basicSound("flight_fail_start", new ResourceLocation(TardisRefined.MODID, "tardis/flight_fail_start")));
+        add(SoundRegistry.CONSOLE_POWER_ON.get(), basicSound("console_power_on", new ResourceLocation(TardisRefined.MODID, "tardis/console_power_on")));
         add(SoundRegistry.SCREWDRIVER_SHORT.get(), basicSound("screwdriver_short", new ResourceLocation(TardisRefined.MODID, "tools/screwdriver/screwdriver_short")));
         add(SoundRegistry.SCREWDRIVER_CONNECT.get(), basicSound("screwdriver_connect", new ResourceLocation(TardisRefined.MODID, "tools/screwdriver/screwdriver_connect")));
         add(SoundRegistry.SCREWDRIVER_DISCARD.get(), basicSound("screwdriver_discard", new ResourceLocation(TardisRefined.MODID, "tools/screwdriver/screwdriver_discard")));
+        add(SoundRegistry.GRAVITY_TUNNEL.get(), basicSound("gravity_tunnel", new ResourceLocation(TardisRefined.MODID, "gravity_tunnel")));
+        add(SoundRegistry.INTERIOR_VOICE.get(), basicSound("interior_voice", new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w1"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w2"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w3"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w4")));
     }
 
 

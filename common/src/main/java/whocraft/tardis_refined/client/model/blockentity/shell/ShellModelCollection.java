@@ -17,10 +17,10 @@ public class ShellModelCollection {
 
     private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
             presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel,
-            portalooModel, pagodaModel, liftModel, hieroglyphModel, castleShellModel;
+            portalooModel, pagodaModel, liftModel, hieroglyphModel, castleShellModel, pathfinderShellModel;
 
     private static ShellDoorModel factoryDoorModel, policeBoxDoorModel, phoneBoothDoorModel, mysticDoorModel, drifterDoorModel, presentDoorModel, vendingDoorModel, briefcaseDoorModel,
-            groeningDoorModel, bigBenDoorModel, nukaDoorModel, growthDoorModel, portalooDoorModel, pagodaDoorModel, liftDoorModel, hieroglyphDoorModel, castleDoorModel;
+            groeningDoorModel, bigBenDoorModel, nukaDoorModel, growthDoorModel, portalooDoorModel, pagodaDoorModel, liftDoorModel, hieroglyphDoorModel, castleDoorModel, pathfinderDoorModel;
 
     public static Map<ResourceLocation, ShellEntry> SHELL_MODELS = new HashMap<>();
 
@@ -49,6 +49,7 @@ public class ShellModelCollection {
         liftModel = new LiftShellModel(context.bakeLayer((ModelRegistry.LIFT_SHELL)));
         hieroglyphModel = new HieroglyphModel(context.bakeLayer((ModelRegistry.HIEROGLYPH_SHELL)));
         castleShellModel = new CastleShellModel(context.bakeLayer((ModelRegistry.CASTLE_SHELL)));
+        pathfinderShellModel = new PathfinderShellModel(context.bakeLayer((ModelRegistry.PATHFINDER_SHELL)));
 
         // Doors
         factoryDoorModel = new FactoryDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)));
@@ -68,6 +69,7 @@ public class ShellModelCollection {
         liftDoorModel = new LiftShellDoorModel(context.bakeLayer((ModelRegistry.LIFT_DOOR)));
         hieroglyphDoorModel = new HieroglyphShellDoor(context.bakeLayer((ModelRegistry.HIEROGLYPH_DOOR)));
         castleDoorModel = new CastleShellDoorModel(context.bakeLayer((ModelRegistry.CASTLE_DOOR)));
+        pathfinderDoorModel = new PathfinderDoorModel(context.bakeLayer((ModelRegistry.PATHFINDER_DOOR)));
 
         TardisEvents.SHELLENTRY_MODELS_SETUP.invoker().setUpShellAndInteriorModels(context);
 
@@ -88,6 +90,7 @@ public class ShellModelCollection {
         registerShellEntry(ShellTheme.LIFT.get(), liftModel, liftDoorModel);
         registerShellEntry(ShellTheme.HIEROGLYPH.get(), hieroglyphModel, hieroglyphDoorModel);
         registerShellEntry(ShellTheme.CASTLE.get(), castleShellModel, castleDoorModel);
+        registerShellEntry(ShellTheme.PATHFINDER.get(), pathfinderShellModel, pathfinderDoorModel);
     }
 
     public static void registerShellEntry(ShellTheme theme, ShellModel shellModel, ShellDoorModel shellDoorModel){

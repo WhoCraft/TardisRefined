@@ -1,18 +1,17 @@
 package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
+import net.minecraft.world.phys.AABB;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
 
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.OPEN;
@@ -26,8 +25,25 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, BulkHeadDoorBlockEntity blockEntity) {
-        Player player = level.getNearestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), 2.5f, false);            toggleDoor(level, blockPos, blockState, player != null);
-        toggleDoor(level, blockPos, blockState, player != null);
+
+        if (blockState.getValue(LOCKED)) {
+            return;
+        }
+
+        double detectionRadius = 1.5;
+        double centerX = blockPos.getX() + 0.5;
+        double centerY = blockPos.getY() + 0.5;
+        double centerZ = blockPos.getZ() + 0.5;
+
+        for (Entity entity : level.getEntitiesOfClass(Entity.class, new AABB(centerX - detectionRadius, centerY - detectionRadius, centerZ - detectionRadius, centerX + detectionRadius, centerY + detectionRadius, centerZ + detectionRadius))) {
+            if (entity instanceof LivingEntity) {
+                toggleDoor(level, blockPos, blockState, true);
+                return;
+            }
+        }
+
+        toggleDoor(level, blockPos, blockState, false);
+
     }
 
     /**
@@ -39,11 +55,6 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
      * @param isOpen     The current open state of the door.
      */
     public void toggleDoor(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
-
-        if(blockState.getValue(LOCKED) && !blockState.getValue(OPEN)){
-            level.setBlock(blockPos, blockState.setValue(OPEN, false), Block.UPDATE_CLIENTS);
-            return;
-        }
 
         if(level.getBlockState(blockPos).hasProperty(OPEN) && level.getBlockState(blockPos).getValue(OPEN) != isOpen) {
             level.playSound(null, blockPos, !isOpen ? SoundEvents.PISTON_EXTEND :  SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);

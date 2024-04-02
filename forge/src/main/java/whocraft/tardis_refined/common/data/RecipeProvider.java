@@ -29,6 +29,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.PATTERN_MANIPULATOR.get()).pattern("RCL").pattern("EAE").pattern(" S ").define('S', Items.STICK).define('E', Items.REDSTONE).define('A', Items.IRON_INGOT).define('R', Items.RED_DYE).define('C', Items.GREEN_DYE).define('L', Items.LAPIS_LAZULI).unlockedBy("has_crafting_table", has(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())).save(consumer);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemRegistry.DRILL.get()).pattern(" P ").pattern("PCP").pattern("IRI").define('P', Items.IRON_PICKAXE).define('R', Items.REDSTONE).define('I', Items.IRON_INGOT).define('C', Items.COBBLESTONE).unlockedBy("has_crafting_table", has(Items.REDSTONE)).save(consumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, ItemRegistry.GLASSES.get()).pattern("S S").pattern("S S").pattern("GZG").define('S', Items.STICK).define('G', Items.GLASS_PANE).define('Z', ItemRegistry.ZEITON_INGOT.get()).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
 
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemRegistry.KEY.get()).requires(Items.IRON_INGOT).requires(Items.TRIPWIRE_HOOK).unlockedBy("has_crafting_table", has(Blocks.TRIPWIRE_HOOK)).save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, BlockRegistry.GLOBAL_DOOR_BLOCK.get()).requires(Items.IRON_INGOT).requires(Items.TRIPWIRE_HOOK).requires(Items.IRON_DOOR).unlockedBy("has_crafting_table", has(Blocks.IRON_DOOR)).save(consumer);
@@ -36,7 +37,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()).requires(ItemRegistry.ZEITON_INGOT.get()).requires(Items.COPPER_BLOCK).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.TOOLS, BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()).requires(ItemRegistry.ZEITON_INGOT.get()).requires(Items.IRON_BLOCK).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.ZEITON_BLOCK.get()).pattern("ZZZ").pattern("ZZZ").pattern("ZZZ").define('Z',  ItemRegistry.ZEITON_INGOT.get()).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.ZEITON_BLOCK.get()).pattern("ZZZ").pattern("ZZZ").pattern("ZZZ").define('Z', ItemRegistry.ZEITON_INGOT.get()).unlockedBy("has_crafting_table", has(ItemRegistry.ZEITON_INGOT.get())).save(consumer);
 
         // Smelting
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(ItemRegistry.RAW_ZEITON.get()), RecipeCategory.MISC, ItemRegistry.ZEITON_INGOT.get(), 0.7F, 300).unlockedBy("has_any_zeiton", has(ItemRegistry.RAW_ZEITON.get())).save(consumer, new ResourceLocation(TardisRefined.MODID, "smelt_zeiton"));

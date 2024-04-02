@@ -2,9 +2,11 @@ package whocraft.tardis_refined.common.block.console;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -12,15 +14,19 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RedStoneOreBlock;
+import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -30,13 +36,19 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.ClientHelper;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 
 public class GlobalConsoleBlock extends BaseEntityBlock {
 
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+
     public GlobalConsoleBlock(Properties properties) {
+
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, true));
     }
 
     @Nullable
@@ -53,6 +65,14 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
+        builder.add(POWERED);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
+        BlockState state = super.getStateForPlacement(blockPlaceContext);
+
+        return state.setValue(POWERED, false);
     }
 
 
@@ -95,15 +115,24 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
         super.animateTick(blockState, level, blockPos, randomSource);
 
         TardisClientData clientData = TardisClientData.getInstance(level.dimension());
+
+        if (!blockState.getValue(POWERED)) {
+            return;
+        }
+
         if (clientData != null) {
 
-            var xCord = (double) blockPos.getX() + randomSource.nextFloat() * 1.25;
-            var yCord = (double) blockPos.getY() + randomSource.nextDouble() + 1D;
-            var zCord = (double) blockPos.getZ() + randomSource.nextFloat() * 1.25;
+            var xCord = (double) blockPos.getX() + randomSource.nextFloat() * 1.5;
+            var yCord = (double) blockPos.getY() + randomSource.nextDouble() + 0.5D;
+            var zCord = (double) blockPos.getZ() + randomSource.nextFloat() * 1.5;
 
-            if (clientData.isFlying() && level.random.nextInt(4) == 0) {
+            if (level.random.nextInt(5) == 0) {
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.05D, 0.0D);
+            }
 
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.1D, 0.0D);
+            if (clientData.isFlying() && level.random.nextInt(1) == 0) {
+
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.CLOUD, new Vec3(xCord, yCord, zCord), 0.0D, 0.05D, 0.0D);
             }
 
             if (clientData.isOnCooldown() || clientData.isCrashing()) {
@@ -130,6 +159,31 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
         // Creative only: Quickly complete the cooldown.
         if (level instanceof ServerLevel serverLevel) {
+
+            TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
+                TardisPilotingManager pilotingManager = operator.getPilotingManager();
+
+                if (serverLevel.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+                    if (pilotingManager.getCurrentConsole() != null) {
+                        if (pilotingManager.getCurrentConsole() != consoleBlockEntity) {
+
+                            if (!pilotingManager.isInFlight()) {
+                                pilotingManager.setCurrentConsole(consoleBlockEntity);
+
+                            } else {
+                                PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
+                            }
+
+                        }
+                    } else {
+                        pilotingManager.setCurrentConsole(consoleBlockEntity);
+                        consoleBlockEntity.getUpdatePacket();
+                    }
+                }
+
+            });
+
+
             if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
                 var operatorOptional = TardisLevelOperator.get(serverLevel);
                 if (operatorOptional.isPresent()) {

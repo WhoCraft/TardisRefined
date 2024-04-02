@@ -121,3 +121,4 @@ run/
 /common/bin/
 /fabric/bin/main/
 /forge/bin/main/
+/forge/src/generated/

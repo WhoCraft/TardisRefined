@@ -37,6 +37,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
         addSound(SoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
         addSound(SoundRegistry.ARS_HUM.get(), "ARS Tree Hum");
+        addSound(SoundRegistry.FLIGHT_FAIL_START.get(), "Failing TARDIS groans");
+        addSound(SoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
+        addSound(SoundRegistry.INTERIOR_VOICE.get(), "...?");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -62,6 +65,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ZEITON_ORE.get(), "Zeiton Ore");
         add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
         add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
+        add(BlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -73,6 +77,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
         add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(ItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
+        add(ItemRegistry.GLASSES.get(), "AR Glasses");
 
 
 
@@ -91,11 +96,21 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ConsoleControl.MONITOR, "Computer Bank");
         addControl(ConsoleControl.FAST_RETURN, "Fast Return");
         addControl(ConsoleControl.DIMENSION, "Dimension");
+        addControl(ConsoleControl.HANDBRAKE, "Handbrake");;
+        addControl(ConsoleControl.GENERIC_NO_SHOW, "Switch");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
+        add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, "Cannot update console block whilst in flight.");
+        add(ModMessages.HARDWARE_OFFLINE, "Hardware offline.");
+        add(ModMessages.HANDBRAKE_ENGAGED, "Engaged.");
+        add(ModMessages.HANDBRAKE_DISENGAGED, "Disengaged.");
+        add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight.");
+        add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage.");
+        add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight.");
+        add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
@@ -173,6 +188,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.LIFT.getId(), "Lift");
         addShell(ShellTheme.HIEROGLYPH.getId(), "Hieroglyph");
         addShell(ShellTheme.CASTLE.getId(), "Castle");
+        addShell(ShellTheme.PATHFINDER.getId(), "Pathfinder");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
@@ -183,6 +199,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
+
+        /*Overlay Messages*/
+        add(ModMessages.ASCEND_KEY, "Ascend: %s");
+        add(ModMessages.DESCEND_KEY, "Descend: %s");
 
         /*Upgrades*/
         addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
@@ -199,7 +219,10 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
         addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
+
+
     }
+
 
     public void addControl(ConsoleControl control, String name) {
         add(control.getTranslationKey(), name);
