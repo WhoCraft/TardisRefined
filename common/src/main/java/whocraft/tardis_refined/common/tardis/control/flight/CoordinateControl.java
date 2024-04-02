@@ -2,7 +2,9 @@ package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
@@ -15,8 +17,15 @@ public class CoordinateControl extends Control {
 
     private CoordinateButton button;
 
-    public CoordinateControl(CoordinateButton button) {
+    private CoordinateControl(CoordinateButton button, ResourceLocation id, String langId) {
+        super(id, langId);
         this.button = button;
+    }
+    private CoordinateControl(CoordinateButton button, ResourceLocation id) {
+        this(button, id, "control.tardis_refined.cord_" + button.name().toLowerCase());
+    }
+    public CoordinateControl(CoordinateButton button) {
+        this(button, new ResourceLocation(TardisRefined.MODID, button.name().toLowerCase() + "_cord"));
     }
 
     @Override

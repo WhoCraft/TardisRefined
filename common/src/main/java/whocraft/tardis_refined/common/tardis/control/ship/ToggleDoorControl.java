@@ -1,7 +1,9 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -10,6 +12,10 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 
 public class ToggleDoorControl extends Control {
+
+    public ToggleDoorControl() {
+        super(new ResourceLocation(TardisRefined.MODID, "door_toggle"));
+    }
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {

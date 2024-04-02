@@ -1,9 +1,11 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
@@ -23,6 +25,9 @@ import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
 
+    public DimensionalControl() {
+        super(new ResourceLocation(TardisRefined.MODID, "dimension"));
+    }
     private List<ServerLevel> getAllowedDimensions(MinecraftServer server) {
         var filteredDimensions = new ArrayList<ServerLevel>();
         var filteredLevels = server.getAllLevels();

@@ -56,6 +56,7 @@ public class TardisRefined {
         Upgrades.UPGRADE_DEFERRED_REGISTRY.register();
         ConsoleTheme.CONSOLE_THEMES.register();
         ShellTheme.SHELL_THEMES.register();
+        ControlRegistry.CONTROLS.register();
         ArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.register();
         TagKeys.init();
         TardisNetwork.init();
