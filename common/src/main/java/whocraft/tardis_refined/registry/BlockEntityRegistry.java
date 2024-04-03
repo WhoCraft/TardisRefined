@@ -12,6 +12,7 @@ import whocraft.tardis_refined.common.blockentity.device.FlightDetectorBlockEnti
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
+import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
@@ -35,5 +36,6 @@ public class BlockEntityRegistry {
     public static final RegistrySupplier<BlockEntityType<ConsoleConfigurationBlockEntity>> CONSOLE_CONFIGURATION = BLOCK_ENTITY_TYPES.register("console_configuration", () -> BlockEntityType.Builder.of(ConsoleConfigurationBlockEntity::new, BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<FlightDetectorBlockEntity>> FLIGHT_DETECTOR = BLOCK_ENTITY_TYPES.register("flight_detector", () -> BlockEntityType.Builder.of(FlightDetectorBlockEntity::new, BlockRegistry.FLIGHT_DETECTOR.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<AstralManipulatorBlockEntity>> ASTRAL_MANIPULATOR = BLOCK_ENTITY_TYPES.register("astral_manipulator", () -> BlockEntityType.Builder.of(AstralManipulatorBlockEntity::new, BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<EyeBlockEntity>> THE_EYE = BLOCK_ENTITY_TYPES.register("the_eye", () -> BlockEntityType.Builder.of(EyeBlockEntity::new, BlockRegistry.THE_EYE.get()).build(null));
 
 }
