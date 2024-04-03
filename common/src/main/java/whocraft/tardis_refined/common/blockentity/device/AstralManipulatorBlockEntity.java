@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
@@ -239,10 +240,21 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                 List<ItemEntity> droppedItems = getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(pointABlockPos, pointBBlockPos).inflate(1));
                 droppedItems.forEach(Entity::discard);
 
-                // TODO: Make this system also accept placing a structure.
-                ItemStack itemStack = new ItemStack(recipe.recipeOutput.asItem());
-                ItemEntity item = new ItemEntity(level, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1, getBlockPos().getZ() + 0.5f, itemStack);
-                level.addFreshEntity(item);
+                if (recipe.recipeOutputBlock != null) {
+                    Vec3 centerVector =  new AABB(pointABlockPos, pointBBlockPos).getCenter();
+                    BlockPos centerPos = new BlockPos((int) centerVector.x, pointABlockPos.getY(), (int) centerVector.z);
+
+                    Block block = recipe.recipeOutputBlock;
+                    level.setBlock(centerPos, block.defaultBlockState(), 3);
+
+                } else {
+                    // TODO: Make this system also accept placing a structure.
+                    ItemStack itemStack = new ItemStack(recipe.recipeOutputItem.asItem());
+                    ItemEntity item = new ItemEntity(level, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1, getBlockPos().getZ() + 0.5f, itemStack);
+                    level.addFreshEntity(item);
+                }
+
+
 
                 return;
             }

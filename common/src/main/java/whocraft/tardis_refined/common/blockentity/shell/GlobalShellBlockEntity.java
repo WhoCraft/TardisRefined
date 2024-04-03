@@ -30,13 +30,13 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), blockPos, blockState);
-        this.shellTheme = ShellTheme.FACTORY.getId();
+        this.shellTheme = ShellTheme.HALF_BAKED.getId();
         this.basePattern = this.pattern();
     }
 
     public ResourceLocation theme(){
         if (this.shellTheme == null){
-            this.shellTheme = ShellTheme.FACTORY.getId();
+            this.shellTheme = ShellTheme.HALF_BAKED.getId();
         }
         return this.shellTheme;
     }

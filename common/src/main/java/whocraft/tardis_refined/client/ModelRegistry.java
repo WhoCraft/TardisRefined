@@ -5,6 +5,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.device.ArtronPillarBlockModel;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
 import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
@@ -54,6 +55,7 @@ public class ModelRegistry {
     public static ModelLayerLocation HIEROGLYPH_SHELL;
     public static ModelLayerLocation CASTLE_SHELL;
     public static ModelLayerLocation PATHFINDER_SHELL;
+    public static ModelLayerLocation HALF_BAKED_SHELL;
 
 
     public static ModelLayerLocation ROOT_SHELL_DOOR;
@@ -75,10 +77,12 @@ public class ModelRegistry {
     public static ModelLayerLocation HIEROGLYPH_DOOR;
     public static ModelLayerLocation CASTLE_DOOR;
     public static ModelLayerLocation PATHFINDER_DOOR;
+    public static ModelLayerLocation HALF_BAKED_DOOR;
 
 
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
+    public static ModelLayerLocation ARTRON_PILLAR;
 
 
     public static void init() {
@@ -118,6 +122,7 @@ public class ModelRegistry {
         HIEROGLYPH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_shell"), "hieroglyph_shell"), HieroglyphModel::createBodyLayer);
         CASTLE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_shell"), "castle_shell"), CastleShellModel::createBodyLayer);
         PATHFINDER_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pathfinder_shell"), "pathfinder_shell"), PathfinderShellModel::createBodyLayer);
+        HALF_BAKED_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "half_baked_shell"), "half_baked_shell"), HalfBakedShellModel::createBodyLayer);
 
 
         ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
@@ -139,9 +144,11 @@ public class ModelRegistry {
         HIEROGLYPH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
         CASTLE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
         PATHFINDER_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pathfinder_door"), "pathfinder_door"), PathfinderShellModel::createBodyLayer);
+        HALF_BAKED_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "half_baked_door"), "half_baked_door"), HalfBakedDoorModel::createBodyLayer);
 
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
         BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
+        ARTRON_PILLAR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "artron_pillar"), "artron_pillar"), ArtronPillarBlockModel::createBodyLayer);
 
     }
 

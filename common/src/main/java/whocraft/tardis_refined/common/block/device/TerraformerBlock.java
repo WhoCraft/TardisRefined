@@ -135,7 +135,7 @@ public class TerraformerBlock extends Block {
                                 level.destroyBlock(blockPos, true);
                             } else {
                                 if (interiorManager.isCave()) {
-                                    interiorManager.prepareDesktop(TardisDesktops.FACTORY_THEME);
+                                    interiorManager.prepareDesktop(TardisDesktops.TERRAFORMED);
                                     destroyStructure(serverLevel, blockPos);
                                     serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
                                 }
@@ -148,9 +148,6 @@ public class TerraformerBlock extends Block {
                 }
             }
         }
-
-
-
 
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }

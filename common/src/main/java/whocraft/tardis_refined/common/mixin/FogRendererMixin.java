@@ -28,7 +28,7 @@ public class FogRendererMixin {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
             if (TardisHelper.isInArsArea(blockPosition)) {
-                RenderSystem.setShaderFogStart(-8);
+                RenderSystem.setShaderFogStart(-30);
                 RenderSystem.setShaderFogEnd(60 * 0.5F);
                 RenderSystem.setShaderFogShape(FogShape.SPHERE);
             }

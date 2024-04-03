@@ -12,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -150,6 +151,16 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void tick(ServerLevel level) {
 
+        if (level.getBlockState(new BlockPos(1013, 73, 55)).getBlock() == Blocks.GOLD_BLOCK) {
+            level.setBlock(new BlockPos(1013, 73, 55), Blocks.AIR.defaultBlockState(), 3);
+
+
+            this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
+            operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
+            setHumEntry(TardisHums.getDefaultHum());
+
+        }
+
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
@@ -176,7 +187,10 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.FACTORY.getId(), true);
+
+
+
+                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), true);
                 this.operator.getExteriorManager().placeExteriorBlock(operator, operator.getExteriorManager().getLastKnownLocation());
                 this.isGeneratingDesktop = false;
             }
@@ -319,17 +333,18 @@ public class TardisInteriorManager extends BaseHandler {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
 
-            if (theme != TardisDesktops.DEFAULT_OVERGROWN_THEME) {
+            if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) {
                 // Generate Corridors
                 if (!this.hasGeneratedCorridors) {
                     TardisArchitectureHandler.generateEssentialCorridors(serverLevel); // This causes a little lag, could be worth a fix.
                     this.hasGeneratedCorridors = true;
                 }
+
+                this.operator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE);
             }
 
             // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
-
             setCurrentTheme(theme);
 
         }

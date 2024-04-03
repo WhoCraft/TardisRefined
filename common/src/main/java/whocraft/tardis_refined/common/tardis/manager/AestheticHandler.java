@@ -29,7 +29,7 @@ public class AestheticHandler extends BaseHandler {
     private final TardisLevelOperator tardisOperator;
 
     // Shell
-    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
+    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
     private HumEntry currentHum = TardisHums.getDefaultHum();
 
@@ -50,7 +50,7 @@ public class AestheticHandler extends BaseHandler {
 
     public ResourceLocation getShellTheme() {
         if(shellTheme.getNamespace().contains("minecraft")){
-            return ShellTheme.FACTORY.getId();
+            return ShellTheme.HALF_BAKED.getId();
         }
         return shellTheme;
     }
@@ -88,6 +88,7 @@ public class AestheticHandler extends BaseHandler {
                 lastKnownLocationLevel.setBlock(lastKnownLocationPosition, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL_IMMEDIATE);
 
                 //Copy over important data such as Tardis ID
+
                 updateShellBlock(theme, lastKnownLocationLevel, lastKnownLocationPosition);
                 updateInteriorDoors(theme);
 

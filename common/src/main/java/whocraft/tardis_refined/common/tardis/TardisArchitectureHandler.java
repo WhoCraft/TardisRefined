@@ -22,7 +22,7 @@ import java.util.*;
 public class TardisArchitectureHandler {
 
     public static final BlockPos DESKTOP_CENTER_POS = new BlockPos(0, 100, 0);
-    public static final BlockPos CORRIDOR_ENTRY_POS = new BlockPos(1001, 99, 1);
+    public static final BlockPos EYE_OF_HARMONY_PLACEMENT = new BlockPos(991,66,31);
     public static final int INTERIOR_SIZE = 150;
 
     public static String currentArsStage = "one";
@@ -41,7 +41,6 @@ public class TardisArchitectureHandler {
                 if (operator.getBlockState(pos) != BlockRegistry.FOOLS_STONE.get().defaultBlockState()) {
                     operator.setBlock(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
                 }
-
             }
         }
 
@@ -87,7 +86,11 @@ public class TardisArchitectureHandler {
 
     public static void generateEssentialCorridors(ServerLevel serverLevel) {
 
-        // Intentionally left blank for now.
+        Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/eye_of_harmony"));
+        structureNBT.ifPresent(structure -> {
+            BlockPos offsetPosition = new BlockPos(EYE_OF_HARMONY_PLACEMENT);
+            structure.placeInWorld(serverLevel.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), serverLevel.getLevel().random, Block.UPDATE_NONE);
+        });
 
     }
 

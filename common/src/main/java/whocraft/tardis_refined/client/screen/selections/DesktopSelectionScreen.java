@@ -129,6 +129,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
         for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
 
+
             Component name = Component.literal(MiscHelper.getCleanName(desktop.getIdentifier().getPath()));
 
             // Check for if the tellraw name is incomplete, or fails to pass.

@@ -21,6 +21,7 @@ import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.client.neoforge.ModelRegistryImpl;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
@@ -81,6 +82,7 @@ public class ClientModBus {
         BlockEntityRenderers.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
         BlockEntityRenderers.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
         BlockEntityRenderers.register(BlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
+        BlockEntityRenderers.register(BlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
 
         EntityRenderers.register(EntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
     }

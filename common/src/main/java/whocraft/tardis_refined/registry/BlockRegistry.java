@@ -82,7 +82,11 @@ public class BlockRegistry {
     public static final RegistrySupplier<LandingPad> LANDING_PAD = register("landing_pad", () -> new LandingPad(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
         return 12;
     })), true, true);
+
+
+
     public static final RegistrySupplier<FlightDetectorBlock> FLIGHT_DETECTOR = register("flight_detector", () -> new FlightDetectorBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
+    public static final RegistrySupplier<ArtronPillarBlock> ARTRON_PILLAR = register("artron_pillar", () -> new ArtronPillarBlock(BlockBehaviour.Properties.of().strength(3, 3).sound(SoundType.ANVIL).noOcclusion()), true, true);
 
     // Console
     public static final RegistrySupplier<GlobalConsoleBlock> GLOBAL_CONSOLE_BLOCK = register("tardis_console", () -> new GlobalConsoleBlock(BlockBehaviour.Properties.of().strength(1000, 1000).sound(SoundType.ANVIL).noOcclusion().lightLevel((x) -> {
@@ -97,5 +101,7 @@ public class BlockRegistry {
 
     public static final RegistrySupplier<Block> ZEITON_ORE = register("zeiton_ore", () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(3.0F, 3.0F)), true, true);
     public static final RegistrySupplier<Block> ZEITON_ORE_DEEPSLATE = register("deepslate_zeiton_ore", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_GOLD_ORE).requiresCorrectToolForDrops()), true, true);
+
+    public static final RegistrySupplier<LanternBlock> ZEITON_LANTERN = register("zeiton_lantern", () -> new LanternBlock(BlockBehaviour.Properties.copy(Blocks.LANTERN).requiresCorrectToolForDrops()), true, true);
 
 }
