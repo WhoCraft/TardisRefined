@@ -51,6 +51,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
         basicItem(ItemRegistry.ZEITON_INGOT.getId());
         basicItem(ItemRegistry.RAW_ZEITON.getId());
+        basicItem(ItemRegistry.ZEITON_NUGGET.getId());
 
         basicItem(BlockRegistry.ZEITON_LANTERN.getId());
 

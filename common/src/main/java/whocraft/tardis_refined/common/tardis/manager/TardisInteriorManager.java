@@ -29,6 +29,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,10 +154,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void tick(ServerLevel level) {
 
-        if (level.getBlockState(new BlockPos(1013, 73, 55)).getBlock() == Blocks.GOLD_BLOCK) {
-            level.setBlock(new BlockPos(1013, 73, 55), Blocks.AIR.defaultBlockState(), 3);
-
-
+        if (level.getBlockState(new BlockPos(1016,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(new BlockPos(1010,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY) {
             this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
             operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
             setHumEntry(TardisHums.getDefaultHum());
