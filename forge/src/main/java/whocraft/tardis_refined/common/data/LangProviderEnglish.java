@@ -79,6 +79,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(ItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
         add(ItemRegistry.GLASSES.get(), "AR Glasses");
+        add(ItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
 
 
 
