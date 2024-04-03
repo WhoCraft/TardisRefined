@@ -138,6 +138,14 @@ public class ManipulatorCrafting {
                 new ManipulatorCraftingRecipeItem(new BlockPos(2, 1, 2), Blocks.CUT_COPPER_SLAB)
 
         ), BlockRegistry.LANDING_PAD.get().asItem()));
+
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 1, 0), Blocks.POLISHED_DEEPSLATE_WALL),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 2, 0), Blocks.POLISHED_DEEPSLATE_WALL),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 3, 0), BlockRegistry.ZEITON_LANTERN.get())
+
+        ), BlockRegistry.ARTRON_PILLAR.get()));
     }
 
     public static ManipulatorCraftingRecipe register(ManipulatorCraftingRecipe manipulatorCraftingRecipe) {

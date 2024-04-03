@@ -17,6 +17,8 @@ public class TardisHums {
 
     private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
+    public static final HumEntry CAVE = new HumEntry(new ResourceLocation(TardisRefined.MODID, "cave"), SoundRegistry.HUM_CAVE.getId(), null);
+
     /**
      * A factory method to create the instance of our reload listener.
      *
@@ -35,6 +37,11 @@ public class TardisHums {
     }
 
     public static HumEntry getHumById(ResourceLocation location) {
+
+        if (location.equals(CAVE.getIdentifier())) {
+            return CAVE;
+        }
+
         return RELOAD_LISTENER.getData().getOrDefault(location, getDefaultHum());
     }
 

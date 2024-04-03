@@ -27,7 +27,7 @@ import java.util.Optional;
 
 public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
 
-    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
+    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
     private ShellPattern basePattern;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -54,7 +54,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
 
     public ResourceLocation theme(){
         if (this.shellTheme == null){
-            this.shellTheme = ShellTheme.FACTORY.getId();
+            this.shellTheme = ShellTheme.HALF_BAKED.getId();
         }
         return this.shellTheme;
     }

@@ -22,6 +22,7 @@ import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.common.GravityUtil;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
@@ -72,6 +73,9 @@ public class TardisClientData {
     private double fuel = 0;
     private double maximumFuel = 0;
 
+    private int tardisState = 0;
+
+
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
 
@@ -80,7 +84,7 @@ public class TardisClientData {
     private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(SoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
 
 
-    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
+    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
     private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
 
     private HumEntry humEntry = TardisHums.getDefaultHum();
@@ -171,6 +175,7 @@ public class TardisClientData {
     public void setMaximumFuel(double fuel) {
         this.maximumFuel = fuel;
     }
+
 
     /**
      * Higher means more fog, lower means less fog
@@ -277,7 +282,6 @@ public class TardisClientData {
 
             createWorldAmbience(Minecraft.getInstance().player);
 
-
             if (LoopingSound.ARS_HUMMING == null) {
                 LoopingSound.setupSounds();
             }
@@ -300,9 +304,11 @@ public class TardisClientData {
             }
 
             if (isThisTardis && tardisLevel.getGameTime() % nextAmbientNoiseCall == 0) {
+
+
                 nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
                 List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
-                if (!ambientSounds.isEmpty()) {
+                if (ambientSounds != null && !ambientSounds.isEmpty()) {
                     RandomSource randomSource = tardisLevel.random;
 
                     ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
@@ -346,7 +352,7 @@ public class TardisClientData {
             }
 
             if (isThisTardis) {
-                tickFog(fuel != 0);
+                tickFog(  tardisState < TardisLevelOperator.STATE_EYE_OF_HARMONY || fuel != 0);
             }
         }
 
@@ -505,5 +511,13 @@ public class TardisClientData {
 
     public void setHandbrakeEngaged(boolean handbrakeEngaged) {
         isHandbrakeEngaged = handbrakeEngaged;
+    }
+
+    public int getTardisState() {
+        return tardisState;
+    }
+
+    public void setTardisState(int tardisState) {
+        this.tardisState = tardisState;
     }
 }

@@ -32,6 +32,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(SoundRegistry.ARS_HUM.get(), basicSound("ars_hum", new ResourceLocation(TardisRefined.MODID, "tardis/ars/ars_hum")));
         add(SoundRegistry.BULKHEAD_LOCKED.get(), basicSound("bulkhead_locked", new ResourceLocation(TardisRefined.MODID, "blocks/bulkhead_locked")));
         add(SoundRegistry.HUM_CORAL.get(), basicSound("hum_coral", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humcoral")));
+        add(SoundRegistry.HUM_CAVE.get(), basicSound("hum_cave", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/cave")));
         add(SoundRegistry.INTERIOR_CREAKS.get(), basicSound("interior_creaks", new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_1"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_2"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_3")));
         add(SoundRegistry.FLIGHT_FAIL_START.get(), basicSound("flight_fail_start", new ResourceLocation(TardisRefined.MODID, "tardis/flight_fail_start")));
         add(SoundRegistry.CONSOLE_POWER_ON.get(), basicSound("console_power_on", new ResourceLocation(TardisRefined.MODID, "tardis/console_power_on")));

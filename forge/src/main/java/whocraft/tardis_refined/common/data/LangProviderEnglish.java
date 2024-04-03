@@ -63,6 +63,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
         add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
         add(BlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
+        add(BlockRegistry.ZEITON_LANTERN.get(), "Zeiton Lantern");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -75,6 +76,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(ItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
         add(ItemRegistry.GLASSES.get(), "AR Glasses");
+
 
 
 

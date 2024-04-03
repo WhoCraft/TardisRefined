@@ -173,7 +173,7 @@ public class TardisExteriorManager extends BaseHandler {
 
     public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
         AestheticHandler aestheticHandler = operator.getAestheticHandler();
-        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.FACTORY.getId();
+        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
 
         BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()

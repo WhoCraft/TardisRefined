@@ -20,6 +20,8 @@ public class ShellTheme implements Theme {
     /** Global instance of the Shell Theme custom registry created by Tardis Refined*/
     public static final Registry<ShellTheme> SHELL_THEME_REGISTRY = SHELL_THEMES.getRegistry();
 
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HALF_BAKED = registerShellTheme("half_baked");
+
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> FACTORY = registerShellTheme("factory");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> POLICE_BOX = registerShellTheme("police_box", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PHONE_BOOTH = registerShellTheme("phone_booth", true);
@@ -45,7 +47,7 @@ public class ShellTheme implements Theme {
         if(potentialTheme != null){
             return potentialTheme;
         }
-        return FACTORY.get();
+        return HALF_BAKED.get();
     }
 
     public static ResourceLocation getKey(ShellTheme shellTheme){

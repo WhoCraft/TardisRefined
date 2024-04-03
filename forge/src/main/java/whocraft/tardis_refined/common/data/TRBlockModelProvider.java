@@ -5,6 +5,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.LanternBlock;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
@@ -37,11 +38,17 @@ public class TRBlockModelProvider extends BlockStateProvider {
         return builder.toJson();
     }
 
+    public JsonObject lantern(Block block) {
+        VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> blockState.getValue(LanternBlock.HANGING) ?
+                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern_hanging", new ResourceLocation("block/template_hanging_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build() :
+                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern",  new ResourceLocation("block/template_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build());
+
+        return builder.toJson();
+    }
+
     // Paul McGann is...
     public JsonObject threeDeeRotating(Block block, ResourceLocation location) {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> ConfiguredModel.builder().modelFile(new ModelFile.UncheckedModelFile(location)).rotationY((int) blockState.getValue(HorizontalDirectionalBlock.FACING).toYRot()).build());
-
-
         return builder.toJson();
     }
 
@@ -128,7 +135,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
 
         threeDeeRotating(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
 
-
+        lantern(BlockRegistry.ZEITON_LANTERN.get());
     }
 
 
