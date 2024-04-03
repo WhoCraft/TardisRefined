@@ -39,6 +39,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(SoundRegistry.ARS_HUM.get(), "ARS Tree Hum");
         addSound(SoundRegistry.FLIGHT_FAIL_START.get(), "Failing TARDIS groans");
         addSound(SoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
+        addSound(SoundRegistry.INTERIOR_VOICE.get(), "...?");
 
         /*Block*/
         add(BlockRegistry.ARS_EGG.get(), "ARS Egg");

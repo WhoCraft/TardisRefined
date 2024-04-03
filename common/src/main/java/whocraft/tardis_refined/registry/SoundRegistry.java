@@ -23,6 +23,7 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> INTERIOR_CREAKS = setUpSound("interior_creaks");
     public static final RegistrySupplier<SoundEvent> FLIGHT_FAIL_START = setUpSound("flight_fail_start");
     public static final RegistrySupplier<SoundEvent> CONSOLE_POWER_ON = setUpSound("console_power_on");
+    public static final RegistrySupplier<SoundEvent> INTERIOR_VOICE = setUpSound("interior_voice");
 
 
     // Screwdriver
