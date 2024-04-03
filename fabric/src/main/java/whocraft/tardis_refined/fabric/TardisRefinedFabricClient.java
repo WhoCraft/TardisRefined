@@ -20,6 +20,7 @@ import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRend
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
@@ -52,6 +53,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
         BlockEntityRendererRegistry.register(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
         BlockEntityRendererRegistry.register(BlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
+        BlockEntityRendererRegistry.register(BlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
         BlockEntityRendererRegistry.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
 
         BlockEntityRendererRegistry.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);

@@ -14,6 +14,7 @@ import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.life.ARSLeavesBlock;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
+import whocraft.tardis_refined.common.block.life.EyeBlock;
 import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
@@ -101,6 +102,7 @@ public class BlockRegistry {
 
     public static final RegistrySupplier<Block> ZEITON_ORE = register("zeiton_ore", () -> new Block(BlockBehaviour.Properties.of().requiresCorrectToolForDrops().strength(3.0F, 3.0F)), true, true);
     public static final RegistrySupplier<Block> ZEITON_ORE_DEEPSLATE = register("deepslate_zeiton_ore", () -> new Block(BlockBehaviour.Properties.copy(Blocks.DEEPSLATE_GOLD_ORE).requiresCorrectToolForDrops()), true, true);
+    public static final RegistrySupplier<Block> THE_EYE = register("the_eye", () -> new EyeBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)), false, false);
 
     public static final RegistrySupplier<LanternBlock> ZEITON_LANTERN = register("zeiton_lantern", () -> new LanternBlock(BlockBehaviour.Properties.copy(Blocks.LANTERN).requiresCorrectToolForDrops()), true, true);
 
