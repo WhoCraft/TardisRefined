@@ -114,7 +114,9 @@ public class TardisInteriorManager extends BaseHandler {
 
 
         tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
-        tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
+        if(currentTheme != null) {
+            tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
+        }
         tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
 
         tag.putDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE, this.fuelForIntChange);
