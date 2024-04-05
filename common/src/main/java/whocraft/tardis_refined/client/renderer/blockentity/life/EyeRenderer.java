@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Random;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
+import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 
@@ -27,15 +29,15 @@ public class EyeRenderer implements BlockEntityRenderer<EyeBlockEntity>, BlockEn
     }
 
     private static void vertex2(VertexConsumer iVertexBuilder, Matrix4f matrix4f, float p_229060_2_, float p_229060_3_) {
-        iVertexBuilder.vertex(matrix4f, -HALF_SQRT_3 * p_229060_3_, p_229060_2_, -0.5F * p_229060_3_).color(255, 0, 255, 0).endVertex();
+        iVertexBuilder.vertex(matrix4f, -HALF_SQRT_3 * p_229060_3_, p_229060_2_, -0.5F * p_229060_3_).color(255, 93, 0, 0).endVertex();
     }
 
     private static void vertex3(VertexConsumer iVertexBuilder, Matrix4f matrix4f, float p_229062_2_, float p_229062_3_) {
-        iVertexBuilder.vertex(matrix4f, HALF_SQRT_3 * p_229062_3_, p_229062_2_, -0.5F * p_229062_3_).color(255, 0, 255, 0).endVertex();
+        iVertexBuilder.vertex(matrix4f, HALF_SQRT_3 * p_229062_3_, p_229062_2_, -0.5F * p_229062_3_).color(255, 93, 0, 0).endVertex();
     }
 
     private static void vertex4(VertexConsumer iVertexBuilder, Matrix4f matrix4f, float p_229063_2_, float p_229063_3_) {
-        iVertexBuilder.vertex(matrix4f, 0.0F, p_229063_2_, 1.0F * p_229063_3_).color(255, 0, 255, 0).endVertex();
+        iVertexBuilder.vertex(matrix4f, 0.0F, p_229063_2_, 1.0F * p_229063_3_).color(255, 93, 0, 0).endVertex();
     }
 
     public EyeRenderer(BlockEntityRendererProvider.Context context) {
@@ -58,10 +60,21 @@ public class EyeRenderer implements BlockEntityRenderer<EyeBlockEntity>, BlockEn
         float f7 = Math.min(f5 > 0.8F ? (f5 - 0.8F) / 0.2F : 0.0F, 1.0F);
         VertexConsumer vertexBuilder = multiBufferSource.getBuffer(RenderType.lightning());
         poseStack.pushPose();
+
+        float sine = 0;
+        sine = (float) ((Math.sin(0.1 * (blockEntity.getLevel().dayTime())) * 0.25f)) + 1f;
+        if (sine < 0) {
+            sine = 0;
+        }
+
+
         poseStack.translate(0.5D, 0.5D, 0.5D);
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount));
-        poseStack.scale(0.2F,0.2F,0.2F);
+        poseStack.mulPose(Axis.YP.rotationDegrees(Minecraft.getInstance().player.tickCount * 0.5f));
+
+
+
+        poseStack.scale(0.15F * sine,0.15F * sine,0.15F * sine);
 
         for (int i = 0; (float) i < (f5 + f5 * f5) / 2.0F * 60.0F; ++i) {
             poseStack.mulPose(Axis.XP.rotationDegrees(random.nextFloat() * 360.0F));
@@ -84,6 +97,10 @@ public class EyeRenderer implements BlockEntityRenderer<EyeBlockEntity>, BlockEn
             vertex4(vertexBuilder, matrix4f, randomFloat, randomFloat2);
             vertex2(vertexBuilder, matrix4f, randomFloat, randomFloat2);
         }
+
+
+        int sideWidth = 7;
+        RenderHelper.drawGlowingBox(poseStack, vertexBuilder,  sideWidth,  sideWidth , sideWidth,  1, 0.11f, 0,  1 , 0 );
         poseStack.popPose();
     }
 

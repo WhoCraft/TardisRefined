@@ -154,6 +154,8 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void tick(ServerLevel level) {
 
+        RandomSource rand = level.getRandom();
+
         if (level.getBlockState(new BlockPos(1016,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(new BlockPos(1010,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY) {
             this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
             operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
@@ -241,11 +243,8 @@ public class TardisInteriorManager extends BaseHandler {
         }
 
         if (processingWarping) {
-
-
             if (level.getGameTime() % 20 == 0) {
 
-                RandomSource rand = level.getRandom();
                 for (ProtectedZone protectedZone : unbreakableZones()) {
                     if (!protectedZone.getName().contains("_airlock")) continue;
                     BlockPos.betweenClosedStream(protectedZone.getArea()).forEach(position -> {
