@@ -353,6 +353,9 @@ public class TardisClientData {
 
             if (isThisTardis) {
                 tickFog(  tardisState < TardisLevelOperator.STATE_EYE_OF_HARMONY || fuel != 0);
+
+                tardisLevel.addParticle(ParticleTypes.CLOUD, (double)1013 + 0.5 - 2 + tardisLevel.random.nextInt(4), 71, (double)55 + 0.5- 2 + tardisLevel.random.nextInt(4),0, 0.1 + tardisLevel.random.nextFloat() / 2 ,0);
+
             }
         }
 

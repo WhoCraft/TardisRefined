@@ -3,8 +3,10 @@ package whocraft.tardis_refined.common.data;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
@@ -78,8 +80,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ItemRegistry.GLASSES.get(), "AR Glasses");
         add(ItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
 
-
-
+        /*Damage Sources*/
+        add(RefinedDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");
 
         /*Entity*/
         add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
@@ -244,6 +246,11 @@ public class LangProviderEnglish extends LanguageProvider {
     public void addSound(SoundEvent soundEvent, String lang) {
         String subtitleKey = SoundProvider.createSubtitle(soundEvent.getLocation().getPath());
         add(subtitleKey, lang);
+    }
+
+    public void add(ResourceKey<DamageType> damageSource, String message) {
+        add("death.attack." + damageSource.location().getPath(), message);
+        add("death.attack." + damageSource.location().getPath() + ".player", message);
     }
 
 }
