@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.block.device;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +29,8 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 public class LandingPad extends Block {
 
@@ -81,9 +84,18 @@ public class LandingPad extends Block {
                         if (Upgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isOnCooldown()) {
                             pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
                             serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
                             return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
                         } else {
-                            serverLevel.playSound(null, blockPos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1f, 1f);
+
+                            if (Upgrades.LANDING_PAD.get().isUnlocked(upgradeHandler)) {
+                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_TRANSIENT), true);
+                                serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
+                            } else {
+                                serverLevel.playSound(null, blockPos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1f, 1f);
+                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_NOT_UNLOCKED), true);
+                            }
+
                             return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
                         }
                     }

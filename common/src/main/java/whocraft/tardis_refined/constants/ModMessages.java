@@ -29,6 +29,10 @@ public class ModMessages {
     public static String CONSOLE_CONFIGURATION_NOT_IN_FLIGHT = message("console_config_not_in_flight");
     public static String CONSOLE_NOT_IN_FLIGHT = message("cannot_switch_console_units_whilst_in_flight");
     public static String NO_END_DRAGON_PREVENTS = message("no_end_dragon_prevents");
+    public static String TARDIS_IS_ON_THE_WAY = message("tardis_on_the_way");
+    public static String LANDING_PAD_NOT_UNLOCKED = message("landing_pad_unlocked");
+    public static String LANDING_PAD_TRANSIENT = message("landing_pad_transient");
+    public static String TOOLTIP_IN_FLIGHT = message("tooltip_in_flight");
 
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");

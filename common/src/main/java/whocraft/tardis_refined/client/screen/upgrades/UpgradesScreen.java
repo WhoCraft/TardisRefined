@@ -17,7 +17,7 @@ import whocraft.tardis_refined.constants.ModMessages;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UpgradesScreen extends Screen {
+public class  UpgradesScreen extends Screen {
 
     public static final ResourceLocation WINDOW = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/window.png");
     public static final ResourceLocation TABS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/tabs.png");
@@ -137,6 +137,7 @@ public class UpgradesScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int i = (this.width - WINDOW_WIDTH) / 2;
         int j = (this.height - WINDOW_HEIGHT) / 2;
+        this.renderTransparentBackground(guiGraphics);
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.renderWindow(guiGraphics, i, j);
         this.renderInside(guiGraphics, mouseX, mouseY, i, j);
@@ -149,6 +150,8 @@ public class UpgradesScreen extends Screen {
             this.selectedTab.fade = Mth.clamp(this.selectedTab.fade + 0.02F, 0, 0.5F);
             guiGraphics.pose().translate(0, 0, -500);
         }
+
+
     }
 
     @Override
@@ -196,7 +199,12 @@ public class UpgradesScreen extends Screen {
             RenderSystem.disableBlend();
         }
 
-        guiGraphics.drawString(this.minecraft.font, TITLE.getString() + " - Upgrade Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width(TITLE.getString() + " - Upgrade Points: " + upgradeHandler.getUpgradePoints()) / 2, offsetY + 6, ChatFormatting.BLACK.getColor(), false);
+        if (upgradeHandler.getUpgradePoints() > 0) {
+            guiGraphics.drawString(this.minecraft.font, "Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width("Points: " + upgradeHandler.getUpgradePoints()) / 2, offsetY + WINDOW_HEIGHT - 15, ChatFormatting.BLACK.getColor(), false);
+        }
+
+        guiGraphics.drawString(this.minecraft.font,  "XP: " + upgradeHandler.getUpgradeXP() + " / 100", width / 2 - font.width(  "XP: " + upgradeHandler.getUpgradeXP() + " / 100") / 2, offsetY + 6  , ChatFormatting.BLACK.getColor(), false);
+       // guiGraphics.drawString(this.minecraft.font, "XP: " + upgradeHandler.getUpgradeXP() + "/100 - Upgrade Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width("XP: " + upgradeHandler.getUpgradeXP() + "/100 - Upgrade Points: " + upgradeHandler.getUpgradePoints()) / 2, offsetY + 6, ChatFormatting.BLACK.getColor(), false);
     }
 
     private void renderTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY) {
