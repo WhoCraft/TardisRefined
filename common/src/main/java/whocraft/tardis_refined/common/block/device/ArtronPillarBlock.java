@@ -1,19 +1,43 @@
 package whocraft.tardis_refined.common.block.device;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.MagmaBlock;
-import net.minecraft.world.level.block.SculkSensorBlock;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.ArtronPillarBlockEntity;
 import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.BlockRegistry;
 
-public class ArtronPillarBlock extends Block implements EntityBlock {
+public class ArtronPillarBlock extends BaseEntityBlock {
+
+    public static BooleanProperty ACTIVE = BlockStateProperties.POWERED;
+
     public ArtronPillarBlock(Properties properties) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
+    }
+
+    @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
+
+        if (level.getBlockState(blockPos.below()).getBlock() == BlockRegistry.ARTRON_PILLAR_PORT.get()) {
+            level.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
+        }
+
+
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(ACTIVE);
     }
 
     @Nullable
