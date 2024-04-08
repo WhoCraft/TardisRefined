@@ -66,6 +66,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
         add(BlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
         add(BlockRegistry.ZEITON_LANTERN.get(), "Zeiton Lantern");
+        add(BlockRegistry.ARTRON_PILLAR.get(), "Artron Pillar");
+        add(BlockRegistry.ARTRON_PILLAR_PORT.get(), "Artron Pillar Port");
 
         /*Items*/
         add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
