@@ -111,6 +111,9 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage.");
         add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight.");
         add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End.");
+        add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way.");
+        add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal.");
+        add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this time.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
@@ -193,6 +196,7 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, "Key Set:");
         add(ModMessages.CONTROL_DIMENSION_SELECTED, "Selected: %s");
+        add(ModMessages.TOOLTIP_IN_FLIGHT, "In flight");
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");

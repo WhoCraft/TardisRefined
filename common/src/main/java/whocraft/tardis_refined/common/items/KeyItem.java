@@ -23,7 +23,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
@@ -167,12 +169,23 @@ public class KeyItem extends Item {
         ArrayList<ResourceKey<Level>> keychain = KeyItem.getKeychain(itemStack);
 
         if (!keychain.isEmpty()) {
+
+            ResourceKey<Level> mainTardisLevel = keychain.get(0);
+
+            if (TardisClientData.getInstance(mainTardisLevel).isFlying()) {
+                list.add(Component.translatable("* " + ModMessages.TOOLTIP_IN_FLIGHT + " *"));
+            }
+
+
+
             list.add(Component.translatable(ModMessages.TOOLTIP_TARDIS_LIST_TITLE));
 
             for (int i = 0; i < keychain.size(); i++) {
                 MutableComponent hyphen = Component.literal((i == 0) ? ChatFormatting.YELLOW + "> " : "- ");
                 list.add(hyphen.append(Component.literal(keychain.get(i).location().getPath().substring(0, 5))));
             }
+
+
 
         }
     }
