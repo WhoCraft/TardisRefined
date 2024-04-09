@@ -192,7 +192,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     private void onFlightTick(Level level) {
         // Don't continue the flight if the throttle isn't active!!!
-        if (this.throttleStage != 0) {
+        if (this.throttleStage != 0 || this.autoLand) {
             ticksInFlight++;
 
             // Removing fuel once every 2.5 seconds
@@ -219,7 +219,7 @@ public class TardisPilotingManager extends BaseHandler {
             }
 
             // Automatically trigger the ship to land for things such as landing pads.
-            if (ticksInFlight > (20 * 10) && autoLand) {
+            if (distanceCovered >= flightDistance && autoLand && !this.isLanding()) {
                 this.endFlight(false);
             }
         }
@@ -455,7 +455,12 @@ public class TardisPilotingManager extends BaseHandler {
             TardisNavLocation lastKnownLocation = this.operator.getExteriorManager().getLastKnownLocation();
 
             this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
-            this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
+
+            if (!autoLand) {
+                this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
+            }
+
+
 
             operator.setDoorClosed(true);
             operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
@@ -531,6 +536,15 @@ public class TardisPilotingManager extends BaseHandler {
             } else {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
             }
+
+            int totalPoints = distanceCovered / 10;
+            this.operator.getUpgradeHandler().addUpgradeXP(totalPoints);
+
+            var players = level.players();
+            for (var player : players) {
+                PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + "XP."), true);
+            }
+
 
 
             return true;

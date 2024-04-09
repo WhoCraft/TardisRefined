@@ -22,11 +22,17 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.ControlRegistry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,7 +130,7 @@ public class KeyItem extends Item {
         if (control.level() instanceof ServerLevel serverLevel) {
             ResourceKey<Level> tardis = serverLevel.dimension();
             if (control.controlSpecification().control() != null) {
-                if (control.controlSpecification().control().equals(ControlRegistry.MONITOR.get()) && !keychainContains(itemStack, tardis)) {
+                if (control.controlSpecification().control() == ConsoleControl.MONITOR && !keychainContains(itemStack, tardis)) {
                     player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                     player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
@@ -163,12 +169,23 @@ public class KeyItem extends Item {
         ArrayList<ResourceKey<Level>> keychain = KeyItem.getKeychain(itemStack);
 
         if (!keychain.isEmpty()) {
+
+            ResourceKey<Level> mainTardisLevel = keychain.get(0);
+
+            if (TardisClientData.getInstance(mainTardisLevel).isFlying()) {
+                list.add(Component.translatable("* " + ModMessages.TOOLTIP_IN_FLIGHT + " *"));
+            }
+
+
+
             list.add(Component.translatable(ModMessages.TOOLTIP_TARDIS_LIST_TITLE));
 
             for (int i = 0; i < keychain.size(); i++) {
                 MutableComponent hyphen = Component.literal((i == 0) ? ChatFormatting.YELLOW + "> " : "- ");
                 list.add(hyphen.append(Component.literal(keychain.get(i).location().getPath().substring(0, 5))));
             }
+
+
 
         }
     }

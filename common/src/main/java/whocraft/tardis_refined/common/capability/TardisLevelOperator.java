@@ -133,7 +133,7 @@ public class TardisLevelOperator {
         interiorManager.tick(level);
         pilotingManager.tick(level);
         flightDanceManager.tick();
-
+        
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());

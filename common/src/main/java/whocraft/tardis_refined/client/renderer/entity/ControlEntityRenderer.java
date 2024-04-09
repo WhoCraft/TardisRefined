@@ -1,12 +1,18 @@
 package whocraft.tardis_refined.client.renderer.entity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.NoopRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.level.Level;
@@ -15,6 +21,7 @@ import net.minecraft.world.phys.HitResult;
 import org.joml.Matrix4f;
 import whocraft.tardis_refined.TRConfig;
 
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.items.GlassesItem;
@@ -22,6 +29,12 @@ import whocraft.tardis_refined.registry.ItemRegistry;
 
 
 public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
+
+    private static ResourceLocation ICON_GOOD = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_good.png");
+    private static ResourceLocation ICON_SLIPPING = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_slipping.png");
+    private static ResourceLocation ICON_WARNING = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_warning.png");
+    private static ResourceLocation ICON_ALERT = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_alert.png");
+    private static ResourceLocation ICON_DANGER = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_danger.png");
 
     public ControlEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -55,6 +68,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
                 }
             }
         }
+
     }
 
     @Override
@@ -66,6 +80,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             boolean isSolid = !entity.isDiscrete();
             float boundingBoxHeight = entity.getNameTagOffsetY() - 0.3f;
             int verticalTextOffset = 10;
+
             poseStack.pushPose();
             poseStack.translate(0.0, boundingBoxHeight, 0.0);
 
@@ -83,16 +98,85 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
             font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
 
-            // Damage used for the icon later on. Left for Jeryn.
-            int entityHealth = entity.getControlHealth();
-
             if (isSolid) {
                 font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
             }
 
+            // Damage used for the icon later on. Left for Jeryn.
+            int entityHealth = entity.getControlHealth();
+
+            poseStack.translate(0.0, 5, 0.0);
+            renderControlIcon(entity, component, getIconByState(entityHealth), poseStack, multiBufferSource, packedLightCoords );
+
             poseStack.popPose();
+
+
         }
 
 
     }
+
+    public ResourceLocation getIconByState(int entityHealth) {
+        if (entityHealth == 10) {
+            return ICON_GOOD;
+        }
+
+        if (entityHealth == 8 || entityHealth == 9) {
+            return ICON_SLIPPING;
+        }
+
+        if (entityHealth > 5) {
+            return ICON_WARNING;
+        }
+
+        if (entityHealth > 3) {
+            return ICON_ALERT;
+        }
+
+        return ICON_DANGER;
+
+    }
+
+
+    private void renderControlIcon(ControlEntity entity, Component component, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
+
+        float offset = (float) -(Minecraft.getInstance().font.width(component) / 2 + 18);
+        VertexConsumer builder = buffer.getBuffer(RenderType.text(texture));
+        int alpha = 32;
+
+        if (entity.isDiscrete()) {
+            vertex(builder, matrixStackIn, offset, 16F, 0F, 0F, 1F, alpha, light);
+            vertex(builder, matrixStackIn, offset + 16F, 16F, 0F, 1F, 1F, alpha, light);
+            vertex(builder, matrixStackIn, offset + 16F, 0F, 0F, 1F, 0F, alpha, light);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
+        } else {
+            vertex(builder, matrixStackIn, offset, 16F, 0F, 0F, 1F, light);
+            vertex(builder, matrixStackIn, offset + 16F, 16F, 0F, 1F, 1F, light);
+            vertex(builder, matrixStackIn, offset + 16F, 0F, 0F, 1F, 0F, light);
+            vertex(builder, matrixStackIn, offset, 0F, 0F, 0F, 0F, light);
+
+            VertexConsumer builderSeeThrough = buffer.getBuffer(RenderType.textSeeThrough(texture));
+            vertex(builderSeeThrough, matrixStackIn, offset, 16F, 0F, 0F, 1F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset + 16F, 16F, 0F, 1F, 1F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset + 16F, 0F, 0F, 1F, 0F, alpha, light);
+            vertex(builderSeeThrough, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
+        }
+
+    }
+
+    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int light) {
+        vertex(builder, matrixStack, x, y, z, u, v, 255, light);
+    }
+
+    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
+        PoseStack.Pose entry = matrixStack.last();
+        builder.vertex(entry.pose(), x, y, z)
+                .color(255, 255, 255, alpha)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(light)
+                .normal(entry.normal(), 0F, 0F, -1F)
+                .endVertex();
+    }
+
 }
