@@ -385,7 +385,7 @@ public class ControlEntity extends Entity {
 
         if (offhandItem == Items.REDSTONE) { //Print position output to console
             if (this.controlSpecification != null)
-                TardisRefined.LOGGER.info("Control Info for: " + this.controlSpecification.control().getSerializedName());
+                TardisRefined.LOGGER.info("Control Info for: " + this.controlSpecification.control().getId().getPath());
             if (this.consoleBlockPos != null) {
                 Vec3 centre = LevelHelper.centerPos(this.consoleBlockPos, true);
                 double x = this.position().x() - centre.x;

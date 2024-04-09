@@ -81,10 +81,6 @@ public abstract class Control {
         return this.id;
     }
     public String getTranslationKey() {return this.langId;}
-    public String getSerializedName() {
-        // todo Temporary - is bad :(
-        return this.getId().getPath();
-    }
 
     @Override
     public boolean equals(Object o) {
