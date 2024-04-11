@@ -1,8 +1,10 @@
 package whocraft.tardis_refined.common.tardis.control;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -11,6 +13,16 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 
 public abstract class Control {
+    protected final ResourceLocation id;
+    protected final String langId;
+
+    protected Control(ResourceLocation id, String langId){
+        this.id = id;
+        this.langId = langId;
+    }
+    protected Control(ResourceLocation id){
+        this(id, "control." + id.getNamespace() + "." + id.getPath());
+    }
 
     private PitchedSound successSound = new PitchedSound(SoundEvents.ARROW_HIT_PLAYER);
     private PitchedSound failSound = new PitchedSound(SoundEvents.ITEM_BREAK);
@@ -65,4 +77,23 @@ public abstract class Control {
         return !isDeskopWaiting && TardisEvents.PLAYER_CONTROL_INTERACT.invoker().canControlBeUsed(tardisLevelOperator, control, controlEntity) == EventResult.pass();
     }
 
+    public ResourceLocation getId(){
+        return this.id;
+    }
+    public String getTranslationKey() {return this.langId;}
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Control control = (Control) o;
+
+        return getId().equals(control.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
 }

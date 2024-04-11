@@ -2,23 +2,28 @@ package whocraft.tardis_refined.common.tardis.control;
 
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 public class ControlSpecification {
-    private ConsoleControl control;
+    private Control control;
     private Vector3f offsetPosition;
     private EntityDimensions scale;
 
-    public ControlSpecification(ConsoleControl control, Vector3f offsetPosition, EntityDimensions scale) {
+    public ControlSpecification(Control control, Vector3f offsetPosition, EntityDimensions scale) {
         this.control = control;
         this.offsetPosition = offsetPosition;
         this.scale = scale;
     }
 
-    public ConsoleControl control() {
+    public ControlSpecification(RegistrySupplier<Control> controlRegistrySupplier, Vector3f offsetPosition, EntityDimensions scalable) {
+        this(controlRegistrySupplier.get(), offsetPosition, scalable);
+    }
+
+    public Control control() {
         return control;
     }
 
-    public ControlSpecification setControl(ConsoleControl control) {
+    public ControlSpecification setControl(Control control) {
         this.control = control;
         return this;
     }

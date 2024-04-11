@@ -1,12 +1,10 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
-import net.minecraft.BlockUtil;
 import net.minecraft.nbt.CompoundTag;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.control.ConsoleControl;
+import whocraft.tardis_refined.registry.ControlRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +34,7 @@ public class FlightDanceManager extends BaseHandler {
 
     private List<ControlEntity> getNonCriticalControls(GlobalConsoleBlockEntity controllerConsole) {
         var controls = controllerConsole.getControlEnttityList();
-        return controls.stream().filter(x -> x.controlSpecification().control() != ConsoleControl.THROTTLE || x.controlSpecification().control() != ConsoleControl.HANDBRAKE || x.controlSpecification().control() != ConsoleControl.MONITOR).toList();
+        return controls.stream().filter(x -> !(x.controlSpecification().control().equals(ControlRegistry.THROTTLE.get())) || !(x.controlSpecification().control().equals(ControlRegistry.HANDBRAKE.get())) || !(x.controlSpecification().control().equals(ControlRegistry.MONITOR.get()))).toList();
     }
 
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {

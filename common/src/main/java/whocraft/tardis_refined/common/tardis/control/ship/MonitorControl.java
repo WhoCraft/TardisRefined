@@ -1,10 +1,12 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.items.KeyItem;
@@ -15,6 +17,12 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class MonitorControl extends Control {
+    public MonitorControl(ResourceLocation id) {
+        super(id);
+    }
+    public MonitorControl(ResourceLocation id, String langId){
+        super(id, langId);
+    }
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
