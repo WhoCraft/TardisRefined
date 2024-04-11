@@ -1,8 +1,6 @@
 package whocraft.tardis_refined.common.hum;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.registry.SoundRegistry;
@@ -17,7 +15,10 @@ public class TardisHums {
 
     private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
-    public static final HumEntry CAVE = new HumEntry(new ResourceLocation(TardisRefined.MODID, "cave"), SoundRegistry.HUM_CAVE.getId(), null);
+    public static final HumEntry CAVE = new HumEntry(new ResourceLocation(TardisRefined.MODID, "cave"), SoundRegistry.HUM_CAVE.getId(), new ArrayList<>());
+    public static final HumEntry TOYOTA = new HumEntry(new ResourceLocation(TardisRefined.MODID, "toyota"), SoundRegistry.HUM_TOYOTA.getId(), new ArrayList<>());
+    public static final HumEntry CLASSIC = new HumEntry(new ResourceLocation(TardisRefined.MODID, "classic"), SoundRegistry.HUM_CLASSIC.getId(), new ArrayList<>());
+    public static final HumEntry HUM_1996 = new HumEntry(new ResourceLocation(TardisRefined.MODID, "hum_1996"), SoundRegistry.HUM_1996.getId(), new ArrayList<>());
 
     /**
      * A factory method to create the instance of our reload listener.
@@ -37,11 +38,6 @@ public class TardisHums {
     }
 
     public static HumEntry getHumById(ResourceLocation location) {
-
-        if (location.equals(CAVE.getIdentifier())) {
-            return CAVE;
-        }
-
         return RELOAD_LISTENER.getData().getOrDefault(location, getDefaultHum());
     }
 
@@ -54,11 +50,16 @@ public class TardisHums {
     public static Map<ResourceLocation, HumEntry> registerDefaultHums() {
         DEFAULT_HUMS.clear();
         addDefaultHum(getDefaultHum());
+        addDefaultHum(CAVE);
+        addDefaultHum(TOYOTA);
+        addDefaultHum(HUM_1996);
+        addDefaultHum(CLASSIC);
         return DEFAULT_HUMS;
     }
 
-    private static void addDefaultHum(HumEntry hum) {
+    private static HumEntry addDefaultHum(HumEntry hum) {
         DEFAULT_HUMS.put(hum.getIdentifier(), hum);
+        return hum;
     }
 
 
