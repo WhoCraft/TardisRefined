@@ -102,6 +102,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(ControlRegistry.DIMENSION.get(), "Dimension");
         addControl(ControlRegistry.HANDBRAKE.get(), "Handbrake");;
         addControl(ControlRegistry.GENERIC_NO_SHOW.get(), "Switch");
+        addControl(ControlRegistry.FUEL.get(), "Fuel");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -118,6 +119,9 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way.");
         add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal.");
         add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this time.");
+        add(ModMessages.REFUEL, "Enabled refuelling.");
+        add(ModMessages.STOP_REFUEL, "Stopped refuelling.");
+        add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process.");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");

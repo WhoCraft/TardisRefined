@@ -10,7 +10,6 @@ public class ToyotaConsoleTheme extends ConsoleThemeDetails {
     @Override
     public ControlSpecification[] getControlSpecification() {
         return new ControlSpecification[] {
-                // Paste this into your designed ConsoleTheme
                 new ControlSpecification(ControlRegistry.THROTTLE, new Vector3f(0.27f, 0.50f, 0.94f), EntityDimensions.scalable(0.19f, 0.19f)),
                 new ControlSpecification(ControlRegistry.X, new Vector3f(-0.07f, 0.63f, 0.80f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(ControlRegistry.Y, new Vector3f(0.02f, 0.63f, 0.80f), EntityDimensions.scalable(0.06f, 0.06f)),
@@ -30,7 +29,7 @@ public class ToyotaConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.94f, 0.61f, 0.19f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.02f, 0.54f, 0.24f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.86f, 0.55f, -0.15f), EntityDimensions.scalable(0.12f, 0.12f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.04f, 0.49f, -0.19f), EntityDimensions.scalable(0.12f, 0.12f)),
+                new ControlSpecification(ControlRegistry.FUEL, new Vector3f(1.04f, 0.49f, -0.19f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.73f, 0.49f, -0.82f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.18f, 0.54f, -0.98f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.08f, 0.54f, -0.98f), EntityDimensions.scalable(0.06f, 0.06f)),
@@ -48,8 +47,7 @@ public class ToyotaConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.71f, 0.53f, 0.78f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.READOUT, new Vector3f(0.88f, 0.56f, -0.17f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(-0.42f, 0.49f, 0.91f), EntityDimensions.scalable(0.25f, 0.25f))
-
-
         };
     }
+
 }

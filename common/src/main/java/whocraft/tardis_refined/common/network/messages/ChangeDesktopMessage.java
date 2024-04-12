@@ -17,6 +17,8 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.SoundRegistry;
 
 import java.util.Optional;
@@ -66,8 +68,11 @@ public class ChangeDesktopMessage extends MessageC2S {
                     if (inFlight)
                         x.playSound(null, context.getPlayer(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.BLOCKS, 10f, 0.25f);
 
-                    if (!hasFuel)
+                    if (!hasFuel) {
                         x.playSound(null, context.getPlayer(), SoundRegistry.SCREWDRIVER_CONNECT.get(), SoundSource.BLOCKS, 10f, 0.25f); // Sound should be changed
+                        PlayerUtil.sendMessage(context.getPlayer(), ModMessages.NO_DESKTOP_NO_FUEL, true);
+                    }
+
                 }
             });
         });

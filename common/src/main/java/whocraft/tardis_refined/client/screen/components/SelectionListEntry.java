@@ -13,6 +13,8 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     private final GenericListSelection press;
     private boolean checked = false;
 
+    private boolean enabled = true;
+
     private int listLeft;
 
     /**
@@ -27,6 +29,20 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
         this.listLeft = listLeft;
     }
 
+    /**
+     *
+     * @param name
+     * @param onSelection
+     * @param listLeft - the left position for the master {@link GenericMonitorSelectionList} so we can left align our text
+     * @param enabled - Should the functionality of the button work?
+     */
+    public SelectionListEntry(Component name, GenericListSelection onSelection, int listLeft, boolean enabled) {
+        this.itemDisplayName = name;
+        this.press = onSelection;
+        this.listLeft = listLeft;
+        this.enabled = enabled;
+    }
+
     @Override
     public Component getNarration() {
         return itemDisplayName;
@@ -34,7 +50,12 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
 
     @Override
     public boolean mouseClicked(double d, double e, int i) {
-        press.onClick(this);
+
+        if (enabled) {
+            press.onClick(this);
+        }
+
+
         return super.mouseClicked(d, e, i);
     }
 
@@ -53,9 +74,12 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
      */
     @Override
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+
+
+
         int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() : (this.checked ? ChatFormatting.YELLOW.getColor() :  this.itemDisplayName.getStyle().getColor() != null ? this.itemDisplayName.getStyle().getColor().getValue() : ChatFormatting.GOLD.getColor());
         Component text = Component.literal((this.checked ? "> " : "") + this.itemDisplayName.getString());
-        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, colour);
+        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
     }
 
     public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour){

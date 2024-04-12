@@ -321,23 +321,8 @@ public class ControlEntity extends Entity {
         if (this.flightDanceManager != null) {
             TardisLevelOperator operator = this.flightDanceManager.getOperator();
 
-            if (this.controlSpecification.control().equals(ControlRegistry.MONITOR.get())) {
-
-                if (operator.getPilotingManager().isInFlight() && !operator.getPilotingManager().isLanding()) {
-                    float percentageCompleted = (this.flightDanceManager.getOperator().getPilotingManager().getFlightPercentageCovered() * 100f);
-                    if (percentageCompleted > 100) {
-                        percentageCompleted = 100;
-                    }
-                    this.setCustomName(Component.translatable(this.controlSpecification.control().getTranslationKey()).append(" (" + (int) percentageCompleted + "%)"));
-                }
-            }
-
-            if (this.controlSpecification.control().equals(ControlRegistry.READOUT.get())) {
-                TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
-                if (targetLocation != null) {
-                    this.setCustomName(Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()));
-                }
-
+            if (this.controlSpecification.control().hasCustomName()) {
+                this.setCustomName(this.controlSpecification.control().getCustomControlName(operator, this, this.controlSpecification));
             }
         }
 

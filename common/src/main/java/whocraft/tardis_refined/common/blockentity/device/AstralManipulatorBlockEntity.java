@@ -242,7 +242,9 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
                 if (recipe.recipeOutputBlock != null) {
                     Vec3 centerVector =  new AABB(pointABlockPos, pointBBlockPos).getCenter();
-                    BlockPos centerPos = new BlockPos((int) centerVector.x, pointABlockPos.getY(), (int) centerVector.z);
+                    int min = Math.min(pointABlockPos.getY(), pointBBlockPos.getY());
+
+                    BlockPos centerPos = new BlockPos((int) centerVector.x, min, (int) centerVector.z);
 
                     Block block = recipe.recipeOutputBlock;
                     level.setBlock(centerPos, block.defaultBlockState(), 3);

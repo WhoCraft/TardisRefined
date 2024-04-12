@@ -38,8 +38,8 @@ public class TardisPilotingManager extends BaseHandler {
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
-    private static final double DEFAULT_MAXIMUM_FUEL = 1000;
-    private static final double FLIGHT_COST = 3;
+    private static final double DEFAULT_MAXIMUM_FUEL = 100;
+    private static final double FLIGHT_COST = 0.1f;
 
     public static final int MAX_THROTTLE_STAGE = 5;
 
@@ -78,6 +78,8 @@ public class TardisPilotingManager extends BaseHandler {
     private GlobalConsoleBlockEntity currentConsole;
     private BlockPos currentConsoleBlockPos = BlockPos.ZERO;
 
+    private boolean isPassivelyRefuelling = false;
+
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
     }
@@ -94,6 +96,7 @@ public class TardisPilotingManager extends BaseHandler {
         this.isHandbrakeOn = tag.getBoolean(NbtConstants.IS_HANDBRAKE_ON);
         this.throttleStage = tag.getInt(NbtConstants.THROTTLE_STAGE);
 
+        this.isPassivelyRefuelling = tag.getBoolean(NbtConstants.IS_PASSIVELY_REFUELING);
 
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_fr_loc", operator);
@@ -138,6 +141,7 @@ public class TardisPilotingManager extends BaseHandler {
         tag.putInt(NbtConstants.FLIGHT_DISTANCE, this.flightDistance);
         tag.putInt(NbtConstants.DISTANCE_COVERED, this.distanceCovered);
         tag.putBoolean("canUseControls", this.canUseControls);
+        tag.putBoolean(NbtConstants.IS_PASSIVELY_REFUELING, this.isPassivelyRefuelling);
 
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
@@ -169,7 +173,6 @@ public class TardisPilotingManager extends BaseHandler {
             }
         }
 
-
         if (isInFlight) {
             onFlightTick(level);
         }
@@ -183,9 +186,17 @@ public class TardisPilotingManager extends BaseHandler {
             }
         }
 
-
         if (ticksSinceCrash > 0) {
             onCrashCooldownTick();
+        }
+
+        if (isPassivelyRefuelling && level.getGameTime() % 60 == 0) {
+            this.addFuel(1);
+
+            if (this.getFuel() >= this.getMaximumFuel()) {
+                this.setFuel(this.getMaximumFuel());
+                this.isPassivelyRefuelling = false;
+            }
         }
 
     }
@@ -196,7 +207,7 @@ public class TardisPilotingManager extends BaseHandler {
             ticksInFlight++;
 
             // Removing fuel once every 2.5 seconds
-            if (ticksInFlight % (2.5 * 20) == 0) {
+            if (ticksInFlight % (5) == 0) {
                 this.removeFuel(this.getFlightFuelCost());
             }
 
@@ -212,6 +223,10 @@ public class TardisPilotingManager extends BaseHandler {
                         }
                     }
                 }
+            }
+
+            if (this.isOutOfFuel() && !this.isLanding() && this.ticksCrashing == 0) {
+                this.endFlightEarly(true);
             }
 
             if (this.isHandbrakeOn && !this.isLanding() && !this.isTakingOff() && this.ticksCrashing == 0) {
@@ -247,6 +262,10 @@ public class TardisPilotingManager extends BaseHandler {
         if (ticksCrashing == 1) {
             onCrashEnd();
         }
+
+
+
+
     }
 
 
@@ -417,9 +436,8 @@ public class TardisPilotingManager extends BaseHandler {
      * @return true if able to, false if not
      */
     public boolean canBeginFlight() {
-        return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate() && !isInFlight && ticksTakingOff <= 0 && !this.isHandbrakeOn && !this.isCrashing && !this.isOutOfFuel();
+        return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate() && !isInFlight && ticksTakingOff <= 0 && !this.isHandbrakeOn && !this.isCrashing && (!this.isOutOfFuel() || this.fuel > 5);
     }
-
 
     /**
      * Logic to handle starting flight
@@ -428,25 +446,30 @@ public class TardisPilotingManager extends BaseHandler {
      */
     public boolean beginFlight(boolean autoLand, Optional<GlobalConsoleBlockEntity> consoleBlockEntity) {
 
+        if (this.getFuel() < 5) {
+            this.failTakeoff();
+            return false;
+        }
+
         if (this.targetLocation.getLevel().dimension() == Level.END) {
 
             if (!TardisHelper.hasTheEndBeenCompleted(this.targetLocation.getLevel())) {
-                if (this.currentConsole != null) {
-                    this.operator.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
-                }
 
+                failTakeoff();
 
                 for (Player player : this.operator.getLevel().players()) {
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.NO_END_DRAGON_PREVENTS), true);
                 }
 
-                this.setThrottleStage(0);
                 return false;
             }
         }
 
+
+
         if (this.canBeginFlight()) {
             this.autoLand = autoLand;
+            this.isPassivelyRefuelling = false;
             this.flightDistance = 0;
             this.distanceCovered = 0;
             this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
@@ -475,6 +498,16 @@ public class TardisPilotingManager extends BaseHandler {
             return true;
         }
         return false;
+    }
+
+    public void failTakeoff() {
+        if (this.currentConsole != null) {
+            this.operator.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
+
+        }
+
+        this.throttleStage = 0;
+
     }
 
     /**
@@ -894,6 +927,25 @@ public class TardisPilotingManager extends BaseHandler {
      */
     public void removeFuel(double amount) {
         this.setFuel(Math.max(0, this.fuel - amount));
+    }
+
+    /**
+     * Is the TARDIS set to refuel passively?
+     * **/
+    public boolean isPassivelyRefuelling() {return this.isPassivelyRefuelling;}
+
+    /**
+     * Sets the TARDIS to passively fuel
+     * @return Returns if it was successful in updating the state. Will fail if the TARDIS is in flight or has crashed.
+     */
+    public boolean setPassivelyRefuelling(boolean refuel) {
+        if (this.isInFlight() || !this.canUseControls()) {
+            return false;
+        }
+
+        this.isPassivelyRefuelling = refuel;
+
+        return true;
     }
 
     /**

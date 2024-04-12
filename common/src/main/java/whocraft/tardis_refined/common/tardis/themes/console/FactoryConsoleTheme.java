@@ -23,7 +23,6 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.FAST_RETURN, new Vector3f(-1.04f, 0.55f, -0.16f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.READOUT, new Vector3f(-0.90f, 0.50f, 0.44f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(1.02f, 0.58f, -0.17f), EntityDimensions.scalable(0.13f, 0.13f)),
-
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.78f, 0.67f, 0.16f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.54f, 0.67f, 0.58f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.69f, 0.61f, 0.68f), EntityDimensions.scalable(0.13f, 0.13f)),
@@ -39,7 +38,9 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.62f, 0.58f, -0.78f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.70f, 0.58f, -0.63f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.00f, 0.55f, 0.20f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.92f, 0.56f, -0.30f), EntityDimensions.scalable(0.13f, 0.13f))
+                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.92f, 0.56f, -0.30f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ControlRegistry.FUEL, new Vector3f(-0.84f, 0.69f, -0.18f), EntityDimensions.scalable(0.13f, 0.13f))
         };
     }
+
 }

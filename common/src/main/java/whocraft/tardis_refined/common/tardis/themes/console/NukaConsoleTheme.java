@@ -67,8 +67,10 @@ public class NukaConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.21f, 0.59f, -0.96f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.11f, 0.87f, 0.74f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(0.77f, 0.63f, 0.25f), EntityDimensions.scalable(0.25f, 0.25f)),
-                new ControlSpecification(ControlRegistry.READOUT, new Vector3f(0.74f, 0.75f, -0.34f), EntityDimensions.scalable(0.13f, 0.13f))
-
+                new ControlSpecification(ControlRegistry.READOUT, new Vector3f(0.74f, 0.75f, -0.34f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(ControlRegistry.FUEL, new Vector3f(-0.55f, 1.06f, -0.36f), EntityDimensions.scalable(0.25f, 0.25f))
         };
     }
+
+
 }

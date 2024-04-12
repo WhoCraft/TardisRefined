@@ -11,7 +11,6 @@ public class CoralConsoleTheme extends ConsoleThemeDetails {
     @Override
     public ControlSpecification[] getControlSpecification() {
         return new ControlSpecification[] {
-// Paste this into your designed ConsoleTheme
                 new ControlSpecification(ControlRegistry.THROTTLE, new Vector3f(0.60f, 0.67f, -1.10f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.X, new Vector3f(-0.26f, 0.48f, 1.10f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.Y, new Vector3f(-0.01f, 0.48f, 1.03f), EntityDimensions.scalable(0.13f, 0.13f)),
@@ -35,7 +34,6 @@ public class CoralConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.04f, 0.49f, 0.42f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.96f, 0.49f, 0.55f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.68f, 0.66f, 0.61f), EntityDimensions.scalable(0.13f, 0.12f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.57f, 0.29f, -0.01f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.86f, 0.41f, -1.00f), EntityDimensions.scalable(0.12f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.12f, 0.58f, -1.00f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.02f, 0.58f, -1.00f), EntityDimensions.scalable(0.06f, 0.06f)),
@@ -47,8 +45,7 @@ public class CoralConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.39f, 0.44f, -1.25f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(-1.03f, 0.68f, -0.03f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(ControlRegistry.READOUT, new Vector3f(0.39f, 0.78f, 0.62f), EntityDimensions.scalable(0.13f, 0.13f))
-
-
         };
     }
+
 }

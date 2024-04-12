@@ -27,8 +27,7 @@ public enum ConsoleControl implements StringRepresentable {
     READOUT("read_out", new ReadoutControl(), "control.tardis_refined.read_out"),
     HANDBRAKE("hand_brake", new HandbrakeControl(), "control.tardis_refined.hand_brake"),
     FAST_RETURN("fast_return", new FastReturnControl(), "control.tardis_refined.fast_return")
-    */
-    ;
+    */;
 
     private final String id;
     private final Control control;
@@ -49,7 +48,9 @@ public enum ConsoleControl implements StringRepresentable {
         return control;
     }
 
-    public String getTranslationKey() {return langId;}
+    public String getTranslationKey() {
+        return langId;
+    }
 
     public static ConsoleControl findOr(String id, ConsoleControl control) {
         for (ConsoleControl value : ConsoleControl.values()) {

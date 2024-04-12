@@ -12,8 +12,10 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.network.messages.screens.OpenMonitorMessage;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.ItemRegistry;
 
 public class MonitorControl extends Control {
@@ -27,14 +29,13 @@ public class MonitorControl extends Control {
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!player.level().isClientSide()){
-            ItemStack hand = player.getMainHandItem();
 
-            // Temporary for testing purposes
-            if (hand.is(Items.EXPERIENCE_BOTTLE)) {
-                operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
-                player.sendSystemMessage(Component.literal("Fueled up!"));
-                return true;
+            if (operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY || operator.getPilotingManager().isOutOfFuel()) {
+                PlayerUtil.sendMessage(player, ModMessages.HARDWARE_OFFLINE, true);
+                return false;
             }
+
+            ItemStack hand = player.getMainHandItem();
 
             boolean isSyncingKey = false;
             if (hand.getItem() instanceof KeyItem key){
@@ -51,5 +52,24 @@ public class MonitorControl extends Control {
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         return false;
+    }
+
+
+    @Override
+    public boolean hasCustomName() {
+        return true;
+    }
+
+    @Override
+    public Component getCustomControlName(TardisLevelOperator operator, ControlEntity entity, ControlSpecification controlSpecification) {
+        if (operator.getPilotingManager().isInFlight() && !operator.getPilotingManager().isLanding()) {
+            float percentageCompleted = (operator.getPilotingManager().getFlightPercentageCovered() * 100f);
+            if (percentageCompleted > 100) {
+                percentageCompleted = 100;
+            }
+            return Component.translatable(controlSpecification.control().getTranslationKey()).append(" (" + (int) percentageCompleted + "%)");
+        }
+
+        return super.getCustomControlName(operator, entity, controlSpecification);
     }
 }

@@ -43,8 +43,8 @@ public class CopperConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.49f, 0.54f, -1.09f), EntityDimensions.scalable(0.12f, 0.13f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(-1.20f, 0.63f, -0.57f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(ControlRegistry.READOUT, new Vector3f(0.24f, 0.97f, -0.70f), EntityDimensions.scalable(0.13f, 0.13f))
-
-
         };
     }
+
+
 }

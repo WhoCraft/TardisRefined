@@ -9,6 +9,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -52,7 +54,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
 
-    private double fuelForIntChange = 500; // The amount of fuel required to change interior
+    private double fuelForIntChange = 25; // The amount of fuel required to change interior
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -156,10 +158,8 @@ public class TardisInteriorManager extends BaseHandler {
 
         RandomSource rand = level.getRandom();
 
-        if (level.getBlockState(new BlockPos(1016,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(new BlockPos(1010,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY) {
-            this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
-            operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
-            setHumEntry(TardisHums.getDefaultHum());
+        if (level.getBlockState(new BlockPos(1016,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(new BlockPos(1010,73,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(new BlockPos(1002,78,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(new BlockPos(1024,78,55)).getBlock() == BlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY) {
+            this.openTheEye();
 
         }
 
@@ -297,6 +297,22 @@ public class TardisInteriorManager extends BaseHandler {
                 airlockTimerSeconds++;
             }
         }
+    }
+
+    public void openTheEye() {
+        this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
+        //operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
+
+        // Remove the blocks
+        BlockPos.betweenClosedStream(new AABB(1011, 72, 54, 1015, 71, 56)).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), 3));
+        BlockPos.betweenClosedStream(new AABB(1012, 72, 53, 1014, 71, 57)).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), 3));
+
+        LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
+        lightningBolt.setPos(1013, 72, 55);
+        this.operator.getLevel().addFreshEntity(lightningBolt);
+
+        setHumEntry(TardisHums.getDefaultHum());
+
     }
 
     public List<LivingEntity> getCorridorEntities(Level level) {

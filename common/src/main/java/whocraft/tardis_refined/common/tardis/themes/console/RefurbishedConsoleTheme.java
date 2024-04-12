@@ -23,7 +23,6 @@ public class RefurbishedConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.FAST_RETURN, new Vector3f(-0.48f, 0.50f, -1.51f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.READOUT, new Vector3f(0.80f, 0.71f, 0.93f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(0.24f, 0.69f, -1.20f), EntityDimensions.scalable(0.25f, 0.25f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.04f, 0.50f, -1.49f), EntityDimensions.scalable(0.12f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.01f, 0.66f, -1.34f), EntityDimensions.scalable(0.12f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.47f, 0.56f, -1.29f), EntityDimensions.scalable(0.12f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.47f, 0.50f, -1.46f), EntityDimensions.scalable(0.12f, 0.13f)),
@@ -56,8 +55,11 @@ public class RefurbishedConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.20f, 0.62f, -0.35f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.90f, 0.62f, -0.89f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.64f, 0.46f, -0.27f), EntityDimensions.scalable(0.12f, 0.12f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.02f, 0.46f, -1.29f), EntityDimensions.scalable(0.12f, 0.12f))
-
+                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.02f, 0.46f, -1.29f), EntityDimensions.scalable(0.12f, 0.12f)),
+                new ControlSpecification(ControlRegistry.FUEL, new Vector3f(-0.04f, 0.50f, -1.48f), EntityDimensions.scalable(0.13f, 0.13f))
         };
     }
+
+
+
 }

@@ -104,17 +104,17 @@ public class ManipulatorCrafting {
 
 
         register(new ManipulatorCraftingRecipe(Arrays.asList(
-                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 0), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), Blocks.PISTON),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), Blocks.OBSERVER),
                 new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 2), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 1), Blocks.AMETHYST_BLOCK),
-                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2), BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
 
-        ), BlockRegistry.GRAVITY_WELL.get().asItem()));
+        ), BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem()));
 
         register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),

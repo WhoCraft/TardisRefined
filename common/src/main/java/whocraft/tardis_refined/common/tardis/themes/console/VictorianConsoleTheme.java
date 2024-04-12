@@ -22,9 +22,9 @@ public class VictorianConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.DIMENSION, new Vector3f(0.8f , 0.5f, -0.85625f), EntityDimensions.scalable(0.125f , 0.125f)),
                 new ControlSpecification(ControlRegistry.FAST_RETURN, new Vector3f(0.721875f , 0.75f, -0.090625f), EntityDimensions.scalable(0.0625f , 0.0625f)),
 
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.315625f , 0.5f, 0.846875f), EntityDimensions.scalable(0.125f , 0.125f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.34062499999999996f , 0.5f, 0.846875f), EntityDimensions.scalable(0.12499999999999994f , 0.125f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.00937499999999987f , 0.7500000000000018f, 0.646875f), EntityDimensions.scalable(0.12499999999999994f , 0.125f)),
+                new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(0.315625f , 0.5f, 0.846875f), EntityDimensions.scalable(0.125f , 0.125f)),
+                new ControlSpecification(ControlRegistry.FUEL, new Vector3f(-0.34062499999999996f , 0.5f, 0.846875f), EntityDimensions.scalable(0.12499999999999994f , 0.125f)),
+                new ControlSpecification(ControlRegistry.READOUT, new Vector3f(-0.00937499999999987f , 0.7500000000000018f, 0.646875f), EntityDimensions.scalable(0.12499999999999994f , 0.125f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.12187499999999994f , 0.5437500000000013f, 0.8593749999999993f), EntityDimensions.scalable(0.125f , 0.125f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.8156250000000004f , 0.5437500000000013f, 0.45312500000000033f), EntityDimensions.scalable(0.12499999999999978f , 0.12499999999999994f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.8968750000000001f , 0.5125000000000008f, 0.24062500000000042f), EntityDimensions.scalable(0.12499999999999978f , 0.12499999999999986f)),

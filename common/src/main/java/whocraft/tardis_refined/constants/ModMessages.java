@@ -34,6 +34,12 @@ public class ModMessages {
     public static String LANDING_PAD_TRANSIENT = message("landing_pad_transient");
     public static String TOOLTIP_IN_FLIGHT = message("tooltip_in_flight");
 
+    public static String REFUEL = message("refuel_engaged");
+    public static String STOP_REFUEL = message("refuel_stopped");
+
+    public static String NO_DESKTOP_NO_FUEL = message("desktop_cancel_not_enough_fuel");
+
+
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
     public static String TOOLTIP_SCREWDRIVER_DESCRIPTION = tooltip("screwdriver_description");

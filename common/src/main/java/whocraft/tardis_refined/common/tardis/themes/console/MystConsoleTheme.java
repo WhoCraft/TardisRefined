@@ -28,7 +28,7 @@ public class MystConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.14f, 0.59f, -0.37f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.71f, 0.66f, -0.81f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.93f, 0.60f, -0.56f), EntityDimensions.scalable(0.13f, 0.12f)),
-                new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.76f, 0.51f, 0.90f), EntityDimensions.scalable(0.13f, 0.12f)),
+                new ControlSpecification(ControlRegistry.FUEL, new Vector3f(0.76f, 0.51f, 0.90f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.01f, 0.58f, 1.06f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.94f, 0.74f, 0.53f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(ControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.01f, 0.53f, 0.57f), EntityDimensions.scalable(0.13f, 0.13f)),
@@ -37,8 +37,7 @@ public class MystConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(ControlRegistry.ROTATE, new Vector3f(0.59f, 0.80f, -0.38f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(ControlRegistry.HANDBRAKE, new Vector3f(-1.01f, 0.56f, 0.09f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(ControlRegistry.READOUT, new Vector3f(-0.02f, 0.69f, -1.09f), EntityDimensions.scalable(0.12f, 0.13f))
-
-
         };
     }
+
 }
