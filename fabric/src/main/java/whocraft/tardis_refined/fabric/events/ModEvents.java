@@ -5,9 +5,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.ControlGroupCheckers;
 import whocraft.tardis_refined.client.GravityOverlay;
 import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -44,6 +47,8 @@ public class ModEvents {
             //Register Recipes
             ManipulatorCrafting.registerRecipes();
         });
+
+        ServerTickEvents.START_SERVER_TICK.register(ControlGroupCheckers::tickServer);
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));
