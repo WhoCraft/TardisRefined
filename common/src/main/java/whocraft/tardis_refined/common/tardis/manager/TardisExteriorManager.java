@@ -177,7 +177,7 @@ public class TardisExteriorManager extends BaseHandler {
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
 
         BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
-                .setValue(GlobalShellBlock.FACING, location.getDirection())
+                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
                 .setValue(GlobalShellBlock.REGEN, false)
                 .setValue(LOCKED, operator.getExteriorManager().locked)
                 .setValue(GlobalShellBlock.LIT, shellTheme.producesLight())
