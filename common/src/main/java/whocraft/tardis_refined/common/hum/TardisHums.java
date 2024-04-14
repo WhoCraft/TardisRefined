@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.hum;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,10 +15,10 @@ public class TardisHums {
 
     private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
-    public static final HumEntry CAVE = new HumEntry(new ResourceLocation(TardisRefined.MODID, "cave"), SoundRegistry.HUM_CAVE.getId(), new ArrayList<>());
-    public static final HumEntry TOYOTA = new HumEntry(new ResourceLocation(TardisRefined.MODID, "toyota"), SoundRegistry.HUM_TOYOTA.getId(), new ArrayList<>());
-    public static final HumEntry CLASSIC = new HumEntry(new ResourceLocation(TardisRefined.MODID, "classic"), SoundRegistry.HUM_CLASSIC.getId(), new ArrayList<>());
-    public static final HumEntry HUM_1996 = new HumEntry(new ResourceLocation(TardisRefined.MODID, "hum_1996"), SoundRegistry.HUM_1996.getId(), new ArrayList<>());
+    public static final HumEntry CAVE = new HumEntry(new ResourceLocation(TardisRefined.MODID, "cave"), TRSoundRegistry.HUM_CAVE.getId(), new ArrayList<>());
+    public static final HumEntry TOYOTA = new HumEntry(new ResourceLocation(TardisRefined.MODID, "toyota"), TRSoundRegistry.HUM_TOYOTA.getId(), new ArrayList<>());
+    public static final HumEntry CLASSIC = new HumEntry(new ResourceLocation(TardisRefined.MODID, "classic"), TRSoundRegistry.HUM_CLASSIC.getId(), new ArrayList<>());
+    public static final HumEntry HUM_1996 = new HumEntry(new ResourceLocation(TardisRefined.MODID, "hum_1996"), TRSoundRegistry.HUM_1996.getId(), new ArrayList<>());
 
     /**
      * A factory method to create the instance of our reload listener.
@@ -69,7 +69,7 @@ public class TardisHums {
     public static HumEntry getDefaultHum() {
         ArrayList<ResourceLocation> arrayList = new ArrayList();
         arrayList.add(new ResourceLocation(TardisRefined.MODID, "interior_creaks"));
-        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), SoundRegistry.HUM_CORAL.getId(), arrayList);
+        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral_hum"), TRSoundRegistry.HUM_CORAL.getId(), arrayList);
     }
 
     public static Map<ResourceLocation, HumEntry> getDefaultHums() {

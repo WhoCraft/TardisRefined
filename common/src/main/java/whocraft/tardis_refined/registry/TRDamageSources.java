@@ -9,7 +9,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import whocraft.tardis_refined.TardisRefined;
 
-public class RefinedDamageSources {
+public class TRDamageSources {
 
     public static final ResourceKey<DamageType> EYE_OF_HARMONY = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(TardisRefined.MODID, "eye_of_harmony"));
 

@@ -3,12 +3,16 @@ package whocraft.tardis_refined.common.blockentity.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -20,8 +24,10 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.items.ScrewdriverMode;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +46,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     private BlockPos pointBBlockPos;
 
     public AstralManipulatorBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.ASTRAL_MANIPULATOR.get(), blockPos, blockState);
+        super(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), blockPos, blockState);
     }
 
     @Override
@@ -104,12 +110,16 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     }
 
 
-    public void onRightClick(ItemStack itemStack) {
+    public void onRightClick(ItemStack itemStack, Player player) {
         if (itemStack.getItem() instanceof ScrewdriverItem screwdriverItem) {
             if (!screwdriverItem.isScrewdriverMode(itemStack, ScrewdriverMode.DRAWING)) {
                 screwdriverItem.setScrewdriverMode(itemStack, ScrewdriverMode.DRAWING, getBlockPos(), null);
                 setShouldDisplay(true);
-                screwdriverItem.playScrewdriverSound((ServerLevel) getLevel(), getBlockPos(), SoundRegistry.SCREWDRIVER_CONNECT.get());
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.ASTRAL_MANIPULATOR_ENGAGED), true);
+
+                if (getLevel() instanceof ServerLevel serverLevel) {
+                    screwdriverItem.playScrewdriverSound(serverLevel, getBlockPos(), TRSoundRegistry.SCREWDRIVER_CONNECT.get());
+                }
 
             } else {
 
@@ -120,7 +130,13 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                     BlockPos pointA = points.get(0);
                     BlockPos pointB = points.get(1);
 
-                    attemptToBuild(pointA, pointB);
+                    if (attemptToBuild(pointA, pointB)) {
+                        level.playSound(null, getBlockPos(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1, 1.25f);
+                    } else {
+
+                        level.playSound(null, getBlockPos(), SoundEvents.ALLAY_HURT, SoundSource.BLOCKS, 1, 0.3f);
+                    }
+
                     screwdriverItem.clearBlockPosFromScrewdriver(itemStack);
                     this.clearDisplay();
                 }
@@ -176,7 +192,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     }
 
 
-    private void attemptToBuild(BlockPos pointA, BlockPos pointB) {
+    private boolean attemptToBuild(BlockPos pointA, BlockPos pointB) {
 
         var submittedBlocks = new ArrayList<ManipulatorCraftingRecipeItem>();
 
@@ -185,9 +201,9 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         float yDiff = Math.abs(pointA.getY() - pointB.getY());
         float zDiff = Math.abs(pointA.getZ() - pointB.getZ());
 
-        int smallestPointX = pointA.getX() > pointB.getX() ? pointB.getX() : pointA.getX();
-        int smallestPointY = pointA.getY() > pointB.getY() ? pointB.getY() : pointA.getY();
-        int smallestPointZ = pointA.getZ() > pointB.getZ() ? pointB.getZ() : pointA.getZ();
+        int smallestPointX = Math.min(pointA.getX(), pointB.getX());
+        int smallestPointY = Math.min(pointA.getY(), pointB.getY());
+        int smallestPointZ = Math.min(pointA.getZ(), pointB.getZ());
 
         BlockPos minPoint = new BlockPos(smallestPointX, smallestPointY, smallestPointZ);
 
@@ -206,8 +222,8 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
         // Filter recipes by the first block, will make it a LOT easier later down the line. (when I make it)
         Optional<ManipulatorCraftingRecipeItem> firstBlock = submittedBlocks.stream().filter(x -> x.relativeBlockPos.getX() == 0 && x.relativeBlockPos.getY() == 0 && x.relativeBlockPos.getZ() == 0).findFirst();
-        if (!firstBlock.isPresent()) {
-            return;
+        if (firstBlock.isEmpty()) {
+            return false;
         }
 
         List<ManipulatorCraftingRecipe> possibleRecipes = new ArrayList<ManipulatorCraftingRecipe>();
@@ -224,8 +240,8 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         }
 
         // No recipes, so no result!
-        if (possibleRecipes.size() == 0) {
-            return;
+        if (possibleRecipes.isEmpty()) {
+            return false;
         }
 
         for (ManipulatorCraftingRecipe recipe : possibleRecipes) {
@@ -240,7 +256,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                 List<ItemEntity> droppedItems = getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(pointABlockPos, pointBBlockPos).inflate(1));
                 droppedItems.forEach(Entity::discard);
 
-                if (recipe.recipeOutputBlock != null) {
+                if (recipe.placeResultAsBlock && recipe.recipeOutputBlock != null) {
                     Vec3 centerVector =  new AABB(pointABlockPos, pointBBlockPos).getCenter();
                     int min = Math.min(pointABlockPos.getY(), pointBBlockPos.getY());
 
@@ -256,11 +272,13 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                     level.addFreshEntity(item);
                 }
 
-
-
-                return;
+                return true;
             }
 
         }
+
+        return false;
     }
+
+
 }

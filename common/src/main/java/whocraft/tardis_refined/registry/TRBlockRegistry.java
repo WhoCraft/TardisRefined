@@ -22,16 +22,16 @@ import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 
 import java.util.function.Supplier;
 
-public class BlockRegistry {
+public class TRBlockRegistry {
 
     public static final DeferredRegistry<Block> BLOCKS = DeferredRegistry.create(TardisRefined.MODID, Registries.BLOCK);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, boolean addToTab, boolean registerItem) {
         RegistrySupplier<T> registryObject = BLOCKS.register(id, blockSupplier);
         if (registerItem) {
-            RegistrySupplier<Item> itemSupplier = ItemRegistry.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties()));
+            RegistrySupplier<Item> itemSupplier = TRItemRegistry.ITEMS.register(id, () -> new BlockItem(registryObject.get(), new Item.Properties()));
             if(addToTab) {
-                ItemRegistry.TAB_ITEMS.add(itemSupplier);
+                TRItemRegistry.TAB_ITEMS.add(itemSupplier);
             }
         }
         return registryObject;

@@ -31,7 +31,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
@@ -42,8 +41,8 @@ import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.ControlRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
+import whocraft.tardis_refined.registry.TRControlRegistry;
+import whocraft.tardis_refined.registry.TREntityRegistry;
 
 public class ControlEntity extends Entity {
 
@@ -66,7 +65,7 @@ public class ControlEntity extends Entity {
     private static final EntityDataAccessor<Float> SCALE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
 
     public ControlEntity(Level level) {
-        super(EntityRegistry.CONTROL_ENTITY.get(), level);
+        super(TREntityRegistry.CONTROL_ENTITY.get(), level);
     }
 
 
@@ -439,7 +438,7 @@ public class ControlEntity extends Entity {
             }
 
 
-            if (!cap.getPilotingManager().canUseControls() && !(controlSpecification.control().equals(ControlRegistry.MONITOR.get()))) {
+            if (!cap.getPilotingManager().canUseControls() && !(controlSpecification.control().equals(TRControlRegistry.MONITOR.get()))) {
                 if (player.isCreative()) {
                     serverLevel.playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.5)));
                 } else {

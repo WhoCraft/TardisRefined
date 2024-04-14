@@ -17,14 +17,19 @@ public class ManipulatorCraftingRecipe {
     public Item recipeOutputItem;
     public Block recipeOutputBlock;
 
+    // Determines whether to place the result at the center position or create an item entity.
+    public boolean placeResultAsBlock;
+
 
     public ManipulatorCraftingRecipe(List<ManipulatorCraftingRecipeItem> itemList, Item recipeOutput) {
         this.itemList = itemList;
         this.recipeOutputItem = recipeOutput;
+        this.placeResultAsBlock = false;
     }
     public ManipulatorCraftingRecipe(List<ManipulatorCraftingRecipeItem> itemList, Block recipeOutput) {
         this.itemList = itemList;
         this.recipeOutputBlock = recipeOutput;
+        this.placeResultAsBlock = true;
     }
 
 

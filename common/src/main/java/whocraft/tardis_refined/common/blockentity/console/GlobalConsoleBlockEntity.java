@@ -8,8 +8,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,7 +26,7 @@ import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +45,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     private ConsolePattern basePattern;
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
+        super(TRBlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
         this.consoleTheme = ConsoleTheme.FACTORY.getId();
         this.basePattern = this.pattern();
     }

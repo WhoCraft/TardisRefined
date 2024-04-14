@@ -14,9 +14,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-import static whocraft.tardis_refined.registry.BlockRegistry.BLOCKS;
+import static whocraft.tardis_refined.registry.TRBlockRegistry.BLOCKS;
 
 public class TRBlockModelProvider extends BlockStateProvider {
 
@@ -91,53 +91,53 @@ public class TRBlockModelProvider extends BlockStateProvider {
 /*
         Blocks that are rendered in code
 */
-        emptyBlockState(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
-        emptyBlockState(BlockRegistry.BULK_HEAD_DOOR.get());
-        emptyBlockState(BlockRegistry.GLOBAL_DOOR_BLOCK.get());
-        emptyBlockState(BlockRegistry.GLOBAL_SHELL_BLOCK.get());
-        emptyBlockState(BlockRegistry.ROOT_SHELL_DOOR.get());
-        emptyBlockState(BlockRegistry.ROOT_PLANT_BLOCK.get());
-        emptyBlockState(BlockRegistry.ROOT_SHELL_BLOCK.get());
-        emptyBlockState(BlockRegistry.ARS_EGG.get());
-        emptyBlockState(BlockRegistry.ARTRON_PILLAR.get());
+        emptyBlockState(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
+        emptyBlockState(TRBlockRegistry.BULK_HEAD_DOOR.get());
+        emptyBlockState(TRBlockRegistry.GLOBAL_DOOR_BLOCK.get());
+        emptyBlockState(TRBlockRegistry.GLOBAL_SHELL_BLOCK.get());
+        emptyBlockState(TRBlockRegistry.ROOT_SHELL_DOOR.get());
+        emptyBlockState(TRBlockRegistry.ROOT_PLANT_BLOCK.get());
+        emptyBlockState(TRBlockRegistry.ROOT_SHELL_BLOCK.get());
+        emptyBlockState(TRBlockRegistry.ARS_EGG.get());
+        emptyBlockState(TRBlockRegistry.ARTRON_PILLAR.get());
 
 
-        threeDeeRotating(BlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
-        threeDeeRotating(BlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
+        threeDeeRotating(TRBlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
+        threeDeeRotating(TRBlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
 
-        terraformer(BlockRegistry.TERRAFORMER_BLOCK.get());
+        terraformer(TRBlockRegistry.TERRAFORMER_BLOCK.get());
 
         /*
          **Basic Blocks**
          */
-        customLocation(BlockRegistry.ARS_LEAVES.get());
-        customLocation(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
-        customLocation(BlockRegistry.FOOLS_STONE.get());
-        simpleBlock(BlockRegistry.ARTRON_PILLAR_PORT.get());
+        customLocation(TRBlockRegistry.ARS_LEAVES.get());
+        customLocation(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
+        customLocation(TRBlockRegistry.FOOLS_STONE.get());
+        simpleBlock(TRBlockRegistry.ARTRON_PILLAR_PORT.get());
 
-        customLocation(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/astral_manipulator"));
-        customLocation(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
-        customLocation(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
-        customLocation(BlockRegistry.ZEITON_ORE.get());
-        customLocation(BlockRegistry.ZEITON_ORE_DEEPSLATE.get());
-        customLocation(BlockRegistry.ZEITON_BLOCK.get());
+        customLocation(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/astral_manipulator"));
+        customLocation(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
+        customLocation(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
+        customLocation(TRBlockRegistry.ZEITON_ORE.get());
+        customLocation(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get());
+        customLocation(TRBlockRegistry.ZEITON_BLOCK.get());
 
-        antiGravityBlock(BlockRegistry.GRAVITY_WELL.get());
+        antiGravityBlock(TRBlockRegistry.GRAVITY_WELL.get());
 
         /*
          **Fences**
          */
-        fenceBlock(BlockRegistry.ARS_LEAVES_FENCE.get(), leavesTexture);
+        fenceBlock(TRBlockRegistry.ARS_LEAVES_FENCE.get(), leavesTexture);
 
         /*
          **Slabs**
          */
-        slabBlock(BlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture, leavesTexture, leavesTexture);
+        slabBlock(TRBlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture, leavesTexture, leavesTexture);
 
 
-        threeDeeRotating(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
+        threeDeeRotating(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
 
-        lantern(BlockRegistry.ZEITON_LANTERN.get());
+        lantern(TRBlockRegistry.ZEITON_LANTERN.get());
     }
 
 

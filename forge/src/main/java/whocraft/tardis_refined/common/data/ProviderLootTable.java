@@ -11,9 +11,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TREntityRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,15 +38,15 @@ public class ProviderLootTable extends LootTableProvider {
                 dropSelf(block);
             }
 
-            this.add(BlockRegistry.ZEITON_ORE.get(), (block) -> createOreDrop(block, ItemRegistry.RAW_ZEITON.get()));
-            this.add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), (block) -> createOreDrop(block, ItemRegistry.RAW_ZEITON.get()));
+            this.add(TRBlockRegistry.ZEITON_ORE.get(), (block) -> createOreDrop(block, TRItemRegistry.RAW_ZEITON.get()));
+            this.add(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get(), (block) -> createOreDrop(block, TRItemRegistry.RAW_ZEITON.get()));
         }
 
         @Override
         protected Iterable<Block> getKnownBlocks() {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
-            for (Block entry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
-                ResourceLocation blockId = BlockRegistry.BLOCKS.getRegistry().getKey(entry);
+            for (Block entry : TRBlockRegistry.BLOCKS.getRegistry().stream().toList()) {
+                ResourceLocation blockId = TRBlockRegistry.BLOCKS.getRegistry().getKey(entry);
                 if (!blockId.toString().contains("minecraft")) {
                     blocks.add(entry);
                 }
@@ -64,8 +64,8 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Stream<EntityType<?>> getKnownEntityTypes() {
             ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
-            for (EntityType<?> entry : EntityRegistry.ENTITY_TYPES.getRegistry().stream().toList()) {
-                if (entry == EntityRegistry.CONTROL_ENTITY.get())
+            for (EntityType<?> entry : TREntityRegistry.ENTITY_TYPES.getRegistry().stream().toList()) {
+                if (entry == TREntityRegistry.CONTROL_ENTITY.get())
                     break;
                 entities.add(entry);
             }

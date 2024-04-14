@@ -43,14 +43,4 @@ public class ReadoutControl extends Control {
     public boolean hasCustomName() {
         return true;
     }
-
-    @Override
-    public Component getCustomControlName(TardisLevelOperator operator, ControlEntity entity, ControlSpecification controlSpecification) {
-        TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
-        if (targetLocation != null) {
-            return Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath());
-        }
-
-        return super.getCustomControlName(operator, entity, controlSpecification);
-    }
 }

@@ -4,20 +4,18 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.EnchantmentTableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import static net.minecraft.core.BlockPos.betweenClosed;
 
@@ -27,7 +25,7 @@ public class GravityUtil {
     private static final int MAX_Y = 30; // The most a shaft can carry a player up
     private static final double ACCELERATION = 0.2;
     public static boolean isInAntiGrav(Player playerBox, AABB box, Level level) {
-        if(level.dimensionTypeId() != DimensionTypes.TARDIS) return false;
+        if(level.dimensionTypeId() != TRDimensionTypes.TARDIS) return false;
         for (BlockPos pos : betweenClosed(new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ), new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ))) {
             BlockState blockState = level.getBlockState(pos);
             if (blockState.getBlock() instanceof AntiGravityBlock) {

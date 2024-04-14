@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.block.device;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -11,8 +12,8 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.ArtronPillarBlockEntity;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 public class ArtronPillarBlock extends BaseEntityBlock {
 
@@ -27,8 +28,9 @@ public class ArtronPillarBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
-        if (level.getBlockState(blockPos.below()).getBlock() == BlockRegistry.ARTRON_PILLAR_PORT.get()) {
+        if (level.getBlockState(blockPos.below()).getBlock() == TRBlockRegistry.ARTRON_PILLAR_PORT.get()) {
             level.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
+            level.playSound(null, blockPos, TRSoundRegistry.ARTRON_PILLAR.get(), SoundSource.BLOCKS, 100, 1 + (level.getRandom().nextFloat() * 0.25f));
         }
 
 

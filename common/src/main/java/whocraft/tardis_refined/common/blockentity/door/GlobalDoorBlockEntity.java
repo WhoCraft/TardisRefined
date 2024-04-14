@@ -7,23 +7,17 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
-import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
-
-import java.util.Optional;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
 
@@ -31,7 +25,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
     private ShellPattern basePattern;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), blockPos, blockState);
+        super(TRBlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), blockPos, blockState);
     }
 
     public ShellPattern pattern() {

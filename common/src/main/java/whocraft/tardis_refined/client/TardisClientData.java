@@ -29,8 +29,8 @@ import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientData
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -81,7 +81,7 @@ public class TardisClientData {
 
     // Independent of the hums logic
     private int nextVoiceAmbientCall = 12000;
-    private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(SoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
+    private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(TRSoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
 
 
     private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
@@ -275,7 +275,7 @@ public class TardisClientData {
         }
 
 
-        if (Minecraft.getInstance().player.level().dimensionTypeId() == DimensionTypes.TARDIS) {
+        if (Minecraft.getInstance().player.level().dimensionTypeId() == TRDimensionTypes.TARDIS) {
 
             ClientLevel tardisLevel = Minecraft.getInstance().level;
             boolean isThisTardis = levelKey == tardisLevel.dimension();

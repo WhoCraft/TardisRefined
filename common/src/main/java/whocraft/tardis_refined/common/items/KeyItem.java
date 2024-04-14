@@ -27,7 +27,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.ControlRegistry;
+import whocraft.tardis_refined.registry.TRControlRegistry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -125,7 +125,7 @@ public class KeyItem extends Item {
         if (control.level() instanceof ServerLevel serverLevel) {
             ResourceKey<Level> tardis = serverLevel.dimension();
             if (control.controlSpecification().control() != null) {
-                if (control.controlSpecification().control() == ControlRegistry.MONITOR.get() && !keychainContains(itemStack, tardis)) {
+                if (control.controlSpecification().control() == TRControlRegistry.MONITOR.get() && !keychainContains(itemStack, tardis)) {
                     player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                     player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);

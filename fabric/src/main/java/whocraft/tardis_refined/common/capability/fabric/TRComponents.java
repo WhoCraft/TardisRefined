@@ -7,7 +7,7 @@ import dev.onyxstudios.cca.api.v3.world.WorldComponentInitializer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class TRComponents implements WorldComponentInitializer {
 
@@ -22,7 +22,7 @@ public class TRComponents implements WorldComponentInitializer {
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
         registry.register(TARDIS_DATA, level -> {
 
-            if (level instanceof ServerLevel serverLevel && level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+            if (level instanceof ServerLevel serverLevel && level.dimensionTypeId().location() == TRDimensionTypes.TARDIS.location()) {
                 return new TardisLevelOperatorImpl(serverLevel);
             }
             return new TardisLevelOperatorDummy(level);

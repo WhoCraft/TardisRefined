@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import whocraft.tardis_refined.TardisRefined;
 
-public class SoundRegistry {
+public class TRSoundRegistry {
     public static final DeferredRegistry<SoundEvent> SOUNDS = DeferredRegistry.create(TardisRefined.MODID, Registries.SOUND_EVENT);
 
     public static final RegistrySupplier<SoundEvent> TARDIS_TAKEOFF = setUpSound("tardis_takeoff");
@@ -24,6 +24,9 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> FLIGHT_FAIL_START = setUpSound("flight_fail_start");
     public static final RegistrySupplier<SoundEvent> CONSOLE_POWER_ON = setUpSound("console_power_on");
     public static final RegistrySupplier<SoundEvent> INTERIOR_VOICE = setUpSound("interior_voice");
+    public static final RegistrySupplier<SoundEvent> LOW_FUEL = setUpSound("low_fuel");
+    public static final RegistrySupplier<SoundEvent> ARTRON_PILLAR = setUpSound("artron_pillar_active");
+
 
 
     // Hums

@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.OPEN;
@@ -19,7 +19,7 @@ import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.OPEN;
 public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityTicker<BulkHeadDoorBlockEntity> {
 
     public BulkHeadDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.BULK_HEAD_DOOR.get(), blockPos, blockState);
+        super(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), blockPos, blockState);
     }
 
 

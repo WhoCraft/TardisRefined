@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
-import whocraft.tardis_refined.registry.ARSStructurePieceRegistry;
+import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
@@ -44,22 +44,22 @@ public class TardisRefined {
 
     public static void init() {
 
-        ItemRegistry.TABS.register();
-        BlockRegistry.BLOCKS.register();
-        ItemRegistry.ITEMS.register();
-        EntityRegistry.ENTITY_TYPES.register();
-        SoundRegistry.SOUNDS.register();
-        BlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
-        DimensionTypes.register();
+        TRItemRegistry.TABS.register();
+        TRBlockRegistry.BLOCKS.register();
+        TRItemRegistry.ITEMS.register();
+        TREntityRegistry.ENTITY_TYPES.register();
+        TRSoundRegistry.SOUNDS.register();
+        TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
+        TRDimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();
         TRParticles.TYPES.register();
         Upgrades.UPGRADE_DEFERRED_REGISTRY.register();
         ConsoleTheme.CONSOLE_THEMES.register();
         ShellTheme.SHELL_THEMES.register();
-        ControlRegistry.CONTROLS.register();
-        ArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.register();
-        TagKeys.init();
+        TRControlRegistry.CONTROLS.register();
+        TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.register();
+        TRTagKeys.init();
         TardisNetwork.init();
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
@@ -72,7 +72,7 @@ public class TardisRefined {
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
 
-        ARSStructurePieceRegistry.register();
+        TRARSStructurePieceRegistry.register();
     }
 
 }

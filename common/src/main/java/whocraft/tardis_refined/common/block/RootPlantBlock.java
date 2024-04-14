@@ -35,8 +35,8 @@ import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 
 public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterloggedBlock{
@@ -113,7 +113,7 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
                     boolean waterlogged = fluidState.getType() == Fluids.WATER;
                     if (age + 1 == this.getMaxAge()) {
                         serverLevel.removeBlock(blockPos, waterlogged); //Use removeBlock to allow us to keep any water source blocks since root block is now waterloggable.
-                        serverLevel.setBlock(blockPos, BlockRegistry.ROOT_SHELL_BLOCK.get().defaultBlockState().setValue(RootedShellBlock.FACING, facing).setValue(WATERLOGGED, waterlogged), 3);
+                        serverLevel.setBlock(blockPos, TRBlockRegistry.ROOT_SHELL_BLOCK.get().defaultBlockState().setValue(RootedShellBlock.FACING, facing).setValue(WATERLOGGED, waterlogged), 3);
                     } else {
                         serverLevel.removeBlock(blockPos, waterlogged); //Use removeBlock to allow us to keep any water source blocks since root block is now waterloggable.
                         serverLevel.setBlock(blockPos, this.getStateForAging(age + 1, facing).setValue(WATERLOGGED, waterlogged), 3);
@@ -154,11 +154,11 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
-        if(level instanceof ServerLevel serverLevel && level.dimensionTypeId() == DimensionTypes.TARDIS){
+        if(level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS){
             TardisLevelOperator.get(serverLevel).ifPresent(TardisHelper::playCloisterBell);
             level.removeBlock(blockPos, false);
             ItemEntity item = new ItemEntity(EntityType.ITEM, level);
-            item.setItem(new ItemStack(BlockRegistry.ROOT_PLANT_BLOCK.get()));
+            item.setItem(new ItemStack(TRBlockRegistry.ROOT_PLANT_BLOCK.get()));
             item.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
             level.addFreshEntity(item);
             return;

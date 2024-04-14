@@ -18,8 +18,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
                 setScrewdriverMode(context.getItemInHand(), ScrewdriverMode.DISABLED, context.getClickedPos(), serverLevel);
             } else {
 
-                if (isScrewdriverMode(context.getItemInHand(), ScrewdriverMode.DRAWING) && context.getLevel().getBlockState(context.getClickedPos()).getBlock() != BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()) {
+                if (isScrewdriverMode(context.getItemInHand(), ScrewdriverMode.DRAWING) && context.getLevel().getBlockState(context.getClickedPos()).getBlock() != TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()) {
                     addBlockPosToScrewdriver(serverLevel, context.getPlayer(), context.getItemInHand(), context.getClickedPos());
                 }
             }
@@ -78,7 +78,7 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
 
             if (currentMode != ScrewdriverMode.DISABLED && mode == ScrewdriverMode.DISABLED) {
                 if (serverLevel != null) {
-                    playScrewdriverSound(serverLevel, sourceChange, SoundRegistry.SCREWDRIVER_DISCARD.get());
+                    playScrewdriverSound(serverLevel, sourceChange, TRSoundRegistry.SCREWDRIVER_DISCARD.get());
                 }
             }
 
@@ -133,11 +133,10 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         itemtag.putBoolean(SCREWDRIVER_B_WAS_LAST_UPDATED, !isUpdatingA);
         stack.setTag(itemtag);
 
-        playScrewdriverSound(serverLevel, player.getOnPos(), SoundRegistry.SCREWDRIVER_SHORT.get());
+        playScrewdriverSound(serverLevel, player.getOnPos(), TRSoundRegistry.SCREWDRIVER_SHORT.get());
     }
 
     public void playScrewdriverSound(ServerLevel level, BlockPos pos, SoundEvent soundEvent) {
-
         level.playSound(null, pos.getX(), pos.getY(), pos.getZ(), soundEvent, SoundSource.PLAYERS, 1, 0.875f + level.getRandom().nextFloat() / 4);
     }
 

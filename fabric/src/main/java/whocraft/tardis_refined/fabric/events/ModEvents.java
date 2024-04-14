@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.ControlGroupCheckers;
@@ -20,8 +19,8 @@ import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
-import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
+import whocraft.tardis_refined.registry.TRItemRegistry;
 
 import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.END_WORLD_TICK;
 import static net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents.START_WORLD_TICK;
@@ -34,7 +33,7 @@ public class ModEvents {
 
         END_WORLD_TICK.register(TardisTeleportData::tick);
         START_WORLD_TICK.register(world -> {
-            if (world.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+            if (world.dimensionTypeId().location() == TRDimensionTypes.TARDIS.location()) {
                 TardisLevelOperator.get(world).get().tick(world);
             }
         });
@@ -56,7 +55,7 @@ public class ModEvents {
 
     public static void addClientEvents() {
         ClientTickEvents.START_CLIENT_TICK.register(TardisClientData::tickClientData);
-        ColorProviderRegistry.ITEM.register(TRItemColouring.SCREWDRIVER_COLORS, ItemRegistry.SCREWDRIVER.get());
+        ColorProviderRegistry.ITEM.register(TRItemColouring.SCREWDRIVER_COLORS, TRItemRegistry.SCREWDRIVER.get());
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> GravityOverlay.renderOverlay(matrixStack.pose()));
     }
 

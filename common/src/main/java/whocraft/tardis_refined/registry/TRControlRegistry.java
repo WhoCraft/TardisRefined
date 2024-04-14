@@ -9,7 +9,7 @@ import whocraft.tardis_refined.common.tardis.control.flight.*;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
-public class ControlRegistry {
+public class TRControlRegistry {
 	/** Registry Key for the Controls registry. For addon mods, use this as the registry key*/
 	public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
 

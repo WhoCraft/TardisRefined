@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 // #PimpMyTimeship
 public class AestheticHandler extends BaseHandler {
@@ -85,7 +85,7 @@ public class AestheticHandler extends BaseHandler {
             if (state.getBlock() instanceof RootedShellBlock) {
                 // If the block at the last known location was originally a Root Shell Block (i.e. transforming to a proper Tardis),
                 // Create a new Global Shell Block instance and copy over all attributes from the existing shell
-                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL_IMMEDIATE);
+                lastKnownLocationLevel.setBlock(lastKnownLocationPosition, TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN)).setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)).setValue(GlobalShellBlock.REGEN, false), Block.UPDATE_ALL_IMMEDIATE);
 
                 //Copy over important data such as Tardis ID
 
@@ -122,7 +122,7 @@ public class AestheticHandler extends BaseHandler {
                 // If the block at the last known location was originally a Root Shell Door (i.e. transforming to a proper Tardis),
                 // Create a new Global Shell Door instance and copy over all attributes from the existing shell
                 tardisOperator.getLevel().setBlock(internalDoorPos,
-                        BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
+                        TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
                                 .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), 2);
 
                 var potentialDoor = tardisOperator.getLevel().getBlockEntity(internalDoorPos);

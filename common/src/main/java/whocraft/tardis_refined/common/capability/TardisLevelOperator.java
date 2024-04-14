@@ -51,7 +51,7 @@ public class TardisLevelOperator {
     private final UpgradeHandler upgradeHandler;
     private final AestheticHandler aestheticHandler;
 
-
+    // TARDIS state refers to different stages of TARDIS creation. This allows for different logic to operate in those moments.
     private int tardisState = 0;
 
     public static final int STATE_CAVE = 0;

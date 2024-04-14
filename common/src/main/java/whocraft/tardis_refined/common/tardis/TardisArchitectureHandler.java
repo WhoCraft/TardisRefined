@@ -14,7 +14,7 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.*;
 
@@ -38,8 +38,8 @@ public class TardisArchitectureHandler {
         if (theme != TardisDesktops.DEFAULT_OVERGROWN_THEME) {
 
             for (BlockPos pos : BlockPos.betweenClosed(corner, farCorner)) {
-                if (operator.getBlockState(pos) != BlockRegistry.FOOLS_STONE.get().defaultBlockState()) {
-                    operator.setBlock(pos, BlockRegistry.FOOLS_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
+                if (operator.getBlockState(pos) != TRBlockRegistry.FOOLS_STONE.get().defaultBlockState()) {
+                    operator.setBlock(pos, TRBlockRegistry.FOOLS_STONE.get().defaultBlockState(), Block.UPDATE_ALL);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class TardisArchitectureHandler {
         BlockPos maxPos = new BlockPos(minPos.getX() + template.getSize().getX(), minPos.getY() + template.getSize().getY(), minPos.getZ() + template.getSize().getZ());
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-            if (level.getBlockState(pos).getBlock() == BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get()) {
+            if (level.getBlockState(pos).getBlock() == TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.get()) {
 
                 TardisLevelOperator.get(level).ifPresent(cap -> {
                     Optional<StructureTemplate> structureNBT = level.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/airlock_entrance"));
