@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -309,14 +310,17 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void openTheEye() {
         this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
-        //operator.getPilotingManager().setFuel(operator.getPilotingManager().getMaximumFuel());
+
+        Vec3 eyeCenter = new Vec3(1013, 72, 55);
+        AABB portalDoorLength = new AABB(1011, 72, 54, 1015, 71, 56);
+        AABB portalDoorWidth = new AABB(1011, 72, 54, 1015, 71, 56);
 
         // Remove the blocks
-        BlockPos.betweenClosedStream(new AABB(1011, 72, 54, 1015, 71, 56)).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), 3));
-        BlockPos.betweenClosedStream(new AABB(1012, 72, 53, 1014, 71, 57)).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), 3));
+        BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
+        BlockPos.betweenClosedStream(portalDoorWidth).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
 
         LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
-        lightningBolt.setPos(1013, 72, 55);
+        lightningBolt.setPos(eyeCenter);
         this.operator.getLevel().addFreshEntity(lightningBolt);
 
         setHumEntry(TardisHums.getDefaultHum());
@@ -349,8 +353,6 @@ public class TardisInteriorManager extends BaseHandler {
     public void generateDesktop(DesktopTheme theme) {
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
-
-            System.out.println(this.operator.getTardisState());
 
             if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) {
                 this.operator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE);

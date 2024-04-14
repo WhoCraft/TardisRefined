@@ -134,9 +134,6 @@ public class TerraformerBlock extends Block {
                             if (interiorManager.isWaitingToGenerate()) {
                                 level.destroyBlock(blockPos, true);
                             } else {
-
-                                System.out.println("We've determined it's good G");
-                                System.out.println(cap.getTardisState());
                                 if (cap.getTardisState() == TardisLevelOperator.STATE_CAVE) {
                                     interiorManager.prepareDesktop(TardisDesktops.TERRAFORMED);
                                     destroyStructure(serverLevel, blockPos);
