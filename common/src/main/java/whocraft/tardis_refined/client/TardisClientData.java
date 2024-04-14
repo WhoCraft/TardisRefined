@@ -22,14 +22,15 @@ import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.common.GravityUtil;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -72,15 +73,18 @@ public class TardisClientData {
     private double fuel = 0;
     private double maximumFuel = 0;
 
+    private int tardisState = 0;
+
+
     //Not saved to disk, no real reason to be
     private int nextAmbientNoiseCall = 40;
 
     // Independent of the hums logic
     private int nextVoiceAmbientCall = 12000;
-    private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(SoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
+    private QuickSimpleSound voiceQuickSound =  new QuickSimpleSound(TRSoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
 
 
-    private ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
+    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
     private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
 
     private HumEntry humEntry = TardisHums.getDefaultHum();
@@ -171,6 +175,7 @@ public class TardisClientData {
     public void setMaximumFuel(double fuel) {
         this.maximumFuel = fuel;
     }
+
 
     /**
      * Higher means more fog, lower means less fog
@@ -270,13 +275,12 @@ public class TardisClientData {
         }
 
 
-        if (Minecraft.getInstance().player.level().dimensionTypeId() == DimensionTypes.TARDIS) {
+        if (Minecraft.getInstance().player.level().dimensionTypeId() == TRDimensionTypes.TARDIS) {
 
             ClientLevel tardisLevel = Minecraft.getInstance().level;
             boolean isThisTardis = levelKey == tardisLevel.dimension();
 
             createWorldAmbience(Minecraft.getInstance().player);
-
 
             if (LoopingSound.ARS_HUMMING == null) {
                 LoopingSound.setupSounds();
@@ -300,9 +304,11 @@ public class TardisClientData {
             }
 
             if (isThisTardis && tardisLevel.getGameTime() % nextAmbientNoiseCall == 0) {
+
+
                 nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
                 List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
-                if (!ambientSounds.isEmpty()) {
+                if (ambientSounds != null && !ambientSounds.isEmpty()) {
                     RandomSource randomSource = tardisLevel.random;
 
                     ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
@@ -346,7 +352,11 @@ public class TardisClientData {
             }
 
             if (isThisTardis) {
-                tickFog(fuel != 0);
+                tickFog(  tardisState < TardisLevelOperator.STATE_EYE_OF_HARMONY || fuel != 0);
+            }
+
+            if (isThisTardis && tardisState == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
+                tardisLevel.addParticle(ParticleTypes.CLOUD, (double)1013 + 0.5 - 2 + tardisLevel.random.nextInt(4), 71, (double)55 + 0.5- 2 + tardisLevel.random.nextInt(4),0, 0.1 + tardisLevel.random.nextFloat() / 2 ,0);
             }
         }
 
@@ -505,5 +515,13 @@ public class TardisClientData {
 
     public void setHandbrakeEngaged(boolean handbrakeEngaged) {
         isHandbrakeEngaged = handbrakeEngaged;
+    }
+
+    public int getTardisState() {
+        return tardisState;
+    }
+
+    public void setTardisState(int tardisState) {
+        this.tardisState = tardisState;
     }
 }

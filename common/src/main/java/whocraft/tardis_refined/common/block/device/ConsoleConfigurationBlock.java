@@ -35,12 +35,11 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Stream;
 
 import static net.minecraft.world.phys.shapes.BooleanOp.OR;
@@ -94,7 +93,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         var offset = blockState.getValue(FACING).getNormal();
         BlockPos consolePos = blockPos.offset(offset);
 
-        if (player.getMainHandItem().getItem() == ItemRegistry.PATTERN_MANIPULATOR.get()) {
+        if (player.getMainHandItem().getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
             this.changePattern(level, blockPos, consolePos, player);
             return InteractionResult.SUCCESS;
         }
@@ -130,7 +129,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
             ResourceLocation consoleThemeId = consoleConfigurationBlockEntity.theme();
 
-            level.setBlockAndUpdate(consolePos, BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
+            level.setBlockAndUpdate(consolePos, TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
 
             BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
 
@@ -189,9 +188,9 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
                 globalConsoleBlockEntity.setPattern(ConsolePatterns.next(currentConsoleThemeId, globalConsoleBlockEntity.pattern()));
                 PlayerUtil.sendMessage(player, Component.Serializer.fromJson(new StringReader(globalConsoleBlockEntity.pattern().name())), true);
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                level.playSound(null, player.getX(), player.getY(), player.getZ(), TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
-                player.getCooldowns().addCooldown(ItemRegistry.PATTERN_MANIPULATOR.get(), 20);
+                player.getCooldowns().addCooldown(TRItemRegistry.PATTERN_MANIPULATOR.get(), 20);
                 return true;
             }
         }

@@ -16,7 +16,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.registry.TagKeys;
+import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.*;
 
@@ -110,6 +110,7 @@ public class TRTeleporter {
                         ((ServerLevel)teleportedEntity.level()).resetEmptyTime();
                         destination.resetEmptyTime();
                     }
+
                     return true;
                 }
             }
@@ -129,7 +130,7 @@ public class TRTeleporter {
             }
         }
 
-        if (pEntity.getType().is(TagKeys.TARDIS_TELEPORT_BLACKLIST)) //Stop teleporting if the entity being teleported is blacklisted
+        if (pEntity.getType().is(TRTagKeys.TARDIS_TELEPORT_BLACKLIST)) //Stop teleporting if the entity being teleported is blacklisted
             return false;
 
         if (safeBlockCheck) {

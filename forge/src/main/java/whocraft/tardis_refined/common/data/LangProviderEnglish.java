@@ -3,8 +3,10 @@ package whocraft.tardis_refined.common.data;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
@@ -24,77 +26,85 @@ public class LangProviderEnglish extends LanguageProvider {
     protected void addTranslations() {
 
         /*Sounds*/
-        addSound(SoundRegistry.TARDIS_LAND.get(), "TARDIS lands");
-        addSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), "TARDIS flies");
-        addSound(SoundRegistry.TARDIS_TAKEOFF.get(), "TARDIS takes off");
-        addSound(SoundRegistry.TARDIS_CRASH_LAND.get(), "TARDIS crash lands");
-        addSound(SoundRegistry.STATIC.get(), "Screen display static");
-        addSound(SoundRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator activates");
-        addSound(SoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
-        addSound(SoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
-        addSound(SoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
-        addSound(SoundRegistry.ARS_HUM.get(), "ARS Tree Hum");
-        addSound(SoundRegistry.FLIGHT_FAIL_START.get(), "Failing TARDIS groans");
-        addSound(SoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
-        addSound(SoundRegistry.INTERIOR_VOICE.get(), "...?");
+        addSound(TRSoundRegistry.TARDIS_LAND.get(), "TARDIS lands");
+        addSound(TRSoundRegistry.TARDIS_SINGLE_FLY.get(), "TARDIS flies");
+        addSound(TRSoundRegistry.TARDIS_TAKEOFF.get(), "TARDIS takes off");
+        addSound(TRSoundRegistry.TARDIS_CRASH_LAND.get(), "TARDIS crash lands");
+        addSound(TRSoundRegistry.STATIC.get(), "Screen display static");
+        addSound(TRSoundRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator activates");
+        addSound(TRSoundRegistry.TARDIS_MISC_SPARKLE.get(), "TARDIS arriving");
+        addSound(TRSoundRegistry.TIME_BLAST.get(), "Time Vortex blast");
+        addSound(TRSoundRegistry.DESTINATION_DING.get(), "TARDIS reaches destination");
+        addSound(TRSoundRegistry.ARS_HUM.get(), "ARS Tree Hum");
+        addSound(TRSoundRegistry.FLIGHT_FAIL_START.get(), "Failing TARDIS groans");
+        addSound(TRSoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
+        addSound(TRSoundRegistry.INTERIOR_VOICE.get(), "...?");
+        addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
 
         /*Block*/
-        add(BlockRegistry.ARS_EGG.get(), "ARS Egg");
-        add(BlockRegistry.ARS_LEAVES.get(), "ARS Leaves");
-        add(BlockRegistry.ARS_LEAVES_FENCE.get(), "ARS Fence");
-        add(BlockRegistry.ARS_LEAVES_SLAB.get(), "ARS Slab");
-        add(BlockRegistry.BULK_HEAD_DOOR.get(), "Bulk Head Door");
-        add(BlockRegistry.ROOT_PLANT_BLOCK.get(), "Root Plant");
-        add(BlockRegistry.ROOT_SHELL_BLOCK.get(), "Root Shell");
-        add(BlockRegistry.TERRAFORMER_BLOCK.get(), "Terraformer");
-        add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get(), "Console");
-        add(BlockRegistry.GLOBAL_DOOR_BLOCK.get(), "Tardis Door");
-        add(BlockRegistry.ROOT_SHELL_DOOR.get(), "Root Door");
-        add(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
-        add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), "Console Configurator");
-        add(BlockRegistry.LANDING_PAD.get(), "Landing Pad");
-        add(BlockRegistry.FOOLS_STONE.get(), "Fool's Stone");
-        add(BlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
-        add(BlockRegistry.GLOBAL_SHELL_BLOCK.get(), "TARDIS");
-        add(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), "Astral Manipulator");
-        add(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get(), "Zeiton Fused Iron Block");
-        add(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get(), "Zeiton Fused Copper Block");
-        add(BlockRegistry.ZEITON_ORE.get(), "Zeiton Ore");
-        add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
-        add(BlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
-        add(BlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
+        add(TRBlockRegistry.ARS_EGG.get(), "ARS Egg");
+        add(TRBlockRegistry.ARS_LEAVES.get(), "ARS Leaves");
+        add(TRBlockRegistry.ARS_LEAVES_FENCE.get(), "ARS Fence");
+        add(TRBlockRegistry.ARS_LEAVES_SLAB.get(), "ARS Slab");
+        add(TRBlockRegistry.BULK_HEAD_DOOR.get(), "Bulk Head Door");
+        add(TRBlockRegistry.ROOT_PLANT_BLOCK.get(), "Root Plant");
+        add(TRBlockRegistry.ROOT_SHELL_BLOCK.get(), "Root Shell");
+        add(TRBlockRegistry.TERRAFORMER_BLOCK.get(), "Terraformer");
+        add(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get(), "Console");
+        add(TRBlockRegistry.GLOBAL_DOOR_BLOCK.get(), "Tardis Door");
+        add(TRBlockRegistry.ROOT_SHELL_DOOR.get(), "Root Door");
+        add(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.get(), "Air Lock Generator");
+        add(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), "Console Configurator");
+        add(TRBlockRegistry.LANDING_PAD.get(), "Landing Pad");
+        add(TRBlockRegistry.FOOLS_STONE.get(), "Fool's Stone");
+        add(TRBlockRegistry.FLIGHT_DETECTOR.get(), "Flight Detector");
+        add(TRBlockRegistry.GLOBAL_SHELL_BLOCK.get(), "TARDIS");
+        add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), "Astral Manipulator");
+        add(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get(), "Zeiton Fused Iron Block");
+        add(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get(), "Zeiton Fused Copper Block");
+        add(TRBlockRegistry.ZEITON_ORE.get(), "Zeiton Ore");
+        add(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get(), "Deepslate Zeiton Ore");
+        add(TRBlockRegistry.ZEITON_BLOCK.get(), "Block of Zeiton");
+        add(TRBlockRegistry.GRAVITY_WELL.get(), "Gravity Well");
+        add(TRBlockRegistry.ZEITON_LANTERN.get(), "Zeiton Lantern");
+        add(TRBlockRegistry.ARTRON_PILLAR.get(), "Artron Pillar");
+        add(TRBlockRegistry.ARTRON_PILLAR_PORT.get(), "Artron Pillar Port");
 
         /*Items*/
-        add(ItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
-        add(ItemRegistry.KEY.get(), "Tardis Key");
-        add(ItemRegistry.DRILL.get(), "Growth Drill");
+        add(TRItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
+        add(TRItemRegistry.KEY.get(), "Tardis Key");
+        add(TRItemRegistry.DRILL.get(), "Growth Drill");
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
         add(ModMessages.ITEM_GROUP, "Tardis Refined");
-        add(ItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
+        add(TRItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
         add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
-        add(ItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
-        add(ItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
-        add(ItemRegistry.GLASSES.get(), "AR Glasses");
+        add(TRItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
+        add(TRItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
+        add(TRItemRegistry.GLASSES.get(), "AR Glasses");
+        add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
 
-
+        /*Damage Sources*/
+        add(TRDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");
 
         /*Entity*/
-        add(EntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
+        add(TREntityRegistry.CONTROL_ENTITY.get(), "Generic Control");
 
         /*Controls*/
-        addControl(ControlRegistry.DOOR_TOGGLE.get(), "Door Toggle");
-        addControl(ControlRegistry.X.get(), "X");
-        addControl(ControlRegistry.Y.get(), "Y");
-        addControl(ControlRegistry.Z.get(), "Z");
-        addControl(ControlRegistry.INCREMENT.get(), "Increment");
-        addControl(ControlRegistry.ROTATE.get(), "Direction");
-        addControl(ControlRegistry.RANDOM.get(), "Randomizer");
-        addControl(ControlRegistry.THROTTLE.get(), "Throttle");
-        addControl(ControlRegistry.MONITOR.get(), "Computer Bank");
-        addControl(ControlRegistry.FAST_RETURN.get(), "Fast Return");
-        addControl(ControlRegistry.DIMENSION.get(), "Dimension");
-        addControl(ControlRegistry.HANDBRAKE.get(), "Handbrake");;
-        addControl(ControlRegistry.GENERIC_NO_SHOW.get(), "Switch");
+        addControl(TRControlRegistry.DOOR_TOGGLE.get(), "Door Toggle");
+        addControl(TRControlRegistry.X.get(), "X");
+        addControl(TRControlRegistry.Y.get(), "Y");
+        addControl(TRControlRegistry.Z.get(), "Z");
+        addControl(TRControlRegistry.INCREMENT.get(), "Increment");
+        addControl(TRControlRegistry.ROTATE.get(), "Direction");
+        addControl(TRControlRegistry.RANDOM.get(), "Randomizer");
+        addControl(TRControlRegistry.THROTTLE.get(), "Throttle");
+        addControl(TRControlRegistry.MONITOR.get(), "Computer Bank");
+        addControl(TRControlRegistry.FAST_RETURN.get(), "Fast Return");
+        addControl(TRControlRegistry.DIMENSION.get(), "Dimension");
+        addControl(TRControlRegistry.HANDBRAKE.get(), "Handbrake");;
+        addControl(TRControlRegistry.GENERIC_NO_SHOW.get(), "Switch");
+        addControl(TRControlRegistry.FUEL.get(), "Fuel");
+        addControl(TRControlRegistry.READOUT.get(), "GPS");
 
         /*Messages*/
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
@@ -111,6 +121,13 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way.");
         add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal.");
         add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this time.");
+        add(ModMessages.REFUEL, "Enabled refuelling.");
+        add(ModMessages.STOP_REFUEL, "Stopped refuelling.");
+        add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process.");
+        add(ModMessages.ASTRAL_MANIPULATOR_ENGAGED, "Please make your selection. Right click again to confirm.");
+        add(ModMessages.ROOT_PLANT_CUT_OPEN, "Roots cover the entrance.");
+        add(ModMessages.FUEL, "Fuel: ");
+        add(ModMessages.FUEL_OFFLINE, "Fuel offline");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
@@ -167,8 +184,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_Z, "Invalid Z value");
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
-        add(ModMessages.UI_UPGRADES_BUY, "Purchase Upgrade?");
-        add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No Available Sub-Systems");
+        add(ModMessages.UI_UPGRADES_BUY, "Purchase upgrade?");
+        add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No available sub-systems");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY.getId(), "Factory");
@@ -241,6 +258,11 @@ public class LangProviderEnglish extends LanguageProvider {
     public void addSound(SoundEvent soundEvent, String lang) {
         String subtitleKey = SoundProvider.createSubtitle(soundEvent.getLocation().getPath());
         add(subtitleKey, lang);
+    }
+
+    public void add(ResourceKey<DamageType> damageSource, String message) {
+        add("death.attack." + damageSource.location().getPath(), message);
+        add("death.attack." + damageSource.location().getPath() + ".player", message);
     }
 
 }

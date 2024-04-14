@@ -21,18 +21,20 @@ import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.client.neoforge.ModelRegistryImpl;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TREntityRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -40,15 +42,15 @@ public class ClientModBus {
 
     @SubscribeEvent
     public static void onItemColors(RegisterColorHandlersEvent.Item item) {
-        item.register(TRItemColouring.SCREWDRIVER_COLORS, ItemRegistry.SCREWDRIVER.get());
+        item.register(TRItemColouring.SCREWDRIVER_COLORS, TRItemRegistry.SCREWDRIVER.get());
     }
 
 
     @SubscribeEvent
     public static void onBuildTabsContent(BuildCreativeModeTabContentsEvent event) {
 
-        if (event.getTab() == ItemRegistry.MAIN_TAB.get()) {
-            for (RegistrySupplier<Item> item : ItemRegistry.TAB_ITEMS.stream().toList()) {
+        if (event.getTab() == TRItemRegistry.MAIN_TAB.get()) {
+            for (RegistrySupplier<Item> item : TRItemRegistry.TAB_ITEMS.stream().toList()) {
                 event.accept(item.get());
             }
         }
@@ -71,18 +73,20 @@ public class ClientModBus {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
-        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_PLANT.get(), RootPlantRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_SHELL.get(), RootShellRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.ROOT_SHELL_DOOR.get(), RootShellDoorRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
-        BlockEntityRenderers.register(BlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ROOT_PLANT.get(), RootPlantRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ROOT_SHELL.get(), RootShellRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ROOT_SHELL_DOOR.get(), RootShellDoorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
 
-        EntityRenderers.register(EntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
+        EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
     }
 
 

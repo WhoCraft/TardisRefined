@@ -29,7 +29,7 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class TardisPilotingManager extends BaseHandler {
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
     private static final double DEFAULT_MAXIMUM_FUEL = 1000;
-    private static final double FLIGHT_COST = 3;
+    private static final double FLIGHT_COST = 0.5f;
 
     public static final int MAX_THROTTLE_STAGE = 5;
 
@@ -52,7 +52,7 @@ public class TardisPilotingManager extends BaseHandler {
     // Inflight timers (ticks)
     private boolean isInFlight = false;
     private int ticksInFlight = 0;
-    private int flightDistance = 0;
+    private int flightDistance = 100;
     private int distanceCovered = 0;
     private int ticksLanding = 0;
     private int ticksTakingOff = 0;
@@ -78,6 +78,8 @@ public class TardisPilotingManager extends BaseHandler {
     private GlobalConsoleBlockEntity currentConsole;
     private BlockPos currentConsoleBlockPos = BlockPos.ZERO;
 
+    private boolean isPassivelyRefuelling = false;
+
     public TardisPilotingManager(TardisLevelOperator operator) {
         this.operator = operator;
     }
@@ -94,6 +96,7 @@ public class TardisPilotingManager extends BaseHandler {
         this.isHandbrakeOn = tag.getBoolean(NbtConstants.IS_HANDBRAKE_ON);
         this.throttleStage = tag.getInt(NbtConstants.THROTTLE_STAGE);
 
+        this.isPassivelyRefuelling = tag.getBoolean(NbtConstants.IS_PASSIVELY_REFUELING);
 
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_fr_loc", operator);
@@ -138,6 +141,7 @@ public class TardisPilotingManager extends BaseHandler {
         tag.putInt(NbtConstants.FLIGHT_DISTANCE, this.flightDistance);
         tag.putInt(NbtConstants.DISTANCE_COVERED, this.distanceCovered);
         tag.putBoolean("canUseControls", this.canUseControls);
+        tag.putBoolean(NbtConstants.IS_PASSIVELY_REFUELING, this.isPassivelyRefuelling);
 
         if (targetLocation != null) {
             NbtConstants.putTardisNavLocation(tag, "ctrl_target", this.targetLocation);
@@ -160,7 +164,11 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
     public void tick(Level level) {
+
+
+
         if (targetLocation == null) {
+
             var location = this.operator.getExteriorManager().getLastKnownLocation();
             if (targetLocation != null) {
                 this.targetLocation = location;
@@ -168,7 +176,6 @@ public class TardisPilotingManager extends BaseHandler {
                 this.targetLocation = TardisNavLocation.ORIGIN;
             }
         }
-
 
         if (isInFlight) {
             onFlightTick(level);
@@ -183,9 +190,17 @@ public class TardisPilotingManager extends BaseHandler {
             }
         }
 
-
         if (ticksSinceCrash > 0) {
             onCrashCooldownTick();
+        }
+
+        if (isPassivelyRefuelling && level.getGameTime() % 60 == 0) {
+            this.addFuel(10);
+
+            if (this.getFuel() >= this.getMaximumFuel()) {
+                this.setFuel(this.getMaximumFuel());
+                this.isPassivelyRefuelling = false;
+            }
         }
 
     }
@@ -196,8 +211,8 @@ public class TardisPilotingManager extends BaseHandler {
             ticksInFlight++;
 
             // Removing fuel once every 2.5 seconds
-            if (ticksInFlight % (2.5 * 20) == 0) {
-                this.removeFuel(this.getFlightFuelCost());
+            if (ticksInFlight % (5) == 0) {
+                this.removeFuel(this.getFlightFuelCost() * throttleStage);
             }
 
             if (this.operator.getLevel().getGameTime() % (20) == 0) {
@@ -207,11 +222,15 @@ public class TardisPilotingManager extends BaseHandler {
                     // If this tick was enough to push us over.
                     if (distanceCovered >= flightDistance) {
                         if (distanceCovered >= flightDistance && this.currentConsole != null) {
-                            level.playSound(null, currentConsole.getBlockPos(), SoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
+                            level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
                             this.operator.getFlightDanceManager().stopDancing();
                         }
                     }
                 }
+            }
+
+            if (this.isOutOfFuel() && !this.isLanding() && this.ticksCrashing == 0) {
+                this.endFlightEarly(true);
             }
 
             if (this.isHandbrakeOn && !this.isLanding() && !this.isTakingOff() && this.ticksCrashing == 0) {
@@ -247,6 +266,10 @@ public class TardisPilotingManager extends BaseHandler {
         if (ticksCrashing == 1) {
             onCrashEnd();
         }
+
+
+
+
     }
 
 
@@ -271,7 +294,7 @@ public class TardisPilotingManager extends BaseHandler {
         if (ticksSinceCrash >= TICKS_COOLDOWN_MAX) {
             this.canUseControls = true;
             ticksSinceCrash = 0;
-            this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
+            this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
         }
     }
 
@@ -417,9 +440,8 @@ public class TardisPilotingManager extends BaseHandler {
      * @return true if able to, false if not
      */
     public boolean canBeginFlight() {
-        return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate() && !isInFlight && ticksTakingOff <= 0 && !this.isHandbrakeOn && !this.isCrashing && !this.isOutOfFuel();
+        return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate() && !isInFlight && ticksTakingOff <= 0 && !this.isHandbrakeOn && !this.isCrashing && (!this.isOutOfFuel() || this.fuel > 5);
     }
-
 
     /**
      * Logic to handle starting flight
@@ -428,31 +450,40 @@ public class TardisPilotingManager extends BaseHandler {
      */
     public boolean beginFlight(boolean autoLand, Optional<GlobalConsoleBlockEntity> consoleBlockEntity) {
 
+        if (this.getFuel() < 50) {
+            this.failTakeoff();
+            return false;
+        }
+
         if (this.targetLocation.getLevel().dimension() == Level.END) {
 
             if (!TardisHelper.hasTheEndBeenCompleted(this.targetLocation.getLevel())) {
-                if (this.currentConsole != null) {
-                    this.operator.getLevel().playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
-                }
 
+                failTakeoff();
 
                 for (Player player : this.operator.getLevel().players()) {
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.NO_END_DRAGON_PREVENTS), true);
                 }
 
-                this.setThrottleStage(0);
                 return false;
             }
         }
 
+
+
         if (this.canBeginFlight()) {
             this.autoLand = autoLand;
+            this.isPassivelyRefuelling = false;
             this.flightDistance = 0;
             this.distanceCovered = 0;
             this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
 
             TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
             TardisNavLocation lastKnownLocation = this.operator.getExteriorManager().getLastKnownLocation();
+
+            // Do we not have a last known location?
+
+            System.out.println(lastKnownLocation.getPosition().toShortString());
 
             this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
 
@@ -463,8 +494,8 @@ public class TardisPilotingManager extends BaseHandler {
 
 
             operator.setDoorClosed(true);
-            operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
-            operator.getExteriorManager().playSoundAtShell(SoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
+            operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
+            operator.getExteriorManager().playSoundAtShell(TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
             this.isInFlight = true;
             this.ticksInFlight = 0;
             this.ticksTakingOff = 1;
@@ -475,6 +506,16 @@ public class TardisPilotingManager extends BaseHandler {
             return true;
         }
         return false;
+    }
+
+    public void failTakeoff() {
+        if (this.currentConsole != null) {
+            this.operator.getLevel().playSound(null, this.currentConsole.getBlockPos(), TRSoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
+
+        }
+
+        this.throttleStage = 0;
+
     }
 
     /**
@@ -499,7 +540,11 @@ public class TardisPilotingManager extends BaseHandler {
         BlockPos startingPointPos = startingPoint.getPosition();
         BlockPos endingPointPos = endingPoint.getPosition();
 
-        int distance = startingPointPos.distManhattan(endingPointPos);
+        int distance = 1000;
+
+        if (startingPointPos != null && endingPointPos != null) {
+            distance = startingPointPos.distManhattan(endingPointPos);
+        }
 
         if (startingPoint.getLevel() != endingPoint.getLevel()) {
             distance += 500 + this.operator.getLevel().random.nextInt(250);
@@ -529,12 +574,12 @@ public class TardisPilotingManager extends BaseHandler {
 
             exteriorManager.placeExteriorBlock(operator, location);
 
-            exteriorManager.playSoundAtShell(SoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
+            exteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
 
             if (currentConsole != null) {
-                level.playSound(null, currentConsole.getBlockPos(), SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
+                level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
             } else {
-                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
             }
 
             int totalPoints = distanceCovered / 10;
@@ -603,6 +648,11 @@ public class TardisPilotingManager extends BaseHandler {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
         this.autoLand = false;
+
+        if (this.getFuel() < getMaximumFuel() * 0.1) {
+            this.operator.getLevel().playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.LOW_FUEL.get(), SoundSource.AMBIENT, 1000, 1 );
+        }
+
         TardisEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().getPosition());
     }
 
@@ -646,8 +696,8 @@ public class TardisPilotingManager extends BaseHandler {
 
         tardisExteriorManager.placeExteriorBlock(operator, location);
 
-        tardisExteriorManager.playSoundAtShell(SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
-        tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);
+        tardisExteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
+        tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);
     }
 
     public void onCrashEnd() {
@@ -801,7 +851,7 @@ public class TardisPilotingManager extends BaseHandler {
         Level level = this.currentConsole.getLevel();
 
         level.setBlockAndUpdate(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true));
-        level.playSound(null, this.currentConsole.getBlockPos(), SoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
+        level.playSound(null, this.currentConsole.getBlockPos(), TRSoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
     }
 
     /**
@@ -894,6 +944,25 @@ public class TardisPilotingManager extends BaseHandler {
      */
     public void removeFuel(double amount) {
         this.setFuel(Math.max(0, this.fuel - amount));
+    }
+
+    /**
+     * Is the TARDIS set to refuel passively?
+     * **/
+    public boolean isPassivelyRefuelling() {return this.isPassivelyRefuelling;}
+
+    /**
+     * Sets the TARDIS to passively fuel
+     * @return Returns if it was successful in updating the state. Will fail if the TARDIS is in flight or has crashed.
+     */
+    public boolean setPassivelyRefuelling(boolean refuel) {
+        if (this.isInFlight() || !this.canUseControls()) {
+            return false;
+        }
+
+        this.isPassivelyRefuelling = refuel;
+
+        return true;
     }
 
     /**

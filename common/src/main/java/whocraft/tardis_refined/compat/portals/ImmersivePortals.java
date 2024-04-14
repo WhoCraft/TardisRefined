@@ -29,7 +29,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -158,7 +158,7 @@ public class ImmersivePortals {
                 if (!door.isMainDoor()) {
                     return true;
                 }
-                if (serverLevel.dimensionTypeId().equals(DimensionTypes.TARDIS)) {
+                if (serverLevel.dimensionTypeId().equals(TRDimensionTypes.TARDIS)) {
                     TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::destroyPortals);
                 }
             }

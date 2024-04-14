@@ -89,10 +89,11 @@ public class GlobalShellBlock extends ShellBaseBlock{
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (level instanceof ServerLevel serverLevel) {
+
             if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
                 if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
                     ItemStack itemStack = player.getItemInHand(interactionHand);
-                    entity.onRightClick(blockState, itemStack);
+                    entity.onRightClick(blockState, itemStack, level, blockPos, player);
                     return InteractionResult.SUCCESS;
                 }
 

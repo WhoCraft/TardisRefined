@@ -26,8 +26,8 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
-import whocraft.tardis_refined.registry.DimensionTypes;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.stream.Stream;
 
@@ -126,7 +126,7 @@ public class TerraformerBlock extends Block {
         if (level instanceof ServerLevel serverLevel) {
             if (interactionHand == InteractionHand.MAIN_HAND) {
                 if (player.getMainHandItem().getItem() instanceof ScrewdriverItem screwdriverItem) {
-                    screwdriverItem.playScrewdriverSound(serverLevel, blockPos, SoundRegistry.SCREWDRIVER_SHORT.get());
+                    screwdriverItem.playScrewdriverSound(serverLevel, blockPos, TRSoundRegistry.SCREWDRIVER_SHORT.get());
 
                     if (checkIfStructure(serverLevel, blockPos)) {
                         TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
@@ -134,8 +134,8 @@ public class TerraformerBlock extends Block {
                             if (interiorManager.isWaitingToGenerate()) {
                                 level.destroyBlock(blockPos, true);
                             } else {
-                                if (interiorManager.isCave()) {
-                                    interiorManager.prepareDesktop(TardisDesktops.FACTORY_THEME);
+                                if (cap.getTardisState() == TardisLevelOperator.STATE_CAVE) {
+                                    interiorManager.prepareDesktop(TardisDesktops.TERRAFORMED);
                                     destroyStructure(serverLevel, blockPos);
                                     serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
                                 }
@@ -149,15 +149,12 @@ public class TerraformerBlock extends Block {
             }
         }
 
-
-
-
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
     private boolean checkIfStructure(Level level, BlockPos blockPos) {
 
-        if (level.dimensionTypeId() != DimensionTypes.TARDIS) {
+        if (level.dimensionTypeId() != TRDimensionTypes.TARDIS) {
             return false;
         }
 

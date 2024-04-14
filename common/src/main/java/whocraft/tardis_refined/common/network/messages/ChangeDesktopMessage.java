@@ -4,7 +4,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +16,9 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.Optional;
 
@@ -64,10 +65,13 @@ public class ChangeDesktopMessage extends MessageC2S {
                     pilotManager.removeFuel(interiorManager.getRequiredFuel());
                 } else {
                     if (inFlight)
-                        x.playSound(null, context.getPlayer(), SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.BLOCKS, 10f, 0.25f);
+                        x.playSound(null, context.getPlayer(), TRSoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.BLOCKS, 10f, 0.25f);
 
-                    if (!hasFuel)
-                        x.playSound(null, context.getPlayer(), SoundRegistry.SCREWDRIVER_CONNECT.get(), SoundSource.BLOCKS, 10f, 0.25f); // Sound should be changed
+                    if (!hasFuel) {
+                        x.playSound(null, context.getPlayer(), TRSoundRegistry.SCREWDRIVER_CONNECT.get(), SoundSource.BLOCKS, 10f, 0.25f); // Sound should be changed
+                        PlayerUtil.sendMessage(context.getPlayer(), ModMessages.NO_DESKTOP_NO_FUEL, true);
+                    }
+
                 }
             });
         });

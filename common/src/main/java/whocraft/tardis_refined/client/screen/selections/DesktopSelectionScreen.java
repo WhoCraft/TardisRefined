@@ -18,7 +18,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import static whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen.NOISE;
 
@@ -129,6 +129,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
         for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
 
+
             Component name = Component.literal(MiscHelper.getCleanName(desktop.getIdentifier().getPath()));
 
             // Check for if the tellraw name is incomplete, or fails to pass.
@@ -150,7 +151,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
                 }
                 entry.setChecked(true);
                 age = 0;
-                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundRegistry.STATIC.get(), (float) Math.random()));
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(TRSoundRegistry.STATIC.get(), (float) Math.random()));
             }, leftPos));
         }
 

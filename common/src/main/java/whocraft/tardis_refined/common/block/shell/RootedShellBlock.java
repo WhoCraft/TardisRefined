@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.block.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -31,6 +32,8 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.Date;
 import java.util.UUID;
@@ -47,11 +50,21 @@ public class RootedShellBlock extends ShellBaseBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if(!player.getMainHandItem().is(Items.SHEARS)) return InteractionResult.FAIL;
+        if(!player.getMainHandItem().is(Items.SHEARS)) {
+
+            if (!blockState.getValue(OPEN)) {
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.ROOT_PLANT_CUT_OPEN), true);
+                level.playSound(player, blockPos, SoundEvents.AZALEA_LEAVES_HIT, SoundSource.BLOCKS, 1, 0.75f + level.getRandom().nextFloat());
+                return InteractionResult.SUCCESS;
+            }
+
+
+            return InteractionResult.FAIL;
+        }
+
 
 
         this.setUpTardis(blockState, level, blockPos);
-
 
         if (player != null) {
 

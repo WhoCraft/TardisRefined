@@ -6,8 +6,8 @@ import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.ItemRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
 
 public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider {
 
@@ -18,40 +18,42 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
     @Override
     protected void registerModels() {
         /*Simple Block Items*/
-        blockItem(BlockRegistry.ARS_EGG.getId());
-        blockItem(BlockRegistry.ARS_LEAVES.getId());
-        blockItem(BlockRegistry.ARS_LEAVES_SLAB.getId());
-        blockItem(BlockRegistry.LANDING_PAD.getId());
-        blockItem(BlockRegistry.FOOLS_STONE.getId());
-        blockItem(BlockRegistry.FLIGHT_DETECTOR.getId());
+        blockItem(TRBlockRegistry.ARS_EGG.getId());
+        blockItem(TRBlockRegistry.ARS_LEAVES.getId());
+        blockItem(TRBlockRegistry.ARS_LEAVES_SLAB.getId());
+        blockItem(TRBlockRegistry.LANDING_PAD.getId());
+        blockItem(TRBlockRegistry.FOOLS_STONE.getId());
+        blockItem(TRBlockRegistry.FLIGHT_DETECTOR.getId());
 
-        blockItem(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.getId());
-        blockItem(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.getId());
-        blockItem(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.getId());
-        blockItem(BlockRegistry.ZEITON_ORE.getId());
-        blockItem(BlockRegistry.ZEITON_ORE_DEEPSLATE.getId());
-        blockItem(BlockRegistry.ZEITON_BLOCK.getId());
+        blockItem(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.getId());
+        blockItem(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.getId());
+        blockItem(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.getId());
+        blockItem(TRBlockRegistry.ZEITON_ORE.getId());
+        blockItem(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.getId());
+        blockItem(TRBlockRegistry.ZEITON_BLOCK.getId());
 
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
 
 
         myFenceInventory(new ResourceLocation(TardisRefined.MODID, "ars_leaves_fence_inventory"), leavesTexture);
 
-        blockItem(BlockRegistry.ARS_LEAVES_FENCE.getId(), new ResourceLocation(TardisRefined.MODID, "item/ars_leaves_fence_inventory"));
-        blockItem(BlockRegistry.TERRAFORMER_BLOCK.getId());
-        blockItem(BlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
-        blockItem(BlockRegistry.GRAVITY_WELL.getId());
+        blockItem(TRBlockRegistry.ARS_LEAVES_FENCE.getId(), new ResourceLocation(TardisRefined.MODID, "item/ars_leaves_fence_inventory"));
+        blockItem(TRBlockRegistry.TERRAFORMER_BLOCK.getId());
+        blockItem(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
+        blockItem(TRBlockRegistry.GRAVITY_WELL.getId());
 
-        basicItem(BlockRegistry.BULK_HEAD_DOOR.getId());
-        basicItem(BlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());
-        basicItem(BlockRegistry.ARS_EGG.getId());
-        basicItem(BlockRegistry.ROOT_SHELL_BLOCK.getId());
-        basicItem(BlockRegistry.ROOT_SHELL_DOOR.getId());
-        basicItem(BlockRegistry.GLOBAL_DOOR_BLOCK.getId());
-        basicItem(BlockRegistry.GLOBAL_SHELL_BLOCK.getId());
-        basicItem(ItemRegistry.ZEITON_INGOT.getId());
-        basicItem(ItemRegistry.RAW_ZEITON.getId());
+        basicItem(TRBlockRegistry.BULK_HEAD_DOOR.getId());
+        basicItem(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());
+        basicItem(TRBlockRegistry.ARS_EGG.getId());
+        basicItem(TRBlockRegistry.ROOT_SHELL_BLOCK.getId());
+        basicItem(TRBlockRegistry.ROOT_SHELL_DOOR.getId());
+        basicItem(TRBlockRegistry.GLOBAL_DOOR_BLOCK.getId());
+        basicItem(TRBlockRegistry.GLOBAL_SHELL_BLOCK.getId());
+        basicItem(TRItemRegistry.ZEITON_INGOT.getId());
+        basicItem(TRItemRegistry.RAW_ZEITON.getId());
+        basicItem(TRItemRegistry.ZEITON_NUGGET.getId());
 
+        basicItem(TRBlockRegistry.ZEITON_LANTERN.getId());
 
     }
 

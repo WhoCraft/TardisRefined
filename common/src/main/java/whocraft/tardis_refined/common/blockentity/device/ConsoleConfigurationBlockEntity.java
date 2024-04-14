@@ -7,17 +7,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.patterns.ConsolePatterns;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class ConsoleConfigurationBlockEntity extends BlockEntity {
 
     private ResourceLocation consoleTheme;
 
     public ConsoleConfigurationBlockEntity( BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), blockPos, blockState);
+        super(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), blockPos, blockState);
         this.consoleTheme = ConsoleTheme.FACTORY.getId();
     }
 

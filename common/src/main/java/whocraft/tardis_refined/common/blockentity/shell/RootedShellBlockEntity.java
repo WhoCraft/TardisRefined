@@ -4,11 +4,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class RootedShellBlockEntity extends ShellBaseBlockEntity{
     public RootedShellBlockEntity(BlockPos blockPos, BlockState blockState) {
-        super(BlockEntityRegistry.ROOT_SHELL.get(), blockPos, blockState);
+        super(TRBlockEntityRegistry.ROOT_SHELL.get(), blockPos, blockState);
     }
 
     @Override

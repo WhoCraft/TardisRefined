@@ -18,14 +18,14 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.common.world.feature.NbtTemplateFeature;
 import whocraft.tardis_refined.common.world.feature.config.NbtTemplateFeatureConfig;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.FeatureKeys;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRFeatureKeys;
 
 public class ProviderConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_ZEITON = createKey("ore_zeiton");
     public static final ResourceKey<ConfiguredFeature<?, ?>> ORE_ZEITON_SMALL = createKey("ore_zeiton_small");
-    public static final ResourceKey<ConfiguredFeature<?, ?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    public static final ResourceKey<ConfiguredFeature<?, ?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, TRFeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
     public static ResourceKey<ConfiguredFeature<?, ?>> createKey(String name) {
         return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(TardisRefined.MODID, name));
@@ -40,8 +40,8 @@ public class ProviderConfiguredFeatures {
         ConfiguredFeature<NbtTemplateFeatureConfig, NbtTemplateFeature> tardisRootCluster = new ConfiguredFeature<>(Features.NBT_FEATURE.get(), new NbtTemplateFeatureConfig(templateLocation, 0));
 
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);
-        register(context, ORE_ZEITON, Feature.ORE, new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, BlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, BlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 9));
-        register(context, ORE_ZEITON_SMALL, Feature.ORE, new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, BlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, BlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 4));
+        register(context, ORE_ZEITON, Feature.ORE, new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, TRBlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 9));
+        register(context, ORE_ZEITON_SMALL, Feature.ORE, new OreConfiguration(ImmutableList.of(OreConfiguration.target(stoneReplaceable, TRBlockRegistry.ZEITON_ORE.get().defaultBlockState()), OreConfiguration.target(deepslateReplaceable, TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get().defaultBlockState())), 4));
         context.register(TARDIS_ROOT_CLUSTER_CONF_FEATURE, tardisRootCluster);
     }
 

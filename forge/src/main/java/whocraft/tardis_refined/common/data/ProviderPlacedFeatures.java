@@ -10,7 +10,7 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.registry.FeatureKeys;
+import whocraft.tardis_refined.registry.TRFeatureKeys;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import static whocraft.tardis_refined.common.data.ProviderConfiguredFeatures.TAR
 
 public class ProviderPlacedFeatures {
 
-    public static final ResourceKey<PlacedFeature> TARDIS_ROOT_CLUSTER_PLACED_FEATUE = ResourceKey.create(Registries.PLACED_FEATURE, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    public static final ResourceKey<PlacedFeature> TARDIS_ROOT_CLUSTER_PLACED_FEATUE = ResourceKey.create(Registries.PLACED_FEATURE, TRFeatureKeys.TARDIS_ROOT_CLUSTER_RL);
     public static final ResourceKey<PlacedFeature> ORE_ZEITON = createKey("ore_zeiton");
     public static final ResourceKey<PlacedFeature> ORE_ZEITON_SMALL = createKey("ore_zeiton_small");
 

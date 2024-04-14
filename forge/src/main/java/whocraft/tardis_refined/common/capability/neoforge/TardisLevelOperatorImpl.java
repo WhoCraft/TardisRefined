@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     @SubscribeEvent
     public static void onLevelCapabilities(AttachCapabilitiesEvent<Level> event) {
         if (event.getObject() instanceof ServerLevel level) {
-            if (level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+            if (level.dimensionTypeId().location() == TRDimensionTypes.TARDIS.location()) {
                 event.addCapability(new ResourceLocation(TardisRefined.MODID, "tardis_data"), new TardisLevelOperatorImpl((ServerLevel) event.getObject()));
             }
         }
@@ -51,7 +51,7 @@ public class TardisLevelOperatorImpl implements ICapabilitySerializable<Compound
     public static void onLevelTick(TickEvent.LevelTickEvent event) {
         if (event.level instanceof ServerLevel level) {
             if (event.phase == TickEvent.Phase.START) {
-                if (event.level.dimensionTypeId().location() == DimensionTypes.TARDIS.location()) {
+                if (event.level.dimensionTypeId().location() == TRDimensionTypes.TARDIS.location()) {
                     event.level.getCapability(TardisLevelOperatorImpl.TARDIS_DATA).ifPresent(x -> x.tick(level));
                 }
             }

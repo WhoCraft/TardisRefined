@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ItemRegistry {
+public class TRItemRegistry {
     public static List<RegistrySupplier<Item>> TAB_ITEMS = new ArrayList<>();
     public static final DeferredRegistry<CreativeModeTab> TABS = DeferredRegistry.create(TardisRefined.MODID, Registries.CREATIVE_MODE_TAB);
 
-    public static final RegistrySupplier<CreativeModeTab> MAIN_TAB = TABS.register("main_tab", ItemRegistry::getCreativeTab);
+    public static final RegistrySupplier<CreativeModeTab> MAIN_TAB = TABS.register("main_tab", TRItemRegistry::getCreativeTab);
 
     public static final DeferredRegistry<Item> ITEMS = DeferredRegistry.create(TardisRefined.MODID, Registries.ITEM);
 
@@ -26,6 +26,7 @@ public class ItemRegistry {
 
     public static final RegistrySupplier<Item> RAW_ZEITON = register("raw_zeiton", () -> new Item(new Item.Properties()), true);
     public static final RegistrySupplier<ZeitonIngotItem> ZEITON_INGOT = register("zeiton_ingot", () -> new ZeitonIngotItem(new Item.Properties()), true);
+    public static final RegistrySupplier<Item> ZEITON_NUGGET = register("zeiton_nugget", () -> new Item(new Item.Properties()), true);
     public static final RegistrySupplier<GlassesItem> GLASSES = register("glasses", () -> new GlassesItem(new Item.Properties()), true);
 
 

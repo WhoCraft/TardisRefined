@@ -14,11 +14,22 @@ public class ManipulatorCraftingRecipe {
     // List of ingredient blocks for the recipe to work.
     public List<ManipulatorCraftingRecipeItem> itemList;
     // Output to be summoned when the recipe is confirmed.
-    public Item recipeOutput;
+    public Item recipeOutputItem;
+    public Block recipeOutputBlock;
+
+    // Determines whether to place the result at the center position or create an item entity.
+    public boolean placeResultAsBlock;
+
 
     public ManipulatorCraftingRecipe(List<ManipulatorCraftingRecipeItem> itemList, Item recipeOutput) {
         this.itemList = itemList;
-        this.recipeOutput = recipeOutput;
+        this.recipeOutputItem = recipeOutput;
+        this.placeResultAsBlock = false;
+    }
+    public ManipulatorCraftingRecipe(List<ManipulatorCraftingRecipeItem> itemList, Block recipeOutput) {
+        this.itemList = itemList;
+        this.recipeOutputBlock = recipeOutput;
+        this.placeResultAsBlock = true;
     }
 
 
