@@ -27,6 +27,18 @@ public class TRSoundRegistry {
     public static final RegistrySupplier<SoundEvent> LOW_FUEL = setUpSound("low_fuel");
     public static final RegistrySupplier<SoundEvent> ARTRON_PILLAR = setUpSound("artron_pillar_active");
 
+    public static final RegistrySupplier<SoundEvent> CORRIDOR_TELEPORTER = setUpSound("corridor_teleporter");
+    public static final RegistrySupplier<SoundEvent> CORRIDOR_TELEPORTER_SUCCESS = setUpSound("corridor_teleporter_success");
+
+
+
+    // Hums
+
+    public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
+    public static final RegistrySupplier<SoundEvent> HUM_CAVE = setUpSound("hum_cave");
+    public static final RegistrySupplier<SoundEvent> HUM_TOYOTA = setUpSound("hum_toyota");
+    public static final RegistrySupplier<SoundEvent> HUM_CLASSIC = setUpSound("hum_classic");
+    public static final RegistrySupplier<SoundEvent> HUM_1996 = setUpSound("hum_1996");
 
 
     // Hums

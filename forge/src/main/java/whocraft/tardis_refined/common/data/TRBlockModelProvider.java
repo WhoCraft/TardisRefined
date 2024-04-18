@@ -29,7 +29,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         return builder.toJson();
     }
 
-
     public JsonObject terraformer(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> blockState.getValue(TerraformerBlock.ACTIVE) ?
                 ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer_on"))).build() :
@@ -116,6 +115,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         simpleBlock(TRBlockRegistry.ARTRON_PILLAR_PORT.get());
 
         customLocation(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/astral_manipulator"));
+        customLocation(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), new ResourceLocation(TardisRefined.MODID, "block/corridor_teleporter"));
         customLocation(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
         customLocation(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
         customLocation(TRBlockRegistry.ZEITON_ORE.get());

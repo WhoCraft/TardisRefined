@@ -41,6 +41,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         blockItem(TRBlockRegistry.TERRAFORMER_BLOCK.getId());
         blockItem(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
         blockItem(TRBlockRegistry.GRAVITY_WELL.getId());
+        blockItem(TRBlockRegistry.CORRIDOR_TELEPORTER.getId());
 
         basicItem(TRBlockRegistry.BULK_HEAD_DOOR.getId());
         basicItem(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());

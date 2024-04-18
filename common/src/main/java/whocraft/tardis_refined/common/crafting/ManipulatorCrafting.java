@@ -139,6 +139,30 @@ public class ManipulatorCrafting {
 
         ), TRBlockRegistry.LANDING_PAD.get().asItem()));
 
+
+        register(new ManipulatorCraftingRecipe(Arrays.asList(
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 1), Blocks.SMOOTH_STONE_SLAB),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 2), TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 0), Blocks.SMOOTH_STONE_SLAB),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 1), TRBlockRegistry.LANDING_PAD.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 0, 2), Blocks.SMOOTH_STONE_SLAB),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 0), TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 1), Blocks.SMOOTH_STONE_SLAB),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 0, 2), TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
+
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 1, 0), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 1, 1), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(0, 1, 2), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 1, 0), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 1, 1), Blocks.AIR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(1, 1, 2), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 1, 0), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 1, 1), Blocks.IRON_TRAPDOOR),
+                new ManipulatorCraftingRecipeItem(new BlockPos(2, 1, 2), Blocks.IRON_TRAPDOOR)
+
+        ), TRBlockRegistry.CORRIDOR_TELEPORTER.get().asItem()));
+
         register(new ManipulatorCraftingRecipe(Arrays.asList(
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 0, 0), TRBlockRegistry.ZEITON_BLOCK.get()),
                 new ManipulatorCraftingRecipeItem(new BlockPos(0, 1, 0), Blocks.POLISHED_DEEPSLATE_WALL),
