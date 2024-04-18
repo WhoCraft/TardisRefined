@@ -58,18 +58,7 @@ public class CorridorTeleporterBlock extends Block implements EntityBlock {
         };
     }
 
-
-
-    @Override
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-
-//        if (level.dimensionTypeId() != TRDimensionTypes.TARDIS) {
-//            level.destroyBlock(blockPos, true);
-//        }
-
-        super.onPlace(blockState, level, blockPos, blockState2, bl);
-    }
-
+    
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
 
