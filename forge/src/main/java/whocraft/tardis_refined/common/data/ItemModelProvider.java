@@ -32,6 +32,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         blockItem(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.getId());
         blockItem(TRBlockRegistry.ZEITON_BLOCK.getId());
 
+
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
 
 
@@ -41,6 +42,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         blockItem(TRBlockRegistry.TERRAFORMER_BLOCK.getId());
         blockItem(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
         blockItem(TRBlockRegistry.GRAVITY_WELL.getId());
+        blockItem(TRBlockRegistry.CORRIDOR_TELEPORTER.getId());
 
         basicItem(TRBlockRegistry.BULK_HEAD_DOOR.getId());
         basicItem(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.getId());
@@ -54,6 +56,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         basicItem(TRItemRegistry.ZEITON_NUGGET.getId());
 
         basicItem(TRBlockRegistry.ZEITON_LANTERN.getId());
+
 
     }
 

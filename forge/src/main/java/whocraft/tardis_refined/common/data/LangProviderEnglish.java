@@ -40,6 +40,8 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
         addSound(TRSoundRegistry.INTERIOR_VOICE.get(), "...?");
         addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
+        addSound(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), "Teleporter building up");
+        addSound(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), "Teleporter used");
 
         /*Block*/
         add(TRBlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -69,6 +71,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRBlockRegistry.ZEITON_LANTERN.get(), "Zeiton Lantern");
         add(TRBlockRegistry.ARTRON_PILLAR.get(), "Artron Pillar");
         add(TRBlockRegistry.ARTRON_PILLAR_PORT.get(), "Artron Pillar Port");
+        add(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), "Corridor Teleporter");
 
         /*Items*/
         add(TRItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");

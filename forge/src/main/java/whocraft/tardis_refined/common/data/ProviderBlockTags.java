@@ -58,7 +58,9 @@ public class ProviderBlockTags extends BlockTagsProvider {
                 .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
                 .add(TRBlockRegistry.ZEITON_BLOCK.get())
                 .add(TRBlockRegistry.GRAVITY_WELL.get())
-                .add(TRBlockRegistry.ROOT_PLANT_BLOCK.get());
+                .add(TRBlockRegistry.ROOT_PLANT_BLOCK.get())
+                .add(TRBlockRegistry.CORRIDOR_TELEPORTER.get())
+                .add(TRBlockRegistry.ZEITON_LANTERN.get());
 
         tag(BlockTags.NEEDS_IRON_TOOL)
                 .add(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
@@ -72,7 +74,9 @@ public class ProviderBlockTags extends BlockTagsProvider {
                 .add(TRBlockRegistry.ZEITON_ORE.get())
                 .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
                 .add(TRBlockRegistry.ZEITON_BLOCK.get())
-                .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
+                .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
+                .add(TRBlockRegistry.CORRIDOR_TELEPORTER.get())
+                .add(TRBlockRegistry.ZEITON_LANTERN.get());
 
     }
 }
