@@ -111,7 +111,6 @@ public class EyeRenderer implements BlockEntityRenderer<EyeBlockEntity>, BlockEn
 
     @Override
     public BlockEntityRenderer<EyeBlockEntity> create(Context context) {
-        System.out.println("OPEN THE EYE");
         return new EyeRenderer(context);
     }
 }

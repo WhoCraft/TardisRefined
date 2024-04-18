@@ -129,6 +129,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process.");
         add(ModMessages.ASTRAL_MANIPULATOR_ENGAGED, "Please make your selection. Right click again to confirm.");
         add(ModMessages.ROOT_PLANT_CUT_OPEN, "Roots cover the entrance.");
+        add(ModMessages.FUEL, "Fuel: ");
+        add(ModMessages.FUEL_OFFLINE, "Fuel offline");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");

@@ -1,0 +1,1 @@
+This folder serves as the "truth" for the english translation of the mod. Do not remove.

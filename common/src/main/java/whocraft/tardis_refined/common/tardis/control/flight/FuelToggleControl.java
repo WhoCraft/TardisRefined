@@ -62,9 +62,9 @@ public class FuelToggleControl extends Control {
 
         boolean offline = operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY;
         if (offline) {
-            return Component.translatable(  "Fuel offline.");
+            return Component.translatable(  ModMessages.FUEL_OFFLINE);
         }
 
-        return Component.translatable(  "Fuel: " + Math.round((operator.getPilotingManager().getFuelPercentage() * 100)) +"%");
+        return Component.translatable(  ModMessages.FUEL).append(String.valueOf((Math.round((operator.getPilotingManager().getFuelPercentage() * 100))))).append("%");
     }
 }

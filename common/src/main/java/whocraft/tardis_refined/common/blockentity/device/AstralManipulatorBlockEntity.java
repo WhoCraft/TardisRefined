@@ -263,7 +263,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                     BlockPos centerPos = new BlockPos((int) centerVector.x, min, (int) centerVector.z);
 
                     Block block = recipe.recipeOutputBlock;
-                    level.setBlock(centerPos, block.defaultBlockState(), 3);
+                    level.setBlock(centerPos, block.defaultBlockState(), Block.UPDATE_ALL);
 
                 } else {
                     // TODO: Make this system also accept placing a structure.
