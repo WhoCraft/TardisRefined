@@ -76,7 +76,7 @@ public class MonitorScreen extends SelectionScreen {
 
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos, Upgrades.INSIDE_ARCHITECTURE.get().isUnlocked(upgradeHandler)));
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), leftPos, Upgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)));
+
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos, Upgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)));
 
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos, Upgrades.COORDINATE_INPUT.get().isUnlocked(upgradeHandler)));
@@ -120,4 +120,5 @@ public class MonitorScreen extends SelectionScreen {
         ScreenHelper.renderWidthScaledText(MiscHelper.getCleanDimensionName(targetLocation.getDimensionKey()), guiGraphics, Minecraft.getInstance().font, width / 2 + 10, textOffset + 70, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
 
     }
+
 }

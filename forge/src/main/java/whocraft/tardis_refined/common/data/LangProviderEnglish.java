@@ -131,6 +131,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.ROOT_PLANT_CUT_OPEN, "Roots cover the entrance.");
         add(ModMessages.FUEL, "Fuel: ");
         add(ModMessages.FUEL_OFFLINE, "Fuel offline");
+        add(ModMessages.WAYPOINT_LOADED, "Preloaded waypoint: %s");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
@@ -178,8 +179,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_NO_WAYPOINTS, "No Waypoints Saved!");
         add(ModMessages.UI_MONITOR_WAYPOINT_UPLOAD, "Upload");
         add(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT, "Submit");
-        add(ModMessages.UI_MONITOR_WAYPOINT_DIMENSION, "Dimension");
-        add(ModMessages.UI_MONITOR_WAYPOINT_DIRECTION, "Direction");
         add(ModMessages.UI_MONITOR_ISSUES, "Issues:");
         add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_NAME, "Invalid waypoint name");
         add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_X, "Invalid X value");
@@ -189,6 +188,12 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase upgrade?");
         add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No available sub-systems");
+        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_A, "Starter Cave");
+        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_B, "Grandma's House");
+        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_C, "107 Baker Street");
+        add(ModMessages.UI_WAYPOINT_NEW_WAYPOINT, "New Waypoint");
+        add(ModMessages.UI_WAYPOINT_TAKEN, "Data retrieved from destination values");
+
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY.getId(), "Factory");

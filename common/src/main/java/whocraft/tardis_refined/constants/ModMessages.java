@@ -43,6 +43,7 @@ public class ModMessages {
 
     public static String ASTRAL_MANIPULATOR_ENGAGED = message("astral_manipulator_engaged");
     public static String ROOT_PLANT_CUT_OPEN = message("root_plant_cut_open");
+    public static String WAYPOINT_LOADED = message("waypoint_loaded");
 
 
 
@@ -69,10 +70,13 @@ public class ModMessages {
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
     public static final String UI_MONITOR_WAYPOINT_UPLOAD = ui("monitor.waypoints.upload");
     public static final String UI_MONITOR_WAYPOINT_SUBMIT = ui("monitor.waypoints.submit");
-    public static final String UI_MONITOR_WAYPOINT_DIMENSION = ui("monitor.waypoints.dimension");
-    public static final String UI_MONITOR_WAYPOINT_DIRECTION = ui("monitor.waypoints.direction");
 
     public static final String VANILLA_SELECT_WORLD  = "selectWorld.search";
+    public static final String UI_WAYPOINT_NAME_PLACEHOLDER_A  = "monitor.waypoints.name.placeholder.a";
+    public static final String UI_WAYPOINT_NAME_PLACEHOLDER_B  = "monitor.waypoints.name.placeholder.b";
+    public static final String UI_WAYPOINT_NAME_PLACEHOLDER_C  = "monitor.waypoints.name.placeholder.c";
+    public static final String UI_WAYPOINT_NEW_WAYPOINT  = "monitor.waypoints.new_waypoint";
+    public static final String UI_WAYPOINT_TAKEN  = "monitor.waypoints.taken";
     public static final String UI_MONITOR_ISSUES = ui("monitor.waypoints.issues");
 
     public static final String UI_MONITOR_WAYPOINT_ISSUE_NAME = ui("monitor.waypoints.issues.name");
