@@ -8,12 +8,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
@@ -31,7 +32,10 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class TardisPilotingManager extends BaseHandler {
 
@@ -211,7 +215,7 @@ public class TardisPilotingManager extends BaseHandler {
             ticksInFlight++;
 
             // Removing fuel once every 2.5 seconds
-            if (ticksInFlight % (5) == 0) {
+            if (ticksInFlight % (45) == 0) {
                 this.removeFuel(this.getFlightFuelCost() * throttleStage);
             }
 
@@ -319,119 +323,99 @@ public class TardisPilotingManager extends BaseHandler {
         var maxBuildHeight = level.getMaxBuildHeight();
         var minHeight = level.getMinBuildHeight();
 
-        var failOffset = 1;
-        var attempts = 20;
-
-        var originalY = location.getPosition().getY();
-
-        // Do any specific dimension checks
-        //TODO: Handle dimension checks in a dedicated function, we already have duplicated codfein #getLegalPosition
-        if (level.dimension() == Level.NETHER) {
-            if (location.getPosition().getY() > 127) {
-                maxBuildHeight = 125;
-                failOffset = 10;
-                location.setPosition(new BlockPos(location.getPosition().getX(), 80, location.getPosition().getZ())); //TODO: Remove this hardcoding to continue searching for a spot
-            }
-        }
-
-        boolean isTargetFine = !isSolidBlock(level, location.getPosition()) && !isSolidBlock(level, location.getPosition().above()) && isSolidBlock(level, location.getPosition().below());
-        if (isTargetFine) {
-            var safeDir = findSafeDirection(location);
-            if (safeDir != null) {
-                return safeDir;
-            }
-        }
-
-        for (int i = 0; i < attempts; i++) {
-
-            location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
-            var result = scanUpwardsFromCord(location, maxBuildHeight);
-            if (result != null && location.getPosition().getY() < maxBuildHeight && location.getPosition().getY() > minHeight) {
-                return result;
-            }
-
-            location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
-            result = scanDownwardsFromCord(location, minHeight);
-            if (result != null && location.getPosition().getY() < maxBuildHeight && location.getPosition().getY() > minHeight) {
-                return result;
-            }
-
-            // Try the next interval in the rotation.
-            location.setPosition(getLegalPosition(location.getLevel(), location.getPosition(), originalY));
-            location.setPosition(location.getPosition().offset(location.getDirection().getNormal().multiply((int) (failOffset * (1 + ((float) i * 0.1f))))));
-        }
-
-
-        return location;
+        return findValidLocationInColumn(location, level, minHeight, maxBuildHeight);
     }
 
-    public BlockPos getLegalPosition(Level level, BlockPos pos, int originalY) {
-        if (level.dimension() == Level.NETHER) {
+    private TardisNavLocation findValidLocationInColumn(TardisNavLocation location, ServerLevel level, int minHeight, int maxBuildHeight) {
 
-            if (pos.getY() > level.getMaxBuildHeight() || originalY > level.getMaxBuildHeight()) {
-                return new BlockPos(pos.getX(), 60, pos.getZ()); //TODO: Remove this hardcoding and run a search below max height
+        ChunkPos chunkPos = level.getChunk(location.getPosition()).getPos();
+        //Force load chunk
+        level.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly remove block
+
+        // Fetch the row of blocks and filter them all out to air.
+        List<BlockPos> blockColumn = getBlockPosColumn(location.getPosition(), minHeight, maxBuildHeight);
+        List<BlockPos> filteredForAir = blockColumn.stream().filter(x -> isLegalLandingBlock(level, x)).toList();
+        List<BlockPos> filteredForNonAir = blockColumn.stream().filter(x -> !isLegalLandingBlock(level, x)).toList();
+
+        List<TardisNavLocation> solutionsInRow = new ArrayList<>();
+        for (BlockPos airPos : filteredForAir) {
+
+            // Ignore any higher scans above the roof.
+            if (level.dimension() == Level.NETHER && airPos.getY() > 125) {
+                continue;
+            }
+
+            BlockPos below = airPos.below();
+            BlockPos above = airPos.above();
+
+            // Does this position have the space for a TARDIS?
+            if (filteredForNonAir.contains(below) && filteredForAir.contains(above)) {
+
+                // Can we find a rotation for the TARDIS?
+
+                // Check front
+                Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
+
+                for (Direction direction : directions) {
+                    BlockPos directionOffset = BlockPos.of(BlockPos.offset(airPos.asLong(), direction));
+                    // Check that the column in the direction is empty and doesn't have a drop.
+                    if (isLegalLandingBlock(level, directionOffset)) {
+                        if (isLegalLandingBlock(level, directionOffset.above()) && !isLegalLandingBlock(level, directionOffset.below()) && !isLegalLandingBlock(level, directionOffset.below(2))) {
+                            solutionsInRow.add(new TardisNavLocation(airPos, direction, location.getLevel()));
+
+                        }
+                    }
+                }
+
             }
         }
 
-        return new BlockPos(pos.getX(), originalY, pos.getZ());
+
+        // We have all solutions. Let's find the closest.
+
+
+        if (solutionsInRow.size() > 0) {
+
+            TardisNavLocation closest = null;
+            int distance = Integer.MAX_VALUE;
+
+            for (TardisNavLocation potentialLocation : solutionsInRow) {
+                int distanceBetween = Math.abs(potentialLocation.getPosition().distManhattan(location.getPosition()));
+                if (distanceBetween < distance) {
+                    distance = distanceBetween;
+                    closest = potentialLocation;
+                }
+            }
+
+            return closest;
+
+        } else {
+
+            BlockPos directionOffset = BlockPos.of(BlockPos.offset(location.getPosition().asLong(), location.getDirection()));
+            TardisNavLocation nextLocation = new TardisNavLocation(directionOffset, location.getDirection(), location.getLevel());
+            return findValidLocationInColumn(nextLocation, level, minHeight, maxBuildHeight);
+        }
     }
+
+    private List<BlockPos> getBlockPosColumn(BlockPos referencePoint, int bottomLevel, int topLevel) {
+
+        List<BlockPos> positions = new ArrayList<>();
+
+        for (int i = bottomLevel; i <= topLevel; i++) {
+            positions.add(new BlockPos(referencePoint.getX(), i, referencePoint.getZ()));
+        }
+
+        return positions;
+    }
+
 
     /**
-     * Checks the tardis nav location for a variety of reasons that a given position would be unsafe to land at.
-     *
-     * @param location the coordinates to check against
-     * @return true if safe to land, otherwise false
-     */
-    public boolean isSafeToLand(TardisNavLocation location) {
-        if (!isSolidBlock(location.getLevel(), location.getPosition()) && isSolidBlock(location.getLevel(), location.getPosition().below()) && !isSolidBlock(location.getLevel(), location.getPosition().above())) {
-            return !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.LAVA) && !location.getLevel().getBlockState(location.getPosition().below()).getFluidState().is(FluidTags.WATER);
-        }
-        return false;
-    }
-
-    public TardisNavLocation scanUpwardsFromCord(TardisNavLocation location, int maxHeight) {
-
-        int startingHeight = location.getPosition().getY();
-        for (int i = startingHeight; i < maxHeight; i++) {
-            if (isSafeToLand(location)) {
-                return findSafeDirection(location);
-            }
-
-            location.setPosition(location.getPosition().above(1));
-        }
-
-        return null;
-    }
-
-    public TardisNavLocation scanDownwardsFromCord(TardisNavLocation location, int minHeight) {
-
-        int startingHeight = location.getPosition().getY();
-        for (int i = startingHeight; i >= minHeight; i--) {
-            if (isSafeToLand(location)) {
-                return findSafeDirection(location);
-            }
-
-            location.setPosition(location.getPosition().below(1));
-        }
-
-        return null;
-    }
-
-    public TardisNavLocation findSafeDirection(TardisNavLocation location) {
-
-        Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-        for (Direction dir : directions) {
-            BlockPos basePos = BlockPos.of(BlockPos.offset(location.getPosition().asLong(), dir));
-            if (!isSolidBlock(location.getLevel(), basePos) && !isSolidBlock(location.getLevel(), basePos.above())) {
-                return new TardisNavLocation(location.getPosition(), dir, location.getLevel());
-            }
-        }
-
-        return null;
-    }
-
-    public boolean isSolidBlock(ServerLevel level, BlockPos pos) {
-        return level.getBlockState(pos).isSolid() || level.getBlockState(pos).liquid();
+     * Check if the block at the target position is a valid block to land inside.
+     * **/
+    public boolean isLegalLandingBlock(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        // Can land in air or override any block that can be marked as "replaceable" such as snow, tall grass etc.
+        return state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty());
     }
 
     /**

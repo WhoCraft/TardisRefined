@@ -176,8 +176,8 @@ public class TardisExteriorManager extends BaseHandler {
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
 
-        BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
-                .setValue(GlobalShellBlock.FACING, location.getDirection())
+        BlockState targetBlockState = BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
+                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
                 .setValue(GlobalShellBlock.REGEN, false)
                 .setValue(LOCKED, operator.getExteriorManager().locked)
                 .setValue(GlobalShellBlock.LIT, shellTheme.producesLight())
