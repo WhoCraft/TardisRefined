@@ -188,9 +188,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase upgrade?");
         add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No available sub-systems");
-        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_A, "Starter Cave");
-        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_B, "Grandma's House");
-        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_C, "107 Baker Street");
+        add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER, "Waypoint name");
         add(ModMessages.UI_WAYPOINT_NEW_WAYPOINT, "New Waypoint");
         add(ModMessages.UI_WAYPOINT_TAKEN, "Data retrieved from destination values");
 

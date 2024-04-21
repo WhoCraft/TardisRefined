@@ -9,20 +9,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.text.WordUtils;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.UploadWaypointMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -41,7 +38,6 @@ public class WaypointManageScreen extends Screen {
     private TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
     private SpriteIconButton onSaveWaypoint;
 
-    private List<String> nameSuggestions = new ArrayList<>();
 
     public WaypointManageScreen(List<ResourceKey<Level>> worlds, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
         super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS));
@@ -49,9 +45,7 @@ public class WaypointManageScreen extends Screen {
         this.tardisNavLocation = tardisNavLocation;
         tardisNavLocation.setName("Waypoint");
 
-        nameSuggestions.add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_A);
-        nameSuggestions.add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_B);
-        nameSuggestions.add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER_C);
+
     }
 
     @Override
@@ -85,9 +79,7 @@ public class WaypointManageScreen extends Screen {
 
         if (coordInputType == CoordInputType.WAYPOINT) {
             this.waypointName = new EditBox(this.font, xPosition, waypointNameHeight, waypointNameWidth, widgetHeight, this.waypointName, Component.translatable(ModMessages.VANILLA_SELECT_WORLD));
-            Random random = new Random();
-            String suggestion = nameSuggestions.get(random.nextInt(nameSuggestions.size()));
-            this.waypointName.setSuggestion(Component.translatable(suggestion).getString());
+            this.waypointName.setSuggestion(Component.translatable(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER).getString());
 
             this.waypointName.setResponder((string) -> {
                 if (!string.isEmpty()) {

@@ -72,9 +72,7 @@ public class ModMessages {
     public static final String UI_MONITOR_WAYPOINT_SUBMIT = ui("monitor.waypoints.submit");
 
     public static final String VANILLA_SELECT_WORLD  = "selectWorld.search";
-    public static final String UI_WAYPOINT_NAME_PLACEHOLDER_A  = "monitor.waypoints.name.placeholder.a";
-    public static final String UI_WAYPOINT_NAME_PLACEHOLDER_B  = "monitor.waypoints.name.placeholder.b";
-    public static final String UI_WAYPOINT_NAME_PLACEHOLDER_C  = "monitor.waypoints.name.placeholder.c";
+    public static final String UI_WAYPOINT_NAME_PLACEHOLDER = "monitor.waypoints.name.placeholder";
     public static final String UI_WAYPOINT_NEW_WAYPOINT  = "monitor.waypoints.new_waypoint";
     public static final String UI_WAYPOINT_TAKEN  = "monitor.waypoints.taken";
     public static final String UI_MONITOR_ISSUES = ui("monitor.waypoints.issues");
