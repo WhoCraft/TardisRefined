@@ -30,8 +30,6 @@ public class TRSoundRegistry {
     public static final RegistrySupplier<SoundEvent> CORRIDOR_TELEPORTER = setUpSound("corridor_teleporter");
     public static final RegistrySupplier<SoundEvent> CORRIDOR_TELEPORTER_SUCCESS = setUpSound("corridor_teleporter_success");
 
-
-
     // Hums
 
     public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
@@ -40,14 +38,6 @@ public class TRSoundRegistry {
     public static final RegistrySupplier<SoundEvent> HUM_CLASSIC = setUpSound("hum_classic");
     public static final RegistrySupplier<SoundEvent> HUM_1996 = setUpSound("hum_1996");
 
-
-    // Hums
-
-    public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
-    public static final RegistrySupplier<SoundEvent> HUM_CAVE = setUpSound("hum_cave");
-    public static final RegistrySupplier<SoundEvent> HUM_TOYOTA = setUpSound("hum_toyota");
-    public static final RegistrySupplier<SoundEvent> HUM_CLASSIC = setUpSound("hum_classic");
-    public static final RegistrySupplier<SoundEvent> HUM_1996 = setUpSound("hum_1996");
 
     // Screwdriver
     public static final RegistrySupplier<SoundEvent> SCREWDRIVER_SHORT = setUpSound("screwdriver_short");
