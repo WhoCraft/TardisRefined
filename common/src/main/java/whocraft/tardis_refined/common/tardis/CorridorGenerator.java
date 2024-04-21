@@ -1,8 +1,6 @@
 package whocraft.tardis_refined.common.tardis;
 
-import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -17,10 +15,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import oshi.PlatformEnum;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 public class CorridorGenerator {
 
@@ -102,7 +99,7 @@ public class CorridorGenerator {
             }
         }
 
-        level.setBlockAndUpdate(corner.above(9), BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get().defaultBlockState());
+        level.setBlockAndUpdate(corner.above(9), TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get().defaultBlockState());
     }
 
     private static ResourceLocation getStructureResourceLocationByType(BlockState blockState, BlockState[] results) {

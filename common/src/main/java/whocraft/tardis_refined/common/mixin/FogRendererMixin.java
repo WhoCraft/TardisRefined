@@ -7,18 +7,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 @Mixin(FogRenderer.class)
 public class FogRendererMixin {
@@ -42,7 +39,7 @@ public class FogRendererMixin {
 
             ClientLevel level = Minecraft.getInstance().level;
 
-            if (level.dimensionTypeId() != DimensionTypes.TARDIS) return;
+            if (level.dimensionTypeId() != TRDimensionTypes.TARDIS) return;
 
             TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 

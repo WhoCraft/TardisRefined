@@ -6,7 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.Set;
 
@@ -20,7 +20,7 @@ public class DimensionUtil {
     public static Set<ResourceKey<Level>> getTardisLevels(MinecraftServer server){
         Set<ResourceKey<Level>> set = Sets.newHashSet();
         for(ServerLevel level : server.getAllLevels()) {
-            if(level.dimensionTypeId() == DimensionTypes.TARDIS){
+            if(level.dimensionTypeId() == TRDimensionTypes.TARDIS){
                 set.add(level.dimension());
             }
         }

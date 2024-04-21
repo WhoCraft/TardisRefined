@@ -24,6 +24,7 @@ public class TardisDesktops {
 
     /** A reference to the default Factory theme, intended for convenience. <br> DO NOT REGISTER THIS, it has already been included in the default list of desktops.*/
     public static final DesktopTheme FACTORY_THEME = new DesktopTheme("factory", "desktop/factory");
+    public static final DesktopTheme TERRAFORMED = new DesktopTheme("terraformed", "desktop/terraformed");
 
     /**
      * A factory method to create the instance of our reload listener.
@@ -65,6 +66,7 @@ public class TardisDesktops {
         addDefaultDesktop(new DesktopTheme("future_nostalgia", "desktop/future_nostalgia"));
         addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
         addDefaultDesktop(new DesktopTheme("shalka", "desktop/shalka"));
+        addDefaultDesktop(new DesktopTheme("arnet", "desktop/arnet"));
         return DEFAULT_DESKTOPS;
     }
 

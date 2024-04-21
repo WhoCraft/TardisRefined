@@ -13,15 +13,15 @@ import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.registry.FeatureKeys;
-import whocraft.tardis_refined.registry.TagKeys;
+import whocraft.tardis_refined.registry.TRFeatureKeys;
+import whocraft.tardis_refined.registry.TRTagKeys;
 
 import static whocraft.tardis_refined.common.data.ProviderPlacedFeatures.TARDIS_ROOT_CLUSTER_PLACED_FEATUE;
 
 public class BiomeModifierProvider {
 
 
-    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, FeatureKeys.TARDIS_ROOT_CLUSTER_RL);
+    private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TRFeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
     private static final ResourceKey<BiomeModifier> ZEITON = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(TardisRefined.MODID, "zeiton"));
     private static final ResourceKey<BiomeModifier> ZEITON_SMALL = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(TardisRefined.MODID, "zeiton_small"));
@@ -39,7 +39,7 @@ public class BiomeModifierProvider {
         context.register(ZEITON, oreModifer);
         context.register(ZEITON_SMALL, oreModiferSmall);
 
-        var tardisRoot = context.lookup(Registries.BIOME).getOrThrow(TagKeys.TARDIS_ROOT_CLUSTER);
+        var tardisRoot = context.lookup(Registries.BIOME).getOrThrow(TRTagKeys.TARDIS_ROOT_CLUSTER);
 
         context.register(ADD_TARDIS_ROOT_CLUSTER, new BiomeModifiers.AddFeaturesBiomeModifier(
                 tardisRoot,

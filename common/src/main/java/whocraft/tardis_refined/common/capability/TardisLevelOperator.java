@@ -18,6 +18,8 @@ import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -35,7 +37,6 @@ import static whocraft.tardis_refined.common.block.RootPlantBlock.FACING;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
 
 public class TardisLevelOperator {
-
     private final Level level;
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
@@ -45,11 +46,17 @@ public class TardisLevelOperator {
     private final TardisInteriorManager interiorManager;
     private final TardisPilotingManager pilotingManager;
     private final TardisWaypointManager tardisWaypointManager;
-
     private final FlightDanceManager flightDanceManager;
     private final TardisClientData tardisClientData;
     private final UpgradeHandler upgradeHandler;
     private final AestheticHandler aestheticHandler;
+
+    // TARDIS state refers to different stages of TARDIS creation. This allows for different logic to operate in those moments.
+    private int tardisState = 0;
+
+    public static final int STATE_CAVE = 0;
+    public static final int STATE_TERRAFORMED_NO_EYE = 1;
+    public static final int STATE_EYE_OF_HARMONY = 2;
 
 
     public TardisLevelOperator(Level level) {
@@ -101,6 +108,8 @@ public class TardisLevelOperator {
         compoundTag = this.upgradeHandler.saveData(compoundTag);
         compoundTag = this.aestheticHandler.saveData(compoundTag);
 
+        compoundTag.putInt("tardis_state", this.tardisState);
+
         return compoundTag;
     }
 
@@ -122,6 +131,9 @@ public class TardisLevelOperator {
         this.tardisWaypointManager.loadData(tag);
         this.upgradeHandler.loadData(tag);
         this.aestheticHandler.loadData(tag);
+
+        this.tardisState = tag.getInt("tardis_state");
+
         tardisClientData.sync();
     }
 
@@ -142,6 +154,7 @@ public class TardisLevelOperator {
             tardisClientData.setHumEntry(interiorManager.getHumEntry());
             tardisClientData.setFuel(pilotingManager.getFuel());
             tardisClientData.setMaximumFuel(pilotingManager.getMaximumFuel());
+            tardisClientData.setTardisState(tardisState);
 
             tardisClientData.sync();
         } else {
@@ -152,8 +165,6 @@ public class TardisLevelOperator {
             tardisClientData.setHandbrakeEngaged(pilotingManager.isHandbrakeOn());
             tardisClientData.sync();
         }
-
-
     }
 
     public boolean hasInitiallyGenerated() {
@@ -184,11 +195,9 @@ public class TardisLevelOperator {
         return false;
 
     }
-
     public boolean isTardisReady() {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
-
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
 
         if (!this.internalDoor.isOpen()) {
@@ -227,7 +236,6 @@ public class TardisLevelOperator {
 
         return true;
     }
-
 
     public void setDoorClosed(boolean closeDoor) {
         TardisExteriorManager extManager = getExteriorManager();
@@ -270,7 +278,6 @@ public class TardisLevelOperator {
         if (door != null) //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
     }
-
     public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
         this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
 
@@ -279,31 +286,34 @@ public class TardisLevelOperator {
         this.exteriorManager.setLastKnownLocation(navLocation);
         this.pilotingManager.setTargetLocation(navLocation);
 
-
         shellServerLevel.setBlock(shellBlockPos, shellBlockState.setValue(OPEN, true), Block.UPDATE_ALL);
 
         this.setInitiallyGenerated(true);
+        this.setTardisState(TardisLevelOperator.STATE_CAVE);
+        this.interiorManager.setHumEntry(TardisHums.CAVE);
     }
-
 
     public TardisExteriorManager getExteriorManager() {
         return this.exteriorManager;
     }
-
     public TardisInternalDoor getInternalDoor() {
         return this.internalDoor;
     }
-
     public TardisInteriorManager getInteriorManager() {
         return this.interiorManager;
     }
-
     public TardisPilotingManager getPilotingManager() {
         return this.pilotingManager;
     }
-
-
     public TardisWaypointManager getTardisWaypointManager() {
         return tardisWaypointManager;
+    }
+
+    public int getTardisState() {
+        return tardisState;
+    }
+
+    public void setTardisState(int state) {
+        this.tardisState = state;
     }
 }

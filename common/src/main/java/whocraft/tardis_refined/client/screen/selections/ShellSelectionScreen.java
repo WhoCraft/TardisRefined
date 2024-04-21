@@ -32,7 +32,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.List;
 import java.util.UUID;
@@ -64,7 +64,7 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
     public static void generateDummyGlobalShell() {
-        globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, BlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
+        globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
         assert Minecraft.getInstance().level != null;
         globalShellBlockEntity.setLevel(Minecraft.getInstance().level);
         ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
@@ -192,6 +192,11 @@ public class ShellSelectionScreen extends SelectionScreen {
         for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
             ShellTheme theme = shellTheme.value();
             ResourceLocation shellThemeId = shellTheme.key().location();
+
+            if (theme == ShellTheme.HALF_BAKED.get()) {
+                continue;
+            }
+
             SelectionListEntry selectionListEntry = new SelectionListEntry(theme.getDisplayName(), (entry) -> {
                 this.currentShellTheme = shellThemeId;
 

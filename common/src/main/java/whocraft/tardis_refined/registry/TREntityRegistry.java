@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.registry;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -9,7 +8,7 @@ import net.minecraft.world.entity.MobCategory;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 
-public class EntityRegistry {
+public class TREntityRegistry {
 
     public static final DeferredRegistry<EntityType<?>> ENTITY_TYPES = DeferredRegistry.create(TardisRefined.MODID, Registries.ENTITY_TYPE);
 

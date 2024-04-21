@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.GravityUtil;
-import whocraft.tardis_refined.registry.SoundRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 public class LoopingSound extends AbstractTickableSoundInstance {
 
@@ -109,9 +109,9 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     }
 
     public static void setupSounds(){
-        LoopingSound.ARS_HUMMING = new LoopingSound(SoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
-        LoopingSound.FLIGHT_LOOP = new LoopingSound(SoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
-        LoopingSound.GRAVITY_LOOP = new LoopingSound(SoundRegistry.GRAVITY_TUNNEL.get(), SoundSource.AMBIENT);
+        LoopingSound.ARS_HUMMING = new LoopingSound(TRSoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
+        LoopingSound.FLIGHT_LOOP = new LoopingSound(TRSoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
+        LoopingSound.GRAVITY_LOOP = new LoopingSound(TRSoundRegistry.GRAVITY_TUNNEL.get(), SoundSource.AMBIENT);
     }
 
 }

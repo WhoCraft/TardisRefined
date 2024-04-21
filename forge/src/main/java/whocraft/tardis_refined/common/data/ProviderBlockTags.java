@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.registry.BlockRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -24,7 +24,7 @@ public class ProviderBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        for (Block blocksEntry : BlockRegistry.BLOCKS.getRegistry().stream().toList()) {
+        for (Block blocksEntry : TRBlockRegistry.BLOCKS.getRegistry().stream().toList()) {
             Block block = blocksEntry;
 
             /*Fences*/
@@ -43,36 +43,36 @@ public class ProviderBlockTags extends BlockTagsProvider {
             }
         }
 
-        tag(BlockTags.DRAGON_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
-        tag(BlockTags.WITHER_IMMUNE).add(BlockRegistry.ROOT_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(BlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
+        tag(BlockTags.DRAGON_IMMUNE).add(TRBlockRegistry.ROOT_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
+        tag(BlockTags.WITHER_IMMUNE).add(TRBlockRegistry.ROOT_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
 
         tag(BlockTags.MINEABLE_WITH_PICKAXE)
-                .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
-                .add(BlockRegistry.LANDING_PAD.get())
-                .add(BlockRegistry.FLIGHT_DETECTOR.get())
-                .add(BlockRegistry.TERRAFORMER_BLOCK.get())
-                .add(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
-                .add(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
-                .add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get())
-                .add(BlockRegistry.ZEITON_ORE.get())
-                .add(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
-                .add(BlockRegistry.ZEITON_BLOCK.get())
-                .add(BlockRegistry.GRAVITY_WELL.get())
-                .add(BlockRegistry.ROOT_PLANT_BLOCK.get());
+                .add(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
+                .add(TRBlockRegistry.LANDING_PAD.get())
+                .add(TRBlockRegistry.FLIGHT_DETECTOR.get())
+                .add(TRBlockRegistry.TERRAFORMER_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get())
+                .add(TRBlockRegistry.ZEITON_ORE.get())
+                .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_BLOCK.get())
+                .add(TRBlockRegistry.GRAVITY_WELL.get())
+                .add(TRBlockRegistry.ROOT_PLANT_BLOCK.get());
 
         tag(BlockTags.NEEDS_IRON_TOOL)
-                .add(BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
-                .add(BlockRegistry.LANDING_PAD.get())
-                .add(BlockRegistry.GRAVITY_WELL.get())
-                .add(BlockRegistry.FLIGHT_DETECTOR.get())
-                .add(BlockRegistry.TERRAFORMER_BLOCK.get())
-                .add(BlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
-                .add(BlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
-                .add(BlockRegistry.ZEITON_ORE_DEEPSLATE.get())
-                .add(BlockRegistry.ZEITON_ORE.get())
-                .add(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
-                .add(BlockRegistry.ZEITON_BLOCK.get())
-                .add(BlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
+                .add(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get())
+                .add(TRBlockRegistry.LANDING_PAD.get())
+                .add(TRBlockRegistry.GRAVITY_WELL.get())
+                .add(TRBlockRegistry.FLIGHT_DETECTOR.get())
+                .add(TRBlockRegistry.TERRAFORMER_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get())
+                .add(TRBlockRegistry.ZEITON_ORE.get())
+                .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get())
+                .add(TRBlockRegistry.ZEITON_BLOCK.get())
+                .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
 
     }
 }

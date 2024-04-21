@@ -53,7 +53,7 @@ public class ShellPatterns {
                 return pattern.getThemeId();
             }
         }
-        return ShellTheme.FACTORY.getId();
+        return ShellTheme.HALF_BAKED.getId();
     }
 
     /** Sanity check to make sure a Pattern for a {@link ShellTheme} exists

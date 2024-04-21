@@ -9,7 +9,7 @@ import whocraft.tardis_refined.common.tardis.control.flight.*;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
-public class ControlRegistry {
+public class TRControlRegistry {
 	/** Registry Key for the Controls registry. For addon mods, use this as the registry key*/
 	public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
 
@@ -34,6 +34,7 @@ public class ControlRegistry {
 	public static final RegistrySupplier<Control> READOUT = register(new ReadoutControl(new ResourceLocation(TardisRefined.MODID, "read_out")));
 	public static final RegistrySupplier<Control> GENERIC_NO_SHOW = register(new GenericControl(new ResourceLocation(TardisRefined.MODID, "generic_no_show"), "control.tardis_refined.generic_control"));
 	public static final RegistrySupplier<Control> HANDBRAKE = register(new HandbrakeControl(new ResourceLocation(TardisRefined.MODID, "hand_brake")));
+	public static final RegistrySupplier<Control> FUEL = register(new FuelToggleControl(new ResourceLocation(TardisRefined.MODID, "fuel")));
 
 	public static Control get(ResourceLocation id){
 		Control potentialTheme = CONTROL_REGISTRY.get(id);

@@ -8,6 +8,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
@@ -35,6 +36,11 @@ public class ReadoutControl extends Control {
         TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
         PlayerUtil.sendMessage(player, Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY()+ " Z: " + targetLocation.getPosition().getZ() +  " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
 
+        return true;
+    }
+
+    @Override
+    public boolean hasCustomName() {
         return true;
     }
 }

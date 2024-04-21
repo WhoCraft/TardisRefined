@@ -7,7 +7,7 @@ import whocraft.tardis_refined.common.world.chunk.ARSStructurePiece;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ARSStructurePieceRegistry {
+public class TRARSStructurePieceRegistry {
 
     public static List<ARSStructurePiece> CORRIDORS = new ArrayList<>();
     public static List<ARSStructurePiece> ROOMS = new ArrayList<>();

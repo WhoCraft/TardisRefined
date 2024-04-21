@@ -37,7 +37,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
 
                     if (itemStack.getItem() instanceof ScrewdriverItem) {
 
-                        astralManipulatorBlockEntity.onRightClick(itemStack);
+                        astralManipulatorBlockEntity.onRightClick(itemStack, player);
                     }
 
                     CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player);

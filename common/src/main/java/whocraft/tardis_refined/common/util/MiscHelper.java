@@ -1,23 +1,19 @@
 package whocraft.tardis_refined.common.util;
 
-import com.google.common.collect.Sets;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -34,11 +30,10 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.DimensionTypes;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class MiscHelper {
@@ -119,12 +114,12 @@ public class MiscHelper {
     }
 
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
-        if (level.dimensionTypeId() == DimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
+        if (level.dimensionTypeId() == TRDimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
 
             // Consoles
-            Item consoleItem = BlockRegistry.GLOBAL_CONSOLE_BLOCK.get().asItem();
-            Item consoleConfigItem = BlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem();
+            Item consoleItem = TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get().asItem();
+            Item consoleConfigItem = TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem();
             if (data.getInteriorManager().isCave() && (itemInHand.getItem() == consoleConfigItem || itemInHand.getItem() == consoleItem)) {
                 return true;
             }
@@ -140,7 +135,7 @@ public class MiscHelper {
 
     public static boolean shouldCancelBreaking(Level world, Entity entity, BlockPos pos, BlockState state) {
 
-        if (world.dimensionTypeId() == DimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
+        if (world.dimensionTypeId() == TRDimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
             for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
                 boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());

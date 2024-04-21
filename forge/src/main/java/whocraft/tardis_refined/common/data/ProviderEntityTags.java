@@ -10,8 +10,8 @@ import net.minecraft.world.entity.EntityType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.registry.EntityRegistry;
-import whocraft.tardis_refined.registry.TagKeys;
+import whocraft.tardis_refined.registry.TREntityRegistry;
+import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -27,11 +27,11 @@ public class ProviderEntityTags extends EntityTypeTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         //Carry On Mod compat
-        tag(ENTITY_BLACKLIST).add(EntityRegistry.CONTROL_ENTITY.get());
+        tag(ENTITY_BLACKLIST).add(TREntityRegistry.CONTROL_ENTITY.get());
 
         //Tardis teleport blacklist
-        tag(TagKeys.TARDIS_TELEPORT_BLACKLIST).add(EntityRegistry.CONTROL_ENTITY.get());
-        tag(TagKeys.TARDIS_TELEPORT_BLACKLIST).add(EntityType.ENDER_DRAGON);
-        tag(TagKeys.TARDIS_TELEPORT_BLACKLIST).add(EntityType.WITHER);
+        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).add(TREntityRegistry.CONTROL_ENTITY.get());
+        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).add(EntityType.ENDER_DRAGON);
+        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).add(EntityType.WITHER);
     }
 }

@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.registry.ControlRegistry;
+import whocraft.tardis_refined.registry.TRControlRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,14 +34,12 @@ public class FlightDanceManager extends BaseHandler {
 
     private List<ControlEntity> getNonCriticalControls(GlobalConsoleBlockEntity controllerConsole) {
         var controls = controllerConsole.getControlEnttityList();
-        return controls.stream().filter(x -> !(x.controlSpecification().control().equals(ControlRegistry.THROTTLE.get())) || !(x.controlSpecification().control().equals(ControlRegistry.HANDBRAKE.get())) || !(x.controlSpecification().control().equals(ControlRegistry.MONITOR.get()))).toList();
+        return controls.stream().filter(x -> !(x.controlSpecification().control().equals(TRControlRegistry.THROTTLE.get())) || !(x.controlSpecification().control().equals(TRControlRegistry.HANDBRAKE.get())) || !(x.controlSpecification().control().equals(TRControlRegistry.MONITOR.get()))).toList();
     }
 
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {
         this.controlEntityList = getNonCriticalControls(controllerConsole);
         this.weAreDancing = true;
-
-
     }
 
     @Override

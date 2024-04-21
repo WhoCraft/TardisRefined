@@ -13,19 +13,21 @@ import whocraft.tardis_refined.client.ParticleGallifrey;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.fabric.events.ModEvents;
-import whocraft.tardis_refined.registry.BlockEntityRegistry;
-import whocraft.tardis_refined.registry.BlockRegistry;
-import whocraft.tardis_refined.registry.EntityRegistry;
+import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TREntityRegistry;
 
 public class TardisRefinedFabricClient implements ClientModInitializer {
     @Override
@@ -44,21 +46,23 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
     }
 
     private void establishBlockEntityRenderers() {
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.ROOT_PLANT.get(), RootPlantRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.ROOT_SHELL.get(), RootShellRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.ROOT_SHELL_DOOR.get(), RootShellDoorRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ROOT_PLANT.get(), RootPlantRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ROOT_SHELL.get(), RootShellRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ROOT_SHELL_DOOR.get(), RootShellDoorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), GlobalShellRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), GlobalDoorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), GlobalConsoleRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
 
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
 
         /*Required to Render Transparency*/
-        for (Block block : BlockRegistry.BLOCKS.getRegistry()) {
-            if(BlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)){
+        for (Block block : TRBlockRegistry.BLOCKS.getRegistry()) {
+            if(TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)){
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
             }
         }
@@ -66,6 +70,6 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
     }
 
     private void registerEntityRenderers() {
-        EntityRendererRegistry.register(EntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
+        EntityRendererRegistry.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
     }
 }

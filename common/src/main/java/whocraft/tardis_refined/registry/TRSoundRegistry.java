@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import whocraft.tardis_refined.TardisRefined;
 
-public class SoundRegistry {
+public class TRSoundRegistry {
     public static final DeferredRegistry<SoundEvent> SOUNDS = DeferredRegistry.create(TardisRefined.MODID, Registries.SOUND_EVENT);
 
     public static final RegistrySupplier<SoundEvent> TARDIS_TAKEOFF = setUpSound("tardis_takeoff");
@@ -19,12 +19,35 @@ public class SoundRegistry {
     public static final RegistrySupplier<SoundEvent> DESTINATION_DING = setUpSound("destination_ding");
     public static final RegistrySupplier<SoundEvent> ARS_HUM = setUpSound("ars_hum");
     public static final RegistrySupplier<SoundEvent> BULKHEAD_LOCKED = setUpSound("bulkhead_locked");
-    public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
+
     public static final RegistrySupplier<SoundEvent> INTERIOR_CREAKS = setUpSound("interior_creaks");
     public static final RegistrySupplier<SoundEvent> FLIGHT_FAIL_START = setUpSound("flight_fail_start");
     public static final RegistrySupplier<SoundEvent> CONSOLE_POWER_ON = setUpSound("console_power_on");
     public static final RegistrySupplier<SoundEvent> INTERIOR_VOICE = setUpSound("interior_voice");
+    public static final RegistrySupplier<SoundEvent> LOW_FUEL = setUpSound("low_fuel");
+    public static final RegistrySupplier<SoundEvent> ARTRON_PILLAR = setUpSound("artron_pillar_active");
 
+    public static final RegistrySupplier<SoundEvent> CORRIDOR_TELEPORTER = setUpSound("corridor_teleporter");
+    public static final RegistrySupplier<SoundEvent> CORRIDOR_TELEPORTER_SUCCESS = setUpSound("corridor_teleporter_success");
+
+
+
+    // Hums
+
+    public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
+    public static final RegistrySupplier<SoundEvent> HUM_CAVE = setUpSound("hum_cave");
+    public static final RegistrySupplier<SoundEvent> HUM_TOYOTA = setUpSound("hum_toyota");
+    public static final RegistrySupplier<SoundEvent> HUM_CLASSIC = setUpSound("hum_classic");
+    public static final RegistrySupplier<SoundEvent> HUM_1996 = setUpSound("hum_1996");
+
+
+    // Hums
+
+    public static final RegistrySupplier<SoundEvent> HUM_CORAL = setUpSound("hum_coral");
+    public static final RegistrySupplier<SoundEvent> HUM_CAVE = setUpSound("hum_cave");
+    public static final RegistrySupplier<SoundEvent> HUM_TOYOTA = setUpSound("hum_toyota");
+    public static final RegistrySupplier<SoundEvent> HUM_CLASSIC = setUpSound("hum_classic");
+    public static final RegistrySupplier<SoundEvent> HUM_1996 = setUpSound("hum_1996");
 
     // Screwdriver
     public static final RegistrySupplier<SoundEvent> SCREWDRIVER_SHORT = setUpSound("screwdriver_short");

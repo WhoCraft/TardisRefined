@@ -12,7 +12,7 @@ import whocraft.tardis_refined.command.arguments.DesktopArgumentType;
 import whocraft.tardis_refined.command.arguments.ShellArgumentType;
 import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 
-public class ArgumentTypeRegistry {
+public class TRArgumentTypeRegistry {
 
     public static final DeferredRegistry<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegistry.create(TardisRefined.MODID, Registries.COMMAND_ARGUMENT_TYPE);
 

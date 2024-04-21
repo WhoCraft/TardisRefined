@@ -1,10 +1,10 @@
 package whocraft.tardis_refined.common.tardis.control;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -96,4 +96,12 @@ public abstract class Control {
     public int hashCode() {
         return getId().hashCode();
     }
+    public boolean hasCustomName() {
+        return false;
+    }
+
+    public Component getCustomControlName(TardisLevelOperator operator, ControlEntity entity, ControlSpecification controlSpecification) {
+        return Component.translatable(controlSpecification.control().getTranslationKey());
+    }
+
 }

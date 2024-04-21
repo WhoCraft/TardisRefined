@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -9,9 +10,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
@@ -28,6 +32,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +46,12 @@ public class TardisInteriorManager extends BaseHandler {
     private BlockPos corridorAirlockCenter;
     private DesktopTheme preparedTheme, currentTheme = TardisDesktops.DEFAULT_OVERGROWN_THEME;
 
+    // Pillars
+    BlockPos pillarTopLeft = new BlockPos(1024,78,55);
+    BlockPos pillarTopRight = new BlockPos(1002,78,55);
+    BlockPos pillarBottomLeft = new BlockPos(1016,73,55);
+    BlockPos pillarBottomRight = new BlockPos(1010,73,55);
+
     // Airlock systems.
     private boolean processingWarping = false;
     private int airlockCountdownSeconds = 3;
@@ -50,7 +61,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
 
-    private double fuelForIntChange = 500; // The amount of fuel required to change interior
+    private double fuelForIntChange = 100; // The amount of fuel required to change interior
 
     public DesktopTheme preparedTheme() {
         return preparedTheme;
@@ -152,6 +163,13 @@ public class TardisInteriorManager extends BaseHandler {
 
     public void tick(ServerLevel level) {
 
+        RandomSource rand = level.getRandom();
+
+        if (shouldTheEyeBeOpen(level)) {
+            this.openTheEye();
+
+        }
+
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
@@ -178,7 +196,7 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.FACTORY.getId(), true);
+                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), true);
                 this.operator.getExteriorManager().placeExteriorBlock(operator, operator.getExteriorManager().getLastKnownLocation());
                 this.isGeneratingDesktop = false;
             }
@@ -229,11 +247,8 @@ public class TardisInteriorManager extends BaseHandler {
         }
 
         if (processingWarping) {
-
-
             if (level.getGameTime() % 20 == 0) {
 
-                RandomSource rand = level.getRandom();
                 for (ProtectedZone protectedZone : unbreakableZones()) {
                     if (!protectedZone.getName().contains("_airlock")) continue;
                     BlockPos.betweenClosedStream(protectedZone.getArea()).forEach(position -> {
@@ -288,6 +303,30 @@ public class TardisInteriorManager extends BaseHandler {
         }
     }
 
+    public boolean shouldTheEyeBeOpen(ServerLevel level) {
+
+        return level.getBlockState(pillarTopLeft).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarTopRight).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarBottomLeft).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarBottomRight).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY;
+    }
+
+    public void openTheEye() {
+        this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
+
+        Vec3 eyeCenter = new Vec3(1013, 72, 55);
+        AABB portalDoorLength = new AABB(1011, 72, 54, 1015, 71, 56);
+        AABB portalDoorWidth = new AABB(1011, 72, 54, 1015, 71, 56);
+
+        // Remove the blocks
+        BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
+        BlockPos.betweenClosedStream(portalDoorWidth).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
+
+        LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
+        lightningBolt.setPos(eyeCenter);
+        this.operator.getLevel().addFreshEntity(lightningBolt);
+
+        setHumEntry(TardisHums.getDefaultHum());
+
+    }
+
     public List<LivingEntity> getCorridorEntities(Level level) {
         return level.getEntitiesOfClass(LivingEntity.class, new AABB(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)));
     }
@@ -315,23 +354,27 @@ public class TardisInteriorManager extends BaseHandler {
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
 
-            // Remove Tardis Interior DOor
+            if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) {
+                this.operator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE);
+            }
+
+            // Remove Tardis Interior Door
             TardisInternalDoor tardisInternalDoor = this.operator.getInternalDoor();
             if (tardisInternalDoor != null) {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
 
-            if (theme != TardisDesktops.DEFAULT_OVERGROWN_THEME) {
+            if (this.operator.getTardisState() == TardisLevelOperator.STATE_TERRAFORMED_NO_EYE) {
                 // Generate Corridors
                 if (!this.hasGeneratedCorridors) {
                     TardisArchitectureHandler.generateEssentialCorridors(serverLevel); // This causes a little lag, could be worth a fix.
                     this.hasGeneratedCorridors = true;
                 }
+
             }
 
             // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);
-
             setCurrentTheme(theme);
 
         }
