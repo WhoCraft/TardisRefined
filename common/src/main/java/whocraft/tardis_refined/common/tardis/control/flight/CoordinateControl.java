@@ -4,13 +4,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+
+import java.awt.*;
 
 
 public class CoordinateControl extends Control {
@@ -44,7 +48,8 @@ public class CoordinateControl extends Control {
 
             int increment = pilotManager.getCordIncrement();
             int incrementAmount = addValue ? increment : -increment;
-            BlockPos potentialPos = pilotManager.getTargetLocation().getPosition();
+            TardisNavLocation targetLocation = pilotManager.getTargetLocation();
+            BlockPos potentialPos = targetLocation.getPosition();
 
             switch (button){
                 case X -> potentialPos = potentialPos.offset(incrementAmount, 0, 0);
@@ -52,7 +57,7 @@ public class CoordinateControl extends Control {
                 case Z -> potentialPos = potentialPos.offset(0, 0, incrementAmount);
             }
 
-            if (pilotManager.getTargetLocation().getLevel().isInWorldBounds(potentialPos)){ //Use vanilla check which accounts for both world height and horizontal bounds
+            if ((targetLocation.getLevel().dimension() == Level.END || targetLocation.getLevel().isInWorldBounds(potentialPos)) && !pilotManager.getTargetLocation().getLevel().isOutsideBuildHeight(potentialPos)){ //Use vanilla check which accounts for both world height and horizontal bounds
 
                 pilotManager.setTargetPosition(potentialPos); //Only update target position if it is within both vertical and horizontal bounds.
 
