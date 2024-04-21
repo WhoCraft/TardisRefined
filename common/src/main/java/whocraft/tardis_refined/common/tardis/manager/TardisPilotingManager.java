@@ -358,6 +358,7 @@ public class TardisPilotingManager extends BaseHandler {
 
                 for (Direction direction : directions) {
                     BlockPos directionOffset = BlockPos.of(BlockPos.offset(airPos.asLong(), direction));
+                    // Check that the column in the direction is empty and doesn't have a drop.
                     if (isLegalLandingBlock(level, directionOffset)) {
                         if (isLegalLandingBlock(level, directionOffset.above()) && !isLegalLandingBlock(level, directionOffset.below()) && !isLegalLandingBlock(level, directionOffset.below(2))) {
                             solutionsInRow.add(new TardisNavLocation(airPos, direction, location.getLevel()));
@@ -408,8 +409,12 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
 
+    /**
+     * Check if the block at the target position is a valid block to land inside.
+     * **/
     public boolean isLegalLandingBlock(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
+        // Can land in air or override any block that can be marked as "replaceable" such as snow, tall grass etc.
         return state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty());
     }
 
