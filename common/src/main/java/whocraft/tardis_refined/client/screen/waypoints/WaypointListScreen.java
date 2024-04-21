@@ -3,6 +3,7 @@ package whocraft.tardis_refined.client.screen.waypoints;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.SpriteIconButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
@@ -12,9 +13,11 @@ import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionL
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesDisplayMessage;
+import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenEditCoordinatesDisplayMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RemoveWaypointEntryMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.TravelToWaypointMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
@@ -29,14 +32,17 @@ public class WaypointListScreen extends SelectionScreen {
     private int leftPos, topPos;
 
     private SpriteIconButton loadButton;
+    private SpriteIconButton editButton;
+    private SpriteIconButton trashButton;
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
-    Collection<TardisNavLocation> WAYPOINTS = new ArrayList<>();
-    TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
+    Collection<TardisWaypoint> WAYPOINTS = new ArrayList<>();
+    TardisWaypoint waypoint = null;
     public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "trash");
     public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "okay");
+    public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "edit");
 
-    public WaypointListScreen(Collection<TardisNavLocation> waypoints) {
+    public WaypointListScreen(Collection<TardisWaypoint> waypoints) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
         this.WAYPOINTS = waypoints;
     }
@@ -58,16 +64,16 @@ public class WaypointListScreen extends SelectionScreen {
         super.init();
 
         setEvents(() -> {
-            if(tardisNavLocation != TardisNavLocation.ORIGIN) {
-                new TravelToWaypointMessage(tardisNavLocation.getName()).send();
+            if(waypoint != null) {
+                new TravelToWaypointMessage(waypoint.getId()).send();
                 Minecraft.getInstance().setScreen(null);
             }
             Minecraft.getInstance().setScreen(null);
         }, new SelectionScreenRun() {
             @Override
             public void onPress() {
-                if (tardisNavLocation != TardisNavLocation.ORIGIN) {
-                    new RemoveWaypointEntryMessage(tardisNavLocation.getName()).send();
+                if (waypoint != null) {
+                    new RemoveWaypointEntryMessage(waypoint.getId()).send();
                 }
             }
         });
@@ -76,32 +82,47 @@ public class WaypointListScreen extends SelectionScreen {
         SpriteIconButton spriteButtonNew = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
             new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send();
         }, true, BUTTON_LOCATION));
+
+        spriteButtonNew.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_CREATE)));
         spriteButtonNew.setPosition(width / 2 + 85, (height) / 2 - 60);
 
+
+
+
         this.loadButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
-            if(tardisNavLocation != TardisNavLocation.ORIGIN) {
-                new TravelToWaypointMessage(tardisNavLocation.getName()).send();
+            if(waypoint != null) {
+
+                new TravelToWaypointMessage(waypoint.getId()).send();
                 Minecraft.getInstance().setScreen(null);
             }
         }, true, OKAY_TEXTURE));
-        this.loadButton.setPosition(width / 2 + 85, (height) / 2 - 20);
+        this.loadButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_LOAD)));
+        this.loadButton.setPosition(width / 2 + 85, (height) / 2 );
 
         this.loadButton.active = false;
 
 
+        this.editButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Edit"), (arg) -> {
+            if(waypoint != null) {
+                new C2SOpenEditCoordinatesDisplayMessage(waypoint.getId()).send();
+                Minecraft.getInstance().setScreen(null);
+            }
+        }, true, EDIT_TEXTURE));
+        this.editButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_EDIT)));
+        this.editButton.setPosition(width / 2 + 85, (height) / 2 - 40);
 
-        addTrashIcon(width / 2 + 85, (height) / 2 - 40);
+        this.editButton.active = false;
 
-    }
+        this.trashButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
+            new RemoveWaypointEntryMessage(waypoint.getId()).send();
 
-
-    public void addTrashIcon(int x, int y) {
-        SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
-            new RemoveWaypointEntryMessage(tardisNavLocation.getName()).send();
-            this.loadButton.active = false;
         }, true, TRASH_LOCATION));
-        spriteiconbutton.setPosition(x, y);
+
+        this.trashButton.setPosition(width / 2 + 85, (height) / 2 - 20);
+        this.trashButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_DELETE)));
+        this.trashButton.active = false;
     }
+
 
     @Override
     public GenericMonitorSelectionList createSelectionList() {
@@ -109,11 +130,13 @@ public class WaypointListScreen extends SelectionScreen {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 250, 80, leftPos - 70, this.topPos + 45, this.topPos + this.imageHeight - 45 , 12);
         selectionList.setRenderBackground(false);
 
-        for (TardisNavLocation waypoint : WAYPOINTS) {
-            selectionList.children().add(new SelectionListEntry(Component.literal(waypoint.getName()), entry -> {
+        for (TardisWaypoint waypointEntry : WAYPOINTS) {
+            selectionList.children().add(new SelectionListEntry(Component.literal(waypointEntry.getLocation().getName()), entry -> {
                 entry.setChecked(true);
-                tardisNavLocation = waypoint;
+                this.waypoint = waypointEntry;
                 this.loadButton.active = true;
+                this.editButton.active = true;
+                this.trashButton.active = true;
 
                 for (SelectionListEntry child : selectionList.children()) {
                     if(child != entry) {

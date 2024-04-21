@@ -69,6 +69,10 @@ public class ModMessages {
     public static final String UI_MONITOR_SELECT_HUM = ui("monitor.select.hum");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
     public static final String UI_MONITOR_WAYPOINT_UPLOAD = ui("monitor.waypoints.upload");
+    public static final String UI_MONITOR_WAYPOINT_CREATE = ui("monitor.waypoints.create");
+    public static final String UI_MONITOR_WAYPOINT_LOAD = ui("monitor.waypoints.load");
+    public static final String UI_MONITOR_WAYPOINT_EDIT = ui("monitor.waypoints.edit");
+    public static final String UI_MONITOR_WAYPOINT_DELETE = ui("monitor.waypoints.delete");
     public static final String UI_MONITOR_WAYPOINT_SUBMIT = ui("monitor.waypoints.submit");
 
     public static final String VANILLA_SELECT_WORLD  = "selectWorld.search";

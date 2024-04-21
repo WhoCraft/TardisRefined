@@ -10,6 +10,7 @@ import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 import whocraft.tardis_refined.common.tardis.manager.TardisWaypointManager;
 
 import java.util.Collection;
@@ -37,7 +38,7 @@ public class RequestWaypointsMessage extends MessageC2S {
         ServerLevel level = player.serverLevel();
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
-            Collection<TardisNavLocation> waypoints = waypointManager.getWaypoints();
+            Collection<TardisWaypoint> waypoints = waypointManager.getWaypoints();
             new WaypointsListScreenMessage(waypoints).send(player);
         });
 

@@ -18,7 +18,7 @@ public class TardisNetwork {
 
     public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
 
-    public static MessageType OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C, REQUEST_SHELL_C2S, CLIENT_OPEN_COORDS_SCREEN, SERVER_OPEN_COORDS_SCREEN, UPLOAD_WAYPOINT, SET_WAYPOINT, CHANGE_HUM, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS, SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE;
+    public static MessageType OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C, REQUEST_SHELL_C2S, CLIENT_OPEN_COORDS_SCREEN,  SERVER_OPEN_COORDS_SCREEN, CLIENT_OPEN_EDIT_COORDS_SCREEN, SERVER_OPEN_EDIT_COORDS_SCREEN, UPLOAD_WAYPOINT, EDIT_WAYPOINT, SET_WAYPOINT, CHANGE_HUM, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS, SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE;
 
     public static void init() {
         // S2C Messages
@@ -30,6 +30,7 @@ public class TardisNetwork {
         SYNC_SHELL_PATTERNS = NETWORK.registerS2C("sync_shell_patterns", SyncShellPatternsMessage::new);
         SYNC_DESKTOPS = NETWORK.registerS2C("sync_desktop", SyncDesktopsMessage::new);
         SERVER_OPEN_COORDS_DISPLAY = NETWORK.registerS2C("server_open_coords_display", S2COpenCoordinatesDisplayMessage::new);
+        SERVER_OPEN_EDIT_COORDS_SCREEN = NETWORK.registerS2C("server_open_edit_coords_display", S2COpenEditCoordinatesDisplayMessage::new);
         OPEN_WAYPOINTS_DISPLAY = NETWORK.registerS2C("open_waypoints_display", WaypointsListScreenMessage::new);
         SERVER_OPEN_COORDS_SCREEN = NETWORK.registerS2C("server_open_coords_screen", S2COpenCoordinatesDisplayMessage::new);
         SYNC_HUMS = NETWORK.registerS2C("sync_hums", SyncHumsMessage::new);
@@ -42,7 +43,9 @@ public class TardisNetwork {
         REQUEST_WAYPOINTS = NETWORK.registerC2S("request_waypoints", RequestWaypointsMessage::new);
         SET_WAYPOINT = NETWORK.registerC2S("set_waypoint", TravelToWaypointMessage::new);
         UPLOAD_WAYPOINT = NETWORK.registerC2S("upload_waypoint", UploadWaypointMessage::new);
+        EDIT_WAYPOINT = NETWORK.registerC2S("edit_waypoint", EditWaypointMessage::new);
         CLIENT_OPEN_COORDS_DISPLAY = NETWORK.registerC2S("client_open_coords_display", C2SOpenCoordinatesDisplayMessage::new);
+        CLIENT_OPEN_EDIT_COORDS_SCREEN = NETWORK.registerC2S("client_open_edit_coords_display", C2SOpenEditCoordinatesDisplayMessage::new);
         DEL_WAYPOINT = NETWORK.registerC2S("del_waypoint", RemoveWaypointEntryMessage::new);
         CLIENT_OPEN_COORDS_SCREEN = NETWORK.registerC2S("client_open_coords_screen", C2SOpenCoordinatesDisplayMessage::new);
         UNLOCK_UPGRADE = NETWORK.registerC2S("unlock_upgrade", UnlockUpgradeMessage::new);

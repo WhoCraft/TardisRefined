@@ -17,6 +17,7 @@ import whocraft.tardis_refined.client.screen.waypoints.WaypointManageScreen;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,13 +27,17 @@ public class ScreenHandler {
 
 
     @Environment(EnvType.CLIENT)
-    public static void setWaypointScreen(Collection<TardisNavLocation> waypoints) {
+    public static void setWaypointScreen(Collection<TardisWaypoint> waypoints) {
         Minecraft.getInstance().setScreen(new WaypointListScreen(waypoints));
     }
 
     @Environment(EnvType.CLIENT)
     public static void setCoordinatesScreen(List<ResourceKey<Level>> levels, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
         Minecraft.getInstance().setScreen(new WaypointManageScreen(levels, coordInputType, tardisNavLocation));
+    }
+    @Environment(EnvType.CLIENT)
+    public static void setEditCoordinatesScreen(TardisWaypoint waypoint) {
+        Minecraft.getInstance().setScreen(new WaypointManageScreen(waypoint));
     }
 
     @Environment(EnvType.CLIENT)
@@ -49,6 +54,11 @@ public class ScreenHandler {
     @Environment(EnvType.CLIENT)
     public static void openCoordinatesScreen(List<ResourceKey<Level>> levels, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
         ScreenHandler.setCoordinatesScreen(levels, coordInputType, tardisNavLocation);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void openEditCoordinatesScreen(TardisWaypoint waypoint) {
+        ScreenHandler.setEditCoordinatesScreen(waypoint);
     }
 
     @Environment(EnvType.CLIENT)

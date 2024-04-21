@@ -4,13 +4,14 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 
 import java.util.*;
 
 public class TardisWaypointManager extends BaseHandler{
 
     private final TardisLevelOperator operator;
-    private Map<String, TardisNavLocation> waypointMap = new HashMap<>();
+    private List<TardisWaypoint> waypoints = new ArrayList<>();
 
     public TardisWaypointManager(TardisLevelOperator tardisLevelOperator) {
         this.operator = tardisLevelOperator;
@@ -18,27 +19,33 @@ public class TardisWaypointManager extends BaseHandler{
 
     public void addWaypoint(TardisNavLocation tardisNavLocation, String name) {
         tardisNavLocation.setName(name);
-        waypointMap.put(name, tardisNavLocation);
+        waypoints.add(new TardisWaypoint(tardisNavLocation));
     }
 
-    public void deleteWaypoint(String name) {
-        waypointMap.remove(name);
+    public void editWaypoint(TardisWaypoint waypoint) {
+
+        waypoints.removeIf(x -> x.getId().equals(waypoint.getId()));
+        waypoints.add(waypoint);
+
+        waypoints.forEach(x -> {
+            System.out.println(x.getId());
+            System.out.println(x.getLocation().getName());
+        });
     }
 
-    /**
-     * @return Map of waypoints, with string names as keys
-     */
-    public Map<String, TardisNavLocation> getWaypointMap()
-    {
-        return this.waypointMap;
+    public void deleteWaypoint(UUID id) {
+        waypoints.removeIf(x -> x.getId().equals(id));
     }
 
-    public Collection<TardisNavLocation> getWaypoints() {
-        return waypointMap.values();
+    public List<TardisWaypoint> getWaypoints() {
+        return this.waypoints;
     }
 
-    public TardisNavLocation getWaypointByName(String name) {
-        return waypointMap.get(name);
+    public TardisWaypoint getWaypointById(UUID id) {
+
+        Optional<TardisWaypoint> waypoint = waypoints.stream().filter(x -> x.getId().equals(id)).findFirst();
+        return waypoint.orElse(null);
+
     }
 
     @Override
@@ -48,21 +55,21 @@ public class TardisWaypointManager extends BaseHandler{
     @Override
     public CompoundTag saveData(CompoundTag compoundTag) {
         ListTag waypointsList = new ListTag();
-        for (TardisNavLocation location : waypointMap.values()) {
-            CompoundTag locationTag = location.serialise();
-            waypointsList.add(locationTag);
+        for (TardisWaypoint waypoint : waypoints) {
+            CompoundTag waypointTag = waypoint.serialise();
+            waypointsList.add(waypointTag);
         }
         compoundTag.put("Waypoints", waypointsList);
         return compoundTag;
     }
     @Override
     public void loadData(CompoundTag tag) {
-        waypointMap.clear();
+        waypoints.clear();
         ListTag waypointsList = tag.getList("Waypoints", 10);
         for (int i = 0; i < waypointsList.size(); i++) {
             CompoundTag locationTag = waypointsList.getCompound(i);
-            TardisNavLocation location = TardisNavLocation.deserialise(locationTag);
-            waypointMap.put(location.getName(), location);
+            TardisWaypoint waypoint = TardisWaypoint.deserialise(locationTag);
+            waypoints.add( waypoint);
         }
     }
 }

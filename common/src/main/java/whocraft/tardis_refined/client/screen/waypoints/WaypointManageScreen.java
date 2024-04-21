@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.SpriteIconButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -12,9 +13,11 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
+import whocraft.tardis_refined.common.network.messages.waypoints.EditWaypointMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.UploadWaypointMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
@@ -35,6 +38,7 @@ public class WaypointManageScreen extends Screen {
 
     protected EditBox waypointName;
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
+    private TardisWaypoint preExistingWaypoint = null;
     private TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
     private SpriteIconButton onSaveWaypoint;
 
@@ -44,8 +48,13 @@ public class WaypointManageScreen extends Screen {
         this.coordInputType = coordInputType;
         this.tardisNavLocation = tardisNavLocation;
         tardisNavLocation.setName("Waypoint");
+    }
 
-
+    public WaypointManageScreen(TardisWaypoint waypoint) {
+        super(Component.translatable("Edit waypoint"));
+        this.preExistingWaypoint = waypoint;
+        this.tardisNavLocation = waypoint.getLocation();
+        this.coordInputType = CoordInputType.WAYPOINT;
     }
 
     @Override
@@ -69,17 +78,31 @@ public class WaypointManageScreen extends Screen {
 
 
         onSaveWaypoint = this.addRenderableWidget(CommonTRWidgets.imageButton(waypointNameWidth, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT), (arg) -> {
-            new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
-            new RequestWaypointsMessage().send();
-        }, false, BUTTON_LOCATION));
 
+            if (preExistingWaypoint != null) {
+                tardisNavLocation.setName(this.waypointName.getValue());
+                preExistingWaypoint.setLocation(tardisNavLocation);
+                new EditWaypointMessage(preExistingWaypoint).send();
+                new RequestWaypointsMessage().send();
+            } else {
+                new UploadWaypointMessage(tardisNavLocation, coordInputType).send();
+                new RequestWaypointsMessage().send();
+            }
+
+
+        }, false, BUTTON_LOCATION));
 
         onSaveWaypoint.setPosition(xPosition, yPosition + 100);
         addWidget(onSaveWaypoint);
 
         if (coordInputType == CoordInputType.WAYPOINT) {
             this.waypointName = new EditBox(this.font, xPosition, waypointNameHeight, waypointNameWidth, widgetHeight, this.waypointName, Component.translatable(ModMessages.VANILLA_SELECT_WORLD));
-            this.waypointName.setSuggestion(Component.translatable(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER).getString());
+
+            if (this.preExistingWaypoint != null) {
+                this.waypointName.setValue(this.preExistingWaypoint.getLocation().getName());
+            } else {
+                this.waypointName.setSuggestion(Component.translatable(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER).getString());
+            }
 
             this.waypointName.setResponder((string) -> {
                 if (!string.isEmpty()) {
@@ -91,9 +114,6 @@ public class WaypointManageScreen extends Screen {
             this.addWidget(waypointName);
         }
     }
-
-
-
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
@@ -123,7 +143,11 @@ public class WaypointManageScreen extends Screen {
 
 
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_NEW_WAYPOINT).getString(), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
-        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_TAKEN).getString(), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight + 10, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
+
+        if (preExistingWaypoint == null) {
+            ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_TAKEN).getString(), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight + 10, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
+        }
+
         ScreenHelper.renderWidthScaledText(tardisNavLocation.getPosition().toShortString(), guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 15, Color.white.getRGB(), 80, 1F, true);
         ScreenHelper.renderWidthScaledText(direction + ", " + dimensionName, guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 25, Color.white.getRGB(), 100, 1F, true);
 

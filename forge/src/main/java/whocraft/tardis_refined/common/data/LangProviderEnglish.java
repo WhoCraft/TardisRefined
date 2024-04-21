@@ -191,6 +191,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER, "Waypoint name");
         add(ModMessages.UI_WAYPOINT_NEW_WAYPOINT, "New Waypoint");
         add(ModMessages.UI_WAYPOINT_TAKEN, "Data retrieved from destination values");
+        add(ModMessages.UI_MONITOR_WAYPOINT_LOAD, "Send to console");
+        add(ModMessages.UI_MONITOR_WAYPOINT_CREATE, "New waypoint");
+        add(ModMessages.UI_MONITOR_WAYPOINT_EDIT, "Edit waypoint");
+        add(ModMessages.UI_MONITOR_WAYPOINT_DELETE, "Delete waypoint");
 
 
         /*Shell Themes*/

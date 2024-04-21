@@ -11,17 +11,19 @@ import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.manager.TardisWaypointManager;
 
+import java.util.UUID;
+
 public class RemoveWaypointEntryMessage extends MessageC2S {
 
-    String tardisNavName;
+    UUID waypointId;
 
-    public RemoveWaypointEntryMessage(String tardisNavName) {
-        this.tardisNavName = tardisNavName;
+    public RemoveWaypointEntryMessage(UUID waypointId) {
+        this.waypointId = waypointId;
     }
 
 
     public RemoveWaypointEntryMessage(FriendlyByteBuf buf) {
-        tardisNavName = buf.readUtf();
+        waypointId = buf.readUUID();
     }
 
 
@@ -33,7 +35,7 @@ public class RemoveWaypointEntryMessage extends MessageC2S {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeUtf(tardisNavName);
+        buf.writeUUID(waypointId);
     }
 
     @Override
@@ -43,7 +45,7 @@ public class RemoveWaypointEntryMessage extends MessageC2S {
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
-            tardisWaypointManager.deleteWaypoint(tardisNavName);
+            tardisWaypointManager.deleteWaypoint(waypointId);
             new WaypointsListScreenMessage(tardisWaypointManager.getWaypoints()).send(player);
         });
     }
