@@ -46,11 +46,11 @@ public class HandbrakeControl extends Control {
 
         if (operator.getPilotingManager().isInFlight()) {
 
-            PlayerUtil.sendMessage(player, Component.translatable( ModMessages.HANDBRAKE_WARNING), true); // MAKE THIS IS A TRANSLATION
+            PlayerUtil.sendMessage(player, Component.translatable( ModMessages.HANDBRAKE_WARNING), true);
             return false;
         } else {
             operator.getPilotingManager().setHandbrakeOn(!operator.getPilotingManager().isHandbrakeOn());
-            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HANDBRAKE).append(operator.getPilotingManager().isHandbrakeOn() ?  ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED), true);
+            PlayerUtil.sendMessage(player, Component.translatable(operator.getPilotingManager().isHandbrakeOn() ?  ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED), true);
             return true;
         }
 

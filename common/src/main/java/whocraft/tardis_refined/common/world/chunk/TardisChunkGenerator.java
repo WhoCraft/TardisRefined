@@ -121,20 +121,21 @@ public class TardisChunkGenerator extends ChunkGenerator {
                 placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
 
             } else {
-                if (random.nextBoolean()) {
+                if (random.nextInt(3) == 0) {
                     ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
                     placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
                 } else {
-                    ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+
+                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
                     placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
                 }
 
-
-                if (random.nextBoolean()) {
+                if (random.nextInt(3) == 0) {
                     ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
                     placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
                 } else {
-                    ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
+
+                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
                     placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
                 }
             }
