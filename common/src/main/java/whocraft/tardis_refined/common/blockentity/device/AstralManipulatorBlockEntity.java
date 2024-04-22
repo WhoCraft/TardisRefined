@@ -81,7 +81,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
         BlockState blockState = level.getBlockState(getBlockPos());
         if (blockState.getBlock() instanceof AstralManipulatorBlock) {
-            level.setBlock(getBlockPos(), blockState.setValue(AstralManipulatorBlock.POWERED, display), 3);
+            level.setBlock(getBlockPos(), blockState.setValue(AstralManipulatorBlock.POWERED, display), Block.UPDATE_ALL);
         }
 
 
