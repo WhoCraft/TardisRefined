@@ -170,7 +170,6 @@ public class TardisPilotingManager extends BaseHandler {
     public void tick(Level level) {
 
 
-
         if (targetLocation == null) {
 
             var location = this.operator.getExteriorManager().getLastKnownLocation();
@@ -435,6 +434,11 @@ public class TardisPilotingManager extends BaseHandler {
     public boolean beginFlight(boolean autoLand, Optional<GlobalConsoleBlockEntity> consoleBlockEntity) {
 
         if (this.getFuel() < 50) {
+
+            operator.getLevel().players().forEach(x -> {
+                PlayerUtil.sendMessage(x, Component.translatable(ModMessages.CANNOT_START_NO_FUEL), true);
+            });
+
             this.failTakeoff();
             return false;
         }

@@ -6,12 +6,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.tardis.CorridorGenerator;
@@ -20,6 +29,28 @@ import whocraft.tardis_refined.common.tardis.CorridorGenerator;
 public class AstralManipulatorBlock extends Block implements EntityBlock {
     public AstralManipulatorBlock(Properties properties) {
         super(properties);
+    }
+
+
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(POWERED);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
+        BlockState state = super.getStateForPlacement(blockPlaceContext);
+
+        return state.setValue(POWERED, false);
+    }
+
+
+    @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return Shapes.join(Block.box(0, 0, 0, 16, 12, 16), Block.box(4, 12, 4, 12, 14, 12), BooleanOp.OR);
     }
 
     @Override
@@ -32,6 +63,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
 
                 if (itemStack == ItemStack.EMPTY) {
                     astralManipulatorBlockEntity.clearDisplay();
+
                     return InteractionResult.CONSUME;
                 } else {
 

@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.block.device.AstralManipulatorBlock;
 import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.items.ScrewdriverMode;
@@ -77,6 +78,13 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         this.shouldDisplay = display;
         this.pointABlockPos = this.getBlockPos();
         this.pointBBlockPos = this.getBlockPos();
+
+        BlockState blockState = level.getBlockState(getBlockPos());
+        if (blockState.getBlock() instanceof AstralManipulatorBlock) {
+            level.setBlock(getBlockPos(), blockState.setValue(AstralManipulatorBlock.POWERED, display), Block.UPDATE_ALL);
+        }
+
+
         sendUpdates();
     }
 
@@ -86,7 +94,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     }
 
     public void clearDisplay() {
-        this.shouldDisplay = false;
+        this.setShouldDisplay(false);
         this.pointABlockPos = this.getBlockPos();
         this.pointBBlockPos = this.getBlockPos();
         sendUpdates();
