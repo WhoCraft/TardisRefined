@@ -2,10 +2,14 @@ package whocraft.tardis_refined.common.network.messages.waypoints;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.ScreenHandler;
+import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -14,48 +18,42 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
-public class WaypointsListScreenMessage extends MessageS2C {
+public class S2COpenEditCoordinatesDisplayMessage extends MessageS2C {
 
-    private Collection<TardisWaypoint> waypoints;
+    TardisWaypoint waypoint;
 
-    public WaypointsListScreenMessage(Collection<TardisWaypoint> waypoints) {
-        this.waypoints = waypoints;
+    public S2COpenEditCoordinatesDisplayMessage(TardisWaypoint waypoint) {
+        this.waypoint = waypoint;
+
     }
 
-    public WaypointsListScreenMessage(FriendlyByteBuf friendlyByteBuf) {
-        waypoints = new ArrayList<>();
-        int size = friendlyByteBuf.readInt();
-        for (int i = 0; i < size; i++) {
-            CompoundTag tardisWay = friendlyByteBuf.readNbt();
-            TardisWaypoint waypoint = TardisWaypoint.deserialise(tardisWay);
-
-            waypoints.add(waypoint);
-        }
+    public S2COpenEditCoordinatesDisplayMessage(FriendlyByteBuf friendlyByteBuf) {
+        CompoundTag tardisNav = friendlyByteBuf.readNbt();
+        waypoint = TardisWaypoint.deserialise(tardisNav);
     }
 
     @NotNull
     @Override
     public MessageType getType() {
-        return TardisNetwork.OPEN_WAYPOINTS_DISPLAY;
+        return TardisNetwork.SERVER_OPEN_EDIT_COORDS_SCREEN;
     }
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeInt(waypoints.size());
-        for (TardisWaypoint waypoint : waypoints) {
-            buf.writeNbt(waypoint.serialise());
-        }
+        buf.writeNbt(waypoint.serialise());
+
     }
 
     @Override
     public void handle(MessageContext context) {
-        handleScreens();
+        handleDisplay();
     }
 
     @Environment(EnvType.CLIENT)
-    private void handleScreens() {
-        ScreenHandler.setWaypointScreen(waypoints);
+    private void handleDisplay() {
+        ScreenHandler.openEditCoordinatesScreen(waypoint);
     }
+
 }
