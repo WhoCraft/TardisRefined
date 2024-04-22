@@ -1,12 +1,15 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.TardisWaypoint;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class TardisWaypointManager extends BaseHandler{
 
@@ -23,14 +26,8 @@ public class TardisWaypointManager extends BaseHandler{
     }
 
     public void editWaypoint(TardisWaypoint waypoint) {
-
         waypoints.removeIf(x -> x.getId().equals(waypoint.getId()));
         waypoints.add(waypoint);
-
-        waypoints.forEach(x -> {
-            System.out.println(x.getId());
-            System.out.println(x.getLocation().getName());
-        });
     }
 
     public void deleteWaypoint(UUID id) {
@@ -42,10 +39,8 @@ public class TardisWaypointManager extends BaseHandler{
     }
 
     public TardisWaypoint getWaypointById(UUID id) {
-
         Optional<TardisWaypoint> waypoint = waypoints.stream().filter(x -> x.getId().equals(id)).findFirst();
         return waypoint.orElse(null);
-
     }
 
     @Override

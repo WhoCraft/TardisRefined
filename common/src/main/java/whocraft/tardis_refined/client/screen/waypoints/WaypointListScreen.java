@@ -36,11 +36,13 @@ public class WaypointListScreen extends SelectionScreen {
     private SpriteIconButton trashButton;
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
-    Collection<TardisWaypoint> WAYPOINTS = new ArrayList<>();
-    TardisWaypoint waypoint = null;
+    private Collection<TardisWaypoint> WAYPOINTS = new ArrayList<>();
+    private TardisWaypoint waypoint = null;
     public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "trash");
     public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "okay");
     public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "edit");
+
+    private final Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
 
     public WaypointListScreen(Collection<TardisWaypoint> waypoints) {
         super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE));
@@ -53,7 +55,7 @@ public class WaypointListScreen extends SelectionScreen {
         return false;
     }
 
-    Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
+
 
     @Override
     protected void init() {
@@ -79,12 +81,12 @@ public class WaypointListScreen extends SelectionScreen {
         });
 
 
-        SpriteIconButton spriteButtonNew = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
+        SpriteIconButton newWaypointButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
             new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send();
         }, true, BUTTON_LOCATION));
 
-        spriteButtonNew.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_CREATE)));
-        spriteButtonNew.setPosition(width / 2 + 85, (height) / 2 - 60);
+        newWaypointButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_CREATE)));
+        newWaypointButton.setPosition(width / 2 + 85, (height) / 2 - 60);
 
 
 
