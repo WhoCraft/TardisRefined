@@ -48,7 +48,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     public GlobalConsoleBlock(Properties properties) {
 
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, true));
+        this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, false));
     }
 
     @Nullable

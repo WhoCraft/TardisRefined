@@ -113,24 +113,24 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
-        add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, "Cannot update console block whilst in flight.");
-        add(ModMessages.HARDWARE_OFFLINE, "Hardware offline.");
-        add(ModMessages.HANDBRAKE_ENGAGED, "Engaged.");
-        add(ModMessages.HANDBRAKE_DISENGAGED, "Disengaged.");
-        add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight.");
-        add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage.");
-        add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight.");
-        add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End.");
-        add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way.");
-        add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal.");
-        add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this time.");
-        add(ModMessages.REFUEL, "Enabled refuelling.");
-        add(ModMessages.STOP_REFUEL, "Stopped refuelling.");
-        add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process.");
-        add(ModMessages.ASTRAL_MANIPULATOR_ENGAGED, "Please make your selection. Right click again to confirm.");
-        add(ModMessages.ROOT_PLANT_CUT_OPEN, "Roots cover the entrance.");
+        add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, "Cannot update console block whilst in flight");
+        add(ModMessages.HARDWARE_OFFLINE, "Hardware offline");
+        add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight");
+        add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage");
+        add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight");
+        add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End");
+        add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way");
+        add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal");
+        add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this tim.");
+        add(ModMessages.REFUEL, "Enabled refuelling");
+        add(ModMessages.STOP_REFUEL, "Stopped refuelling");
+        add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process");
+        add(ModMessages.ASTRAL_MANIPULATOR_ENGAGED, "Please make your selection. Right click again to confirm");
+        add(ModMessages.ROOT_PLANT_CUT_OPEN, "Roots cover the entrance");
         add(ModMessages.FUEL, "Fuel: ");
         add(ModMessages.FUEL_OFFLINE, "Fuel offline");
+        add(ModMessages.HANDBRAKE_ENGAGED, "Handbrake engaged");
+        add(ModMessages.HANDBRAKE_DISENGAGED, "Handbrake disengaged");
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
@@ -189,6 +189,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase upgrade?");
         add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No available sub-systems");
+        add(ModMessages.CANNOT_START_NO_FUEL, "Not enough fuel to start");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY.getId(), "Factory");

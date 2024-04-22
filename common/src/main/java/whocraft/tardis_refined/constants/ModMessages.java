@@ -43,6 +43,7 @@ public class ModMessages {
 
     public static String ASTRAL_MANIPULATOR_ENGAGED = message("astral_manipulator_engaged");
     public static String ROOT_PLANT_CUT_OPEN = message("root_plant_cut_open");
+    public static String CANNOT_START_NO_FUEL = message("cannot_start_no_fuel");
 
 
 
