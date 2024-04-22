@@ -65,7 +65,6 @@ public class TardisDesktops {
         addDefaultDesktop(new DesktopTheme("nuka", "desktop/nuka"));
         addDefaultDesktop(new DesktopTheme("future_nostalgia", "desktop/future_nostalgia"));
         addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
-        addDefaultDesktop(new DesktopTheme("shalka", "desktop/shalka"));
         addDefaultDesktop(new DesktopTheme("arnet", "desktop/arnet"));
         return DEFAULT_DESKTOPS;
     }
