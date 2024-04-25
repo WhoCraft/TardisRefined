@@ -2718,6 +2718,7 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 
 
 	private final ModelPart throttle;
+	private final ModelPart handbrake;
 	private final ModelPart base_console;
 	private final ModelPart anim_parts;
 	private final ModelPart root;
@@ -2727,6 +2728,7 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 		this.base_console = root.getChild("base_console");
 		this.throttle = base_console.getChild("controls").getChild("borders").getChild("bone23").getChild("bone17").getChild("throttle");
 		this.anim_parts = root.getChild("anim_parts");
+		this.handbrake = findPart(this, "handbrake");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -3589,6 +3591,8 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 
 		float rot = 0f + ( 2f * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		this.throttle.xRot = rot;
+
+		this.handbrake.xRot = !reactions.isHandbrakeEngaged() ? 1f : -0.25f;
 
 		base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 		anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

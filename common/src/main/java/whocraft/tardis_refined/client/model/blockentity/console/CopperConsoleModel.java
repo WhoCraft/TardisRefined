@@ -1283,6 +1283,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 	private final ModelPart west;
 	private final ModelPart modelRoot;
 	private final ModelPart throttle;
+	private final ModelPart handbrake;
 
 	public CopperConsoleModel(ModelPart root) {
 		this.modelRoot = root;
@@ -1300,6 +1301,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 		this.south_left = root.getChild("south_left");
 		this.west = root.getChild("west");
 		this.throttle = north_right.getChild("bone203").getChild("bone213").getChild("main_lever_control2");
+		this.handbrake = findPart(this, "lever_control8");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -2266,6 +2268,9 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 		
 		float rot = 1f - ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		this.throttle.zRot = rot;
+
+		this.handbrake.zRot = !reactions.isHandbrakeEngaged() ? 1f : -1f;
+
 		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

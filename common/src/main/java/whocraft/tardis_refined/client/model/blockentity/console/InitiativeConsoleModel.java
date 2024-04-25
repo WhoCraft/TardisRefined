@@ -27,9 +27,6 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 	private static final ResourceLocation INITIATIVE_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
 
-
-
-
 	public static final AnimationDefinition IDLE = AnimationDefinition.Builder.withLength(10f).looping()
 			.addAnimation("rotor_on",
 					new AnimationChannel(AnimationChannel.Targets.SCALE,
@@ -1723,12 +1720,14 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 	private final ModelPart root;
 	private final ModelPart throttle;
+	private final ModelPart handbrake;
 	private final ModelPart rotor_on;
 
 	public InitiativeConsoleModel(ModelPart root) {
 		this.root = root;
 		this.throttle = findPart(this, "bone178");
 		this.rotor_on = findPart(this, "rotor_on");
+		this.handbrake = findPart(this, "bone185");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -2495,6 +2494,9 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
 		float rot = -1f + ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		throttle.xRot = rot;
+
+		handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
+
 		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 

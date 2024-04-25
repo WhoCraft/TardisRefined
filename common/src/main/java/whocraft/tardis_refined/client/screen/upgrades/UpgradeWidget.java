@@ -147,7 +147,10 @@ public class UpgradeWidget {
 
     public void drawIcon(Minecraft mc, GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), this.upgradeEntry.isUnlocked(upgradeHandler)), x - 13, y - 13, 26, 26);
+
+        boolean isUnlocked =this.upgradeEntry.isUnlocked(upgradeHandler);
+
+        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), x - 13, y - 13, 26, 26);
         this.drawDisplayIcon(mc, guiGraphics, x - 8, y - 8);
     }
 

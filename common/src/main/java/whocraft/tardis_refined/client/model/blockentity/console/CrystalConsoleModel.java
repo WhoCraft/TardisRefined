@@ -33,6 +33,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
     private final ModelPart bb_main;
     private final ModelPart root;
     private final ModelPart throttle;
+    private final ModelPart handbrake;
 
     private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
 
@@ -45,6 +46,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         this.spinninglight = root.getChild("spinninglight");
         this.bb_main = root.getChild("bb_main");
         this.throttle = findPart(this, "large_lever_control_throttle");
+        this.handbrake = findPart(this, "large_lever3_control");
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -814,6 +816,8 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         float rot = -0.5f + ( 0.5f * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 
         this.throttle.xRot = rot;
+
+        this.handbrake.xRot = reactions.isHandbrakeEngaged() ? 0f : -0.5f;
 
         base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

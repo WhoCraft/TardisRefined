@@ -313,7 +313,7 @@ public class TardisInteriorManager extends BaseHandler {
 
         Vec3 eyeCenter = new Vec3(1013, 72, 55);
         AABB portalDoorLength = new AABB(1011, 72, 54, 1015, 71, 56);
-        AABB portalDoorWidth = new AABB(1011, 72, 54, 1015, 71, 56);
+        AABB portalDoorWidth = new AABB(1014, 71, 57, 1012, 72, 53);
 
         // Remove the blocks
         BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));

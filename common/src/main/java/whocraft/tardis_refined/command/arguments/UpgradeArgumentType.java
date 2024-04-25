@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 
 public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
 
-    private static final Collection<String> EXAMPLES = Stream.of(Upgrades.COORDINATE_INPUT).map((upgrade) -> {
+    private static final Collection<String> EXAMPLES = Stream.of(Upgrades.ARCHITECTURE_SYSTEM).map((upgrade) -> {
         return upgrade != null ? upgrade.getId().toString() : "";
     }).collect(Collectors.toList());
 

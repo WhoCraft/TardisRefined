@@ -183,6 +183,11 @@ public class UpgradeHandler {
 
         ListTag unlockedUpgradesTag = new ListTag();
         for (Upgrade upgrade : this.unlockedUpgrades) {
+
+            if (Upgrades.UPGRADE_REGISTRY.getKey(upgrade) == null) {
+                continue;
+            }
+
             unlockedUpgradesTag.add(StringTag.valueOf(Objects.requireNonNull(Upgrades.UPGRADE_REGISTRY.getKey(upgrade)).toString()));
         }
         updateTag.put("UnlockedUpgrades", unlockedUpgradesTag);

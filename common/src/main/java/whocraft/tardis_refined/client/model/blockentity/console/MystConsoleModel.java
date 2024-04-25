@@ -46,6 +46,7 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 	private final ModelPart controls;
 	private final ModelPart rotor;
 	private final ModelPart throttle_control;
+	private final ModelPart handbrake;
 
 	public MystConsoleModel(ModelPart root) {
 		this.root = root;
@@ -53,6 +54,7 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 		this.controls = root.getChild("controls");
 		this.rotor = root.getChild("rotor");
 		this.throttle_control = controls.getChild("south").getChild("bone120").getChild("throttle_control");
+		this.handbrake = findPart(this, "door_control");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -604,6 +606,8 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 		float rot = -1f + ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		throttle_control.xRot = rot;
+
+		handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
 		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
