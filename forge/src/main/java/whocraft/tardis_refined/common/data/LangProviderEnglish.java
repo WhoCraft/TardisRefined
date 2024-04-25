@@ -235,7 +235,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DESCEND_KEY, "Descend: %s");
 
         /*Upgrades*/
-        addUpgrade(Upgrades.COORDINATE_INPUT.get(), "Coordinate Input", "Allows the Pilot to input coordinates with the monitor");
         addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
         addUpgrade(Upgrades.DEFENSE_SYSTEM.get(), "Defense System", "Enables Defense Protocols");
         addUpgrade(Upgrades.WAYPOINTS.get(), "Waypoints", "Allows the Pilot to create saved locations");

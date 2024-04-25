@@ -42,6 +42,7 @@ import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRControlRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TREntityRegistry;
 
 public class ControlEntity extends Entity {
@@ -308,6 +309,10 @@ public class ControlEntity extends Entity {
             }
         } else {
             onClientTick(this.level());
+        }
+
+        if (level().dimensionTypeId() != TRDimensionTypes.TARDIS) {
+            discard();
         }
 
     }

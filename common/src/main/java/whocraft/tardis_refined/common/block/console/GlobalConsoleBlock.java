@@ -39,6 +39,7 @@ import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 
 public class GlobalConsoleBlock extends BaseEntityBlock {
@@ -107,6 +108,8 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
             globalConsoleBlock.killControls();
         }
 
+        levelAccessor.playSound(null, blockPos, SoundEvents.ANVIL_BREAK, SoundSource.BLOCKS, 1, 1);
+
         super.destroy(levelAccessor, blockPos, blockState);
     }
 
@@ -157,8 +160,8 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        // Creative only: Quickly complete the cooldown.
-        if (level instanceof ServerLevel serverLevel) {
+
+        if (level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
 
             TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
                 TardisPilotingManager pilotingManager = operator.getPilotingManager();
@@ -183,7 +186,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
             });
 
-
+            // Creative only: Quickly complete the cooldown.
             if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
                 var operatorOptional = TardisLevelOperator.get(serverLevel);
                 if (operatorOptional.isPresent()) {
