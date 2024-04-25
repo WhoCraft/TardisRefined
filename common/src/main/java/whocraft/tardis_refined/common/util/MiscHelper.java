@@ -143,7 +143,7 @@ public class MiscHelper {
             }
         }
 
-        return state.getBlock() instanceof GlobalConsoleBlock || state.getBlock() instanceof ShellBaseBlock;
+        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock;
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
