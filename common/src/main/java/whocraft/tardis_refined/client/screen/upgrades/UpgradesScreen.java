@@ -209,8 +209,6 @@ public class  UpgradesScreen extends Screen {
 
             RenderSystem.disableBlend();
         }
-
-       // guiGraphics.drawString(this.minecraft.font, "XP: " + upgradeHandler.getUpgradeXP() + "/100 - Upgrade Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width("XP: " + upgradeHandler.getUpgradeXP() + "/100 - Upgrade Points: " + upgradeHandler.getUpgradePoints()) / 2, offsetY + 6, ChatFormatting.BLACK.getColor(), false);
     }
 
     public void renderFinalOverlay(GuiGraphics guiGraphics, int offsetX, int offsetY) {
