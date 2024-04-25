@@ -10,7 +10,8 @@
     "PortalMixin"
   ],
   "client": [
-    "FogRendererMixin"
+    "FogRendererMixin",
+    "MultiplayerGameModeMixin"
   ],
   "injectors": {
     "defaultRequire": 1
