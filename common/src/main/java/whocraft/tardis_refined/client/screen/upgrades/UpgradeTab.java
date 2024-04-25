@@ -23,7 +23,7 @@ import java.util.List;
 @Environment(EnvType.CLIENT)
 public class UpgradeTab {
 
-    public static final int GRID_SIZE = 50;
+    public static final int GRID_SIZE = 30;
     private final Minecraft minecraft;
     private final UpgradesScreen screen;
     private final UpgradeTabType type;
@@ -234,6 +234,7 @@ public class UpgradeTab {
         }
 
         for (UpgradeWidget widget : this.entries) {
+
             widget.drawIcon(this.minecraft, guiGraphics, i + widget.getX() + 16, j + widget.getY() + 13);
         }
 

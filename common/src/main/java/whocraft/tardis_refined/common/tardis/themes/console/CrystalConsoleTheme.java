@@ -32,18 +32,16 @@ public class CrystalConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.81f, 0.64f, -0.01f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.14f, 0.51f, -0.38f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.82f, 1.07f, 0.16f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.72f, 0.52f, 0.93f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.49f, 0.52f, 1.07f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.29f, 0.52f, 1.23f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(TRControlRegistry.FUEL, new Vector3f(0.29f, 0.52f, 1.23f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.58f, 0.52f, 1.29f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.69f, 0.52f, 1.22f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.83f, 0.52f, 1.14f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.12f, 0.40f, -0.99f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.12f, 0.40f, -0.99f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.HANDBRAKE, new Vector3f(0.61f, 1.13f, 0.30f), EntityDimensions.scalable(0.25f, 0.25f)),
-                new ControlSpecification(TRControlRegistry.READOUT, new Vector3f(0.83f, 1.06f, -0.56f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.FUEL, new Vector3f(-0.61f, 0.52f, 1.01f), EntityDimensions.scalable(0.13f, 0.13f))
+                new ControlSpecification(TRControlRegistry.READOUT, new Vector3f(0.83f, 1.06f, -0.56f), EntityDimensions.scalable(0.13f, 0.13f))
         };
     }
+
 
 }

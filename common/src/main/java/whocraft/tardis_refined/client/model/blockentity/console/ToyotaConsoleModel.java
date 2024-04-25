@@ -841,10 +841,12 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 									AnimationChannel.Interpolations.CATMULLROM))).build();
 	private final ModelPart bone181;
 	private final ModelPart throttle;
+	private final ModelPart handbrake;
 
 	public ToyotaConsoleModel(ModelPart root) {
 		this.bone181 = root.getChild("bone181");
 		this.throttle = findPart(this, "bone198");
+		this.handbrake = findPart(this, "bone202");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -1504,6 +1506,9 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		float rot = 1f - ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		this.throttle.xRot = rot;
+
+		this.handbrake.yRot = reactions.isHandbrakeEngaged() ? 2f : -1f;
+
 		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 
