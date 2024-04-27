@@ -530,7 +530,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         int distance = 1000;
 
-        if (startingPointPos != null && endingPointPos != null) {
+        if (startingPointPos != null && endingPointPos != null && startingPointPos != BlockPos.ZERO && endingPointPos != BlockPos.ZERO) {
             distance = startingPointPos.distManhattan(endingPointPos);
         }
 
