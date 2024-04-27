@@ -7,12 +7,16 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -116,6 +120,8 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                         cap.getAestheticHandler().setShellTheme(ShellTheme.FACTORY.getId(), cap.getExteriorManager().getLastKnownLocation());
                         level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
 
+                        spawnCoralItems();
+
                     } else {
                         boolean validKey = KeyItem.keychainContains(stack, dimension);
                         if(validKey) {
@@ -149,5 +155,15 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
         setChanged();
+    }
+
+    public void spawnCoralItems() {
+        int numberOfItems = 2 + level.getRandom().nextInt(5);
+
+        for (int i = 0; i < numberOfItems; i++) {
+            ItemStack coralItem = new ItemStack(Items.HORN_CORAL_FAN);
+            BlockPos currentPos = getBlockPos();
+            Containers.dropItemStack(level, currentPos.getX(), currentPos.getY(), currentPos.getZ() , coralItem);
+        }
     }
 }

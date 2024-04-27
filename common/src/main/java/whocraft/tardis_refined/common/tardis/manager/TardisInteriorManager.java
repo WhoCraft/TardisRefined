@@ -364,14 +364,7 @@ public class TardisInteriorManager extends BaseHandler {
                 serverLevel.removeBlock(tardisInternalDoor.getDoorPosition(), false);
             }
 
-            if (this.operator.getTardisState() == TardisLevelOperator.STATE_TERRAFORMED_NO_EYE) {
-                // Generate Corridors
-                if (!this.hasGeneratedCorridors) {
-                    TardisArchitectureHandler.generateEssentialCorridors(serverLevel); // This causes a little lag, could be worth a fix.
-                    this.hasGeneratedCorridors = true;
-                }
-
-            }
+            this.hasGeneratedCorridors = true;
 
             // Generate Desktop Interior
             TardisArchitectureHandler.generateDesktop(serverLevel, theme);

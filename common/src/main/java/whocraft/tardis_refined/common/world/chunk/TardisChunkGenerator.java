@@ -13,6 +13,7 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeManager;
 import net.minecraft.world.level.biome.FixedBiomeSource;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
@@ -31,8 +33,11 @@ import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+
+import static whocraft.tardis_refined.common.tardis.TardisArchitectureHandler.EYE_OF_HARMONY_PLACEMENT;
 
 public class TardisChunkGenerator extends ChunkGenerator {
     public static final Codec<TardisChunkGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(RegistryOps.retrieveElement(ChunkGenerators.TARDIS_BIOME)).apply(instance, instance.stable(TardisChunkGenerator::new)));
@@ -53,6 +58,22 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public void applyBiomeDecoration(WorldGenLevel pLevel, ChunkAccess pChunk, StructureManager pStructureManager) {
+
+        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 2) {
+            pLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/eye_of_harmony_part_a")).ifPresent(structure -> {
+                BlockPos offsetPosition = new BlockPos(EYE_OF_HARMONY_PLACEMENT);
+                structure.placeInWorld(pLevel, offsetPosition, offsetPosition, new StructurePlaceSettings(), pLevel.getRandom(), Block.UPDATE_NONE);
+            });
+
+        }
+
+        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 4) {
+            pLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/eye_of_harmony_part_b")).ifPresent(structure -> {
+                BlockPos offsetPosition = new BlockPos(EYE_OF_HARMONY_PLACEMENT).offset(0, 0, 24);
+                structure.placeInWorld(pLevel, offsetPosition, offsetPosition, new StructurePlaceSettings(), pLevel.getRandom(), Block.UPDATE_NONE);
+            });
+
+        }
 
         if (pChunk.getPos().x == 63 && pChunk.getPos().z == 0) {
             pLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_center")).ifPresent(structure -> {
