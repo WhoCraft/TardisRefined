@@ -59,6 +59,7 @@ public class TRTeleporter {
 
                 if (pEntity instanceof ServerPlayer serverPlayer) {
                     //Always update player data, do not create new instances of the player
+                    
                     teleportedEntity = teleportPlayer(serverPlayer, destination, pX, pY, pZ, updatedYRot, updatedXRot);
 
                 } else { //If not a player
@@ -153,13 +154,14 @@ public class TRTeleporter {
 
         serverPlayer.setDeltaMovement(Vec3.ZERO); //set velocity to 0 because otherwise we will trigger the "player moved wrongly" hardcoded vanilla check which will result in the player not changing coordinates in the new dimension
 
-        serverPlayer.connection.send(new ClientboundRespawnPacket(serverPlayer.createCommonSpawnInfo(destination), (byte)3));
         serverPlayer.connection.send(new ClientboundChangeDifficultyPacket(destination.getLevelData().getDifficulty(), destination.getLevelData().isDifficultyLocked()));
         serverPlayer.teleportTo(destination, pX, pY, pZ, updatedYRot, updatedXRot);
 
         serverPlayer.setPortalCooldown(); //Prevent player from being teleport by nether portal in the destination dimension
         serverPlayer.setYHeadRot(updatedYRot);
         serverPlayer.setYBodyRot(updatedYRot);
+
+        serverPlayer.onUpdateAbilities();
 
 
         //Handle player experience not getting received on client after interdimensional teleport
