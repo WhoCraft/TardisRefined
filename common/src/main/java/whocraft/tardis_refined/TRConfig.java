@@ -53,7 +53,7 @@ public class TRConfig {
 
         public Common(ModConfigSpec.Builder builder) {
             builder.push("compatibility");
-            COMPATIBILITY_IP = builder.comment("Toggle Immersive Portals compatibility").translation(ModMessages.CONFIG_IP_COMPAT).define("immersive_portals", true);
+            COMPATIBILITY_IP = builder.comment("Toggle Immersive Portals compatibility (TR 2.0+)").translation(ModMessages.CONFIG_IP_COMPAT).define("immersive_portals_version_two", false);
             builder.pop();
         }
 
