@@ -219,7 +219,7 @@ public class TardisLevelOperator {
                 TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
                 BlockPos exteriorPos = targetLocation.getPosition();
                 ServerLevel targetLevel = targetLocation.getLevel();
-                Direction exteriorDirection = targetLocation.getDirection();
+                Direction exteriorDirection = targetLocation.getDirection().getOpposite();
 
                 BlockPos teleportPos = exteriorPos;
 
