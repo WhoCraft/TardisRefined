@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -119,16 +120,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                         cap.getAestheticHandler().setShellTheme(ShellTheme.FACTORY.getId(), cap.getExteriorManager().getLastKnownLocation());
                         level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
 
-                        int numberOfItems = 2 + level.getRandom().nextInt(5);
-
-                        for (int i = 0; i < numberOfItems; i++) {
-                            ItemStack coralItem = new ItemStack(Items.HORN_CORAL_FAN);
-                            ItemEntity coralEntity = new ItemEntity(EntityType.ITEM, level);
-                            coralEntity.setItem(coralItem);
-                            coralEntity.setPos(blockPos.getCenter().offsetRandom(level.getRandom(), 0.25f));
-                            coralEntity.setDeltaMovement(new Vec3(-0.5f + level.getRandom().nextFloat(),level.getRandom().nextFloat(), -0.5f + level.getRandom().nextFloat()));
-                            level.addFreshEntity(coralEntity);
-                        }
+                        spawnCoralItems();
 
                     } else {
                         boolean validKey = KeyItem.keychainContains(stack, dimension);
@@ -163,5 +155,15 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
         setChanged();
+    }
+
+    public void spawnCoralItems() {
+        int numberOfItems = 2 + level.getRandom().nextInt(5);
+
+        for (int i = 0; i < numberOfItems; i++) {
+            ItemStack coralItem = new ItemStack(Items.HORN_CORAL_FAN);
+            BlockPos currentPos = getBlockPos();
+            Containers.dropItemStack(level, currentPos.getX(), currentPos.getY(), currentPos.getZ() , coralItem);
+        }
     }
 }
