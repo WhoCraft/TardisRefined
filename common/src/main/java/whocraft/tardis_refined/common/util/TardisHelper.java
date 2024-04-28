@@ -52,8 +52,10 @@ public class TardisHelper {
 
         int minX = Math.min(corner1.getX(), corner2.getX());
         int maxX = Math.max(corner1.getX(), corner2.getX());
+
         int minY = Math.min(corner1.getY(), corner2.getY());
         int maxY = Math.max(corner1.getY(), corner2.getY());
+
         int minZ = Math.min(corner1.getZ(), corner2.getZ());
         int maxZ = Math.max(corner1.getZ(), corner2.getZ());
 

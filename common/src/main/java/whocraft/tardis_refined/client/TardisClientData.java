@@ -18,6 +18,7 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.LoopingSound;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
@@ -27,6 +28,7 @@ import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -181,8 +183,8 @@ public class TardisClientData {
      * Higher means more fog, lower means less fog
      * @return 0 -> 1 float based off fog tick delta
      */
-    public static float getFogTickDelta() {
-        return 1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
+    public static float getFogTickDelta(BlockPos playerPosition) {
+        return TardisHelper.isInArsArea(playerPosition) ? 1f :  1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
     }
 
     public static void tickFog(boolean hasFuel) {

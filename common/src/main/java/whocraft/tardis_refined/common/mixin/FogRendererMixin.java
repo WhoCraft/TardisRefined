@@ -25,6 +25,7 @@ public class FogRendererMixin {
         if (Minecraft.getInstance().player != null) {
             BlockPos blockPosition = Minecraft.getInstance().player.blockPosition();
             if (TardisHelper.isInArsArea(blockPosition)) {
+
                 RenderSystem.setShaderFogStart(-8);
                 RenderSystem.setShaderFogEnd(60 * 0.5F);
                 RenderSystem.setShaderFogShape(FogShape.SPHERE);
@@ -43,8 +44,8 @@ public class FogRendererMixin {
 
             TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-            if (TardisClientData.getFogTickDelta() > 0.0f) {
-                float delta = TardisClientData.getFogTickDelta();
+            if (TardisClientData.getFogTickDelta(blockPosition) > 0.0f) {
+                float delta = TardisClientData.getFogTickDelta(blockPosition);
 
                 RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
                 RenderSystem.setShaderFogStart(Mth.lerp(delta, 16f, -8f)); // This positions the fog based off the delta
@@ -55,7 +56,6 @@ public class FogRendererMixin {
             }
 
             if (TardisHelper.isInArsArea(blockPosition)) {
-
                 Vec3 fogColor = reactions.fogColor(reactions.isCrashing());
                 RenderSystem.setShaderFogColor((float) fogColor.x, (float) fogColor.y, (float) fogColor.z);
                 callbackInfo.cancel();
