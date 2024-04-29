@@ -570,12 +570,12 @@ public class TardisPilotingManager extends BaseHandler {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
             }
 
-            int totalPoints = distanceCovered / 10;
+            int totalPoints = (int) (distanceCovered * 0.05f);
             this.operator.getUpgradeHandler().addUpgradeXP(totalPoints);
 
             var players = level.players();
             for (var player : players) {
-                PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + "XP."), true);
+                PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + " XP"), true);
             }
 
 
