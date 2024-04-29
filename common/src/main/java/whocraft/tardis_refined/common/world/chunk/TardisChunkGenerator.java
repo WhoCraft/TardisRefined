@@ -285,7 +285,7 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
             BlockPos pos = pChunk.getPos().getBlockAt(0, height, 0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
             StructurePlaceSettings settings = new StructurePlaceSettings();
-            structure.placeInWorld(level, pos, pos, settings, level.getRandom(), 1);
+            structure.placeInWorld(level, pos, pos, settings, level.getRandom(), 0);
         });
 
     }
