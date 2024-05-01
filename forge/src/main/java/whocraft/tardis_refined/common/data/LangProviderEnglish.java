@@ -248,6 +248,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
         addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
         addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
+        addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_I.get(), "Improved Generation I", "Lowers desktop wait times to 120 seconds");
+        addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_II.get(), "Improved Generation II", "Lowers desktop wait times to 60 seconds");
+        addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_III.get(), "Improved Generation III", "Lowers desktop wait times to 10 seconds");
 
 
     }

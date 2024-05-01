@@ -31,7 +31,7 @@ public class HandbrakeControl extends Control {
             }
 
             operator.getPilotingManager().setHandbrakeOn(true);
-            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HANDBRAKE).append(operator.getPilotingManager().isHandbrakeOn() ? ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED ), true);
+            PlayerUtil.sendMessage(player, Component.translatable(operator.getPilotingManager().isHandbrakeOn() ?  ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED), true);
             return true;
         }
 
