@@ -390,16 +390,17 @@ public class TardisInteriorManager extends BaseHandler {
         // Cooldown based on upgrades
         int cooldownSeconds = 180;
 
+        UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
 
-        if (this.operator.getUpgradeHandler().isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_I.get())) {
+        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_I.get())) {
             cooldownSeconds = 120;
         }
 
-        if (this.operator.getUpgradeHandler().isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_II.get())) {
+        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_II.get())) {
             cooldownSeconds = 30;
         }
 
-        if (this.operator.getUpgradeHandler().isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_III.get())) {
+        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_III.get())) {
             cooldownSeconds = 10;
         }
 
