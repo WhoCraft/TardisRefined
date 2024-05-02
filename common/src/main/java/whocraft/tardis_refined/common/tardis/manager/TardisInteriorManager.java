@@ -22,6 +22,8 @@ import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
@@ -384,7 +386,25 @@ public class TardisInteriorManager extends BaseHandler {
     public void prepareDesktop(DesktopTheme theme) {
         this.preparedTheme = theme;
         this.isWaitingToGenerate = true;
-        this.interiorGenerationCooldown = 1200; // Make this more independent.
+
+        // Cooldown based on upgrades
+        int cooldownSeconds = 180;
+
+        UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
+
+        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_I.get())) {
+            cooldownSeconds = 120;
+        }
+
+        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_II.get())) {
+            cooldownSeconds = 30;
+        }
+
+        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_III.get())) {
+            cooldownSeconds = 10;
+        }
+
+        this.interiorGenerationCooldown = 20 * cooldownSeconds;
     }
 
     public void cancelDesktopChange() {

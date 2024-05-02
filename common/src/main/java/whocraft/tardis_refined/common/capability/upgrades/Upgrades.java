@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.capability.upgrades;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.TardisRefined;
@@ -33,6 +34,13 @@ public class Upgrades {
 
     public static final RegistrySupplier<Upgrade> INSIDE_ARCHITECTURE = UPGRADE_DEFERRED_REGISTRY.register("inside_architecture", () -> new Upgrade(TRBlockRegistry.TERRAFORMER_BLOCK.get().asItem()::getDefaultInstance, ARCHITECTURE_SYSTEM, RegistryHelper.makeKey("inside_architecture"), Upgrade.UpgradeType.SUB_UPGRADE)
             .setSkillPointsRequired(20).setPosition(4, 2));
+
+    public static final RegistrySupplier<Upgrade> IMPROVED_GENERATION_TIME_I = UPGRADE_DEFERRED_REGISTRY.register("improved_generation_time_i", () -> new Upgrade(Items.TURTLE_EGG::getDefaultInstance, INSIDE_ARCHITECTURE, RegistryHelper.makeKey("improved_generation_time_i"), Upgrade.UpgradeType.SUB_UPGRADE)
+            .setSkillPointsRequired(10).setPosition(4, 3));
+    public static final RegistrySupplier<Upgrade> IMPROVED_GENERATION_TIME_II = UPGRADE_DEFERRED_REGISTRY.register("improved_generation_time_ii", () -> new Upgrade(Items.RABBIT_FOOT::getDefaultInstance, IMPROVED_GENERATION_TIME_I, RegistryHelper.makeKey("improved_generation_time_ii"), Upgrade.UpgradeType.SUB_UPGRADE)
+            .setSkillPointsRequired(10).setPosition(4, 4));
+    public static final RegistrySupplier<Upgrade> IMPROVED_GENERATION_TIME_III = UPGRADE_DEFERRED_REGISTRY.register("improved_generation_time_iii", () -> new Upgrade(Items.MINECART::getDefaultInstance, IMPROVED_GENERATION_TIME_II, RegistryHelper.makeKey("improved_generation_time_iii"), Upgrade.UpgradeType.SUB_UPGRADE)
+            .setSkillPointsRequired(10).setPosition(4, 5));
 
     // Defense Upgrades
     public static final RegistrySupplier<Upgrade> DEFENSE_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("defense_system", () -> new Upgrade(Items.DIAMOND_SWORD::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("defense_system"), Upgrade.UpgradeType.MAIN_UPGRADE)
