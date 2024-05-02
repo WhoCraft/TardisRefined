@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -24,6 +23,7 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
@@ -274,12 +274,12 @@ public class TardisInteriorManager extends BaseHandler {
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter));
-                        TRTeleporter.performTeleport(x, level, STATIC_CORRIDOR_POSITION.getX() + offsetPos.x() + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y() + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TardisTeleportData.getOrCreate(level).scheduleEntityTeleport(x, level.dimension(), STATIC_CORRIDOR_POSITION.getX() + offsetPos.x() + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y() + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(STATIC_CORRIDOR_POSITION));
-                        TRTeleporter.performTeleport(x, level, corridorAirlockCenter.getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TardisTeleportData.getOrCreate(level).scheduleEntityTeleport(x, level.dimension(), corridorAirlockCenter.getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
 
@@ -310,16 +310,33 @@ public class TardisInteriorManager extends BaseHandler {
         return level.getBlockState(pillarTopLeft).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarTopRight).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarBottomLeft).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarBottomRight).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY;
     }
 
-    public void openTheEye() {
+    public void openTheEye(){
+        openTheEye(false);
+    }
+
+    public void setEyePillars(Level level){
+        level.setBlock(pillarTopLeft, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(pillarTopRight, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(pillarBottomLeft, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(pillarBottomRight, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
+    }
+
+    public void openTheEye(boolean forced) {
+
+        Level level = this.operator.getLevel();
         this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
 
         Vec3 eyeCenter = new Vec3(1013, 72, 55);
         AABB portalDoorLength = new AABB(1011, 72, 54, 1015, 71, 56);
         AABB portalDoorWidth = new AABB(1014, 71, 57, 1012, 72, 53);
 
+        if (forced){
+            this.setEyePillars(level);
+        }
+
         // Remove the blocks
-        BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
-        BlockPos.betweenClosedStream(portalDoorWidth).forEach(x -> this.operator.getLevel().setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
+        BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> level.setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
+        BlockPos.betweenClosedStream(portalDoorWidth).forEach(x -> level.setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
 
         LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
         lightningBolt.setPos(eyeCenter);

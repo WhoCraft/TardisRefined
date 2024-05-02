@@ -59,7 +59,7 @@ public class InteriorCommand implements Command<CommandSourceStack> {
             if (tardisLevelOperator.getInternalDoor() != null) {
                 BlockPos pos = tardisLevelOperator.getInternalDoor().getDoorPosition();
                 pos = pos.relative(tardisLevelOperator.getInternalDoor().getEntryRotation(), 1);
-                TRTeleporter.performTeleport(entity, finalTpLevel, pos.getX(), pos.getY(), pos.getZ(), entity.getYHeadRot(), entity.getXRot());
+                TRTeleporter.simpleTeleport(entity, finalTpLevel, pos.getX(), pos.getY(), pos.getZ(), entity.getYHeadRot(), entity.getXRot());
                 return true;
             }
         }
