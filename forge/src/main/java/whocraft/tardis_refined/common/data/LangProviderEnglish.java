@@ -42,6 +42,9 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), "Teleporter building up");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), "Teleporter used");
+        addSound(TRSoundRegistry.SCREWDRIVER_SHORT.get(), "Screwdriver used");
+        addSound(TRSoundRegistry.INTERIOR_CREAKS.get(), "Creaks");
+        addSound(TRSoundRegistry.SCREWDRIVER_DISCARD.get(), "Screwdriver discard data");
 
         /*Block*/
         add(TRBlockRegistry.ARS_EGG.get(), "ARS Egg");
