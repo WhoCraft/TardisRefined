@@ -89,7 +89,7 @@ public class TardisInteriorManager extends BaseHandler {
 
         if (!hasGeneratedCorridors || corridorAirlockCenter == null) return new ProtectedZone[]{};
 
-        ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(6), "control_room_airlock");
+        ProtectedZone ctrlRoomAirlck = new ProtectedZone(corridorAirlockCenter.below(2).north(2).west(3), corridorAirlockCenter.south(3).east(3).above(5), "control_room_airlock");
         ProtectedZone hubAirlck = new ProtectedZone(STATIC_CORRIDOR_POSITION.below(2).north(2).west(3), STATIC_CORRIDOR_POSITION.south(3).east(3).above(6), "hub_airlock");
         ProtectedZone arsRoom = new ProtectedZone(new BlockPos(1051, 97, 6), new BlockPos(1023, 118, 36), "ars_room");
 

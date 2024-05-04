@@ -102,6 +102,16 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
 
     @Override
+    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+
+        if (level.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
+            globalConsoleBlock.killControls();
+        }
+
+        super.onRemove(blockState, level, blockPos, blockState2, bl);
+    }
+
+    @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
 
         if (levelAccessor.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {

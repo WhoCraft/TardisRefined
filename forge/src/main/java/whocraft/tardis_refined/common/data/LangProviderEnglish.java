@@ -45,6 +45,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.SCREWDRIVER_SHORT.get(), "Screwdriver used");
         addSound(TRSoundRegistry.INTERIOR_CREAKS.get(), "Creaks");
         addSound(TRSoundRegistry.SCREWDRIVER_DISCARD.get(), "Screwdriver discard data");
+        addSound(TRSoundRegistry.GRAVITY_TUNNEL.get(), "Gravity tunnel winds");
 
         /*Block*/
         add(TRBlockRegistry.ARS_EGG.get(), "ARS Egg");

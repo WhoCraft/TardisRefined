@@ -23,6 +23,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -32,6 +33,7 @@ import whocraft.tardis_refined.registry.TRControlRegistry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class KeyItem extends Item {
 
@@ -125,7 +127,21 @@ public class KeyItem extends Item {
         if (control.level() instanceof ServerLevel serverLevel) {
             ResourceKey<Level> tardis = serverLevel.dimension();
             if (control.controlSpecification().control() != null) {
-                if (control.controlSpecification().control() == TRControlRegistry.MONITOR.get() && !keychainContains(itemStack, tardis)) {
+                if (control.controlSpecification().control() == TRControlRegistry.MONITOR.get()) {
+
+
+                    AtomicBoolean canTARDISTakeItem = new AtomicBoolean(false);
+                    TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {
+                        if (operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY || operator.getPilotingManager().isOutOfFuel()) {
+                            PlayerUtil.sendMessage(player, ModMessages.HARDWARE_OFFLINE, true);
+                            canTARDISTakeItem.set(false);
+                        } else {
+                            canTARDISTakeItem.set(true);
+                        }
+                    });
+
+                    if (!keychainContains(itemStack, tardis) || !canTARDISTakeItem.get()) {return false;}
+
                     player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                     player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
