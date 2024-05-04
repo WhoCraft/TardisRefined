@@ -19,6 +19,7 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.*;
@@ -74,7 +75,7 @@ public class TRTeleporter {
         Preconditions.checkNotNull(destination, "A target level must be provided for teleportation");
         Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
         if (!pEntity.level().isClientSide()) {
-            if (safetyCheck(pEntity, destination, pX, pY, pZ, pYaw, pPitch, safeBlockCheck, teleportedEntities)) {
+            if (safetyCheck(pEntity, destination, pX, pY, pZ, safeBlockCheck, teleportedEntities)) {
                 Entity teleportedEntity;
 
                 float updatedYRot = Mth.wrapDegrees(pYaw);
@@ -272,9 +273,15 @@ public class TRTeleporter {
      * @return
      */
     private static Entity teleportNonPlayerEntity(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float yRot, float xRot){
+
         //For non player entities, always create new instances if inter dimensional teleporting
         float adjustedXRot = Mth.clamp(xRot, -90.0F, 90.0F);
         Entity teleportedEntity = null;
+
+        if (!safetyCheck(pEntity, destination, pX, pY, pZ, false, null)) {
+            TardisRefined.LOGGER.warn("Failed to teleport entity type due to it being blacklisted or the teleport destination is unsafe: {}", pEntity.getType().toString());
+            return null;
+        }
 
         boolean handlePassengerTeleport = false;
 
@@ -300,7 +307,9 @@ public class TRTeleporter {
                 passengers.stream().map(
                         passenger -> teleportPassengerForNonEntityDimensionTeleport(passenger, destination, pX, pY, pZ, yRot, adjustedXRot)
                 ).collect(Collectors.toList()).forEach(teleportedPassenger -> {
-                    destination.getServer().tell( new TickTask(10, () -> teleportedPassenger.startRiding(finalTeleportedEntity, true)));
+                    if (teleportedPassenger != null){
+                        destination.getServer().tell( new TickTask(10, () -> teleportedPassenger.startRiding(finalTeleportedEntity, true)));
+                    }
                 });
             }
         }
@@ -443,7 +452,7 @@ public class TRTeleporter {
         return box;
     }
 
-    /** Make sure vehicles are */
+    /** Make sure vehicles are positioned close enough to the specified entity so that remounting after teleportation is possible*/
     private static boolean reSyncVehicleToPassengerPos(Entity entity) {
         Entity vehicle = entity.getVehicle();
         if (vehicle == null) {
@@ -471,7 +480,7 @@ public class TRTeleporter {
 
     }
 
-    /** Helper to get the last ticked position of the Entity, vanilla doesn't have a helper so we add one for our uses*/
+    /** Helper to get the last ticked position of the Entity, vanilla doesn't have a helper, so we add one for our uses*/
     private static Vec3 lastTickPosOf(Entity entity) {
         return new Vec3(entity.xo, entity.yo, entity.zo);
     }
@@ -513,15 +522,17 @@ public class TRTeleporter {
     }
 
 
-    private static boolean safetyCheck(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float pYaw, float pPitch, boolean safeBlockCheck, Set<Entity> teleportedEntities){
+    private static boolean safetyCheck(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, boolean safeBlockCheck, Set<Entity> teleportedEntities){
         int xRound = (int) pX;
         int yRound = (int) pY;
         int zRound = (int) pZ;
         BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
 
-        if (!teleportedEntities.isEmpty()){
-            if (teleportedEntities.contains(pEntity)){ //If we are calling this method by itself such as teleporting passengers, check if we have already teleported the entity
-                return false;
+        if (teleportedEntities != null){
+            if (!teleportedEntities.isEmpty()){
+                if (teleportedEntities.contains(pEntity)){ //If we are calling this method by itself such as teleporting passengers, check if we have already teleported the entity
+                    return false;
+                }
             }
         }
 
