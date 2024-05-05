@@ -27,6 +27,7 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -175,7 +176,10 @@ public class ImmersivePortals {
             return;
         }
 
-        TardisNavLocation location = operator.getPilotingManager().getCurrentLocation();
+        TardisPilotingManager pilotingManager = operator.getPilotingManager();
+
+
+        TardisNavLocation location = pilotingManager.getCurrentLocation();
         BlockPos entryPositionBPos = door.getEntryPosition();
         Vec3 entryPosition = new Vec3(entryPositionBPos.getX() + 0.5, entryPositionBPos.getY() + 1, entryPositionBPos.getZ() + 0.5);
         BlockPos exteriorEntryBPos = location.getPosition();
@@ -183,6 +187,9 @@ public class ImmersivePortals {
 
         theme = operator.getAestheticHandler().getShellTheme();
         PortalOffets themeData = themeToOffsetMap.get(theme);
+
+        Level operatorLevel = operator.getLevel();
+
 
         switch (location.getDirection()) {
             case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().east());
@@ -199,11 +206,11 @@ public class ImmersivePortals {
         DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
 
-        Portal exteriorPortal = createPortal(operator.getPilotingManager().getCurrentLocation().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
+        Portal exteriorPortal = createPortal(location.getLevel(), exteriorEntryPosition, entryPosition, operatorLevel.dimension(), extQuat);
         Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, retrievePortalType(), interiorQuat);
 
 
-        tardisToPortalsMap.put(UUID.fromString(operator.getLevel().dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
+        tardisToPortalsMap.put(UUID.fromString(operatorLevel.dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
 
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);

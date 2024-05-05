@@ -39,12 +39,18 @@ public class TardisExteriorManager extends BaseHandler {
     }
 
     public void setLocked(boolean locked) {
-        if (operator.getPilotingManager().isInFlight()) {
-            return;
-        }
+
+        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
+
+
         this.locked = locked;
-        if (this.operator.getPilotingManager() != null) {
-            TardisNavLocation currentLocation = this.operator.getPilotingManager().getCurrentLocation();
+        if (pilotingManager != null) {
+
+            if (pilotingManager.isInFlight()) {
+                return;
+            }
+
+            TardisNavLocation currentLocation = pilotingManager.getCurrentLocation();
             Level level = currentLocation.getLevel();
             BlockPos extPos = currentLocation.getPosition();
             if (level.getBlockState(extPos) != null) {
@@ -96,10 +102,19 @@ public class TardisExteriorManager extends BaseHandler {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        if (this.operator.getPilotingManager().getCurrentLocation() != null) {
-            ServerLevel lastKnownLocationLevel = this.operator.getPilotingManager().getCurrentLocation().getLevel();
-            lastKnownLocationLevel.playSound(null, this.operator.getPilotingManager().getCurrentLocation().getPosition(), event, source, volume, pitch);
+
+        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
+
+        if (pilotingManager != null) {
+            if (pilotingManager.getCurrentLocation() != null) {
+                TardisNavLocation currentLocation = pilotingManager.getCurrentLocation();
+                ServerLevel lastKnownLocationLevel = currentLocation.getLevel();
+
+                lastKnownLocationLevel.playSound(null, currentLocation.getPosition(), event, source, volume, pitch);
+            }
         }
+
+
     }
 
     public void setDoorClosed(boolean closed) {
@@ -123,6 +138,12 @@ public class TardisExteriorManager extends BaseHandler {
 
 
     public void triggerShellRegenState() {
+
+        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
+        if (pilotingManager == null) {
+            return;
+        }
+
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
         if(currentPosition == null) return;
         BlockPos lastKnownLocationPosition = currentPosition.getPosition();
@@ -136,6 +157,11 @@ public class TardisExteriorManager extends BaseHandler {
 
     public void removeExteriorBlock() {
         this.isLanding = false;
+
+        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
+        if (pilotingManager == null) {
+            return;
+        }
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
         if (currentPosition != null) {
@@ -192,6 +218,11 @@ public class TardisExteriorManager extends BaseHandler {
 
 
     public boolean isExitLocationSafe() {
+
+        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
+        if (pilotingManager == null) {
+            return false;
+        }
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
         if(currentPosition == null) return false;

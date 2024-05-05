@@ -35,7 +35,7 @@ public class RandomControl extends Control {
             );
 
             if (pilotManager.isInFlight()) {
-                operator.getPilotingManager().recalculateFlightDistance();
+                pilotManager.recalculateFlightDistance();
             }
 
             PlayerUtil.sendMessage(player, Component.translatable(pilotManager.getTargetLocation().getPosition().toShortString()), true);

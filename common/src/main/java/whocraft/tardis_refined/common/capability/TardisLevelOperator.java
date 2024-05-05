@@ -145,9 +145,11 @@ public class TardisLevelOperator {
     }
 
     public void tick(ServerLevel level) {
-        interiorManager.tick(level);
-        pilotingManager.tick(level);
-        flightDanceManager.tick();
+
+        if (interiorManager != null) {  interiorManager.tick(level);}
+        if (pilotingManager != null) {  pilotingManager.tick(level);}
+        if (flightDanceManager != null) {  flightDanceManager.tick();}
+
         
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
@@ -209,6 +211,10 @@ public class TardisLevelOperator {
             return false;
         }
 
+        if (aestheticHandler == null || pilotingManager == null) {
+            return false;
+        }
+
         if (aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
@@ -251,8 +257,6 @@ public class TardisLevelOperator {
         } else {
             TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
         }
-
-
 
         if (this.pilotingManager != null) {
             if (this.pilotingManager.getCurrentLocation() != null) {

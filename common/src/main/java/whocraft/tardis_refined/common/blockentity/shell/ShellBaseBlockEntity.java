@@ -28,6 +28,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -149,14 +150,17 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             BlockPos myCurrentPosition = getBlockPos();
 
             TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
-                BlockPos currentLocation = tardisLevelOperator.getPilotingManager().getCurrentLocation().getPosition();
-                BlockPos wantedDestination = tardisLevelOperator.getPilotingManager().getTargetLocation().getPosition();
+
+                TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
+
+                BlockPos currentLocation = pilotingManager.getCurrentLocation().getPosition();
+                BlockPos wantedDestination = pilotingManager.getTargetLocation().getPosition();
 
 
                 if (currentLocation == null) {
                     Direction direction = blockState.getValue(ShellBaseBlock.FACING);
                     ServerLevel serverLevel = Platform.getServer().getLevel(level.dimension());
-                    tardisLevelOperator.getPilotingManager().setCurrentLocation(new TardisNavLocation(getBlockPos(), direction != null ? direction : Direction.NORTH, serverLevel));
+                    pilotingManager.setCurrentLocation(new TardisNavLocation(getBlockPos(), direction != null ? direction : Direction.NORTH, serverLevel));
                 }
 
                 if (!myCurrentPosition.equals(currentLocation) && !myCurrentPosition.equals(wantedDestination) ) {
