@@ -164,7 +164,10 @@ public class TardisPilotingManager extends BaseHandler {
             NbtConstants.putTardisNavLocation(tag, "ctrl_fr_loc", this.fastReturnLocation);
         }
 
-        NbtConstants.putTardisNavLocation(tag, "current_location", this.currentLocation);
+        if (this.currentLocation != null) {
+            NbtConstants.putTardisNavLocation(tag, "current_location", this.currentLocation);
+        }
+
 
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
 
@@ -745,6 +748,10 @@ public class TardisPilotingManager extends BaseHandler {
         this.currentLocation = currentLocation;
     }
     public TardisNavLocation getCurrentLocation() {
+        if (this.currentLocation == null) {
+            return TardisNavLocation.ORIGIN;
+        }
+
         return this.currentLocation;
     }
 
