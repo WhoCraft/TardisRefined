@@ -88,7 +88,7 @@ public class TardisHelper {
                         intManager.generateDesktop(desktopTheme);
                         Direction direction = targetBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
                         TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
-                        extManager.setLastKnownLocation(navLocation);
+                        pilotManager.setCurrentLocation(navLocation);
                         pilotManager.setTargetLocation(navLocation);
                         tardisLevelOperator.setInitiallyGenerated(true);
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);

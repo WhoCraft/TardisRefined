@@ -23,8 +23,8 @@ public class ReadoutControl extends Control {
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
-        TardisNavLocation currentPosition = operator.getExteriorManager().getLastKnownLocation();
-        PlayerUtil.sendMessage(player, Component.translatable("Current - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY()+ " Z: " + currentPosition.getPosition().getZ() +  "F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
+        TardisNavLocation currentPosition = operator.getPilotingManager().getCurrentLocation();
+        PlayerUtil.sendMessage(player, Component.translatable("Current - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY()+ " Z: " + currentPosition.getPosition().getZ() +  " F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
 
 
         return true;

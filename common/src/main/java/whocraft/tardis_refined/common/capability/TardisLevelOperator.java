@@ -10,13 +10,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
+import whocraft.tardis_refined.common.blockentity.door.AbstractDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
@@ -188,6 +191,8 @@ public class TardisLevelOperator {
             TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
             TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
 
+            this.pilotingManager.setCurrentLocation(new TardisNavLocation(externalShellPos, shellDirection.getOpposite(), shellLevel));
+
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
             return true;
         }
@@ -213,32 +218,29 @@ public class TardisLevelOperator {
             }
         }
 
-        if (this.exteriorManager != null) {
-            if (this.exteriorManager.getLastKnownLocation() != null) {
+        if (this.pilotingManager.getCurrentLocation() != null) {
 
-                TardisNavLocation targetLocation = this.exteriorManager.getLastKnownLocation();
-                BlockPos exteriorPos = targetLocation.getPosition();
-                ServerLevel targetLevel = targetLocation.getLevel();
-                Direction exteriorDirection = targetLocation.getDirection().getOpposite();
+            TardisNavLocation targetLocation = this.pilotingManager.getCurrentLocation();
+            BlockPos exteriorPos = targetLocation.getPosition();
+            ServerLevel targetLevel = targetLocation.getLevel();
+            Direction exteriorDirection = targetLocation.getDirection().getOpposite();
 
-                BlockPos teleportPos = exteriorPos;
+            BlockPos teleportPos = exteriorPos;
 
-                if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
-                    teleportPos = exteriorShell.getExitPosition();
-                }
-
-                TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-                TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
-
-                TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
+            if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
+                teleportPos = exteriorShell.getExitPosition();
             }
+
+            TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
+            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
+
+            TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
         }
 
         return true;
     }
 
     public void setDoorClosed(boolean closeDoor) {
-        TardisExteriorManager extManager = getExteriorManager();
         TardisInternalDoor intDoor = getInternalDoor();
 
         if (intDoor != null) {
@@ -250,15 +252,17 @@ public class TardisLevelOperator {
             TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
         }
 
-        if (extManager != null) {
-            if (extManager.getLastKnownLocation() != null) {
-                extManager.setDoorClosed(closeDoor);
+
+
+        if (this.pilotingManager != null) {
+            if (this.pilotingManager.getCurrentLocation() != null) {
+                this.exteriorManager.setDoorClosed(closeDoor);
             }
         }
     }
 
     public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
-        this.getAestheticHandler().setShellTheme(theme, setupTardis, getExteriorManager().getLastKnownLocation());
+        this.getAestheticHandler().setShellTheme(theme, setupTardis, this.getPilotingManager().getCurrentLocation());
         tardisClientData.setShellTheme(theme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();
@@ -283,7 +287,7 @@ public class TardisLevelOperator {
 
         Direction direction = shellBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
         TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);
-        this.exteriorManager.setLastKnownLocation(navLocation);
+        this.pilotingManager.setCurrentLocation(navLocation);
         this.pilotingManager.setTargetLocation(navLocation);
 
         shellServerLevel.setBlock(shellBlockPos, shellBlockState.setValue(OPEN, true), Block.UPDATE_ALL);

@@ -175,7 +175,7 @@ public class ImmersivePortals {
             return;
         }
 
-        TardisNavLocation location = operator.getExteriorManager().getLastKnownLocation();
+        TardisNavLocation location = operator.getPilotingManager().getCurrentLocation();
         BlockPos entryPositionBPos = door.getEntryPosition();
         Vec3 entryPosition = new Vec3(entryPositionBPos.getX() + 0.5, entryPositionBPos.getY() + 1, entryPositionBPos.getZ() + 0.5);
         BlockPos exteriorEntryBPos = location.getPosition();
@@ -199,7 +199,7 @@ public class ImmersivePortals {
         DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
 
-        Portal exteriorPortal = createPortal(operator.getExteriorManager().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
+        Portal exteriorPortal = createPortal(operator.getPilotingManager().getCurrentLocation().getLevel(), exteriorEntryPosition, entryPosition, operator.getLevel().dimension(), extQuat);
         Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, retrievePortalType(), interiorQuat);
 
 

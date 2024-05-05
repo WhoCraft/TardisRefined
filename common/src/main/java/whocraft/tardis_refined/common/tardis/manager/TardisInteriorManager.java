@@ -199,12 +199,12 @@ public class TardisInteriorManager extends BaseHandler {
 
             if (interiorGenerationCooldown == 0) {
                 this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), true);
-                this.operator.getExteriorManager().placeExteriorBlock(operator, operator.getExteriorManager().getLastKnownLocation());
+                this.operator.getExteriorManager().placeExteriorBlock(operator, this.operator.getPilotingManager().getCurrentLocation());
                 this.isGeneratingDesktop = false;
             }
 
             if (level.getGameTime() % 60 == 0) {
-                operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getExteriorManager().getLastKnownLocation().getLevel().getRandom().nextFloat(), 0.1f);
+                operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getLevel().getRandom().nextFloat(), 0.1f);
             }
         }
 

@@ -10,6 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
@@ -32,7 +33,6 @@ public class TardisExteriorManager extends BaseHandler {
     private double fuelForShellChange = 15; // Amount of fuel required to change the shell
 
     private final TardisLevelOperator operator;
-    private TardisNavLocation lastKnownLocation = TardisNavLocation.ORIGIN;
 
     public boolean locked() {
         return locked;
@@ -43,10 +43,10 @@ public class TardisExteriorManager extends BaseHandler {
             return;
         }
         this.locked = locked;
-        if (this.getLastKnownLocation() != null) {
-            TardisNavLocation lastKnownLocation = this.getLastKnownLocation();
-            Level level = lastKnownLocation.getLevel();
-            BlockPos extPos = lastKnownLocation.getPosition();
+        if (this.operator.getPilotingManager() != null) {
+            TardisNavLocation currentLocation = this.operator.getPilotingManager().getCurrentLocation();
+            Level level = currentLocation.getLevel();
+            BlockPos extPos = currentLocation.getPosition();
             if (level.getBlockState(extPos) != null) {
                 BlockState extState = level.getBlockState(extPos);
                 if (extState.getBlock() instanceof GlobalShellBlock shellBlock) {
@@ -79,25 +79,6 @@ public class TardisExteriorManager extends BaseHandler {
         this.operator = operator;
     }
 
-    public void setLastKnownLocation(TardisNavLocation lastKnownLocation) {
-        this.lastKnownLocation = lastKnownLocation;
-    }
-
-    public TardisNavLocation getLastKnownLocation() {
-
-        if(lastKnownLocation == null){
-            return TardisNavLocation.ORIGIN;
-        }
-
-        return this.lastKnownLocation;
-    }
-
-
-    public ServerLevel getLevel() {
-        return this.getLastKnownLocation().getLevel();
-    }
-
-
     @Override
     public void tick() {
 
@@ -105,23 +86,19 @@ public class TardisExteriorManager extends BaseHandler {
     @Override
     public CompoundTag saveData(CompoundTag tag) {
 
-        if (this.lastKnownLocation != null) {
-            NbtConstants.putTardisNavLocation(tag, "lk_ext", this.lastKnownLocation);
-        }
         tag.putBoolean(NbtConstants.LOCKED, locked);
 
         return tag;
     }
     @Override
     public void loadData(CompoundTag tag) {
-        this.lastKnownLocation = NbtConstants.getTardisNavLocation(tag, "lk_ext", operator);
         locked = tag.getBoolean(NbtConstants.LOCKED);
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-        if (lastKnownLocation != null) {
-            ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
-            lastKnownLocationLevel.playSound(null, lastKnownLocation.getPosition(), event, source, volume, pitch);
+        if (this.operator.getPilotingManager().getCurrentLocation() != null) {
+            ServerLevel lastKnownLocationLevel = this.operator.getPilotingManager().getCurrentLocation().getLevel();
+            lastKnownLocationLevel.playSound(null, this.operator.getPilotingManager().getCurrentLocation().getPosition(), event, source, volume, pitch);
         }
     }
 
@@ -131,22 +108,25 @@ public class TardisExteriorManager extends BaseHandler {
             closed = true;
         }
 
-        if(lastKnownLocation == null) return;
-        ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
+        TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
+
+        if(currentPosition == null) return;
+        ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
 
         // Get the exterior block.
-        BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocation.getPosition());
+        BlockState state = lastKnownLocationLevel.getBlockState(currentPosition.getPosition());
         if (state.hasProperty(ShellBaseBlock.OPEN)) {
-            lastKnownLocationLevel.setBlock(lastKnownLocation.getPosition(), state.setValue(ShellBaseBlock.OPEN, !closed), 2);
+            lastKnownLocationLevel.setBlock(currentPosition.getPosition(), state.setValue(ShellBaseBlock.OPEN, !closed), 2);
             playSoundAtShell(locked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
         }
     }
 
 
     public void triggerShellRegenState() {
-        if(lastKnownLocation == null) return;
-        BlockPos lastKnownLocationPosition = lastKnownLocation.getPosition();
-        ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
+        TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
+        if(currentPosition == null) return;
+        BlockPos lastKnownLocationPosition = currentPosition.getPosition();
+        ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
 
         BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocationPosition);
         if (lastKnownLocationLevel == null) return;
@@ -156,9 +136,11 @@ public class TardisExteriorManager extends BaseHandler {
 
     public void removeExteriorBlock() {
         this.isLanding = false;
-        if (lastKnownLocation != null) {
-            BlockPos lastKnownLocationPosition = lastKnownLocation.getPosition();
-            ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
+
+        TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
+        if (currentPosition != null) {
+            BlockPos lastKnownLocationPosition = currentPosition.getPosition();
+            ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
             ChunkPos chunkPos = lastKnownLocationLevel.getChunk(lastKnownLocationPosition).getPos();
             //Force load chunk
             lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly remove block
@@ -175,6 +157,9 @@ public class TardisExteriorManager extends BaseHandler {
         AestheticHandler aestheticHandler = operator.getAestheticHandler();
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
+
+        //remove the exterior block
+        location.getLevel().setBlock(location.getPosition(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
         BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
                 .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
@@ -202,14 +187,17 @@ public class TardisExteriorManager extends BaseHandler {
         //Un-force load target chunk
         targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
 
-        setLastKnownLocation(location);
         this.isLanding = true;
     }
 
 
     public boolean isExitLocationSafe() {
-        BlockPos lastKnownLocationPosition = lastKnownLocation.getPosition();
-        ServerLevel lastKnownLocationLevel = lastKnownLocation.getLevel();
+
+        TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
+        if(currentPosition == null) return false;
+
+        BlockPos lastKnownLocationPosition = currentPosition.getPosition();
+        ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
         if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof ExteriorShell shellBaseBlockEntity) {
             BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
             if (lastKnownLocationLevel.getBlockState(landingArea).isAir()) {

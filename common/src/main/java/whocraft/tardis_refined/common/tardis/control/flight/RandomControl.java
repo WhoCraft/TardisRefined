@@ -26,7 +26,7 @@ public class RandomControl extends Control {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 
             int increment = pilotManager.getCordIncrement();
-            BlockPos currentExLoc = operator.getExteriorManager().getLastKnownLocation().getPosition();
+            BlockPos currentExLoc = operator.getPilotingManager().getCurrentLocation().getPosition();
             pilotManager.getTargetLocation().setPosition(
                     new BlockPos((currentExLoc.getX() - (increment / 2)) +  operator.getLevel().random.nextInt(increment * 2),
                             150,

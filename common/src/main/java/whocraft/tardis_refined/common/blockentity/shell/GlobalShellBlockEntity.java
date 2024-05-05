@@ -117,7 +117,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                     ResourceKey<Level> dimension = this.getTardisId();
 
                     if (stack.is(Items.SHEARS) && cap.getAestheticHandler().getShellTheme() == ShellTheme.HALF_BAKED.getId() && !cap.getPilotingManager().isInFlight()) {
-                        cap.getAestheticHandler().setShellTheme(ShellTheme.FACTORY.getId(), cap.getExteriorManager().getLastKnownLocation());
+                        cap.getAestheticHandler().setShellTheme(ShellTheme.FACTORY.getId(), cap.getPilotingManager().getCurrentLocation());
                         level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
 
                         spawnCoralItems();
