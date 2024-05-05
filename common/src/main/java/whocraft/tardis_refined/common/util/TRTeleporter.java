@@ -331,6 +331,7 @@ public class TRTeleporter {
      * @return
      */
     private static Entity teleportNonPlayerEntityRegular(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float yRot, float xRot){
+        Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
         Entity teleportedEntity;
         pEntity.setDeltaMovement(Vec3.ZERO);
         //Teleport the current entity (which we know is a vehicle)
