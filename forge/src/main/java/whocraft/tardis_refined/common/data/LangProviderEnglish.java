@@ -108,7 +108,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(TRControlRegistry.MONITOR.get(), "Computer Bank");
         addControl(TRControlRegistry.FAST_RETURN.get(), "Fast Return");
         addControl(TRControlRegistry.DIMENSION.get(), "Dimension");
-        addControl(TRControlRegistry.HANDBRAKE.get(), "Handbrake");;
+        addControl(TRControlRegistry.HANDBRAKE.get(), "Handbrake");
         addControl(TRControlRegistry.GENERIC_NO_SHOW.get(), "Switch");
         addControl(TRControlRegistry.FUEL.get(), "Fuel");
         addControl(TRControlRegistry.READOUT.get(), "GPS");

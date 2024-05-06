@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.compat.portals;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +19,7 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
+import qouteall.imm_ptl.core.render.PortalEntityRenderer;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
@@ -27,14 +28,12 @@ import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
-import whocraft.tardis_refined.registry.TREntityRegistry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -75,6 +74,8 @@ public class ImmersivePortals {
 
         BOTI_PORTAL = ENTITY_TYPES.register("boti_portal", () -> registerStatic(BOTIPortalEntity::new, MobCategory.MISC, 1, 1, 96, 20, "boti_portal"));
 
+        //TODO Temp! Would crash a server
+        EntityRendererRegistry.register(ImmersivePortals.BOTI_PORTAL.get(), PortalEntityRenderer::new);
 
         TardisEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
         TardisEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
@@ -187,7 +188,7 @@ public class ImmersivePortals {
         TardisInternalDoor door = operator.getInternalDoor();
         TardisPilotingManager pilotingManager = operator.getPilotingManager();
 
-        if (operator.getInteriorManager().isCave() || !operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
+        if (operator.getInteriorManager().isCave() || !door.isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
             return;
         }
 

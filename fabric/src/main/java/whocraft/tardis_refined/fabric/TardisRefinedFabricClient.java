@@ -36,10 +36,10 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         establishBlockEntityRenderers();
-        registerEntityRenderers();
         ModelRegistry.init();
         ModEvents.addClientEvents();
         particles();
+        registerEntityRenderers();
     }
 
     private void particles() {
@@ -64,7 +64,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
         /*Required to Render Transparency*/
         for (Block block : TRBlockRegistry.BLOCKS.getRegistry()) {
-            if(TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)){
+            if (TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
             }
         }
@@ -74,7 +74,5 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
     private void registerEntityRenderers() {
         EntityRendererRegistry.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
-        //TODO Temp!
-        EntityRendererRegistry.register(ImmersivePortals.BOTI_PORTAL.get(), PortalEntityRenderer::new);
     }
 }

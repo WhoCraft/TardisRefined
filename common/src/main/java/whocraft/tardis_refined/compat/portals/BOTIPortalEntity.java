@@ -4,11 +4,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import qouteall.imm_ptl.core.portal.Portal;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
@@ -17,7 +15,6 @@ import java.util.UUID;
 public class BOTIPortalEntity extends Portal {
 
     private static final EntityDataAccessor<Optional<UUID>> TARDIS_ID = SynchedEntityData.defineId(BOTIPortalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
-
 
     public BOTIPortalEntity(EntityType<?> entityType, Level world) {
         super(entityType, world);
@@ -41,34 +38,14 @@ public class BOTIPortalEntity extends Portal {
     }
 
     public boolean isValidToStayAlive(){
-
-
-        return false;
+        return ImmersivePortals.tardisToPortalsMap.containsKey(getTardisId());
     }
 
     @Override
     public void tick() {
-        UUID tardisId = getTardisId();
-        if (tardisId == null || !(level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-
-
-
-        if (!ImmersivePortals.tardisToPortalsMap.containsKey(tardisId)) {
-            //kill();
-            if (serverLevel.dimension().location().getPath().equals(tardisId.toString())) {
-                TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::createPortals);
-            }
-        } else {
-            for (Portal portal : ImmersivePortals.tardisToPortalsMap.get(tardisId)) {
-                if (portal == null) {
-                    //kill();
-                    break;
-                }
-            }
-        }
-
+       /* if (tickCount > 40 && !isValidToStayAlive()) {
+            kill();
+        }*/
         super.tick();
     }
 
