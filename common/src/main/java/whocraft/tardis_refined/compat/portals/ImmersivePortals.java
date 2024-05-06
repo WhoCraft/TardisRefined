@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -26,11 +27,14 @@ import whocraft.tardis_refined.api.event.TardisEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
+import whocraft.tardis_refined.registry.TREntityRegistry;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,9 +42,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
+import static whocraft.tardis_refined.registry.TREntityRegistry.ENTITY_TYPES;
+import static whocraft.tardis_refined.registry.TREntityRegistry.registerStatic;
+
 
 public class ImmersivePortals {
 
+    public static RegistrySupplier<EntityType<BOTIPortalEntity>> BOTI_PORTAL = null;
     public static Map<UUID, List<Portal>> tardisToPortalsMap = new HashMap<>();
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
@@ -52,6 +60,7 @@ public class ImmersivePortals {
         final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
         DimensionAPI.addDimensionDynamically(server, id.location(), dimensionFactory.apply(server, dimensionKey));
         // TODO, Is this important? DimensionAPI.saveDimensionConfiguration(id);
+
         world = server.getLevel(id);
         DimensionHandler.addDimension(world.dimension());
         return world;
@@ -63,12 +72,17 @@ public class ImmersivePortals {
     public static void init() {
         if (!ModCompatChecker.immersivePortals()) return;
         TardisRefined.LOGGER.info("Immersive Portals Detected - Setting up Compatibility");
+
+        BOTI_PORTAL = ENTITY_TYPES.register("boti_portal", () -> registerStatic(BOTIPortalEntity::new, MobCategory.MISC, 1, 1, 96, 20, "boti_portal"));
+
+
         TardisEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
         TardisEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
         TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme, isSetupTardis) -> {
+            TardisInternalDoor internalDoor = operator.getInternalDoor();
             ImmersivePortals.destroyPortals(operator);
-            if (operator.getInternalDoor() != null){
-                if (operator.getInternalDoor().isOpen()) {
+            if (internalDoor != null){
+                if (internalDoor.isOpen()) {
                     ImmersivePortals.createPortals(operator);
                 }
             }
@@ -171,13 +185,11 @@ public class ImmersivePortals {
         UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
         ResourceLocation theme = operator.getAestheticHandler().getShellTheme();
         TardisInternalDoor door = operator.getInternalDoor();
+        TardisPilotingManager pilotingManager = operator.getPilotingManager();
 
         if (operator.getInteriorManager().isCave() || !operator.getInternalDoor().isOpen() || !operator.isTardisReady() || tardisToPortalsMap.get(dimId) != null || !exteriorHasPortalSupport(theme) || door == null) {
             return;
         }
-
-        TardisPilotingManager pilotingManager = operator.getPilotingManager();
-
 
         TardisNavLocation location = pilotingManager.getCurrentLocation();
         BlockPos entryPositionBPos = door.getEntryPosition();
@@ -187,28 +199,30 @@ public class ImmersivePortals {
 
         theme = operator.getAestheticHandler().getShellTheme();
         PortalOffets themeData = themeToOffsetMap.get(theme);
+        PortalOffets.OffsetData interiorDoor = themeData.intDoor();
+        PortalOffets.OffsetData exteriorDoor = themeData.shell();
 
         Level operatorLevel = operator.getLevel();
 
 
         switch (location.getDirection()) {
-            case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().east());
-            case SOUTH -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().south());
-            case WEST -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().west());
-            case NORTH -> exteriorEntryPosition = exteriorEntryPosition.add(themeData.shell().north());
+            case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.east());
+            case SOUTH -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.south());
+            case WEST -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.west());
+            case NORTH -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.north());
         }
+
         switch (door.getEntryRotation()) {
-            case EAST -> entryPosition = entryPosition.add(themeData.intDoor().east());
-            case SOUTH -> entryPosition = entryPosition.add(themeData.intDoor().south());
-            case WEST -> entryPosition = entryPosition.add(themeData.intDoor().west());
-            case NORTH -> entryPosition = entryPosition.add(themeData.intDoor().north());
+            case EAST -> entryPosition = entryPosition.add(interiorDoor.east());
+            case SOUTH -> entryPosition = entryPosition.add(interiorDoor.south());
+            case WEST -> entryPosition = entryPosition.add(interiorDoor.west());
+            case NORTH -> entryPosition = entryPosition.add(interiorDoor.north());
         }
         DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
 
-        Portal exteriorPortal = createPortal(location.getLevel(), exteriorEntryPosition, entryPosition, operatorLevel.dimension(), extQuat);
-        Portal interiorPortal = createDestPortal(exteriorPortal, entryPosition, retrievePortalType(), interiorQuat);
-
+        BOTIPortalEntity exteriorPortal = createPortal(location.getLevel(), exteriorEntryPosition, entryPosition, operatorLevel.dimension(), extQuat);
+        BOTIPortalEntity interiorPortal = createDestPortal(exteriorPortal, entryPosition, ImmersivePortals.BOTI_PORTAL.get(), interiorQuat);
 
         tardisToPortalsMap.put(UUID.fromString(operatorLevel.dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
 
@@ -227,11 +241,6 @@ public class ImmersivePortals {
         interiorPortal.level().addFreshEntity(interiorPortal);
     }
 
-    @ExpectPlatform
-    public static EntityType<Portal> retrievePortalType() {
-        throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
-    }
-
     public static void destroyPortals(TardisLevelOperator operator) {
         UUID tardisID = UUID.fromString(operator.getLevel().dimension().location().getPath());
         List<Portal> portals = tardisToPortalsMap.get(tardisID);
@@ -246,11 +255,11 @@ public class ImmersivePortals {
         tardisToPortalsMap.remove(tardisID);
     }
 
-    public static Portal createDestPortal(Portal portal, Vec3 doorPos, EntityType<Portal> entityType, DQuaternion quat) {
+    public static BOTIPortalEntity createDestPortal(BOTIPortalEntity portal, Vec3 doorPos, EntityType<BOTIPortalEntity> entityType, DQuaternion quat) {
         Level world = portal.getDestinationWorld();
 
-        Portal newPortal = entityType.create(world);
-        ((TardisPortalData) newPortal).setTardisID(UUID.fromString(world.dimension().location().getPath()));
+        BOTIPortalEntity newPortal = entityType.create(world);
+        portal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
         newPortal.dimensionTo = portal.level().dimension();
         newPortal.setPos(doorPos);
         newPortal.setDestination(portal.getOriginPos());
@@ -268,9 +277,9 @@ public class ImmersivePortals {
         return newPortal;
     }
 
-    public static Portal createPortal(Level level, Vec3 origin, Vec3 destination, ResourceKey<Level> destinationLvl, DQuaternion quat) {
-        Portal portal = retrievePortalType().create(level);
-        ((TardisPortalData) portal).setTardisID(UUID.fromString(destinationLvl.location().getPath()));
+    public static BOTIPortalEntity createPortal(Level level, Vec3 origin, Vec3 destination, ResourceKey<Level> destinationLvl, DQuaternion quat) {
+        BOTIPortalEntity portal = ImmersivePortals.BOTI_PORTAL.get().create(level);
+        portal.setTardisId(UUID.fromString(destinationLvl.location().getPath()));
         portal.setOriginPos(origin);
         portal.setDestinationDimension(destinationLvl);
         portal.setDestination(destination);

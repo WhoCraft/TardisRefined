@@ -6,8 +6,7 @@
   "mixins": [
     "EndDragonFightAccessor",
     "MinecraftServerStorageAccessor",
-    "PlayerEntityMixin",
-    "PortalMixin"
+    "PlayerEntityMixin"
   ],
   "client": [
     "FogRendererMixin",
