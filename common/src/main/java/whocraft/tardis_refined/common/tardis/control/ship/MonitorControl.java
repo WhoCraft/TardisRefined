@@ -40,7 +40,7 @@ public class MonitorControl extends Control {
                     isSyncingKey = true;
             }
             if (!isSyncingKey)
-                new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(), operator.getExteriorManager().getLastKnownLocation(), operator.getPilotingManager().getTargetLocation(), operator.getUpgradeHandler()).send((ServerPlayer) player);
+                new OpenMonitorMessage(operator.getInteriorManager().isWaitingToGenerate(), operator.getPilotingManager().getCurrentLocation(), operator.getPilotingManager().getTargetLocation(), operator.getUpgradeHandler()).send((ServerPlayer) player);
             return true;
         }
         return false;

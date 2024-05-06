@@ -27,6 +27,8 @@ import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -114,7 +116,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                             }
                         }
                     }
-                    cap.enterTardis(entity, externalShellPos, serverLevel, blockState.getValue(ShellBaseBlock.FACING));
+                    cap.enterTardis(entity, getBlockPos(), serverLevel, blockState.getValue(ShellBaseBlock.FACING));
                 } else {
                     if (!cap.isTardisReady()) {
                         if (entity instanceof Player player)
@@ -141,20 +143,31 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
-//        if(level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide){
-//            ResourceKey<Level> tardisId = getTardisId();
-//            if(tardisId == null) return;
-//            ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
-//            BlockPos myCurrentPosition = getBlockPos();
-//
-//            TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
-//                BlockPos blockPosLastKnown = tardisLevelOperator.getExteriorManager().getLastKnownLocation().getPosition();
-//                BlockPos wantedDestination = tardisLevelOperator.getPilotingManager().getTargetLocation().getPosition();
-//
-//                if(myCurrentPosition != blockPosLastKnown && myCurrentPosition != wantedDestination && myCurrentPosition != BlockPos.ZERO){
-//                    level.removeBlock(worldPosition, false);
-//                }
-//            });
-//        }
+        if(level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide){
+            ResourceKey<Level> tardisId = getTardisId();
+            if(tardisId == null) return;
+            ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
+            BlockPos myCurrentPosition = getBlockPos();
+
+            TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
+
+                TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
+
+                BlockPos currentLocation = pilotingManager.getCurrentLocation().getPosition();
+                BlockPos wantedDestination = pilotingManager.getTargetLocation().getPosition();
+
+
+                if (currentLocation == null) {
+                    Direction direction = blockState.getValue(ShellBaseBlock.FACING);
+                    ServerLevel serverLevel = Platform.getServer().getLevel(level.dimension());
+                    pilotingManager.setCurrentLocation(new TardisNavLocation(getBlockPos(), direction != null ? direction : Direction.NORTH, serverLevel));
+                }
+
+                if (!myCurrentPosition.equals(currentLocation) && !myCurrentPosition.equals(wantedDestination) ) {
+                    level.removeBlock(myCurrentPosition, false);
+                }
+
+            });
+        }
     }
 }

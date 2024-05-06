@@ -11,6 +11,7 @@ import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 public class ReadoutControl extends Control {
     public ReadoutControl(ResourceLocation id) {
@@ -23,8 +24,8 @@ public class ReadoutControl extends Control {
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
-        TardisNavLocation currentPosition = operator.getExteriorManager().getLastKnownLocation();
-        PlayerUtil.sendMessage(player, Component.translatable("Current - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY()+ " Z: " + currentPosition.getPosition().getZ() +  "F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
+        TardisNavLocation currentPosition = operator.getPilotingManager().getCurrentLocation();
+        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(  " - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY()+ " Z: " + currentPosition.getPosition().getZ() +  " F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
 
 
         return true;
@@ -34,7 +35,7 @@ public class ReadoutControl extends Control {
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
-        PlayerUtil.sendMessage(player, Component.translatable("Destination - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY()+ " Z: " + targetLocation.getPosition().getZ() +  " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY()+ " Z: " + targetLocation.getPosition().getZ() +  " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
 
         return true;
     }

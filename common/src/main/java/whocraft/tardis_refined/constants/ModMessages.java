@@ -46,6 +46,9 @@ public class ModMessages {
     public static String WAYPOINT_LOADED = message("waypoint_loaded");
     public static String CANNOT_START_NO_FUEL = message("cannot_start_no_fuel");
 
+    public static String CURRENT = message("current");
+    public static String DESTINATION = message("destination");
+
 
 
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");

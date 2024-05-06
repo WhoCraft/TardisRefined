@@ -172,6 +172,15 @@ public class TardisInteriorManager extends BaseHandler {
 
         }
 
+        TardisExteriorManager exteriorManager = this.operator.getExteriorManager();
+        if (exteriorManager == null) {
+            return;
+        }
+        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
+        if (pilotingManager == null) {
+            return;
+        }
+
         if (this.isWaitingToGenerate) {
             if (level.random.nextInt(30) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
@@ -182,7 +191,7 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (level.players().isEmpty()) {
-                this.operator.getExteriorManager().triggerShellRegenState();
+                exteriorManager.triggerShellRegenState();
                 operator.setDoorClosed(true);
                 generateDesktop(this.preparedTheme);
 
@@ -199,15 +208,14 @@ public class TardisInteriorManager extends BaseHandler {
 
             if (interiorGenerationCooldown == 0) {
                 this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), true);
-                this.operator.getExteriorManager().placeExteriorBlock(operator, operator.getExteriorManager().getLastKnownLocation());
+                exteriorManager.placeExteriorBlock(operator, this.operator.getPilotingManager().getCurrentLocation());
                 this.isGeneratingDesktop = false;
             }
 
             if (level.getGameTime() % 60 == 0) {
-                operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getExteriorManager().getLastKnownLocation().getLevel().getRandom().nextFloat(), 0.1f);
+                exteriorManager.playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getLevel().getRandom().nextFloat(), 0.1f);
             }
         }
-
 
         /// Airlock Logic
 

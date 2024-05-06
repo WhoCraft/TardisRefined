@@ -136,6 +136,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.WAYPOINT_LOADED, "Preloaded waypoint: %s");
         add(ModMessages.HANDBRAKE_ENGAGED, "Handbrake engaged");
         add(ModMessages.HANDBRAKE_DISENGAGED, "Handbrake disengaged");
+        add(ModMessages.CURRENT, "CURRENT");
+        add(ModMessages.DESTINATION, "DESTINATION");
 
 
         /*Command*/

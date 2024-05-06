@@ -54,6 +54,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     // Location based.
     private TardisNavLocation targetLocation;
+    private TardisNavLocation currentLocation;
     private TardisNavLocation fastReturnLocation;
 
     // Inflight timers (ticks)
@@ -105,6 +106,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         this.isPassivelyRefuelling = tag.getBoolean(NbtConstants.IS_PASSIVELY_REFUELING);
 
+        this.currentLocation = NbtConstants.getTardisNavLocation(tag, "current_location", operator);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_target", operator);
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, "ctrl_fr_loc", operator);
 
@@ -162,6 +164,11 @@ public class TardisPilotingManager extends BaseHandler {
             NbtConstants.putTardisNavLocation(tag, "ctrl_fr_loc", this.fastReturnLocation);
         }
 
+        if (this.currentLocation != null) {
+            NbtConstants.putTardisNavLocation(tag, "current_location", this.currentLocation);
+        }
+
+
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
 
         tag.putDouble(NbtConstants.FUEL, this.fuel);
@@ -172,10 +179,8 @@ public class TardisPilotingManager extends BaseHandler {
 
     public void tick(Level level) {
 
-
         if (targetLocation == null) {
-
-            var location = this.operator.getExteriorManager().getLastKnownLocation();
+            var location = currentLocation;
             if (targetLocation != null) {
                 this.targetLocation = location;
             } else {
@@ -213,6 +218,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     private void onFlightTick(Level level) {
         // Don't continue the flight if the throttle isn't active!!!
+
         if (this.throttleStage != 0 || this.autoLand) {
             ticksInFlight++;
 
@@ -317,7 +323,6 @@ public class TardisPilotingManager extends BaseHandler {
             return true;
         }
     }
-
 
     public TardisNavLocation findClosestValidPosition(TardisNavLocation location) {
         ServerLevel level = location.getLevel();
@@ -467,14 +472,16 @@ public class TardisPilotingManager extends BaseHandler {
             this.isPassivelyRefuelling = false;
             this.flightDistance = 0;
             this.distanceCovered = 0;
-            this.fastReturnLocation = this.operator.getExteriorManager().getLastKnownLocation();
+
+
+
+            this.fastReturnLocation = new TardisNavLocation(this.currentLocation.getPosition(), this.currentLocation.getDirection(), this.currentLocation.getLevel());
+
 
             TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
-            TardisNavLocation lastKnownLocation = this.operator.getExteriorManager().getLastKnownLocation();
+            TardisNavLocation lastKnownLocation = new TardisNavLocation(this.currentLocation.getPosition(), this.currentLocation.getDirection(), this.currentLocation.getLevel());
 
             // Do we not have a last known location?
-
-            System.out.println(lastKnownLocation.getPosition().toShortString());
 
             this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
 
@@ -520,7 +527,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     public void recalculateFlightDistance() {
         TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
-        TardisNavLocation lastKnownLocation = this.operator.getExteriorManager().getLastKnownLocation();
+        TardisNavLocation lastKnownLocation = new TardisNavLocation(this.currentLocation.getPosition(), this.currentLocation.getDirection(), this.currentLocation.getLevel());
 
         this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
         this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
@@ -563,6 +570,8 @@ public class TardisPilotingManager extends BaseHandler {
             TardisNavLocation landingLocation = this.targetLocation;
             TardisNavLocation location = findClosestValidPosition(landingLocation);
 
+            currentLocation = location;
+
             exteriorManager.placeExteriorBlock(operator, location);
 
             exteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
@@ -581,8 +590,6 @@ public class TardisPilotingManager extends BaseHandler {
                 PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + " XP"), true);
             }
 
-
-
             return true;
         }
         return false;
@@ -595,14 +602,15 @@ public class TardisPilotingManager extends BaseHandler {
      * @param dramatic Play sounds to show the TARDIS doesn't like it.
      */
     private void endFlightEarly(boolean dramatic) {
+
         BlockPos targetPosition = this.targetLocation.getPosition();
-        BlockPos startingPosition = this.operator.getExteriorManager().getLastKnownLocation().getPosition();
+        BlockPos startingPosition = this.currentLocation.getPosition();
         float percentage = this.getFlightPercentageCovered();
         float percentageX = (targetPosition.getX() - startingPosition.getX()) * percentage;
         float percentageY = (targetPosition.getY() - startingPosition.getY()) * percentage;
         float percentageZ = (targetPosition.getZ() - startingPosition.getZ()) * percentage;
 
-        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.operator.getExteriorManager().getLastKnownLocation().getLevel());
+        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.currentLocation.getLevel());
         this.targetLocation = newLocation;
 
         if (dramatic) {
@@ -625,17 +633,17 @@ public class TardisPilotingManager extends BaseHandler {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
-        TardisNavLocation lastKnown = operator.getExteriorManager().getLastKnownLocation();
+        TardisNavLocation lastKnown = this.currentLocation;
         TardisEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.getPosition());
 
         if (this.currentConsole != null) {
             operator.getFlightDanceManager().startFlightDance(this.currentConsole);
         }
-
     }
 
     public void onFlightEnd() {
         this.operator.getFlightDanceManager().stopDancing();
+
         this.isInFlight = false;
         this.ticksTakingOff = 0;
         this.autoLand = false;
@@ -672,7 +680,7 @@ public class TardisPilotingManager extends BaseHandler {
         float progress = getFlightPercentageCovered();
 
         Vec3 targetPos = new Vec3(this.targetLocation.getPosition().getX(), this.targetLocation.getPosition().getY(), this.targetLocation.getPosition().getZ());
-        BlockPos currentLoc = tardisExteriorManager.getLastKnownLocation().getPosition();
+        BlockPos currentLoc = this.currentLocation.getPosition();
         Vec3 currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
         int x = (int) (currentPos.x + ((targetPos.x - currentPos.x) * progress));
@@ -734,6 +742,17 @@ public class TardisPilotingManager extends BaseHandler {
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
         this.targetLocation = targetLocation;
+    }
+
+    public void setCurrentLocation(TardisNavLocation currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+    public TardisNavLocation getCurrentLocation() {
+        if (this.currentLocation == null) {
+            return TardisNavLocation.ORIGIN;
+        }
+
+        return this.currentLocation;
     }
 
     public void setTargetPosition(BlockPos pos) {
