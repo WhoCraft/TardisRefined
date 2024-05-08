@@ -72,9 +72,9 @@ public class TardisTeleportData extends SavedData {
 
                     @Nullable ServerLevel targetWorld = server.getLevel(entry.getDestination());
                     if (entity != null && targetWorld != null && entity.level() == level) {
-                        if (TRTeleporter.performTeleport(entity, targetWorld, entry.getX(), entry.getY(), entry.getZ(), entry.getyRot(), entry.getxRot(), teleportedEntities)) {
+                        if (TRTeleporter.fullTeleport(entity, targetWorld, entry.getX(), entry.getY(), entry.getZ(), entry.getyRot(), entry.getxRot(), teleportedEntities)) {
                             teleportedEntities.add(entity);
-                            entry.setIsCurrentTeleporting(true);
+                            entry.setSuccessfulTeleport(true);
                         }
                         else {
                             entry.setSuccessfulTeleport(false);
