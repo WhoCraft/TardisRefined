@@ -30,8 +30,8 @@ public class OpenMonitorMessage extends MessageS2C {
 
     public OpenMonitorMessage(FriendlyByteBuf friendlyByteBuf) {
         this.desktopGenerating = friendlyByteBuf.readBoolean();
-        this.currentLocation = TardisNavLocation.deserialise(friendlyByteBuf.readNbt());
-        this.targetLocation = TardisNavLocation.deserialise(friendlyByteBuf.readNbt());
+        this.currentLocation = TardisNavLocation.deserialize(friendlyByteBuf.readNbt());
+        this.targetLocation = TardisNavLocation.deserialize(friendlyByteBuf.readNbt());
         this.upgradeHandlerNbt = friendlyByteBuf.readNbt();
     }
 

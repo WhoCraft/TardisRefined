@@ -33,7 +33,7 @@ public class S2COpenCoordinatesDisplayMessage extends MessageS2C {
 
     public S2COpenCoordinatesDisplayMessage(FriendlyByteBuf friendlyByteBuf) {
         CompoundTag tardisNav = friendlyByteBuf.readNbt();
-        tardisNavLocation = TardisNavLocation.deserialise(tardisNav);
+        tardisNavLocation = TardisNavLocation.deserialize(tardisNav);
         coordInputType = CoordInputType.valueOf(friendlyByteBuf.readUtf());
         levels = new ArrayList<>();
         int size = friendlyByteBuf.readInt();
