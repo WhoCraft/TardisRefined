@@ -125,7 +125,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End");
         add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way");
         add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal");
-        add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this tim.");
+        add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this time.");
         add(ModMessages.REFUEL, "Enabled refuelling");
         add(ModMessages.STOP_REFUEL, "Stopped refuelling");
         add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process");
