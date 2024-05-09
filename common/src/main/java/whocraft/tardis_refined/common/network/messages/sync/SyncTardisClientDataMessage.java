@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -48,6 +49,6 @@ public class SyncTardisClientDataMessage extends MessageS2C {
         data.deserializeNBT(compoundTag);
 
         // Update the Tardis instance
-        data.update();
+        TardisClientLogic.update(data);
     }
 }

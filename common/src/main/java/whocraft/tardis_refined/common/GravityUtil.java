@@ -67,33 +67,8 @@ public class GravityUtil {
         return isInAntiGrav(player, player.getBoundingBox().inflate(8, MAX_Y, 8), player.level());
     }
 
-    @Environment(EnvType.CLIENT)
-    public static void moveGravity(Player player, CallbackInfo info) {
-        Vec3 deltaMovement = player.getDeltaMovement();
-        Minecraft minecraft = Minecraft.getInstance();
-        Options options = minecraft.options;
 
-        if (isInGravityShaft(player)) {
-            player.resetFallDistance();
-            player.setNoGravity(true);
-            player.setPose(Pose.STANDING);
-
-            if (options.keyJump.isDown()) {
-                player.setDeltaMovement(deltaMovement.add(0, easeMovement(), 0));
-                info.cancel();
-            } else if (options.keyShift.isDown()) {
-                player.setDeltaMovement(deltaMovement.add(0, -easeMovement(), 0));
-                info.cancel();
-            } else {
-                player.setDeltaMovement(deltaMovement.x, 0, deltaMovement.z);
-            }
-        } else {
-            player.setNoGravity(false);
-        }
-    }
-
-
-    private static double easeMovement() {
+    static double easeMovement() {
         double smoothedMovement = Math.abs(GravityUtil.ACCELERATION);
         return smoothedMovement * smoothedMovement * smoothedMovement;
     }

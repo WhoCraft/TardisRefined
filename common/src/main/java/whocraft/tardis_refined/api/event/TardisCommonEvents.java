@@ -1,22 +1,16 @@
 package whocraft.tardis_refined.api.event;
 
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
 
-public class TardisEvents {
+public class TardisCommonEvents {
 
     public static final Event<TakeOff> TAKE_OFF = new Event<>(TakeOff.class, listeners -> (tardisLevelOperator, level, pos) -> Event.result(listeners, takeOff -> takeOff.onTakeOff(tardisLevelOperator, level, pos)));
 
@@ -68,23 +62,12 @@ public class TardisEvents {
         }
     }));
 
-    public static final Event<SetupModels> SHELLENTRY_MODELS_SETUP = new Event<>(SetupModels.class, listeners -> (EntityModelSet context) -> {
-        for(SetupModels listener : listeners) {
-            listener.setUpShellAndInteriorModels(context);
-        }
-    });
-
 
     /**
      * Represents an event that allows checking whether player control can be used.
      */
     public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
 
-
-    @FunctionalInterface
-    public interface SetupModels {
-        void setUpShellAndInteriorModels(EntityModelSet context);
-    }
 
 
     /**

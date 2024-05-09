@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
@@ -148,9 +148,9 @@ public class TardisHelper {
             //Fire exit or enter events
             if (entity instanceof LivingEntity livingEntity) {
                 if (enterTardis) {
-                    TardisEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(cap, livingEntity, sourceLocation, destinationLocation);
+                    TardisCommonEvents.TARDIS_ENTRY_EVENT.invoker().onEnterTardis(cap, livingEntity, sourceLocation, destinationLocation);
                 } else {
-                    TardisEvents.TARDIS_EXIT_EVENT.invoker().onExitTardis(cap, livingEntity, sourceLocation, destinationLocation);
+                    TardisCommonEvents.TARDIS_EXIT_EVENT.invoker().onExitTardis(cap, livingEntity, sourceLocation, destinationLocation);
                 }
             }
 

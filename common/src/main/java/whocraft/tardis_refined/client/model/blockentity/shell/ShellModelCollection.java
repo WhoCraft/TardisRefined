@@ -3,8 +3,8 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.api.event.TardisClientEvents;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
 import whocraft.tardis_refined.client.model.blockentity.shell.shells.*;
@@ -73,7 +73,7 @@ public class ShellModelCollection {
         pathfinderDoorModel = new PathfinderDoorModel(context.bakeLayer((ModelRegistry.PATHFINDER_DOOR)));
         halfBakedDoorModel = new HalfBakedDoorModel(context.bakeLayer((ModelRegistry.HALF_BAKED_DOOR)));
 
-        TardisEvents.SHELLENTRY_MODELS_SETUP.invoker().setUpShellAndInteriorModels(context);
+        TardisClientEvents.SHELLENTRY_MODELS_SETUP.invoker().setUpShellAndInteriorModels(context);
 
         registerShellEntry(ShellTheme.FACTORY.get(), factoryShellModel, factoryDoorModel);
         registerShellEntry(ShellTheme.POLICE_BOX.get(), policeBoxModel, policeBoxDoorModel);
