@@ -129,6 +129,7 @@ public class KeyItem extends Item {
             if (control.controlSpecification().control() != null) {
                 if (control.controlSpecification().control() == TRControlRegistry.MONITOR.get()) {
 
+                    setKeychain(itemStack, new ArrayList<>(List.of(serverLevel.dimension())));
 
                     AtomicBoolean canTARDISTakeItem = new AtomicBoolean(false);
                     TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {

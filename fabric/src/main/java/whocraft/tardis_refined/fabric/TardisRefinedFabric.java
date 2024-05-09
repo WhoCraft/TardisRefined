@@ -73,9 +73,6 @@ public class TardisRefinedFabric implements ModInitializer {
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
-        ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(TardisRefined.MODID, "upgrades"), UpgradeArgumentType.class, SingletonArgumentInfo.contextFree(UpgradeArgumentType::upgradeArgumentType));
-
-
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "console_patterns"), ConsolePatterns.getReloadListener());
 
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
@@ -93,6 +90,11 @@ public class TardisRefinedFabric implements ModInitializer {
 
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton")));
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton_small")));
+
+
+        ArgumentTypeRegistry.registerArgumentType(new ResourceLocation(TardisRefined.MODID, "upgrades"), UpgradeArgumentType.class, SingletonArgumentInfo.contextFree(UpgradeArgumentType::upgradeArgumentType));
+
+
 
     }
 }

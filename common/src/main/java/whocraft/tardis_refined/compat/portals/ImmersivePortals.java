@@ -234,6 +234,7 @@ public class ImmersivePortals {
 
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);
+
         exteriorPortal.updatePortalFromNbt(tag);
 
         interiorPortal.updatePortalFromNbt(tag);
