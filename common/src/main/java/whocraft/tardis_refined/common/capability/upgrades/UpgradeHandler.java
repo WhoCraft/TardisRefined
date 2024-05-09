@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
 import java.util.ArrayList;
@@ -160,7 +160,7 @@ public class UpgradeHandler {
                 generateArsTree(tardisLevelOperator, serverLevel);
             }
 
-            TardisEvents.UPGRADE_UNLOCKED.invoker().onUpgradeUnlock(this.tardisLevelOperator, upgrade);
+            TardisCommonEvents.UPGRADE_UNLOCKED.invoker().onUpgradeUnlock(this.tardisLevelOperator, upgrade);
 
         }
     }
