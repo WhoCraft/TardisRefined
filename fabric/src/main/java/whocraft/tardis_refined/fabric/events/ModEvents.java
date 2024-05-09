@@ -13,6 +13,7 @@ import whocraft.tardis_refined.ControlGroupCheckers;
 import whocraft.tardis_refined.client.GravityOverlay;
 import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
@@ -54,7 +55,7 @@ public class ModEvents {
     }
 
     public static void addClientEvents() {
-        ClientTickEvents.START_CLIENT_TICK.register(TardisClientData::tickClientData);
+        ClientTickEvents.START_CLIENT_TICK.register(TardisClientLogic::tickClientData);
         ColorProviderRegistry.ITEM.register(TRItemColouring.SCREWDRIVER_COLORS, TRItemRegistry.SCREWDRIVER.get());
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> GravityOverlay.renderOverlay(matrixStack.pose()));
     }
