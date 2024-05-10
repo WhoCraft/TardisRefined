@@ -35,7 +35,7 @@ public abstract class DeferredRegistry<T> {
     }
 
     /** Gets the underlying Codec for the registry object type, if defined. Currently unused and untested, but added for completeness*/
-    public abstract Codec<T> getCodec();
+    public abstract Supplier<Codec<T>> getCodec();
 
     /**
      * Create a DeferredRegistry instance for custom registries

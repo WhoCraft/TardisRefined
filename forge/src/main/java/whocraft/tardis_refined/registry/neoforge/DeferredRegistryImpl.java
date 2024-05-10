@@ -78,8 +78,8 @@ public class DeferredRegistryImpl {
         }
 
         @Override
-        public Codec<T> getCodec() {
-            return this.getRegistry().byNameCodec();
+        public Supplier<Codec<T>> getCodec() {
+            return () -> this.registry.byNameCodec();
         }
     }
 
