@@ -19,7 +19,13 @@ public class TardisRefinedCommand {
                 .then(UpgradesCommand.register(dispatcher))
                 .then(Commands.literal("data").then(Commands.literal("export").then(ExportDesktopCommand.register(dispatcher))))
                 .then(LevelCommand.register(dispatcher))
-                .then(CreateCommand.register(dispatcher)));
+                );
+
+        if(!TardisRefined.IS_RELEASE) {
+            dispatcher.register(Commands.literal(TardisRefined.MODID + "_dev").requires(commandSource -> commandSource.hasPermission(Platform.getServer().getOperatorUserPermissionLevel()))
+                    .then(CreateCommand.register(dispatcher)
+                    ));
+        }
     }
 
 }
