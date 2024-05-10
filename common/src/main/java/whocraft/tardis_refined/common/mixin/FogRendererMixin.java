@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -44,8 +45,8 @@ public class FogRendererMixin {
 
             TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
-            if (TardisClientData.getFogTickDelta(blockPosition) > 0.0f) {
-                float delta = TardisClientData.getFogTickDelta(blockPosition);
+            if (TardisClientLogic.getFogTickDelta(blockPosition) > 0.0f) {
+                float delta = TardisClientLogic.getFogTickDelta(blockPosition);
 
                 RenderSystem.setShaderFogColor(0, 0, 0, 1); // This sets the fog to a pitch black
                 RenderSystem.setShaderFogStart(Mth.lerp(delta, 16f, -8f)); // This positions the fog based off the delta

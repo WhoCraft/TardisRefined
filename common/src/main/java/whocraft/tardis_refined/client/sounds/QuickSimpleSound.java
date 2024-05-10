@@ -8,8 +8,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 public class QuickSimpleSound extends AbstractTickableSoundInstance {
+
+    public static QuickSimpleSound VOICE_QUICK_SOUND =  new QuickSimpleSound(TRSoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
+
 
     public QuickSimpleSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());

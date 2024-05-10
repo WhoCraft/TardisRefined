@@ -24,7 +24,7 @@ import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
@@ -77,9 +77,9 @@ public class ImmersivePortals {
         //TODO Temp! Would crash a server
         EntityRendererRegistry.register(ImmersivePortals.BOTI_PORTAL.get(), PortalEntityRenderer::new);
 
-        TardisEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
-        TardisEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
-        TardisEvents.SHELL_CHANGE_EVENT.register((operator, theme, isSetupTardis) -> {
+        TardisCommonEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
+        TardisCommonEvents.DOOR_CLOSED_EVENT.register(ImmersivePortals::destroyPortals);
+        TardisCommonEvents.SHELL_CHANGE_EVENT.register((operator, theme, isSetupTardis) -> {
             TardisInternalDoor internalDoor = operator.getInternalDoor();
             ImmersivePortals.destroyPortals(operator);
             if (internalDoor != null){

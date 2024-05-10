@@ -10,25 +10,19 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import whocraft.tardis_refined.api.event.TardisEvents;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
-import whocraft.tardis_refined.common.blockentity.door.AbstractDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
-import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
-import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -36,7 +30,6 @@ import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
 
-import static whocraft.tardis_refined.common.block.RootPlantBlock.FACING;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
 
 public class TardisLevelOperator {
@@ -253,9 +246,9 @@ public class TardisLevelOperator {
             intDoor.setClosed(closeDoor);
         }
         if (closeDoor) {
-            TardisEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
+            TardisCommonEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
         } else {
-            TardisEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
+            TardisCommonEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
         }
 
         if (this.pilotingManager != null) {
@@ -270,7 +263,7 @@ public class TardisLevelOperator {
         tardisClientData.setShellTheme(theme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();
-        TardisEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
+        TardisCommonEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
     }
 
     /**
