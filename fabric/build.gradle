@@ -182,7 +182,7 @@ publishing {
 
     repositories {
         maven {
-            url = "https://maven.craig.software/repository/whocraft/"
+            url = "https://maven.craig.software/snapshots/"
             credentials {
                 username = project.findProperty("MAVEN_REPO_USERNAME") ?: System.getenv("MAVEN_REPO_USERNAME") ?: ""
                 password = project.findProperty("MAVEN_REPO_PASSWORD") ?: System.getenv("MAVEN_REPO_PASSWORD") ?: ""
