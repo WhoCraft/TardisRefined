@@ -12,11 +12,10 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.ControlGroupCheckers;
 import whocraft.tardis_refined.client.GravityOverlay;
 import whocraft.tardis_refined.client.TRItemColouring;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -44,8 +43,6 @@ public class ModEvents {
             ServerLevel world = server.getLevel(Level.OVERWORLD);
             DimensionHandlerImpl.loadLevels(world);
 
-            //Register Recipes
-            ManipulatorCrafting.registerRecipes();
         });
 
         ServerTickEvents.START_SERVER_TICK.register(ControlGroupCheckers::tickServer);

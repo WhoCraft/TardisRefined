@@ -22,7 +22,10 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.block.device.AstralManipulatorBlock;
-import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorBlockResult;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingRecipe;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingIngredient;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorItemResult;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.items.ScrewdriverMode;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -202,7 +205,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
     private boolean attemptToBuild(BlockPos pointA, BlockPos pointB) {
 
-        var submittedBlocks = new ArrayList<ManipulatorCraftingRecipeItem>();
+        var submittedBlocks = new ArrayList<ManipulatorCraftingIngredient>();
 
         // Grab the absolutes for these items.
         float xDiff = Math.abs(pointA.getX() - pointB.getX());
@@ -223,24 +226,24 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
                     var blockPosInWorld = new BlockPos(minPoint.getX() + x, minPoint.getY() + y, minPoint.getZ() + z);
 
-                    submittedBlocks.add(new ManipulatorCraftingRecipeItem(new BlockPos(x, y, z), level.getBlockState(blockPosInWorld).getBlock()));
+                    submittedBlocks.add(new ManipulatorCraftingIngredient(new BlockPos(x, y, z), level.getBlockState(blockPosInWorld)));
                 }
             }
         }
 
         // Filter recipes by the first block, will make it a LOT easier later down the line. (when I make it)
-        Optional<ManipulatorCraftingRecipeItem> firstBlock = submittedBlocks.stream().filter(x -> x.relativeBlockPos.getX() == 0 && x.relativeBlockPos.getY() == 0 && x.relativeBlockPos.getZ() == 0).findFirst();
+        Optional<ManipulatorCraftingIngredient> firstBlock = submittedBlocks.stream().filter(x -> x.relativeBlockPos().getX() == 0 && x.relativeBlockPos().getY() == 0 && x.relativeBlockPos().getZ() == 0).findFirst();
         if (firstBlock.isEmpty()) {
             return false;
         }
 
         List<ManipulatorCraftingRecipe> possibleRecipes = new ArrayList<ManipulatorCraftingRecipe>();
 
-        for (ManipulatorCraftingRecipe recipe : ManipulatorCrafting.MANIPULATOR_CRAFTING_RECIPES) {
+        for (ManipulatorCraftingRecipe recipe : ManipulatorCraftingRecipe.getAllRecipes(this.getLevel())) {
 
-            var zeroPos = recipe.itemList.stream().filter(x -> x.relativeBlockPos.getX() == 0 && x.relativeBlockPos.getY() == 0 && x.relativeBlockPos.getZ() == 0).findFirst();
+            var zeroPos = recipe.ingredients().stream().filter(x -> x.relativeBlockPos().getX() == 0 && x.relativeBlockPos().getY() == 0 && x.relativeBlockPos().getZ() == 0).findFirst();
             if (zeroPos.isPresent()) {
-                if (zeroPos.get().block == firstBlock.get().block) {
+                if (zeroPos.get().inputBlockState().getBlock() == firstBlock.get().inputBlockState().getBlock()) {
                     possibleRecipes.add(recipe);
                 }
             }
@@ -264,20 +267,24 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                 List<ItemEntity> droppedItems = getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(pointABlockPos, pointBBlockPos).inflate(1));
                 droppedItems.forEach(Entity::discard);
 
-                if (recipe.placeResultAsBlock && recipe.recipeOutputBlock != null) {
-                    Vec3 centerVector =  new AABB(pointABlockPos, pointBBlockPos).getCenter();
-                    int min = Math.min(pointABlockPos.getY(), pointBBlockPos.getY());
+                if (recipe.result() instanceof ManipulatorBlockResult blockResult) {
+                    BlockState blockState = blockResult.recipeOutput();
+                    if (blockState != null){
+                        Vec3 centerVector =  new AABB(pointABlockPos, pointBBlockPos).getCenter();
+                        int min = Math.min(pointABlockPos.getY(), pointBBlockPos.getY());
 
-                    BlockPos centerPos = new BlockPos((int) centerVector.x, min, (int) centerVector.z);
-
-                    Block block = recipe.recipeOutputBlock;
-                    level.setBlock(centerPos, block.defaultBlockState(), Block.UPDATE_ALL);
+                        BlockPos centerPos = new BlockPos((int) centerVector.x, min, (int) centerVector.z);
+                        level.setBlock(centerPos, blockState, Block.UPDATE_ALL);
+                    }
 
                 } else {
-                    // TODO: Make this system also accept placing a structure.
-                    ItemStack itemStack = new ItemStack(recipe.recipeOutputItem.asItem());
-                    ItemEntity item = new ItemEntity(level, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1, getBlockPos().getZ() + 0.5f, itemStack);
-                    level.addFreshEntity(item);
+                    if (recipe.result() instanceof ManipulatorItemResult itemResult) {
+                        ItemStack itemStack = itemResult.recipeOutput();
+                        if (itemStack != null){
+                            ItemEntity item = new ItemEntity(level, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1, getBlockPos().getZ() + 0.5f, itemStack);
+                            level.addFreshEntity(item);
+                        }
+                    }
                 }
 
                 return true;

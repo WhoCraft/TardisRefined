@@ -50,6 +50,9 @@ public class TardisRefined {
         TREntityRegistry.ENTITY_TYPES.register();
         TRSoundRegistry.SOUNDS.register();
         TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
+        TRManipulatorRecipeResultTypes.RESULT_TYPES.register();
+        TRCraftingRecipeTypes.RECIPE_TYPES.register();
+        TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
         TRDimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();
