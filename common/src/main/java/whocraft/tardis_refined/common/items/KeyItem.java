@@ -131,21 +131,14 @@ public class KeyItem extends Item {
 
                     setKeychain(itemStack, new ArrayList<>(List.of(serverLevel.dimension())));
 
-                    AtomicBoolean canTARDISTakeItem = new AtomicBoolean(false);
-                    TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {
-                        if (operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY || operator.getPilotingManager().isOutOfFuel()) {
-                            PlayerUtil.sendMessage(player, ModMessages.HARDWARE_OFFLINE, true);
-                            canTARDISTakeItem.set(false);
-                        } else {
-                            canTARDISTakeItem.set(true);
-                        }
-                    });
 
-                    if (!keychainContains(itemStack, tardis) || !canTARDISTakeItem.get()) {return false;}
+                    if (keychainContains(itemStack, tardis)) {return false;}
 
                     player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
                     player.playSound(SoundEvents.PLAYER_LEVELUP, 1, 0.5F);
+
+
                     return true;
                 }
             }

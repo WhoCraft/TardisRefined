@@ -1,19 +1,16 @@
 package whocraft.tardis_refined.common.blockentity.device;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import whocraft.tardis_refined.client.TRParticles;
-import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
+import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
@@ -69,7 +66,7 @@ public class CorridorTeleporterBlockEntity extends BlockEntity implements BlockE
                 List<Entity> entities = serverLevel.getEntitiesOfClass(Entity.class, box);
                 BlockPos corridorAirlock = TardisInteriorManager.STATIC_CORRIDOR_POSITION;
                 for (Entity entity : entities) {
-                    TRTeleporter.performTeleport(entity, serverLevel, corridorAirlock.getX() + 0.5f, corridorAirlock.getY(), corridorAirlock.getZ() + 0.5f, 0,0 );
+                    TardisTeleportData.getOrCreate(serverLevel).scheduleEntityTeleport(entity, serverLevel.dimension(), corridorAirlock.getX() + 0.5f, corridorAirlock.getY(), corridorAirlock.getZ() + 0.5f, 0,0 );
                 }
 
                 if (entities.stream().count() > 0) {

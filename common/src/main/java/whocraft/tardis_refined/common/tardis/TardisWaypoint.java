@@ -1,11 +1,6 @@
 package whocraft.tardis_refined.common.tardis;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.UUID;
 
@@ -37,7 +32,7 @@ public class TardisWaypoint {
     }
 
     public static TardisWaypoint deserialise(CompoundTag tag) {
-        TardisNavLocation loc = TardisNavLocation.deserialise(tag.getCompound("location"));
+        TardisNavLocation loc = TardisNavLocation.deserialize(tag.getCompound("location"));
         UUID id = tag.getUUID("id");
 
         TardisWaypoint waypoint = new TardisWaypoint(id, loc);

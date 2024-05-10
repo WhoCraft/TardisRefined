@@ -28,7 +28,7 @@ public class UploadWaypointMessage extends MessageC2S {
 
     public UploadWaypointMessage(FriendlyByteBuf buf) {
         CompoundTag tardisNav = buf.readNbt();
-        this.tardisNavLocation = TardisNavLocation.deserialise(tardisNav);
+        this.tardisNavLocation = TardisNavLocation.deserialize(tardisNav);
         this.coordInputType = CoordInputType.valueOf(buf.readUtf());
     }
 

@@ -90,7 +90,10 @@ public class TardisHelper {
                         TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
                         pilotManager.setCurrentLocation(navLocation);
                         pilotManager.setTargetLocation(navLocation);
+                        pilotManager.setFuel(pilotManager.getMaximumFuel());
                         tardisLevelOperator.setInitiallyGenerated(true);
+                        tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
+                        intManager.openTheEye(true);
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                         generated.set(true);
                     }

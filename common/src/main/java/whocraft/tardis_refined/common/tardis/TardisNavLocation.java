@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.tardis;
 
-import com.sun.jna.platform.win32.Guid;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
@@ -10,8 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.util.Platform;
-
-import java.util.UUID;
 
 /**
  * TardisNavLocation
@@ -108,7 +105,7 @@ public class TardisNavLocation {
         this.name = name;
     }
 
-    public static TardisNavLocation deserialise(CompoundTag tag) {
+    public static TardisNavLocation deserialize(CompoundTag tag) {
         TardisNavLocation loc = new TardisNavLocation(BlockPos.of(tag.getLong("pos")), Direction.values()[tag.getInt("dir")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dim"))));
 
         if (tag.contains("name"))

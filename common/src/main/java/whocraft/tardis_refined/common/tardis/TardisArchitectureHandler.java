@@ -83,17 +83,7 @@ public class TardisArchitectureHandler {
             }
         }
     }
-
-    public static void generateEssentialCorridors(ServerLevel serverLevel) {
-
-        Optional<StructureTemplate> structureNBT = serverLevel.getLevel().getStructureManager().get(new ResourceLocation(TardisRefined.MODID, "rooms/eye_of_harmony"));
-        structureNBT.ifPresent(structure -> {
-            BlockPos offsetPosition = new BlockPos(EYE_OF_HARMONY_PLACEMENT);
-            structure.placeInWorld(serverLevel.getLevel(), offsetPosition, offsetPosition, new StructurePlaceSettings(), serverLevel.getLevel().random, Block.UPDATE_NONE);
-        });
-
-    }
-
+    
     public static void generateArsTree(TardisLevelOperator tardisLevelOperator, ServerLevel level) {
         if (!currentArsStage.equals("one") && Objects.equals(tardisLevelOperator.getUpgradeHandler().getProgressLevel(), currentArsStage))
             return;
