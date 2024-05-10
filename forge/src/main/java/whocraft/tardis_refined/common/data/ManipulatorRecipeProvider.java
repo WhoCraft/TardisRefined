@@ -56,7 +56,7 @@ public class ManipulatorRecipeProvider implements DataProvider {
             data.entrySet().forEach(entry -> {
                 try {
                     ManipulatorCraftingRecipe recipe = entry.getValue();
-                    JsonObject currentDesktop = ManipulatorCraftingRecipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).get()
+                    JsonObject currentRecipe = ManipulatorCraftingRecipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).get()
                             .ifLeft(element -> { //Must add type field so that vanilla recognises this as a recipe type
                                 JsonObject json = element.getAsJsonObject();
                                 json.addProperty("type", ManipulatorCraftingRecipeSerializer.SERIALIZER_ID.toString());
@@ -65,7 +65,7 @@ public class ManipulatorRecipeProvider implements DataProvider {
                                 TardisRefined.LOGGER.error(right.message());
                             }).orThrow().getAsJsonObject();
                     String outputPath = "data/" + recipe.getId().getNamespace() + "/" + "recipes/astral_manipulator" + "/" + recipe.getId().getPath().replace("/", "_") + ".json";
-                    futures.add(DataProvider.saveStable(arg, currentDesktop, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
+                    futures.add(DataProvider.saveStable(arg, currentRecipe, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
                     TardisRefined.LOGGER.debug("Issue writing ManipulatorRecipe {}! Error: {}", entry.getValue().getId(), exception.getMessage());
                 }

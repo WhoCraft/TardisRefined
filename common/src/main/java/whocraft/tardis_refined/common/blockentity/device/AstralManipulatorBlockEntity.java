@@ -243,7 +243,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
             var zeroPos = recipe.ingredients().stream().filter(x -> x.relativeBlockPos().getX() == 0 && x.relativeBlockPos().getY() == 0 && x.relativeBlockPos().getZ() == 0).findFirst();
             if (zeroPos.isPresent()) {
-                if (zeroPos.get().input().getBlock() == firstBlock.get().input().getBlock()) {
+                if (zeroPos.get().inputBlockState().getBlock() == firstBlock.get().inputBlockState().getBlock()) {
                     possibleRecipes.add(recipe);
                 }
             }

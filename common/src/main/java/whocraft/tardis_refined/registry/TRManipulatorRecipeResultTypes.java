@@ -9,6 +9,7 @@ import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorBlo
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingResult;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorItemResult;
 
+/** 50ap5ud5 11/05/2024: Register our own recipe types to allow for different data to be defined depending on the recipe type*/
 public class TRManipulatorRecipeResultTypes {
 
     /** Registry Key for the Astral Manipulator Recipe Result type registry. For addon mods, use this as the registry key*/
@@ -20,6 +21,9 @@ public class TRManipulatorRecipeResultTypes {
     /** Global instance of the Astral Manipulator Recipe Result type custom registry created by Tardis Refined*/
     public static final Registry<Codec<? extends ManipulatorCraftingResult>> RESULT_TYPE_REGISTRY = RESULT_TYPES.getRegistry();
 
+    /* Register the codec derived from the MapCodec for each entry since the MapCodec isn't actually inheriting from Codec.
+    This is needed because for registration, NBT and JSON read/writing, we need the Codec. However, when we need to find the sub-codec based off the "type" key, we need to use the MapCodec
+    */
     public static final RegistrySupplier<Codec<ManipulatorItemResult>> ITEM_RESULT = RESULT_TYPES.register("item_result", () -> ManipulatorItemResult.MAP_CODEC.codec());
     public static final RegistrySupplier<Codec<ManipulatorBlockResult>> BLOCK_RESULT = RESULT_TYPES.register("block_result", () -> ManipulatorBlockResult.MAP_CODEC.codec());
 }

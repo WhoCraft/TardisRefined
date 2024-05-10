@@ -74,9 +74,4 @@ public class CommonBus {
         event.setCanceled(MiscHelper.shouldCancelBreaking(event.getEntity().level(), event.getEntity(), event.getPos(), event.getState()));
     }
 
-    @SubscribeEvent
-    public static void onServerStart(ServerStartedEvent event) {
-        ManipulatorRecipes.registerRecipes();
-    }
-
 }

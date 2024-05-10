@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.crafting.astral_manipulator;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,11 +41,12 @@ public class ManipulatorCraftingIngredient {
         return this.relativeBlockPos.getX() == compared.relativeBlockPos.getX() && this.relativeBlockPos.getY() == compared.relativeBlockPos.getY() && this.relativeBlockPos.getZ() == compared.relativeBlockPos.getZ();
     }
 
+    /** Defines the offset position for a block, in terms of a distance away from the position closest to the smallest coordinates out of the two positions chosen by the player*/
     public BlockPos relativeBlockPos(){
         return this.relativeBlockPos;
     }
 
-    public BlockState input(){
+    public BlockState inputBlockState(){
         return this.blockState;
     }
 }

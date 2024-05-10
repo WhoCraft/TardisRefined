@@ -47,6 +47,7 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
         this(ingredients, new ManipulatorBlockResult(recipeOutput));
     }
 
+    /** Get the unique id for this recipe. Needed for debugging purposes, and also to make sure we keep track of the recipes in some manner*/
     public ResourceLocation getId() {
         return this.id;
     }
@@ -93,11 +94,12 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
         return true;
     }
 
+    /** Provides the result of the recipe. This can be either a blockstate or itemstack depending on the result type*/
     public ManipulatorCraftingResult result(){
         return this.result;
     }
 
-
+    /** Provides the list of ingredients for the recipe, in the form of a list of blockstate to block position offsets*/
     public List<ManipulatorCraftingIngredient> ingredients(){
         return this.ingredients;
     }
@@ -127,12 +129,12 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
     public ItemStack getResultItem(RegistryAccess registryAccess) {
         return ItemStack.EMPTY;
     }
-    /** Required to allow vanilla to parse the recipe*/
+    /** Required to allow vanilla to parse the recipe during datapack parsing*/
     @Override
     public RecipeSerializer<?> getSerializer() {
         return TRCraftingRecipeSerializers.ASTRAL_MANIPULATOR.get();
     }
-    /** Required to allow vanilla to parse the recipe*/
+    /** Required to allow vanilla to parse the recipe during datapack parsing*/
     @Override
     public RecipeType<?> getType() {
         return TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get();

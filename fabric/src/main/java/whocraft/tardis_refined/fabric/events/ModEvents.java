@@ -43,8 +43,6 @@ public class ModEvents {
             ServerLevel world = server.getLevel(Level.OVERWORLD);
             DimensionHandlerImpl.loadLevels(world);
 
-            //Register Recipes
-            ManipulatorRecipes.registerRecipes();
         });
 
         ServerTickEvents.START_SERVER_TICK.register(ControlGroupCheckers::tickServer);

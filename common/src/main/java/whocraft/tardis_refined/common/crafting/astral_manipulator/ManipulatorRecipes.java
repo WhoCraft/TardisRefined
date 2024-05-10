@@ -9,7 +9,7 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.*;
 
-// Before 50 says anything. Yes, this should be made into a codec. Will I do it? No.
+/** Default recipes added by Tardis Refined. Used for data generators */
 public class ManipulatorRecipes {
 
     public static Map<ResourceLocation, ManipulatorCraftingRecipe> MANIPULATOR_CRAFTING_RECIPES = new HashMap<>();
