@@ -211,7 +211,7 @@ public class TardisLevelOperator {
         if (aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                if (ImmersivePortals.isShellThemeSupported(theme)) {
                     return false;
                 }
             }

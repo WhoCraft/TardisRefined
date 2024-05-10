@@ -39,18 +39,27 @@ public class BOTIPortalEntity extends Portal {
         }
     }
 
-    public boolean isValidToStayAlive(){
-        return ImmersivePortals.tardisToPortalsMap.containsKey(getTardisId());
-    }
-
     @Override
     public void tick() {
+        UUID tardisId = getTardisId();
 
-       if(!isValidToStayAlive() && level() instanceof ServerLevel serverLevel) {
-            if(serverLevel.dimension().location().getPath().equals(getTardisId().toString())) {
-                TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::createPortals);
+        /*// Just in case the portal persists
+        if(tardisId != null && !level().isClientSide) {
+            ServerLevel serverLevel = (ServerLevel) level();
+            if (!ImmersivePortals.doPortalsExistForTardis(getTardisId())) {
+                kill();
+                if(serverLevel.dimension().location().getPath().equals(tardisId.toString())) {
+                    TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::createPortals);
+                }
             }
-        }
+            else {
+                for (Portal portal : ImmersivePortals.getPortalsForTardis(tardisId)) {
+                    if (portal == null) {
+                        kill();
+                    }
+                }
+            }
+        }*/
 
         super.tick();
     }

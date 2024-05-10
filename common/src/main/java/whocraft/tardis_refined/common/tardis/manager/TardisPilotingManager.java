@@ -572,6 +572,9 @@ public class TardisPilotingManager extends BaseHandler {
 
             currentLocation = location;
 
+            level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
+
+
             exteriorManager.placeExteriorBlock(operator, location);
 
             exteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
