@@ -24,8 +24,8 @@ body:
       label: Minecraft version
       description: What version of Minecraft are you using?
       options:
-        - 1.19.4 (Latest)
-        - 1.19.2 (Latest)
+        - 1.20.2 (Latest)
+        - 1.19.2
     validations:
       required: true
   - type: dropdown
@@ -34,6 +34,7 @@ body:
       label: Mod Loader Platform type
       description: What type of mod loader are you using?
       options:
+        - Neoforge
         - Forge
         - Fabric
     validations:
@@ -51,6 +52,7 @@ body:
       label: Tardis Refined version
       description: What version of Tardis Refined are you using?
       options:
+        - v2.0
         - v1.0
         - Pre-release v0.1
     validations:
