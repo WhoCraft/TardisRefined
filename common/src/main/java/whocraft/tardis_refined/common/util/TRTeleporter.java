@@ -531,19 +531,19 @@ public class TRTeleporter {
         if (teleportedEntities != null){
             if (!teleportedEntities.isEmpty()){
                 if (teleportedEntities.contains(pEntity)){ //If we are calling this method by itself such as teleporting passengers, check if we have already teleported the entity
-                    TardisRefined.LOGGER.warn("Failed to teleport entity type as it has already been teleported: {}", pEntity.getType().toString());
+                    TardisRefined.LOGGER.warn("Failed to teleport entity type as it has already been teleported: {}", pEntity.getType());
                     return false;
                 }
             }
         }
 
         if (pEntity.getType().is(TRTagKeys.TARDIS_TELEPORT_BLACKLIST)) { //Stop teleporting if the entity being teleported is blacklisted
-            TardisRefined.LOGGER.warn("Failed to teleport entity type due to it being blacklisted: {}", pEntity.getType().toString());
+            TardisRefined.LOGGER.warn("Failed to teleport entity type due to it being blacklisted: {}", pEntity.getType());
             return false;
         }
         if (safeBlockCheck) {
             if (!canTeleportTo(blockpos, destination, pEntity)) {
-                TardisRefined.LOGGER.warn("Failed to teleport entity type due to destination location being unsafe: {}", pEntity.getType().toString());
+                TardisRefined.LOGGER.warn("Failed to teleport entity type due to destination location being unsafe: {}", pEntity.getType());
                 return false;
             }
         }

@@ -66,7 +66,7 @@ public class CorridorTeleporterBlockEntity extends BlockEntity implements BlockE
                 List<Entity> entities = serverLevel.getEntitiesOfClass(Entity.class, box);
                 BlockPos corridorAirlock = TardisInteriorManager.STATIC_CORRIDOR_POSITION;
                 for (Entity entity : entities) {
-                    TardisTeleportData.getOrCreate(serverLevel).scheduleEntityTeleport(entity, serverLevel.dimension(), corridorAirlock.getX() + 0.5f, corridorAirlock.getY(), corridorAirlock.getZ() + 0.5f, 0,0 );
+                    TardisTeleportData.scheduleEntityTeleport(entity, serverLevel.dimension(), corridorAirlock.getX() + 0.5f, corridorAirlock.getY(), corridorAirlock.getZ() + 0.5f, 0,0 );
                 }
 
                 if (entities.stream().count() > 0) {

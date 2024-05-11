@@ -143,7 +143,7 @@ public class TardisHelper {
 
             Vec3 centredTarget = LevelHelper.centerPos(finalTeleportPos, false);
 
-            TardisTeleportData.getOrCreate(teleportingEntityLevel).scheduleEntityTeleport(entity, destinationLevel.dimension(), centredTarget.x(), centredTarget.y(), centredTarget.z(), adjustedRotationYaw, entity.getXRot());
+            TardisTeleportData.scheduleEntityTeleport(entity, destinationLevel.dimension(), centredTarget.x(), centredTarget.y(), centredTarget.z(), adjustedRotationYaw, entity.getXRot());
 
             //Fire exit or enter events
             if (entity instanceof LivingEntity livingEntity) {
