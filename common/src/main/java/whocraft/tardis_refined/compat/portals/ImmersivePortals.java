@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.imm_ptl.core.render.PortalEntityRenderer;
@@ -349,4 +351,7 @@ public class ImmersivePortals {
         return portal;
     }
 
+    public static void teleportViaIp(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ) {
+        PortalAPI.teleportEntity(pEntity, destination, new Vec3(pX, pY, pZ));
+    }
 }

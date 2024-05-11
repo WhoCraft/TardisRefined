@@ -19,7 +19,11 @@ import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import qouteall.imm_ptl.core.IPGlobal;
+import qouteall.imm_ptl.core.api.PortalAPI;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.*;
@@ -74,6 +78,12 @@ public class TRTeleporter {
     private static boolean performTeleport(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float pYaw, float pPitch, boolean safeBlockCheck, Set<Entity> teleportedEntities) {
         Preconditions.checkNotNull(destination, "A target level must be provided for teleportation");
         Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
+
+        if(ModCompatChecker.immersivePortals()){
+            ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);
+            return false;
+        }
+
         if (!pEntity.level().isClientSide()) {
             if (safetyCheck(pEntity, destination, pX, pY, pZ, safeBlockCheck, teleportedEntities)) {
                 Entity teleportedEntity;
