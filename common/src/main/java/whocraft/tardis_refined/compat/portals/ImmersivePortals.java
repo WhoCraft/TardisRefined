@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.compat.portals;
 
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
-import qouteall.imm_ptl.core.render.PortalEntityRenderer;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
@@ -39,7 +37,6 @@ import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
-import javax.sound.sampled.Port;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,9 +89,13 @@ public class ImmersivePortals {
         // Register BOTI Portal here, as doing it in main code would make it a hard dependency
         BOTI_PORTAL = ENTITY_TYPES.register("boti_portal", () -> registerStatic(BOTIPortalEntity::new, MobCategory.MISC, 1, 1, 96, 20, "boti_portal"));
 
-        //TODO Temp! Would crash a server
-        EntityRendererRegistry.register(ImmersivePortals.BOTI_PORTAL.get(), PortalEntityRenderer::new);
+        setupEvents();
 
+        // Set up for Portals!
+        setupPortalsForShellThemes();
+    }
+
+    private static void setupEvents() {
         // Create Portals when Doors are opened
         TardisCommonEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
 
@@ -111,9 +112,6 @@ public class ImmersivePortals {
                 }
             }
         });
-
-        // Set up for Portals!
-        setupPortalsForShellThemes();
     }
 
     private static void setupPortalsForShellThemes() {
@@ -269,10 +267,10 @@ public class ImmersivePortals {
         }
 
         switch (door.getEntryRotation()) {
-            case EAST -> entryPosition = entryPosition.add(interiorDoor.east().scale((0.0625)));
-            case SOUTH -> entryPosition = entryPosition.add(interiorDoor.south().scale((0.0625)));
-            case WEST -> entryPosition = entryPosition.add(interiorDoor.west().scale((0.0625)));
-            case NORTH -> entryPosition = entryPosition.add(interiorDoor.north().scale((0.0625)));
+            case EAST -> entryPosition = entryPosition.add(interiorDoor.east());
+            case SOUTH -> entryPosition = entryPosition.add(interiorDoor.south());
+            case WEST -> entryPosition = entryPosition.add(interiorDoor.west());
+            case NORTH -> entryPosition = entryPosition.add(interiorDoor.north());
         }
         DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
         DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
