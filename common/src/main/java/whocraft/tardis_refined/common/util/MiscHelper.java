@@ -27,6 +27,7 @@ import net.minecraft.world.phys.AABB;
 import org.apache.commons.lang3.text.WordUtils;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
+import whocraft.tardis_refined.common.block.life.EyeBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
@@ -143,7 +144,7 @@ public class MiscHelper {
             }
         }
 
-        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock;
+        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
