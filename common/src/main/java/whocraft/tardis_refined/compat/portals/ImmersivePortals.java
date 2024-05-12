@@ -115,15 +115,17 @@ public class ImmersivePortals {
     }
 
     private static void setupPortalsForShellThemes() {
-        registerThemePortal(ShellTheme.FACTORY.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.3125, 0),
-                new Vec3(0, 0.3125, 0.499), new Vec3(-0.499, 0.3125, 0), new Vec3(0, 0.3125, -0.499)), new PortalOffets.OffsetData(
-                new Vec3(-1.375, 0.125, 0), new Vec3(0, 0.125, -1.375),
-                new Vec3(1.375, 0.125, 0), new Vec3(0, 0.125, 1.375)), new Vec2(1, 2)));
 
-        registerThemePortal(ShellTheme.HALF_BAKED.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.3125, 0),
+        THEME_OFFSETS.clear();
+
+        PortalOffets ttCapsule = new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.499, 0.3125, 0),
                 new Vec3(0, 0.3125, 0.499), new Vec3(-0.499, 0.3125, 0), new Vec3(0, 0.3125, -0.499)), new PortalOffets.OffsetData(
                 new Vec3(-1.375, 0.125, 0), new Vec3(0, 0.125, -1.375),
-                new Vec3(1.375, 0.125, 0), new Vec3(0, 0.125, 1.375)), new Vec2(1, 2)));
+                new Vec3(1.375, 0.125, 0), new Vec3(0, 0.125, 1.375)), new Vec2(1, 2));
+
+        registerThemePortal(ShellTheme.FACTORY.get(), ttCapsule);
+
+        registerThemePortal(ShellTheme.HALF_BAKED.get(), ttCapsule);
 
 
         registerThemePortal(ShellTheme.POLICE_BOX.get(),
@@ -133,9 +135,11 @@ public class ImmersivePortals {
                         new Vec3(-0.6, 0.125, 0),
                         new Vec3(0, 0.125, -0.6)),
 
-
-                        new PortalOffets.OffsetData(new Vec3(-1.425, 0.0625, 0), new Vec3(0, 0.0625, -1.425),
-                        new Vec3(1.425, 0.0625, 0), new Vec3(0, 0.0625, 1.425)), new Vec2(1, 2)));
+                        new PortalOffets.OffsetData(
+                                new Vec3(-1.425, 0.0625, 0),
+                                new Vec3(0, 0.0625, -1.425),
+                                new Vec3(1.425, 0.0625, 0),
+                                new Vec3(0, 0.0625, 1.700)), new Vec2(1, 2)));
 
         registerThemePortal(ShellTheme.PHONE_BOOTH.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0.125, 0),
                 new Vec3(0, 0.125, 0.5), new Vec3(-0.5, 0.125, 0), new Vec3(0, 0.125, -0.5)),
@@ -156,6 +160,12 @@ public class ImmersivePortals {
                 new Vec3(0, 0.125, 0.61), new Vec3(-0.61, 0.125, 0), new Vec3(0, 0.125, -0.61)), new PortalOffets.OffsetData(
                 new Vec3(-1.425, 0.0625, 0), new Vec3(0, 0.0625, -1.425),
                 new Vec3(1.425, 0.0625, 0), new Vec3(0, 0.0625, 1.425)), new Vec2(1, 2)));
+
+        registerThemePortal(ShellTheme.HIEROGLYPH.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0, 0),
+                new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0, -0.5)), new PortalOffets.OffsetData(
+                new Vec3(-1.33, 0, 0), new Vec3(0, 0, -1.33),
+                new Vec3(1.33, 0, 0), new Vec3(0, 0, 1.33)), new Vec2(1, 2.25f)));
+
 
         registerThemePortal(ShellTheme.GROENING.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.5, 0, 0),
                 new Vec3(0, 0, 0.5), new Vec3(-0.5, 0, 0), new Vec3(0, 0, -0.5)), new PortalOffets.OffsetData(
@@ -232,6 +242,8 @@ public class ImmersivePortals {
     }
 
     public static void createPortals(TardisLevelOperator operator) {
+
+        setupPortalsForShellThemes();
         UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
 
         AestheticHandler aestheticsHandler = operator.getAestheticHandler();
