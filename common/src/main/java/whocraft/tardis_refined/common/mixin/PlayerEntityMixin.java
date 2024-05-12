@@ -21,4 +21,13 @@ public class PlayerEntityMixin {
     }
 
 
+    @Inject(method = "tick()V", at = @At("TAIL"))
+    private void tick(CallbackInfo ci) {
+        Player player = (Player) (Object) this;
+        if(GravityUtil.isInGravityShaft(player)){
+            player.resetFallDistance();
+        }
+    }
+
+
 }

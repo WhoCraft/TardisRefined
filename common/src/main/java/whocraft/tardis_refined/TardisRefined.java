@@ -28,7 +28,7 @@ import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
 
-    public static boolean IS_CONTROL_GROUP = true;
+    public static boolean IS_CONTROL_GROUP = false;
     public static boolean IS_RELEASE = !IS_CONTROL_GROUP || !SharedConstants.IS_RUNNING_IN_IDE;
 
     public static final String MODID = "tardis_refined";
@@ -50,6 +50,9 @@ public class TardisRefined {
         TREntityRegistry.ENTITY_TYPES.register();
         TRSoundRegistry.SOUNDS.register();
         TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
+        TRManipulatorRecipeResultTypes.RESULT_TYPES.register();
+        TRCraftingRecipeTypes.RECIPE_TYPES.register();
+        TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
         TRDimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();

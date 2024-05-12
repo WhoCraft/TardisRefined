@@ -172,11 +172,11 @@ public class ShellPatterns {
         }
 
         //TODO Currently not compatible
- /*       addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "marble", false);
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "gaudy", false);
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "metal", false);
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "stone", false);
-        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);*/
+         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "faded", true);
+//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "gaudy", false);
+//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "metal", false);
+//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "stone", false);
+//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);*/
 
         addDefaultPattern(ShellTheme.PHONE_BOOTH.getId(), "metal", false);
 

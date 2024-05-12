@@ -41,7 +41,7 @@ public class DesktopTheme {
      * @param id
      * @param structureLocation
      * @param name - The display name that is shown on the Desktop Selection Screen. Supports Tellraw style JSON strings, but they must be validated beforehand.
-     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/ui/desktops/
+     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/gui/desktops/
      */
     public DesktopTheme(String id, String structureLocation, String name) {
         this(new ResourceLocation(TardisRefined.MODID, id), new ResourceLocation(TardisRefined.MODID, structureLocation), name);
@@ -52,7 +52,7 @@ public class DesktopTheme {
      * @param id - the unique identifier for the DesktopTheme. Do not use the Tardis Refined ModId for the namespace if the DesktopTheme is not for the base mod.
      * @param structureLocation - the ResourceLocation for the structure's .nbt file. The nbt file should be located under data/[namespace]/structures.
      * @param name - The display name that is shown on the Desktop Selection Screen. Supports Tellraw style JSON strings, but they must be validated beforehand.
-     * @implNote NOTE: Users must also add a PNG display image under assets/[namespace]/textures/ui/desktops/
+     * @implNote NOTE: Users must also add a PNG display image under assets/[namespace]/textures/gui/desktops/
      */
     public DesktopTheme(ResourceLocation id, ResourceLocation structureLocation, String name) {
         this.identifier = id;

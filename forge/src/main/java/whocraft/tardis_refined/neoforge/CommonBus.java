@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import whocraft.tardis_refined.ControlGroupCheckers;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
-import whocraft.tardis_refined.common.crafting.ManipulatorCrafting;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -75,11 +75,6 @@ public class CommonBus {
     @SubscribeEvent
     public static void onEntityBlockBreak(LivingDestroyBlockEvent event) {
         event.setCanceled(MiscHelper.shouldCancelBreaking(event.getEntity().level(), event.getEntity(), event.getPos(), event.getState()));
-    }
-
-    @SubscribeEvent
-    public static void onServerStart(ServerStartedEvent event) {
-        ManipulatorCrafting.registerRecipes();
     }
 
 }
