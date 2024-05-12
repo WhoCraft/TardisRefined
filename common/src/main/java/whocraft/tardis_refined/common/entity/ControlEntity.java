@@ -44,6 +44,7 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TREntityRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
 
 public class ControlEntity extends Entity {
 
@@ -111,6 +112,10 @@ public class ControlEntity extends Entity {
     public void setSizeAndUpdate(float width, float height) {
         this.setSizeData(width, height);
         this.refreshDimensions();
+    }
+
+    public boolean isDead() {
+        return this.getEntityData().get(IS_DEAD);
     }
 
     public ControlSpecification controlSpecification() {
@@ -218,20 +223,45 @@ public class ControlEntity extends Entity {
     @Override
     public boolean hurt(DamageSource damageSource, float f) {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
-            if (this.level() instanceof ServerLevel serverLevel) {
+
+            Level level = this.level();
+
+
+            if (level instanceof ServerLevel serverLevel) {
 
                 if (entityData.get(IS_DEAD)) {
                     return false;
                 }
 
                 if (this.entityData.get(TICKING_DOWN)) {
-                    realignControl();
+
+                    if (player.getMainHandItem().is(TRItemRegistry.MALLET.get())) {
+                        forceRealignControl();
+                    } else {
+                        realignControl();
+                    }
+
+
                 } else {
                     handleLeftClick(player, serverLevel);
                 }
 
 
                 return true;
+            } else {
+
+                if (level instanceof ClientLevel clientLevel) {
+                    if (player.getMainHandItem().is(TRItemRegistry.MALLET.get())) {
+
+                        for (int i = 0; i < 4; i++) {
+                            ClientHelper.playParticle(clientLevel, ParticleTypes.LAVA, this.position(), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + clientLevel.random.nextFloat());
+                        }
+
+                        clientLevel.playLocalSound(BlockPos.containing(this.position()), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.25f, level.getRandom().nextFloat() + 1f, false);
+                    }
+                }
+
+
             }
         }
         return super.hurt(damageSource, f);
@@ -281,6 +311,16 @@ public class ControlEntity extends Entity {
             this.level().addParticle(ParticleTypes.HEART, consoleBlockPos.getX() + 0.5, consoleBlockPos.getY() + 2, consoleBlockPos.getZ() + 0.5, 0, 0.5, 0);
 
             this.entityData.set(CONTROL_HEALTH, nextHealth);
+        }
+    }
+
+    private void forceRealignControl() {
+        if (level().getRandom().nextInt(4) == 0) {
+            this.onControlDead();
+        } else {
+            this.entityData.set(TICKING_DOWN, false);
+            this.entityData.set(CONTROL_HEALTH, TotalControlHealth);
+            this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
         }
     }
 

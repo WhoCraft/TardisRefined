@@ -89,6 +89,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
         add(TRItemRegistry.GLASSES.get(), "AR Glasses");
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
+        add(TRItemRegistry.MALLET.get(), "Mallet");
 
         /*Damage Sources*/
         add(TRDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");
