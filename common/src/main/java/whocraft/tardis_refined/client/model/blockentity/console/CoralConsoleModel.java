@@ -3599,6 +3599,11 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 	}
 
 	@Override
+	public ResourceLocation getConsoleTheme() {
+		return ConsoleTheme.CORAL.getId();
+	}
+
+	@Override
 	public ResourceLocation getDefaultTexture() {
 		return CORAL_TEXTURE;
 	}

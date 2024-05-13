@@ -3,12 +3,15 @@ package whocraft.tardis_refined.client.model.blockentity.console;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.ResourceLocation;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.*;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -18,7 +21,7 @@ public class ConsoleModelCollection {
 
     ConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel, refurbishedConsoleModel;
 
-    public static Map<ResourceLocation, ConsoleUnit> CONSOLE_MODELS = new HashMap<>();
+    public static List<ConsoleUnit> CONSOLE_MODELS = new ArrayList<>();
     
     public ConsoleModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
@@ -38,16 +41,16 @@ public class ConsoleModelCollection {
         initiativeConsoleModel = new InitiativeConsoleModel(context.bakeLayer((ModelRegistry.INITIATIVE_CONSOLE)));
         refurbishedConsoleModel = new RefurbishedConsoleModel(context.bakeLayer((ModelRegistry.REFURBISHED_CONSOLE)));
 
-        CONSOLE_MODELS.put(ConsoleTheme.FACTORY.getId(), factoryConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.NUKA.getId(), nukaConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.COPPER.getId(), copperConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.CORAL.getId(), coralConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.TOYOTA.getId(), toyotaConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.CRYSTAL.getId(), crystalConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.VICTORIAN.getId(), victorianConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.MYST.getId(), mystConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.INITIATIVE.getId(), initiativeConsoleModel);
-        CONSOLE_MODELS.put(ConsoleTheme.REFURBISHED.getId(), refurbishedConsoleModel);
+        CONSOLE_MODELS.add(factoryConsoleModel);
+        CONSOLE_MODELS.add(nukaConsoleModel);
+        CONSOLE_MODELS.add( copperConsoleModel);
+        CONSOLE_MODELS.add(coralConsoleModel);
+        CONSOLE_MODELS.add(toyotaConsoleModel);
+        CONSOLE_MODELS.add(crystalConsoleModel);
+        CONSOLE_MODELS.add(victorianConsoleModel);
+        CONSOLE_MODELS.add(mystConsoleModel);
+        CONSOLE_MODELS.add(initiativeConsoleModel);
+        CONSOLE_MODELS.add(refurbishedConsoleModel);
 
     }
 
@@ -58,8 +61,13 @@ public class ConsoleModelCollection {
      * @return Console unit model tied with the console theme.
      **/
     public ConsoleUnit getConsoleModel(ResourceLocation themeId) {
-        System.out.println(themeId);
-        return CONSOLE_MODELS.get(themeId);
+        for (ConsoleUnit consoleModel : CONSOLE_MODELS) {
+            if(consoleModel.getConsoleTheme().toString().equals(themeId.toString())){
+                return consoleModel;
+            }
+        }
+        TardisRefined.LOGGER.warn("Could not find model for {}, did you bind it?", themeId);
+        return null;
     }
 
     private static ConsoleModelCollection instance = null;

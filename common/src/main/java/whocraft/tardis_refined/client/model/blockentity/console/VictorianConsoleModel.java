@@ -23,6 +23,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class VictorianConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -2317,5 +2318,10 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 	@Override
 	public ResourceLocation getDefaultTexture() {
 		return VICTORIAN_TEXTURE;
+	}
+
+	@Override
+	public ResourceLocation getConsoleTheme() {
+		return ConsoleTheme.VICTORIAN.getId();
 	}
 }
