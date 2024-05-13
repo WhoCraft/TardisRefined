@@ -58,6 +58,7 @@ public class ConsoleModelCollection {
      * @return Console unit model tied with the console theme.
      **/
     public ConsoleUnit getConsoleModel(ResourceLocation themeId) {
+        System.out.println(themeId);
         return CONSOLE_MODELS.get(themeId);
     }
 
