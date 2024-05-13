@@ -5,6 +5,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.CancelDesktopChangeMessage;
 import whocraft.tardis_refined.common.network.messages.ChangeDesktopMessage;
 import whocraft.tardis_refined.common.network.messages.ChangeShellMessage;
+import whocraft.tardis_refined.common.network.messages.EjectPlayerFromConsoleMessage;
 import whocraft.tardis_refined.common.network.messages.hums.ChangeHumMessage;
 import whocraft.tardis_refined.common.network.messages.screens.C2SRequestShellSelection;
 import whocraft.tardis_refined.common.network.messages.screens.OpenMonitorMessage;
@@ -18,7 +19,10 @@ public class TardisNetwork {
 
     public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
 
-    public static MessageType OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C, REQUEST_SHELL_C2S, CLIENT_OPEN_COORDS_SCREEN,  SERVER_OPEN_COORDS_SCREEN, CLIENT_OPEN_EDIT_COORDS_SCREEN, SERVER_OPEN_EDIT_COORDS_SCREEN, UPLOAD_WAYPOINT, EDIT_WAYPOINT, SET_WAYPOINT, CHANGE_HUM, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS, SYNC_LEVELS, INT_REACTION, OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE;
+    public static MessageType OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C,
+            REQUEST_SHELL_C2S, CLIENT_OPEN_COORDS_SCREEN,  SERVER_OPEN_COORDS_SCREEN, CLIENT_OPEN_EDIT_COORDS_SCREEN, SERVER_OPEN_EDIT_COORDS_SCREEN, UPLOAD_WAYPOINT,
+            EDIT_WAYPOINT, SET_WAYPOINT, CHANGE_HUM, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS, SYNC_LEVELS, INT_REACTION,
+            OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE, EJECT_PLAYER;
 
     public static void init() {
         // S2C Messages
@@ -51,6 +55,7 @@ public class TardisNetwork {
         UNLOCK_UPGRADE = NETWORK.registerC2S("unlock_upgrade", UnlockUpgradeMessage::new);
         REQUEST_SHELL_C2S = NETWORK.registerC2S("request_shell_c2s", C2SRequestShellSelection::new);
         CHANGE_HUM = NETWORK.registerC2S("change_hum", ChangeHumMessage::new);
+        EJECT_PLAYER = NETWORK.registerC2S("eject_player", EjectPlayerFromConsoleMessage::new);
     }
 
 
