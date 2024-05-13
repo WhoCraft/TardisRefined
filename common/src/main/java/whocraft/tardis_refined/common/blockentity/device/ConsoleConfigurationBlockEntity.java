@@ -31,7 +31,6 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
     }
 
     public void setConsoleTheme(ResourceLocation themeId){
-        System.out.println(themeId);
         this.consoleTheme = themeId;
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
         this.setChanged();
