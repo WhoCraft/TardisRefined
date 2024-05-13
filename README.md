@@ -40,6 +40,10 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
          <td><a href="https://twitter.com/50ap5ud5">50ap5ud5</a></td>
          <td>Developer</td>
       </tr>
+    <tr>
+         <td><a href="https://github.com/Duzos">duzo</a></td>
+         <td>Developer</td>
+      </tr>
 <tr><td><a href="https://twitter.com/MagicMrmann">MagicMan</a></td>
          <td>Art Lead</td> </tr>
 <tr><td><a href="https://twitter.com/ILikePandas18">ILikePandas</a></td>
@@ -49,7 +53,7 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
    </tbody>
 </table>
 
-With special thanks to Commoble, Lucraft, starray1000000, The Judge and Sea Pickle<br/><hr/>
+With special thanks to Commoble, Lucraft, starray1000000, The Judge, Monsterwaill and Sea Pickle<br/><hr/>
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
 ## Immersive Portals Support
