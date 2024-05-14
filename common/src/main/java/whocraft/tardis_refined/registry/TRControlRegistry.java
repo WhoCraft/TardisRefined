@@ -14,7 +14,7 @@ public class TRControlRegistry {
 	public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
 
 	/** Tardis Refined instance of the Controls registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-	public static final DeferredRegistry<Control> CONTROLS = DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
+	public static final DeferredRegistry<Control> CONTROLS = DeferredRegistry.create(TardisRefined.MODID, CONTROL_REGISTRY_KEY);
 
 	/** Global instance of the Control custom registry created by Tardis Refined*/
 	public static final Registry<Control> CONTROL_REGISTRY = CONTROLS.getRegistry();

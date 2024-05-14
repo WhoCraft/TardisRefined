@@ -55,14 +55,16 @@ public class DeferredRegistryImpl {
         @Override
         public <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier) {
             var orig = this.register.register(id, supplier);
-            var registrySupplier = new RegistrySupplier<>(orig.getId(), orig);
-            return registrySupplier;
+            return new RegistrySupplier<>(orig.getId(), orig);
         }
 
         @Override
         public Registry<T> getRegistry() {
-            this.registry = this.isCustom ? (Registry<T>) this.register.makeRegistry(RegistryBuilder::new).get() : (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location());
-            return this.registry;
+            Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location());
+            if (registry == null) {
+                throw new IllegalArgumentException("No registry with key " + registryKey);
+            }
+            return registry;
         }
 
         @Override

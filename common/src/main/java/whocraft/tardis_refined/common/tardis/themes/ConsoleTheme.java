@@ -19,7 +19,7 @@ public class ConsoleTheme implements Theme {
     public static final ResourceKey<Registry<ConsoleTheme>> CONSOLE_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "console_theme"));
 
     /** Tardis Refined instance of the ConsoleTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-    public static final DeferredRegistry<ConsoleTheme> CONSOLE_THEMES = DeferredRegistry.createCustom(TardisRefined.MODID, CONSOLE_THEME_REGISTRY_KEY, true);
+    public static final DeferredRegistry<ConsoleTheme> CONSOLE_THEMES = DeferredRegistry.create(TardisRefined.MODID, CONSOLE_THEME_REGISTRY_KEY);
     /** Global instance of the Console Theme custom registry created by Tardis Refined*/
     public static final Registry<ConsoleTheme> CONSOLE_THEME_REGISTRY = CONSOLE_THEMES.getRegistry();
 

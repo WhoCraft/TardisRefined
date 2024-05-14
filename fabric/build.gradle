@@ -91,6 +91,7 @@ repositories {
     }
 }
 
+/*
 def generatedResources = project(":forge").file("src/generated/resources")
 
 sourceSets {
@@ -98,6 +99,7 @@ sourceSets {
         resources.srcDir generatedResources
     }
 }
+*/
 
 
 
@@ -169,6 +171,8 @@ def replaceProperties = [mod_id                                : mod_id, mod_nam
                          fabric_immersive_portals_version_range: fabric_immersive_portals_version_range
                          //,display_test_type: display_test_type
 ]
+
+
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
