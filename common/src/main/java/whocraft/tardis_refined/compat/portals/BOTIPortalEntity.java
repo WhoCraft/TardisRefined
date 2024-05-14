@@ -7,15 +7,27 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import qouteall.imm_ptl.core.portal.Portal;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class BOTIPortalEntity extends Portal {
 
     private static final EntityDataAccessor<Optional<UUID>> TARDIS_ID = SynchedEntityData.defineId(BOTIPortalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+
+
+    // We don't save this as the portals die on server stop, we just need it in RAM
+    ShellTheme shellTheme = ShellTheme.FACTORY.get();
+
+    public ShellTheme getShellTheme() {
+        return shellTheme;
+    }
+
+    public void setShellTheme(ShellTheme shellTheme) {
+        this.shellTheme = shellTheme;
+    }
 
     public BOTIPortalEntity(EntityType<?> entityType, Level world) {
         super(entityType, world);
@@ -45,11 +57,11 @@ public class BOTIPortalEntity extends Portal {
         super.tick();
     }
 
-    private void contemplateExistence(UUID uuid) {
-        List<Portal> portals = ImmersivePortals.getPortalsForTardis(uuid);
-        if(portals == null) return;
-        if(!portals.contains(this)){
-            kill();
+    private void contemplateExistence(UUID tardisUuid) {
+        PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisUuid);
+        if(portalEntry == null) return;
+        if(!portalEntry.isPortalValidForEntry(this)){
+            remove(RemovalReason.DISCARDED);
         }
     }
 

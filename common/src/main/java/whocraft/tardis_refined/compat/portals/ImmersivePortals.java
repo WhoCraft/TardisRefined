@@ -55,7 +55,7 @@ import static whocraft.tardis_refined.registry.TREntityRegistry.registerStatic;
 public class ImmersivePortals {
 
     public static RegistrySupplier<EntityType<BOTIPortalEntity>> BOTI_PORTAL = null;
-    private static final Map<UUID, List<Portal>> EXISTING_PORTALS = new HashMap<>();
+    private static final Map<UUID, PortalEntry> EXISTING_PORTALS = new HashMap<>();
     // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
     private static final Map<ResourceLocation, PortalOffets> THEME_OFFSETS = new HashMap<>();
 
@@ -67,7 +67,7 @@ public class ImmersivePortals {
         return EXISTING_PORTALS.containsKey(uuid);
     }
 
-    public static List<Portal> getPortalsForTardis(UUID uuid){
+    public static PortalEntry getPortalsForTardis(UUID uuid){
         return EXISTING_PORTALS.get(uuid);
     }
 
@@ -166,10 +166,16 @@ public class ImmersivePortals {
                 new PortalOffets.OffsetData(new Vec3(-1.425, 0.0625, 0), new Vec3(0, 0.0625, -1.425),
                         new Vec3(1.425, 0.0625, 0), new Vec3(0, 0.0625, 1.425)), new Vec2(1, 2)));
 
+        registerThemePortal(ShellTheme.VENDING.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.57, 0, 0),
+                new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0, -0.57)), new PortalOffets.OffsetData(
+                new Vec3(-1.455, 0, 0), new Vec3(0, 0, -1.455),
+                new Vec3(1.455, 0, 0), new Vec3(0, 0, 1.455)), new Vec2(1, 2.175f)));
+
         registerThemePortal(ShellTheme.PRESENT.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.57, 0, 0),
                 new Vec3(0, 0, 0.57), new Vec3(-0.57, 0, 0), new Vec3(0, 0, -0.57)), new PortalOffets.OffsetData(
                 new Vec3(-1.455, 0, 0), new Vec3(0, 0, -1.455),
                 new Vec3(1.455, 0, 0), new Vec3(0, 0, 1.455)), new Vec2(1, 2.175f)));
+
 
         registerThemePortal(ShellTheme.DRIFTER.get(), new PortalOffets(new PortalOffets.OffsetData(new Vec3(0.61, 0.125, 0),
                 new Vec3(0, 0.125, 0.61), new Vec3(-0.61, 0.125, 0), new Vec3(0, 0.125, -0.61)), new PortalOffets.OffsetData(
@@ -273,6 +279,7 @@ public class ImmersivePortals {
             return;
         }
 
+
         TardisNavLocation location = pilotingManager.getCurrentLocation();
         BlockPos entryPositionBPos = door.getEntryPosition();
         Vec3 entryPosition = new Vec3(entryPositionBPos.getX() + 0.5, entryPositionBPos.getY() + 1, entryPositionBPos.getZ() + 0.5);
@@ -306,7 +313,10 @@ public class ImmersivePortals {
         BOTIPortalEntity exteriorPortal = createPortal(location.getLevel(), exteriorEntryPosition, entryPosition, operatorLevel.dimension(), extQuat);
         BOTIPortalEntity interiorPortal = createDestPortal(exteriorPortal, entryPosition, ImmersivePortals.BOTI_PORTAL.get(), interiorQuat);
 
-        EXISTING_PORTALS.put(UUID.fromString(operatorLevel.dimension().location().getPath()), List.of(exteriorPortal, interiorPortal));
+        exteriorPortal.setShellTheme(ShellTheme.getShellTheme(theme));
+        interiorPortal.setShellTheme(ShellTheme.getShellTheme(theme));
+
+        EXISTING_PORTALS.put(dimId, new PortalEntry(interiorPortal, exteriorPortal, ShellTheme.getShellTheme(theme), dimId));
 
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);
@@ -328,15 +338,14 @@ public class ImmersivePortals {
 
     public static void destroyPortals(TardisLevelOperator operator) {
         UUID tardisID = UUID.fromString(operator.getLevel().dimension().location().getPath());
-        List<Portal> portals = EXISTING_PORTALS.get(tardisID);
-        if (portals == null) {
+        PortalEntry portalEntry = EXISTING_PORTALS.get(tardisID);
+        if (portalEntry == null) {
             return;
         }
-        for (Portal portal : portals) {
-            if (portal != null) {
-                portal.kill();
-            }
-        }
+
+        portalEntry.getInternalPortal().remove(Entity.RemovalReason.DISCARDED);
+        portalEntry.getShellPortal().remove(Entity.RemovalReason.DISCARDED);
+
         EXISTING_PORTALS.remove(tardisID);
     }
 
@@ -384,10 +393,9 @@ public class ImmersivePortals {
     }
 
     public static void onServerStopping(MinecraftServer server) {
-        EXISTING_PORTALS.forEach((uuid, portals) -> {
-            for (Portal portal : portals) {
-                portal.kill();
-            }
+        EXISTING_PORTALS.forEach((uuid, portalEntry) -> {
+            portalEntry.getShellPortal().remove(Entity.RemovalReason.DISCARDED);
+            portalEntry.getInternalPortal().remove(Entity.RemovalReason.DISCARDED);
         });
 
         EXISTING_PORTALS.clear();

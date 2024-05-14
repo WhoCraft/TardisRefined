@@ -29,6 +29,7 @@ import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
 
@@ -211,7 +212,7 @@ public class TardisLevelOperator {
         if (aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                if (ImmersivePortals.isShellThemeSupported(theme)) {
+                if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(doorLevel.dimension().location().getPath()))) {
                     return false;
                 }
             }
