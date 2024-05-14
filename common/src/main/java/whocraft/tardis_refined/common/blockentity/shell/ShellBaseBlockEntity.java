@@ -36,6 +36,8 @@ import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 
+import java.util.UUID;
+
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
     protected ResourceKey<Level> TARDIS_ID;
@@ -110,7 +112,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                         ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
-                            if (ImmersivePortals.isShellThemeSupported(theme)) {
+                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(TARDIS_ID.location().getPath()))) {
                                 return;
                             }
                         }

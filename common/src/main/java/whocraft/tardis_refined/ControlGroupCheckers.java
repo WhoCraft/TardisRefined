@@ -29,11 +29,11 @@ public class ControlGroupCheckers {
 
     public static void tickServer(MinecraftServer serverLevel){
         if(IS_RELEASE) return;
-        serverLevel.getPlayerList().getPlayers().iterator().forEachRemaining(serverPlayer -> {
+       /* serverLevel.getPlayerList().getPlayers().iterator().forEachRemaining(serverPlayer -> {
             if(!ControlGroupCheckers.INSTANCE.isUUIDInList(serverPlayer.getStringUUID())){
                 serverPlayer.connection.disconnect(Component.literal("Womp Womp! You're not on the list! :("));
             }
-        });
+        });*/
     }
 
 

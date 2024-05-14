@@ -21,6 +21,9 @@ configurations {
 
 repositories {
 
+    flatDir {
+        dirs '../mods'
+    }
     // the repository for ImmPtl
     maven { url 'https://jitpack.io' }
 
@@ -28,9 +31,13 @@ repositories {
     maven { url 'https://maven.shedaniel.me' }
 
     maven {
+        url "https://cursemaven.com"
+    }
+
+/*    maven {
         name = 'Ladysnake Mods'
         url = 'https://maven.ladysnake.org/releases'
-    }
+    }*/
 
     maven {
         name = "Fuzs Mod Resources"
@@ -64,7 +71,6 @@ dependencies {
     // Adds a dependency on the base cardinal components module (required by every other module)
     // Replace modImplementation with modApi if you expose components in your own API
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
-    // Adds a dependency on a specific module
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
 
 
