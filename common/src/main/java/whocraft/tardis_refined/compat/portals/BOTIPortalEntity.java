@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 import qouteall.imm_ptl.core.portal.Portal;
 import whocraft.tardis_refined.constants.NbtConstants;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,26 +41,16 @@ public class BOTIPortalEntity extends Portal {
     @Override
     public void tick() {
         UUID tardisId = getTardisId();
-
-        /*// Just in case the portal persists
-        if(tardisId != null && !level().isClientSide) {
-            ServerLevel serverLevel = (ServerLevel) level();
-            if (!ImmersivePortals.doPortalsExistForTardis(getTardisId())) {
-                kill();
-                if(serverLevel.dimension().location().getPath().equals(tardisId.toString())) {
-                    TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::createPortals);
-                }
-            }
-            else {
-                for (Portal portal : ImmersivePortals.getPortalsForTardis(tardisId)) {
-                    if (portal == null) {
-                        kill();
-                    }
-                }
-            }
-        }*/
-
+        contemplateExistence(tardisId);
         super.tick();
+    }
+
+    private void contemplateExistence(UUID uuid) {
+        List<Portal> portals = ImmersivePortals.getPortalsForTardis(uuid);
+        if(portals == null) return;
+        if(!portals.contains(this)){
+            kill();
+        }
     }
 
     @Override

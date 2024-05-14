@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
@@ -193,6 +194,7 @@ public class TardisInteriorManager extends BaseHandler {
             if (level.players().isEmpty()) {
                 exteriorManager.triggerShellRegenState();
                 operator.setDoorClosed(true);
+                TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
                 generateDesktop(this.preparedTheme);
 
                 this.isWaitingToGenerate = false;

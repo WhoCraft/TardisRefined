@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.ControlGroupCheckers;
@@ -19,6 +20,8 @@ import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRec
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
 
@@ -47,7 +50,15 @@ public class ModEvents {
 
         ServerTickEvents.END_SERVER_TICK.register(server -> TardisTeleportData.tick());
 
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> DimensionHandlerImpl.clear());
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            DimensionHandlerImpl.clear();
+
+            if(ModCompatChecker.immersivePortals()){
+                ImmersivePortals.onServerStopping(server);
+            }
+        });
+
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));
     }
 

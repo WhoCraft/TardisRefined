@@ -98,7 +98,7 @@ public class NbtConstants {
                 return new TardisNavLocation(position, direction, level);
             }
         }
-        return null;
+        return TardisNavLocation.ORIGIN;
     }
 
     public static void putTardisNavLocation(CompoundTag tag, String prefix, TardisNavLocation location) {

@@ -11,19 +11,24 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.api.PortalAPI;
+import qouteall.imm_ptl.core.chunk_loading.ChunkLoader;
+import qouteall.imm_ptl.core.commands.PortalCommand;
 import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
@@ -65,7 +70,8 @@ public class ImmersivePortals {
     public static List<Portal> getPortalsForTardis(UUID uuid){
         return EXISTING_PORTALS.get(uuid);
     }
-    
+
+
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
         MinecraftServer server = MiscHelper.getServer();
         if (server == null) return null;
@@ -96,6 +102,8 @@ public class ImmersivePortals {
     }
 
     private static void setupEvents() {
+
+
         // Create Portals when Doors are opened
         TardisCommonEvents.DOOR_OPENED_EVENT.register(ImmersivePortals::createPortals);
 
@@ -106,11 +114,18 @@ public class ImmersivePortals {
         TardisCommonEvents.SHELL_CHANGE_EVENT.register((operator, theme, isSetupTardis) -> {
             TardisInternalDoor internalDoor = operator.getInternalDoor();
             ImmersivePortals.destroyPortals(operator);
-            if (internalDoor != null){
+            if (internalDoor != null) {
                 if (internalDoor.isOpen()) {
                     ImmersivePortals.createPortals(operator);
                 }
             }
+        });
+
+        TardisCommonEvents.DESKTOP_CHANGE_EVENT.register(ImmersivePortals::destroyPortals);
+
+        TardisCommonEvents.TAKE_OFF.register((tardisLevelOperator, level, pos) -> {
+            ImmersivePortals.destroyPortals(tardisLevelOperator);
+            return EventResult.pass();
         });
     }
 
@@ -244,6 +259,7 @@ public class ImmersivePortals {
     public static void createPortals(TardisLevelOperator operator) {
 
         setupPortalsForShellThemes();
+        destroyPortals(operator);
         UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
 
         AestheticHandler aestheticsHandler = operator.getAestheticHandler();
@@ -296,7 +312,6 @@ public class ImmersivePortals {
         exteriorPortal.setInteractable(false);
         interiorPortal.setInteractable(false);
 
-
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);
 
@@ -306,6 +321,9 @@ public class ImmersivePortals {
 
         exteriorPortal.level().addFreshEntity(exteriorPortal);
         interiorPortal.level().addFreshEntity(interiorPortal);
+
+        exteriorPortal.reloadPortal();
+        interiorPortal.reloadPortal();
     }
 
     public static void destroyPortals(TardisLevelOperator operator) {
@@ -363,5 +381,15 @@ public class ImmersivePortals {
 
     public static void teleportViaIp(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ) {
         PortalAPI.teleportEntity(pEntity, destination, new Vec3(pX, pY, pZ));
+    }
+
+    public static void onServerStopping(MinecraftServer server) {
+        EXISTING_PORTALS.forEach((uuid, portals) -> {
+            for (Portal portal : portals) {
+                portal.kill();
+            }
+        });
+
+        EXISTING_PORTALS.clear();
     }
 }
