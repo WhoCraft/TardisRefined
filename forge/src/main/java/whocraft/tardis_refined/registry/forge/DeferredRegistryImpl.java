@@ -60,11 +60,8 @@ public class DeferredRegistryImpl {
 
         @Override
         public Registry<T> getRegistry() {
-            Registry<T> registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(registryKey.location());
-            if (registry == null) {
-                throw new IllegalArgumentException("No registry with key " + registryKey);
-            }
-            return registry;
+            this.registry = this.isCustom ? (Registry<T>) this.register.makeRegistry(RegistryBuilder::new).get() : (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location());
+            return this.registry;
         }
 
         @Override
