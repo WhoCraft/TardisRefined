@@ -31,6 +31,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
     private static ResourceLocation ICON_WARNING = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_warning.png");
     private static ResourceLocation ICON_ALERT = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_alert.png");
     private static ResourceLocation ICON_DANGER = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_danger.png");
+    private static ResourceLocation ICON_DEAD = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_dead.png");
 
     public ControlEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -100,9 +101,10 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
             // Damage used for the icon later on. Left for Jeryn.
             int entityHealth = entity.getControlHealth();
+            boolean isDead = entity.isDead();
 
             poseStack.translate(0.0, 5, 0.0);
-            renderControlIcon(entity, component, getIconByState(entityHealth), poseStack, multiBufferSource, packedLightCoords );
+            renderControlIcon(entity, component, getIconByState(entityHealth, isDead), poseStack, multiBufferSource, packedLightCoords );
 
             poseStack.popPose();
 
@@ -112,7 +114,12 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
     }
 
-    public ResourceLocation getIconByState(int entityHealth) {
+    public ResourceLocation getIconByState(int entityHealth, boolean isDead) {
+
+        if (isDead) {
+            return ICON_DEAD;
+        }
+
         if (entityHealth == 10) {
             return ICON_GOOD;
         }
