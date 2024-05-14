@@ -21,16 +21,20 @@ configurations {
 
 repositories {
 
+    flatDir {
+        dirs '../mods'
+    }
+
     // the repository for ImmPtl
     maven { url 'https://jitpack.io' }
 
 // the repository for Cloth Config
     maven { url 'https://maven.shedaniel.me' }
 
-    maven {
+  /*  maven {
         name = 'Ladysnake Mods'
         url = 'https://maven.ladysnake.org/releases'
-    }
+    }*/
 
     maven {
         name = "Fuzs Mod Resources"
