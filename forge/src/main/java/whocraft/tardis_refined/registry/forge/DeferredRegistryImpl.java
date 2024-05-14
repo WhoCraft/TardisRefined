@@ -61,13 +61,13 @@ public class DeferredRegistryImpl {
 
         @Override
         public Registry<T> getRegistry() {
-            this.registry = this.isCustom ? (Registry<T>) this.register.makeRegistry(RegistryBuilder::new).get() : (Registry<T>) BuiltInRegistries.f_257047_.m_7745_(this.registryKey.m_135782_());
+            this.registry = this.isCustom ? (Registry<T>) this.register.makeRegistry(RegistryBuilder::new).get() : (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location());
             return this.registry;
         }
 
         @Override
         public Supplier<Codec<T>> getCodec() {
-            return () -> this.registry.m_194605_();
+            return () -> this.registry.byNameCodec();
         }
     }
 
