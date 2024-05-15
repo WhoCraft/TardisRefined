@@ -91,7 +91,7 @@ repositories {
     }
 }
 
-/*
+
 def generatedResources = project(":forge").file("src/generated/resources")
 
 sourceSets {
@@ -99,7 +99,6 @@ sourceSets {
         resources.srcDir generatedResources
     }
 }
-*/
 
 
 
