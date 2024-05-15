@@ -111,9 +111,10 @@ public class ShellSelectionScreen extends SelectionScreen {
     }
 
 
+
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+        renderBackground(guiGraphics);
         PoseStack poseStack = guiGraphics.pose();
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;

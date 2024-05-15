@@ -2,6 +2,8 @@ package whocraft.tardis_refined.client.screen.selections;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -51,7 +53,7 @@ public class SelectionScreen extends Screen {
 
     public void addSubmitButton(int x, int y) {
         if (onSubmit != null) {
-            SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
+            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
                 this.onSubmit.onPress();
             }, true, BUTTON_LOCATION));
             spriteiconbutton.setPosition(x, y);
@@ -60,7 +62,7 @@ public class SelectionScreen extends Screen {
 
     public void addCancelButton(int x, int y) {
         if (onCancel != null) {
-            SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> {
+            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> {
                 this.onCancel.onPress();
             }, true, BCK_LOCATION));
             spriteiconbutton.setPosition(x, y);
