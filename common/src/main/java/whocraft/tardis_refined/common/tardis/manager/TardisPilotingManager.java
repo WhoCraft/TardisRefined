@@ -783,8 +783,7 @@ public class TardisPilotingManager extends BaseHandler {
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
 
-        for (RegistrySupplier<Upgrade> upgradeEntry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries()) {
-            Upgrade upgrade = upgradeEntry.get();
+        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.getValues()) {
             if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
                 if (upgrade.isUnlocked(upgradeHandler)) {
                     increments.add(incrementUpgrade.getIncrementAmount());

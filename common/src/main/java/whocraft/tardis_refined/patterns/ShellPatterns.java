@@ -6,6 +6,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.*;
 
@@ -162,15 +163,15 @@ public class ShellPatterns {
     public static Map<ResourceLocation, List<ShellPattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
-        //TODO
-        /*     for (ResourceLocation shellTheme : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
+        for (RegistrySupplier<ShellTheme> shellThemeEntry : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.getEntries()) {
+            ResourceLocation shellTheme = shellThemeEntry.getId();
             boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC.getId() || shellTheme == ShellTheme.NUKA.getId() || shellTheme == ShellTheme.PAGODA.getId() || shellTheme == ShellTheme.PHONE_BOOTH.getId() || shellTheme == ShellTheme.POLICE_BOX.getId() || shellTheme == ShellTheme.VENDING.getId();
             String textureName = shellTheme.getPath();
             //Use an overload version of the method for default shells because the texture files were named based on shell theme name
             ShellPattern pattern = new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID.getPath(), new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
                     , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission));
             addDefaultPattern(shellTheme, pattern);
-        }*/
+        }
 
         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "faded", true);
 
