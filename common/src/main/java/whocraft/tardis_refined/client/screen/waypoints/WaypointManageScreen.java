@@ -2,6 +2,7 @@ package whocraft.tardis_refined.client.screen.waypoints;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
@@ -40,7 +41,7 @@ public class WaypointManageScreen extends Screen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
     private TardisWaypoint preExistingWaypoint = null;
     private TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
-    private SpriteIconButton onSaveWaypoint;
+    private Button onSaveWaypoint;
 
 
     public WaypointManageScreen(List<ResourceKey<Level>> worlds, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {

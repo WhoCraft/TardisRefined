@@ -21,9 +21,8 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
         this.setLeftPos(xLeftPos);
         this.setRenderHeader(false, 0);
 
-        //Todo is this important?
-        /*this.setRenderTopAndBottom(false);
-        this.setRenderSelection(false);*/
+        this.setRenderTopAndBottom(false);
+        this.setRenderSelection(false);
 
         this.setRenderBackground(true);
     }
