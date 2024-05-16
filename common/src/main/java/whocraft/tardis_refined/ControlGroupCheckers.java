@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import static whocraft.tardis_refined.TardisRefined.IS_CONTROL_GROUP;
 import static whocraft.tardis_refined.TardisRefined.IS_RELEASE;
 
 public class ControlGroupCheckers {
@@ -30,7 +31,7 @@ public class ControlGroupCheckers {
     }
 
     public static void tickServer(MinecraftServer serverLevel){
-        if(IS_RELEASE) return;
+        if(!IS_CONTROL_GROUP) return;
         serverLevel.getPlayerList().getPlayers().iterator().forEachRemaining(serverPlayer -> {
             if(!ControlGroupCheckers.INSTANCE.isUUIDInList(serverPlayer.getStringUUID())){
                 serverPlayer.connection.disconnect(Component.literal("Womp Womp! You're not on the list! :("));

@@ -230,7 +230,9 @@ public class TardisClientLogic {
             }
         }
 
-        TardisClientData.getAllEntries().forEach((levelResourceKey, tardisClientData) -> TardisClientLogic.tickClientside(tardisClientData));
+        for (TardisClientData tardisClientData : TardisClientData.getAllEntries()) {
+            TardisClientLogic.tickClientside(tardisClientData);
+        }
     }
 
     private static void createWorldAmbience(Player player) {

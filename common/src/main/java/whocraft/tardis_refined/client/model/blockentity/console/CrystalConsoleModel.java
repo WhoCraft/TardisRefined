@@ -22,6 +22,7 @@ import whocraft.tardis_refined.client.model.blockentity.console.animations.Cryst
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -831,6 +832,11 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
     @Override
     public ResourceLocation getDefaultTexture() {
         return CRYSTAL_TEXTURE;
+    }
+
+    @Override
+    public ResourceLocation getConsoleTheme() {
+        return ConsoleTheme.CRYSTAL.getId();
     }
 
     @Override
