@@ -11,18 +11,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.api.PortalAPI;
-import qouteall.imm_ptl.core.chunk_loading.ChunkLoader;
-import qouteall.imm_ptl.core.commands.PortalCommand;
-import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
@@ -43,7 +38,6 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
@@ -392,8 +386,8 @@ public class ImmersivePortals {
 
     public static void onServerStopping(MinecraftServer server) {
         EXISTING_PORTALS.forEach((uuid, portalEntry) -> {
-            portalEntry.getShellPortal().remove(Entity.RemovalReason.DISCARDED);
-            portalEntry.getInternalPortal().remove(Entity.RemovalReason.DISCARDED);
+            portalEntry.getShellPortal().kill();
+            portalEntry.getInternalPortal().kill();
         });
 
         EXISTING_PORTALS.clear();

@@ -61,7 +61,7 @@ public class BOTIPortalEntity extends Portal {
         PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisUuid);
         if(portalEntry == null) return;
         if(!portalEntry.isPortalValidForEntry(this)){
-            remove(RemovalReason.DISCARDED);
+            kill();
         }
     }
 
