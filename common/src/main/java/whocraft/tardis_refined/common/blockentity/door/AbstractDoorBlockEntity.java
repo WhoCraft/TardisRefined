@@ -146,7 +146,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
             Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
             data.ifPresent(tardisLevelOperator -> {
                 tardisLevelOperator.setInternalDoor(this);
-                tardisLevelOperator.exitTardis(entity, serverLevel, doorPos, blockState.getValue(InternalDoorBlock.FACING));
+                tardisLevelOperator.exitTardis(entity, serverLevel, doorPos, blockState.getValue(InternalDoorBlock.FACING), false);
             });
         }
     }

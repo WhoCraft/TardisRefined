@@ -21,6 +21,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 import java.util.Calendar;
 
@@ -1515,5 +1516,10 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 	@Override
 	public ResourceLocation getDefaultTexture() {
 		return TOYOTA_TEXTURE;
+	}
+
+	@Override
+	public ResourceLocation getConsoleTheme() {
+		return ConsoleTheme.TOYOTA.getId();
 	}
 }

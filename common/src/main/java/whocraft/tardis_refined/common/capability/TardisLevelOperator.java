@@ -199,9 +199,9 @@ public class TardisLevelOperator {
     public boolean isTardisReady() {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
-    public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
+    public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection, boolean ignoreDoor) {
 
-        if (!this.internalDoor.isOpen()) {
+        if (!ignoreDoor && !this.internalDoor.isOpen()) {
             return false;
         }
 

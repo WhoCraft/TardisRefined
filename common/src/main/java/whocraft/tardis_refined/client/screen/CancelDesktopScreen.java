@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.common.network.messages.CancelDesktopChangeMessage;
 import whocraft.tardis_refined.constants.ModMessages;
 
@@ -50,21 +49,23 @@ public class CancelDesktopScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
+        this.renderTransparentBackground(guiGraphics);
 
-        this.renderBackground(guiGraphics, i, j, f);
-
-        /*Render Back drop*/
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.blit(MonitorScreen.MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("textures/gui/chat_tags.png"));
-        guiGraphics.blit(MonitorScreen.MONITOR_TEXTURE, width / 2 - minecraft.font.width(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE)) + 45, height / 2 - 30, 0, 0, 9, 9, 32, 32);
-        guiGraphics.blit(MonitorScreen.MONITOR_TEXTURE, width / 2 + minecraft.font.width(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE)) - 55, height / 2 - 30, 0, 0, 9, 9, 32, 32);
-
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_TITLE).getString(), guiGraphics, Minecraft.getInstance().font, width / 2, height / 2 - 30, Color.LIGHT_GRAY.getRGB(), 300, true);
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION).getString(), guiGraphics, Minecraft.getInstance().font, width / 2, this.height / 2 - 20, Color.WHITE.getRGB(), 210, true);
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_DESKTOP).getString(), guiGraphics, Minecraft.getInstance().font, width / 2, this.height / 2 - 10, Color.WHITE.getRGB(), 210, true);
+
+
         super.render(guiGraphics, i, j, f);
+
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+
     }
 }

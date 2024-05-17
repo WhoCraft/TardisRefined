@@ -28,7 +28,8 @@ import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
 
-    public static boolean IS_RELEASE = false;
+    public static boolean IS_CONTROL_GROUP = false;
+    public static boolean IS_RELEASE = false ;//!SharedConstants.IS_RUNNING_IN_IDE || !IS_CONTROL_GROUP;
 
     public static final String MODID = "tardis_refined";
     public static final String NAME = "Tardis Refined";
