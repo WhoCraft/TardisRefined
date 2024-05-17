@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static whocraft.tardis_refined.TardisRefined.IS_CONTROL_GROUP;
-import static whocraft.tardis_refined.TardisRefined.IS_RELEASE;
 
 public class ControlGroupCheckers {
 
