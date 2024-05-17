@@ -71,6 +71,8 @@ public class ModMessages {
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
     public static final String UI_MONITOR_SELECT_HUM = ui("monitor.select.hum");
+    public static final String UI_MONITOR_EJECT = ui("monitor.select.eject");
+    public static final String UI_EJECT_CANNOT_IN_FLIGHT = ui("monitor.select.eject_fail");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
     public static final String UI_MONITOR_WAYPOINT_UPLOAD = ui("monitor.waypoints.upload");
     public static final String UI_MONITOR_WAYPOINT_CREATE = ui("monitor.waypoints.create");
