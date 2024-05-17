@@ -4,10 +4,8 @@ import fuzs.forgeconfigapiport.api.config.v3.ForgeConfigRegistry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
-import net.fabricmc.fabric.api.command.v2.ArgumentTypeRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -19,7 +17,6 @@ import net.minecraft.world.level.levelgen.GenerationStep;
 import net.neoforged.fml.config.ModConfig;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
@@ -81,10 +78,10 @@ public class TardisRefinedFabric implements ModInitializer {
         register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "hums"), TardisHums.getReloadListener());
 
         if (ModCompatChecker.immersivePortals()) {
-            //   if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {
+            if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {
             ImmersivePortals.init();
             PortalsCompatFabric.init();
-            //     }
+            }
         } else {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
