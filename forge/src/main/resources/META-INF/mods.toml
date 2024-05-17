@@ -14,6 +14,11 @@ authors = "${mod_authors}"
 description = '''${mod_description}'''
 #displayTest=""
 
+[[mixins]]
+config = "tardis_refined.mixins.json"
+[[mixins]]
+config = "tardis_refined-common.mixins.json"
+
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
 mandatory = true

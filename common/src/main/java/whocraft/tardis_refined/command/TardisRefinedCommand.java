@@ -21,7 +21,7 @@ public class TardisRefinedCommand {
                 .then(LevelCommand.register(dispatcher))
                 );
 
-        if(!TardisRefined.IS_RELEASE) {
+        if(!Platform.isProduction()) {
             dispatcher.register(Commands.literal(TardisRefined.MODID + "_dev").requires(commandSource -> commandSource.hasPermission(Platform.getServer().getOperatorUserPermissionLevel()))
                     .then(CreateCommand.register(dispatcher)
                     ));

@@ -214,6 +214,8 @@ public class TardisExteriorManager extends BaseHandler {
                 globalShell.setPattern(shellPattern);
             }
 
+            globalShell.sendUpdates();
+
             location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, Block.UPDATE_CLIENTS);
         }
 
