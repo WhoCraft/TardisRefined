@@ -342,10 +342,8 @@ public class ImmersivePortals {
         if (portalEntry == null) {
             return;
         }
-
-        portalEntry.getInternalPortal().remove(Entity.RemovalReason.DISCARDED);
-        portalEntry.getShellPortal().remove(Entity.RemovalReason.DISCARDED);
-
+        portalEntry.getInternalPortal().kill();
+        portalEntry.getShellPortal().kill();
         EXISTING_PORTALS.remove(tardisID);
     }
 
