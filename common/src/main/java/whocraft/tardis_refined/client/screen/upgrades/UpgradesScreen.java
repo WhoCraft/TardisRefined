@@ -31,6 +31,7 @@ public class  UpgradesScreen extends Screen {
     public static final ResourceLocation LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/lock.png");
     public static final ResourceLocation UNOBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/box_unobtained.png");
     public static final ResourceLocation OBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/box_obtained.png");
+    public static final ResourceLocation WIDGETS = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/widgets.png");
 
 
     public static final int WINDOW_WIDTH = 256;
@@ -39,7 +40,6 @@ public class  UpgradesScreen extends Screen {
     private static final int WINDOW_INSIDE_Y = 18;
     public static final int WINDOW_INSIDE_WIDTH = 234 - 10;
     public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
-    private static final Component TITLE = Component.translatable(ModMessages.UI_UPGRADES);
     private final List<UpgradeTab> tabs = new ArrayList<>();
     private final UpgradeHandler upgradeHandler;
     @Nullable
