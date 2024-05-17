@@ -1,11 +1,13 @@
 package whocraft.tardis_refined.client.sounds;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class LoopingHumSound extends LoopingSound{
     private SoundEvent soundEvent;
@@ -23,9 +25,17 @@ public class LoopingHumSound extends LoopingSound{
     public void tick() {
         super.tick();
         volume = 0.10F;
-        if(Minecraft.getInstance().player != null){
-            setLocation(Minecraft.getInstance().player.position());
+        LocalPlayer player = Minecraft.getInstance().player;
+        if(player != null){
+            setLocation(player.position());
+
+            if(player.level().dimensionTypeId() != TRDimensionTypes.TARDIS){
+                stopSound();
+            }
+
         }
+
+
     }
 
     // So, I don't like this. But it is necessary else we are making another Mixin, which isn't a bad thing but better to avoid
