@@ -86,9 +86,9 @@ dependencies {
 
     // Immersive Portals Start
 
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:v4.0.3-mc1.20.2")
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:v4.0.3-mc1.20.2")
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:build:v4.0.3-mc1.20.2")
+    modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}")
+    modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}")
+    modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:build:${rootProject.immersive_portals_version}")
 
     /*  // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
       modCompileOnlyApi("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}") {

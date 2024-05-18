@@ -79,19 +79,19 @@ public class TRTeleporter {
         Preconditions.checkNotNull(destination, "A target level must be provided for teleportation");
         Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
 
+        float updatedYRot = Mth.wrapDegrees(pYaw);
+        float updatedXRot = Mth.wrapDegrees(pPitch);
+
         if(ModCompatChecker.immersivePortals()){
-            pEntity.setYRot(pYaw);
-            pEntity.setXRot(pPitch);
+            pEntity.setYRot(updatedYRot); //Set the desired yRot and xRot before teleportation. For non-players, this means the facing is copied over to the copy of the entity which we recreate. For players, it should update the rotation with the correct facing at the destination
+            pEntity.setXRot(updatedXRot);
             ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);
-            return false;
+            return true;
         }
 
         if (!pEntity.level().isClientSide()) {
             if (safetyCheck(pEntity, destination, pX, pY, pZ, safeBlockCheck, teleportedEntities)) {
                 Entity teleportedEntity;
-
-                float updatedYRot = Mth.wrapDegrees(pYaw);
-                float updatedXRot = Mth.wrapDegrees(pPitch);
 
                 //Teleport this entity regardless if it's a vehicle or passenger
                 teleportedEntity = teleportLogicCommon(pEntity, destination, pX, pY, pZ, updatedYRot, updatedXRot);
@@ -195,8 +195,7 @@ public class TRTeleporter {
         serverPlayer.setDeltaMovement(Vec3.ZERO); //set velocity to 0 because otherwise we will trigger the "player moved wrongly" hardcoded vanilla check which will result in the player not changing coordinates in the new dimension
 
         if (destination == serverPlayer.level()) {
-            serverPlayer.setPos(pX, pY, pZ);
-            serverPlayer.connection.teleport(pX, pY, pZ, updatedYRot, updatedXRot);
+            serverPlayer.connection.teleport(pX, pY, pZ, updatedYRot, updatedXRot); //Must update the player position via packets as opposed to raw setPos
         }
         else {
             serverPlayer = teleportPlayerOtherDimension(serverPlayer, destination, pX, pY, pZ, updatedYRot, updatedXRot);
