@@ -2,6 +2,7 @@ package whocraft.tardis_refined.registry.fabric;
 
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
@@ -19,15 +20,25 @@ import java.util.stream.Collectors;
 
 public class CustomRegistryImpl<T> extends CustomRegistry<T> {
 
-    public static <T> CustomRegistry<T> create(ResourceLocation id) {
+    public static <T> CustomRegistry<T> create(ResourceLocation id, boolean syncToClient) {
         ResourceKey<Registry<T>> resourceKey = ResourceKey.createRegistryKey(id);
-        return new CustomRegistryImpl<>(FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister());
+        return syncToClient ? new CustomRegistryImpl<>(FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister(), true) : new CustomRegistryImpl<>(FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister(), false);
+    }
+
+    public static <T> CustomRegistry<T> create(ResourceLocation id) {
+        return create(id, true);
     }
 
     private final WritableRegistry<T> parent;
+    private final boolean syncToClient;
+
+    public CustomRegistryImpl(WritableRegistry<T> parent, boolean syncToClient) {
+        this.parent = parent;
+        this.syncToClient = syncToClient;
+    }
 
     public CustomRegistryImpl(WritableRegistry<T> parent) {
-        this.parent = parent;
+        this(parent, true);
     }
 
     @Override

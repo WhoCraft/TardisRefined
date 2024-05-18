@@ -18,16 +18,23 @@ public class CustomRegistryImpl<T> extends CustomRegistry<T> {
 
     private final Supplier<IForgeRegistry<T>> parent;
     private final ResourceKey<? extends Registry<T>> resourceKey;
-    public CustomRegistryImpl(ResourceLocation id, Supplier<IForgeRegistry<T>> parent) {
+    private final boolean syncToClient;
+
+    public CustomRegistryImpl(ResourceLocation id, Supplier<IForgeRegistry<T>> parent, boolean syncToClient) {
         this.parent = parent;
         this.resourceKey = ResourceKey.createRegistryKey(id);
+        this.syncToClient = syncToClient;
+    }
+
+    public static <T> CustomRegistry<T> create(ResourceLocation id, boolean syncToClient) {
+        DeferredRegister<T> deferredRegister = DeferredRegister.create(id, id.getNamespace());
+        var supplier = syncToClient ? deferredRegister.makeRegistry(RegistryBuilder::new) : deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1).disableSync());
+        deferredRegister.register(FMLJavaModLoadingContext.get().getModEventBus());
+        return new CustomRegistryImpl<>(id, supplier, syncToClient);
     }
 
     public static <T> CustomRegistry<T> create(ResourceLocation id) {
-        DeferredRegister<T> deferredRegister = DeferredRegister.create(id, id.getNamespace());
-        var supplier = deferredRegister.makeRegistry(RegistryBuilder::new);
-        deferredRegister.register(FMLJavaModLoadingContext.get().getModEventBus());
-        return new CustomRegistryImpl<>(id, supplier);
+        return create(id, true);
     }
 
     @Override

@@ -13,8 +13,15 @@ import java.util.function.Supplier;
 
 public abstract class CustomRegistry<T> {
 
+
     @ExpectPlatform
     public static <T> CustomRegistry<T> create(ResourceLocation resourceLocation) {
+        throw new AssertionError();
+    }
+
+
+    @ExpectPlatform
+    public static <T> CustomRegistry<T> create(ResourceLocation resourceLocation, boolean syncToClient) {
         throw new AssertionError();
     }
 
