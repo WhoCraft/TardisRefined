@@ -367,7 +367,7 @@ public class ImmersivePortals {
         Level world = portal.getDestinationWorld();
 
         BOTIPortalEntity newPortal = entityType.create(world);
-        portal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
+        newPortal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
         newPortal.dimensionTo = portal.level().dimension();
         newPortal.setPos(doorPos);
         newPortal.setDestination(portal.getOriginPos());
