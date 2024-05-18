@@ -80,6 +80,8 @@ public class TRTeleporter {
         Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
 
         if(ModCompatChecker.immersivePortals()){
+            pEntity.setYRot(pYaw);
+            pEntity.setXRot(pPitch);
             ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);
             return false;
         }
@@ -194,6 +196,7 @@ public class TRTeleporter {
 
         if (destination == serverPlayer.level()) {
             serverPlayer.setPos(pX, pY, pZ);
+            serverPlayer.connection.teleport(pX, pY, pZ, updatedYRot, updatedXRot);
         }
         else {
             serverPlayer = teleportPlayerOtherDimension(serverPlayer, destination, pX, pY, pZ, updatedYRot, updatedXRot);
@@ -235,7 +238,6 @@ public class TRTeleporter {
         reSyncVehicleToPassengerPos(serverPlayer);
 
         serverPlayer.connection.resetPosition();
-
         serverPlayer.setPortalCooldown(); //Prevent player from being teleport by nether portal in the destination dimension
         serverPlayer.setYHeadRot(updatedYRot);
         serverPlayer.setYBodyRot(updatedYRot);
