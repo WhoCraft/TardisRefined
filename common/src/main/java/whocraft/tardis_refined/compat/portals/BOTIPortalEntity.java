@@ -20,6 +20,7 @@ public class BOTIPortalEntity extends Portal {
 
     // We don't save this as the portals die on server stop, we just need it in RAM
     ShellTheme shellTheme = ShellTheme.FACTORY.get();
+    private boolean isValid = false;
 
     public ShellTheme getShellTheme() {
         return shellTheme;
@@ -40,6 +41,7 @@ public class BOTIPortalEntity extends Portal {
         if (tardisId != null) {
             compoundTag.putUUID(NbtConstants.TARDIS_ID, tardisId);
         }
+        compoundTag.putBoolean("valid", isValid);
     }
 
     @Override
@@ -48,19 +50,38 @@ public class BOTIPortalEntity extends Portal {
         if (compoundTag.contains(NbtConstants.TARDIS_ID)) {
             setTardisId(compoundTag.getUUID(NbtConstants.TARDIS_ID));
         }
+        if(compoundTag.contains("valid")) {
+            setValid(compoundTag.getBoolean("valid"));
+        } else {
+            isValid = false;
+        }
     }
 
     @Override
     public void tick() {
-        UUID tardisId = getTardisId();
-        contemplateExistence(tardisId);
         super.tick();
+    }
+
+    @Override
+    public boolean isPortalValid() {
+        UUID tardisId = getTardisId();
+        PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisId);
+
+       /* if(portalEntry == null){
+            return false;
+        }*/
+
+        if(!isValid){
+            return false;
+        }
+
+        return super.isPortalValid();
     }
 
     private void contemplateExistence(UUID tardisUuid) {
         PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisUuid);
         if(portalEntry == null) return;
-        if(!portalEntry.isPortalValidForEntry(this)){
+        if(portalEntry.isPortalValidForEntry(this)){
             kill();
         }
     }
@@ -79,4 +100,11 @@ public class BOTIPortalEntity extends Portal {
         this.getEntityData().set(TARDIS_ID, Optional.of(tardisId));
     }
 
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean valid) {
+        isValid = valid;
+    }
 }

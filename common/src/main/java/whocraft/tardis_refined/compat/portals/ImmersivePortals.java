@@ -325,6 +325,8 @@ public class ImmersivePortals {
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);
         interiorPortal.setInteractable(false);
+        interiorPortal.setValid(true);
+        exteriorPortal.setValid(true);
 
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);
@@ -351,8 +353,13 @@ public class ImmersivePortals {
         if (portalEntry == null) {
             return;
         }
+
+        portalEntry.getInternalPortal().setValid(false);
         portalEntry.getInternalPortal().kill();
+
+        portalEntry.getShellPortal().setValid(false);
         portalEntry.getShellPortal().kill();
+
         EXISTING_PORTALS.remove(tardisID);
     }
 
@@ -401,6 +408,8 @@ public class ImmersivePortals {
 
     public static void onServerStopping(MinecraftServer server) {
         EXISTING_PORTALS.forEach((uuid, portalEntry) -> {
+            portalEntry.getShellPortal().setValid(false);
+            portalEntry.getInternalPortal().setValid(false);
             portalEntry.getShellPortal().kill();
             portalEntry.getInternalPortal().kill();
         });
