@@ -33,6 +33,7 @@ import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -224,7 +225,7 @@ public class ImmersivePortals {
         detectMissingSetup();
     }
 
-    
+
     private static void detectMissingSetup() {
         for (ResourceLocation value : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
             if (!isShellThemeSupported(value) && !value.equals(ShellTheme.getKey(ShellTheme.BRIEFCASE.get()))) {
@@ -258,7 +259,11 @@ public class ImmersivePortals {
 
     public static void createPortals(TardisLevelOperator operator) {
 
-        setupPortalsForShellThemes();
+        // Just for debugging editing values
+        if(!Platform.isProduction()) {
+            setupPortalsForShellThemes();
+        }
+
         destroyPortals(operator);
         UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
 
@@ -269,7 +274,12 @@ public class ImmersivePortals {
         TardisInternalDoor door = operator.getInternalDoor();
         TardisPilotingManager pilotingManager = operator.getPilotingManager();
 
-        if (interiorManager.isCave() || door != null && !door.isOpen() || !operator.isTardisReady() || EXISTING_PORTALS.get(dimId) != null || !isShellThemeSupported(theme) || door == null) {
+        if(!isShellThemeSupported(theme)){
+            destroyPortals(operator); //we're going to make sure.
+            return;
+        }
+
+        if (interiorManager.isCave() || door != null && !door.isOpen() || !operator.isTardisReady() || EXISTING_PORTALS.get(dimId) != null  || door == null) {
             return;
         }
 
@@ -310,7 +320,7 @@ public class ImmersivePortals {
         exteriorPortal.setShellTheme(ShellTheme.getShellTheme(theme));
         interiorPortal.setShellTheme(ShellTheme.getShellTheme(theme));
 
-        EXISTING_PORTALS.put(dimId, new PortalEntry(interiorPortal, exteriorPortal, ShellTheme.getShellTheme(theme), dimId));
+        updatePortalEntry(operator, dimId, interiorPortal, exteriorPortal, theme);
 
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);
@@ -328,6 +338,11 @@ public class ImmersivePortals {
 
         exteriorPortal.reloadPortal();
         interiorPortal.reloadPortal();
+    }
+
+    private static void updatePortalEntry(TardisLevelOperator operator, UUID dimId, BOTIPortalEntity interiorPortal, BOTIPortalEntity exteriorPortal, ResourceLocation theme) {
+        destroyPortals(operator);
+        EXISTING_PORTALS.put(dimId, new PortalEntry(interiorPortal, exteriorPortal, ShellTheme.getShellTheme(theme), dimId));
     }
 
     public static void destroyPortals(TardisLevelOperator operator) {
