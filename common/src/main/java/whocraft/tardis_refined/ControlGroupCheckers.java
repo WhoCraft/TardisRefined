@@ -1,12 +1,10 @@
 package whocraft.tardis_refined;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +20,7 @@ public class ControlGroupCheckers {
 
     public static final ControlGroupCheckers INSTANCE = new ControlGroupCheckers();
     private static final String API_URL = "https://mc.craig.software/api/skin/beta_players";
-    private List<String> uuidList;
+    private final List<String> uuidList;
 
     public ControlGroupCheckers() {
         this.uuidList = new ArrayList<>();
@@ -30,13 +28,14 @@ public class ControlGroupCheckers {
     }
 
     public static void tickServer(MinecraftServer serverLevel){
-        if(!IS_CONTROL_GROUP) return;
+        if (!IS_CONTROL_GROUP) return;
         serverLevel.getPlayerList().getPlayers().iterator().forEachRemaining(serverPlayer -> {
             if(!ControlGroupCheckers.INSTANCE.isUUIDInList(serverPlayer.getStringUUID())){
                 serverPlayer.connection.disconnect(Component.literal("Womp Womp! You're not on the list! :("));
             }
         });
     }
+
 
     public void fetchUUIDsFromAPI() {
         try {

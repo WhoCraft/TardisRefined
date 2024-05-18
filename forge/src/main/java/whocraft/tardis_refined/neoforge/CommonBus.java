@@ -30,7 +30,7 @@ public class CommonBus {
         Level level = event.level;
         if (level instanceof ServerLevel serverLevel) {
             if (event.phase == TickEvent.Phase.END) {
-                TardisTeleportData.tick(serverLevel);
+                TardisTeleportData.tick();
             }
         }
     }
@@ -38,6 +38,9 @@ public class CommonBus {
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
         ControlGroupCheckers.tickServer(event.getServer());
+
+        TardisTeleportData.tick();
+
     }
 
     @SubscribeEvent

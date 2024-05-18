@@ -23,7 +23,7 @@ public class PortalsCompatForge {
 
     @SubscribeEvent
     public void onServerShutdown(ServerStoppedEvent serverStoppedEvent) {
-        ImmersivePortals.tardisToPortalsMap.clear();
+        ImmersivePortals.clearPortalCache();
     }
 
 }

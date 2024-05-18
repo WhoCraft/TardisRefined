@@ -8,7 +8,7 @@ public class PortalsCompatFabric {
 
     public static void init() {
         PlayerBlockBreakEvents.BEFORE.register(ImmersivePortals::onDoorRemoved);
-        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> ImmersivePortals.tardisToPortalsMap.clear());
+        ServerLifecycleEvents.SERVER_STOPPING.register((server) -> ImmersivePortals.clearPortalCache());
     }
 
 }

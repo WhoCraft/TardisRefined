@@ -129,6 +129,7 @@ public class KeyItem extends Item {
             if (control.controlSpecification().control() != null) {
                 if (control.controlSpecification().control() == TRControlRegistry.MONITOR.get()) {
 
+                    setKeychain(itemStack, new ArrayList<>(List.of(serverLevel.dimension())));
 
 
                     if (keychainContains(itemStack, tardis)) {return false;}

@@ -1,15 +1,11 @@
 package whocraft.tardis_refined.common.dimension;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.saveddata.SavedData;
-import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 
 import javax.annotation.Nullable;
@@ -21,25 +17,14 @@ import java.util.Set;
 // we can't teleport players from onBlockActivated as there are assumptions
 // in the right click processing that assume a player's world does not change
 // so what we'll do is schedule a teleport to occur at the end of the world tick
-public class TardisTeleportData extends SavedData {
-    public static final String DATA_KEY = new ResourceLocation(TardisRefined.MODID, "tardis_teleports").toString();
+public class TardisTeleportData {
 
-    private List<TeleportEntry> queuedTeleports = new ArrayList<>();
+    private static List<TeleportEntry> queuedTeleports = new ArrayList<>();
 
-    public static TardisTeleportData getOrCreate(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(new Factory<>(TardisTeleportData::new, TardisTeleportData::load, DataFixTypes.SAVED_DATA_MAP_DATA), DATA_KEY);
-    }
+    private static TardisTeleportData INSTANCE = new TardisTeleportData();
 
-    public static TardisTeleportData load(CompoundTag nbt) {
-        // NOOP, data is transient
-        return TardisTeleportData.create();
-    }
-
-    public static TardisTeleportData create() {
-        return new TardisTeleportData();
-    }
-
-    protected TardisTeleportData() {
+    public List<TeleportEntry> getQueuedTeleports() {
+        return queuedTeleports;
     }
 
     /**
@@ -49,18 +34,17 @@ public class TardisTeleportData extends SavedData {
      * Does *not* create dynamic worlds that don't already exist,
      * So dynamic worlds should be created by the thing that schedules the tick, if possible
      *
-     * @param level The world that is being ticked and contains a data instance
      */
-    public static void tick(ServerLevel level) {
-        MinecraftServer server = level.getServer();
-        TardisTeleportData eventData = getOrCreate(level);
+    public static void tick() {
+        TardisTeleportData eventData = TardisTeleportData.INSTANCE;
+        MinecraftServer server = Platform.getServer();
 
         // handle teleports
-        List<TeleportEntry> teleports = eventData.queuedTeleports;
+        List<TeleportEntry> teleports = eventData.getQueuedTeleports();
 
         Set<Entity> teleportedEntities = new HashSet<>();
 
-        if (teleports.size() != 0){
+        if (!teleports.isEmpty()) {
             for (TeleportEntry entry : teleports) {
 
                 if (!entry.getIsCurrentTeleporting() && !entry.getSuccessfulTeleport()) {
@@ -71,7 +55,7 @@ public class TardisTeleportData extends SavedData {
                     if (teleportedEntities.contains(entity)) continue;
 
                     @Nullable ServerLevel targetWorld = server.getLevel(entry.getDestination());
-                    if (entity != null && targetWorld != null && entity.level() == level) {
+                    if (entity != null && targetWorld != null) {
                         if (TRTeleporter.fullTeleport(entity, targetWorld, entry.getX(), entry.getY(), entry.getZ(), entry.getyRot(), entry.getxRot(), teleportedEntities)) {
                             teleportedEntities.add(entity);
                             entry.setSuccessfulTeleport(true);
@@ -86,26 +70,21 @@ public class TardisTeleportData extends SavedData {
             // remove all entities that were successfully teleported. Also remove failed teleports to prevent a backlog from building up
             teleports.removeIf(teleportEntry -> teleportedEntities.contains(teleportEntry.getEntity()) || !teleportEntry.getSuccessfulTeleport());
 
-            eventData.queuedTeleports = teleports;
+            queuedTeleports = teleports;
         }
 
 
     }
 
-    public void scheduleEntityTeleport(Entity entity, ResourceKey<Level> destination, double x, double y, double z, float yRot, float xRot) {
+    public static void scheduleEntityTeleport(Entity entity, ResourceKey<Level> destination, double x, double y, double z, float yRot, float xRot) {
         if(entity != null && !entity.level().isClientSide() && !isEntityQueuedToTeleportAlready(entity)) {
-            this.queuedTeleports.add(new TeleportEntry(entity, destination, x, y, z, yRot, xRot));
+            queuedTeleports.add(new TeleportEntry(entity, destination, x, y, z, yRot, xRot));
         }
 
     }
 
-    public boolean isEntityQueuedToTeleportAlready(Entity entity) {
-        return this.queuedTeleports.stream().anyMatch(entry -> entry.getEntity().equals(entity));
-    }
-
-    @Override
-    public CompoundTag save(CompoundTag compound) {
-        return compound;
+    public static boolean isEntityQueuedToTeleportAlready(Entity entity) {
+        return queuedTeleports.stream().anyMatch(entry -> entry.getEntity().equals(entity));
     }
 
     private static final class TeleportEntry{

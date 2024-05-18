@@ -26,7 +26,7 @@ public class TREntityRegistry {
      * @return
      * @param <T>
      */
-    private static <T extends Entity> EntityType<T> registerStatic(EntityType.EntityFactory<T> factory, MobCategory classification, float width, float height, int trackingRange, int updateFreq, String name) {
+    public static <T extends Entity> EntityType<T> registerStatic(EntityType.EntityFactory<T> factory, MobCategory classification, float width, float height, int trackingRange, int updateFreq, String name) {
         ResourceLocation loc = new ResourceLocation(TardisRefined.MODID, name);
         EntityType.Builder<T> builder = EntityType.Builder.of(factory, classification);
         builder.clientTrackingRange(trackingRange);

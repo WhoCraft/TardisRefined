@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.entity.TickingBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -36,6 +35,8 @@ import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
+
+import java.util.UUID;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
@@ -111,7 +112,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                         ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
-                            if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(TARDIS_ID.location().getPath()))) {
                                 return;
                             }
                         }

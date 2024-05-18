@@ -8,7 +8,6 @@ import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.GravityOverlay;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.TardisClientLogic;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)

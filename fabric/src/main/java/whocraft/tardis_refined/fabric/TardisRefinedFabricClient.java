@@ -24,6 +24,8 @@ import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -34,10 +36,10 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         establishBlockEntityRenderers();
-        registerEntityRenderers();
         ModelRegistry.init();
         ModEvents.addClientEvents();
         particles();
+        registerEntityRenderers();
     }
 
     private void particles() {
@@ -62,7 +64,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
         /*Required to Render Transparency*/
         for (Block block : TRBlockRegistry.BLOCKS.getRegistry()) {
-            if(TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)){
+            if (TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
             }
         }
@@ -71,5 +73,10 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
     private void registerEntityRenderers() {
         EntityRendererRegistry.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
+
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortalsClient.doClientRenderers();
+        }
+
     }
 }

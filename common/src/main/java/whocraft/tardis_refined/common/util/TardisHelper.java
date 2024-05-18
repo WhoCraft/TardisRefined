@@ -29,6 +29,8 @@ import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -77,6 +79,7 @@ public class TardisHelper {
                 //Set the shell with this level
                 shellBaseBlockEntity.setTardisId(generatedLevelKey);
                 shellBaseBlockEntity.setShellTheme(shellTheme);
+                shellBaseBlockEntity.setPattern(ShellPatterns.getPatternsForTheme(shellTheme).get(0));
                 //Create the Level on demand which will create our capability
                 ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, shellBaseBlockEntity.getTardisId().location());
 
@@ -143,7 +146,7 @@ public class TardisHelper {
 
             Vec3 centredTarget = LevelHelper.centerPos(finalTeleportPos, false);
 
-            TardisTeleportData.getOrCreate(teleportingEntityLevel).scheduleEntityTeleport(entity, destinationLevel.dimension(), centredTarget.x(), centredTarget.y(), centredTarget.z(), adjustedRotationYaw, entity.getXRot());
+            TardisTeleportData.scheduleEntityTeleport(entity, destinationLevel.dimension(), centredTarget.x(), centredTarget.y(), centredTarget.z(), adjustedRotationYaw, entity.getXRot());
 
             //Fire exit or enter events
             if (entity instanceof LivingEntity livingEntity) {
@@ -165,8 +168,8 @@ public class TardisHelper {
     public static boolean hasTheEndBeenCompleted(ServerLevel serverLevel) {
 
         if (serverLevel.dimension() == Level.END) {
-            if (serverLevel.dragonFight != null) {
-               return ((EndDragonFightAccessor) serverLevel.dragonFight).isDragonKilled();
+            if (serverLevel.getDragonFight() != null) {
+               return ((EndDragonFightAccessor) serverLevel.getDragonFight()).isDragonKilled();
             }
 
             return false; // Better safe than sorry.
