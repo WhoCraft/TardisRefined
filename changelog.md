@@ -17,7 +17,7 @@
 + Fixes [#276](https://github.com/WhoCraft/TardisRefined/issues/276) - Mixins do not apply on NeoForge
 + Fixes [#263](https://github.com/WhoCraft/TardisRefined/issues/263) - Teleporting player within the same dimension via the corridor airlock does not update position.
 + Fixes [#255](https://github.com/WhoCraft/TardisRefined/issues/255) - Controls on Toyota and Crystal having overlapping controls.
-+ Refines Immersive Portal Compatibility (Not every Shell with have Immersive Portals yet)
++ Disbales Immersive Portal Compatibility for the time being.
 + Stopped the ability to sleep within a TARDIS (Preventing sleeping inside a Tardis dimension was an intended feature but was originally not implemented correctly. To revert this change, customise with a DataPack)
 
 

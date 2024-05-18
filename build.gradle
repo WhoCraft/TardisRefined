@@ -64,3 +64,8 @@ allprojects {
         withSourcesJar()
     }
 }
+
+task publishMeEverywhere(){
+    dependsOn ':forge:publishUnified'
+    dependsOn ':fabric:publishUnified'
+}
