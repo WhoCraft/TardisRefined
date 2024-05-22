@@ -30,7 +30,7 @@ public class ManipulatorCraftingRecipeSerializer implements RecipeSerializer<Man
 
     @Override
     public ManipulatorCraftingRecipe fromNetwork(ResourceLocation resourceLocation, FriendlyByteBuf friendlyByteBuf) {
-        return ManipulatorCraftingRecipe.CODEC.parse(NbtOps.INSTANCE, friendlyByteBuf.readNbt()).resultOrPartial(TardisRefined.LOGGER::error).get();
+        return ManipulatorCraftingRecipe.CODEC.parse(NbtOps.INSTANCE, friendlyByteBuf.readNbt()).resultOrPartial(TardisRefined.LOGGER::error).get().setRegistryId(resourceLocation);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ManipulatorCraftingRecipeSerializer implements RecipeSerializer<Man
                         .decode(new Dynamic<>(JsonOps.INSTANCE, jsonObject.get("ingredients"))), JsonParseException::new)
                         .getFirst();
 
-        return new ManipulatorCraftingRecipe(ingredients, result);
+        return new ManipulatorCraftingRecipe(ingredients, result).setRegistryId(resourceLocation);
     }
 
     @Override
