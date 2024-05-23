@@ -74,10 +74,6 @@ public class BOTIPortalEntity extends Portal {
                 return false;
             }
 
-            if (portalEntry.isPortalValidForEntry(this)) {
-                return true;
-            }
-
             if (!isValid) {
                 return false;
             }
