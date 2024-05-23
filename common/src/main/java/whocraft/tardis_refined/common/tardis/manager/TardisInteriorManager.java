@@ -209,7 +209,7 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), true);
+                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), this.operator.getAestheticHandler().shellPattern().getThemeId(), true);
                 exteriorManager.placeExteriorBlock(operator, this.operator.getPilotingManager().getCurrentLocation());
                 this.isGeneratingDesktop = false;
             }

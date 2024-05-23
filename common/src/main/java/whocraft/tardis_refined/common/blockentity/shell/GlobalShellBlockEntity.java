@@ -130,7 +130,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
                 // Shearing the TARDIS
                 if (stack.is(Items.SHEARS) && aestheticHandler.getShellTheme() == ShellTheme.HALF_BAKED.getId()) {
-                    aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), tardisPilotingManager.getCurrentLocation());
+                    aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(), tardisPilotingManager.getCurrentLocation());
                     level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
                     spawnCoralItems();
                     return true;
