@@ -259,8 +259,8 @@ public class TardisLevelOperator {
         }
     }
 
-    public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
-        this.getAestheticHandler().setShellTheme(theme, setupTardis, this.getPilotingManager().getCurrentLocation());
+    public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis) {
+        this.getAestheticHandler().setShellTheme(theme, shellPattern, setupTardis, this.getPilotingManager().getCurrentLocation());
         tardisClientData.setShellTheme(theme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();
