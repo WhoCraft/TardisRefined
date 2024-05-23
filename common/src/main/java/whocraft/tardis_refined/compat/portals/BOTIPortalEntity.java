@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import qouteall.imm_ptl.core.portal.Portal;
@@ -65,14 +66,21 @@ public class BOTIPortalEntity extends Portal {
     @Override
     public boolean isPortalValid() {
         UUID tardisId = getTardisId();
-        PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisId);
 
-       /* if(portalEntry == null){
-            return false;
-        }*/
+        if (level() instanceof ServerLevel serverLevel && tickCount > (20 * 40)) {
+            PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisId);
 
-        if(!isValid){
-            return false;
+            if (portalEntry == null && this.tickCount > (2 * 20) && !this.getOriginWorld().isClientSide()) {
+                return false;
+            }
+
+            if (portalEntry.isPortalValidForEntry(this)) {
+                return true;
+            }
+
+            if (!isValid) {
+                return false;
+            }
         }
 
         return super.isPortalValid();

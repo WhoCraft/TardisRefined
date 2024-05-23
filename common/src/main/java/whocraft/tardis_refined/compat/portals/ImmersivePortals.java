@@ -18,6 +18,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.api.PortalAPI;
+import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static whocraft.tardis_refined.registry.TREntityRegistry.ENTITY_TYPES;
 import static whocraft.tardis_refined.registry.TREntityRegistry.registerStatic;
@@ -354,6 +356,14 @@ public class ImmersivePortals {
             return;
         }
 
+        PortalManipulation.removeConnectedPortals(portalEntry.getInternalPortal(), portal -> {
+
+        });
+
+        PortalManipulation.removeConnectedPortals(portalEntry.getShellPortal(), portal -> {
+
+        });
+
         portalEntry.getInternalPortal().setValid(false);
         portalEntry.getInternalPortal().kill();
 
@@ -367,7 +377,7 @@ public class ImmersivePortals {
         Level world = portal.getDestinationWorld();
 
         BOTIPortalEntity newPortal = entityType.create(world);
-        portal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
+        newPortal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
         newPortal.dimensionTo = portal.level().dimension();
         newPortal.setPos(doorPos);
         newPortal.setDestination(portal.getOriginPos());
