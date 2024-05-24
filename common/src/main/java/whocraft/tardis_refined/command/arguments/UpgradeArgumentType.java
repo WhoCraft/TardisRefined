@@ -45,7 +45,6 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
 
     @Override
     public Collection<String> getExamples() {
-        EXAMPLES.add("*");
         return EXAMPLES;
     }
 
