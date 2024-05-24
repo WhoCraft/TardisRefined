@@ -82,14 +82,6 @@ public class BOTIPortalEntity extends Portal {
         return super.isPortalValid();
     }
 
-    private void contemplateExistence(UUID tardisUuid) {
-        PortalEntry portalEntry = ImmersivePortals.getPortalsForTardis(tardisUuid);
-        if(portalEntry == null) return;
-        if(portalEntry.isPortalValidForEntry(this)){
-            kill();
-        }
-    }
-
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
@@ -104,6 +96,8 @@ public class BOTIPortalEntity extends Portal {
         this.getEntityData().set(TARDIS_ID, Optional.of(tardisId));
     }
 
+
+    /*Marks whether or not a portal can live! If set to false the portal will immediately poof out of existence*/
     public boolean isValid() {
         return isValid;
     }
