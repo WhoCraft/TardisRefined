@@ -34,8 +34,7 @@ public class PortalEntry {
     }
 
     public boolean isPortalValidForEntry(BOTIPortalEntity portalEntity){
-      //  return portalEntity == internalPortal || portalEntity == shellPortal;
-        return true;
+        return portalEntity.getUUID() != internalPortal.getUUID() && portalEntity.getUUID() != shellPortal.getUUID();
     }
 
 }

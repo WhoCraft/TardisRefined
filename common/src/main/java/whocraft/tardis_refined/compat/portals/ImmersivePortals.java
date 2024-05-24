@@ -18,6 +18,7 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import qouteall.imm_ptl.core.api.PortalAPI;
+import qouteall.imm_ptl.core.portal.Portal;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 import static whocraft.tardis_refined.registry.TREntityRegistry.ENTITY_TYPES;
 import static whocraft.tardis_refined.registry.TREntityRegistry.registerStatic;
@@ -325,6 +327,8 @@ public class ImmersivePortals {
         PortalManipulation.adjustRotationToConnect(exteriorPortal, interiorPortal);
         exteriorPortal.setInteractable(false);
         interiorPortal.setInteractable(false);
+        interiorPortal.setValid(true);
+        exteriorPortal.setValid(true);
 
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);
@@ -351,8 +355,21 @@ public class ImmersivePortals {
         if (portalEntry == null) {
             return;
         }
+
+        PortalManipulation.removeConnectedPortals(portalEntry.getInternalPortal(), portal -> {
+
+        });
+
+        PortalManipulation.removeConnectedPortals(portalEntry.getShellPortal(), portal -> {
+
+        });
+
+        portalEntry.getInternalPortal().setValid(false);
         portalEntry.getInternalPortal().kill();
+
+        portalEntry.getShellPortal().setValid(false);
         portalEntry.getShellPortal().kill();
+
         EXISTING_PORTALS.remove(tardisID);
     }
 
@@ -360,7 +377,7 @@ public class ImmersivePortals {
         Level world = portal.getDestinationWorld();
 
         BOTIPortalEntity newPortal = entityType.create(world);
-        portal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
+        newPortal.setTardisId(UUID.fromString(world.dimension().location().getPath()));
         newPortal.dimensionTo = portal.level().dimension();
         newPortal.setPos(doorPos);
         newPortal.setDestination(portal.getOriginPos());
@@ -401,6 +418,8 @@ public class ImmersivePortals {
 
     public static void onServerStopping(MinecraftServer server) {
         EXISTING_PORTALS.forEach((uuid, portalEntry) -> {
+            portalEntry.getShellPortal().setValid(false);
+            portalEntry.getInternalPortal().setValid(false);
             portalEntry.getShellPortal().kill();
             portalEntry.getInternalPortal().kill();
         });
