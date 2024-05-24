@@ -78,7 +78,7 @@ public class WaypointManageScreen extends Screen {
         xPosition = this.width / 2 - (waypointNameWidth / 2);
 
 
-        onSaveWaypoint = this.addRenderableWidget(CommonTRWidgets.imageButton(waypointNameWidth, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT), (arg) -> {
+        onSaveWaypoint = this.addRenderableWidget(Button.builder(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT), (arg) -> {
 
             if (preExistingWaypoint != null) {
                 tardisNavLocation.setName(this.waypointName.getValue());
@@ -91,8 +91,9 @@ public class WaypointManageScreen extends Screen {
             }
 
 
-        }, false, BUTTON_LOCATION));
+        }).build());
 
+        onSaveWaypoint.setWidth(waypointNameWidth);
         onSaveWaypoint.setPosition(xPosition, yPosition + 100);
         addWidget(onSaveWaypoint);
 
@@ -133,6 +134,7 @@ public class WaypointManageScreen extends Screen {
         }
 
 
+
         int headerHeight = height / 2 - imageHeight / 3;
         int starterCordHeight = height / 2 - imageHeight / 3 + 7;
         int centerX = width / 2;
@@ -152,7 +154,7 @@ public class WaypointManageScreen extends Screen {
         ScreenHelper.renderWidthScaledText(tardisNavLocation.getPosition().toShortString(), guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 15, Color.white.getRGB(), 80, 1F, true);
         ScreenHelper.renderWidthScaledText(direction + ", " + dimensionName, guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 25, Color.white.getRGB(), 100, 1F, true);
 
-
+        onSaveWaypoint.render(guiGraphics, i, j, f);
     }
 
     @Override
