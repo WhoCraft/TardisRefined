@@ -61,6 +61,10 @@ configurations {
 
 repositories {
 
+    flatDir {
+        dirs '../mods'
+    }
+
     // the repository for ImmPtl
     maven { url 'https://jitpack.io' }
 
