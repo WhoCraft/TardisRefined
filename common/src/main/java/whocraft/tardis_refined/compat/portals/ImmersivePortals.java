@@ -229,7 +229,7 @@ public class ImmersivePortals {
 
 
     private static void detectMissingSetup() {
-        for (ResourceLocation value : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.getKeys()) {
+        for (ResourceLocation value : ShellTheme.SHELL_THEME_REGISTRY.getKeys()) {
             if (!isShellThemeSupported(value) && !value.equals(ShellTheme.getKey(ShellTheme.BRIEFCASE.get()))) {
                 TardisRefined.LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
             }
