@@ -24,13 +24,13 @@ public class  UpgradesScreen extends Screen {
     public static final ResourceLocation TABS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/tabs.png");
     public static final ResourceLocation BACKDROP = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/upgrades.png");
 
-    public static final ResourceLocation MAIN_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "upgrades/gallifreyan_frame_unobtained");
-    public static final ResourceLocation SUB_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "upgrades/upgrade_frame_unobtained");
-    public static final ResourceLocation SUB_UPGRADE = new ResourceLocation(TardisRefined.MODID, "upgrades/upgrade_frame_obtained");
-    public static final ResourceLocation MAIN_UPGRADE = new ResourceLocation(TardisRefined.MODID, "upgrades/gallifreyan_frame_obtained");
-    public static final ResourceLocation LOCKED = new ResourceLocation(TardisRefined.MODID, "upgrades/lock");
-    public static final ResourceLocation UNOBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "upgrades/box_unobtained");
-    public static final ResourceLocation OBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "upgrades/box_obtained");
+    public static final ResourceLocation MAIN_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/gallifreyan_frame_unobtained.png");
+    public static final ResourceLocation SUB_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/upgrade_frame_unobtained.png");
+    public static final ResourceLocation SUB_UPGRADE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/upgrade_frame_obtained.png");
+    public static final ResourceLocation MAIN_UPGRADE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/gallifreyan_frame_obtained.png");
+    public static final ResourceLocation LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/lock.png");
+    public static final ResourceLocation UNOBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/box_unobtained.png");
+    public static final ResourceLocation OBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/box_obtained.png");
 
 
     public static final int WINDOW_WIDTH = 256;

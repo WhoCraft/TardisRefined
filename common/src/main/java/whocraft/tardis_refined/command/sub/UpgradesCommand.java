@@ -19,7 +19,6 @@ import whocraft.tardis_refined.common.util.CommandHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
 public class UpgradesCommand {
 
@@ -52,9 +51,9 @@ public class UpgradesCommand {
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
-            for (Upgrade entry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
-                tardisLevelOperator.getUpgradeHandler().unlockUpgrade(entry);
-                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, entry.getDisplayName(), tardisId));
+            for (RegistrySupplier<Upgrade> entry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries()) {
+                tardisLevelOperator.getUpgradeHandler().unlockUpgrade(entry.get());
+                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, entry.get().getDisplayName(), tardisId));
             }
         });
         return Command.SINGLE_SUCCESS;
@@ -66,9 +65,9 @@ public class UpgradesCommand {
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
-            for (Upgrade entry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
-                tardisLevelOperator.getUpgradeHandler().lockUpgrade(entry);
-                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, entry.getDisplayName(), tardisId));
+            for (RegistrySupplier<Upgrade> entry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries()) {
+                tardisLevelOperator.getUpgradeHandler().lockUpgrade(entry.get());
+                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, entry.get().getDisplayName(), tardisId));
             }
         });
         return Command.SINGLE_SUCCESS;
