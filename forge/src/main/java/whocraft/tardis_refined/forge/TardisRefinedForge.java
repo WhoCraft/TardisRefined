@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.neoforge;
+package whocraft.tardis_refined.forge;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;

@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.registry.neoforge;
+package whocraft.tardis_refined.registry.forge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
@@ -7,13 +7,9 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryBuilder;
-import net.minecraftforge.registries.RegistryObject;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class DeferredRegistryImpl {
@@ -34,8 +30,6 @@ public class DeferredRegistryImpl {
         private Registry<T> registry;
 
         private ResourceKey<? extends Registry<T>> registryKey;
-
-        private Map<RegistrySupplierHolder<T, ?>, Supplier<? extends T>> entries = new LinkedHashMap<>();
 
         private boolean isCustom;
 

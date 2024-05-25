@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.DeferredRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 public class ShellTheme implements Theme {
 
@@ -20,26 +20,26 @@ public class ShellTheme implements Theme {
     /** Global instance of the Shell Theme custom registry created by Tardis Refined*/
     public static final Registry<ShellTheme> SHELL_THEME_REGISTRY = SHELL_THEMES.getRegistry();
 
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HALF_BAKED = registerShellTheme("half_baked"); // The default shell. Do not remove.
+    public static final RegistrySupplier<ShellTheme> HALF_BAKED = registerShellTheme("half_baked"); // The default shell. Do not remove.
 
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> FACTORY = registerShellTheme("factory");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> POLICE_BOX = registerShellTheme("police_box", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PHONE_BOOTH = registerShellTheme("phone_booth", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> MYSTIC = registerShellTheme("mystic", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PRESENT = registerShellTheme("present");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> DRIFTER = registerShellTheme("drifter");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> VENDING = registerShellTheme("vending", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> BRIEFCASE = registerShellTheme("briefcase");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROENING = registerShellTheme("groening", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> BIG_BEN = registerShellTheme("big_ben", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> NUKA = registerShellTheme("nuka", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROWTH = registerShellTheme("growth");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PORTALOO = registerShellTheme("portaloo");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PAGODA = registerShellTheme("pagoda");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> LIFT = registerShellTheme("lift", true);
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> CASTLE = registerShellTheme("castle");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
+    public static final RegistrySupplier<ShellTheme> FACTORY = registerShellTheme("factory");
+    public static final RegistrySupplier<ShellTheme> POLICE_BOX = registerShellTheme("police_box", true);
+    public static final RegistrySupplier<ShellTheme> PHONE_BOOTH = registerShellTheme("phone_booth", true);
+    public static final RegistrySupplier<ShellTheme> MYSTIC = registerShellTheme("mystic", true);
+    public static final RegistrySupplier<ShellTheme> PRESENT = registerShellTheme("present");
+    public static final RegistrySupplier<ShellTheme> DRIFTER = registerShellTheme("drifter");
+    public static final RegistrySupplier<ShellTheme> VENDING = registerShellTheme("vending", true);
+    public static final RegistrySupplier<ShellTheme> BRIEFCASE = registerShellTheme("briefcase");
+    public static final RegistrySupplier<ShellTheme> GROENING = registerShellTheme("groening", true);
+    public static final RegistrySupplier<ShellTheme> BIG_BEN = registerShellTheme("big_ben", true);
+    public static final RegistrySupplier<ShellTheme> NUKA = registerShellTheme("nuka", true);
+    public static final RegistrySupplier<ShellTheme> GROWTH = registerShellTheme("growth");
+    public static final RegistrySupplier<ShellTheme> PORTALOO = registerShellTheme("portaloo");
+    public static final RegistrySupplier<ShellTheme> PAGODA = registerShellTheme("pagoda");
+    public static final RegistrySupplier<ShellTheme> LIFT = registerShellTheme("lift", true);
+    public static final RegistrySupplier<ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
+    public static final RegistrySupplier<ShellTheme> CASTLE = registerShellTheme("castle");
+    public static final RegistrySupplier<ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
 
 
     public static ShellTheme getShellTheme(ResourceLocation resourceLocation){
@@ -65,12 +65,12 @@ public class ShellTheme implements Theme {
         this.producesLight = producesLight;
     }
 
-    private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
-        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+    private static RegistrySupplier<ShellTheme> registerShellTheme(String id){
+        return SHELL_THEMES.register(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
     }
 
-    private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, boolean producesLight){
-        return SHELL_THEMES.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
+    private static RegistrySupplier<ShellTheme> registerShellTheme(String id, boolean producesLight){
+        return SHELL_THEMES.register(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
     }
 
     @Override

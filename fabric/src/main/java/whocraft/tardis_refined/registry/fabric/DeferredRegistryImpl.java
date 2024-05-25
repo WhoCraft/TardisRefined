@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
 import java.util.function.Supplier;
 

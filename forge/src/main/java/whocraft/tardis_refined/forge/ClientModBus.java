@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.neoforge;
+package whocraft.tardis_refined.forge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
@@ -18,7 +18,7 @@ import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.ParticleGallifrey;
 import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TRParticles;
-import whocraft.tardis_refined.client.neoforge.ModelRegistryImpl;
+import whocraft.tardis_refined.client.forge.ModelRegistryImpl;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;

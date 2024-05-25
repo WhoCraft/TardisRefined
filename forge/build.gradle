@@ -54,20 +54,22 @@ unifiedPublishing {
 
 
 loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add 'tardis_refined.accesswidener'
 
-//    neoForge {
-//        convertAccessWideners = true
-//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-//
-//        mixinConfig "tardis_refined-common.mixins.json"
-//        mixinConfig "tardis_refined.mixins.json"
+        if(file("src/main/resources/${mod_id}.mixins.json").exists()) {
+            mixinConfig "${mod_id}.mixins.json"
+        }
+
+        if(getRootProject().file("common/src/main/resources/${mod_id}-common.mixins.json").exists()) {
+            mixinConfig "${mod_id}-common.mixins.json"
+        }
 
 //        dataGen {
 //            mod "${mod_id}"
 //        }
-
-//    }
+    }
 
     runs {
         data {
@@ -91,12 +93,11 @@ configurations {
 
 repositories {
     maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
-    maven { url "https://maven.neoforged.net/releases/" }
+    maven { url "https://maven.minecraftforge.net" }
 }
 
 dependencies {
-    neoForge "net.neoforged:forge:${minecraft_version}-${neoforge_version}"
-
+    forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //   modCompileOnly "curse.maven:worldedit-225608:${world_edit_version}"
 //    modCompileOnly "curse.maven:structure-expansion-398430:${structure_expansion_version}"
@@ -122,11 +123,11 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          issue_tracker_url: issue_tracker_url,
                          // update_json_url: update_json_url,
                          license: license,
-                         neoforge_version_range: neoforge_version_range, neoforge_minecraft_version_range: neoforge_minecraft_version_range,
-                         neoforge_loader_version_range: neoforge_loader_version_range,
+                         forge_version_range: forge_version_range, forge_minecraft_version_range: forge_minecraft_version_range,
+                         forge_loader_version_range: forge_loader_version_range,
                          pack_format: pack_format,
-                         neoforge_resource_pack_format: forge_resource_pack_format,
-                         neoforge_data_pack_format: neoforge_data_pack_format,
+                         forge_resource_pack_format: forge_resource_pack_format,
+                         forge_data_pack_format: forge_data_pack_format,
                          // forge_immersive_portals_version_range: forge_immersive_portals_version_range
                          // ,display_test_type: display_test_type
 ]
