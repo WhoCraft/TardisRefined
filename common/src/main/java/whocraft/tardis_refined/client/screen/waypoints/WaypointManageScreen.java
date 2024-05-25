@@ -3,7 +3,6 @@ package whocraft.tardis_refined.client.screen.waypoints;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -13,6 +12,7 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
+import whocraft.tardis_refined.client.screen.components.SpriteIconButton;
 import whocraft.tardis_refined.common.network.messages.waypoints.EditWaypointMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.UploadWaypointMessage;
@@ -117,7 +117,7 @@ public class WaypointManageScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderTransparentBackground(guiGraphics);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         super.render(guiGraphics, i, j, f);
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
@@ -164,10 +164,10 @@ public class WaypointManageScreen extends Screen {
         return super.charTyped(c, i);
     }
 
-    @Override
+    /*@Override
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
 
-    }
+    }*/
 
     @Override
     public boolean isPauseScreen() {

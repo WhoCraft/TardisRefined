@@ -141,7 +141,7 @@ public class UpgradeWidget {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             //Display Lock6,
-            guiGraphics.blitSprite(UpgradesScreen.LOCKED, x - 5, y - 5, 26, 26);
+            guiGraphics.blit(UpgradesScreen.LOCKED, 0, 0, x - 5, y - 5, 26, 26);
         }
     }
 
@@ -150,7 +150,7 @@ public class UpgradeWidget {
 
         boolean isUnlocked =this.upgradeEntry.isUnlocked(upgradeHandler);
 
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), x - 13, y - 13, 26, 26);
+        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), 0, 0, x - 13, y - 13, 26, 26);
         this.drawDisplayIcon(mc, guiGraphics, x - 8, y - 8);
     }
 
@@ -209,15 +209,15 @@ public class UpgradeWidget {
         int r = 32 + var10001 * 9;
         if (!this.description.isEmpty()) {
             if (bl2) {
-                guiGraphics.blitSprite(TITLE_BOX_SPRITE, q, p + 26 - r, this.width, r);
+                guiGraphics.blit(TITLE_BOX_SPRITE, 0, 0, q, p + 26 - r, this.width, r);
             } else {
-                guiGraphics.blitSprite(TITLE_BOX_SPRITE, q, p, this.width, r);
+                guiGraphics.blit(TITLE_BOX_SPRITE, 0, 0, q, p, this.width, r);
             }
         }
 
-        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 0, 0, q, p, n, 26);
-        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 200 - o, 0, q + n, p, o, 26);
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 26, 26);
+        guiGraphics.blit(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 0, 0, q, p, n, 26);
+        guiGraphics.blit(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 200 - o, 0, q + n, p, o, 26);
+        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), 0, 0, i + this.x + 3, j + this.y, 26, 26);
         if (bl) {
             guiGraphics.drawString(this.minecraft.font, this.title, q + 5, j + this.y + 9, -1);
             if (component != null) {

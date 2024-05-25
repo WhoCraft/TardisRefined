@@ -71,8 +71,8 @@ public class BuyUpgradeScreen extends Screen {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
-    @Override
+    /*@Override
     public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
 
-    }
+    }*/
 }

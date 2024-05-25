@@ -2,7 +2,6 @@ package whocraft.tardis_refined.client.screen.waypoints;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +10,7 @@ import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
+import whocraft.tardis_refined.client.screen.components.SpriteIconButton;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesDisplayMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenEditCoordinatesDisplayMessage;
@@ -153,10 +153,10 @@ public class WaypointListScreen extends SelectionScreen {
     }
 
 
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        // super.renderBackground(guiGraphics, i, j, f);
-    }
+//    @Override
+//    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+//        // super.renderBackground(guiGraphics, i, j, f);
+//    }
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
@@ -164,7 +164,7 @@ public class WaypointListScreen extends SelectionScreen {
         int textOffset = height / 2 - 60;
         int textScale = 40;
 
-        this.renderTransparentBackground(guiGraphics);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
 
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 

@@ -4,9 +4,10 @@ import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryBuilder;
+import net.minecraftforge.registries.RegistryObject;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
@@ -65,21 +66,14 @@ public class DeferredRegistryImpl {
         }
 
         @Override
-        public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
-            DeferredHolder<T, I> deferredHolder = this.register.register(id, sup);
-            RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.registryKey, deferredHolder.getId());
-            return registryHolder;
-        }
-
-        @Override
         public Registry<T> getRegistry() {
-            this.registry = this.isCustom ? this.register.makeRegistry(builder -> builder.maxId(Integer.MAX_VALUE - 1).sync(this.syncToClient)) : (Registry<T>) BuiltInRegistries.REGISTRY.get(this.registryKey.location());
+            this.registry = this.isCustom ? (Registry<T>) this.register.makeRegistry(RegistryBuilder::new).get() : (Registry<T>) BuiltInRegistries.f_257047_.m_7745_(this.registryKey.m_135782_());
             return this.registry;
         }
 
         @Override
         public Supplier<Codec<T>> getCodec() {
-            return () -> this.registry.byNameCodec();
+            return () -> this.registry.m_194605_();
         }
     }
 

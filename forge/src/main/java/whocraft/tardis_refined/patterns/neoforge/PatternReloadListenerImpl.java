@@ -2,8 +2,8 @@ package whocraft.tardis_refined.patterns.neoforge;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.patterns.BasePattern;
@@ -28,7 +28,7 @@ public class PatternReloadListenerImpl {
 
         @Override
         public PatternReloadListener setSyncPacket(NetworkManager networkManager, Function packetFactory) {
-            NeoForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, packetFactory));
+            MinecraftForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, packetFactory));
             return this;
         }
 

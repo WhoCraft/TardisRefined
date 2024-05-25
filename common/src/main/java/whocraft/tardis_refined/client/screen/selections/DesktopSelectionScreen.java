@@ -66,7 +66,7 @@ public class DesktopSelectionScreen extends SelectionScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderTransparentBackground(guiGraphics);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
 
         PoseStack poseStack = guiGraphics.pose();
 
@@ -111,10 +111,10 @@ public class DesktopSelectionScreen extends SelectionScreen {
         Minecraft.getInstance().setScreen(null);
     }
 
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-
-    }
+//    @Override
+//    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+//
+//    }
 
     @Override
     public Component getSelectedDisplayName() {
