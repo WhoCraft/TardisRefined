@@ -41,7 +41,7 @@ public class ShellArgumentType implements ArgumentType<ResourceLocation> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return SharedSuggestionProvider.suggestResource(ShellTheme.SHELL_THEME_REGISTRY.keySet(), builder);
+        return SharedSuggestionProvider.suggestResource(ShellTheme.SHELL_THEME_REGISTRY.getKeys(), builder);
     }
 
     @Override

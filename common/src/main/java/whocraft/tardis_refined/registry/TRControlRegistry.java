@@ -9,15 +9,17 @@ import whocraft.tardis_refined.common.tardis.control.flight.*;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
+import java.util.Optional;
+
 public class TRControlRegistry {
 	/** Registry Key for the Controls registry. For addon mods, use this as the registry key*/
-	public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
+	public static final ResourceLocation CONTROL = new ResourceLocation(TardisRefined.MODID, "control");
 
 	/** Tardis Refined instance of the Controls registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-	public static final DeferredRegistry<Control> CONTROLS = DeferredRegistry.create(TardisRefined.MODID, CONTROL_REGISTRY_KEY);
+	public static final CustomRegistry<Control> CONTROLS_REGISTRY = CustomRegistry.create(CONTROL);
 
 	/** Global instance of the Control custom registry created by Tardis Refined*/
-	public static final Registry<Control> CONTROL_REGISTRY = CONTROLS.getRegistry();
+	public static final DeferredRegistry<Control> CONTROL_DEFERRED_REGISTRY = DeferredRegistry.create(TardisRefined.MODID, CONTROLS_REGISTRY);
 
 	// Tardis refined controls
 	public static final RegistrySupplier<Control> DOOR_TOGGLE = register(new ToggleDoorControl(new ResourceLocation(TardisRefined.MODID, "door_toggle")));
@@ -37,7 +39,7 @@ public class TRControlRegistry {
 	public static final RegistrySupplier<Control> FUEL = register(new FuelToggleControl(new ResourceLocation(TardisRefined.MODID, "fuel")));
 
 	public static Control get(ResourceLocation id){
-		Control potentialTheme = CONTROL_REGISTRY.get(id);
+		Control potentialTheme = CONTROLS_REGISTRY.get(id);
 		if(potentialTheme != null){
 			return potentialTheme;
 		}
@@ -45,7 +47,7 @@ public class TRControlRegistry {
 	}
 
 	public static ResourceLocation getKey(Control control){
-		return CONTROL_REGISTRY.getKey(control);
+		return CONTROLS_REGISTRY.getKey(control);
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class TRControlRegistry {
 		return register(control, control.getId().getPath());
 	}
 	private static RegistrySupplier<Control> register(Control control, String id) {
-		return CONTROLS.register(id, () -> control);
+		return CONTROL_DEFERRED_REGISTRY.register(id, () -> control);
 	}
 }
 

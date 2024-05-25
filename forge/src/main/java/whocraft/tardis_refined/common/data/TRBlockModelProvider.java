@@ -51,15 +51,6 @@ public class TRBlockModelProvider extends BlockStateProvider {
         return builder.toJson();
     }
 
-    public ResourceLocation getBlockResourceLocation(Block block) {
-        return BLOCKS.getRegistry().getKey(block);
-    }
-
-    public ResourceLocation getBlockTextureResourceLocation(Block block) {
-        ResourceLocation blockTex = BLOCKS.getRegistry().getKey(block);
-        return new ResourceLocation(TardisRefined.MODID, "block/" + blockTex.getPath());
-    }
-
     public JsonObject customLocation(Block block, ResourceLocation resourceLocation) {
         return getVariantBuilder(block).partialState().modelForState().modelFile(models().getExistingFile(resourceLocation)).addModel().toJson();
     }

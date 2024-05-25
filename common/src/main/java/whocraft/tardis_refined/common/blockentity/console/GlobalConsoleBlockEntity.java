@@ -130,7 +130,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
             killControls();
             ResourceLocation themeId = this.theme();
-            ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEME_REGISTRY.get(themeId);
+            ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEMES_REGISTRY.get(themeId);
             ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
             Arrays.stream(controls).toList().forEach(control -> {
                 // Spawn a control!

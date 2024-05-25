@@ -11,6 +11,7 @@ import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.concurrent.CompletableFuture;
@@ -24,8 +25,8 @@ public class ProviderBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        for (Block blocksEntry : TRBlockRegistry.BLOCKS.getRegistry().stream().toList()) {
-            Block block = blocksEntry;
+        for (RegistrySupplier<Block> blocksEntry : TRBlockRegistry.BLOCKS.getEntries().stream().toList()) {
+            Block block = blocksEntry.get();
 
             /*Fences*/
             if (block instanceof FenceBlock fenceBlock) {

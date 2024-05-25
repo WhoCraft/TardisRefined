@@ -37,7 +37,7 @@ public class RegistryHelper {
     }
 
     public static ResourceLocation getKey(ConsoleTheme theme){
-        return ConsoleTheme.CONSOLE_THEME_REGISTRY.getKey(theme);
+        return ConsoleTheme.CONSOLE_THEMES_REGISTRY.getKey(theme);
     }
 
     public static ResourceLocation getKey(ShellTheme theme){

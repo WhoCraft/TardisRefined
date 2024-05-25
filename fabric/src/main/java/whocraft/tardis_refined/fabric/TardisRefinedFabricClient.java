@@ -27,6 +27,7 @@ import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.fabric.events.ModEvents;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TREntityRegistry;
@@ -36,10 +37,10 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         establishBlockEntityRenderers();
+        registerEntityRenderers();
         ModelRegistry.init();
         ModEvents.addClientEvents();
         particles();
-        registerEntityRenderers();
     }
 
     private void particles() {
@@ -63,9 +64,9 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
 
         /*Required to Render Transparency*/
-        for (Block block : TRBlockRegistry.BLOCKS.getRegistry()) {
-            if (TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)) {
-                BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
+        for (RegistrySupplier<Block> block : TRBlockRegistry.BLOCKS.getEntries()) {
+            if(block.getId().getNamespace().contains(TardisRefined.MODID)){
+                BlockRenderLayerMap.INSTANCE.putBlock(block.get(), RenderType.cutout());
             }
         }
 

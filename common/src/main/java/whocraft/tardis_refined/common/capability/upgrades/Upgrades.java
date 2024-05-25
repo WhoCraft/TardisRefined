@@ -8,18 +8,21 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.RegistryHelper;
+import whocraft.tardis_refined.registry.CustomRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
+import java.util.Optional;
+
 public class Upgrades {
 
-    public static final ResourceKey<Registry<Upgrade>> UPGRADE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "upgrade"));
+    public static final ResourceLocation UPGRADE = new ResourceLocation(TardisRefined.MODID, "upgrade");
 
     /** Tardis Refined instance of the Upgrade registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-    public static final DeferredRegistry<Upgrade> UPGRADE_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, UPGRADE_REGISTRY_KEY, true);
+    public static final CustomRegistry<Upgrade> UPGRADE_REGISTRY = CustomRegistry.create(UPGRADE);
     /** Global instance of the Upgrade custom registry created by Tardis Refined*/
-    public static final Registry<Upgrade> UPGRADE_REGISTRY = UPGRADE_DEFERRED_REGISTRY.getRegistry();
+    public static final DeferredRegistry<Upgrade> UPGRADE_DEFERRED_REGISTRY = DeferredRegistry.create(TardisRefined.MODID, UPGRADE_REGISTRY);
 
     // Base Upgrades
     public static final RegistrySupplier<Upgrade> TARDIS_XP = UPGRADE_DEFERRED_REGISTRY.register("tardis_xp", () -> new Upgrade(Items.GLASS_BOTTLE::getDefaultInstance, RegistryHelper.makeKey("tardis_xp"), Upgrade.UpgradeType.MAIN_UPGRADE)

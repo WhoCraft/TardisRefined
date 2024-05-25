@@ -33,6 +33,7 @@ import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.ArrayList;
@@ -782,7 +783,8 @@ public class TardisPilotingManager extends BaseHandler {
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
 
-        for (Upgrade upgrade : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
+        for (RegistrySupplier<Upgrade> upgradeEntry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries()) {
+            Upgrade upgrade = upgradeEntry.get();
             if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
                 if (upgrade.isUnlocked(upgradeHandler)) {
                     increments.add(incrementUpgrade.getIncrementAmount());

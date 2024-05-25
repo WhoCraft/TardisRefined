@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -59,7 +60,8 @@ public class UpgradeTab {
         List<UpgradeWidget> root = new LinkedList<>();
 
         // Create entry for each ability
-        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
+        for (RegistrySupplier<Upgrade> upgradeEntry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries()) {
+            Upgrade upgrade = upgradeEntry.get();
             var widget = new UpgradeWidget(this, this.minecraft, upgradeHandlerClient, upgrade).setPosition(0, 0);
             this.entries.add(widget);
             var pos = upgrade.getScreenPosition();

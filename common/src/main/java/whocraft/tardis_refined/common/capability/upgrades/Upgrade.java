@@ -8,6 +8,7 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,8 @@ public class Upgrade {
     public List<Upgrade> getDirectChildren() {
         List<Upgrade> upgrades = new ArrayList<>();
 
-        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
+        for (RegistrySupplier<Upgrade> upgradeEntry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries()) {
+            Upgrade upgrade = upgradeEntry.get();
             if (upgrade.getParent() == this) {
                 upgrades.add(upgrade);
             }

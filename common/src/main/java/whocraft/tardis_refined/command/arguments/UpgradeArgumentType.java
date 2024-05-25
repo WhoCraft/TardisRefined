@@ -40,7 +40,7 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 
-        return SharedSuggestionProvider.suggestResource(Upgrades.UPGRADE_REGISTRY.keySet(), builder);
+        return SharedSuggestionProvider.suggestResource(Upgrades.UPGRADE_REGISTRY.getKeys(), builder);
     }
 
     @Override

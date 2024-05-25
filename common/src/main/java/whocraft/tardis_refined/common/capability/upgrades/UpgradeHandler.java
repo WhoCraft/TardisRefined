@@ -34,7 +34,7 @@ public class UpgradeHandler {
     }
 
     public double calculateProgress() {
-        int totalUpgrades = Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry().size();
+        int totalUpgrades = Upgrades.UPGRADE_DEFERRED_REGISTRY.getEntries().size();
         int unlockedCount = unlockedUpgrades.size();
 
         if (totalUpgrades == 0) {

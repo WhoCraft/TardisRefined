@@ -49,7 +49,7 @@ public class TardisRefined {
         TREntityRegistry.ENTITY_TYPES.register();
         TRSoundRegistry.SOUNDS.register();
         TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
-        TRManipulatorRecipeResultTypes.RESULT_TYPES.register();
+        TRManipulatorRecipeResultTypes.RESULT_TYPES_DEFERRED_REGISTER.register();
         TRCraftingRecipeTypes.RECIPE_TYPES.register();
         TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
         TRDimensionTypes.register();
@@ -57,9 +57,9 @@ public class TardisRefined {
         Features.FEATURES.register();
         TRParticles.TYPES.register();
         Upgrades.UPGRADE_DEFERRED_REGISTRY.register();
-        ConsoleTheme.CONSOLE_THEMES.register();
-        ShellTheme.SHELL_THEMES.register();
-        TRControlRegistry.CONTROLS.register();
+        ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.register();
+        ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.register();
+        TRControlRegistry.CONTROL_DEFERRED_REGISTRY.register();
         TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.register();
         TRTagKeys.init();
         TardisNetwork.init();

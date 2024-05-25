@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TREntityRegistry;
 import whocraft.tardis_refined.registry.TRItemRegistry;
@@ -45,10 +46,10 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Iterable<Block> getKnownBlocks() {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
-            for (Block entry : TRBlockRegistry.BLOCKS.getRegistry().stream().toList()) {
-                ResourceLocation blockId = TRBlockRegistry.BLOCKS.getRegistry().getKey(entry);
+            for (RegistrySupplier<Block> entry : TRBlockRegistry.BLOCKS.getEntries().stream().toList()) {
+                ResourceLocation blockId = entry.getId();
                 if (!blockId.toString().contains("minecraft")) {
-                    blocks.add(entry);
+                    blocks.add(entry.get());
                 }
             }
             return blocks;
@@ -64,10 +65,11 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Stream<EntityType<?>> getKnownEntityTypes() {
             ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
-            for (EntityType<?> entry : TREntityRegistry.ENTITY_TYPES.getRegistry().stream().toList()) {
-                if (entry == TREntityRegistry.CONTROL_ENTITY.get())
+            for (RegistrySupplier<EntityType<?>> entry : TREntityRegistry.ENTITY_TYPES.getEntries().stream().toList()) {
+                EntityType entityType = entry.get();
+                if (entityType == TREntityRegistry.CONTROL_ENTITY.get())
                     break;
-                entities.add(entry);
+                entities.add(entityType);
             }
             return entities.stream();
         }

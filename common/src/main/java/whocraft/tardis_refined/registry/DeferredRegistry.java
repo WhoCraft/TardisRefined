@@ -6,6 +6,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import whocraft.tardis_refined.TardisRefined;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 /** Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister. */
@@ -15,9 +17,7 @@ public abstract class DeferredRegistry<T> {
     /** Register using a Supplier */
     public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
 
-    /** Get the underlying registry, which includes all entries added by any mod that has a DeferredRegistry with the same ResourceKey.
-     * All lookup methods should be called from here.*/
-    public abstract Registry<T> getRegistry();
+    public abstract List<RegistrySupplier<T>> getEntries();
 
     /**
      * Create a DeferredRegistry instance for vanilla registries
@@ -31,19 +31,7 @@ public abstract class DeferredRegistry<T> {
         throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
 
-    /** Gets the underlying Codec for the registry object type, if defined. Currently unused and untested, but added for completeness*/
-    public abstract Supplier<Codec<T>> getCodec();
-
-    /**
-     * Create a DeferredRegistry instance for custom registries
-     * @param modid - Your Mod's unique identifier
-     * @param resourceKey - Resource Key for the Registry
-     * @param syncToClient - True if we want the objects to sync to the client.
-     * @return
-     * @param <T>
-     */
-    @ExpectPlatform
-    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
-        throw new AssertionError();
+    public static <T> DeferredRegistry<T> create(String modid, CustomRegistry<T> registry) {
+        return create(modid, registry.getRegistryKey());
     }
 }

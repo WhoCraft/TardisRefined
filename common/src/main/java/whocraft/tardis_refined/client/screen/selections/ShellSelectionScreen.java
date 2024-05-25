@@ -32,6 +32,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.List;
@@ -57,7 +58,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     public ShellSelectionScreen(ResourceLocation currentShellTheme) {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
-        this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
+        this.themeList = ShellTheme.SHELL_THEME_REGISTRY.getKeys().stream().toList();
         generateDummyGlobalShell();
         this.currentShellTheme = currentShellTheme;
 
@@ -189,9 +190,9 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         selectionList.setRenderBackground(false);
 
-        for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
-            ShellTheme theme = shellTheme.value();
-            ResourceLocation shellThemeId = shellTheme.key().location();
+        for (RegistrySupplier<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.getEntries()) {
+            ShellTheme theme = shellTheme.get();
+            ResourceLocation shellThemeId = shellTheme.getId();
 
             if (theme == ShellTheme.HALF_BAKED.get()) {
                 continue;

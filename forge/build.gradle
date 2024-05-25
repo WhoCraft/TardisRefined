@@ -69,6 +69,11 @@ loom {
 
     }
 
+    runs {
+        data {
+            programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
+        }
+    }
 }
 
 
@@ -114,6 +119,7 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          license: license,
                          forge_loader_version_range: forge_loader_version_range,
                          forge_minecraft_version_range: forge_minecraft_version_range,
+                         forge_version_range: forge_version_range,
                          forge_loader_version_range: forge_loader_version_range,
                          pack_format: pack_format,
                          forge_resource_pack_format: forge_resource_pack_format,

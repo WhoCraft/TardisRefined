@@ -6,6 +6,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.*;
 
@@ -51,7 +52,7 @@ public class ConsolePatterns{
         Map<ResourceLocation, List<ConsolePattern>> entries = ConsolePatterns.getRegistry();
         for (Map.Entry<ResourceLocation, List<ConsolePattern>> entry : entries.entrySet()){
             if (pattern.getThemeId() == entry.getKey()){
-                return ConsoleTheme.CONSOLE_THEME_REGISTRY.get(entry.getKey());
+                return ConsoleTheme.CONSOLE_THEMES_REGISTRY.get(entry.getKey());
             }
         }
         return ConsoleTheme.FACTORY.get();
@@ -150,7 +151,8 @@ public class ConsolePatterns{
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
 
-        for (ResourceLocation consoleTheme : ConsoleTheme.CONSOLE_THEMES.getRegistry().keySet()) {
+        for (RegistrySupplier<ConsoleTheme> consoleThemeSupplier : ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.getEntries()) {
+            ResourceLocation consoleTheme = consoleThemeSupplier.getId();
             boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER.getId() || consoleTheme == ConsoleTheme.CRYSTAL.getId() || consoleTheme == ConsoleTheme.CORAL.getId() || consoleTheme == ConsoleTheme.FACTORY.getId() || consoleTheme == ConsoleTheme.INITIATIVE.getId() || consoleTheme == ConsoleTheme.TOYOTA.getId() || consoleTheme == ConsoleTheme.VICTORIAN.getId();
             addDefaultPattern(consoleTheme, ResourceConstants.DEFAULT_PATTERN_ID.getPath(), consoleTheme.getPath() + "_console", hasDefaultEmission);
         }
