@@ -35,6 +35,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ShellSelectionScreen extends SelectionScreen {
@@ -189,9 +190,9 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         selectionList.setRenderBackground(false);
 
-        for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
-            ShellTheme theme = shellTheme.value();
-            ResourceLocation shellThemeId = shellTheme.key().location();
+        for (Map.Entry<ResourceKey<ShellTheme>, ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.entrySet()) {
+            ShellTheme theme = shellTheme.getValue();
+            ResourceLocation shellThemeId = shellTheme.getKey().location();
 
             if (theme == ShellTheme.HALF_BAKED.get()) {
                 continue;

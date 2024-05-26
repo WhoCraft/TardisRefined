@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.capability.upgrades;
 
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec2;
@@ -11,6 +12,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class Upgrade {
@@ -98,7 +100,8 @@ public class Upgrade {
     public List<Upgrade> getDirectChildren() {
         List<Upgrade> upgrades = new ArrayList<>();
 
-        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
+        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> upgradeEntry : Upgrades.UPGRADE_REGISTRY.entrySet()) {
+            Upgrade upgrade = upgradeEntry.getValue();
             if (upgrade.getParent() == this) {
                 upgrades.add(upgrade);
             }

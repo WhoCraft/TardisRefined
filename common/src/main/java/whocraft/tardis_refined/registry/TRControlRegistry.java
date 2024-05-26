@@ -13,11 +13,12 @@ public class TRControlRegistry {
 	/** Registry Key for the Controls registry. For addon mods, use this as the registry key*/
 	public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
 
-	/** Tardis Refined instance of the Controls registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-	public static final DeferredRegistry<Control> CONTROLS = DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
-
 	/** Global instance of the Control custom registry created by Tardis Refined*/
-	public static final Registry<Control> CONTROL_REGISTRY = CONTROLS.getRegistry();
+	public static final CustomRegistry<Control> CONSOLE_THEMES_REGISTRY = CustomRegistry.create(CONTROL_REGISTRY_KEY);
+
+	/** Tardis Refined instance of the Controls registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
+	public static final DeferredRegistry<Control> CONTROL_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, CONSOLE_THEMES_REGISTRY);
+
 
 	// Tardis refined controls
 	public static final RegistrySupplier<Control> DOOR_TOGGLE = register(new ToggleDoorControl(new ResourceLocation(TardisRefined.MODID, "door_toggle")));
@@ -37,7 +38,7 @@ public class TRControlRegistry {
 	public static final RegistrySupplier<Control> FUEL = register(new FuelToggleControl(new ResourceLocation(TardisRefined.MODID, "fuel")));
 
 	public static Control get(ResourceLocation id){
-		Control potentialTheme = CONTROL_REGISTRY.get(id);
+		Control potentialTheme = CONSOLE_THEMES_REGISTRY.get(id);
 		if(potentialTheme != null){
 			return potentialTheme;
 		}
@@ -45,7 +46,7 @@ public class TRControlRegistry {
 	}
 
 	public static ResourceLocation getKey(Control control){
-		return CONTROL_REGISTRY.getKey(control);
+		return CONSOLE_THEMES_REGISTRY.getKey(control);
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class TRControlRegistry {
 		return register(control, control.getId().getPath());
 	}
 	private static RegistrySupplier<Control> register(Control control, String id) {
-		return CONTROLS.register(id, () -> control);
+		return CONTROL_DEFERRED_REGISTRY.register(id, () -> control);
 	}
 }
 

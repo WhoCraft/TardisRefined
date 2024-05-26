@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -19,6 +20,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class UpgradeTab {
@@ -59,8 +61,9 @@ public class UpgradeTab {
         List<UpgradeWidget> root = new LinkedList<>();
 
         // Create entry for each ability
-        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
-            var widget = new UpgradeWidget(this, this.minecraft, upgradeHandlerClient, upgrade).setPosition(0, 0);
+        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> upgradeEntry : Upgrades.UPGRADE_REGISTRY.entrySet()) {
+            Upgrade upgrade = upgradeEntry.getValue();
+            UpgradeWidget widget = new UpgradeWidget(this, this.minecraft, upgradeHandlerClient, upgrade).setPosition(0, 0);
             this.entries.add(widget);
             var pos = upgrade.getScreenPosition();
 
