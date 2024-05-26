@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +26,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -35,10 +36,7 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class TardisPilotingManager extends BaseHandler {
 
@@ -782,7 +780,8 @@ public class TardisPilotingManager extends BaseHandler {
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
 
-        for (Upgrade upgrade : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
+        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+            Upgrade upgrade = entry.getValue();
             if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
                 if (upgrade.isUnlocked(upgradeHandler)) {
                     increments.add(incrementUpgrade.getIncrementAmount());

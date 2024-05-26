@@ -2,20 +2,14 @@ package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.*;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
-import whocraft.tardis_refined.common.util.MiscHelper;
-import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.DeferredRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
 
@@ -25,9 +19,9 @@ public class ConsoleTheme implements Theme {
     public static final ResourceKey<Registry<ConsoleTheme>> CONSOLE_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "console_theme"));
 
     /** Tardis Refined instance of the ConsoleTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-    public static final DeferredRegistry<ConsoleTheme> CONSOLE_THEMES = DeferredRegistry.createCustom(TardisRefined.MODID, CONSOLE_THEME_REGISTRY_KEY, true);
-    /** Global instance of the Console Theme custom registry created by Tardis Refined*/
-    public static final Registry<ConsoleTheme> CONSOLE_THEME_REGISTRY = CONSOLE_THEMES.getRegistry();
+    public static final DeferredRegistry<ConsoleTheme> CONSOLE_THEME_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, CONSOLE_THEME_REGISTRY_KEY, true);
+    /** Convenient instance of the Console Theme entries*/
+    public static final Registry<ConsoleTheme> CONSOLE_THEME_REGISTRY = CONSOLE_THEME_DEFERRED_REGISTRY.getRegistry().get();
 
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> FACTORY = registerConsoleTheme("factory", new FactoryConsoleTheme());
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> CRYSTAL = registerConsoleTheme("crystal", new CrystalConsoleTheme());
@@ -58,7 +52,7 @@ public class ConsoleTheme implements Theme {
 
 
     private static RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> registerConsoleTheme(String id, ConsoleThemeDetails themeDetails){
-        return CONSOLE_THEMES.registerHolder(id, () -> new ConsoleTheme(new ResourceLocation(TardisRefined.MODID, id), themeDetails));
+        return CONSOLE_THEME_DEFERRED_REGISTRY.registerHolder(id, () -> new ConsoleTheme(new ResourceLocation(TardisRefined.MODID, id), themeDetails));
     }
 
     @Override

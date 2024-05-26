@@ -16,7 +16,7 @@ public abstract class ManipulatorCraftingResult {
 
     /** Master Codec object for the recipe result. We use dispatch codec to create a key-value ledger of the different Result types, and the data format (in the form of Codecs) for each type.
      * Each type of recipe result is defined as a registry object, registered to a custom registry in {@link TRManipulatorRecipeResultTypes }*/
-    public static final Codec<ManipulatorCraftingResult> RESULT_CODEC = TRManipulatorRecipeResultTypes.RESULT_TYPES.getCodec().get().dispatch(ManipulatorCraftingResult::type, Function.identity());
+    public static final Codec<ManipulatorCraftingResult> RESULT_CODEC = TRManipulatorRecipeResultTypes.RESULT_TYPE_REGISTRY.byNameCodec().dispatch(ManipulatorCraftingResult::type, Function.identity());
 
 
 }

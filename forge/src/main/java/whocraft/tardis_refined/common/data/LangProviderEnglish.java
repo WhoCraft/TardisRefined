@@ -10,7 +10,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -243,22 +243,22 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DESCEND_KEY, "Descend: %s");
 
         /*Upgrades*/
-        addUpgrade(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
-        addUpgrade(Upgrades.DEFENSE_SYSTEM.get(), "Defense System", "Enables Defense Protocols");
-        addUpgrade(Upgrades.WAYPOINTS.get(), "Waypoints", "Allows the Pilot to create saved locations");
-        addUpgrade(Upgrades.NAVIGATION_SYSTEM.get(), "Navigation System", "Allows upgrades to the TARDIS Navigation System");
-        addUpgrade(Upgrades.TARDIS_XP.get(), "System Upgrades", "Allows upgrades to the TARDIS");
-        addUpgrade(Upgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
-        addUpgrade(Upgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
-        addUpgrade(Upgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
-        addUpgrade(Upgrades.EXPLORER.get(), "Explorer I", "x1000 Increment");
-        addUpgrade(Upgrades.EXPLORER_II.get(), "Explorer II", "x2500 Increment");
-        addUpgrade(Upgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
-        addUpgrade(Upgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
-        addUpgrade(Upgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
-        addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_I.get(), "Improved Generation I", "Lowers desktop wait times to 120 seconds");
-        addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_II.get(), "Improved Generation II", "Lowers desktop wait times to 60 seconds");
-        addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_III.get(), "Improved Generation III", "Lowers desktop wait times to 10 seconds");
+        addUpgrade(TRUpgrades.CHAMELEON_CIRCUIT_SYSTEM.get(), "Chameleon Circuit", "Allows the TARDIS to change it's shape");
+        addUpgrade(TRUpgrades.DEFENSE_SYSTEM.get(), "Defense System", "Enables Defense Protocols");
+        addUpgrade(TRUpgrades.WAYPOINTS.get(), "Waypoints", "Allows the Pilot to create saved locations");
+        addUpgrade(TRUpgrades.NAVIGATION_SYSTEM.get(), "Navigation System", "Allows upgrades to the TARDIS Navigation System");
+        addUpgrade(TRUpgrades.TARDIS_XP.get(), "System Upgrades", "Allows upgrades to the TARDIS");
+        addUpgrade(TRUpgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
+        addUpgrade(TRUpgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
+        addUpgrade(TRUpgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
+        addUpgrade(TRUpgrades.EXPLORER.get(), "Explorer I", "x1000 Increment");
+        addUpgrade(TRUpgrades.EXPLORER_II.get(), "Explorer II", "x2500 Increment");
+        addUpgrade(TRUpgrades.EXPLORER_III.get(), "Explorer III", "x5000 Increment");
+        addUpgrade(TRUpgrades.DIMENSION_TRAVEL.get(), "Inter-Dimensional Travel", "Allows the TARDIS to move between dimensions");
+        addUpgrade(TRUpgrades.LANDING_PAD.get(), "Landing Pad", "Allows the TARDIS to be summoned to a landing pad");
+        addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_I.get(), "Improved Generation I", "Lowers desktop wait times to 120 seconds");
+        addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_II.get(), "Improved Generation II", "Lowers desktop wait times to 60 seconds");
+        addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_III.get(), "Improved Generation III", "Lowers desktop wait times to 10 seconds");
 
 
     }
@@ -273,8 +273,8 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addUpgrade(Upgrade upgrade, String title, String description) {
-        add(Util.makeDescriptionId("upgrade", Upgrades.UPGRADE_REGISTRY.getKey(upgrade)), title);
-        add(Util.makeDescriptionId("upgrade", Upgrades.UPGRADE_REGISTRY.getKey(upgrade)) + ".description", description);
+        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)), title);
+        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)) + ".description", description);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {

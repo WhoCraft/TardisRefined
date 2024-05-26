@@ -22,7 +22,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -107,7 +107,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
 
-                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().endFlight(false) && Upgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().endFlight(false) && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
                     if (cap.getAestheticHandler().getShellTheme() != null) {
                         ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
 

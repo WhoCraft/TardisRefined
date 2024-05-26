@@ -24,7 +24,7 @@ public class ProviderBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        for (Block blocksEntry : TRBlockRegistry.BLOCKS.getRegistry().stream().toList()) {
+        for (Block blocksEntry : TRBlockRegistry.BLOCKS.getRegistry().get().stream().toList()) {
             Block block = blocksEntry;
 
             /*Fences*/

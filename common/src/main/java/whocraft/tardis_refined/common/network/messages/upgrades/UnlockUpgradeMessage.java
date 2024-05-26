@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.network.MessageC2S;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -24,7 +24,7 @@ public class UnlockUpgradeMessage extends MessageC2S {
     }
 
     public UnlockUpgradeMessage(FriendlyByteBuf buf) {
-        this.upgrade = Upgrades.UPGRADE_REGISTRY.get(buf.readResourceLocation());
+        this.upgrade = TRUpgrades.UPGRADE_REGISTRY.get(buf.readResourceLocation());
     }
 
     @NotNull
@@ -35,7 +35,7 @@ public class UnlockUpgradeMessage extends MessageC2S {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(Objects.requireNonNull(Upgrades.UPGRADE_REGISTRY.getKey(this.upgrade)));
+        buf.writeResourceLocation(Objects.requireNonNull(TRUpgrades.UPGRADE_REGISTRY.getKey(this.upgrade)));
     }
 
     @Override
