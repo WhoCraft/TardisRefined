@@ -69,6 +69,10 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         return this;
     }
 
+    public ResourceLocation getShellTheme() {
+        return shellTheme;
+    }
+
     @Override
     public void load(CompoundTag pTag) {
         super.load(pTag);

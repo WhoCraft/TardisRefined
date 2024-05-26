@@ -5,6 +5,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.model.blockentity.VortexModel;
 import whocraft.tardis_refined.client.model.blockentity.device.ArtronPillarBlockModel;
 import whocraft.tardis_refined.client.model.blockentity.console.*;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
@@ -83,6 +84,7 @@ public class ModelRegistry {
     public static ModelLayerLocation ARS_EGG;
     public static ModelLayerLocation BULK_HEAD_DOOR;
     public static ModelLayerLocation ARTRON_PILLAR;
+    public static ModelLayerLocation VORTEX;
 
 
     public static void init() {
@@ -149,6 +151,7 @@ public class ModelRegistry {
         ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
         BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
         ARTRON_PILLAR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "artron_pillar"), "artron_pillar"), ArtronPillarBlockModel::createBodyLayer);
+        VORTEX = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "vortex"), "vortex"), VortexModel::createBodyLayer);
 
     }
 
