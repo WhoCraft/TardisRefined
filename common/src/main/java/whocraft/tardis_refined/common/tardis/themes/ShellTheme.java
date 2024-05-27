@@ -17,7 +17,7 @@ public class ShellTheme implements Theme {
     /** Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
     public static final DeferredRegistry<ShellTheme> SHELL_THEME_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, SHELL_THEME_REGISTRY_KEY, true);
 
-    /** Convenient instance of the Shell Theme entries*/
+    /** Instance of registry containing all ShellTheme entries. Addon mod entries will be included in this registry as long as they are use the same ResourceKey<Registry<ObjectType>>. */
     public static final Registry<ShellTheme> SHELL_THEME_REGISTRY = SHELL_THEME_DEFERRED_REGISTRY.getRegistry().get();
 
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HALF_BAKED = registerShellTheme("half_baked"); // The default shell. Do not remove.

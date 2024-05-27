@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 /** Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister.
  * This also acts as a dedicated wrapper object for object types that require a custom registry.
- * <br> This object stores a vanilla {@link Registry} instance which means all addon mods will need to use this as the source of truth.
+ * <br> This object stores a vanilla {@link Registry} instance based of a {@link ResourceKey<Registry<T>>} which means as long as mods register to the same {@link ResourceKey}, they will be correctly appending new entries correctly.
  * <br> For example, here is what the main Tardis Refined mod's registry class might look like:
  * <pre>{@code
  * public class TRControlRegistry {
@@ -25,7 +25,11 @@ import java.util.function.Supplier;
  *     // Source of truth for all entries
  *     public static final Registry<Control> GLOBAL_CONTROL_REGISTRY = CONTROLS.getRegistry();
  *
+ *     //Register using RegistrySupplier if you only need the raw object and no compatibiltiy with other vanilla features
  *     public static final RegistrySupplier<Control> THROTTLE = TR_CONTROLS.register("throttle", () -> new GenericControl(new ResourceLocation(TardisRefined.MODID, "throttle"));
+ *
+ *     //Alternatively, register using RegistrySupplierHolder for greater compatibiltiy with vanilla features such as datapack tags
+ *     public static final RegistrySupplierHolder<Control, MyCustomControl> STABILISER = TR_CONTROLS.register("stabiliser", () -> new MyCustomControl(new ResourceLocation(TardisRefined.MODID, "stabiliser"));
  *}
  *
  * public class TardisConsoleBlock {
@@ -44,19 +48,29 @@ import java.util.function.Supplier;
  * <br> And here is how the addon mod's registry class may look like:
  * <pre>{@code
  * public class AddonModControlRegistry {
+ *     //The addon mod uses the same ResourceKey<Registry<Control>> as the TardisRefined DeferredRegistry BUT with the addon mod's namespace (MyAddonMod.MODID). This way the addon mod is registering new entries to the same source of truth as Tardis Refined but under its own namespace
+ *     //DO NOT use Tardis Refined's namespace
  *     private static final DeferredRegistry<Control> MY_ADDON_CONTROLS =  DeferredRegistry.createCustom(MyAddonMod.MODID, TRControlRegistry.CONTROL_REGISTRY_KEY, true);
  *
+ *     //Register entries to the addon mod's instance of the deferred registry using a RegistrySupplier
  *     public static final RegistrySupplier<Control> SPEED = MY_ADDON_CONTROLS.register("speed", () -> new GenericControl(new ResourceLocation(MyAddonMod.MODID, "speed"));
+ *
+ *     //Alternatively, register using RegistrySupplierHolder for greater compatibiltiy with vanilla features such as datapack tags
+ *     public static final RegistrySupplierHolder<Control, SuperTemporalControl> TEMPORAL_PLOTTERS = TR_CONTROLS.register("temporal_plotters", () -> new SuperTemporalControl(new ResourceLocation(MyAddonMod.MODID, "temporal_plotters"));
  * }
  *
  * public class MyAddonMod {
+ *
+ *     public static final String MODID = "my_addon_mod";
+ *
  *     public MyAddonMod() {
  *         MY_ADDON_CONTROLS.registerToModBus();
  *     }
  * }
  * }</pre>
- * <br> As you can see, the Addon Mod just needs to create its own DeferredRegister instance and reference TardisRefined's ResourceKey. This way it greatly simplifies the ability to append new entries to an existing registry
- * <br> This ensures there is a global source of truth for all our TardisRefined object types, and we don't accidentally restrict the mod to only use Tardis Refined's entries in areas where addon mods are likely to add additional content. E.g. Upgrades
+ * <br> As you can see, the Addon Mod just needs to create its own DeferredRegistry instance and reference the TardisRefined Registry's ResourceKey.
+ * <br> This way, registering objects is greatly simplified along with the ability to append new entries to an existing registry
+ * <br> This also ensures that there is a global source of truth for all our TardisRefined object types, and we don't accidentally restrict the mod to only use Tardis Refined's entries in areas where addon mods are likely to add additional content. E.g. Upgrades
  * */
 public abstract class DeferredRegistry<T> {
     /** Call in main mod constructor to classload the registry class. On Forge/NeoForge environments, the necessary event buses for registries will be called*/

@@ -18,7 +18,7 @@ public class TRManipulatorRecipeResultTypes {
     /** Tardis Refined instance of the Astral Manipulator Recipe Result type registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
     public static final DeferredRegistry<Codec<? extends ManipulatorCraftingResult>> MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, MANIPULATOR_RECIPE_TYPE_KEY, true);
 
-    /** Convenient instance of the Astral Manipulator Recipe Result type entries*/
+    /** Instance of registry containing all Astral Manipulator Recipe Result type entries. Addon mod entries will be included in this registry as long as they are use the same ResourceKey<Registry<ObjectType>>. */
     public static final Registry<Codec<? extends ManipulatorCraftingResult>> RESULT_TYPE_REGISTRY = MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY.getRegistry().get();
 
     /* Register the codec derived from the MapCodec for each entry since the MapCodec isn't actually inheriting from Codec.
