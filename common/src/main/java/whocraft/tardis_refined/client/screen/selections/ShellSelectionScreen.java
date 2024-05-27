@@ -153,11 +153,6 @@ public class ShellSelectionScreen extends SelectionScreen {
         super.render(guiGraphics, i, j, f);
     }
 
-//    @Override
-//    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-//        // super.renderBackground(guiGraphics, i, j, f);
-//    }
-
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
         ShellModel model = ShellModelCollection.getInstance().getShellEntry(this.currentShellTheme).getShellModel(pattern);
         model.setDoorPosition(false);

@@ -236,11 +236,6 @@ public class  UpgradesScreen extends Screen {
         }
     }
 
-    /*@Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-
-    }*/
-
     public void closeOverlayScreen() {
         this.overlayScreen = null;
     }

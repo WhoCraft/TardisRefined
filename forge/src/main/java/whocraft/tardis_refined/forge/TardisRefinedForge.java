@@ -25,6 +25,7 @@ public class TardisRefinedForge {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
 
+        //TODO IP compat for forge?
    /*     if (ModCompatChecker.immersivePortals()) {
             if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();

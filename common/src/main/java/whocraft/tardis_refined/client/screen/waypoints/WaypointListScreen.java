@@ -153,12 +153,6 @@ public class WaypointListScreen extends SelectionScreen {
         return selectionList;
     }
 
-
-//    @Override
-//    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-//        // super.renderBackground(guiGraphics, i, j, f);
-//    }
-
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
 
