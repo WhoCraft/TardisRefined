@@ -11,45 +11,45 @@ architectury {
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 }
-
-unifiedPublishing {
-    project {
-        displayName = "[Fabric] - Tardis Refined - v$project.version"
-        releaseType = "release"
-        changelog = new File("${rootProject.projectDir}/changelog.md").text
-        gameVersions = ["$rootProject.minecraft_version"]
-        mainPublication tasks.remapJar
-        gameLoaders = ["fabric"]
-        relations {
-            depends {
-                curseforge = "fabric-api"
-                modrinth = "fabric-api"
-            }
-            optional {
-                curseforge = "immersive-portals-mod"
-                modrinth = "immersiveportals"
-            }
-        }
-
-        var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
-        if (CURSE_API_KEY != "") {
-            curseforge {
-                token = CURSE_API_KEY
-                id = "782697"
-                gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
-            }
-        }
-
-        var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
-        if (MODRINTH_TOKEN != "") {
-            modrinth {
-                token = MODRINTH_TOKEN
-                id = "nqVt6aES"
-                version = "$project.version+$project.name"
-            }
-        }
-    }
-}
+//
+//unifiedPublishing {
+//    project {
+//        displayName = "[Fabric] - Tardis Refined - v$project.version"
+//        releaseType = "release"
+//        changelog = new File("${rootProject.projectDir}/changelog.md").text
+//        gameVersions = ["$rootProject.minecraft_version"]
+//        mainPublication tasks.remapJar
+//        gameLoaders = ["fabric"]
+//        relations {
+//            depends {
+//                curseforge = "fabric-api"
+//                modrinth = "fabric-api"
+//            }
+//            optional {
+//                curseforge = "immersive-portals-mod"
+//                modrinth = "immersiveportals"
+//            }
+//        }
+//
+//        var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
+//        if (CURSE_API_KEY != "") {
+//            curseforge {
+//                token = CURSE_API_KEY
+//                id = "782697"
+//                gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
+//            }
+//        }
+//
+//        var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
+//        if (MODRINTH_TOKEN != "") {
+//            modrinth {
+//                token = MODRINTH_TOKEN
+//                id = "nqVt6aES"
+//                version = "$project.version+$project.name"
+//            }
+//        }
+//    }
+//}
 
 configurations {
     common
@@ -126,9 +126,9 @@ dependencies {
 
     // Immersive Portals Start
 
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}")
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}")
-    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:build:${rootProject.immersive_portals_version}")
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}")
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}")
+    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:build:${rootProject.immersive_portals_version}")
 
     /*  // If working on Immersive Portals, change modCompileOnlyApi to modImplementation for the following two entries, this will enable Immersive Portals in Dev
       modCompileOnlyApi("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}") {
