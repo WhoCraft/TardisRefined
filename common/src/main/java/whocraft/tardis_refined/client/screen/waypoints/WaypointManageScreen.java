@@ -167,11 +167,6 @@ public class WaypointManageScreen extends Screen {
         return super.charTyped(c, i);
     }
 
-    /*@Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-
-    }*/
-
     @Override
     public boolean isPauseScreen() {
         return false;

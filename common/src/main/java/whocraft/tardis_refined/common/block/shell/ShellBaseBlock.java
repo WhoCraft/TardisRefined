@@ -83,25 +83,6 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
     }
 
- /*   @Override
-    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource randomSource) {
-        if (!FallingBlock.isFree(serverLevel.getBlockState(blockPos.below())) || blockPos.getY() < serverLevel.getMinBuildHeight()) {
-            return;
-        }
-        FallingBlockEntity fallingBlockEntity = FallingBlockEntity.fall(serverLevel, blockPos, blockState);
-        this.falling(fallingBlockEntity);
-    }
-
-    protected void falling(FallingBlockEntity fallingBlockEntity) {
-    }
-
-    protected int getDelayAfterPlace() {
-        return 2;
-    }
-
-    public static boolean isFree(BlockState blockState) {
-        return blockState.isAir() || blockState.is(BlockTags.FIRE) || blockState.liquid() || blockState.canBeReplaced();
-    }*/
 
     @Nullable
     @Override

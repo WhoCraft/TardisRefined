@@ -92,11 +92,6 @@ public class HumSelectionScreen extends SelectionScreen {
         Minecraft.getInstance().setScreen(null);
     }
 
-    /*@Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-
-    }*/
-
     @Override
     public Component getSelectedDisplayName() {
         return Component.Serializer.fromJson(currentHumEntry.getName());
