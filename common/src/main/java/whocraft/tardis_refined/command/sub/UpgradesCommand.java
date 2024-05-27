@@ -10,16 +10,17 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.command.arguments.UpgradeArgumentType;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.util.CommandHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
+
+import java.util.Map;
 
 public class UpgradesCommand {
 
@@ -52,9 +53,10 @@ public class UpgradesCommand {
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
-            for (Upgrade entry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
-                tardisLevelOperator.getUpgradeHandler().unlockUpgrade(entry);
-                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, entry.getDisplayName(), tardisId));
+            for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+                Upgrade upgrade = entry.getValue();
+                tardisLevelOperator.getUpgradeHandler().unlockUpgrade(upgrade);
+                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, upgrade.getDisplayName(), tardisId));
             }
         });
         return Command.SINGLE_SUCCESS;
@@ -66,9 +68,10 @@ public class UpgradesCommand {
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
-            for (Upgrade entry : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
-                tardisLevelOperator.getUpgradeHandler().lockUpgrade(entry);
-                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, entry.getDisplayName(), tardisId));
+            for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+                Upgrade upgrade = entry.getValue();
+                tardisLevelOperator.getUpgradeHandler().lockUpgrade(upgrade);
+                context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, upgrade.getDisplayName(), tardisId));
             }
         });
         return Command.SINGLE_SUCCESS;

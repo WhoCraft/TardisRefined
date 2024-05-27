@@ -13,12 +13,10 @@ import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.HumSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
-import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.network.messages.EjectPlayerFromConsoleMessage;
 import whocraft.tardis_refined.common.network.messages.screens.C2SRequestShellSelection;
-import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesDisplayMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -72,13 +70,13 @@ public class MonitorScreen extends SelectionScreen {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 250, 80, leftPos - 70, this.topPos + 30, this.topPos + this.imageHeight - 45, 12);
         selectionList.setRenderBackground(false);
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> new C2SRequestShellSelection().send(), leftPos, Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(upgradeHandler)));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_EXTERNAL_SHELL), entry -> new C2SRequestShellSelection().send(), leftPos, TRUpgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(upgradeHandler)));
 
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos, Upgrades.INSIDE_ARCHITECTURE.get().isUnlocked(upgradeHandler)));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_DESKTOP_CONFIGURATION), entry -> Minecraft.getInstance().setScreen(new DesktopSelectionScreen()), leftPos, TRUpgrades.INSIDE_ARCHITECTURE.get().isUnlocked(upgradeHandler)));
 
 
-        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos, Upgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_WAYPOINTS), entry -> new RequestWaypointsMessage().send(), leftPos, TRUpgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)));
 
         //selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_UPLOAD_COORDS), entry -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.TRAVEL).send(), leftPos, Upgrades.COORDINATE_INPUT.get().isUnlocked(upgradeHandler)));
 

@@ -45,8 +45,8 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Iterable<Block> getKnownBlocks() {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
-            for (Block entry : TRBlockRegistry.BLOCKS.getRegistry().stream().toList()) {
-                ResourceLocation blockId = TRBlockRegistry.BLOCKS.getRegistry().getKey(entry);
+            for (Block entry : TRBlockRegistry.BLOCKS.getRegistry().get().stream().toList()) {
+                ResourceLocation blockId = TRBlockRegistry.BLOCKS.getRegistry().get().getKey(entry);
                 if (!blockId.toString().contains("minecraft")) {
                     blocks.add(entry);
                 }
@@ -64,7 +64,7 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Stream<EntityType<?>> getKnownEntityTypes() {
             ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
-            for (EntityType<?> entry : TREntityRegistry.ENTITY_TYPES.getRegistry().stream().toList()) {
+            for (EntityType<?> entry : TREntityRegistry.ENTITY_TYPES.getRegistry().get().stream().toList()) {
                 if (entry == TREntityRegistry.CONTROL_ENTITY.get())
                     break;
                 entities.add(entry);

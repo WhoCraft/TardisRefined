@@ -23,7 +23,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
@@ -81,14 +81,14 @@ public class LandingPad extends Block {
                         TardisPilotingManager pilotManager = operator.getPilotingManager();
                         UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-                        if (Upgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isOnCooldown()) {
+                        if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isOnCooldown()) {
                             pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
                             serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
                             PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
                             return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
                         } else {
 
-                            if (Upgrades.LANDING_PAD.get().isUnlocked(upgradeHandler)) {
+                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler)) {
                                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_TRANSIENT), true);
                                 serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
                             } else {

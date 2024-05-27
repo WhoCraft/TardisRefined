@@ -9,9 +9,9 @@ import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCra
 
 public class TRCraftingRecipeTypes {
 
-    public static final DeferredRegistry<RecipeType<?>> RECIPE_TYPES = DeferredRegistry.create(TardisRefined.MODID, Registries.RECIPE_TYPE);
+    public static final DeferredRegistry<RecipeType<?>> RECIPE_TYPE_DEFERRED_REGISTRY = DeferredRegistry.create(TardisRefined.MODID, Registries.RECIPE_TYPE);
 
-    public static final RegistrySupplier<RecipeType<ManipulatorCraftingRecipe>> ASTRAL_MANIPULATOR_RECIPE = RECIPE_TYPES.register("astral_manipulator_recipe", () -> registerRecipeType(new ResourceLocation(TardisRefined.MODID, "astral_manipulator_recipe")));
+    public static final RegistrySupplier<RecipeType<ManipulatorCraftingRecipe>> ASTRAL_MANIPULATOR_RECIPE = RECIPE_TYPE_DEFERRED_REGISTRY.register("astral_manipulator_recipe", () -> registerRecipeType(new ResourceLocation(TardisRefined.MODID, "astral_manipulator_recipe")));
 
     /** Need a custom registry method as vanilla will register our entries under the minecraft namspace which creates a duplicate entry
      * We don't want that to happen so we have a custom method*/

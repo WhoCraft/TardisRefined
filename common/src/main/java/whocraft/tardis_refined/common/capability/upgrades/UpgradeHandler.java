@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class UpgradeHandler {
     }
 
     public double calculateProgress() {
-        int totalUpgrades = Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry().size();
+        int totalUpgrades = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry().get().size();
         int unlockedCount = unlockedUpgrades.size();
 
         if (totalUpgrades == 0) {
@@ -184,11 +185,11 @@ public class UpgradeHandler {
         ListTag unlockedUpgradesTag = new ListTag();
         for (Upgrade upgrade : this.unlockedUpgrades) {
 
-            if (Upgrades.UPGRADE_REGISTRY.getKey(upgrade) == null) {
+            if (TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgrade) == null) {
                 continue;
             }
 
-            unlockedUpgradesTag.add(StringTag.valueOf(Objects.requireNonNull(Upgrades.UPGRADE_REGISTRY.getKey(upgrade)).toString()));
+            unlockedUpgradesTag.add(StringTag.valueOf(Objects.requireNonNull(TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)).toString()));
         }
         updateTag.put("UnlockedUpgrades", unlockedUpgradesTag);
         compoundTag.put("upgrades", updateTag);
@@ -202,7 +203,7 @@ public class UpgradeHandler {
         this.overallTardisPoints = nbt.getInt("OverallPoints");
         this.unlockedUpgrades.clear();
         for (Tag upgrade : nbt.getList("UnlockedUpgrades", StringTag.TAG_STRING)) {
-            this.unlockedUpgrades.add(Upgrades.UPGRADE_REGISTRY.get(new ResourceLocation(upgrade.getAsString())));
+            this.unlockedUpgrades.add(TRUpgrades.UPGRADE_REGISTRY.get(new ResourceLocation(upgrade.getAsString())));
         }
     }
 }

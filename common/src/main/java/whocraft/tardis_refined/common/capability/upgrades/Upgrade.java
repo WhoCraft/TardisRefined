@@ -4,10 +4,10 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +98,7 @@ public class Upgrade {
     public List<Upgrade> getDirectChildren() {
         List<Upgrade> upgrades = new ArrayList<>();
 
-        for (Upgrade upgrade : Upgrades.UPGRADE_REGISTRY.stream().toList()) {
+        for (Upgrade upgrade : TRUpgrades.UPGRADE_REGISTRY.stream().toList()) {
             if (upgrade.getParent() == this) {
                 upgrades.add(upgrade);
             }

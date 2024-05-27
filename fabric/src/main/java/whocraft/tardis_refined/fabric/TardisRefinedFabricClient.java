@@ -63,8 +63,8 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
 
         /*Required to Render Transparency*/
-        for (Block block : TRBlockRegistry.BLOCKS.getRegistry()) {
-            if (TRBlockRegistry.BLOCKS.getRegistry().getKey(block).getNamespace().contains(TardisRefined.MODID)) {
+        for (Block block : TRBlockRegistry.BLOCKS.getRegistry().get()) {
+            if (TRBlockRegistry.BLOCKS.getRegistry().get().getKey(block).getNamespace().contains(TardisRefined.MODID)) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout());
             }
         }
