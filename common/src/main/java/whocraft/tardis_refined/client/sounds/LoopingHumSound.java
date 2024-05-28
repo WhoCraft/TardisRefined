@@ -26,6 +26,13 @@ public class LoopingHumSound extends LoopingSound{
         super.tick();
         volume = 0.10F;
         LocalPlayer player = Minecraft.getInstance().player;
+
+        if(soundEvent.getLocation().getNamespace().contains("minecraft")){
+            volume = 1f;
+        } else {
+            volume = 0.10F;
+        }
+
         if(player != null){
             setLocation(player.position());
 
