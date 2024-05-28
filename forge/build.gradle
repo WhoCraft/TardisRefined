@@ -48,9 +48,9 @@ sourceSets {
 //}
 
 
-remapJar {
-    atAccessWideners.add('tardis_refined.accesswidener')
-}
+//remapJar {
+//    atAccessWideners.add('tardis_refined.accesswidener')
+//}
 
 
 loom {
@@ -95,7 +95,7 @@ repositories {
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:${neoforge_version}"
+    neoForge "net.neoforged:forge:${minecraft_version}-${neoforge_version}"
 
 
     //   modCompileOnly "curse.maven:worldedit-225608:${world_edit_version}"

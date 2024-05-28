@@ -113,7 +113,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-        this.renderTransparentBackground(guiGraphics);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         PoseStack poseStack = guiGraphics.pose();
         ClientLevel lvl = Minecraft.getInstance().level;
         RandomSource rand = lvl.random;
@@ -152,10 +152,10 @@ public class ShellSelectionScreen extends SelectionScreen {
         super.render(guiGraphics, i, j, f);
     }
 
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        // super.renderBackground(guiGraphics, i, j, f);
-    }
+//    @Override
+//    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
+//        // super.renderBackground(guiGraphics, i, j, f);
+//    }
 
     private void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
         ShellModel model = ShellModelCollection.getInstance().getShellEntry(this.currentShellTheme).getShellModel(pattern);

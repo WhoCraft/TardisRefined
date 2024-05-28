@@ -38,7 +38,7 @@ public class SyncShellPatternsMessage extends MessageS2C {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeNbt(MAPPER.encodeStart(NbtOps.INSTANCE, this.patterns).result().orElse(new CompoundTag()));
+        buf.writeNbt((CompoundTag) MAPPER.encodeStart(NbtOps.INSTANCE, this.patterns).result().orElse(new CompoundTag()));
     }
 
     @Override

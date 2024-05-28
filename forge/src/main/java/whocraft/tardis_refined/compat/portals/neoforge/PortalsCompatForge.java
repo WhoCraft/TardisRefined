@@ -1,12 +1,12 @@
 package whocraft.tardis_refined.compat.portals.neoforge;
 
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
-import static net.neoforged.neoforge.common.NeoForge.EVENT_BUS;
+import static net.minecraftforge.common.MinecraftForge.EVENT_BUS;
 
 public class PortalsCompatForge {
 
@@ -16,8 +16,8 @@ public class PortalsCompatForge {
 
     @SubscribeEvent
     public void onBreak(BlockEvent.BreakEvent breakEvent) {
-        BlockEntity blockEntity = breakEvent.getLevel().getBlockEntity(breakEvent.getPos());
-        ImmersivePortals.onDoorRemoved(breakEvent.getPlayer().level(), breakEvent.getPlayer(), breakEvent.getPos(), breakEvent.getState(), blockEntity);
+        BlockEntity blockEntity = breakEvent.getLevel().getExistingBlockEntity(breakEvent.getPos());
+        ImmersivePortals.onDoorRemoved(breakEvent.getPlayer().m_20193_(), breakEvent.getPlayer(), breakEvent.getPos(), breakEvent.getState(), blockEntity);
     }
 
 

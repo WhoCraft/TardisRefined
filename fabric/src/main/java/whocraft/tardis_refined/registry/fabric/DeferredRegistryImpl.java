@@ -14,8 +14,6 @@ import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 
 public class DeferredRegistryImpl {
@@ -25,10 +23,7 @@ public class DeferredRegistryImpl {
     }
 
     public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
-        //Add our custom registry to vanilla's list of registries
-        //Must call FabricRegistryBuilder#createSimple directly and not in a supplier.
-        WritableRegistry<T> registry = syncToClient ? FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
-        return new Impl<>(modid, resourceKey, syncToClient, () -> registry);
+        return new Impl<>(modid, resourceKey, syncToClient);
     }
 
 
@@ -36,85 +31,48 @@ public class DeferredRegistryImpl {
     public static class Impl<T> extends DeferredRegistry<T> {
 
         private final String modid;
-        private final Supplier<WritableRegistry<T>> registry;
+        private final WritableRegistry<T> registry;
         private final boolean isCustom;
         private final boolean syncToClient;
-        private final ResourceKey<? extends Registry<T>> resourceKey;
-
-        public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey, boolean isCustom, boolean syncToClient, Supplier<WritableRegistry<T>> registry) {
-            this.modid = modid;
-            this.resourceKey = resourceKey;
-            this.isCustom = false;
-            this.syncToClient = false;
-            this.registry = registry;
-        }
+        private ResourceKey<? extends Registry<T>> registryKey;
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
-            this(modid, resourceKey, false, false, () -> (WritableRegistry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location()));
+            this.modid = modid;
+            this.registryKey = resourceKey;
+            this.isCustom = false;
+            this.syncToClient = false;
+            this.registry = (WritableRegistry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location());
         }
 
-        public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey, boolean syncToClient, Supplier<WritableRegistry<T>> registry) {
-            this(modid, resourceKey, true, syncToClient, registry);
+        public Impl(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
+            this.modid = modid;
+            this.registryKey = resourceKey;
+            this.isCustom = true;
+            this.syncToClient = syncToClient;
+            this.registry = syncToClient ? (MappedRegistry<T>) FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : (MappedRegistry<T>) FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
+
         }
 
         @Override
-        public void registerToModBus() {
+        public void register() {
 
         }
 
         @Override
         public <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier) {
             ResourceLocation registeredId = new ResourceLocation(this.modid, id);
-            RegistrySupplier<R> registrySupplier = new RegistrySupplier<>(registeredId, Registry.register(this.registry.get(), registeredId, supplier.get()));
+            RegistrySupplier<R> registrySupplier = new RegistrySupplier<>(registeredId, Registry.register(this.registry, registeredId, supplier.get()));
             return registrySupplier;
         }
 
         @Override
-        public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
-            ResourceLocation registeredId = new ResourceLocation(this.modid, id);
-            Registry.register(this.registry.get(), registeredId, sup.get()); //Need to call this explicitly to register the object
-            RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.resourceKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
-            return registryHolder;
-        }
-
-        @Override
-        public Supplier<Registry<T>> getRegistry() {
-            return () -> this.registry.get();
-        }
-
-        @Override
-        public ResourceKey<? extends Registry<T>> key(){
-            return this.resourceKey;
-        }
-
-        @Override
-        public T get(ResourceLocation key) {
-            return this.getRegistry().get().get(key);
-        }
-
-        @Override
-        public ResourceLocation getKey(T object) {
-            return this.getRegistry().get().getKey(object);
-        }
-
-        @Override
-        public boolean containsKey(ResourceLocation key) {
-            return this.getRegistry().get().containsKey(key);
-        }
-
-        @Override
-        public Set<ResourceLocation> keySet() {
-            return this.getRegistry().get().keySet();
-        }
-
-        @Override
-        public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
-            return this.getRegistry().get().entrySet();
+        public Registry<T> getRegistry() {
+            return this.registry;
         }
 
         @Override
         public Supplier<Codec<T>> getCodec() {
-            return () -> this.getRegistry().get().byNameCodec();
+            return () -> this.registry.byNameCodec();
         }
     }
 }

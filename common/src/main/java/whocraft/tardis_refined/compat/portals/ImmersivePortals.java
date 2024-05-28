@@ -76,7 +76,7 @@ public class ImmersivePortals {
         if (world != null) return world;
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
         final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
-        DimensionAPI.addDimensionDynamically(server, id.location(), dimensionFactory.apply(server, dimensionKey));
+        DimensionAPI.addDimensionDynamically(id.location(), dimensionFactory.apply(server, dimensionKey));
         // TODO, Is this important? DimensionAPI.saveDimensionConfiguration(id);
 
         world = server.getLevel(id);
