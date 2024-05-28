@@ -7,6 +7,7 @@ import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class LoopingHumSound extends LoopingSound{
@@ -27,7 +28,7 @@ public class LoopingHumSound extends LoopingSound{
         volume = 0.10F;
         LocalPlayer player = Minecraft.getInstance().player;
 
-        if(soundEvent.getLocation().getNamespace().contains("minecraft")){
+        if(soundEvent.getLocation().getNamespace().contains(NbtConstants.MINECRAFT)){
             volume = 1f;
         } else {
             volume = 0.10F;
