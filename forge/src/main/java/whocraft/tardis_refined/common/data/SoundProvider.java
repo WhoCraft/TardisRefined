@@ -33,7 +33,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(TRSoundRegistry.BULKHEAD_LOCKED.get(), basicSound("bulkhead_locked", new ResourceLocation(TardisRefined.MODID, "blocks/bulkhead_locked")));
         add(TRSoundRegistry.HUM_CORAL.get(), basicSound("hum_coral", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humcoral")));
         add(TRSoundRegistry.HUM_CAVE.get(), basicSound("hum_cave", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/cave")));
-        add(TRSoundRegistry.HUM_1996.get(), basicSound("hum_1996", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/hum1996")));
+        add(TRSoundRegistry.HUM_VICTORIAN.get(), basicSound("hum_victorian", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humvictorian")));
         add(TRSoundRegistry.HUM_CLASSIC.get(), basicSound("hum_classic", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humclassic")));
         add(TRSoundRegistry.HUM_TOYOTA.get(), basicSound("hum_toyota", new ResourceLocation(TardisRefined.MODID, "tardis/interior_hums/humtoyota")));
         add(TRSoundRegistry.INTERIOR_CREAKS.get(), basicSound("interior_creaks", new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_1"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_2"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/interior_creaks_3")));

@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.client.screen.selections;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.brigadier.StringReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -14,8 +15,8 @@ import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.hums.ChangeHumMessage;
 import whocraft.tardis_refined.common.util.MiscHelper;
-
-import java.io.StringReader;
+import java.util.Collection;
+import java.util.Comparator;
 
 public class HumSelectionScreen extends SelectionScreen {
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
@@ -97,10 +98,13 @@ public class HumSelectionScreen extends SelectionScreen {
     @Override
     public ObjectSelectionList createSelectionList() {
         int leftPos = this.width / 2 - 75;
-        GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 100, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
+        GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 150, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
         selectionList.setRenderBackground(false);
 
-        for (HumEntry humEntry : TardisHums.getRegistry().values()) {
+        Collection<HumEntry> knownHums = TardisHums.getRegistry().values();
+        knownHums = knownHums.stream().sorted(Comparator.comparing(HumEntry::getName)).toList();
+
+        for (HumEntry humEntry : knownHums) {
             Component name = Component.literal(MiscHelper.getCleanName(humEntry.getIdentifier().getPath()));
 
             // Check for if the tellraw name is incomplete, or fails to pass.
