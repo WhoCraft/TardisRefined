@@ -78,6 +78,9 @@ public abstract class DeferredRegistry<T> {
     /** Register using a Supplier */
     public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
 
+    /** Create a RegistrySupplierHolder. This has similar behaviour to a Supplier but has vanilla Holder attributes such as use in tags*/
+    public abstract <I extends T> RegistrySupplierHolder<T, I> registerHolder(final String name, final Supplier<I> sup);
+
     /** Get the underlying registry, which includes all entries added by any mod that has a DeferredRegistry with the same ResourceKey.
      * All lookup methods should be called from here.*/
     public abstract Supplier<Registry<T>> getRegistry();

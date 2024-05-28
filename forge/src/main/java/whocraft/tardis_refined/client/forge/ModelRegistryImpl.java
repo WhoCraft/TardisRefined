@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.client.neoforge;
+package whocraft.tardis_refined.client.forge;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;

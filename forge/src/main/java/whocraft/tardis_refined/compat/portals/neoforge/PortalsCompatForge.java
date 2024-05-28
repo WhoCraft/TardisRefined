@@ -17,7 +17,7 @@ public class PortalsCompatForge {
     @SubscribeEvent
     public void onBreak(BlockEvent.BreakEvent breakEvent) {
         BlockEntity blockEntity = breakEvent.getLevel().getExistingBlockEntity(breakEvent.getPos());
-        ImmersivePortals.onDoorRemoved(breakEvent.getPlayer().m_20193_(), breakEvent.getPlayer(), breakEvent.getPos(), breakEvent.getState(), blockEntity);
+        ImmersivePortals.onDoorRemoved(breakEvent.getPlayer().level(), breakEvent.getPlayer(), breakEvent.getPos(), breakEvent.getState(), blockEntity);
     }
 
 

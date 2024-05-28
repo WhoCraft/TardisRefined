@@ -20,7 +20,7 @@ subprojects {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
         mappings loom.layered() {
             officialMojangMappings()
-            // parchment("org.parchmentmc.data:parchment-${rootProject.mappings}")
+//            parchment("org.parchmentmc.data:parchment-${rootProject.mappings}")
         }
         implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     }
@@ -47,7 +47,6 @@ allprojects {
         }
 
         maven { url 'https://jitpack.io' }
-
         flatDir {
             dirs '../modlibs'
         }

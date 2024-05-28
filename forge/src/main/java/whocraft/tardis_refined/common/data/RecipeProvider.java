@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -12,15 +13,16 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRItemRegistry;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
-    public RecipeProvider(DataGenerator arg, CompletableFuture<HolderLookup.Provider> completableFuture) {
-        super(arg.getPackOutput(), completableFuture);
+    public RecipeProvider(PackOutput arg) {
+        super(arg);
     }
 
 
     @Override
-    protected void buildRecipes(RecipeOutput consumer) {
+    protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, TRBlockRegistry.BULK_HEAD_DOOR.get()).pattern(" L ").pattern("PDP").pattern("RDR").define('L', Blocks.REDSTONE_LAMP).define('P', Blocks.PISTON).define('D', Blocks.IRON_DOOR).define('R', Blocks.REDSTONE_WIRE).unlockedBy("has_crafting_table", has(Blocks.TARGET)).save(consumer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, TRItemRegistry.SCREWDRIVER.get()).pattern(" A ").pattern("BR ").pattern(" L ").define('L', Items.LAPIS_LAZULI).define('B', Items.STONE_BUTTON).define('R', Items.BLAZE_ROD).define('A', Items.AMETHYST_SHARD).unlockedBy("has_crafting_table", has(Items.LAPIS_LAZULI)).save(consumer);

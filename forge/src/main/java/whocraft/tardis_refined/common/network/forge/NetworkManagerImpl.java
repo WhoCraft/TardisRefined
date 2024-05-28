@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.network.neoforge;
+package whocraft.tardis_refined.common.network.forge;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

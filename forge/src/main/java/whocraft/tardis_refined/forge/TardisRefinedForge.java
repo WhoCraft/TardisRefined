@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.neoforge;
+package whocraft.tardis_refined.forge;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -51,7 +51,7 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
         generator.addProvider(e.includeServer(), new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator.getPackOutput()));
-        generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
+        generator.addProvider(e.includeServer(), new RecipeProvider(generator.getPackOutput()));
         generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
         generator.addProvider(e.includeServer(), new DesktopProvider(generator));
         generator.addProvider(e.includeServer(), new HumProvider(generator));
