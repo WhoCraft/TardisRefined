@@ -16,10 +16,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
+
+
     public RecipeProvider(PackOutput arg) {
         super(arg);
     }
-
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
@@ -51,4 +52,5 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         SimpleCookingRecipeBuilder.smelting(Ingredient.of(TRItemRegistry.RAW_ZEITON.get()), RecipeCategory.MISC, TRItemRegistry.ZEITON_INGOT.get(), 0.7F, 300).unlockedBy("has_any_zeiton", has(TRItemRegistry.RAW_ZEITON.get())).save(consumer, new ResourceLocation(TardisRefined.MODID, "smelt_zeiton"));
         SimpleCookingRecipeBuilder.blasting(Ingredient.of(TRItemRegistry.RAW_ZEITON.get()), RecipeCategory.MISC, TRItemRegistry.ZEITON_INGOT.get(), 0.8F, 150).unlockedBy("has_any_zeiton", has(TRItemRegistry.RAW_ZEITON.get())).save(consumer, new ResourceLocation(TardisRefined.MODID, "blast_zeiton"));
     }
+
 }

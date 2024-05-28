@@ -54,30 +54,15 @@ sourceSets {
 
 
 loom {
+    accessWidenerPath = project(":common").loom.accessWidenerPath
+
     forge {
         convertAccessWideners = true
-        extraAccessWideners.add 'tardis_refined.accesswidener'
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-        if(file("src/main/resources/${mod_id}.mixins.json").exists()) {
-            mixinConfig "${mod_id}.mixins.json"
-        }
+        mixinConfig "tardis_refined-common.mixins.json"
+        mixinConfig "tardis_refined.mixins.json"
 
-        if(getRootProject().file("common/src/main/resources/${mod_id}-common.mixins.json").exists()) {
-            mixinConfig "${mod_id}-common.mixins.json"
-        }
-
-//        dataGen {
-//            mod "${mod_id}"
-//        }
-    }
-
-    runs {
-        data {
-            data()
-            programArgs "--all", "--mod", "${mod_id}"
-            programArgs "--output", project(":forge").file("src/generated/resources").absolutePath
-            programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
-        }
     }
 
 }
