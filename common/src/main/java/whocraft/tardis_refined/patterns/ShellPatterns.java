@@ -162,21 +162,17 @@ public class ShellPatterns {
     public static Map<ResourceLocation, List<ShellPattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
-        for (ResourceLocation shellTheme : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
+        //TODO
+        /*     for (ResourceLocation shellTheme : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
             boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC.getId() || shellTheme == ShellTheme.NUKA.getId() || shellTheme == ShellTheme.PAGODA.getId() || shellTheme == ShellTheme.PHONE_BOOTH.getId() || shellTheme == ShellTheme.POLICE_BOX.getId() || shellTheme == ShellTheme.VENDING.getId();
             String textureName = shellTheme.getPath();
             //Use an overload version of the method for default shells because the texture files were named based on shell theme name
             ShellPattern pattern = new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID.getPath(), new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
                     , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission));
             addDefaultPattern(shellTheme, pattern);
-        }
+        }*/
 
-        //TODO Currently not compatible
-         addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "faded", true);
-//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "gaudy", false);
-//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "metal", false);
-//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "stone", false);
-//        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "red", false);*/
+        addDefaultPattern(ShellTheme.POLICE_BOX.getId(), "faded", true);
 
         addDefaultPattern(ShellTheme.PHONE_BOOTH.getId(), "metal", false);
 
