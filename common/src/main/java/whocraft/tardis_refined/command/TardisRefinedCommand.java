@@ -19,9 +19,9 @@ public class TardisRefinedCommand {
                 .then(UpgradesCommand.register(dispatcher))
                 .then(Commands.literal("data").then(Commands.literal("export").then(ExportDesktopCommand.register(dispatcher))))
                 .then(LevelCommand.register(dispatcher))
-                );
+        );
 
-        if(!Platform.isProduction()) {
+        if (!Platform.isProduction()) {
             dispatcher.register(Commands.literal(TardisRefined.MODID + "_dev").requires(commandSource -> commandSource.hasPermission(Platform.getServer().getOperatorUserPermissionLevel()))
                     .then(CreateCommand.register(dispatcher)
                     ));

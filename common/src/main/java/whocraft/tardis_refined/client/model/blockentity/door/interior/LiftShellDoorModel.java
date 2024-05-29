@@ -11,6 +11,7 @@ public class LiftShellDoorModel extends ShellDoorModel {
 
     private final ModelPart bone28;
     private final ModelPart doorOpen, doorClosed;
+    public boolean isDoorOpen = false;
 
     public LiftShellDoorModel(ModelPart modelPart) {
         this.bone28 = modelPart.getChild("bone28");
@@ -83,15 +84,12 @@ public class LiftShellDoorModel extends ShellDoorModel {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
-
     @Override
     public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         bone28.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         doorOpen.visible = isDoorOpen;
         doorClosed.visible = !isDoorOpen;
     }
-
-    public boolean isDoorOpen = false;
 
     @Override
     public void setDoorPosition(boolean open) {

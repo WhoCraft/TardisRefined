@@ -17,20 +17,20 @@ public class DimensionUtil {
         return !level.location().getNamespace().toString().contains("tardis") && !bannedDimensions.contains(level.location().toString());
     }
 
-    public static Set<ResourceKey<Level>> getTardisLevels(MinecraftServer server){
+    public static Set<ResourceKey<Level>> getTardisLevels(MinecraftServer server) {
         Set<ResourceKey<Level>> set = Sets.newHashSet();
-        for(ServerLevel level : server.getAllLevels()) {
-            if(level.dimensionTypeId() == TRDimensionTypes.TARDIS){
+        for (ServerLevel level : server.getAllLevels()) {
+            if (level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
                 set.add(level.dimension());
             }
         }
         return set;
     }
 
-    public static Set<ResourceKey<Level>> getAllowedDimensions(MinecraftServer server){
+    public static Set<ResourceKey<Level>> getAllowedDimensions(MinecraftServer server) {
         Set<ResourceKey<Level>> set = Sets.newHashSet();
-        for(ServerLevel level : server.getAllLevels()) {
-            if(isAllowedDimension(level.dimension())){
+        for (ServerLevel level : server.getAllLevels()) {
+            if (isAllowedDimension(level.dimension())) {
                 set.add(level.dimension());
             }
         }

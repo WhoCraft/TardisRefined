@@ -12,20 +12,26 @@ import java.util.UUID;
 public interface TardisInternalDoor {
 
     boolean isMainDoor();
+
     void onSetMainDoor(boolean isMainDoor);
 
     String getID();
+
     void setID(String id);
 
     boolean isOpen();
+
     void setClosed(boolean state);
 
     BlockPos getDoorPosition();
 
     BlockPos getEntryPosition();
+
     Direction getEntryRotation();
 
-    /** The true facing of the internal door based off its blockstate*/
+    /**
+     * The true facing of the internal door based off its blockstate
+     */
     Direction getDoorRotation();
 
     void onEntityExit(ServerEntity entity);
@@ -33,6 +39,7 @@ public interface TardisInternalDoor {
     void setLocked(boolean locked);
 
     boolean locked();
+
     void onAttemptEnter(BlockState blockState, Level level, BlockPos doorPos, Entity entity);
 
 }

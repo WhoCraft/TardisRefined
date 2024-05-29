@@ -24,11 +24,11 @@ public abstract class MessageS2C extends Message {
         this.getType().getNetworkManager().sendToAllPlayers(this);
     }
 
-    public void sendToTracking(Entity entity){
+    public void sendToTracking(Entity entity) {
         this.getType().getNetworkManager().sendToTracking(entity, this);
     }
 
-    public void sendToTracking(BlockEntity blockEntity){
+    public void sendToTracking(BlockEntity blockEntity) {
         this.getType().getNetworkManager().sendToTracking(blockEntity, this);
     }
 

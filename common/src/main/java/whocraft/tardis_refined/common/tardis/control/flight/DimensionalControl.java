@@ -28,9 +28,11 @@ public class DimensionalControl extends Control {
     public DimensionalControl(ResourceLocation id) {
         super(id);
     }
-    public DimensionalControl(ResourceLocation id, String langId){
+
+    public DimensionalControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
+
     private List<ServerLevel> getAllowedDimensions(MinecraftServer server) {
         var filteredDimensions = new ArrayList<ServerLevel>();
         var filteredLevels = server.getAllLevels();
@@ -60,7 +62,7 @@ public class DimensionalControl extends Control {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-            if(!Upgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)){
+            if (!Upgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)) {
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HARDWARE_OFFLINE), true);
                 pilotManager.getTargetLocation().setDimensionKey(OVERWORLD);
                 return false;
@@ -69,7 +71,7 @@ public class DimensionalControl extends Control {
             var server = operator.getLevel().getServer();
             var dimensions = getAllowedDimensions(server);
             var currentIndex = dimensions.indexOf(pilotManager.getTargetLocation().getLevel());
-            var nextIndex = forward ? ( (currentIndex >= dimensions.size()-1) ? 0 : currentIndex + 1) : ((currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1);
+            var nextIndex = forward ? ((currentIndex >= dimensions.size() - 1) ? 0 : currentIndex + 1) : ((currentIndex <= 0) ? dimensions.size() - 1 : currentIndex - 1);
 
             var nextDimension = dimensions.get(nextIndex);
 

@@ -2,27 +2,15 @@ package whocraft.tardis_refined.client.renderer.blockentity.device;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Vector3f;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
-import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
 import whocraft.tardis_refined.client.renderer.RenderHelper;
-import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
-import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
-import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 
 import java.awt.*;
@@ -49,7 +37,7 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
             float height = 1;
             float length = 1;
 
-            var centerOfBoth = new Vector3f(0,0,0);
+            var centerOfBoth = new Vector3f(0, 0, 0);
             if (pointB != null) {
 
                 float xDiff = Math.abs(pointA.getX() - pointB.getX());
@@ -72,15 +60,14 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
             }
 
 
-
             var centerPos = pointB != null ? centerOfBoth : new Vector3f(pointA.getX(), pointA.getY(), pointA.getZ());
 
             var posAOffsetX = blockEntity.getBlockPos().getX() - centerPos.x - .5f;
 
-            var posAOffsetY = blockEntity.getBlockPos().getY() - centerPos.y- .5f;
-            var posAOffsetZ = blockEntity.getBlockPos().getZ() - centerPos.z- .5f;
+            var posAOffsetY = blockEntity.getBlockPos().getY() - centerPos.y - .5f;
+            var posAOffsetZ = blockEntity.getBlockPos().getZ() - centerPos.z - .5f;
 
-            float sine = (float)(Math.sin(blockEntity.getLevel().getGameTime()*10f*Math.PI/8f)*(0.25f/2f) + (0.25f/2f)) * 0.25f;
+            float sine = (float) (Math.sin(blockEntity.getLevel().getGameTime() * 10f * Math.PI / 8f) * (0.25f / 2f) + (0.25f / 2f)) * 0.25f;
             if (sine < 0.001) {
                 sine = 0.001f;
             }
@@ -89,11 +76,11 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
             poseStack.translate(-posAOffsetX, -posAOffsetY, -posAOffsetZ);
             VertexConsumer vertexBuilder = bufferSource.getBuffer(RenderType.lightning());
 
-            if(Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof ScrewdriverItem screwdriverItem) {
+            if (Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof ScrewdriverItem screwdriverItem) {
                 Color color = new Color(screwdriverItem.getColor(Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND)));
                 RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f, height + 1.25f, width + 1.25f, (float) color.getRed() / 255, (float) color.getGreen() / 255, (float) color.getBlue() / 255, 0 + sine, 0);
             } else {
-                RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f,  height + 1.25f , width + 1.25f,  0.635f, 0.392f, 0.878f,  0 + sine , 0 );
+                RenderHelper.drawGlowingBox(poseStack, vertexBuilder, length + 1.25f, height + 1.25f, width + 1.25f, 0.635f, 0.392f, 0.878f, 0 + sine, 0);
             }
 
             poseStack.popPose();

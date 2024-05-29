@@ -27,7 +27,7 @@ public class CorridorTeleporterBlockEntity extends BlockEntity implements BlockE
     private int timeSinceTriggeredTicks = 0;
     private int cooldownTicks = 0;
 
-    public CorridorTeleporterBlockEntity( BlockPos blockPos, BlockState blockState) {
+    public CorridorTeleporterBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.CORRIDOR_TELEPORTER.get(), blockPos, blockState);
     }
 
@@ -66,7 +66,7 @@ public class CorridorTeleporterBlockEntity extends BlockEntity implements BlockE
                 List<Entity> entities = serverLevel.getEntitiesOfClass(Entity.class, box);
                 BlockPos corridorAirlock = TardisInteriorManager.STATIC_CORRIDOR_POSITION;
                 for (Entity entity : entities) {
-                    TardisTeleportData.scheduleEntityTeleport(entity, serverLevel.dimension(), corridorAirlock.getX() + 0.5f, corridorAirlock.getY(), corridorAirlock.getZ() + 0.5f, 0,0 );
+                    TardisTeleportData.scheduleEntityTeleport(entity, serverLevel.dimension(), corridorAirlock.getX() + 0.5f, corridorAirlock.getY(), corridorAirlock.getZ() + 0.5f, 0, 0);
                 }
 
                 if (entities.stream().count() > 0) {

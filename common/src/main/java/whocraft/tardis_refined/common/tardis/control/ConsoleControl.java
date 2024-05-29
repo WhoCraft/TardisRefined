@@ -39,6 +39,15 @@ public enum ConsoleControl implements StringRepresentable {
         this.langId = langId;
     }
 
+    public static ConsoleControl findOr(String id, ConsoleControl control) {
+        for (ConsoleControl value : ConsoleControl.values()) {
+            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
+                return value;
+            }
+        }
+        return control;
+    }
+
     @Override
     public String getSerializedName() {
         return this.id;
@@ -50,14 +59,5 @@ public enum ConsoleControl implements StringRepresentable {
 
     public String getTranslationKey() {
         return langId;
-    }
-
-    public static ConsoleControl findOr(String id, ConsoleControl control) {
-        for (ConsoleControl value : ConsoleControl.values()) {
-            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
-                return value;
-            }
-        }
-        return control;
     }
 }

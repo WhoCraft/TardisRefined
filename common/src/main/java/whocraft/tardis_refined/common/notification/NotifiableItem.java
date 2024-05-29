@@ -9,6 +9,6 @@ import java.util.logging.Level;
 
 public interface NotifiableItem {
 
-   boolean containsIntendedTardis(ItemStack stack, ResourceKey<Level> tardis);
+    boolean containsIntendedTardis(ItemStack stack, ResourceKey<Level> tardis);
 
 }

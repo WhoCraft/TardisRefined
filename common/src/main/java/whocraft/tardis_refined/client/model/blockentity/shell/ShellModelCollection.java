@@ -4,7 +4,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.api.event.TardisClientEvents;
-import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
 import whocraft.tardis_refined.client.model.blockentity.shell.shells.*;
@@ -15,21 +14,36 @@ import java.util.Map;
 
 public class ShellModelCollection {
 
+    public static Map<ResourceLocation, ShellEntry> SHELL_MODELS = new HashMap<>();
     private static ShellModel factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
             presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel,
             portalooModel, pagodaModel, liftModel, hieroglyphModel, castleShellModel, pathfinderShellModel, halfBakedShellModel;
-
     private static ShellDoorModel factoryDoorModel, policeBoxDoorModel, phoneBoothDoorModel, mysticDoorModel, drifterDoorModel, presentDoorModel, vendingDoorModel, briefcaseDoorModel,
             groeningDoorModel, bigBenDoorModel, nukaDoorModel, growthDoorModel, portalooDoorModel, pagodaDoorModel, liftDoorModel, hieroglyphDoorModel, castleDoorModel, pathfinderDoorModel, halfBakedDoorModel;
-
-    public static Map<ResourceLocation, ShellEntry> SHELL_MODELS = new HashMap<>();
+    private static ShellModelCollection instance = null;
 
     public ShellModelCollection() {
         var context = Minecraft.getInstance().getEntityModels();
         this.registerModels(context);
     }
 
-    public void registerModels(EntityModelSet context){
+    public static void registerShellEntry(ShellTheme theme, ShellModel shellModel, ShellDoorModel shellDoorModel) {
+        SHELL_MODELS.put(ShellTheme.getKey(theme), new ShellEntry(shellModel, shellDoorModel));
+    }
+
+    public static void registerShellEntry(ShellTheme theme, ShellEntry shellEntry) {
+        SHELL_MODELS.put(ShellTheme.getKey(theme), shellEntry);
+    }
+
+    public static ShellModelCollection getInstance() {
+        if (ShellModelCollection.instance == null) {
+            ShellModelCollection.instance = new ShellModelCollection();
+        }
+
+        return instance;
+    }
+
+    public void registerModels(EntityModelSet context) {
 
         // Shells
         factoryShellModel = new FactoryShellModel(context.bakeLayer((ModelRegistry.FACTORY_SHELL)));
@@ -96,31 +110,14 @@ public class ShellModelCollection {
         registerShellEntry(ShellTheme.HALF_BAKED.get(), halfBakedShellModel, halfBakedDoorModel);
     }
 
-    public static void registerShellEntry(ShellTheme theme, ShellModel shellModel, ShellDoorModel shellDoorModel){
-        SHELL_MODELS.put(ShellTheme.getKey(theme), new ShellEntry(shellModel, shellDoorModel));
-    }
-
-    public static void registerShellEntry(ShellTheme theme, ShellEntry shellEntry){
-        SHELL_MODELS.put(ShellTheme.getKey(theme), shellEntry);
-    }
-
     /**
      * Get the associated shell model from a shell theme.
+     *
      * @param themeId The Shell theme Id.
      * @return Shell model tied with the shell theme.
-     * **/
+     **/
     public ShellEntry getShellEntry(ResourceLocation themeId) {
         return SHELL_MODELS.get(themeId);
-    }
-
-    private static ShellModelCollection instance = null;
-
-    public static ShellModelCollection getInstance() {
-        if (ShellModelCollection.instance == null) {
-            ShellModelCollection.instance = new ShellModelCollection();
-        }
-
-        return instance;
     }
 
 }

@@ -27,7 +27,7 @@ public abstract class SpriteIconButton
         return new Builder(component, onPress, bl);
     }
 
-    @Environment(value= EnvType.CLIENT)
+    @Environment(value = EnvType.CLIENT)
     public static class Builder {
         private final Component message;
         private final Button.OnPress onPress;
@@ -74,7 +74,7 @@ public abstract class SpriteIconButton
         }
     }
 
-    @Environment(value=EnvType.CLIENT)
+    @Environment(value = EnvType.CLIENT)
     public static class TextAndIcon
             extends SpriteIconButton {
         protected TextAndIcon(int i, int j, Component component, int k, int l, ResourceLocation resourceLocation, Button.OnPress onPress) {
@@ -86,7 +86,7 @@ public abstract class SpriteIconButton
             super.renderWidget(guiGraphics, i, j, f);
             int k = this.getX() + this.getWidth() - this.spriteWidth - 2;
             int l = this.getY() + this.getHeight() / 2 - this.spriteHeight / 2;
-            guiGraphics.blit(this.sprite, 0, 0, this.spriteWidth, this.spriteHeight, k, l,10, 10);
+            guiGraphics.blit(this.sprite, 0, 0, this.spriteWidth, this.spriteHeight, k, l, 10, 10);
         }
 
         @Override
@@ -98,7 +98,7 @@ public abstract class SpriteIconButton
         }
     }
 
-    @Environment(value=EnvType.CLIENT)
+    @Environment(value = EnvType.CLIENT)
     public static class CenteredIcon
             extends SpriteIconButton {
         protected CenteredIcon(int i, int j, Component component, int k, int l, ResourceLocation resourceLocation, Button.OnPress onPress) {
@@ -110,7 +110,7 @@ public abstract class SpriteIconButton
             super.renderWidget(guiGraphics, i, j, f);
             int k = this.getX() + this.getWidth() / 2 - this.spriteWidth / 2;
             int l = this.getY() + this.getHeight() / 2 - this.spriteHeight / 2;
-            guiGraphics.blit(this.sprite, 0, 0, this.spriteWidth, this.spriteHeight, k, l,10, 10);
+            guiGraphics.blit(this.sprite, 0, 0, this.spriteWidth, this.spriteHeight, k, l, 10, 10);
         }
 
         @Override

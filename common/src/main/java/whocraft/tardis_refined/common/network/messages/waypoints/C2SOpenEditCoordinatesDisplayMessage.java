@@ -48,7 +48,8 @@ public class C2SOpenEditCoordinatesDisplayMessage extends MessageC2S {
 
     @Override
     public void handle(MessageContext context) {
-        ServerPlayer serverPlayer = context.getPlayer();;
+        ServerPlayer serverPlayer = context.getPlayer();
+        ;
         ServerLevel level = serverPlayer.serverLevel();
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();

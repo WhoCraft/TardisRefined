@@ -169,7 +169,7 @@ public class TardisHelper {
 
         if (serverLevel.dimension() == Level.END) {
             if (serverLevel.getDragonFight() != null) {
-               return ((EndDragonFightAccessor) serverLevel.getDragonFight()).isDragonKilled();
+                return ((EndDragonFightAccessor) serverLevel.getDragonFight()).isDragonKilled();
             }
 
             return false; // Better safe than sorry.

@@ -27,10 +27,10 @@ public class ControlGroupCheckers {
         fetchUUIDsFromAPI();
     }
 
-    public static void tickServer(MinecraftServer serverLevel){
+    public static void tickServer(MinecraftServer serverLevel) {
         if (!IS_CONTROL_GROUP) return;
         serverLevel.getPlayerList().getPlayers().iterator().forEachRemaining(serverPlayer -> {
-            if(!ControlGroupCheckers.INSTANCE.isUUIDInList(serverPlayer.getStringUUID())){
+            if (!ControlGroupCheckers.INSTANCE.isUUIDInList(serverPlayer.getStringUUID())) {
                 serverPlayer.connection.disconnect(Component.literal("Womp Womp! You're not on the list! :("));
             }
         });

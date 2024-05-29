@@ -20,8 +20,6 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
-import java.util.Objects;
-
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
     private static final Vec3 crystalHolo = new Vec3(0.3f, -1.725, 0.655);
@@ -46,7 +44,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         consoleModel.renderConsole(blockEntity, blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         if (blockEntity != null && blockEntity.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
-            if(blockEntity.pattern() != null && blockEntity.pattern().patternTexture().emissive()) {
+            if (blockEntity.pattern() != null && blockEntity.pattern().patternTexture().emissive()) {
                 consoleModel.renderConsole(blockEntity, blockEntity.getLevel(), poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(consoleModel.getTexture(blockEntity, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
             }
         }
@@ -55,7 +53,7 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
 
         if (blockEntity != null && blockEntity.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
             if (theme.toString().equals(ConsoleTheme.CRYSTAL.getId().toString())) {
-                renderHoloShell(crystalHolo,270, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
+                renderHoloShell(crystalHolo, 270, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
             }
 
             if (theme.toString().equals(ConsoleTheme.INITIATIVE.getId().toString())) {
@@ -105,5 +103,5 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     public BlockEntityRenderer<GlobalConsoleBlockEntity> create(BlockEntityRendererProvider.Context context) {
         return new GlobalConsoleRenderer(context);
     }
-    
+
 }

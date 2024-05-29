@@ -10,7 +10,7 @@ public class CoralConsoleTheme extends ConsoleThemeDetails {
 
     @Override
     public ControlSpecification[] getControlSpecification() {
-        return new ControlSpecification[] {
+        return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(0.60f, 0.67f, -1.10f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(-0.26f, 0.48f, 1.10f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.Y, new Vector3f(-0.01f, 0.48f, 1.03f), EntityDimensions.scalable(0.13f, 0.13f)),

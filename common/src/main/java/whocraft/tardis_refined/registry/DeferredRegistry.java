@@ -10,21 +10,17 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
-/** Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister. */
+/**
+ * Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister.
+ */
 public abstract class DeferredRegistry<T> {
-    /** Call in main mod constructor to classload the registry class. On Forge/NeoForge environments, the necessary event buses for registries will be called*/
-    public abstract void register();
-    /** Register using a Supplier */
-    public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
-
-    public abstract List<RegistrySupplier<T>> getEntries();
-
     /**
      * Create a DeferredRegistry instance for vanilla registries
-     * @param modid - Your Mod's unique identifier
+     *
+     * @param modid       - Your Mod's unique identifier
      * @param resourceKey - Resource Key for the Registry
-     * @return
      * @param <T>
+     * @return
      */
     @ExpectPlatform
     public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
@@ -34,4 +30,16 @@ public abstract class DeferredRegistry<T> {
     public static <T> DeferredRegistry<T> create(String modid, CustomRegistry<T> registry) {
         return create(modid, registry.getRegistryKey());
     }
+
+    /**
+     * Call in main mod constructor to classload the registry class. On Forge/NeoForge environments, the necessary event buses for registries will be called
+     */
+    public abstract void register();
+
+    /**
+     * Register using a Supplier
+     */
+    public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
+
+    public abstract List<RegistrySupplier<T>> getEntries();
 }

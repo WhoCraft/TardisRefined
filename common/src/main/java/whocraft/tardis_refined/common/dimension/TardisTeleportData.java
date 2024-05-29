@@ -23,17 +23,12 @@ public class TardisTeleportData {
 
     private static TardisTeleportData INSTANCE = new TardisTeleportData();
 
-    public List<TeleportEntry> getQueuedTeleports() {
-        return queuedTeleports;
-    }
-
     /**
      * This is to be called from the world tick event, if the world being ticked
      * is a ServerWorld and if the tick phase is the end of the world tick.
      * <p>
      * Does *not* create dynamic worlds that don't already exist,
      * So dynamic worlds should be created by the thing that schedules the tick, if possible
-     *
      */
     public static void tick() {
         TardisTeleportData eventData = TardisTeleportData.INSTANCE;
@@ -59,8 +54,7 @@ public class TardisTeleportData {
                         if (TRTeleporter.fullTeleport(entity, targetWorld, entry.getX(), entry.getY(), entry.getZ(), entry.getyRot(), entry.getxRot(), teleportedEntities)) {
                             teleportedEntities.add(entity);
                             entry.setSuccessfulTeleport(true);
-                        }
-                        else {
+                        } else {
                             entry.setSuccessfulTeleport(false);
                         }
                     }
@@ -77,7 +71,7 @@ public class TardisTeleportData {
     }
 
     public static void scheduleEntityTeleport(Entity entity, ResourceKey<Level> destination, double x, double y, double z, float yRot, float xRot) {
-        if(entity != null && !entity.level().isClientSide() && !isEntityQueuedToTeleportAlready(entity)) {
+        if (entity != null && !entity.level().isClientSide() && !isEntityQueuedToTeleportAlready(entity)) {
             queuedTeleports.add(new TeleportEntry(entity, destination, x, y, z, yRot, xRot));
         }
 
@@ -87,7 +81,11 @@ public class TardisTeleportData {
         return queuedTeleports.stream().anyMatch(entry -> entry.getEntity().equals(entity));
     }
 
-    private static final class TeleportEntry{
+    public List<TeleportEntry> getQueuedTeleports() {
+        return queuedTeleports;
+    }
+
+    private static final class TeleportEntry {
 
         private final Entity entity;
         private final ResourceKey<Level> destination;

@@ -5,7 +5,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Supplier;
 
-public class IncrementUpgrade extends Upgrade{
+public class IncrementUpgrade extends Upgrade {
 
     int incrementAmount = 0;
 

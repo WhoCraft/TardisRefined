@@ -1,17 +1,14 @@
 package whocraft.tardis_refined.registry.forge;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryBuilder;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -25,11 +22,9 @@ public class DeferredRegistryImpl {
     public static class Impl<T> extends DeferredRegistry<T> {
 
         private final DeferredRegister<T> register;
-
-        private Registry<T> registry;
-
-        private ResourceKey<? extends Registry<T>> registryKey;
         private final List<RegistrySupplier<T>> entries;
+        private Registry<T> registry;
+        private ResourceKey<? extends Registry<T>> registryKey;
 
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey) {

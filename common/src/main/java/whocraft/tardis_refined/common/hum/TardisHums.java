@@ -1,9 +1,7 @@
 package whocraft.tardis_refined.common.hum;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundSource;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
@@ -14,14 +12,12 @@ import java.util.Map;
 public class TardisHums {
 
 
-    private static final CodecJsonReloadListener<HumEntry> RELOAD_LISTENER = createReloadListener();
-
-    private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
-
     public static final HumEntry CAVE = new HumEntry(new ResourceLocation(TardisRefined.MODID, "cave"), TRSoundRegistry.HUM_CAVE.getId(), new ArrayList<>());
     public static final HumEntry TOYOTA = new HumEntry(new ResourceLocation(TardisRefined.MODID, "toyota"), TRSoundRegistry.HUM_TOYOTA.getId(), new ArrayList<>());
     public static final HumEntry CLASSIC = new HumEntry(new ResourceLocation(TardisRefined.MODID, "classic"), TRSoundRegistry.HUM_CLASSIC.getId(), new ArrayList<>());
     public static final HumEntry HUM_1996 = new HumEntry(new ResourceLocation(TardisRefined.MODID, "hum_1996"), TRSoundRegistry.HUM_1996.getId(), new ArrayList<>());
+    private static final CodecJsonReloadListener<HumEntry> RELOAD_LISTENER = createReloadListener();
+    private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
     /**
      * A factory method to create the instance of our reload listener.

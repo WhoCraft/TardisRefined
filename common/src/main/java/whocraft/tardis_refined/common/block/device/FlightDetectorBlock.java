@@ -29,12 +29,12 @@ public class FlightDetectorBlock extends HorizontalDirectionalBlock implements E
     public static final IntegerProperty LEVEL = IntegerProperty.create("level", 0, 16);
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 6.0D, 16.0D);
 
-    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return SHAPE;
-    }
-
     public FlightDetectorBlock(Properties properties) {
         super(properties);
+    }
+
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return SHAPE;
     }
 
     @Override

@@ -16,7 +16,8 @@ public class ThrottleControl extends Control {
     public ThrottleControl(ResourceLocation id) {
         super(id);
     }
-    public ThrottleControl(ResourceLocation id, String langId){
+
+    public ThrottleControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 

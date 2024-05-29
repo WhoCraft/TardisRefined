@@ -35,6 +35,7 @@ public class ScreenHandler {
     public static void setCoordinatesScreen(List<ResourceKey<Level>> levels, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
         Minecraft.getInstance().setScreen(new WaypointManageScreen(levels, coordInputType, tardisNavLocation));
     }
+
     @Environment(EnvType.CLIENT)
     public static void setEditCoordinatesScreen(TardisWaypoint waypoint) {
         Minecraft.getInstance().setScreen(new WaypointManageScreen(waypoint));

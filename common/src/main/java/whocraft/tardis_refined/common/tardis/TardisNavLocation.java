@@ -13,9 +13,8 @@ import whocraft.tardis_refined.common.util.Platform;
 /**
  * TardisNavLocation
  * Co-ordinates that represent position, rotation, level and name.
- * **/
+ **/
 public class TardisNavLocation {
-
 
 
     public static final TardisNavLocation ORIGIN = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD);
@@ -29,10 +28,10 @@ public class TardisNavLocation {
     private String name = "";
 
     /**
-     * @param position World co-ordinate
+     * @param position  World co-ordinate
      * @param direction Rotation/Facing direction.
-     * @param level ResourceKey of the desired level.
-     * **/
+     * @param level     ResourceKey of the desired level.
+     **/
     public TardisNavLocation(BlockPos position, Direction direction, ServerLevel level) {
         this.position = position;
         this.direction = direction;
@@ -47,6 +46,7 @@ public class TardisNavLocation {
      * <br> Alternate Constructor ONLY for static references.
      * <br> DO NOT use for logic E.g. Using methods from the Level instance
      * <br> This is because this version doesn't have a {@link Level}  reference
+     *
      * @param position
      * @param direction
      * @param level
@@ -55,6 +55,14 @@ public class TardisNavLocation {
         this.position = position;
         this.direction = direction;
         this.dimensionKey = level;
+    }
+
+    public static TardisNavLocation deserialize(CompoundTag tag) {
+        TardisNavLocation loc = new TardisNavLocation(BlockPos.of(tag.getLong("pos")), Direction.values()[tag.getInt("dir")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dim"))));
+
+        if (tag.contains("name"))
+            loc.setName(tag.getString("name"));
+        return loc;
     }
 
     public ServerLevel getLevel() {
@@ -66,10 +74,6 @@ public class TardisNavLocation {
         return Platform.getServer().getLevel(Level.OVERWORLD);
     }
 
-    public void setDimensionKey(ResourceKey<Level> dimensionKey) {
-        this.dimensionKey = dimensionKey;
-    }
-
     public void setLevel(ServerLevel level) {
         this.dimensionKey = level.dimension();
         this.level = level;
@@ -77,6 +81,10 @@ public class TardisNavLocation {
 
     public ResourceKey<Level> getDimensionKey() {
         return dimensionKey;
+    }
+
+    public void setDimensionKey(ResourceKey<Level> dimensionKey) {
+        this.dimensionKey = dimensionKey;
     }
 
     public BlockPos getPosition() {
@@ -105,14 +113,6 @@ public class TardisNavLocation {
         this.name = name;
     }
 
-    public static TardisNavLocation deserialize(CompoundTag tag) {
-        TardisNavLocation loc = new TardisNavLocation(BlockPos.of(tag.getLong("pos")), Direction.values()[tag.getInt("dir")], ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dim"))));
-
-        if (tag.contains("name"))
-            loc.setName(tag.getString("name"));
-        return loc;
-    }
-
     public CompoundTag serialise() {
         CompoundTag tag = new CompoundTag();
         tag.putLong("pos", this.position.asLong());
@@ -122,19 +122,19 @@ public class TardisNavLocation {
         return tag;
     }
 
-    public BlockPos setX(int x){
+    public BlockPos setX(int x) {
         BlockPos blockPos = new BlockPos(x, position.getY(), position.getZ());
         position = blockPos;
         return position;
     }
 
-    public BlockPos setY(int y){
+    public BlockPos setY(int y) {
         BlockPos blockPos = new BlockPos(position.getX(), y, position.getZ());
         position = blockPos;
         return position;
     }
 
-    public BlockPos setZ(int z){
+    public BlockPos setZ(int z) {
         BlockPos blockPos = new BlockPos(position.getX(), position.getY(), z);
         position = blockPos;
         return position;

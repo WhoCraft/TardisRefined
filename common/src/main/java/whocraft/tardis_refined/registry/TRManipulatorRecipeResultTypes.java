@@ -9,16 +9,24 @@ import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorBlo
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingResult;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorItemResult;
 
-/** 50ap5ud5 11/05/2024: Register our own recipe types to allow for different data to be defined depending on the recipe type*/
+/**
+ * 50ap5ud5 11/05/2024: Register our own recipe types to allow for different data to be defined depending on the recipe type
+ */
 public class TRManipulatorRecipeResultTypes {
 
-    /** Registry Key for the Astral Manipulator Recipe Result type registry. For addon mods, use this as the registry key*/
+    /**
+     * Registry Key for the Astral Manipulator Recipe Result type registry. For addon mods, use this as the registry key
+     */
     public static final ResourceLocation MANIPULATOR_RECIPE_TYPE = new ResourceLocation(TardisRefined.MODID, "manipulator_recipe_result");
 
-    /** Tardis Refined instance of the Astral Manipulator Recipe Result type registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
+    /**
+     * Tardis Refined instance of the Astral Manipulator Recipe Result type registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only
+     */
     public static CustomRegistry<Codec<? extends ManipulatorCraftingResult>> RESULT_TYPES = CustomRegistry.create(MANIPULATOR_RECIPE_TYPE);
 
-    /** Global instance of the Astral Manipulator Recipe Result type custom registry created by Tardis Refined*/
+    /**
+     * Global instance of the Astral Manipulator Recipe Result type custom registry created by Tardis Refined
+     */
     public static final DeferredRegistry<Codec<? extends ManipulatorCraftingResult>> RESULT_TYPES_DEFERRED_REGISTER = DeferredRegistry.create(TardisRefined.MODID, RESULT_TYPES);
 
     /* Register the codec derived from the MapCodec for each entry since the MapCodec isn't actually inheriting from Codec.

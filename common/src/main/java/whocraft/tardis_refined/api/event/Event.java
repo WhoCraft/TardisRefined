@@ -15,6 +15,23 @@ public class Event<T> {
         update();
     }
 
+    public static <T> EventResult result(List<T> listeners, Function<T, EventResult> function) {
+        boolean cancel = false;
+
+        for (T listener : listeners) {
+            EventResult result = function.apply(listener);
+
+            if (result.cancelsEvent()) {
+                cancel = true;
+            }
+
+            if (result.stopsListeners()) {
+                break;
+            }
+        }
+        return cancel ? EventResult.cancel() : EventResult.pass();
+    }
+
     public void register(T handler) {
         this.register(Priority.NORMAL, handler);
     }
@@ -32,23 +49,6 @@ public class Event<T> {
 
     public T invoker() {
         return invoker;
-    }
-
-    public static <T> EventResult result(List<T> listeners, Function<T, EventResult> function) {
-        boolean cancel = false;
-
-        for (T listener : listeners) {
-            EventResult result = function.apply(listener);
-
-            if (result.cancelsEvent()) {
-                cancel = true;
-            }
-
-            if (result.stopsListeners()) {
-                break;
-            }
-        }
-        return cancel ? EventResult.cancel() : EventResult.pass();
     }
 
     public enum Priority {

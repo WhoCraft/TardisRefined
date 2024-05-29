@@ -39,8 +39,8 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
 
         BlockState blockState = blockEntity.getBlockState();
 
-        if(!blockState.getValue(ArsEggBlock.HANGING)){
-           poseStack.translate(0, -0.3, 0);
+        if (!blockState.getValue(ArsEggBlock.HANGING)) {
+            poseStack.translate(0, -0.3, 0);
         }
 
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
@@ -48,11 +48,11 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
         arsEggModel.root().getAllParts().forEach(ModelPart::resetPose);
 
 
-        if(!blockEntity.getLiveliness().isStarted()) {
+        if (!blockEntity.getLiveliness().isStarted()) {
             blockEntity.getLiveliness().start(12);
         }
 
-        if(blockState.getValue(ArsEggBlock.HANGING)){
+        if (blockState.getValue(ArsEggBlock.HANGING)) {
             TardisClientData tardisClientData = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
             boolean crashing = tardisClientData.isCrashing();
             int animationCounter = Minecraft.getInstance().player.tickCount;
@@ -62,7 +62,7 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
         arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(arsEggTexture)),
                 i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
-        if(blockState.getValue(ArsEggBlock.ALIVE)) {
+        if (blockState.getValue(ArsEggBlock.ALIVE)) {
             arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(arsEggTextureEmissive)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1F);
         }

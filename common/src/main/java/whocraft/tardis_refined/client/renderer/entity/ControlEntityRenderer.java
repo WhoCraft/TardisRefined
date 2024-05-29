@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.client.renderer.entity;
 
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,7 +18,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.joml.Matrix4f;
 import whocraft.tardis_refined.TRConfig;
-
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -34,6 +34,21 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
     public ControlEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
+    }
+
+    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int light) {
+        vertex(builder, matrixStack, x, y, z, u, v, 255, light);
+    }
+
+    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
+        PoseStack.Pose entry = matrixStack.last();
+        builder.vertex(entry.pose(), x, y, z)
+                .color(255, 255, 255, alpha)
+                .uv(u, v)
+                .overlayCoords(OverlayTexture.NO_OVERLAY)
+                .uv2(light)
+                .normal(entry.normal(), 0F, 0F, -1F)
+                .endVertex();
     }
 
     @Override
@@ -92,17 +107,17 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
             FormattedCharSequence sequence = component.getVisualOrderText();
 
-            font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
+            font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource, packedLightCoords);
 
             if (isSolid) {
-                font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource,  packedLightCoords);
+                font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 0, textMatrix, multiBufferSource, packedLightCoords);
             }
 
             // Damage used for the icon later on. Left for Jeryn.
             int entityHealth = entity.getControlHealth();
 
             poseStack.translate(0.0, 5, 0.0);
-            renderControlIcon(entity, component, getIconByState(entityHealth), poseStack, multiBufferSource, packedLightCoords );
+            renderControlIcon(entity, component, getIconByState(entityHealth), poseStack, multiBufferSource, packedLightCoords);
 
             poseStack.popPose();
 
@@ -133,7 +148,6 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
     }
 
-
     private void renderControlIcon(ControlEntity entity, Component component, ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource buffer, int light) {
 
         float offset = (float) -(Minecraft.getInstance().font.width(component) / 2 + 18);
@@ -158,21 +172,6 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             vertex(builderSeeThrough, matrixStackIn, offset, 0F, 0F, 0F, 0F, alpha, light);
         }
 
-    }
-
-    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int light) {
-        vertex(builder, matrixStack, x, y, z, u, v, 255, light);
-    }
-
-    private static void vertex(VertexConsumer builder, PoseStack matrixStack, float x, float y, float z, float u, float v, int alpha, int light) {
-        PoseStack.Pose entry = matrixStack.last();
-        builder.vertex(entry.pose(), x, y, z)
-                .color(255, 255, 255, alpha)
-                .uv(u, v)
-                .overlayCoords(OverlayTexture.NO_OVERLAY)
-                .uv2(light)
-                .normal(entry.normal(), 0F, 0F, -1F)
-                .endVertex();
     }
 
 }

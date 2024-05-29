@@ -9,7 +9,7 @@ public class RefurbishedConsoleTheme extends ConsoleThemeDetails {
 
     @Override
     public ControlSpecification[] getControlSpecification() {
-        return new ControlSpecification[] {
+        return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(-1.22f, 0.63f, 0.71f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(1.43f, 0.66f, -0.29f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.Y, new Vector3f(1.18f, 0.69f, -0.51f), EntityDimensions.scalable(0.13f, 0.13f)),
@@ -59,7 +59,6 @@ public class RefurbishedConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.FUEL, new Vector3f(-0.04f, 0.50f, -1.48f), EntityDimensions.scalable(0.13f, 0.13f))
         };
     }
-
 
 
 }

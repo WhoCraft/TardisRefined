@@ -16,8 +16,6 @@ import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-import static whocraft.tardis_refined.registry.TRBlockRegistry.BLOCKS;
-
 public class TRBlockModelProvider extends BlockStateProvider {
 
     public TRBlockModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {

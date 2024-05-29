@@ -51,20 +51,20 @@ import static whocraft.tardis_refined.registry.TREntityRegistry.registerStatic;
 
 public class ImmersivePortals {
 
-    public static RegistrySupplier<EntityType<BOTIPortalEntity>> BOTI_PORTAL = null;
     private static final Map<UUID, PortalEntry> EXISTING_PORTALS = new HashMap<>();
     // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
     private static final Map<ResourceLocation, PortalOffets> THEME_OFFSETS = new HashMap<>();
+    public static RegistrySupplier<EntityType<BOTIPortalEntity>> BOTI_PORTAL = null;
 
-    public static void clearPortalCache(){
+    public static void clearPortalCache() {
         EXISTING_PORTALS.clear();
     }
 
-    public static boolean doPortalsExistForTardis(UUID uuid){
+    public static boolean doPortalsExistForTardis(UUID uuid) {
         return EXISTING_PORTALS.containsKey(uuid);
     }
 
-    public static PortalEntry getPortalsForTardis(UUID uuid){
+    public static PortalEntry getPortalsForTardis(UUID uuid) {
         return EXISTING_PORTALS.get(uuid);
     }
 
@@ -262,7 +262,7 @@ public class ImmersivePortals {
     public static void createPortals(TardisLevelOperator operator) {
 
         // Just for debugging editing values
-        if(!Platform.isProduction()) {
+        if (!Platform.isProduction()) {
             setupPortalsForShellThemes();
         }
 
@@ -276,12 +276,12 @@ public class ImmersivePortals {
         TardisInternalDoor door = operator.getInternalDoor();
         TardisPilotingManager pilotingManager = operator.getPilotingManager();
 
-        if(!isShellThemeSupported(theme)){
+        if (!isShellThemeSupported(theme)) {
             destroyPortals(operator); //we're going to make sure.
             return;
         }
 
-        if (interiorManager.isCave() || door != null && !door.isOpen() || !operator.isTardisReady() || EXISTING_PORTALS.get(dimId) != null  || door == null) {
+        if (interiorManager.isCave() || door != null && !door.isOpen() || !operator.isTardisReady() || EXISTING_PORTALS.get(dimId) != null || door == null) {
             return;
         }
 

@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,14 +23,12 @@ import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
@@ -45,14 +42,14 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         this.basePattern = this.pattern();
     }
 
-    public ResourceLocation theme(){
-        if (this.shellTheme == null){
+    public ResourceLocation theme() {
+        if (this.shellTheme == null) {
             this.shellTheme = ShellTheme.HALF_BAKED.getId();
         }
         return this.shellTheme;
     }
 
-    public void setShellTheme(ResourceLocation theme){
+    public void setShellTheme(ResourceLocation theme) {
         this.shellTheme = theme;
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
@@ -79,7 +76,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         }
 
         if (pTag.contains(NbtConstants.PATTERN)) {
-            if (this.shellTheme != null){
+            if (this.shellTheme != null) {
                 ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
                 if (ShellPatterns.doesPatternExist(this.shellTheme, currentPattern)) {
                     this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
@@ -87,7 +84,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             }
         }
 
-        if (this.shellTheme == null){
+        if (this.shellTheme == null) {
             this.shellTheme = this.theme();
         }
 
@@ -145,7 +142,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                     return true;
                 }
 
-                if(!exteriorManager.locked()){
+                if (!exteriorManager.locked()) {
                     level.setBlock(blockPos, blockState.cycle(GlobalShellBlock.OPEN), Block.UPDATE_ALL);
                     tardisLevelOperator.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
                     return true;
@@ -167,7 +164,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         for (int i = 0; i < numberOfItems; i++) {
             ItemStack coralItem = new ItemStack(Items.HORN_CORAL_FAN);
             BlockPos currentPos = getBlockPos();
-            Containers.dropItemStack(level, currentPos.getX(), currentPos.getY(), currentPos.getZ() , coralItem);
+            Containers.dropItemStack(level, currentPos.getX(), currentPos.getY(), currentPos.getZ(), coralItem);
         }
     }
 }

@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.registry.TRManipulatorRecipeResultTypes;
 
-public class ManipulatorBlockResult extends ManipulatorCraftingResult{
+public class ManipulatorBlockResult extends ManipulatorCraftingResult {
 
     //Creates a MapCodec. We must use MapCodecs because the "type" field in our json will need to use MapCodecs
     //to determine what fields to deserialise. In 1.20.5+ MapCodecs will also become mandatory so it's better to future-proof for it now

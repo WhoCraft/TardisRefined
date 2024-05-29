@@ -19,6 +19,15 @@ public class TardisWaypoint {
         this.location = location;
     }
 
+    public static TardisWaypoint deserialise(CompoundTag tag) {
+        TardisNavLocation loc = TardisNavLocation.deserialize(tag.getCompound("location"));
+        UUID id = tag.getUUID("id");
+
+        TardisWaypoint waypoint = new TardisWaypoint(id, loc);
+
+        return waypoint;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -29,15 +38,6 @@ public class TardisWaypoint {
 
     public void setLocation(TardisNavLocation location) {
         this.location = location;
-    }
-
-    public static TardisWaypoint deserialise(CompoundTag tag) {
-        TardisNavLocation loc = TardisNavLocation.deserialize(tag.getCompound("location"));
-        UUID id = tag.getUUID("id");
-
-        TardisWaypoint waypoint = new TardisWaypoint(id, loc);
-
-        return waypoint;
     }
 
     public CompoundTag serialise() {

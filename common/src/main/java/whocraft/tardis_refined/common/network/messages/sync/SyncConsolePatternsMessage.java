@@ -17,11 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SyncConsolePatternsMessage extends MessageS2C{
-
-    protected Map<ResourceLocation, List<ConsolePattern>> patterns = new HashMap<>();
+public class SyncConsolePatternsMessage extends MessageS2C {
 
     protected final UnboundedMapCodec<ResourceLocation, List<ConsolePattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ConsolePattern.CODEC.listOf().xmap(List::copyOf, List::copyOf));
+    protected Map<ResourceLocation, List<ConsolePattern>> patterns = new HashMap<>();
 
     public SyncConsolePatternsMessage(Map<ResourceLocation, List<ConsolePattern>> patterns) {
         this.patterns = patterns;

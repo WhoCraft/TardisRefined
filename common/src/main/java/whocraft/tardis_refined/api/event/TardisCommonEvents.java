@@ -33,13 +33,13 @@ public class TardisCommonEvents {
     });
 
     public static final Event<CloseDoor> DOOR_CLOSED_EVENT = new Event<>(CloseDoor.class, listeners -> (tardisLevelOperator) -> {
-        for(CloseDoor listener : listeners) {
+        for (CloseDoor listener : listeners) {
             listener.onDoorClosed(tardisLevelOperator);
         }
     });
 
     public static final Event<OpenDoor> DOOR_OPENED_EVENT = new Event<>(OpenDoor.class, listeners -> (tardisLevelOperator) -> {
-        for(OpenDoor listener : listeners) {
+        for (OpenDoor listener : listeners) {
             listener.onDoorOpen(tardisLevelOperator);
         }
     });
@@ -75,7 +75,6 @@ public class TardisCommonEvents {
     public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
 
 
-
     /**
      * Functional interface to define the conditions for using player control.
      */
@@ -86,8 +85,8 @@ public class TardisCommonEvents {
          * Checks whether player control can be used based on specified parameters.
          *
          * @param tardisLevelOperator The Tardis level operator.
-         * @param control The control to be used.
-         * @param controlEntity The entity associated with the control.
+         * @param control             The control to be used.
+         * @param controlEntity       The entity associated with the control.
          * @return True if control can be used, false otherwise.
          */
         EventResult canControlBeUsed(TardisLevelOperator tardisLevelOperator, Control control, ControlEntity controlEntity);
@@ -103,8 +102,8 @@ public class TardisCommonEvents {
          * Called when a TARDIS takes off.
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
-         * @param level The level where the TARDIS is taking off from.
-         * @param pos The position of the TARDIS.
+         * @param level               The level where the TARDIS is taking off from.
+         * @param pos                 The position of the TARDIS.
          * @return The result of the event.
          */
         EventResult onTakeOff(TardisLevelOperator tardisLevelOperator, LevelAccessor level, BlockPos pos);
@@ -161,8 +160,8 @@ public class TardisCommonEvents {
          * Called when a TARDIS lands.
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
-         * @param level The level where the TARDIS is landing.
-         * @param pos The position of the TARDIS.
+         * @param level               The level where the TARDIS is landing.
+         * @param pos                 The position of the TARDIS.
          */
         void onLand(TardisLevelOperator tardisLevelOperator, LevelAccessor level, BlockPos pos);
     }
@@ -176,8 +175,8 @@ public class TardisCommonEvents {
          * Called when a TARDIS lands.
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
-         * @param theme The theme the TARDIS changed to.
-         * @param isSetupTardis if the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
+         * @param theme               The theme the TARDIS changed to.
+         * @param isSetupTardis       if the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
          */
         void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, boolean isSetupTardis);
     }
@@ -191,8 +190,8 @@ public class TardisCommonEvents {
          * Called when a living entity enters a TARDIS.
          *
          * @param tardisLevelOperator The Tardis capability
-         * @param livingEntity The living entity who is entering the TARDIS.
-         * @param sourceLocation The position, level and direction of the exterior of the TARDIS.
+         * @param livingEntity        The living entity who is entering the TARDIS.
+         * @param sourceLocation      The position, level and direction of the exterior of the TARDIS.
          * @param destinationLocation The position, level and direction of the internal door of the TARDIS.
          */
         void onEnterTardis(TardisLevelOperator tardisLevelOperator, LivingEntity livingEntity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation);
@@ -205,8 +204,8 @@ public class TardisCommonEvents {
          * Called when a living entity exits a TARDIS.
          *
          * @param tardisLevelOperator The Tardis capability
-         * @param livingEntity The living entity who is exiting the TARDIS.
-         * @param sourceLocation The position, level and direction of the internal door of the TARDIS.
+         * @param livingEntity        The living entity who is exiting the TARDIS.
+         * @param sourceLocation      The position, level and direction of the internal door of the TARDIS.
          * @param destinationLocation The position, level and direction of the exterior of the TARDIS.
          */
         void onExitTardis(TardisLevelOperator tardisLevelOperator, LivingEntity livingEntity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation);
@@ -235,7 +234,7 @@ public class TardisCommonEvents {
          * Called when a TARDIS unlocks a new Upgrade.
          *
          * @param tardisLevelOperator The TARDIS Level Operator.
-         * @param upgrade       The Upgrade
+         * @param upgrade             The Upgrade
          */
         void onUpgradeUnlock(TardisLevelOperator tardisLevelOperator, Upgrade upgrade);
     }

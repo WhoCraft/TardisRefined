@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
-public class LoopingHumSound extends LoopingSound{
+public class LoopingHumSound extends LoopingSound {
     private SoundEvent soundEvent;
 
     public LoopingHumSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
@@ -26,10 +26,10 @@ public class LoopingHumSound extends LoopingSound{
         super.tick();
         volume = 0.10F;
         LocalPlayer player = Minecraft.getInstance().player;
-        if(player != null){
+        if (player != null) {
             setLocation(player.position());
 
-            if(player.level().dimensionTypeId() != TRDimensionTypes.TARDIS){
+            if (player.level().dimensionTypeId() != TRDimensionTypes.TARDIS) {
                 stopSound();
             }
 

@@ -48,20 +48,15 @@ public class EyeBlock extends BaseEntityBlock {
     public void animateTick(BlockState blockState, Level level, BlockPos blockPos, RandomSource randomSource) {
 
         if (randomSource.nextInt(5) == 0) {
-            level.playLocalSound((double)blockPos.getX() + 0.5, (double)blockPos.getY() + 0.5, (double)blockPos.getZ() + 0.5, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 10, randomSource.nextFloat() * 0.7F + 0.6F, false);
+            level.playLocalSound((double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.5, (double) blockPos.getZ() + 0.5, SoundEvents.CAMPFIRE_CRACKLE, SoundSource.BLOCKS, 10, randomSource.nextFloat() * 0.7F + 0.6F, false);
         }
 
-        if ( randomSource.nextInt(2) == 0) {
-            for(int i = 0; i < randomSource.nextInt(5) + 1; ++i) {
-                level.addParticle(ParticleTypes.LAVA, true, (double)blockPos.getX() + 0.5, (double)blockPos.getY() + 0.5, (double)blockPos.getZ() + 0.5, (double)(randomSource.nextFloat() / 2.0F), 5.0E-5, (double)(randomSource.nextFloat() / 2.0F));
+        if (randomSource.nextInt(2) == 0) {
+            for (int i = 0; i < randomSource.nextInt(5) + 1; ++i) {
+                level.addParticle(ParticleTypes.LAVA, true, (double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.5, (double) blockPos.getZ() + 0.5, (double) (randomSource.nextFloat() / 2.0F), 5.0E-5, (double) (randomSource.nextFloat() / 2.0F));
             }
 
         }
-
-
-
-
-
 
 
     }

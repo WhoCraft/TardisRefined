@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class InternalDoorBlockEntity extends AbstractDoorBlockEntity {
 
-    public InternalDoorBlockEntity(BlockEntityType<?> type, BlockPos blockPos,BlockState blockState) {
+    public InternalDoorBlockEntity(BlockEntityType<?> type, BlockPos blockPos, BlockState blockState) {
         super(type, blockPos, blockState);
     }
 

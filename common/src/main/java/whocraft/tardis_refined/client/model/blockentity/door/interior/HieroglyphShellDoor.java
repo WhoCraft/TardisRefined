@@ -7,7 +7,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 
-public class HieroglyphShellDoor extends ShellDoorModel{
+public class HieroglyphShellDoor extends ShellDoorModel {
 
     private final ModelPart root;
     private final ModelPart door_closed;
@@ -88,7 +88,6 @@ public class HieroglyphShellDoor extends ShellDoorModel{
 
         return LayerDefinition.create(meshdefinition, 256, 256);
     }
-
 
 
     @Override

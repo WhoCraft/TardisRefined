@@ -17,7 +17,7 @@ public class TRParticles {
 
 
     @ExpectPlatform
-    public static SimpleParticleType getParticleType(){
+    public static SimpleParticleType getParticleType() {
         throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
     }
 

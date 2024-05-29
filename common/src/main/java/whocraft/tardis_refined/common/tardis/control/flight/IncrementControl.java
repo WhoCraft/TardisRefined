@@ -15,9 +15,11 @@ public class IncrementControl extends Control {
     public IncrementControl(ResourceLocation id) {
         super(id);
     }
-    public IncrementControl(ResourceLocation id, String langId){
+
+    public IncrementControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
+
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         return this.incrementCoord(operator, theme, controlEntity, player, 1);
@@ -28,8 +30,8 @@ public class IncrementControl extends Control {
         return this.incrementCoord(operator, theme, controlEntity, player, -1);
     }
 
-    private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount){
-        if (!operator.getLevel().isClientSide()){
+    private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount) {
+        if (!operator.getLevel().isClientSide()) {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             pilotManager.cycleCordIncrement(incAmount);
             int currentIncAmount = pilotManager.getCordIncrement();

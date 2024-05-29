@@ -1,10 +1,6 @@
 package whocraft.tardis_refined.registry.fabric;
 
 
-import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -14,7 +10,6 @@ import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -29,8 +24,8 @@ public class DeferredRegistryImpl {
 
         private final String modid;
         private final WritableRegistry<T> registry;
-        private ResourceKey<? extends Registry<T>> registryKey;
         private final List<RegistrySupplier<T>> entries;
+        private ResourceKey<? extends Registry<T>> registryKey;
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
             this.modid = modid;

@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-public class ShellPatternCollection extends PatternCollection<ShellPattern>{
+public class ShellPatternCollection extends PatternCollection<ShellPattern> {
 
     public static final Codec<ShellPatternCollection> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(

@@ -47,23 +47,20 @@ import whocraft.tardis_refined.registry.TREntityRegistry;
 
 public class ControlEntity extends Entity {
 
-    public static int TotalControlHealth = 10;
-
-    private ControlSpecification controlSpecification;
-    private ConsoleTheme consoleTheme;
-    private BlockPos consoleBlockPos;
-    private FlightDanceManager flightDanceManager;
-
-    public ControlEntity(EntityType<?> entityTypeIn, Level level) {
-        super(entityTypeIn, level);
-    }
-
     private static final EntityDataAccessor<Boolean> TICKING_DOWN = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> IS_DEAD = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> CONTROL_HEALTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Float> SCALE_WIDTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> SCALE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
+    public static int TotalControlHealth = 10;
+    private ControlSpecification controlSpecification;
+    private ConsoleTheme consoleTheme;
+    private BlockPos consoleBlockPos;
+    private FlightDanceManager flightDanceManager;
+    public ControlEntity(EntityType<?> entityTypeIn, Level level) {
+        super(entityTypeIn, level);
+    }
 
     public ControlEntity(Level level) {
         super(TREntityRegistry.CONTROL_ENTITY.get(), level);
@@ -138,19 +135,6 @@ public class ControlEntity extends Entity {
         return Component.translatable(this.controlSpecification.control().getTranslationKey());
     }
 
-    public void setTickingDown(FlightDanceManager manager) {
-
-        if (this.getEntityData().get(IS_DEAD)) {
-            return;
-        }
-
-        this.entityData.set(TICKING_DOWN, true);
-        this.flightDanceManager = manager;
-        this.level().playSound(null, this.blockPosition(), SoundEvents.ARROW_HIT, SoundSource.BLOCKS, 0.5f, 2f);
-
-        this.setCustomName(Component.translatable("!"));
-    }
-
     @Override
     protected void defineSynchedData() {
         getEntityData().define(SHOW_PARTICLE, false);
@@ -166,7 +150,6 @@ public class ControlEntity extends Entity {
     public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
         this.setSizeAndUpdate(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
     }
-
 
     @Override
     public boolean save(CompoundTag compound) {
@@ -263,6 +246,19 @@ public class ControlEntity extends Entity {
 
     public boolean isTickingDown() {
         return getEntityData().get(TICKING_DOWN);
+    }
+
+    public void setTickingDown(FlightDanceManager manager) {
+
+        if (this.getEntityData().get(IS_DEAD)) {
+            return;
+        }
+
+        this.entityData.set(TICKING_DOWN, true);
+        this.flightDanceManager = manager;
+        this.level().playSound(null, this.blockPosition(), SoundEvents.ARROW_HIT, SoundSource.BLOCKS, 0.5f, 2f);
+
+        this.setCustomName(Component.translatable("!"));
     }
 
     private void realignControl() {

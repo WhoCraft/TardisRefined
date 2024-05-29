@@ -11,6 +11,17 @@ public class ProtectedZone {
 
     private String name = "";
 
+    public ProtectedZone(BlockPos topCorner, BlockPos bottomCorner) {
+        this.topCorner = topCorner;
+        this.bottomCorner = bottomCorner;
+    }
+
+    public ProtectedZone(BlockPos topCorner, BlockPos bottomCorner, String name) {
+        this.topCorner = topCorner;
+        this.bottomCorner = bottomCorner;
+        this.name = name;
+    }
+
     public boolean isAllowPlacement() {
         return allowPlacement;
     }
@@ -29,19 +40,8 @@ public class ProtectedZone {
         return this;
     }
 
-    public ProtectedZone(BlockPos topCorner, BlockPos bottomCorner) {
-        this.topCorner = topCorner;
-        this.bottomCorner = bottomCorner;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public ProtectedZone(BlockPos topCorner, BlockPos bottomCorner, String name) {
-        this.topCorner = topCorner;
-        this.bottomCorner = bottomCorner;
-        this.name = name;
     }
 
     public AABB getArea() {

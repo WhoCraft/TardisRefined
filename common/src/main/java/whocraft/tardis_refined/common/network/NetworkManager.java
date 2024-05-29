@@ -18,17 +18,17 @@ import java.util.Map;
 
 public abstract class NetworkManager {
 
-    protected final ResourceLocation channelName;
     public static final Map<String, MessageType> toServer = new HashMap<>();
+    protected final ResourceLocation channelName;
     protected final Map<String, MessageType> toClient = new HashMap<>();
+
+    public NetworkManager(ResourceLocation channelName) {
+        this.channelName = channelName;
+    }
 
     @ExpectPlatform
     public static NetworkManager create(ResourceLocation channelName) {
         throw new AssertionError();
-    }
-
-    public NetworkManager(ResourceLocation channelName) {
-        this.channelName = channelName;
     }
 
     public MessageType registerS2C(String id, MessageDecoder<MessageS2C> decoder) {
@@ -52,16 +52,16 @@ public abstract class NetworkManager {
     public abstract void sendToTracking(BlockEntity entity, MessageS2C message);
 
     public void sendToDimension(Level level, MessageS2C message) {
-        if(!level.isClientSide) {
+        if (!level.isClientSide) {
             for (Player player : level.players()) {
                 this.sendToPlayer((ServerPlayer) player, message);
             }
         }
     }
 
-    public void sendToAllPlayers(MessageS2C message){
+    public void sendToAllPlayers(MessageS2C message) {
         MinecraftServer server = Platform.getServer();
-        if(server == null) return;
+        if (server == null) return;
         List<ServerPlayer> players = server.getPlayerList().getPlayers();
         players.forEach(entry -> sendToPlayer(entry, message));
     }

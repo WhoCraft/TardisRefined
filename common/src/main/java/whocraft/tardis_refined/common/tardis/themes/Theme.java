@@ -6,5 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 public interface Theme {
 
     public String getTranslationKey();
+
     Component getDisplayName();
 }

@@ -45,7 +45,6 @@ public class UpgradesCommand {
     }
 
 
-
     private static int unlockAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());

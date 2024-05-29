@@ -57,7 +57,7 @@ public class ChangeShellMessage extends MessageC2S {
     public void handle(MessageContext context) {
         Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
         level.flatMap(TardisLevelOperator::get).ifPresent(y -> {
-            if(Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(y.getUpgradeHandler()) && y.getExteriorManager().hasEnoughFuelForShellChange()) {
+            if (Upgrades.CHAMELEON_CIRCUIT_SYSTEM.get().isUnlocked(y.getUpgradeHandler()) && y.getExteriorManager().hasEnoughFuelForShellChange()) {
                 y.setShellTheme(this.shellTheme, pattern.id(), false);
                 y.getPilotingManager().removeFuel(y.getExteriorManager().getFuelForShellChange());
             } else {

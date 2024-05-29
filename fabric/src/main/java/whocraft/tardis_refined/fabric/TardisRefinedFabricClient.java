@@ -65,7 +65,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
 
         /*Required to Render Transparency*/
         for (RegistrySupplier<Block> block : TRBlockRegistry.BLOCKS.getEntries()) {
-            if(block.getId().getNamespace().contains(TardisRefined.MODID)){
+            if (block.getId().getNamespace().contains(TardisRefined.MODID)) {
                 BlockRenderLayerMap.INSTANCE.putBlock(block.get(), RenderType.cutout());
             }
         }

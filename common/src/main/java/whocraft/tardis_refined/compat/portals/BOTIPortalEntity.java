@@ -23,16 +23,16 @@ public class BOTIPortalEntity extends Portal {
     ShellTheme shellTheme = ShellTheme.FACTORY.get();
     private boolean isValid = false;
 
+    public BOTIPortalEntity(EntityType<?> entityType, Level world) {
+        super(entityType, world);
+    }
+
     public ShellTheme getShellTheme() {
         return shellTheme;
     }
 
     public void setShellTheme(ShellTheme shellTheme) {
         this.shellTheme = shellTheme;
-    }
-
-    public BOTIPortalEntity(EntityType<?> entityType, Level world) {
-        super(entityType, world);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class BOTIPortalEntity extends Portal {
         if (compoundTag.contains(NbtConstants.TARDIS_ID)) {
             setTardisId(compoundTag.getUUID(NbtConstants.TARDIS_ID));
         }
-        if(compoundTag.contains("valid")) {
+        if (compoundTag.contains("valid")) {
             setValid(compoundTag.getBoolean("valid"));
         } else {
             isValid = false;

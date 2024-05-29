@@ -19,12 +19,12 @@ import java.util.Objects;
 
 public class BuyUpgradeScreen extends Screen {
 
+    private static final int GUI_WIDTH = 202;
+    private static final int GUI_HEIGHT = 60;
     public final Upgrade upgrade;
     public final boolean available;
     public final UpgradesScreen parentScreen;
     private final Component text;
-    private static final int GUI_WIDTH = 202;
-    private static final int GUI_HEIGHT = 60;
 
     public BuyUpgradeScreen(Upgrade upgrade, boolean available, UpgradesScreen parentScreen) {
         super(Component.empty());

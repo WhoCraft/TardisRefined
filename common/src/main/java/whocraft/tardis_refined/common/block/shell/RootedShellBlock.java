@@ -50,7 +50,7 @@ public class RootedShellBlock extends ShellBaseBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if(!player.getMainHandItem().is(Items.SHEARS)) {
+        if (!player.getMainHandItem().is(Items.SHEARS)) {
 
             if (!blockState.getValue(OPEN)) {
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.ROOT_PLANT_CUT_OPEN), true);
@@ -61,7 +61,6 @@ public class RootedShellBlock extends ShellBaseBlock {
 
             return InteractionResult.FAIL;
         }
-
 
 
         this.setUpTardis(blockState, level, blockPos);
@@ -78,10 +77,10 @@ public class RootedShellBlock extends ShellBaseBlock {
     }
 
 
-    private boolean setUpTardis(BlockState blockState, Level level, BlockPos blockPos){
+    private boolean setUpTardis(BlockState blockState, Level level, BlockPos blockPos) {
         if (level instanceof ServerLevel serverLevel) {
             if (level.getBlockEntity(blockPos) instanceof ShellBaseBlockEntity shellBaseBlockEntity) {
-                if (shellBaseBlockEntity.shouldSetup()){
+                if (shellBaseBlockEntity.shouldSetup()) {
 
 
                     //Create a Level Key with a randomised UUID

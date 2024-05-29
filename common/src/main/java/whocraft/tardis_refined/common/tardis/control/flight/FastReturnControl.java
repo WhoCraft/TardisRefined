@@ -15,7 +15,8 @@ public class FastReturnControl extends Control {
     public FastReturnControl(ResourceLocation id) {
         super(id);
     }
-    public FastReturnControl(ResourceLocation id, String langId){
+
+    public FastReturnControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 
@@ -26,7 +27,7 @@ public class FastReturnControl extends Control {
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        if (!operator.getLevel().isClientSide()){
+        if (!operator.getLevel().isClientSide()) {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             if (pilotManager.preloadFastReturn()) {
                 return true;
@@ -36,6 +37,7 @@ public class FastReturnControl extends Control {
         }
         return false;
     }
+
     @Override
     public PitchedSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
         return new PitchedSound(SoundEvents.NOTE_BLOCK_BIT.value(), 1F);

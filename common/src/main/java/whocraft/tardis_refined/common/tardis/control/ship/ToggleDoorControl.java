@@ -15,18 +15,19 @@ public class ToggleDoorControl extends Control {
     public ToggleDoorControl(ResourceLocation id) {
         super(id);
     }
-    public ToggleDoorControl(ResourceLocation id, String langId){
+
+    public ToggleDoorControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        if (!operator.getLevel().isClientSide()){
+        if (!operator.getLevel().isClientSide()) {
             if (operator.getInternalDoor() != null) {
-                if(operator.getExteriorManager().locked() || operator.getPilotingManager().isInFlight()) {
+                if (operator.getExteriorManager().locked() || operator.getPilotingManager().isInFlight()) {
                     return false;
                 }
-                if (!operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).isAir()){
+                if (!operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).isAir()) {
                     var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
                     operator.setDoorClosed(isDoorOpen);
                     return true;
@@ -54,7 +55,7 @@ public class ToggleDoorControl extends Control {
     @Override
     public PitchedSound getSuccessSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
         if (!operator.getLevel().isClientSide()) {
-            if (!operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).isAir()){
+            if (!operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).isAir()) {
                 var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
                 var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().getDoorClose().getRightClick() : theme.getSoundProfile().getDoorOpen().getRightClick();
                 if (pitchedSound != null) {

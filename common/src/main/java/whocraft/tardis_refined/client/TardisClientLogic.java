@@ -21,7 +21,6 @@ import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.hum.HumEntry;
-import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -37,10 +36,11 @@ public class TardisClientLogic {
 
     /**
      * Higher means more fog, lower means less fog
+     *
      * @return 0 -> 1 float based off fog tick delta
      */
     public static float getFogTickDelta(BlockPos playerPosition) {
-        return TardisHelper.isInArsArea(playerPosition) ? 1f :  1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
+        return TardisHelper.isInArsArea(playerPosition) ? 1f : 1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
     }
 
     public static void tickFog(boolean hasFuel) {
@@ -127,7 +127,6 @@ public class TardisClientLogic {
             }
 
 
-
             if (isThisTardis && tardisLevel.getGameTime() % clientData.nextVoiceAmbientCall == 0) {
                 clientData.nextVoiceAmbientCall = tardisLevel.random.nextInt(6000, 36000);
 
@@ -142,7 +141,7 @@ public class TardisClientLogic {
                 var player = Minecraft.getInstance().player;
                 if (clientData.isCrashing()) {
                     player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) *  0.5f);
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
                 } else {
                     if (clientData.isFlying()) {
                         player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
@@ -152,11 +151,11 @@ public class TardisClientLogic {
             }
 
             if (isThisTardis) {
-                tickFog(  clientData.getTardisState() < TardisLevelOperator.STATE_EYE_OF_HARMONY || clientData.getFuel() != 0);
+                tickFog(clientData.getTardisState() < TardisLevelOperator.STATE_EYE_OF_HARMONY || clientData.getFuel() != 0);
             }
 
             if (isThisTardis && clientData.getTardisState() == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
-                tardisLevel.addParticle(ParticleTypes.CLOUD, (double)1013 + 0.5 - 2 + tardisLevel.random.nextInt(4), 71, (double)55 + 0.5- 2 + tardisLevel.random.nextInt(4),0, 0.1 + tardisLevel.random.nextFloat() / 2 ,0);
+                tardisLevel.addParticle(ParticleTypes.CLOUD, (double) 1013 + 0.5 - 2 + tardisLevel.random.nextInt(4), 71, (double) 55 + 0.5 - 2 + tardisLevel.random.nextInt(4), 0, 0.1 + tardisLevel.random.nextFloat() / 2, 0);
             }
         }
 
@@ -255,7 +254,6 @@ public class TardisClientLogic {
             }
         }
     }
-
 
 
 }

@@ -118,9 +118,9 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     /**
      * Places a Global Console block at the specified position, with the same theme as the Console Configuration block.
      *
-     * @param level The level the Global Console block will be placed in.
+     * @param level           The level the Global Console block will be placed in.
      * @param configuratorPos - The position where this current configurator block is at
-     * @param consolePos   The position to place the Global Console block at.
+     * @param consolePos      The position to place the Global Console block at.
      */
     private boolean placeNewGlobalConsoleBlock(Level level, BlockPos configuratorPos, BlockPos consolePos) {
         BlockEntity expectedConfiguratorBlockEntity = level.getBlockEntity(configuratorPos);
@@ -150,8 +150,8 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     /**
      * Removes the Global Console block at the specified position and kills its controls.
      *
-     * @param consolePos   The position of the Global Console block to be removed.
-     * @param level The level the Global Console block is in.
+     * @param consolePos The position of the Global Console block to be removed.
+     * @param level      The level the Global Console block is in.
      */
     private boolean removeGlobalConsoleBlock(BlockPos consolePos, Level level) {
         BlockEntity blockEntity = level.getBlockEntity(consolePos);
@@ -165,13 +165,14 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
     /**
      * Change the pattern of the console blocks' current theme
+     *
      * @param level
      * @param configuratorPos
      * @param consolePos
      * @param player
      * @return
      */
-    private boolean changePattern(Level level, BlockPos configuratorPos, BlockPos consolePos, Player player){
+    private boolean changePattern(Level level, BlockPos configuratorPos, BlockPos consolePos, Player player) {
 
         BlockEntity expectedConfiguratorBlockEntity = level.getBlockEntity(configuratorPos);
 
@@ -200,10 +201,9 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     /**
      * Changes the theme of the Console Configuration block and its adjacent Global Console block using the next theme from the configurator's current theme.
      *
-     * @param level The level the Console Configuration and Global Console blocks are in.
-     * @param configuratorPos   The position of the Console Configuration block.
-     * @param consolePos - The configurator block entity which we expect to not be null
-
+     * @param level           The level the Console Configuration and Global Console blocks are in.
+     * @param configuratorPos The position of the Console Configuration block.
+     * @param consolePos      - The configurator block entity which we expect to not be null
      */
     private boolean changeConsoleTheme(Level level, BlockPos configuratorPos, BlockPos consolePos) {
 
@@ -226,7 +226,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 // Change theme and set the current pattern to the default
                 ConsolePattern defaultOrEquivalentPattern = ConsolePatterns.getPatternOrDefault(nextTheme, ResourceConstants.DEFAULT_PATTERN_ID);
 
-                if (defaultOrEquivalentPattern != null){
+                if (defaultOrEquivalentPattern != null) {
                     consoleBlockEntity.setPattern(defaultOrEquivalentPattern);
 
                     level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
@@ -241,13 +241,13 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         return false;
     }
 
-    private ResourceLocation nextTheme(ConsoleConfigurationBlockEntity blockEntity){
+    private ResourceLocation nextTheme(ConsoleConfigurationBlockEntity blockEntity) {
         ResourceLocation consoleThemeId = blockEntity.theme();
         //Get next console theme
         List<ResourceLocation> themesList = ConsoleTheme.CONSOLE_THEMES_REGISTRY.getKeys().stream().toList();
         int index = themesList.indexOf(consoleThemeId);
         int nextIndex = index + 1;
-        if(nextIndex >= themesList.size()) {
+        if (nextIndex >= themesList.size()) {
             nextIndex = 0;
         }
         return themesList.get(nextIndex);

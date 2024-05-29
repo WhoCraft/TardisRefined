@@ -13,12 +13,10 @@ import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.selections.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.HumSelectionScreen;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
-import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.network.messages.EjectPlayerFromConsoleMessage;
 import whocraft.tardis_refined.common.network.messages.screens.C2SRequestShellSelection;
-import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesDisplayMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.RequestWaypointsMessage;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -29,16 +27,14 @@ import java.awt.*;
 
 public class MonitorScreen extends SelectionScreen {
 
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
     private final TardisNavLocation currentLocation;
     private final TardisNavLocation targetLocation;
     private final UpgradeHandler upgradeHandler;
-
-
     protected int imageWidth = 256;
     protected int imageHeight = 173;
     private int leftPos, topPos;
-
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
+    private boolean noUpgrades = false;
 
 
     public MonitorScreen(TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler) {
@@ -47,7 +43,6 @@ public class MonitorScreen extends SelectionScreen {
         this.targetLocation = targetLocation;
         this.upgradeHandler = upgradeHandler;
     }
-
 
     @Override
     public boolean isPauseScreen() {
@@ -63,8 +58,6 @@ public class MonitorScreen extends SelectionScreen {
         //Super method already creates the list, we don't need to create it a second time.
         super.init();
     }
-
-    private boolean noUpgrades = false;
 
     @Override
     public GenericMonitorSelectionList createSelectionList() {

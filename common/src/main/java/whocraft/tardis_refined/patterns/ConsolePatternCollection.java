@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
 
-public class ConsolePatternCollection extends PatternCollection<ConsolePattern>{
+public class ConsolePatternCollection extends PatternCollection<ConsolePattern> {
 
     public static final Codec<ConsolePatternCollection> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(

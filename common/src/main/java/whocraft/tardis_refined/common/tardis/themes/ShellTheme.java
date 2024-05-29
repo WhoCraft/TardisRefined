@@ -14,13 +14,19 @@ import java.util.Optional;
 
 public class ShellTheme implements Theme {
 
-    /** Registry Key for the ShellTheme registry. For addon mods, use this as the registry key*/
+    /**
+     * Registry Key for the ShellTheme registry. For addon mods, use this as the registry key
+     */
     public static final ResourceLocation SHELL_THEME = new ResourceLocation(TardisRefined.MODID, "shell_theme");
 
-    /** Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
+    /**
+     * Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only
+     */
     public static final CustomRegistry<ShellTheme> SHELL_THEME_REGISTRY = CustomRegistry.create(SHELL_THEME);
 
-    /** Global instance of the Shell Theme custom registry created by Tardis Refined*/
+    /**
+     * Global instance of the Shell Theme custom registry created by Tardis Refined
+     */
     public static final DeferredRegistry<ShellTheme> SHELL_THEME_DEFERRED_REGISTRY = DeferredRegistry.create(TardisRefined.MODID, SHELL_THEME_REGISTRY);
 
     public static final RegistrySupplier<ShellTheme> HALF_BAKED = registerShellTheme("half_baked"); // The default shell. Do not remove.
@@ -43,20 +49,6 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplier<ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
     public static final RegistrySupplier<ShellTheme> CASTLE = registerShellTheme("castle");
     public static final RegistrySupplier<ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
-
-
-    public static ShellTheme getShellTheme(ResourceLocation resourceLocation){
-        ShellTheme potentialTheme = SHELL_THEME_REGISTRY.get(resourceLocation);
-        if(potentialTheme != null){
-            return potentialTheme;
-        }
-        return HALF_BAKED.get();
-    }
-
-    public static ResourceLocation getKey(ShellTheme shellTheme){
-        return SHELL_THEME_REGISTRY.getKey(shellTheme);
-    }
-
     private ResourceLocation translationKey;
     private boolean producesLight;
 
@@ -68,12 +60,24 @@ public class ShellTheme implements Theme {
         this.producesLight = producesLight;
     }
 
-    private static RegistrySupplier<ShellTheme> registerShellTheme(String id){
-        return SHELL_THEME_DEFERRED_REGISTRY.register(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+    public static ShellTheme getShellTheme(ResourceLocation resourceLocation) {
+        ShellTheme potentialTheme = SHELL_THEME_REGISTRY.get(resourceLocation);
+        if (potentialTheme != null) {
+            return potentialTheme;
+        }
+        return HALF_BAKED.get();
     }
 
-    private static RegistrySupplier<ShellTheme> registerShellTheme(String id, boolean producesLight){
-        return SHELL_THEME_DEFERRED_REGISTRY.register(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
+    public static ResourceLocation getKey(ShellTheme shellTheme) {
+        return SHELL_THEME_REGISTRY.getKey(shellTheme);
+    }
+
+    private static RegistrySupplier<ShellTheme> registerShellTheme(String id) {
+        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+    }
+
+    private static RegistrySupplier<ShellTheme> registerShellTheme(String id, boolean producesLight) {
+        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
     }
 
     @Override

@@ -23,6 +23,10 @@ public class S2CDisplayUpgradeScreen extends MessageS2C {
         compoundTag = friendlyByteBuf.readNbt();
     }
 
+    @Environment(EnvType.CLIENT)
+    private static void display(CompoundTag compoundTag) {
+        ScreenHandler.displayUpgradesScreen(compoundTag);
+    }
 
     @NotNull
     @Override
@@ -33,12 +37,6 @@ public class S2CDisplayUpgradeScreen extends MessageS2C {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeNbt(compoundTag);
-    }
-
-
-    @Environment(EnvType.CLIENT)
-    private static void display(CompoundTag compoundTag) {
-        ScreenHandler.displayUpgradesScreen(compoundTag);
     }
 
     @Override

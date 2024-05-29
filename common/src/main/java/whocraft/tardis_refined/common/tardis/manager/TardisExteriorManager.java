@@ -31,9 +31,14 @@ import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
  * External Shell data.
  **/
 public class TardisExteriorManager extends BaseHandler {
-    private double fuelForShellChange = 15; // Amount of fuel required to change the shell
-
     private final TardisLevelOperator operator;
+    private double fuelForShellChange = 15; // Amount of fuel required to change the shell
+    private boolean locked;
+    private boolean isLanding;
+    private boolean isTakingOff;
+    public TardisExteriorManager(TardisLevelOperator operator) {
+        this.operator = operator;
+    }
 
     public boolean locked() {
         return locked;
@@ -64,14 +69,9 @@ public class TardisExteriorManager extends BaseHandler {
 
     }
 
-    private boolean locked;
-    private boolean isLanding;
-
     public boolean isLanding() {
         return this.isLanding;
     }
-
-    private boolean isTakingOff;
 
     public boolean isTakingOff() {
         return this.isTakingOff;
@@ -81,15 +81,11 @@ public class TardisExteriorManager extends BaseHandler {
         this.isTakingOff = isTakingOff;
     }
 
-
-    public TardisExteriorManager(TardisLevelOperator operator) {
-        this.operator = operator;
-    }
-
     @Override
     public void tick() {
 
     }
+
     @Override
     public CompoundTag saveData(CompoundTag tag) {
 
@@ -97,6 +93,7 @@ public class TardisExteriorManager extends BaseHandler {
 
         return tag;
     }
+
     @Override
     public void loadData(CompoundTag tag) {
         locked = tag.getBoolean(NbtConstants.LOCKED);
@@ -126,7 +123,7 @@ public class TardisExteriorManager extends BaseHandler {
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
 
-        if(currentPosition == null) return;
+        if (currentPosition == null) return;
         ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
 
         // Get the exterior block.
@@ -146,7 +143,7 @@ public class TardisExteriorManager extends BaseHandler {
         }
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
-        if(currentPosition == null) return;
+        if (currentPosition == null) return;
         BlockPos lastKnownLocationPosition = currentPosition.getPosition();
         ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
 
@@ -234,7 +231,7 @@ public class TardisExteriorManager extends BaseHandler {
         }
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
-        if(currentPosition == null) return false;
+        if (currentPosition == null) return false;
 
         BlockPos lastKnownLocationPosition = currentPosition.getPosition();
         ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
@@ -251,6 +248,7 @@ public class TardisExteriorManager extends BaseHandler {
 
     /**
      * Returns whether a Tardis has enough fuel to perform an interior change
+     *
      * @return true if the Tardis has enough fuel
      */
     public boolean hasEnoughFuelForShellChange() {
@@ -259,6 +257,7 @@ public class TardisExteriorManager extends BaseHandler {
 
     /**
      * The amount of fuel required to change the exterior shell
+     *
      * @return double amount of fuel to be removed
      */
     public double getFuelForShellChange() {
@@ -267,6 +266,7 @@ public class TardisExteriorManager extends BaseHandler {
 
     /**
      * Sets the amount of fuel required to change the exterior shell
+     *
      * @param fuel the amount of fuel
      */
     private void setFuelForShellChange(double fuel) {

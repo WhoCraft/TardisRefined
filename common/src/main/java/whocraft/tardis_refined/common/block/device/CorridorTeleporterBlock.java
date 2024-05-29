@@ -58,12 +58,12 @@ public class CorridorTeleporterBlock extends Block implements EntityBlock {
         };
     }
 
-    
+
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
 
-        if (!level.isClientSide()){
-            ServerLevel serverLevel = (ServerLevel)level;
+        if (!level.isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof CorridorTeleporterBlockEntity corridorTeleporterBlockEntity) {
                 corridorTeleporterBlockEntity.startTeleporterTimer();
             }
