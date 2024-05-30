@@ -116,6 +116,8 @@ dependencies {
     // Adds a dependency on a specific module
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
 
+    // Create - dependencies are added transitively
+    modImplementation("com.simibubi.create:create-fabric-${minecraft_version}:${create_version_fabric}")
 
     // Includes Cardinal Components API as a Jar-in-Jar dependency (optional)
     include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"

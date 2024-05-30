@@ -104,6 +104,10 @@ dependencies {
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
 
+    modImplementation("com.simibubi.create:create-${minecraft_version}:${create_version_forge}:slim"){transitive = false}
+    modImplementation("com.jozufozu.flywheel:flywheel-forge-${flywheel_minecraft_version}:${flywheel_version_forge}")
+    modImplementation("com.tterrag.registrate:Registrate:${registrate_version_forge}")
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
 
