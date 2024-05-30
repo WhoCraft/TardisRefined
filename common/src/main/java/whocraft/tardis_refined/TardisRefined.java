@@ -21,6 +21,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
+import whocraft.tardis_refined.compat.create.CreateIntergrations;
 import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -73,6 +74,7 @@ public class TardisRefined {
         TardisHums.registerDefaultHums();
 
         TRARSStructurePieceRegistry.register();
+
     }
 
 }

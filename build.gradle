@@ -18,6 +18,7 @@ subprojects {
 
     dependencies {
         minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+
         mappings loom.layered() {
             officialMojangMappings()
 //            parchment("org.parchmentmc.data:parchment-${rootProject.mappings}")
@@ -39,6 +40,22 @@ allprojects {
     repositories {
         maven {
             url "https://cursemaven.com"
+        }
+
+        // mavens for Create Fabric and dependencies
+        maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+        maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu
+        maven { url = "https://mvn.devos.one/snapshots/" }
+        maven { url = "https://mvn.devos.one/releases/" }
+
+        maven { url = "https://maven.cafeteria.dev/releases" } // Fake Player API
+        maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+        maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
+        maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
+
+        maven {
+            name "tterrag maven"
+            url "https://maven.tterrag.com/"
         }
 
         maven {

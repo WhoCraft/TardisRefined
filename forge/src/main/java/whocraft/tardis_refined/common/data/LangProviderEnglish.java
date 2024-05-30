@@ -13,6 +13,7 @@ import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.create.ModCompatMessages;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.*;
 
@@ -139,7 +140,6 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CURRENT, "CURRENT");
         add(ModMessages.DESTINATION, "DESTINATION");
 
-
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
         add(ModMessages.CMD_NO_INTERNAL_DOOR, ChatFormatting.RED + "No Internal Door found in dimension %s! Consider using the default teleport command %s");
@@ -260,6 +260,17 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_II.get(), "Improved Generation II", "Lowers desktop wait times to 60 seconds");
         addUpgrade(Upgrades.IMPROVED_GENERATION_TIME_III.get(), "Improved Generation III", "Lowers desktop wait times to 10 seconds");
 
+
+        /*Create stuff*/
+        add(ModMessages.DOOR_STATUS, "Door: %s");
+        add(ModMessages.LOCK_STATUS, "Locked: %s");
+
+        add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
+        add(ModCompatMessages.createDisplaySource("gps"), "GPS");
+        add(ModCompatMessages.createDisplaySource("destination"), "GPS Destination");
+        add(ModCompatMessages.createDisplaySource("tardis_bigdata"), "Tardis Summary");
+        add(ModCompatMessages.createDisplaySource("door"), "Door Status");
+        add(ModCompatMessages.createDisplaySource("locked"), "Lock Status");
 
     }
 
