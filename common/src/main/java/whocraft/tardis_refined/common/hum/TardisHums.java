@@ -61,6 +61,11 @@ public class TardisHums {
             createSoundList(SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS.value(), SoundEvents.AMBIENT_WARPED_FOREST_MOOD.value())
     );
 
+    public static final HumEntry AVIATRAX = new HumEntry(
+            new ResourceLocation(TardisRefined.MODID, "aviatrax"),
+            TRSoundRegistry.HUM_AVIATRAX.getId(),new ArrayList<>()
+    );
+
     private static List<ResourceLocation> createSoundList(SoundEvent... sounds) {
         ArrayList<ResourceLocation> soundList = new ArrayList<>();
         for (SoundEvent sound : sounds) {
@@ -103,6 +108,7 @@ public class TardisHums {
         addDefaultHum(TOYOTA);
         addDefaultHum(VICTORIAN);
         addDefaultHum(CLASSIC);
+        addDefaultHum(AVIATRAX);
         return DEFAULT_HUMS;
     }
 

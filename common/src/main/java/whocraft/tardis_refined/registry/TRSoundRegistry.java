@@ -37,6 +37,7 @@ public class TRSoundRegistry {
     public static final RegistrySupplier<SoundEvent> HUM_TOYOTA = setUpSound("hum_toyota");
     public static final RegistrySupplier<SoundEvent> HUM_CLASSIC = setUpSound("hum_classic");
     public static final RegistrySupplier<SoundEvent> HUM_VICTORIAN = setUpSound("victorian");
+    public static final RegistrySupplier<SoundEvent> HUM_AVIATRAX = setUpSound("aviatrax");
 
 
     // Screwdriver

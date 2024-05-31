@@ -50,6 +50,7 @@ public class HumProvider implements DataProvider {
             addHum(TardisHums.TOYOTA);
             addHum(TardisHums.CLASSIC);
             addHum(TardisHums.CAVE);
+            addHum(TardisHums.AVIATRAX);
             addHum(TardisHums.CRIMSON_FOREST);
             addHum(TardisHums.BASALT_DELTAS);
             addHum(TardisHums.NETHER_WASTES);
