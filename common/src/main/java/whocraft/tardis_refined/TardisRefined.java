@@ -66,6 +66,15 @@ public class TardisRefined {
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncHumsMessage::new);
+
+        registerFallbackEntries();
+    }
+
+    /** Register default entries for data-driven registries. This is encapsulated in a method to call at different game load stages depending on the mod-loader
+     * <br> E.g. On Forge, Console Patterns require Console Theme registry to be fully populated before the pattern can lookup a Console Theme object
+     * <br> On Forge: This is called in ServerAboutToStartEvent, which is after registries are frozen, but before the server has started and before commands are registered, because commands still reference Console/Shell Themes
+     * <br> On Fabric: The custom registries for Console/Shell Theme are created instantly, so there is no need to register the patterns at a specific stage.*/
+    public static void registerFallbackEntries(){
         /* Need to register a default list of entries because on Fabric Cardinal Components classloads the TardisClientData class early on, before datapack entries have been added.
         We will use these as fallback values when looking up patterns.
          */
