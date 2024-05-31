@@ -85,6 +85,7 @@ public class NbtConstants {
     public static final String FUEL = "fuel";
     public static final String MAXIMUM_FUEL = "MaximumFuel";
     public static final String IS_PASSIVELY_REFUELING = "is_passively_refueling";
+    public static final CharSequence MINECRAFT = "minecraft";
 
     public static TardisNavLocation getTardisNavLocation(CompoundTag tag, String prefix, TardisLevelOperator operator) {
         BlockPos position = NbtUtils.readBlockPos(tag.getCompound(prefix + NbtConstants.LOCATION_POSITION));
@@ -98,7 +99,7 @@ public class NbtConstants {
                 return new TardisNavLocation(position, direction, level);
             }
         }
-        return null;
+        return TardisNavLocation.ORIGIN;
     }
 
     public static void putTardisNavLocation(CompoundTag tag, String prefix, TardisNavLocation location) {

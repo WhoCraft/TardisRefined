@@ -21,6 +21,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -524,5 +525,10 @@ public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 	@Override
 	public ResourceLocation getDefaultTexture() {
 		return NUKA_TEXTURE;
+	}
+
+	@Override
+	public ResourceLocation getConsoleTheme() {
+		return ConsoleTheme.NUKA.getId();
 	}
 }

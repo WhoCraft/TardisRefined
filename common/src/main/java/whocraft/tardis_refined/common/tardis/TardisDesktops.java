@@ -56,17 +56,27 @@ public class TardisDesktops {
      */
     public static Map<ResourceLocation,DesktopTheme> registerDefaultDesktops() {
         DEFAULT_DESKTOPS.clear();
-        addDefaultDesktop(TardisDesktops.FACTORY_THEME);
-        addDefaultDesktop(new DesktopTheme("coral", "desktop/coral"));
-        addDefaultDesktop(new DesktopTheme("victorian","desktop/victorian"));
-        addDefaultDesktop(new DesktopTheme("copper", "desktop/copper"));
-        addDefaultDesktop(new DesktopTheme("toyota", "desktop/toyota"));
-        addDefaultDesktop(new DesktopTheme("crystal", "desktop/crystal"));
-        addDefaultDesktop(new DesktopTheme("nuka", "desktop/nuka"));
-        addDefaultDesktop(new DesktopTheme("future_nostalgia", "desktop/future_nostalgia"));
-        addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
         addDefaultDesktop(new DesktopTheme("arnet", "desktop/arnet"));
+        addDefaultDesktop(new DesktopTheme("copper", "desktop/copper"));
+        addDefaultDesktop(new DesktopTheme("coral", "desktop/coral"));
+        addDefaultDesktop(new DesktopTheme("crystal", "desktop/crystal"));
+        addDefaultDesktop(TardisDesktops.FACTORY_THEME);
+        addDefaultDesktop(new DesktopTheme("future_nostalgia", "desktop/future_nostalgia"));
+        addDefaultDesktop(new DesktopTheme("hellbound", "desktop/hellbound"));
+        addDefaultDesktop(new DesktopTheme("ironguard", "desktop/ironguard"));
+        addDefaultDesktop(new DesktopTheme("lodestone", "desktop/lodestone"));
+        addDefaultDesktop(new DesktopTheme("mechanical", "desktop/mechanical"));
+        addDefaultDesktop(new DesktopTheme("mesh", "desktop/mesh"));
+        addDefaultDesktop(new DesktopTheme("newwave", "desktop/newwave"));
+        addDefaultDesktop(new DesktopTheme("nuka", "desktop/nuka"));
+        addDefaultDesktop(new DesktopTheme("radiance", "desktop/radiance"));
         addDefaultDesktop(new DesktopTheme("refurbished", "desktop/refurbished"));
+        addDefaultDesktop(new DesktopTheme("toyota", "desktop/toyota"));
+        addDefaultDesktop(new DesktopTheme("vapor", "desktop/vapor"));
+        addDefaultDesktop(new DesktopTheme("victorian","desktop/victorian"));
+        addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
+        addDefaultDesktop(new DesktopTheme("watchface", "desktop/watchface"));
+
         return DEFAULT_DESKTOPS;
     }
 

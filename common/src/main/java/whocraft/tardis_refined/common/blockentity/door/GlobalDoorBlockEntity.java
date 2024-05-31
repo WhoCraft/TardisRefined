@@ -35,14 +35,13 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
 
     public GlobalDoorBlockEntity setPattern(ShellPattern basePattern) {
         this.basePattern = basePattern;
-        this.setChanged();
-        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+        sendUpdates();
         return this;
     }
 
     public void sendUpdates() {
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), Block.UPDATE_ALL);
         setChanged();
     }
 

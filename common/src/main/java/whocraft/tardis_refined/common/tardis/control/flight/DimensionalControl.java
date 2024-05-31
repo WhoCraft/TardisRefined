@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
@@ -60,7 +60,7 @@ public class DimensionalControl extends Control {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-            if(!Upgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)){
+            if(!TRUpgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)){
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HARDWARE_OFFLINE), true);
                 pilotManager.getTargetLocation().setDimensionKey(OVERWORLD);
                 return false;

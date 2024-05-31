@@ -17,12 +17,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
@@ -31,7 +32,6 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -193,6 +193,7 @@ public class TardisInteriorManager extends BaseHandler {
             if (level.players().isEmpty()) {
                 exteriorManager.triggerShellRegenState();
                 operator.setDoorClosed(true);
+                TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
                 generateDesktop(this.preparedTheme);
 
                 this.isWaitingToGenerate = false;
@@ -207,7 +208,7 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), true);
+                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), this.operator.getAestheticHandler().shellPattern().getThemeId(), true);
                 exteriorManager.placeExteriorBlock(operator, this.operator.getPilotingManager().getCurrentLocation());
                 this.isGeneratingDesktop = false;
             }
@@ -282,12 +283,12 @@ public class TardisInteriorManager extends BaseHandler {
 
                     desktopEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(corridorAirlockCenter));
-                        TardisTeleportData.getOrCreate(level).scheduleEntityTeleport(x, level.dimension(), STATIC_CORRIDOR_POSITION.getX() + offsetPos.x() + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y() + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TardisTeleportData.scheduleEntityTeleport(x, level.dimension(), STATIC_CORRIDOR_POSITION.getX() + offsetPos.x() + 0.5f, STATIC_CORRIDOR_POSITION.getY() + offsetPos.y() + 0.5f, STATIC_CORRIDOR_POSITION.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
 
                     corridorEntities.forEach(x -> {
                         Vec3 offsetPos = x.position().subtract(Vec3.atCenterOf(STATIC_CORRIDOR_POSITION));
-                        TardisTeleportData.getOrCreate(level).scheduleEntityTeleport(x, level.dimension(), corridorAirlockCenter.getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
+                        TardisTeleportData.scheduleEntityTeleport(x, level.dimension(), corridorAirlockCenter.getX() + offsetPos.x() + 0.5f, corridorAirlockCenter.getY() + offsetPos.y() + 0.5f, corridorAirlockCenter.getZ() + offsetPos.z() + 0.5f, x.getYRot(), x.getXRot());
                     });
                 }
 
@@ -417,15 +418,15 @@ public class TardisInteriorManager extends BaseHandler {
 
         UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
 
-        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_I.get())) {
+        if (upgradeHandler.isUpgradeUnlocked(TRUpgrades.IMPROVED_GENERATION_TIME_I.get())) {
             cooldownSeconds = 120;
         }
 
-        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_II.get())) {
+        if (upgradeHandler.isUpgradeUnlocked(TRUpgrades.IMPROVED_GENERATION_TIME_II.get())) {
             cooldownSeconds = 30;
         }
 
-        if (upgradeHandler.isUpgradeUnlocked(Upgrades.IMPROVED_GENERATION_TIME_III.get())) {
+        if (upgradeHandler.isUpgradeUnlocked(TRUpgrades.IMPROVED_GENERATION_TIME_III.get())) {
             cooldownSeconds = 10;
         }
 

@@ -50,6 +50,12 @@ public class TardisCommonEvents {
         }
     });
 
+    public static final Event<DesktopChangeEvent> DESKTOP_CHANGE_EVENT = new Event<>(DesktopChangeEvent.class, listeners -> (tardisLevelOperator) -> {
+        for (DesktopChangeEvent listener : listeners) {
+            listener.onDesktopChange(tardisLevelOperator);
+        }
+    });
+
     public static final Event<TardisCrash> TARDIS_CRASH_EVENT = new Event<>(TardisCrash.class, listeners -> ((tardisLevelOperator, crashLocation) -> {
         for (TardisCrash listener : listeners) {
             listener.onTardisCrash(tardisLevelOperator, crashLocation);
@@ -129,6 +135,22 @@ public class TardisCommonEvents {
          */
         void onDoorOpen(TardisLevelOperator tardisLevelOperator);
     }
+
+
+    /**
+     * An event that is triggered when the TARDIS desktp is changed.
+     * Note: Only fired once all players have left the dimension
+     */
+    @FunctionalInterface
+    public interface DesktopChangeEvent {
+        /**
+         * Called when the TARDIS desktp is changed.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDesktopChange(TardisLevelOperator tardisLevelOperator);
+    }
+
 
     /**
      * An event that is triggered when a TARDIS lands.

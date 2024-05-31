@@ -8,26 +8,29 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.items.KeyItem;
+import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
@@ -106,46 +109,47 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public boolean onRightClick(BlockState blockState, ItemStack stack, Level level, BlockPos blockPos, Player player) {
 
-        if (blockState.getValue(ShellBaseBlock.REGEN)) {return false;}
+        // We do not want interactions if the TARDIS is in Flight
+        if (blockState.getValue(ShellBaseBlock.REGEN)) {
+            return false;
+        }
 
-        if (getLevel() instanceof ServerLevel serverLevel) {
+        if (level instanceof ServerLevel serverLevel) {
             ServerLevel interior = DimensionHandler.getExistingLevel(serverLevel, this.TARDIS_ID);
-            if (interior != null) {
-                AtomicBoolean valid = new AtomicBoolean();
-                TardisLevelOperator.get(interior).ifPresent(cap -> {
-                    if (cap.getPilotingManager().isInFlight()) valid.set(false);
-                    ResourceKey<Level> dimension = this.getTardisId();
+            Optional<TardisLevelOperator> tardisLevelOperatorOptional = TardisLevelOperator.get(interior);
 
-                    if (stack.is(Items.SHEARS) && cap.getAestheticHandler().getShellTheme() == ShellTheme.HALF_BAKED.getId() && !cap.getPilotingManager().isInFlight()) {
-                        cap.getAestheticHandler().setShellTheme(ShellTheme.FACTORY.getId(), cap.getPilotingManager().getCurrentLocation());
-                        level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
+            if (tardisLevelOperatorOptional.isPresent()) {
+                TardisLevelOperator tardisLevelOperator = tardisLevelOperatorOptional.get();
+                TardisPilotingManager tardisPilotingManager = tardisLevelOperator.getPilotingManager();
+                AestheticHandler aestheticHandler = tardisLevelOperator.getAestheticHandler();
+                TardisExteriorManager exteriorManager = tardisLevelOperator.getExteriorManager();
+                TardisInternalDoor internalDoor = tardisLevelOperator.getInternalDoor();
 
-                        spawnCoralItems();
+                // We do not want interactions in Flight
+                if (tardisPilotingManager.isInFlight()) return false;
 
-                    } else {
-                        boolean validKey = KeyItem.keychainContains(stack, dimension);
-                        if(validKey) {
-                            boolean locked = !cap.getExteriorManager().locked();
-                            cap.getExteriorManager().setLocked(locked);
-                            cap.getInternalDoor().setLocked(locked);
-                            cap.setDoorClosed(locked);
-                            valid.set(true);
-                        }
-                        else { //If not a valid key
-                            if(cap.getExteriorManager().locked()) {
-                                valid.set(false);
-                            }
-                            else {
-                                cap.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
-                                valid.set(true);
-                            }
-                        }
-                    }
+                // Shearing the TARDIS
+                if (stack.is(Items.SHEARS) && aestheticHandler.getShellTheme() == ShellTheme.HALF_BAKED.getId()) {
+                    aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(), tardisPilotingManager.getCurrentLocation());
+                    level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
+                    spawnCoralItems();
+                    return true;
+                }
 
+                boolean validKey = KeyItem.keychainContains(stack, TARDIS_ID);
+                if (validKey) {
+                    boolean locked = !exteriorManager.locked();
+                    exteriorManager.setLocked(locked);
+                    internalDoor.setLocked(locked);
+                    tardisLevelOperator.setDoorClosed(locked);
+                    return true;
+                }
 
-
-                });
-                return valid.get();
+                if(!exteriorManager.locked()){
+                    level.setBlock(blockPos, blockState.cycle(GlobalShellBlock.OPEN), Block.UPDATE_ALL);
+                    tardisLevelOperator.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
+                    return true;
+                }
             }
         }
         return false;

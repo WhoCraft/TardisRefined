@@ -14,10 +14,10 @@ public class TRControlRegistry {
 	public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
 
 	/** Tardis Refined instance of the Controls registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-	public static final DeferredRegistry<Control> CONTROLS = DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
+	public static final DeferredRegistry<Control> CONTROL_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
 
-	/** Global instance of the Control custom registry created by Tardis Refined*/
-	public static final Registry<Control> CONTROL_REGISTRY = CONTROLS.getRegistry();
+	/** Instance of registry containing all Control entries. Addon mod entries will be included in this registry as long as they are use the same ResourceKey<Registry<ObjectType>>. */
+	public static final Registry<Control> CONTROL_REGISTRY = CONTROL_DEFERRED_REGISTRY.getRegistry().get();
 
 	// Tardis refined controls
 	public static final RegistrySupplier<Control> DOOR_TOGGLE = register(new ToggleDoorControl(new ResourceLocation(TardisRefined.MODID, "door_toggle")));
@@ -56,7 +56,7 @@ public class TRControlRegistry {
 		return register(control, control.getId().getPath());
 	}
 	private static RegistrySupplier<Control> register(Control control, String id) {
-		return CONTROLS.register(id, () -> control);
+		return CONTROL_DEFERRED_REGISTRY.register(id, () -> control);
 	}
 }
 

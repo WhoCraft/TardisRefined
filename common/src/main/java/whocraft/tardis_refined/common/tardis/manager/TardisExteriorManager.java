@@ -21,6 +21,7 @@ import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
@@ -183,6 +184,7 @@ public class TardisExteriorManager extends BaseHandler {
         AestheticHandler aestheticHandler = operator.getAestheticHandler();
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
+        ShellPattern shellPattern = aestheticHandler.getShellTheme() != null ? aestheticHandler.shellPattern() : null;
 
         //remove the exterior block
         location.getLevel().setBlock(location.getPosition(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
@@ -207,6 +209,13 @@ public class TardisExteriorManager extends BaseHandler {
         if (location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity globalShell) {
             globalShell.setTardisId(operator.getLevel().dimension());
             globalShell.setShellTheme(theme);
+
+            if (shellPattern != null) {
+                globalShell.setPattern(shellPattern);
+            }
+
+            globalShell.sendUpdates();
+
             location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, Block.UPDATE_CLIENTS);
         }
 

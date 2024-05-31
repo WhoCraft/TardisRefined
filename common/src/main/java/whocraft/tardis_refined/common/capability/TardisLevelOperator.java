@@ -29,6 +29,7 @@ import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
 
@@ -198,9 +199,9 @@ public class TardisLevelOperator {
     public boolean isTardisReady() {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
-    public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection) {
+    public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection, boolean ignoreDoor) {
 
-        if (!this.internalDoor.isOpen()) {
+        if (!ignoreDoor && !this.internalDoor.isOpen()) {
             return false;
         }
 
@@ -211,7 +212,7 @@ public class TardisLevelOperator {
         if (aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                if (ImmersivePortals.exteriorHasPortalSupport(theme)) {
+                if (!ignoreDoor && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(doorLevel.dimension().location().getPath()))) {
                     return false;
                 }
             }
@@ -258,8 +259,8 @@ public class TardisLevelOperator {
         }
     }
 
-    public void setShellTheme(ResourceLocation theme, boolean setupTardis) {
-        this.getAestheticHandler().setShellTheme(theme, setupTardis, this.getPilotingManager().getCurrentLocation());
+    public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis) {
+        this.getAestheticHandler().setShellTheme(theme, shellPattern, setupTardis, this.getPilotingManager().getCurrentLocation());
         tardisClientData.setShellTheme(theme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();

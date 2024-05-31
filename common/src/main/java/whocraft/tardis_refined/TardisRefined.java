@@ -3,13 +3,12 @@ package whocraft.tardis_refined;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
-import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.sync.SyncConsolePatternsMessage;
@@ -29,7 +28,6 @@ import whocraft.tardis_refined.registry.*;
 public class TardisRefined {
 
     public static boolean IS_CONTROL_GROUP = false;
-    public static boolean IS_RELEASE = !IS_CONTROL_GROUP || !SharedConstants.IS_RUNNING_IN_IDE;
 
     public static final String MODID = "tardis_refined";
     public static final String NAME = "Tardis Refined";
@@ -44,30 +42,39 @@ public class TardisRefined {
 
     public static void init() {
 
-        TRItemRegistry.TABS.register();
-        TRBlockRegistry.BLOCKS.register();
-        TRItemRegistry.ITEMS.register();
-        TREntityRegistry.ENTITY_TYPES.register();
-        TRSoundRegistry.SOUNDS.register();
-        TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
-        TRManipulatorRecipeResultTypes.RESULT_TYPES.register();
-        TRCraftingRecipeTypes.RECIPE_TYPES.register();
-        TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
+        TRItemRegistry.TABS.registerToModBus();
+        TRBlockRegistry.BLOCKS.registerToModBus();
+        TRItemRegistry.ITEMS.registerToModBus();
+        TREntityRegistry.ENTITY_TYPES.registerToModBus();
+        TRSoundRegistry.SOUNDS.registerToModBus();
+        TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.registerToModBus();
+        TRManipulatorRecipeResultTypes.MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY.registerToModBus();
+        TRCraftingRecipeTypes.RECIPE_TYPE_DEFERRED_REGISTRY.registerToModBus();
+        TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.registerToModBus();
         TRDimensionTypes.register();
-        ChunkGenerators.CHUNK_GENERATORS.register();
-        Features.FEATURES.register();
-        TRParticles.TYPES.register();
-        Upgrades.UPGRADE_DEFERRED_REGISTRY.register();
-        ConsoleTheme.CONSOLE_THEMES.register();
-        ShellTheme.SHELL_THEMES.register();
-        TRControlRegistry.CONTROLS.register();
-        TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.register();
+        ChunkGenerators.CHUNK_GENERATORS.registerToModBus();
+        Features.FEATURES.registerToModBus();
+        TRParticles.TYPES.registerToModBus();
+        TRUpgrades.UPGRADE_DEFERRED_REGISTRY.registerToModBus();
+        ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.registerToModBus();
+        ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.registerToModBus();
+        TRControlRegistry.CONTROL_DEFERRED_REGISTRY.registerToModBus();
+        TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.registerToModBus();
         TRTagKeys.init();
         TardisNetwork.init();
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncHumsMessage::new);
+
+        registerFallbackEntries();
+    }
+
+    /** Register default entries for data-driven registries. This is encapsulated in a method to call at different game load stages depending on the mod-loader
+     * <br> E.g. On Forge, Console Patterns require Console Theme registry to be fully populated before the pattern can lookup a Console Theme object
+     * <br> On Forge: This is called in ServerAboutToStartEvent, which is after registries are frozen, but before the server has started and before commands are registered, because commands still reference Console/Shell Themes
+     * <br> On Fabric: The custom registries for Console/Shell Theme are created instantly, so there is no need to register the patterns at a specific stage.*/
+    public static void registerFallbackEntries(){
         /* Need to register a default list of entries because on Fabric Cardinal Components classloads the TardisClientData class early on, before datapack entries have been added.
         We will use these as fallback values when looking up patterns.
          */

@@ -28,7 +28,6 @@ public class ToyotaConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.03f, 0.51f, 0.98f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.94f, 0.61f, 0.19f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.02f, 0.54f, 0.24f), EntityDimensions.scalable(0.06f, 0.06f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.86f, 0.55f, -0.15f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.FUEL, new Vector3f(1.04f, 0.49f, -0.19f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.73f, 0.49f, -0.82f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.18f, 0.54f, -0.98f), EntityDimensions.scalable(0.06f, 0.06f)),

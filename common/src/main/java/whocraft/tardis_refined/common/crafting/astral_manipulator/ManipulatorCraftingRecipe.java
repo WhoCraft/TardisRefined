@@ -127,6 +127,14 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
+        if(result.type() instanceof ManipulatorItemResult manipulatorItemResult){
+            return manipulatorItemResult.recipeOutput();
+        }
+
+        if(result.type() instanceof ManipulatorBlockResult manipulatorBlockResult){
+            return new ItemStack(manipulatorBlockResult.recipeOutput().getBlock().asItem());
+        }
+
         return ItemStack.EMPTY;
     }
     /** Required to allow vanilla to parse the recipe during datapack parsing*/

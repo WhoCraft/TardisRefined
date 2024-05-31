@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +26,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.capability.upgrades.Upgrades;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -35,10 +36,7 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class TardisPilotingManager extends BaseHandler {
 
@@ -53,9 +51,9 @@ public class TardisPilotingManager extends BaseHandler {
     private final TardisLevelOperator operator;
 
     // Location based.
-    private TardisNavLocation targetLocation;
-    private TardisNavLocation currentLocation;
-    private TardisNavLocation fastReturnLocation;
+    private TardisNavLocation targetLocation = TardisNavLocation.ORIGIN;
+    private TardisNavLocation currentLocation = TardisNavLocation.ORIGIN;
+    private TardisNavLocation fastReturnLocation = TardisNavLocation.ORIGIN;
 
     // Inflight timers (ticks)
     private boolean isInFlight = false;
@@ -164,9 +162,11 @@ public class TardisPilotingManager extends BaseHandler {
             NbtConstants.putTardisNavLocation(tag, "ctrl_fr_loc", this.fastReturnLocation);
         }
 
-        if (this.currentLocation != null) {
-            NbtConstants.putTardisNavLocation(tag, "current_location", this.currentLocation);
+        if (this.getCurrentLocation() == null) {
+            currentLocation = TardisNavLocation.ORIGIN;
         }
+
+        NbtConstants.putTardisNavLocation(tag, "current_location", this.getCurrentLocation());
 
 
         tag.putInt(NbtConstants.CONTROL_INCREMENT_INDEX, this.cordIncrementIndex);
@@ -475,11 +475,11 @@ public class TardisPilotingManager extends BaseHandler {
 
 
 
-            this.fastReturnLocation = new TardisNavLocation(this.currentLocation.getPosition(), this.currentLocation.getDirection(), this.currentLocation.getLevel());
+            this.fastReturnLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
 
             TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
-            TardisNavLocation lastKnownLocation = new TardisNavLocation(this.currentLocation.getPosition(), this.currentLocation.getDirection(), this.currentLocation.getLevel());
+            TardisNavLocation lastKnownLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
             // Do we not have a last known location?
 
@@ -527,7 +527,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     public void recalculateFlightDistance() {
         TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
-        TardisNavLocation lastKnownLocation = new TardisNavLocation(this.currentLocation.getPosition(), this.currentLocation.getDirection(), this.currentLocation.getLevel());
+        TardisNavLocation lastKnownLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
         this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
         this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
@@ -572,6 +572,10 @@ public class TardisPilotingManager extends BaseHandler {
 
             currentLocation = location;
 
+            if(currentConsole != null) {
+                level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
+            }
+
             exteriorManager.placeExteriorBlock(operator, location);
 
             exteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
@@ -604,13 +608,13 @@ public class TardisPilotingManager extends BaseHandler {
     private void endFlightEarly(boolean dramatic) {
 
         BlockPos targetPosition = this.targetLocation.getPosition();
-        BlockPos startingPosition = this.currentLocation.getPosition();
+        BlockPos startingPosition = this.getCurrentLocation().getPosition();
         float percentage = this.getFlightPercentageCovered();
         float percentageX = (targetPosition.getX() - startingPosition.getX()) * percentage;
         float percentageY = (targetPosition.getY() - startingPosition.getY()) * percentage;
         float percentageZ = (targetPosition.getZ() - startingPosition.getZ()) * percentage;
 
-        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.currentLocation.getLevel());
+        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.getCurrentLocation().getLevel());
         this.targetLocation = newLocation;
 
         if (dramatic) {
@@ -633,7 +637,7 @@ public class TardisPilotingManager extends BaseHandler {
         operator.getExteriorManager().removeExteriorBlock();
         this.ticksTakingOff = 0;
         this.operator.getExteriorManager().setIsTakingOff(false);
-        TardisNavLocation lastKnown = this.currentLocation;
+        TardisNavLocation lastKnown = this.getCurrentLocation();
         TardisCommonEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.getPosition());
 
         if (this.currentConsole != null) {
@@ -680,7 +684,7 @@ public class TardisPilotingManager extends BaseHandler {
         float progress = getFlightPercentageCovered();
 
         Vec3 targetPos = new Vec3(this.targetLocation.getPosition().getX(), this.targetLocation.getPosition().getY(), this.targetLocation.getPosition().getZ());
-        BlockPos currentLoc = this.currentLocation.getPosition();
+        BlockPos currentLoc = this.getCurrentLocation().getPosition();
         Vec3 currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
         int x = (int) (currentPos.x + ((targetPos.x - currentPos.x) * progress));
@@ -776,7 +780,8 @@ public class TardisPilotingManager extends BaseHandler {
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
 
-        for (Upgrade upgrade : Upgrades.UPGRADE_DEFERRED_REGISTRY.getRegistry()) {
+        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+            Upgrade upgrade = entry.getValue();
             if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
                 if (upgrade.isUnlocked(upgradeHandler)) {
                     increments.add(incrementUpgrade.getIncrementAmount());

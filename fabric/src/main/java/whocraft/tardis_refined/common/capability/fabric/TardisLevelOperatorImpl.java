@@ -17,7 +17,7 @@ public class TardisLevelOperatorImpl extends TardisLevelOperator implements Comp
     }
 
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
-        if(level == null) {
+        if (level == null) {
             return Optional.empty();
         }
         try {

@@ -40,7 +40,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
     public JsonObject lantern(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> blockState.getValue(LanternBlock.HANGING) ?
                 ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern_hanging", new ResourceLocation("block/template_hanging_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build() :
-                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern",  new ResourceLocation("block/template_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build());
+                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern", new ResourceLocation("block/template_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build());
 
         return builder.toJson();
     }
@@ -52,11 +52,11 @@ public class TRBlockModelProvider extends BlockStateProvider {
     }
 
     public ResourceLocation getBlockResourceLocation(Block block) {
-        return BLOCKS.getRegistry().getKey(block);
+        return BLOCKS.getRegistry().get().getKey(block);
     }
 
     public ResourceLocation getBlockTextureResourceLocation(Block block) {
-        ResourceLocation blockTex = BLOCKS.getRegistry().getKey(block);
+        ResourceLocation blockTex = BLOCKS.getRegistry().get().getKey(block);
         return new ResourceLocation(TardisRefined.MODID, "block/" + blockTex.getPath());
     }
 

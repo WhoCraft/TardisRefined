@@ -36,6 +36,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -241,22 +242,10 @@ public class TardisClientData {
     }
 
 
-    // A map that stores information about Tardis instances, keyed by level resource key
-    protected static Map<ResourceKey<Level>, TardisClientData> DATA = Util.make(new Object2ObjectOpenHashMap<>(), (objectOpenHashMap) -> {
-        // Set the default return value for the map to be a new TardisIntReactions instance with a null level resource key
-        objectOpenHashMap.defaultReturnValue(new TardisClientData(null));
-    });
+    private static final List<TardisClientData> DATA = new ArrayList<>();
 
-
-    /**
-     * Registers information about a Tardis instance.
-     *
-     * @param tardisClientData The TardisIntReactions instance containing information about the Tardis.
-     * @param levelResourceKey The resource key of the level the Tardis is in.
-     */
-    public static void add(TardisClientData tardisClientData, ResourceKey<Level> levelResourceKey) {
-        // Add the information about the Tardis to the map
-        DATA.put(levelResourceKey, tardisClientData);
+    public static void add(TardisClientData tardisClientData) {
+        DATA.add(tardisClientData);
     }
 
     /**
@@ -266,29 +255,23 @@ public class TardisClientData {
      * @return The TardisIntReactions instance containing information about the Tardis.
      */
     public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey) {
-        // Check if the map contains information about the Tardis
-        if (DATA.containsKey(levelResourceKey)) {
-            // If the map contains information about the Tardis, return it
-            return DATA.get(levelResourceKey);
+        for (TardisClientData data : DATA) {
+            if (data.getLevelKey().equals(levelResourceKey)) {
+                return data;
+            }
         }
-
-        // If the map does not contain information about the Tardis, create a new TardisIntReactions instance and add it to the map
-        DATA.put(levelResourceKey, new TardisClientData(levelResourceKey));
-        return DATA.get(levelResourceKey);
+        TardisClientData newData = new TardisClientData(levelResourceKey);
+        DATA.add(newData);
+        return newData;
     }
 
-    public static Map<ResourceKey<Level>, TardisClientData> getAllEntries() {
-        return DATA;
+    public static List<TardisClientData> getAllEntries() {
+        return new ArrayList<>(DATA);
     }
 
-    /**
-     * Clears all Tardis information from the map.
-     */
     public static void clearAll() {
-        // Clear the map
         DATA.clear();
     }
-
 
     public Vec3 fogColor(boolean isCrashing) {
         if (isCrashing) {

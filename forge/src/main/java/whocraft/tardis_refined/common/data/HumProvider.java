@@ -46,10 +46,17 @@ public class HumProvider implements DataProvider {
             TardisHums.registerDefaultHums();
             data.putAll(TardisHums.getDefaultHums());
             addHum(TardisHums.getDefaultHum());
-            addHum(TardisHums.HUM_1996);
+            addHum(TardisHums.VICTORIAN);
             addHum(TardisHums.TOYOTA);
             addHum(TardisHums.CLASSIC);
             addHum(TardisHums.CAVE);
+            addHum(TardisHums.AVIATRAX);
+            addHum(TardisHums.CRIMSON_FOREST);
+            addHum(TardisHums.BASALT_DELTAS);
+            addHum(TardisHums.NETHER_WASTES);
+            addHum(TardisHums.SOUL_SAND_VALLEY);
+            addHum(TardisHums.WARPED_FOREST);
+            addHum(TardisHums.UNDER_WATER);
         }
 
         this.addHums();

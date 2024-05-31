@@ -26,18 +26,13 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 public class CommonBus {
 
     @SubscribeEvent
-    public static void onLevelTick(TickEvent.LevelTickEvent event) {
-        Level level = event.level;
-        if (level instanceof ServerLevel serverLevel) {
-            if (event.phase == TickEvent.Phase.END) {
-                TardisTeleportData.tick(serverLevel);
-            }
-        }
-    }
-
-    @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
-        ControlGroupCheckers.tickServer(event.getServer());
+
+        if (event.phase == TickEvent.Phase.END) {
+            ControlGroupCheckers.tickServer(event.getServer());
+            TardisTeleportData.tick();
+        }
+
     }
 
     @SubscribeEvent

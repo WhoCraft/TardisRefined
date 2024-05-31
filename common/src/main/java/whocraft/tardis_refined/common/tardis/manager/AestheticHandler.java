@@ -60,17 +60,19 @@ public class AestheticHandler extends BaseHandler {
      *
      * @param theme
      */
-    public void setShellTheme(ResourceLocation theme, TardisNavLocation tardisNavLocation) {
-        this.setShellTheme(theme, false, tardisNavLocation);
+    public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, TardisNavLocation tardisNavLocation) {
+        this.setShellTheme(theme, shellPattern, false, tardisNavLocation);
     }
 
     /**
      * Sets the shell theme ID for the Exterior Shell Block
      *
      * @param theme       - the Shell Theme ID
+     * @param shellPattern - the Shell Theme Pattern
      * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one. True if that is the case.
      */
-    public void setShellTheme(ResourceLocation theme, boolean setupTardis, TardisNavLocation tardisNavLocation) {
+    public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis, TardisNavLocation tardisNavLocation) {
+        setShellPattern(ShellPatterns.getPatternOrDefault(theme, shellPattern));
 
         if (tardisNavLocation == null) return;
 
@@ -89,8 +91,8 @@ public class AestheticHandler extends BaseHandler {
 
                 //Copy over important data such as Tardis ID
 
-                updateShellBlock(theme, lastKnownLocationLevel, lastKnownLocationPosition);
-                updateInteriorDoors(theme);
+                updateShellBlock(theme, shellPattern, lastKnownLocationLevel, lastKnownLocationPosition);
+                updateInteriorDoors(theme, shellPattern);
 
             }
             return;
@@ -106,13 +108,13 @@ public class AestheticHandler extends BaseHandler {
             lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(GlobalShellBlock.REGEN, false).setValue(GlobalShellBlock.LIT, shouldProduceLight), Block.UPDATE_CLIENTS);
 
             // Update Exterior (We should make this a method tbh)
-            updateShellBlock(theme, lastKnownLocationLevel, lastKnownLocationPosition);
-            updateInteriorDoors(theme);
+            updateShellBlock(theme, shellPattern, lastKnownLocationLevel, lastKnownLocationPosition);
+            updateInteriorDoors(theme, shellPattern);
         }
 
     }
 
-    public void updateInteriorDoors(ResourceLocation theme) {
+    public void updateInteriorDoors(ResourceLocation theme, ResourceLocation shellPattern) {
         if (tardisOperator.getInternalDoor() != null) {
             BlockPos internalDoorPos = tardisOperator.getInternalDoor().getDoorPosition();
             BlockState state = tardisOperator.getLevel().getBlockState(internalDoorPos);
@@ -128,7 +130,7 @@ public class AestheticHandler extends BaseHandler {
                 var potentialDoor = tardisOperator.getLevel().getBlockEntity(internalDoorPos);
                 if (potentialDoor instanceof GlobalDoorBlockEntity doorBlockEntity) {
                     doorBlockEntity.setShellTheme(theme);
-                    doorBlockEntity.setPattern(shellPattern);
+                    doorBlockEntity.setPattern(ShellPatterns.getPatternOrDefault(shellTheme, shellPattern));
                     tardisOperator.setInternalDoor(doorBlockEntity);
                     doorBlockEntity.sendUpdates();
                 }
@@ -136,7 +138,7 @@ public class AestheticHandler extends BaseHandler {
                 // Check if its our default global shell.
                 if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
                     doorBlockEntity.setShellTheme(theme);
-                    doorBlockEntity.setPattern(shellPattern);
+                    doorBlockEntity.setPattern(ShellPatterns.getPatternOrDefault(shellTheme, shellPattern));
                     doorBlockEntity.sendUpdates();
                 }
             }
@@ -145,15 +147,14 @@ public class AestheticHandler extends BaseHandler {
         }
     }
 
-    private void updateShellBlock(ResourceLocation theme, ServerLevel lastKnownLocationLevel, BlockPos lastKnownLocationPosition) {
+    private void updateShellBlock(ResourceLocation theme, ResourceLocation shellPattern, ServerLevel lastKnownLocationLevel, BlockPos lastKnownLocationPosition) {
         var shellBlockEntity = lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition);
         if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
             entity.setTardisId(tardisOperator.getLevel().dimension());
             entity.setShellTheme(theme);
-            if (shellPattern != null) {
-                entity.setPattern(ShellPatterns.getThemeForPattern(this.shellPattern) != theme ? shellPattern : ShellPatterns.getPatternsForTheme(theme).get(0));
-            }
+            entity.setPattern(ShellPatterns.getPatternOrDefault(theme, shellPattern));
             entity.sendUpdates();
+            entity.setChanged();
         }
     }
 
