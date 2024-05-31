@@ -22,20 +22,22 @@ import java.util.function.Supplier;
  *
  *     public static final DeferredRegistry<Control> TR_CONTROLS =  DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
  *
- *     // Source of truth for all entries
- *     public static final Registry<Control> GLOBAL_CONTROL_REGISTRY = CONTROLS.getRegistry();
+ *     // Source of truth for all entries is derived from the
+ *     // Due to Forge in 1.20.1 using its entirely isolated registry system from vanilla, we cannot use the underlying vanilla registry as a source of truth
+ *     // Therefore, for 1.20.1 ONLY, we must only call the lookup methods provided such as DeferredRegistry#entrySet
+ *     public static final Map.Entry<ResourceKey<Control>, Control> GLOBAL_CONTROL_REGISTRY = TR_CONTROLS.entrySet();
  *
  *     //Register using RegistrySupplier if you only need the raw object and no compatibiltiy with other vanilla features
  *     public static final RegistrySupplier<Control> THROTTLE = TR_CONTROLS.register("throttle", () -> new GenericControl(new ResourceLocation(TardisRefined.MODID, "throttle"));
  *
- *     //Alternatively, register using RegistrySupplierHolder for greater compatibiltiy with vanilla features such as datapack tags
- *     public static final RegistrySupplierHolder<Control, MyCustomControl> STABILISER = TR_CONTROLS.register("stabiliser", () -> new MyCustomControl(new ResourceLocation(TardisRefined.MODID, "stabiliser"));
+ *     //Unfortunately, we cannot register using RegistrySupplierHolder in 1.20.1 because Forge's Registries are isolated from vanilla, so in order to have unified modding interface we must only use suppliers
+ *
  *}
  *
  * public class TardisConsoleBlock {
  *
  *     public Set<ResourceLocation> getAllControls() {
- *         return TRControlRegistry.GLOBAL_CONTROL_REGISTRY.keySet();
+ *         return TRControlRegistry.TR_CONTROLS.keySet();
  *     }
  * }
  *
@@ -55,8 +57,7 @@ import java.util.function.Supplier;
  *     //Register entries to the addon mod's instance of the deferred registry using a RegistrySupplier
  *     public static final RegistrySupplier<Control> SPEED = MY_ADDON_CONTROLS.register("speed", () -> new GenericControl(new ResourceLocation(MyAddonMod.MODID, "speed"));
  *
- *     //Alternatively, register using RegistrySupplierHolder for greater compatibiltiy with vanilla features such as datapack tags
- *     public static final RegistrySupplierHolder<Control, SuperTemporalControl> TEMPORAL_PLOTTERS = TR_CONTROLS.register("temporal_plotters", () -> new SuperTemporalControl(new ResourceLocation(MyAddonMod.MODID, "temporal_plotters"));
+ *     //Unfortunately, we cannot register using RegistrySupplierHolder in 1.20.1 because Forge's Registries are isolated from vanilla, so in order to have unified modding interface we must only use suppliers
  * }
  *
  * public class MyAddonMod {
@@ -78,12 +79,20 @@ public abstract class DeferredRegistry<T> {
     /** Register using a Supplier */
     public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
 
-    /** Create a RegistrySupplierHolder. This has similar behaviour to a Supplier but has vanilla Holder attributes such as use in tags*/
+    /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
+    /** Create a RegistrySupplierHolder. This has similar behaviour to a Supplier but has vanilla Holder attributes such as use in tags
     public abstract <I extends T> RegistrySupplierHolder<T, I> registerHolder(final String name, final Supplier<I> sup);
+    */
 
+    /** 1.20.1: Must comment this out because of Forge 1.20.1 not exposing the underlying vanilla registry
+     *  Therefore, to maintain a consistent API for both Fabric and Forge, we cannot grab the vanilla registry unfortunately.
+     *  This means we cannot utilise vanilla registry features such as compatibility with tags in datapacks
     /** Get the underlying registry, which includes all entries added by any mod that has a DeferredRegistry with the same ResourceKey.
-     * All lookup methods should be called from here.*/
+     * All lookup methods should be called from here.
     public abstract Supplier<Registry<T>> getRegistry();
+     */
+
+
 
     /**
      * Create a DeferredRegistry instance for vanilla registries
@@ -120,8 +129,7 @@ public abstract class DeferredRegistry<T> {
 
     public abstract Set<ResourceLocation> keySet();
 
-    /** Gets the values in the underlying registry ordered by key. This is sufficient for most purposes
-     * <br> If you need to get values in order of registration, use {@link DeferredRegistry#getRegistry} then {@link Registry#holders} */
+    /** Gets the values in the underlying registry ordered by key. This is sufficient for most purposes */
     public abstract Set<Map.Entry<ResourceKey<T>, T>> entrySet();
 
     public abstract boolean containsKey(ResourceLocation key);

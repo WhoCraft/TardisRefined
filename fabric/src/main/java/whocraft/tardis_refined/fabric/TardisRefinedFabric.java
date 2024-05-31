@@ -65,6 +65,7 @@ public class TardisRefinedFabric implements ModInitializer {
         PlatformImpl.init();
         ModEvents.addCommonEvents();
         TardisRefined.init();
+        TardisRefined.registerFallbackEntries();
         setupBiomeModifications();
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);

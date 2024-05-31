@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.registry.forge;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -24,18 +25,17 @@ public class DeferredRegistryImpl {
     public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
         //Create a deferredRegister instance to be passed on to Tardis Refined's {@link DeferredRegister} object later
         DeferredRegister<T> deferredRegister = DeferredRegister.create(resourceKey, modid);
-        var supplier = syncToClient ? deferredRegister.makeRegistry(RegistryBuilder::new) : deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1).disableSync()); //Tell Forge to register our registry when NewRegistryEvent fires. DO NOT call this anywhere else.
+        var supplier = syncToClient ? deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1)) : deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1).disableSync()); //Tell Forge to register our registry when NewRegistryEvent fires. DO NOT call this anywhere else.
         return new Impl<T>(resourceKey, deferredRegister, supplier, syncToClient);
     }
 
-    @SuppressWarnings("unchecked")
     public static class Impl<T> extends DeferredRegistry<T> {
 
         private final DeferredRegister<T> deferredRegister;
 
-        private final Supplier<Registry<T>> registry;
+        private Registry<T> registry;
 
-        private final Supplier<IForgeRegistry<T>> forgeRegistry;
+        private IForgeRegistry<T> forgeRegistry;
 
         private final ResourceKey<? extends Registry<T>> resourceKey;
 
@@ -43,11 +43,11 @@ public class DeferredRegistryImpl {
 
         private final boolean syncToClient;
 
-        public Impl(ResourceKey<? extends Registry<T>> resourceKey, DeferredRegister<T> deferredRegister, Supplier<IForgeRegistry<T>>  forgeRegistry, boolean isCustom, boolean syncToClient) {
+        public Impl(ResourceKey<? extends Registry<T>> resourceKey, DeferredRegister<T> deferredRegister, Supplier<IForgeRegistry<T>> forgeRegistry, boolean isCustom, boolean syncToClient) {
             this.resourceKey = resourceKey;
             this.deferredRegister = deferredRegister;
-            this.forgeRegistry = forgeRegistry;
-            this.registry = () -> (Registry<T>) BuiltInRegistries.REGISTRY.get(this.resourceKey.location()); //Binds the underlying vanilla registry object to our object. DO NOT call DeferredRegister#makeRegistry here because it will attempt to create a duplicate copy.
+            this.forgeRegistry = forgeRegistry.get();
+            this.registry = (Registry<T>) BuiltInRegistries.REGISTRY.get(this.resourceKey.location());
             this.isCustom = isCustom;
             this.syncToClient = syncToClient;
         }
@@ -67,7 +67,6 @@ public class DeferredRegistryImpl {
             this.deferredRegister.register(FMLJavaModLoadingContext.get().getModEventBus());
         }
 
-
         @Override
         public <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier) {
             var orig = this.deferredRegister.register(id, supplier);
@@ -75,16 +74,25 @@ public class DeferredRegistryImpl {
             return registrySupplier;
         }
 
+        /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
         @Override
         public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
             RegistryObject<I> registryObject = this.deferredRegister.register(id, sup);
             RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.resourceKey, registryObject.getId());
             return registryHolder;
         }
+        */
 
-        @Override
-        public Supplier<Registry<T>> getRegistry() {
-            return this.registry;
+        /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
+         @Override
+         public Supplier<Registry<T>> getRegistry() {
+         return () -> this.registry;
+         } */
+
+        public IForgeRegistry<T> getForgeRegistry(){
+            if (this.forgeRegistry == null)
+                this.forgeRegistry = RegistryManager.ACTIVE.getRegistry(this.resourceKey);
+            return this.forgeRegistry;
         }
 
         @Override
@@ -94,32 +102,32 @@ public class DeferredRegistryImpl {
 
         @Override
         public T get(ResourceLocation key) {
-            return this.getRegistry().get().get(key);
+            return this.getForgeRegistry().getValue(key);
         }
 
         @Override
         public ResourceLocation getKey(T object) {
-            return this.getRegistry().get().getKey(object);
+            return this.getForgeRegistry().getKey(object);
         }
 
         @Override
         public boolean containsKey(ResourceLocation key) {
-            return this.getRegistry().get().containsKey(key);
+            return this.getForgeRegistry().containsKey(key);
         }
 
         @Override
         public Set<ResourceLocation> keySet() {
-            return this.getRegistry().get().keySet();
+            return this.getForgeRegistry().getKeys();
         }
 
         @Override
         public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
-            return this.getRegistry().get().entrySet();
+            return this.getForgeRegistry().getEntries();
         }
 
         @Override
         public Supplier<Codec<T>> getCodec() {
-            return () -> this.getRegistry().get().byNameCodec();
+            return () -> this.getForgeRegistry().getCodec();
         }
     }
 

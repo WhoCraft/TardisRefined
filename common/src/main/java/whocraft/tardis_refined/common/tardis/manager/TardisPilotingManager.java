@@ -780,7 +780,7 @@ public class TardisPilotingManager extends BaseHandler {
     public int[] getCoordinateIncrements(UpgradeHandler upgradeHandler) {
         List<Integer> increments = new ArrayList<>(List.of(1, 10, 100));
 
-        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
             Upgrade upgrade = entry.getValue();
             if (upgrade instanceof IncrementUpgrade incrementUpgrade) {
                 if (upgrade.isUnlocked(upgradeHandler)) {

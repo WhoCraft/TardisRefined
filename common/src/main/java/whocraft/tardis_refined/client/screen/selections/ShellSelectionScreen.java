@@ -35,6 +35,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class ShellSelectionScreen extends SelectionScreen {
@@ -57,7 +58,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     public ShellSelectionScreen(ResourceLocation currentShellTheme) {
         super(Component.translatable(ModMessages.UI_SHELL_SELECTION));
-        this.themeList = ShellTheme.SHELL_THEME_REGISTRY.keySet().stream().toList();
+        this.themeList = ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet().stream().toList();
         generateDummyGlobalShell();
         this.currentShellTheme = currentShellTheme;
 
@@ -174,7 +175,7 @@ public class ShellSelectionScreen extends SelectionScreen {
 
     @Override
     public Component getSelectedDisplayName() {
-        ShellTheme theme = ShellTheme.SHELL_THEME_REGISTRY.get(this.currentShellTheme);
+        ShellTheme theme = ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.get(this.currentShellTheme);
         return theme.getDisplayName();
     }
 
@@ -185,9 +186,9 @@ public class ShellSelectionScreen extends SelectionScreen {
 
         selectionList.setRenderBackground(false);
 
-        for (Holder.Reference<ShellTheme> shellTheme : ShellTheme.SHELL_THEME_REGISTRY.holders().toList()) {
-            ShellTheme theme = shellTheme.value();
-            ResourceLocation shellThemeId = shellTheme.key().location();
+        for (Map.Entry<ResourceKey<ShellTheme>, ShellTheme> shellTheme : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.entrySet()) {
+            ShellTheme theme = shellTheme.getValue();
+            ResourceLocation shellThemeId = shellTheme.getKey().location();
 
             if (theme == ShellTheme.HALF_BAKED.get()) {
                 continue;

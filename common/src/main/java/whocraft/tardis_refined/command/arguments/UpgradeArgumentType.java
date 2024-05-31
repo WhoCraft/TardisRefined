@@ -40,7 +40,7 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
 
-        return SharedSuggestionProvider.suggestResource(TRUpgrades.UPGRADE_REGISTRY.keySet(), builder);
+        return SharedSuggestionProvider.suggestResource(TRUpgrades.UPGRADE_DEFERRED_REGISTRY.keySet(), builder);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
 
     public static Upgrade getUpgrade(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         ResourceLocation resourcelocation = context.getArgument(name, ResourceLocation.class);
-        Upgrade upgrade = TRUpgrades.UPGRADE_REGISTRY.get(resourcelocation);
+        Upgrade upgrade = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(resourcelocation);
         if (upgrade == null)
             throw INVALID_UPGRADE_EXCEPTION.create(resourcelocation);
         else
@@ -59,7 +59,7 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
 
     public static ResourceLocation getUpgradeId(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
         ResourceLocation resourcelocation = context.getArgument(name, ResourceLocation.class);
-        if (TRUpgrades.UPGRADE_REGISTRY.get(resourcelocation) == null)
+        if (TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(resourcelocation) == null)
             throw INVALID_UPGRADE_EXCEPTION.create(resourcelocation);
         else
             return resourcelocation;

@@ -273,8 +273,8 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addUpgrade(Upgrade upgrade, String title, String description) {
-        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)), title);
-        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)) + ".description", description);
+        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgrade)), title);
+        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgrade)) + ".description", description);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {
