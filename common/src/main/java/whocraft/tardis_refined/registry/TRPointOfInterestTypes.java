@@ -1,12 +1,10 @@
 package whocraft.tardis_refined.registry;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
-import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
@@ -15,12 +13,17 @@ public class TRPointOfInterestTypes {
 
     public static void init(){};
 
-    public static final ResourceKey<PoiType> PILOT = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, new ResourceLocation(TardisRefined.MODID, "pilot"));
-
-    public static final PoiType PILOT_POI = registerPointOfInterest( PILOT, 5, 25, TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
+    public static final ResourceKey<PoiType> PILOT = ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, new ResourceLocation(TardisRefined.MODID, "console_unit"));
 
 
-    private static PoiType registerPointOfInterest(ResourceKey<PoiType> key, int maxTickets, int validRange, Block... blocks) {
+    public static final DeferredRegistry<PoiType> POIS = DeferredRegistry.create(TardisRefined.MODID, Registries.POINT_OF_INTEREST_TYPE);
+
+
+    public static final RegistrySupplier<PoiType> PILOT_POI = POIS.register("console_unit", () -> registerPointOfInterest(1, 1, TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get()));
+
+
+
+    private static PoiType registerPointOfInterest(int maxTickets, int validRange, Block... blocks) {
 
         final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
 
@@ -28,7 +31,7 @@ public class TRPointOfInterestTypes {
             builder.addAll(block.getStateDefinition().getPossibleStates());
         }
 
-        return PoiTypes.register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, key, builder.build(), maxTickets, validRange);
+        return new PoiType(builder.build(), maxTickets, validRange);
     }
 
 }
