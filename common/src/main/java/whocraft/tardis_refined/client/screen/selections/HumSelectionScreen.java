@@ -117,7 +117,7 @@ public class HumSelectionScreen extends SelectionScreen {
 
             // Check for if the tellraw name is incomplete, or fails to pass.
             try {
-                var json = Component.Serializer.fromJson(new StringReader(humEntry.getName()).toString());
+                var json = Component.Serializer.fromJson(new StringReader(humEntry.getName()));
                 name = json;
             } catch (Exception ex) {
                 TardisRefined.LOGGER.error("Could not process Name for hum " + humEntry.getIdentifier().toString());

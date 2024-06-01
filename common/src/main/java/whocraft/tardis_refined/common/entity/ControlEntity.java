@@ -254,6 +254,7 @@ public class ControlEntity extends Entity {
 
         if (this.entityData.get(TICKING_DOWN)) {
             realignControl();
+            return InteractionResult.SUCCESS;
         } else {
             this.handleRightClick(player, serverLevel, interactionHand);
         }

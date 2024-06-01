@@ -10,11 +10,15 @@ import net.minecraft.world.damagesource.DamageType;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.*;
+
+import java.util.Map;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -42,10 +46,18 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), "Teleporter building up");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), "Teleporter used");
+        addSound(TRSoundRegistry.SCREWDRIVER_CONNECT.get(), "Screwdriver connected position");
         addSound(TRSoundRegistry.SCREWDRIVER_SHORT.get(), "Screwdriver used");
         addSound(TRSoundRegistry.INTERIOR_CREAKS.get(), "Creaks");
         addSound(TRSoundRegistry.SCREWDRIVER_DISCARD.get(), "Screwdriver discard data");
         addSound(TRSoundRegistry.GRAVITY_TUNNEL.get(), "Gravity tunnel winds");
+        addSound(TRSoundRegistry.LOW_FUEL.get(), "Low fuel warning");
+
+        //Hum Sounds
+        TardisHums.registerDefaultHums();
+        for(Map.Entry<ResourceLocation, HumEntry> entry : TardisHums.getDefaultHums().entrySet()){
+            addSound(entry.getValue().getSound(), "TARDIS hums");
+        }
 
         /*Block*/
         add(TRBlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -279,6 +291,11 @@ public class LangProviderEnglish extends LanguageProvider {
 
     public void addSound(SoundEvent soundEvent, String lang) {
         String subtitleKey = SoundProvider.createSubtitle(soundEvent.getLocation().getPath());
+        add(subtitleKey, lang);
+    }
+
+    public void addSound(ResourceLocation soundId, String lang) {
+        String subtitleKey = SoundProvider.createSubtitle(soundId.getPath());
         add(subtitleKey, lang);
     }
 
