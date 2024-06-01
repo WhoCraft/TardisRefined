@@ -178,7 +178,7 @@ public class KeyItem extends Item {
             ResourceKey<Level> mainTardisLevel = keychain.get(0);
 
             if (TardisClientData.getInstance(mainTardisLevel).isFlying()) {
-                list.add(Component.translatable("* " + ModMessages.TOOLTIP_IN_FLIGHT + " *"));
+                list.add(Component.literal("* ").append(Component.translatable(ModMessages.TOOLTIP_IN_FLIGHT)).append(Component.literal(" *")));
             }
 
 

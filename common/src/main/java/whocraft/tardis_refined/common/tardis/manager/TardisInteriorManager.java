@@ -191,7 +191,7 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (level.players().isEmpty()) {
-                exteriorManager.triggerShellRegenState();
+                exteriorManager.triggerShellRegenState(true);
                 operator.setDoorClosed(true);
                 TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
                 generateDesktop(this.preparedTheme);
@@ -208,8 +208,7 @@ public class TardisInteriorManager extends BaseHandler {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.setShellTheme((this.operator.getAestheticHandler().getShellTheme() != null) ? operator.getAestheticHandler().getShellTheme() : ShellTheme.HALF_BAKED.getId(), this.operator.getAestheticHandler().shellPattern().getThemeId(), true);
-                exteriorManager.placeExteriorBlock(operator, this.operator.getPilotingManager().getCurrentLocation());
+                exteriorManager.triggerShellRegenState(false);
                 this.isGeneratingDesktop = false;
             }
 

@@ -96,6 +96,9 @@ public class TardisClientLogic {
                 if (!soundManager.isActive(LoopingSound.FLIGHT_LOOP)) {
                     soundManager.play(LoopingSound.FLIGHT_LOOP);
                 }
+                else {
+                    soundManager.stop(LoopingSound.FLIGHT_LOOP);
+                }
             }
 
             HumEntry humEntry = clientData.getHumEntry();

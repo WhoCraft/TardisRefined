@@ -120,7 +120,7 @@ public class HumSelectionScreen extends SelectionScreen {
                 var json = Component.Serializer.fromJson(new StringReader(humEntry.getName()).toString());
                 name = json;
             } catch (Exception ex) {
-                TardisRefined.LOGGER.error("Could not process Name for datapack desktop " + humEntry.getIdentifier().toString());
+                TardisRefined.LOGGER.error("Could not process Name for hum " + humEntry.getIdentifier().toString());
             }
 
             selectionList.children().add(new SelectionListEntry(name, (entry) -> {

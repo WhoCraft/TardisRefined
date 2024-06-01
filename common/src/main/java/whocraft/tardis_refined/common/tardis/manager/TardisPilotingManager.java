@@ -576,7 +576,7 @@ public class TardisPilotingManager extends BaseHandler {
                 level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
             }
 
-            exteriorManager.placeExteriorBlock(operator, location);
+            exteriorManager.startLanding(operator, location);
 
             exteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
 
@@ -697,7 +697,7 @@ public class TardisPilotingManager extends BaseHandler {
         TardisNavLocation landing = this.targetLocation;
         TardisNavLocation location = findClosestValidPosition(landing);
 
-        tardisExteriorManager.placeExteriorBlock(operator, location);
+        tardisExteriorManager.startLanding(operator, location);
 
         tardisExteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
         tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);
