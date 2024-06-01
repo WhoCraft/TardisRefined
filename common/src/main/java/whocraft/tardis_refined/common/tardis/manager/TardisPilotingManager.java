@@ -36,10 +36,7 @@ import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class TardisPilotingManager extends BaseHandler {
 
@@ -745,11 +742,8 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
     public TardisNavLocation getCurrentLocation() {
-        if (this.currentLocation == null) {
-            return TardisNavLocation.ORIGIN;
-        }
+        return Objects.requireNonNullElse(this.currentLocation, TardisNavLocation.ORIGIN);
 
-        return this.currentLocation;
     }
 
     public void setCurrentLocation(TardisNavLocation currentLocation) {

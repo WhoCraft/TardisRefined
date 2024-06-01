@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.compat;
 
+import whocraft.tardis_refined.common.util.Platform;
+
 public class ModCompatChecker {
 
     public static boolean immersivePortals() {
@@ -11,4 +13,7 @@ public class ModCompatChecker {
         }
     }
 
+    public static boolean create() {
+        return Platform.isModLoaded("create");
+    }
 }
