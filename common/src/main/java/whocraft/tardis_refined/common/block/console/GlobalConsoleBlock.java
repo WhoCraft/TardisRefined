@@ -216,4 +216,6 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
+
+
 }

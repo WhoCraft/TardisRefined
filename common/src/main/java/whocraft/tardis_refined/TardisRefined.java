@@ -60,6 +60,10 @@ public class TardisRefined {
         ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.registerToModBus();
         TRControlRegistry.CONTROL_DEFERRED_REGISTRY.registerToModBus();
         TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.registerToModBus();
+
+        TRPointOfInterestTypes.init(); // Cannot defer this one, has to be done through the helper.
+        TRVillagerProfession.PROFESSIONS.registerToModBus();
+
         TRTagKeys.init();
         TardisNetwork.init();
         TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncDesktopsMessage::new);
