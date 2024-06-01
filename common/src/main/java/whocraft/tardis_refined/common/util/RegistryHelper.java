@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.util;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,10 +36,10 @@ public class RegistryHelper {
     }
 
     public static ResourceLocation getKey(ConsoleTheme theme){
-        return ConsoleTheme.CONSOLE_THEME_REGISTRY.getKey(theme);
+        return ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.getKey(theme);
     }
 
     public static ResourceLocation getKey(ShellTheme theme){
-        return ShellTheme.SHELL_THEME_REGISTRY.getKey(theme);
+        return ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.getKey(theme);
     }
 }

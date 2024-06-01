@@ -67,7 +67,6 @@ public class TardisRefined {
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncHumsMessage::new);
 
-        registerFallbackEntries();
     }
 
     /** Register default entries for data-driven registries. This is encapsulated in a method to call at different game load stages depending on the mod-loader

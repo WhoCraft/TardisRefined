@@ -51,7 +51,7 @@ public class ConsolePatterns{
         Map<ResourceLocation, List<ConsolePattern>> entries = ConsolePatterns.getRegistry();
         for (Map.Entry<ResourceLocation, List<ConsolePattern>> entry : entries.entrySet()){
             if (pattern.getThemeId() == entry.getKey()){
-                return ConsoleTheme.CONSOLE_THEME_REGISTRY.get(entry.getKey());
+                return ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.get(entry.getKey());
             }
         }
         return ConsoleTheme.FACTORY.get();
@@ -149,7 +149,8 @@ public class ConsolePatterns{
     public static Map<ResourceLocation, List<ConsolePattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
-        for (ResourceLocation consoleTheme : ConsoleTheme.CONSOLE_THEME_REGISTRY.keySet()) {
+
+        for (ResourceLocation consoleTheme : ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.keySet()) {
             boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER.getId() || consoleTheme == ConsoleTheme.CRYSTAL.getId() || consoleTheme == ConsoleTheme.CORAL.getId() || consoleTheme == ConsoleTheme.FACTORY.getId() || consoleTheme == ConsoleTheme.INITIATIVE.getId() || consoleTheme == ConsoleTheme.TOYOTA.getId() || consoleTheme == ConsoleTheme.VICTORIAN.getId();
             addDefaultPattern(consoleTheme, ResourceConstants.DEFAULT_PATTERN_ID.getPath(), consoleTheme.getPath() + "_console", hasDefaultEmission);
         }

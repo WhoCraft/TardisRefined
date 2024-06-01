@@ -60,9 +60,9 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
 
     /** Helper to get all recipes without needing to use a Container. In 1.21+ recipes will be decoupled from Containers but until them, we will need this workaround*/
     public static List<ManipulatorCraftingRecipe> getAllRecipes(Level level){
-        List<RecipeHolder<ManipulatorCraftingRecipe>> recipeHolders = level.getRecipeManager().getAllRecipesFor(TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get());
+        List<ManipulatorCraftingRecipe> recipeHolders = level.getRecipeManager().getAllRecipesFor(TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get());
         List<ManipulatorCraftingRecipe> recipeList = new ArrayList<>();
-        recipeHolders.forEach(recipeHolder -> recipeList.add(recipeHolder.value().setRegistryId(recipeHolder.id()))); //Make sure to set registry id
+        recipeHolders.forEach(recipeHolder -> recipeList.add(recipeHolder.setRegistryId(recipeHolder.id))); //Make sure to set registry id
         return recipeList;
     }
 

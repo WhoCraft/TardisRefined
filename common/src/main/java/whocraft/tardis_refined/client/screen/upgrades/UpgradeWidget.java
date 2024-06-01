@@ -1,12 +1,14 @@
 package whocraft.tardis_refined.client.screen.upgrades;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -15,6 +17,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 
@@ -22,6 +25,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import static net.minecraft.client.gui.components.AbstractWidget.WIDGETS_LOCATION;
 
 public class UpgradeWidget {
 
@@ -140,8 +145,8 @@ public class UpgradeWidget {
         } else {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-            //Display Lock6,
-            guiGraphics.blitSprite(UpgradesScreen.LOCKED, x - 5, y - 5, 26, 26);
+            //Display Lock
+            guiGraphics.blit(UpgradesScreen.LOCKED, x - 5, y - 5, 0,0, 26, 26,26, 26);
         }
     }
 
@@ -150,7 +155,7 @@ public class UpgradeWidget {
 
         boolean isUnlocked =this.upgradeEntry.isUnlocked(upgradeHandler);
 
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), x - 13, y - 13, 26, 26);
+        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), x - 13, y - 13, 0,0, 26, 26,26, 26);
         this.drawDisplayIcon(mc, guiGraphics, x - 8, y - 8);
     }
 
@@ -158,33 +163,30 @@ public class UpgradeWidget {
         return this.width;
     }
 
-    private static final ResourceLocation TITLE_BOX_SPRITE = new ResourceLocation("advancements/title_box");
+    private static final ResourceLocation TITLE_BOX_SPRITE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/title_box.png");
 
-    public void drawHover(GuiGraphics guiGraphics, int i, int j, float f, int k, int l) {
-        boolean bl = k + i + this.x + this.width + 26 >= this.tab.getScreen().width;
-        Component component = null;
-        int m = component == null ? 0 : this.minecraft.font.width(component);
-        int var10000 = 113 - j - this.y - 26;
-        int var10002 = this.description.size();
-        Objects.requireNonNull(this.minecraft.font);
-        boolean bl2 = var10000 <= 6 + var10002 * 9;
-        float g = this.upgradeHandler.isUpgradeUnlocked(upgradeEntry) ? 1 : 0;
-        int n = Mth.floor(g * (float) this.width);
+    public void drawHover(GuiGraphics guiGraphics, int x, int y, float fade, int width, int height) {
+        boolean bl = width + x + this.x + this.width + 26 >= this.tab.getScreen().width;
+        String string = null;
+        int i = string == null ? 0 : this.minecraft.font.width(string);
+        boolean bl2 = 113 - y - this.y - 26 <= 6 + this.description.size() * 9;
+        float f = 0.0F;
+        int j = Mth.floor(f * (float) this.width);
         AdvancementWidgetType advancementWidgetType;
         AdvancementWidgetType advancementWidgetType2;
         AdvancementWidgetType advancementWidgetType3;
-        if (g >= 1.0F) {
-            n = this.width / 2;
+        if (f >= 1.0F) {
+            j = this.width / 2;
             advancementWidgetType = AdvancementWidgetType.OBTAINED;
             advancementWidgetType2 = AdvancementWidgetType.OBTAINED;
             advancementWidgetType3 = AdvancementWidgetType.OBTAINED;
-        } else if (n < 2) {
-            n = this.width / 2;
+        } else if (j < 2) {
+            j = this.width / 2;
             advancementWidgetType = AdvancementWidgetType.UNOBTAINED;
             advancementWidgetType2 = AdvancementWidgetType.UNOBTAINED;
             advancementWidgetType3 = AdvancementWidgetType.UNOBTAINED;
-        } else if (n > this.width - 2) {
-            n = this.width / 2;
+        } else if (j > this.width - 2) {
+            j = this.width / 2;
             advancementWidgetType = AdvancementWidgetType.OBTAINED;
             advancementWidgetType2 = AdvancementWidgetType.OBTAINED;
             advancementWidgetType3 = AdvancementWidgetType.UNOBTAINED;
@@ -194,68 +196,59 @@ public class UpgradeWidget {
             advancementWidgetType3 = AdvancementWidgetType.UNOBTAINED;
         }
 
-        int o = this.width - n;
+        int k = this.width - j;
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableBlend();
-        int p = j + this.y;
-        int q;
+        int l = y + this.y;
+        int m;
         if (bl) {
-            q = i + this.x - this.width + 26 + 6;
+            m = x + this.x - this.width + 26 + 6;
         } else {
-            q = i + this.x;
+            m = x + this.x;
         }
 
-        int var10001 = this.description.size();
-        Objects.requireNonNull(this.minecraft.font);
-        int r = 32 + var10001 * 9;
+        int n = 32 + this.description.size() * 9;
         if (!this.description.isEmpty()) {
             if (bl2) {
-                guiGraphics.blitSprite(TITLE_BOX_SPRITE, q, p + 26 - r, this.width, r);
+                guiGraphics.blitNineSliced(UpgradesScreen.WIDGETS, m + 2, l + 26 - n, this.width, n, 10, 200, 26, 0, 52);
             } else {
-                guiGraphics.blitSprite(TITLE_BOX_SPRITE, q, p, this.width, r);
+                guiGraphics.blitNineSliced(UpgradesScreen.WIDGETS,  m, l, this.width, n, 10, 200, 26, 0, 52);
             }
         }
 
-        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 0, 0, q, p, n, 26);
-        guiGraphics.blitSprite(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), 200, 26, 200 - o, 0, q + n, p, o, 26);
-        guiGraphics.blitSprite(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 26, 26);
+        //blit(ResourceLocation atlasLocation, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight)
+
+      //  guiGraphics.blit(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 0,0, 200, 26,200, 26);
+
+        guiGraphics.blit(UpgradesScreen.WIDGETS, m, l, 0, advancementWidgetType.getIndex() * 26, j, 26);
+        guiGraphics.blit(UpgradesScreen.WIDGETS, m + j, l, 200 - k, advancementWidgetType2.getIndex() * 26, k, 26);
+
+        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), x + this.x + 3, y + this.y, 0,0, 26, 26,26, 26);
+
+
         if (bl) {
-            guiGraphics.drawString(this.minecraft.font, this.title, q + 5, j + this.y + 9, -1);
-            if (component != null) {
-                guiGraphics.drawString(this.minecraft.font, component, i + this.x - m, j + this.y + 9, -1);
+            guiGraphics.drawString(this.minecraft.font, this.title, m + 5, y + this.y + 9, -1);
+            if (string != null) {
+                guiGraphics.drawString(this.minecraft.font, string, x + this.x - i, y + this.y + 9, -1);
             }
         } else {
-            guiGraphics.drawString(this.minecraft.font, this.title, i + this.x + 32, j + this.y + 9, -1);
-            if (component != null) {
-                guiGraphics.drawString(this.minecraft.font, component, i + this.x + this.width - m - 5, j + this.y + 9, -1);
+            guiGraphics.drawString(this.minecraft.font, this.title, x + this.x + 32, y + this.y + 9, -1);
+            if (string != null) {
+                guiGraphics.drawString(this.minecraft.font, string, x + this.x + this.width - i - 5, y + this.y + 9, -1);
             }
         }
 
-        int var10003;
-        int s;
-        int var10004;
-        Font var21;
-        FormattedCharSequence var22;
         if (bl2) {
-            for (s = 0; s < this.description.size(); ++s) {
-                var21 = this.minecraft.font;
-                var22 = this.description.get(s);
-                var10003 = q + 5;
-                var10004 = p + 26 - r + 7;
-                Objects.requireNonNull(this.minecraft.font);
-                guiGraphics.drawString(var21, var22, var10003, var10004 + s * 9, -5592406, false);
+            for (int o = 0; o < this.description.size(); ++o) {
+                guiGraphics.drawString(this.minecraft.font, this.description.get(o), m + 5, l + 26 - n + 7 + o * 9, -5592406);
             }
         } else {
-            for (s = 0; s < this.description.size(); ++s) {
-                var21 = this.minecraft.font;
-                var22 = this.description.get(s);
-                var10003 = q + 5;
-                var10004 = j + this.y + 9 + 17;
-                Objects.requireNonNull(this.minecraft.font);
-                guiGraphics.drawString(var21, var22, var10003, var10004 + s * 9, -5592406, false);
+            for (int o = 0; o < this.description.size(); ++o) {
+                guiGraphics.drawString(this.minecraft.font, this.description.get(o), m + 5, y + this.y + 9 + 17 + o * 9, -5592406);
             }
         }
 
-        this.drawDisplayIcon(this.minecraft, guiGraphics, i + this.x + 8, j + this.y + 5);
+        this.drawDisplayIcon(this.minecraft, guiGraphics, x + this.x + 8, y + this.y + 5);
     }
 
     public boolean isMouseOver(int x, int y, int mouseX, int mouseY) {

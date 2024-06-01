@@ -206,7 +206,7 @@ public class TRTeleporter {
 
             ServerPlayer teleportedPlayer = serverPlayer;
 
-            double vehicleOffset = teleportedPlayer.getMyRidingOffset(vehicle);
+            double vehicleOffset = teleportedPlayer.getMyRidingOffset();
 
             teleportedPlayer.stopRiding(); //Dismount the player from riding the vehicle
 
@@ -470,7 +470,7 @@ public class TRTeleporter {
             return false;
         }
 
-        double vehicleOffset = entity.getMyRidingOffset(vehicle);
+        double vehicleOffset = entity.getMyRidingOffset();
 
         Vec3 oldMotion = vehicle.getDeltaMovement();
 
@@ -481,7 +481,7 @@ public class TRTeleporter {
         //Prevent minecarts, boats and LivingEntity types from interpolating their position so that it doesn't fall into unloaded chunks
         //Directly set their position and rotation so that the interpolation will not happen
         vehicle.setPos(newVehiclePos.x(), newVehiclePos.y(), newVehiclePos.z());
-        vehicle.lerpTo(newVehiclePos.x(), newVehiclePos.y(), newVehiclePos.z(), vehicle.getYRot(), vehicle.getXRot(), 0);
+        vehicle.lerpTo(newVehiclePos.x(), newVehiclePos.y(), newVehiclePos.z(), vehicle.getYRot(), vehicle.getXRot(), 0, false);
 
         updatePosAndLastTickPos(vehicle, newVehiclePos, newVehicleLastTickPos);
 

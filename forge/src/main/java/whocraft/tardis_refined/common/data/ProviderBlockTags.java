@@ -2,17 +2,19 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.SlabBlock;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.common.data.BlockTagsProvider;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ProviderBlockTags extends BlockTagsProvider {
@@ -24,8 +26,8 @@ public class ProviderBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        for (Block blocksEntry : TRBlockRegistry.BLOCKS.getRegistry().get().stream().toList()) {
-            Block block = blocksEntry;
+        for (Map.Entry<ResourceKey<Block>, Block> blocksEntry : TRBlockRegistry.BLOCKS.entrySet()) {
+            Block block = blocksEntry.getValue();
 
             /*Fences*/
             if (block instanceof FenceBlock fenceBlock) {

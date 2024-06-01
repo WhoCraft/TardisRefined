@@ -2,7 +2,7 @@ package whocraft.tardis_refined.client.screen.waypoints;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.SpriteIconButton;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +11,7 @@ import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
+import whocraft.tardis_refined.client.screen.components.SpriteIconButton;
 import whocraft.tardis_refined.client.screen.selections.SelectionScreen;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenCoordinatesDisplayMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SOpenEditCoordinatesDisplayMessage;
@@ -31,16 +32,16 @@ public class WaypointListScreen extends SelectionScreen {
     protected int imageHeight = 173;
     private int leftPos, topPos;
 
-    private SpriteIconButton loadButton;
-    private SpriteIconButton editButton;
-    private SpriteIconButton trashButton;
+    private Button loadButton;
+    private Button editButton;
+    private Button trashButton;
 
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
     private Collection<TardisWaypoint> WAYPOINTS = new ArrayList<>();
     private TardisWaypoint waypoint = null;
-    public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "trash");
-    public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "okay");
-    public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "edit");
+    public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/trash.png");
+    public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/okay.png");
+    public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/edit.png");
 
     private final Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
 
@@ -81,7 +82,7 @@ public class WaypointListScreen extends SelectionScreen {
         });
 
 
-        SpriteIconButton newWaypointButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
+        Button newWaypointButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
             new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send();
         }, true, BUTTON_LOCATION));
 
@@ -152,19 +153,13 @@ public class WaypointListScreen extends SelectionScreen {
         return selectionList;
     }
 
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-        // super.renderBackground(guiGraphics, i, j, f);
-    }
-
     @Override
     public void render(GuiGraphics guiGraphics, int i, int j, float f) {
 
         int textOffset = height / 2 - 60;
         int textScale = 40;
 
-        this.renderTransparentBackground(guiGraphics);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
 
         guiGraphics.blit(MONITOR_TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 

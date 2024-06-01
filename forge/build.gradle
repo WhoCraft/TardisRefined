@@ -4,16 +4,16 @@ plugins {
 }
 architectury {
     platformSetupLoomIde()
-    neoForge();
+    forge();
 }
 
-def generatedResources = project(":forge").file("src/generated/resources")
+/*def generatedResources = project(":forge").file("src/generated/resources")
 
 sourceSets {
     main {
         resources.srcDir generatedResources
     }
-}
+}*/
 
 //unifiedPublishing {
 //    project {
@@ -48,36 +48,32 @@ sourceSets {
 //}
 
 
-remapJar {
-    atAccessWideners.add('tardis_refined.accesswidener')
-}
+//remapJar {
+//    atAccessWideners.add('tardis_refined.accesswidener')
+//}
 
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
-//    neoForge {
-//        convertAccessWideners = true
-//        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
-//
-//        mixinConfig "tardis_refined-common.mixins.json"
-//        mixinConfig "tardis_refined.mixins.json"
+    forge {
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
 
-//        dataGen {
-//            mod "${mod_id}"
-//        }
+        mixinConfig "tardis_refined-common.mixins.json"
+        mixinConfig "tardis_refined.mixins.json"
 
-//    }
+        dataGen {
+            mod "tardis_refined"
+        }
+
+    }
 
     runs {
         data {
-            data()
-            programArgs "--all", "--mod", "${mod_id}"
-            programArgs "--output", project(":forge").file("src/generated/resources").absolutePath
             programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
         }
     }
-
 }
 
 
@@ -86,17 +82,16 @@ configurations {
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentNeoForge.extendsFrom common
+    developmentForge.extendsFrom common
 }
 
 repositories {
     maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
-    maven { url "https://maven.neoforged.net/releases/" }
+    maven { url "https://maven.minecraftforge.net" }
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:${neoforge_version}"
-
+    forge "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
     //   modCompileOnly "curse.maven:worldedit-225608:${world_edit_version}"
 //    modCompileOnly "curse.maven:structure-expansion-398430:${structure_expansion_version}"
@@ -110,7 +105,7 @@ dependencies {
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive false }
 
 }
 
@@ -122,14 +117,18 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          issue_tracker_url: issue_tracker_url,
                          // update_json_url: update_json_url,
                          license: license,
-                         neoforge_version_range: neoforge_version_range, neoforge_minecraft_version_range: neoforge_minecraft_version_range,
-                         neoforge_loader_version_range: neoforge_loader_version_range,
+                         forge_loader_version_range: forge_loader_version_range,
+                         forge_minecraft_version_range: forge_minecraft_version_range,
+                         forge_version_range: forge_version_range,
+                         forge_loader_version_range: forge_loader_version_range,
                          pack_format: pack_format,
-                         neoforge_resource_pack_format: forge_resource_pack_format,
-                         neoforge_data_pack_format: neoforge_data_pack_format,
+                         forge_resource_pack_format: forge_resource_pack_format,
+                         forge_data_pack_format: forge_data_pack_format,
                          // forge_immersive_portals_version_range: forge_immersive_portals_version_range
                          // ,display_test_type: display_test_type
 ]
+
+
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project
@@ -150,7 +149,6 @@ processResources {
         }
     }
 }
-
 shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"

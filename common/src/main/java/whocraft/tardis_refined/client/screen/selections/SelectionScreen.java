@@ -2,8 +2,9 @@ package whocraft.tardis_refined.client.screen.selections;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.gui.components.SpriteIconButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +12,7 @@ import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
+import whocraft.tardis_refined.client.screen.components.SpriteIconButton;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
@@ -26,8 +28,8 @@ public class SelectionScreen extends Screen {
     public int noiseX, noiseY, age;
     public double noiseAlpha;
 
-    public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "save");
-    public static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "back");
+    public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/save.png");
+    public static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/back.png");
 
 
     public SelectionScreen(Component title) {
@@ -51,7 +53,7 @@ public class SelectionScreen extends Screen {
 
     public void addSubmitButton(int x, int y) {
         if (onSubmit != null) {
-            SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
+            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
                 this.onSubmit.onPress();
             }, true, BUTTON_LOCATION));
             spriteiconbutton.setPosition(x, y);
@@ -60,7 +62,7 @@ public class SelectionScreen extends Screen {
 
     public void addCancelButton(int x, int y) {
         if (onCancel != null) {
-            SpriteIconButton spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> {
+            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> {
                 this.onCancel.onPress();
             }, true, BCK_LOCATION));
             spriteiconbutton.setPosition(x, y);

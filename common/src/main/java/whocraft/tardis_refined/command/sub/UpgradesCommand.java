@@ -53,7 +53,7 @@ public class UpgradesCommand {
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
-            for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+            for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
                 Upgrade upgrade = entry.getValue();
                 tardisLevelOperator.getUpgradeHandler().unlockUpgrade(upgrade);
                 context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_UNLOCK, upgrade.getDisplayName(), tardisId));
@@ -68,7 +68,7 @@ public class UpgradesCommand {
         MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
-            for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_REGISTRY.entrySet()) {
+            for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
                 Upgrade upgrade = entry.getValue();
                 tardisLevelOperator.getUpgradeHandler().lockUpgrade(upgrade);
                 context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_UPGRADE_LOCK, upgrade.getDisplayName(), tardisId));

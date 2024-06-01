@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.dimension.neoforge;
+package whocraft.tardis_refined.common.dimension.forge;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.util.neoforge.PlatformImpl.getServer;
+import static whocraft.tardis_refined.common.util.forge.PlatformImpl.getServer;
 
 public class DimensionHandlerImpl {
 

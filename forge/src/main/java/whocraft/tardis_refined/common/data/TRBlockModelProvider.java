@@ -6,11 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.LanternBlock;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
-import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.client.model.generators.VariantBlockStateBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraftforge.client.model.generators.BlockStateProvider;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.device.AntiGravityBlock;
 import whocraft.tardis_refined.common.block.device.TerraformerBlock;
@@ -52,11 +52,11 @@ public class TRBlockModelProvider extends BlockStateProvider {
     }
 
     public ResourceLocation getBlockResourceLocation(Block block) {
-        return BLOCKS.getRegistry().get().getKey(block);
+        return BLOCKS.getKey(block);
     }
 
     public ResourceLocation getBlockTextureResourceLocation(Block block) {
-        ResourceLocation blockTex = BLOCKS.getRegistry().get().getKey(block);
+        ResourceLocation blockTex = BLOCKS.getKey(block);
         return new ResourceLocation(TardisRefined.MODID, "block/" + blockTex.getPath());
     }
 

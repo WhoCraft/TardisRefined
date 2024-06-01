@@ -244,7 +244,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     private ResourceLocation nextTheme(ConsoleConfigurationBlockEntity blockEntity){
         ResourceLocation consoleThemeId = blockEntity.theme();
         //Get next console theme
-        List<ResourceLocation> themesList = ConsoleTheme.CONSOLE_THEME_REGISTRY.keySet().stream().toList();
+        List<ResourceLocation> themesList = ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.keySet().stream().toList();
         int index = themesList.indexOf(consoleThemeId);
         int nextIndex = index + 1;
         if(nextIndex >= themesList.size()) {

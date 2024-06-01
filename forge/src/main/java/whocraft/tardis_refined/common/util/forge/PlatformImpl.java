@@ -1,12 +1,12 @@
-package whocraft.tardis_refined.common.util.neoforge;
+package whocraft.tardis_refined.common.util.forge;
 
 import net.minecraft.server.MinecraftServer;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.neoforge.server.ServerLifecycleHooks;
-import net.neoforged.neoforgespi.language.IModInfo;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.Collection;
 

@@ -69,6 +69,7 @@ public class DeferredRegistryImpl {
             return registrySupplier;
         }
 
+        /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
         @Override
         public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
             ResourceLocation registeredId = new ResourceLocation(this.modid, id);
@@ -76,11 +77,13 @@ public class DeferredRegistryImpl {
             RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.resourceKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
             return registryHolder;
         }
+        */
 
+        /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
         @Override
         public Supplier<Registry<T>> getRegistry() {
             return () -> this.registry.get();
-        }
+        } */
 
         @Override
         public ResourceKey<? extends Registry<T>> key(){
@@ -89,32 +92,32 @@ public class DeferredRegistryImpl {
 
         @Override
         public T get(ResourceLocation key) {
-            return this.getRegistry().get().get(key);
+            return this.registry.get().get(key);
         }
 
         @Override
         public ResourceLocation getKey(T object) {
-            return this.getRegistry().get().getKey(object);
+            return this.registry.get().getKey(object);
         }
 
         @Override
         public boolean containsKey(ResourceLocation key) {
-            return this.getRegistry().get().containsKey(key);
+            return this.registry.get().containsKey(key);
         }
 
         @Override
         public Set<ResourceLocation> keySet() {
-            return this.getRegistry().get().keySet();
+            return this.registry.get().keySet();
         }
 
         @Override
         public Set<Map.Entry<ResourceKey<T>, T>> entrySet() {
-            return this.getRegistry().get().entrySet();
+            return this.registry.get().entrySet();
         }
 
         @Override
         public Supplier<Codec<T>> getCodec() {
-            return () -> this.getRegistry().get().byNameCodec();
+            return () -> this.registry.get().byNameCodec();
         }
     }
 }

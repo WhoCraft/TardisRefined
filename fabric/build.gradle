@@ -61,6 +61,10 @@ configurations {
 
 repositories {
 
+    flatDir {
+        dirs '../mods'
+    }
+
     // the repository for ImmPtl
     maven { url 'https://jitpack.io' }
 
@@ -90,6 +94,7 @@ repositories {
         url = "https://maven.terraformersmc.com/"
     }
 }
+
 
 def generatedResources = project(":forge").file("src/generated/resources")
 
@@ -169,6 +174,8 @@ def replaceProperties = [mod_id                                : mod_id, mod_nam
                          fabric_immersive_portals_version_range: fabric_immersive_portals_version_range
                          //,display_test_type: display_test_type
 ]
+
+
 processResources {
     inputs.properties replaceProperties
     replaceProperties.put 'project', project

@@ -1,13 +1,13 @@
-package whocraft.tardis_refined.neoforge;
+package whocraft.tardis_refined.forge;
 
 import net.minecraft.data.DataGenerator;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
@@ -25,6 +25,7 @@ public class TardisRefinedForge {
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
 
+        //TODO IP compat for forge?
    /*     if (ModCompatChecker.immersivePortals()) {
             if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();
@@ -51,7 +52,7 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
         generator.addProvider(e.includeServer(), new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider()));
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator.getPackOutput()));
-        generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
+        generator.addProvider(e.includeServer(), new RecipeProvider(generator.getPackOutput()));
         generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
         generator.addProvider(e.includeServer(), new DesktopProvider(generator));
         generator.addProvider(e.includeServer(), new HumProvider(generator));

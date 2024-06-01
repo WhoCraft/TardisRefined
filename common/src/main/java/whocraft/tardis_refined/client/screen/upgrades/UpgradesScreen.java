@@ -24,13 +24,14 @@ public class  UpgradesScreen extends Screen {
     public static final ResourceLocation TABS = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/tabs.png");
     public static final ResourceLocation BACKDROP = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/upgrades.png");
 
-    public static final ResourceLocation MAIN_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "upgrades/gallifreyan_frame_unobtained");
-    public static final ResourceLocation SUB_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "upgrades/upgrade_frame_unobtained");
-    public static final ResourceLocation SUB_UPGRADE = new ResourceLocation(TardisRefined.MODID, "upgrades/upgrade_frame_obtained");
-    public static final ResourceLocation MAIN_UPGRADE = new ResourceLocation(TardisRefined.MODID, "upgrades/gallifreyan_frame_obtained");
-    public static final ResourceLocation LOCKED = new ResourceLocation(TardisRefined.MODID, "upgrades/lock");
-    public static final ResourceLocation UNOBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "upgrades/box_unobtained");
-    public static final ResourceLocation OBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "upgrades/box_obtained");
+    public static final ResourceLocation MAIN_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/gallifreyan_frame_unobtained.png");
+    public static final ResourceLocation SUB_UPGRADE_LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/upgrade_frame_unobtained.png");
+    public static final ResourceLocation SUB_UPGRADE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/upgrade_frame_obtained.png");
+    public static final ResourceLocation MAIN_UPGRADE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/gallifreyan_frame_obtained.png");
+    public static final ResourceLocation LOCKED = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/lock.png");
+    public static final ResourceLocation UNOBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/box_unobtained.png");
+    public static final ResourceLocation OBTAINED_BOX = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/box_obtained.png");
+    public static final ResourceLocation WIDGETS = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/upgrades/widgets.png");
 
 
     public static final int WINDOW_WIDTH = 256;
@@ -39,7 +40,6 @@ public class  UpgradesScreen extends Screen {
     private static final int WINDOW_INSIDE_Y = 18;
     public static final int WINDOW_INSIDE_WIDTH = 234 - 10;
     public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
-    private static final Component TITLE = Component.translatable(ModMessages.UI_UPGRADES);
     private final List<UpgradeTab> tabs = new ArrayList<>();
     private final UpgradeHandler upgradeHandler;
     @Nullable
@@ -138,8 +138,8 @@ public class  UpgradesScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int i = (this.width - WINDOW_WIDTH) / 2;
         int j = (this.height - WINDOW_HEIGHT) / 2;
-        this.renderTransparentBackground(guiGraphics);
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+//        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.renderWindow(guiGraphics, i, j);
         this.renderInside(guiGraphics, mouseX, mouseY, i, j);
 
@@ -234,11 +234,6 @@ public class  UpgradesScreen extends Screen {
                 }
             }
         }
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics, int i, int j, float f) {
-
     }
 
     public void closeOverlayScreen() {

@@ -4,6 +4,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.EntityLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
@@ -17,6 +18,7 @@ import whocraft.tardis_refined.registry.TRItemRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -45,10 +47,10 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Iterable<Block> getKnownBlocks() {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
-            for (Block entry : TRBlockRegistry.BLOCKS.getRegistry().get().stream().toList()) {
-                ResourceLocation blockId = TRBlockRegistry.BLOCKS.getRegistry().get().getKey(entry);
+            for (Map.Entry<ResourceKey<Block>, Block> entry : TRBlockRegistry.BLOCKS.entrySet()) {
+                ResourceLocation blockId = TRBlockRegistry.BLOCKS.getKey(entry.getValue());
                 if (!blockId.toString().contains("minecraft")) {
-                    blocks.add(entry);
+                    blocks.add(entry.getValue());
                 }
             }
             return blocks;
@@ -64,10 +66,10 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected Stream<EntityType<?>> getKnownEntityTypes() {
             ArrayList<@NotNull EntityType<?>> entities = new ArrayList<>();
-            for (EntityType<?> entry : TREntityRegistry.ENTITY_TYPES.getRegistry().get().stream().toList()) {
-                if (entry == TREntityRegistry.CONTROL_ENTITY.get())
+            for (Map.Entry<ResourceKey<EntityType<?>>, EntityType<?>> entry : TREntityRegistry.ENTITY_TYPES.entrySet()) {
+                if (entry.getValue() == TREntityRegistry.CONTROL_ENTITY.get())
                     break;
-                entities.add(entry);
+                entities.add(entry.getValue());
             }
             return entities.stream();
         }
