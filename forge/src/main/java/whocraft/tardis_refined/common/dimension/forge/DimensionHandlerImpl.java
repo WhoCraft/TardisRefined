@@ -38,36 +38,6 @@ import static whocraft.tardis_refined.common.util.forge.PlatformImpl.getServer;
 public class DimensionHandlerImpl {
 
 
-    public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
-
-    public static void addDimension(ResourceKey<Level> resourceKey) {
-        LEVELS.add(resourceKey);
-        writeLevels();
-    }
-
-
-    /*Only present in Forge so that worlds can be opened in Fabric*/
-    private static void writeLevels() {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("tardis_dimensions", new JsonPrimitive(TardisRefined.GSON.toJson(LEVELS)));
-
-        TardisRefined.LOGGER.info("Writing to: {}", file.getAbsolutePath());
-
-        try (FileWriter writer = new FileWriter(file)) {
-            TardisRefined.GSON.toJson(jsonObject, writer);
-            writer.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static Path getWorldSavingDirectory() {
-        MinecraftServer server = getServer();
-        return server.storageSource.getWorldDir();
-    }
-
-
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
@@ -105,7 +75,7 @@ public class DimensionHandlerImpl {
                 false, // "tick time", true for overworld, always false for everything else
                 new RandomSequences(BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed())));
 
-        addDimension(newLevel.dimension());
+        DimensionHandler.addDimension(newLevel.dimension());
 
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
 

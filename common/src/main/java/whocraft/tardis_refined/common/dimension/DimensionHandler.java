@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.dimension;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.RegistryAccess;
@@ -24,6 +25,8 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Map;
@@ -92,6 +95,26 @@ public class DimensionHandler {
         }
 
         return null;
+
+    }
+
+    public static void loadLevels(ServerLevel serverLevel) {
+        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
+        if (!file.exists()) return;
+
+        Reader reader = null;
+        try {
+            reader = Files.newBufferedReader(file.toPath());
+
+            JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
+            for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
+                TardisRefined.LOGGER.info("Attempting to load {}", dimension.getAsString());
+                DimensionHandler.getOrCreateInterior(serverLevel, new ResourceLocation(dimension.getAsString()));
+            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

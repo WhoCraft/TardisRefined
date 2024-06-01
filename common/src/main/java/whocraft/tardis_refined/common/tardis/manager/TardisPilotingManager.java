@@ -752,11 +752,8 @@ public class TardisPilotingManager extends BaseHandler {
         this.currentLocation = currentLocation;
     }
     public TardisNavLocation getCurrentLocation() {
-        if (this.currentLocation == null) {
-            return TardisNavLocation.ORIGIN;
-        }
+        return Objects.requireNonNullElse(this.currentLocation, TardisNavLocation.ORIGIN);
 
-        return this.currentLocation;
     }
 
     public void setTargetPosition(BlockPos pos) {

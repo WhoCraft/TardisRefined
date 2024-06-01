@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 import whocraft.tardis_refined.ControlGroupCheckers;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
@@ -35,6 +36,15 @@ public class CommonBus {
         }
 
     }
+
+    @SubscribeEvent
+    public static void onServerStart(ServerStartedEvent event) {
+        // Load Levels
+        ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
+        DimensionHandler.loadLevels(world);
+
+    }
+
 
     @SubscribeEvent
     public static void onDatapack(AddReloadListenerEvent addReloadListenerEvent) {

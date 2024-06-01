@@ -43,9 +43,11 @@ public class ModEvents {
 
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
-            DimensionHandlerImpl.loadLevels(world);
+            DimensionHandler.loadLevels(world);
 
-            CreateIntergrations.init();
+            if(ModCompatChecker.create()){
+                CreateIntergrations.init();
+            }
 
 
         });
