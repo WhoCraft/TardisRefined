@@ -17,6 +17,8 @@ public class GravityClient {
         Options options = minecraft.options;
 
         if (GravityUtil.isInGravityShaft(player)) {
+            player.setOnGround(true); //Required to stop player attempting to open Elytra. Side effect: Hunger and other behaviours that occur when player is touching the ground will apply.
+            player.stopFallFlying();
             player.resetFallDistance();
             player.setNoGravity(true);
             player.setPose(Pose.STANDING);
