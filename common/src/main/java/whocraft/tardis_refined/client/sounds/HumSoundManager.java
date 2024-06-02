@@ -13,13 +13,13 @@ public class HumSoundManager {
 
     public static void playHum(SoundEvent soundEvent) {
         stopCurrentHum();
-        LoopingHumSound newSound = createSound(soundEvent);
+        LoopingHumSound newSound = createHumSound(soundEvent);
         currentSound = newSound;
         currentRawSound = soundEvent;
         MC.getSoundManager().play(newSound);
     }
 
-    public static LoopingHumSound getCurrentSound() {
+    public static LoopingHumSound getCurrentHumSound() {
         return currentSound;
     }
 
@@ -42,7 +42,7 @@ public class HumSoundManager {
         }
     }
 
-    private static LoopingHumSound createSound(SoundEvent soundEvent) {
+    private static LoopingHumSound createHumSound(SoundEvent soundEvent) {
         return new LoopingHumSound(soundEvent, SoundSource.AMBIENT);
     }
 }
