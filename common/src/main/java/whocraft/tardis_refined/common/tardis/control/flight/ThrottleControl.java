@@ -14,10 +14,10 @@ import java.util.Optional;
 
 public class ThrottleControl extends Control {
     public ThrottleControl(ResourceLocation id) {
-        super(id);
+        super(id, true);
     }
     public ThrottleControl(ResourceLocation id, String langId){
-        super(id, langId);
+        super(id, langId, true);
     }
 
     @Override

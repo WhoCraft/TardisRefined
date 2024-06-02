@@ -15,13 +15,24 @@ import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 public abstract class Control {
     protected final ResourceLocation id;
     protected final String langId;
+    /** Determines if this Control should be used for the FlightDance. This can be expanded to be used for other purposes in the future.*/
+    private boolean isCriticalForTardisOperation = false;
 
-    protected Control(ResourceLocation id, String langId){
+    protected Control(ResourceLocation id, String langId, boolean isCriticalForTardisOperation){
         this.id = id;
         this.langId = langId;
+        this.isCriticalForTardisOperation = isCriticalForTardisOperation;
     }
+    protected Control(ResourceLocation id, String langId){
+        this(id, langId, false);
+    }
+
+    protected Control(ResourceLocation id, boolean isCriticalForTardisOperation){
+        this(id, "control." + id.getNamespace() + "." + id.getPath(), isCriticalForTardisOperation);
+    }
+
     protected Control(ResourceLocation id){
-        this(id, "control." + id.getNamespace() + "." + id.getPath());
+        this(id, false);
     }
 
     private PitchedSound successSound = new PitchedSound(SoundEvents.ARROW_HIT_PLAYER);
@@ -85,17 +96,18 @@ public abstract class Control {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         Control control = (Control) o;
 
-        return getId().equals(control.getId());
+        return this.getId().equals(control.getId());
     }
 
     @Override
     public int hashCode() {
         return getId().hashCode();
     }
+    /** Determines if the Control will have a custom name that will display other information. E.g. Monitor control shows flight progress*/
     public boolean hasCustomName() {
         return false;
     }
@@ -104,4 +116,16 @@ public abstract class Control {
         return Component.translatable(controlSpecification.control().getTranslationKey());
     }
 
+    /** Determines if this Control should be used for the FlightDance.
+     *  <br> This can be expanded to be used for other purposes in the future.
+     * @return true if shouldn't be included in FlightDance, false if allowed to be included in FlightDance.
+     */
+    public boolean isCriticalForTardisOperation() {
+        return this.isCriticalForTardisOperation;
+    }
+
+    public Control setCriticalForTardisOperation(boolean criticalForTardisOperation) {
+        this.isCriticalForTardisOperation = criticalForTardisOperation;
+        return this;
+    }
 }
