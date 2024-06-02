@@ -4,19 +4,15 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -25,12 +21,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.device.CorridorTeleporterBlockEntity;
-import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.util.ClientHelper;
-import whocraft.tardis_refined.common.util.TRTeleporter;
-import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
-import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class CorridorTeleporterBlock extends Block implements EntityBlock {
 
@@ -58,12 +49,12 @@ public class CorridorTeleporterBlock extends Block implements EntityBlock {
         };
     }
 
-    
+
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
 
-        if (!level.isClientSide()){
-            ServerLevel serverLevel = (ServerLevel)level;
+        if (!level.isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof CorridorTeleporterBlockEntity corridorTeleporterBlockEntity) {
                 corridorTeleporterBlockEntity.startTeleporterTimer();
             }

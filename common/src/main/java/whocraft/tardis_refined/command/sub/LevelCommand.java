@@ -23,28 +23,28 @@ public class LevelCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("level")
                 .then(
-                    Commands.literal("points")
-                        .then(
-                                Commands.literal("get").then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::getDimensionPoints))
-                        )
-                        .then(
-                                Commands.literal("set").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::setDimensionPoints)))
-                        )
-                        .then(
-                                Commands.literal("add").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::addDimensionPoints)))
-                        )
+                        Commands.literal("points")
+                                .then(
+                                        Commands.literal("get").then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::getDimensionPoints))
+                                )
+                                .then(
+                                        Commands.literal("set").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::setDimensionPoints)))
+                                )
+                                .then(
+                                        Commands.literal("add").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::addDimensionPoints)))
+                                )
                 )
                 .then(
                         Commands.literal("xp")
-                        .then(
-                                Commands.literal("get").then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::getDimensionXp))
-                        )
-                        .then(
-                                Commands.literal("set").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::setDimensionXp)))
-                        )
-                        .then(
-                                Commands.literal("add").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::addDimensionXp)))
-                        )
+                                .then(
+                                        Commands.literal("get").then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::getDimensionXp))
+                                )
+                                .then(
+                                        Commands.literal("set").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::setDimensionXp)))
+                                )
+                                .then(
+                                        Commands.literal("add").then(Commands.argument("amount", IntegerArgumentType.integer()).then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(LevelCommand::addDimensionXp)))
+                                )
                 );
 
 

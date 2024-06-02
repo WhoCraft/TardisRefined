@@ -2,14 +2,14 @@ package whocraft.tardis_refined.common.tardis.themes.console;
 
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
-import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.registry.TRControlRegistry;
 
 public class NukaConsoleTheme extends ConsoleThemeDetails {
 
     @Override
     public ControlSpecification[] getControlSpecification() {
-        return new ControlSpecification[] {
+        return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(0.22f, 0.56f, -1.01f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(-0.95f, 0.63f, -0.42f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(TRControlRegistry.Y, new Vector3f(-0.99f, 0.63f, -0.33f), EntityDimensions.scalable(0.06f, 0.06f)),

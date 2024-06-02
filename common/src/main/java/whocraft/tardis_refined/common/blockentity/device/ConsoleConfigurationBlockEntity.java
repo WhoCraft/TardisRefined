@@ -18,19 +18,19 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
 
     private ResourceLocation consoleTheme;
 
-    public ConsoleConfigurationBlockEntity( BlockPos blockPos, BlockState blockState) {
+    public ConsoleConfigurationBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), blockPos, blockState);
         this.consoleTheme = ConsoleTheme.FACTORY.getId();
     }
 
-    public ResourceLocation theme(){
-        if (this.consoleTheme == null){
+    public ResourceLocation theme() {
+        if (this.consoleTheme == null) {
             this.consoleTheme = ConsoleTheme.FACTORY.getId();
         }
         return this.consoleTheme;
     }
 
-    public void setConsoleTheme(ResourceLocation themeId){
+    public void setConsoleTheme(ResourceLocation themeId) {
         this.consoleTheme = themeId;
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
         this.setChanged();
@@ -54,7 +54,7 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
             this.consoleTheme = themeId;
         }
 
-        if (this.consoleTheme == null){
+        if (this.consoleTheme == null) {
             this.consoleTheme = this.theme();
         }
 

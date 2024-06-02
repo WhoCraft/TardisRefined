@@ -1,12 +1,9 @@
 package whocraft.tardis_refined.common.dimension.fabric;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -22,43 +19,20 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.sync.SyncLevelListMessage;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.dimension.DimensionHandler.*;
+import static whocraft.tardis_refined.common.dimension.DimensionHandler.LEVELS;
+import static whocraft.tardis_refined.common.dimension.DimensionHandler.addDimension;
 import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 public class DimensionHandlerImpl {
 
-    public static void loadLevels(ServerLevel serverLevel) {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        if (!file.exists()) return;
-
-        Reader reader = null;
-        try {
-            reader = Files.newBufferedReader(file.toPath());
-
-            JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
-            for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
-                TardisRefined.LOGGER.info("Attempting to load {}", dimension.getAsString());
-                DimensionHandler.getOrCreateInterior(serverLevel, new ResourceLocation(dimension.getAsString()));
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 

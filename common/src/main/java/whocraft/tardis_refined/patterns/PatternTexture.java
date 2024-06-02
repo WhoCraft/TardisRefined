@@ -4,12 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-/** Common template for texture objects used in instances of {@link BasePattern}*/
-public class PatternTexture{
 
-    private final ResourceLocation textureLocation, emissiveTexture;
-
-    private boolean hasEmissiveTexture = false;
+/**
+ * Common template for texture objects used in instances of {@link BasePattern}
+ */
+public class PatternTexture {
 
     private static final Codec<PatternTexture> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
@@ -17,6 +16,8 @@ public class PatternTexture{
                 Codec.BOOL.fieldOf("emissive").forGetter(PatternTexture::emissive)
         ).apply(instance, PatternTexture::new);
     });
+    private final ResourceLocation textureLocation, emissiveTexture;
+    private boolean hasEmissiveTexture = false;
 
     public PatternTexture(String textureLocation, boolean hasEmissiveTexture) {
         this(new ResourceLocation(TardisRefined.MODID, textureLocation), hasEmissiveTexture);
@@ -36,6 +37,9 @@ public class PatternTexture{
         this.emissiveTexture = new ResourceLocation(textureLocation.getNamespace(), textureLocation.getPath().replace(".png", "_emissive.png"));
     }
 
+    public static Codec<PatternTexture> getCodec() {
+        return CODEC;
+    }
 
     public boolean emissive() {
         return this.hasEmissiveTexture;
@@ -52,10 +56,6 @@ public class PatternTexture{
 
     public ResourceLocation texture() {
         return this.textureLocation;
-    }
-
-    public static Codec<PatternTexture> getCodec() {
-        return CODEC;
     }
 
 }

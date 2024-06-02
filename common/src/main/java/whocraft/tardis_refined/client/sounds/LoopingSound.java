@@ -19,6 +19,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     public static LoopingSound ARS_HUMMING = null;
     public static LoopingSound FLIGHT_LOOP = null;
     public static LoopingSound GRAVITY_LOOP = null;
+
     public LoopingSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
         attenuation = Attenuation.NONE;
@@ -27,8 +28,14 @@ public class LoopingSound extends AbstractTickableSoundInstance {
         volume = 0.5f;
     }
 
-    public void setVolume(float volume) {
-        this.volume = volume;
+    public static boolean shouldMinecraftMusicStop(SoundManager soundManager) {
+        return soundManager.isActive(FLIGHT_LOOP) || soundManager.isActive(ARS_HUMMING) || soundManager.isActive(HumSoundManager.getCurrentSound());
+    }
+
+    public static void setupSounds() {
+        LoopingSound.ARS_HUMMING = new LoopingSound(TRSoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
+        LoopingSound.FLIGHT_LOOP = new LoopingSound(TRSoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
+        LoopingSound.GRAVITY_LOOP = new LoopingSound(TRSoundRegistry.GRAVITY_TUNNEL.get(), SoundSource.AMBIENT);
     }
 
     @Override
@@ -36,13 +43,17 @@ public class LoopingSound extends AbstractTickableSoundInstance {
         return volume;
     }
 
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
+    public void setVolume(float volume) {
+        this.volume = volume;
     }
 
     @Override
     public float getPitch() {
         return pitch;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
     }
 
     public void setLocation(Vec3 location) {
@@ -60,11 +71,11 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     @Override
     public void tick() {
         LocalPlayer player = Minecraft.getInstance().player;
-        if(player == null) return;
+        if (player == null) return;
 
         TardisClientData tardisClientData = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
 
-        if(this == LoopingSound.ARS_HUMMING) {
+        if (this == LoopingSound.ARS_HUMMING) {
             Vec3 playerVec = player.position();
             double distance = playerVec.distanceTo(new Vec3(x, y, z));
             double maxDistance = 11.0;
@@ -73,7 +84,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
             volume = (float) (fadeFactor * defaultVolume);
         }
 
-        if(this == LoopingSound.FLIGHT_LOOP){
+        if (this == LoopingSound.FLIGHT_LOOP) {
             if (tardisClientData.isFlying() && !tardisClientData.isCrashing()) {
                 LoopingSound.FLIGHT_LOOP.setLocation(player.position());
                 volume = 0.5F;
@@ -88,7 +99,7 @@ public class LoopingSound extends AbstractTickableSoundInstance {
         }
 
 
-        if(this == LoopingSound.GRAVITY_LOOP){
+        if (this == LoopingSound.GRAVITY_LOOP) {
             if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
                 LoopingSound.GRAVITY_LOOP.setLocation(player.position());
                 volume = 0.5F;
@@ -102,16 +113,6 @@ public class LoopingSound extends AbstractTickableSoundInstance {
     @Override
     public Sound getSound() {
         return super.getSound();
-    }
-
-    public static boolean shouldMinecraftMusicStop(SoundManager soundManager){
-        return soundManager.isActive(FLIGHT_LOOP) || soundManager.isActive(ARS_HUMMING) || soundManager.isActive(HumSoundManager.getCurrentSound());
-    }
-
-    public static void setupSounds(){
-        LoopingSound.ARS_HUMMING = new LoopingSound(TRSoundRegistry.ARS_HUM.get(), SoundSource.AMBIENT);
-        LoopingSound.FLIGHT_LOOP = new LoopingSound(TRSoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT);
-        LoopingSound.GRAVITY_LOOP = new LoopingSound(TRSoundRegistry.GRAVITY_TUNNEL.get(), SoundSource.AMBIENT);
     }
 
 }

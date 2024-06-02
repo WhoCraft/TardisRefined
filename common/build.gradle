@@ -24,6 +24,9 @@ dependencies {
         exclude(group: "net.fabricmc.fabric-api")
         transitive(false)
     }
+
+    modCompileOnly("com.simibubi.create:create-fabric-${minecraft_version}:${create_version_fabric}")
+
 }
 
 publishing {

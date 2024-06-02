@@ -1,9 +1,6 @@
 package whocraft.tardis_refined.common.tardis.control;
 
 import net.minecraft.util.StringRepresentable;
-import whocraft.tardis_refined.common.tardis.control.flight.*;
-import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
-import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
 import java.util.Locale;
 
@@ -39,6 +36,15 @@ public enum ConsoleControl implements StringRepresentable {
         this.langId = langId;
     }
 
+    public static ConsoleControl findOr(String id, ConsoleControl control) {
+        for (ConsoleControl value : ConsoleControl.values()) {
+            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
+                return value;
+            }
+        }
+        return control;
+    }
+
     @Override
     public String getSerializedName() {
         return this.id;
@@ -50,14 +56,5 @@ public enum ConsoleControl implements StringRepresentable {
 
     public String getTranslationKey() {
         return langId;
-    }
-
-    public static ConsoleControl findOr(String id, ConsoleControl control) {
-        for (ConsoleControl value : ConsoleControl.values()) {
-            if (value.name().toLowerCase(Locale.ENGLISH).matches(id.toLowerCase(Locale.ENGLISH))) {
-                return value;
-            }
-        }
-        return control;
     }
 }

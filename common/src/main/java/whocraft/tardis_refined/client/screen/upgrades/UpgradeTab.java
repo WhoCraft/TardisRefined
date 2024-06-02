@@ -24,21 +24,21 @@ import java.util.Map;
 public class UpgradeTab {
 
     public static final int GRID_SIZE = 30;
+    public final UpgradeHandler upgradeHandler;
     private final Minecraft minecraft;
     private final UpgradesScreen screen;
     private final UpgradeTabType type;
     private final int index;
-    public final UpgradeHandler upgradeHandler;
     private final Component title;
     private final List<UpgradeWidget> entries = new ArrayList<>();
     private final List<Connection> connections = new ArrayList<>();
+    public float fade;
     private double scrollX;
     private double scrollY;
     private int minX = 2147483647;
     private int minY = 2147483647;
     private int maxX = -2147483648;
     private int maxY = -2147483648;
-    public float fade;
     private boolean centered;
 
     public UpgradeTab(Minecraft minecraft, UpgradesScreen UpgradesScreen, UpgradeTabType tabType, int i, UpgradeHandler powerHolder) {
@@ -49,6 +49,21 @@ public class UpgradeTab {
         this.upgradeHandler = powerHolder;
         this.title = Component.literal("");
         this.populate(powerHolder);
+    }
+
+    @Nullable
+    public static UpgradeTab create(Minecraft minecraft, UpgradesScreen screen, int tabIndex, UpgradeHandler upgradeHandler) {
+        UpgradeTabType[] var4 = UpgradeTabType.values();
+
+        for (UpgradeTabType tabType : var4) {
+            if (tabIndex < tabType.getMax()) {
+                return new UpgradeTab(minecraft, screen, tabType, tabIndex, upgradeHandler);
+            }
+
+            tabIndex -= tabType.getMax();
+        }
+
+        return null;
     }
 
     public void populate(UpgradeHandler upgradeHandlerClient) {
@@ -140,7 +155,6 @@ public class UpgradeTab {
         }
     }
 
-
     private int toCoord(double d) {
         return toCoord(d, 0.5D);
     }
@@ -206,7 +220,7 @@ public class UpgradeTab {
     }
 
     public void drawIcon(GuiGraphics guiGraphics, int offsetX, int offsetY) {
-       //TODO Render iTem this.type.drawIcon(guiGraphics, DataContext.forPower(this.minecraft.player, this.powerHolder), offsetX, offsetY, this.index, this.icon);
+        //TODO Render iTem this.type.drawIcon(guiGraphics, DataContext.forPower(this.minecraft.player, this.powerHolder), offsetX, offsetY, this.index, this.icon);
     }
 
     public void drawContents(GuiGraphics guiGraphics, int x, int y) {
@@ -290,21 +304,6 @@ public class UpgradeTab {
 
     public boolean isMouseOver(int offsetX, int offsetY, double mouseX, double mouseY) {
         return this.type.isMouseOver(offsetX, offsetY, this.index, mouseX, mouseY);
-    }
-
-    @Nullable
-    public static UpgradeTab create(Minecraft minecraft, UpgradesScreen screen, int tabIndex, UpgradeHandler upgradeHandler) {
-        UpgradeTabType[] var4 = UpgradeTabType.values();
-
-        for (UpgradeTabType tabType : var4) {
-            if (tabIndex < tabType.getMax()) {
-                return new UpgradeTab(minecraft, screen, tabType, tabIndex, upgradeHandler);
-            }
-
-            tabIndex -= tabType.getMax();
-        }
-
-        return null;
     }
 
     public void scroll(double dragX, double dragY) {

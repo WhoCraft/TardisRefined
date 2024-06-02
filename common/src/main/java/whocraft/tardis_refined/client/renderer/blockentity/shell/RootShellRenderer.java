@@ -19,10 +19,9 @@ import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 
 public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEntity>, BlockEntityRendererProvider<RootedShellBlockEntity> {
 
-    private static RootShellModel rootShellModel;
-
     private static final ResourceLocation rootShellTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell.png");
     private static final ResourceLocation rootShellClosed = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell_closed.png");
+    private static RootShellModel rootShellModel;
 
     public RootShellRenderer(BlockEntityRendererProvider.Context context) {
         rootShellModel = new RootShellModel(context.bakeLayer((ModelRegistry.ROOT_SHELL)));
@@ -39,13 +38,15 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
 
         boolean isOpen = blockEntity.getBlockState().getValue(ShellBaseBlock.OPEN);
 
-        rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent( (isOpen) ? rootShellTexture : rootShellClosed)),
+        rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent((isOpen) ? rootShellTexture : rootShellClosed)),
                 i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         float sine = 0;
         if (blockstate.getValue(ShellBaseBlock.REGEN)) {
             sine = (float) ((Math.sin(0.1 * (blockEntity.getLevel().dayTime())) * 1));
-            if (sine < 0) {sine =0;}
+            if (sine < 0) {
+                sine = 0;
+            }
 
             rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(rootShellClosed)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);

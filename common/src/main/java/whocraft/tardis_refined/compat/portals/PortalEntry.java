@@ -6,9 +6,9 @@ import java.util.UUID;
 
 public class PortalEntry {
 
-    private BOTIPortalEntity internalPortal, shellPortal;
     ShellTheme shellTheme;
     UUID tardisId;
+    private BOTIPortalEntity internalPortal, shellPortal;
 
     public PortalEntry(BOTIPortalEntity internalPortal, BOTIPortalEntity shellPortal, ShellTheme shellTheme, UUID tardisId) {
         this.internalPortal = internalPortal;
@@ -33,7 +33,7 @@ public class PortalEntry {
         return internalPortal;
     }
 
-    public boolean isPortalValidForEntry(BOTIPortalEntity portalEntity){
+    public boolean isPortalValidForEntry(BOTIPortalEntity portalEntity) {
         return portalEntity.getUUID() != internalPortal.getUUID() && portalEntity.getUUID() != shellPortal.getUUID();
     }
 

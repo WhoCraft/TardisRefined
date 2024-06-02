@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -23,11 +22,11 @@ import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 
-public class GlobalDoorBlock extends InternalDoorBlock{
+public class GlobalDoorBlock extends InternalDoorBlock {
 
     protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 32.0D, 0.25D);
     protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 15.75D, 16.0D, 32.0D, 16.0D);
-    protected static final VoxelShape EAST_AABB= Block.box(15.75D, 0.0D, 0.0D, 16.0D, 32.0D, 16.0D);
+    protected static final VoxelShape EAST_AABB = Block.box(15.75D, 0.0D, 0.0D, 16.0D, 32.0D, 16.0D);
     protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 0.25D, 32.0D, 16.0D);
 
     public GlobalDoorBlock(Properties properties) {
@@ -45,11 +44,11 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
-        if(level instanceof ServerLevel serverLevel){
+        if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                 BlockEntity block = level.getBlockEntity(blockPos);
                 AestheticHandler aesthetics = tardisLevelOperator.getAestheticHandler();
-                if(block instanceof GlobalDoorBlockEntity globalDoorBlockEntity){
+                if (block instanceof GlobalDoorBlockEntity globalDoorBlockEntity) {
                     globalDoorBlockEntity.setShellTheme(aesthetics.getShellTheme());
                     globalDoorBlockEntity.setPattern(aesthetics.shellPattern());
                     globalDoorBlockEntity.sendUpdates();
@@ -86,7 +85,7 @@ public class GlobalDoorBlock extends InternalDoorBlock{
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        switch(blockState.getValue(FACING)) {
+        switch (blockState.getValue(FACING)) {
             case EAST:
                 return EAST_AABB;
             case SOUTH:

@@ -10,6 +10,7 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 public interface ExteriorShell {
 
     BlockPos getExitPosition();
+
     DesktopTheme getAssociatedTheme();
 
     ResourceKey<Level> getTardisId();

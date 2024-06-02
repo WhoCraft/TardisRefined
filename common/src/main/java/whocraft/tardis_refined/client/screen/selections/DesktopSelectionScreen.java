@@ -24,19 +24,21 @@ import static whocraft.tardis_refined.client.screen.selections.ShellSelectionScr
 
 public class DesktopSelectionScreen extends SelectionScreen {
 
-    private DesktopTheme currentDesktopTheme;
-
-
-    protected int imageWidth = 256;
-    protected int imageHeight = 173;
-    private int leftPos, topPos;
-
     public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/desktop.png");
     public static ResourceLocation MONITOR_TEXTURE_OVERLAY = new ResourceLocation(TardisRefined.MODID, "textures/gui/desktop_overlay.png");
     public static ResourceLocation previousImage = TardisDesktops.FACTORY_THEME.getPreviewTexture();
+    protected int imageWidth = 256;
+    protected int imageHeight = 173;
+    private DesktopTheme currentDesktopTheme;
+    private int leftPos, topPos;
 
     public DesktopSelectionScreen() {
         super(Component.translatable(ModMessages.UI_DESKTOP_SELECTION));
+    }
+
+    public static void selectDesktop(DesktopTheme theme) {
+        new ChangeDesktopMessage(Minecraft.getInstance().player.level().dimension(), theme).send();
+        Minecraft.getInstance().setScreen(null);
     }
 
     @Override
@@ -104,11 +106,6 @@ public class DesktopSelectionScreen extends SelectionScreen {
         super.render(guiGraphics, i, j, f);
 
 
-    }
-
-    public static void selectDesktop(DesktopTheme theme) {
-        new ChangeDesktopMessage(Minecraft.getInstance().player.level().dimension(), theme).send();
-        Minecraft.getInstance().setScreen(null);
     }
 
     @Override

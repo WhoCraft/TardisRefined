@@ -15,14 +15,6 @@ public class EventResult {
         this.stopListeners = stopListeners;
     }
 
-    public boolean cancelsEvent() {
-        return this.cancelEvent;
-    }
-
-    public boolean stopsListeners() {
-        return this.stopListeners;
-    }
-
     /**
      * @return Cancel the event and prevent further listeners from being executed
      */
@@ -49,6 +41,14 @@ public class EventResult {
      */
     public static EventResult pass() {
         return PASS;
+    }
+
+    public boolean cancelsEvent() {
+        return this.cancelEvent;
+    }
+
+    public boolean stopsListeners() {
+        return this.stopListeners;
     }
 
 }

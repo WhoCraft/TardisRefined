@@ -16,11 +16,11 @@ import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.create.CreateIntergrations;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
@@ -42,18 +42,28 @@ public class ModEvents {
 
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
-            DimensionHandlerImpl.loadLevels(world);
+            DimensionHandler.loadLevels(world);
+
+            if (ModCompatChecker.create()) {
+                CreateIntergrations.init();
+            }
+
 
         });
 
-        ServerTickEvents.START_SERVER_TICK.register(ControlGroupCheckers::tickServer);
+        ServerTickEvents.START_SERVER_TICK.register(new ServerTickEvents.StartTick() {
+            @Override
+            public void onStartTick(MinecraftServer server) {
+                ControlGroupCheckers.tickServer(server);
+            }
+        });
 
         ServerTickEvents.END_SERVER_TICK.register(server -> TardisTeleportData.tick());
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             DimensionHandlerImpl.clear();
 
-            if(ModCompatChecker.immersivePortals()){
+            if (ModCompatChecker.immersivePortals()) {
                 ImmersivePortals.onServerStopping(server);
             }
         });

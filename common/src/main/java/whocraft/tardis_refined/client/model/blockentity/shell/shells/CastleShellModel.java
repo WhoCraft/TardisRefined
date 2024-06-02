@@ -39,7 +39,6 @@ public class CastleShellModel extends ShellModel {
     }
 
 
-
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();

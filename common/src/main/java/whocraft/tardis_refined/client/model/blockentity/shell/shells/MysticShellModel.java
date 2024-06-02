@@ -10,33 +10,13 @@ import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 
 
 public class MysticShellModel extends ShellModel {
-
-    private final ModelPart right_door;
-    private final ModelPart left_door;
-    private final ModelPart bone3;
-    private final ModelPart bone6;
-    private final ModelPart bone7;
-    private final ModelPart bone10;
-    private final ModelPart bone11;
-    private final ModelPart bone;
-    private final ModelPart side_animations;
-    private final ModelPart bone56;
-    private final ModelPart bone58;
-    private final ModelPart gold_animations;
-    private final ModelPart bb_main;
-    private final ModelPart root;
-
 
     public static final AnimationDefinition LOOP = AnimationDefinition.Builder.withLength(8.96f).looping()
             .addAnimation("bone14",
@@ -751,6 +731,20 @@ public class MysticShellModel extends ShellModel {
                                     AnimationChannel.Interpolations.LINEAR),
                             new Keyframe(8.96f, KeyframeAnimations.degreeVec(0f, 0f, 360f),
                                     AnimationChannel.Interpolations.LINEAR))).build();
+    private final ModelPart right_door;
+    private final ModelPart left_door;
+    private final ModelPart bone3;
+    private final ModelPart bone6;
+    private final ModelPart bone7;
+    private final ModelPart bone10;
+    private final ModelPart bone11;
+    private final ModelPart bone;
+    private final ModelPart side_animations;
+    private final ModelPart bone56;
+    private final ModelPart bone58;
+    private final ModelPart gold_animations;
+    private final ModelPart bb_main;
+    private final ModelPart root;
 
     public MysticShellModel(ModelPart root) {
         super(root);

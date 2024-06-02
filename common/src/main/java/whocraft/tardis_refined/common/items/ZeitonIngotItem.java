@@ -24,7 +24,7 @@ public class ZeitonIngotItem extends Item {
         if (level.getBlockState(useOnContext.getClickedPos()).getBlock() == Blocks.IRON_BLOCK) {
             level.setBlockAndUpdate(useOnContext.getClickedPos(), TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get().defaultBlockState());
             itemInHand.shrink(1);
-            level.playSound(null, useOnContext.getClickedPos(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1, 1 );
+            level.playSound(null, useOnContext.getClickedPos(), SoundEvents.STONE_BREAK, SoundSource.BLOCKS, 1, 1);
         }
 
         if (level.getBlockState(useOnContext.getClickedPos()).getBlock() == Blocks.COPPER_BLOCK) {

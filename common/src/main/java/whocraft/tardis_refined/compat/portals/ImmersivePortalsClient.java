@@ -9,7 +9,7 @@ public class ImmersivePortalsClient {
 
     @Environment(EnvType.CLIENT)
     public static void doClientRenderers() {
-        if(ImmersivePortals.BOTI_PORTAL == null) return;
+        if (ImmersivePortals.BOTI_PORTAL == null) return;
         EntityRendererRegistry.register(ImmersivePortals.BOTI_PORTAL.get(), BotiPortalRenderer::new);
     }
 

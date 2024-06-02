@@ -12,12 +12,11 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class  UpgradesScreen extends Screen {
+public class UpgradesScreen extends Screen {
 
     public static final ResourceLocation WINDOW = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/window.png");
     public static final ResourceLocation OVERLAY = new ResourceLocation(TardisRefined.MODID, "textures/gui/upgrades/upgrades_overlay.png");
@@ -36,31 +35,48 @@ public class  UpgradesScreen extends Screen {
 
     public static final int WINDOW_WIDTH = 256;
     public static final int WINDOW_HEIGHT = 173;
-    private static final int WINDOW_INSIDE_X = 10;
-    private static final int WINDOW_INSIDE_Y = 18;
     public static final int WINDOW_INSIDE_WIDTH = 234 - 10;
     public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
+    private static final int WINDOW_INSIDE_X = 10;
+    private static final int WINDOW_INSIDE_Y = 18;
+    private static int tabPage;
+    private static int maxPages;
     private final List<UpgradeTab> tabs = new ArrayList<>();
     private final UpgradeHandler upgradeHandler;
     @Nullable
     public UpgradeTab selectedTab;
-    private boolean isScrolling;
-    private static int tabPage;
-    private static int maxPages;
     public Screen overlayScreen = null;
+    private boolean isScrolling;
 
     public UpgradesScreen(UpgradeHandler upgradeHandler) {
         super(Component.empty());
         this.upgradeHandler = upgradeHandler;
     }
 
+    public static boolean isPotentialParentUnlocked(Upgrade upgrade, UpgradeHandler upgradeHandler) {
+        if (upgrade.getParent() == null) {
+            return true;
+        }
+        return upgrade.getParent().isUnlocked(upgradeHandler);
+    }
+
+    public static ResourceLocation getFrame(Upgrade.UpgradeType upgradeType, boolean isUnlocked) {
+        if (isUnlocked) {
+            return upgradeType == Upgrade.UpgradeType.MAIN_UPGRADE ? MAIN_UPGRADE : SUB_UPGRADE;
+        }
+        return upgradeType == Upgrade.UpgradeType.MAIN_UPGRADE ? MAIN_UPGRADE_LOCKED : SUB_UPGRADE_LOCKED;
+    }
+
+    public static ResourceLocation getBox(boolean isUnlocked) {
+        return isUnlocked ? OBTAINED_BOX : UNOBTAINED_BOX;
+    }
 
     @Override
     protected void init() {
         this.tabs.clear();
         this.selectedTab = null;
 
-        UpgradeTab upgradeTab = UpgradeTab.create(this.minecraft, this, 0, upgradeHandler );
+        UpgradeTab upgradeTab = UpgradeTab.create(this.minecraft, this, 0, upgradeHandler);
         this.tabs.add(upgradeTab);
 
 
@@ -112,7 +128,7 @@ public class  UpgradesScreen extends Screen {
                     if (entry != null) {
                         Upgrade upgrade = entry.upgradeEntry;
                         boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
-                        if(upgrade.isUnlocked(upgradeHandler)) return false;
+                        if (upgrade.isUnlocked(upgradeHandler)) return false;
                         this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired(), this));
                     }
                 }
@@ -120,13 +136,6 @@ public class  UpgradesScreen extends Screen {
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    public static boolean isPotentialParentUnlocked(Upgrade upgrade, UpgradeHandler upgradeHandler) {
-        if(upgrade.getParent() == null){
-            return true;
-        }
-        return upgrade.getParent().isUnlocked(upgradeHandler);
     }
 
     @Override
@@ -160,7 +169,7 @@ public class  UpgradesScreen extends Screen {
             guiGraphics.drawString(this.minecraft.font, "Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width("Points: " + upgradeHandler.getUpgradePoints()) / 2, j + WINDOW_HEIGHT - 15, ChatFormatting.BLACK.getColor(), false);
         }
 
-        guiGraphics.drawString(this.minecraft.font,  "XP: " + upgradeHandler.getUpgradeXP() + " / 100", width / 2 - font.width(  "XP: " + upgradeHandler.getUpgradeXP() + " / 100") / 2, j + 6  , ChatFormatting.BLACK.getColor(), false);
+        guiGraphics.drawString(this.minecraft.font, "XP: " + upgradeHandler.getUpgradeXP() + " / 100", width / 2 - font.width("XP: " + upgradeHandler.getUpgradeXP() + " / 100") / 2, j + 6, ChatFormatting.BLACK.getColor(), false);
 
 
     }
@@ -246,23 +255,9 @@ public class  UpgradesScreen extends Screen {
         this.overlayScreen.init(this.minecraft, this.width, this.height);
     }
 
-
     public boolean isOverOverlayScreen(double mouseX, double mouseY) {
         return overlayScreen != null;
     }
-
-
-    public static ResourceLocation getFrame(Upgrade.UpgradeType upgradeType, boolean isUnlocked) {
-        if (isUnlocked) {
-            return upgradeType == Upgrade.UpgradeType.MAIN_UPGRADE ? MAIN_UPGRADE : SUB_UPGRADE;
-        }
-        return upgradeType == Upgrade.UpgradeType.MAIN_UPGRADE ? MAIN_UPGRADE_LOCKED : SUB_UPGRADE_LOCKED;
-    }
-
-    public static ResourceLocation getBox(boolean isUnlocked) {
-        return isUnlocked ? OBTAINED_BOX : UNOBTAINED_BOX;
-    }
-
 
 
 }

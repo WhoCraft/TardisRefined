@@ -55,9 +55,9 @@ public class MiscHelper {
     public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
 
         TardisRefined.LOGGER.debug("Teleported {} to {} {} {}", pEntity.getDisplayName().getString(), pX, pY, pZ);
-        int xRound = (int)pX;
-        int yRound = (int)pY;
-        int zRound = (int)pZ;
+        int xRound = (int) pX;
+        int yRound = (int) pY;
+        int zRound = (int) pZ;
 
         BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
 
@@ -140,7 +140,7 @@ public class MiscHelper {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
             for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
                 boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
-                if(shouldCancel) return true;
+                if (shouldCancel) return true;
             }
         }
 
@@ -152,11 +152,11 @@ public class MiscHelper {
     }
 
     public static String getCleanName(String name) {
-       var noUnderscores = name.replace("_", " ");
-       return WordUtils.capitalizeFully(noUnderscores);
+        var noUnderscores = name.replace("_", " ");
+        return WordUtils.capitalizeFully(noUnderscores);
     }
 
-    public static DamageSource getDamageSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey){
+    public static DamageSource getDamageSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey) {
         Holder.Reference<DamageType> damageType = level.registryAccess()
                 .registryOrThrow(Registries.DAMAGE_TYPE)
                 .getHolderOrThrow(damageTypeResourceKey);
@@ -166,14 +166,15 @@ public class MiscHelper {
 
     /**
      * Combines elements of two sets togethor into a new set
+     *
      * @param setOne
      * @param setTwo
-     * @return
      * @param <T>
+     * @return
      */
-    public static <T extends Object> ArrayList<T> unionList(List<T> setOne, List<T> setTwo){
-        if(setOne != null){
-            if (setTwo != null){
+    public static <T extends Object> ArrayList<T> unionList(List<T> setOne, List<T> setTwo) {
+        if (setOne != null) {
+            if (setTwo != null) {
                 ArrayList<T> finalSet = new ArrayList<>();
                 finalSet.addAll(setOne);
                 finalSet.addAll(setTwo);

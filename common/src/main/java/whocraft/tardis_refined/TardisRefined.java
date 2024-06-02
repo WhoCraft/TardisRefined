@@ -20,20 +20,17 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
-import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
 
 public class TardisRefined {
 
-    public static boolean IS_CONTROL_GROUP = false;
-
     public static final String MODID = "tardis_refined";
     public static final String NAME = "Tardis Refined";
     public static final String PLATFORM_ERROR = "Something has gone critically wrong with platform definitions. Please contact the mod author.";
-
     public static final Logger LOGGER = LogUtils.getLogger();
+    public static boolean IS_CONTROL_GROUP = false;
     public static Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
             .registerTypeHierarchyAdapter(Component.class, new Component.Serializer()).
@@ -69,11 +66,13 @@ public class TardisRefined {
 
     }
 
-    /** Register default entries for data-driven registries. This is encapsulated in a method to call at different game load stages depending on the mod-loader
+    /**
+     * Register default entries for data-driven registries. This is encapsulated in a method to call at different game load stages depending on the mod-loader
      * <br> E.g. On Forge, Console Patterns require Console Theme registry to be fully populated before the pattern can lookup a Console Theme object
      * <br> On Forge: This is called in ServerAboutToStartEvent, which is after registries are frozen, but before the server has started and before commands are registered, because commands still reference Console/Shell Themes
-     * <br> On Fabric: The custom registries for Console/Shell Theme are created instantly, so there is no need to register the patterns at a specific stage.*/
-    public static void registerFallbackEntries(){
+     * <br> On Fabric: The custom registries for Console/Shell Theme are created instantly, so there is no need to register the patterns at a specific stage.
+     */
+    public static void registerFallbackEntries() {
         /* Need to register a default list of entries because on Fabric Cardinal Components classloads the TardisClientData class early on, before datapack entries have been added.
         We will use these as fallback values when looking up patterns.
          */
@@ -82,6 +81,7 @@ public class TardisRefined {
         TardisHums.registerDefaultHums();
 
         TRARSStructurePieceRegistry.register();
+
     }
 
 }

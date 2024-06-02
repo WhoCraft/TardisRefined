@@ -2,10 +2,8 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -16,14 +14,18 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 
 public class RootShellDoorBlock extends GlobalDoorBlock {
 
     protected static final VoxelShape SOUTH_AABB, NORTH_AABB, WEST_AABB, EAST_AABB;
 
+    static {
+        NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 32.0D, 3.0D);
+        SOUTH_AABB = Block.box(0.0D, 0.0D, 13.0D, 16.0D, 32.0D, 16.0D);
+        EAST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 32.0D, 16.0D);
+        WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 32.0D, 16.0D);
+    }
 
     public RootShellDoorBlock(Properties properties) {
         super(properties);
@@ -42,9 +44,15 @@ public class RootShellDoorBlock extends GlobalDoorBlock {
             case SOUTH -> {
                 return SOUTH_AABB;
             }
-            case NORTH -> {return NORTH_AABB;}
-            case WEST -> {return WEST_AABB;}
-            case EAST -> {return EAST_AABB;}
+            case NORTH -> {
+                return NORTH_AABB;
+            }
+            case WEST -> {
+                return WEST_AABB;
+            }
+            case EAST -> {
+                return EAST_AABB;
+            }
         }
 
         return SOUTH_AABB;
@@ -52,29 +60,22 @@ public class RootShellDoorBlock extends GlobalDoorBlock {
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        switch(blockState.getValue(FACING)) {
+        switch (blockState.getValue(FACING)) {
 
             case SOUTH:
-                return SOUTH_AABB ;
+                return SOUTH_AABB;
             case WEST:
                 return WEST_AABB;
             case NORTH:
                 return NORTH_AABB;
             case EAST:
             default:
-                return  EAST_AABB;
+                return EAST_AABB;
         }
     }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         return InteractionResult.SUCCESS;
-    }
-
-    static {
-        NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 32.0D, 3.0D);
-        SOUTH_AABB = Block.box(0.0D, 0.0D, 13.0D, 16.0D, 32.0D, 16.0D);
-        EAST_AABB = Block.box(13.0D, 0.0D, 0.0D, 16.0D, 32.0D, 16.0D);
-        WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 3.0D, 32.0D, 16.0D);
     }
 }

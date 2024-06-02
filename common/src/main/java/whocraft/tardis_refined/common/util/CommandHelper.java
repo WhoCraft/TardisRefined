@@ -60,7 +60,9 @@ public class CommandHelper {
         return component;
     }
 
-    /** Creates a Text Component but doesn't allow copying of the tooltip text. Instead, will copy the text in the text component*/
+    /**
+     * Creates a Text Component but doesn't allow copying of the tooltip text. Instead, will copy the text in the text component
+     */
     public static MutableComponent createTextWithoutTooltipCopying(String text, String tooltipText) {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {

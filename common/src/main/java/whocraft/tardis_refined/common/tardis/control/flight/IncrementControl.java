@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.tardis.control.flight;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
@@ -15,9 +14,11 @@ public class IncrementControl extends Control {
     public IncrementControl(ResourceLocation id) {
         super(id);
     }
-    public IncrementControl(ResourceLocation id, String langId){
+
+    public IncrementControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
+
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         return this.incrementCoord(operator, theme, controlEntity, player, 1);
@@ -28,8 +29,8 @@ public class IncrementControl extends Control {
         return this.incrementCoord(operator, theme, controlEntity, player, -1);
     }
 
-    private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount){
-        if (!operator.getLevel().isClientSide()){
+    private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount) {
+        if (!operator.getLevel().isClientSide()) {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             pilotManager.cycleCordIncrement(incAmount);
             int currentIncAmount = pilotManager.getCordIncrement();

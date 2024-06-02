@@ -11,6 +11,7 @@ public class ARSStructurePiece {
 
     /**
      * 3x3 chunk structure used to place infinite corridor generation.
+     *
      * @param resourceLocation ResourceLocation of the structure file
      */
     public ARSStructurePiece(ResourceLocation resourceLocation) {
@@ -19,10 +20,12 @@ public class ARSStructurePiece {
 
     /**
      * Fetch the resource location of the piece
+     *
      * @return resource location of the piece
      */
-    public ResourceLocation getResourceLocation() {return resourceLocation;}
-
+    public ResourceLocation getResourceLocation() {
+        return resourceLocation;
+    }
 
 
 }

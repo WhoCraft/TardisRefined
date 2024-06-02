@@ -5,10 +5,10 @@ package whocraft.tardis_refined.client.model.blockentity.console;
 // Paste this class into your mod and generate all required imports
 
 
-import net.minecraft.client.model.HierarchicalModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
+    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
     private final ModelPart base_control;
     private final ModelPart rotor;
     private final ModelPart rotor_purple;
@@ -35,8 +36,6 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
     private final ModelPart root;
     private final ModelPart throttle;
     private final ModelPart handbrake;
-
-    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
 
     public CrystalConsoleModel(ModelPart root) {
         this.root = root;
@@ -813,8 +812,7 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
         }
 
 
-
-        float rot = -0.5f + ( 0.5f * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
+        float rot = -0.5f + (0.5f * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 
         this.throttle.xRot = rot;
 

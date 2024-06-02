@@ -6,7 +6,6 @@ import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.commands.synchronization.SingletonArgumentInfo;
 import net.minecraft.core.registries.Registries;
-
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.arguments.DesktopArgumentType;
 import whocraft.tardis_refined.command.arguments.ShellArgumentType;

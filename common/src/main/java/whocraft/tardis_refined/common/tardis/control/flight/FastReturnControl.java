@@ -3,7 +3,6 @@ package whocraft.tardis_refined.common.tardis.control.flight;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
@@ -15,7 +14,8 @@ public class FastReturnControl extends Control {
     public FastReturnControl(ResourceLocation id) {
         super(id);
     }
-    public FastReturnControl(ResourceLocation id, String langId){
+
+    public FastReturnControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 
@@ -26,7 +26,7 @@ public class FastReturnControl extends Control {
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        if (!operator.getLevel().isClientSide()){
+        if (!operator.getLevel().isClientSide()) {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             if (pilotManager.preloadFastReturn()) {
                 return true;
@@ -36,6 +36,7 @@ public class FastReturnControl extends Control {
         }
         return false;
     }
+
     @Override
     public PitchedSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
         return new PitchedSound(SoundEvents.NOTE_BLOCK_BIT.value(), 1F);

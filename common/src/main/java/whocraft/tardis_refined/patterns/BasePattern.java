@@ -9,13 +9,15 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.util.Objects;
-/** Template for patterns. Patterns are assigned to a theme based on PatternCollection, though they also hold an instance of the Theme ID for lookup purposes.*/
+
+/**
+ * Template for patterns. Patterns are assigned to a theme based on PatternCollection, though they also hold an instance of the Theme ID for lookup purposes.
+ */
 public abstract class BasePattern {
 
     private final ResourceLocation identifier;
-    private String name;
-
     protected ResourceLocation themeId;
+    private String name;
 
     public BasePattern(String id) {
         this(new ResourceLocation(TardisRefined.MODID, id));
@@ -45,9 +47,11 @@ public abstract class BasePattern {
         return this.identifier;
     }
 
-    public ResourceLocation getThemeId() {return this.themeId;}
+    public ResourceLocation getThemeId() {
+        return this.themeId;
+    }
 
-    public BasePattern setThemeId(ResourceLocation themeId){
+    public BasePattern setThemeId(ResourceLocation themeId) {
         this.themeId = themeId;
         return this;
     }

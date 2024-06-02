@@ -40,37 +40,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TardisInteriorManager extends BaseHandler {
+    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
     private final TardisLevelOperator operator;
+    // Pillars
+    BlockPos pillarTopLeft = new BlockPos(1024, 78, 55);
+    BlockPos pillarTopRight = new BlockPos(1002, 78, 55);
+    BlockPos pillarBottomLeft = new BlockPos(1016, 73, 55);
+    BlockPos pillarBottomRight = new BlockPos(1010, 73, 55);
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
     private boolean hasGeneratedCorridors = false;
     private int interiorGenerationCooldown = 0;
     private BlockPos corridorAirlockCenter;
     private DesktopTheme preparedTheme, currentTheme = TardisDesktops.DEFAULT_OVERGROWN_THEME;
-
-    // Pillars
-    BlockPos pillarTopLeft = new BlockPos(1024,78,55);
-    BlockPos pillarTopRight = new BlockPos(1002,78,55);
-    BlockPos pillarBottomLeft = new BlockPos(1016,73,55);
-    BlockPos pillarBottomRight = new BlockPos(1010,73,55);
-
     // Airlock systems.
     private boolean processingWarping = false;
     private int airlockCountdownSeconds = 3;
     private int airlockTimerSeconds = 5;
-
     private HumEntry humEntry = TardisHums.getDefaultHum();
-
-    public static final BlockPos STATIC_CORRIDOR_POSITION = new BlockPos(1013, 99, 5);
-
     private double fuelForIntChange = 100; // The amount of fuel required to change interior
-
-    public DesktopTheme preparedTheme() {
-        return preparedTheme;
-    }
 
     public TardisInteriorManager(TardisLevelOperator operator) {
         this.operator = operator;
+    }
+
+    public DesktopTheme preparedTheme() {
+        return preparedTheme;
     }
 
     public boolean isGeneratingDesktop() {
@@ -127,7 +122,7 @@ public class TardisInteriorManager extends BaseHandler {
 
 
         tag.putString(NbtConstants.TARDIS_IM_PREPARED_THEME, this.preparedTheme != null ? this.preparedTheme.getIdentifier().toString() : "");
-        if(currentTheme != null) {
+        if (currentTheme != null) {
             tag.putString(NbtConstants.TARDIS_IM_CURRENT_THEME, this.currentTheme.getIdentifier().toString());
         }
         tag.putString(NbtConstants.TARDIS_CURRENT_HUM, this.humEntry.getIdentifier().toString());
@@ -319,11 +314,11 @@ public class TardisInteriorManager extends BaseHandler {
         return level.getBlockState(pillarTopLeft).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarTopRight).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarBottomLeft).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && level.getBlockState(pillarBottomRight).getBlock() == TRBlockRegistry.ARTRON_PILLAR.get() && operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY;
     }
 
-    public void openTheEye(){
+    public void openTheEye() {
         openTheEye(false);
     }
 
-    public void setEyePillars(Level level){
+    public void setEyePillars(Level level) {
         level.setBlock(pillarTopLeft, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(pillarTopRight, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(pillarBottomLeft, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
@@ -339,7 +334,7 @@ public class TardisInteriorManager extends BaseHandler {
         AABB portalDoorLength = new AABB(1011, 72, 54, 1015, 71, 56);
         AABB portalDoorWidth = new AABB(1014, 71, 57, 1012, 72, 53);
 
-        if (forced){
+        if (forced) {
             this.setEyePillars(level);
         }
 
@@ -401,12 +396,12 @@ public class TardisInteriorManager extends BaseHandler {
         }
     }
 
-    public void setCorridorAirlockCenter(BlockPos center) {
-        this.corridorAirlockCenter = center;
-    }
-
     public BlockPos getCorridorAirlockCenter() {
         return this.corridorAirlockCenter;
+    }
+
+    public void setCorridorAirlockCenter(BlockPos center) {
+        this.corridorAirlockCenter = center;
     }
 
     public void prepareDesktop(DesktopTheme theme) {
@@ -440,6 +435,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     /**
      * Returns whether a Tardis has enough fuel to perform an interior change
+     *
      * @return true if the Tardis has enough fuel
      */
     public boolean hasEnoughFuel() {
@@ -448,6 +444,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     /**
      * The amount of fuel required to change the interior
+     *
      * @return double amount of fuel to be removed
      */
     public double getRequiredFuel() {
@@ -456,6 +453,7 @@ public class TardisInteriorManager extends BaseHandler {
 
     /**
      * Sets the amount of fuel required to change the interior
+     *
      * @param fuel the amount of fuel
      */
     private void setRequiredFuel(double fuel) {

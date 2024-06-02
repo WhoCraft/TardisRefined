@@ -1,59 +1,83 @@
 package whocraft.tardis_refined.client;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.sounds.HumSoundManager;
-import whocraft.tardis_refined.client.sounds.LoopingSound;
-import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
-import whocraft.tardis_refined.common.GravityUtil;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.TRDimensionTypes;
-import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
-import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CENTER;
 
 public class TardisClientData {
+    private static final List<TardisClientData> DATA = new ArrayList<>();
     public static int FOG_TICK_DELTA = 0; // This is for the fading in and out of the fog.
     static int MAX_FOG_TICK_DELTA = 2 * 20; // This is for adjusting how fast the fog will fade in and out.
-
     private final ResourceKey<Level> levelKey;
     public AnimationState ROTOR_ANIMATION = new AnimationState();
     public AnimationState LANDING_ANIMATION = new AnimationState();
     public AnimationState TAKEOFF_ANIMATION = new AnimationState();
+    public int landingTime = 0, takeOffTime = 0;
+    //Not saved to disk, no real reason to be
+    int nextAmbientNoiseCall = 40;
+    // Independent of the hums logic
+    int nextVoiceAmbientCall = 12000;
+    private boolean flying = false;
+    // Control specifics
+    private int throttleStage = 0;
+    private boolean isLanding = false;
+    private boolean isHandbrakeEngaged = false;
+    private boolean isTakingOff = false;
+    private boolean isInDangerZone = false;
+    private boolean isCrashing = false;
+    private boolean isOnCooldown = false;
+    private float flightShakeScale = 0;
+    private double fuel = 0;
+    private double maximumFuel = 0;
+    private int tardisState = 0;
+    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
+    private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
+
+    private HumEntry humEntry = TardisHums.getDefaultHum();
 
     public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
+    }
+
+    public static void add(TardisClientData tardisClientData) {
+        DATA.add(tardisClientData);
+    }
+
+    /**
+     * Retrieves information about a Tardis instance.
+     *
+     * @param levelResourceKey The resource key of the level the Tardis is in.
+     * @return The TardisIntReactions instance containing information about the Tardis.
+     */
+    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey) {
+        for (TardisClientData data : DATA) {
+            if (data.getLevelKey().equals(levelResourceKey)) {
+                return data;
+            }
+        }
+        TardisClientData newData = new TardisClientData(levelResourceKey);
+        DATA.add(newData);
+        return newData;
+    }
+
+    public static List<TardisClientData> getAllEntries() {
+        return new ArrayList<>(DATA);
+    }
+
+    public static void clearAll() {
+        DATA.clear();
     }
 
     /**
@@ -63,57 +87,28 @@ public class TardisClientData {
         return levelKey;
     }
 
-    private boolean flying = false;
-
-    // Control specifics
-    private int throttleStage = 0;
-    private boolean isLanding = false;
-    private boolean isHandbrakeEngaged = false;
-
-    private boolean isTakingOff = false;
-    private boolean isInDangerZone = false;
-    private boolean isCrashing = false;
-    private boolean isOnCooldown = false;
-    private float flightShakeScale = 0;
-    private double fuel = 0;
-    private double maximumFuel = 0;
-
-    private int tardisState = 0;
-
-
-    //Not saved to disk, no real reason to be
-    int nextAmbientNoiseCall = 40;
-
-    // Independent of the hums logic
-    int nextVoiceAmbientCall = 12000;
-
-    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
-    private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
-
-    private HumEntry humEntry = TardisHums.getDefaultHum();
-
     public ResourceLocation getShellTheme() {
         return shellTheme;
+    }
+
+    public void setShellTheme(ResourceLocation shellTheme) {
+        this.shellTheme = shellTheme;
     }
 
     public HumEntry getHumEntry() {
         return humEntry;
     }
 
-    public void setThrottleStage(int stage) {
-        this.throttleStage = stage;
+    public void setHumEntry(HumEntry humEntry) {
+        this.humEntry = humEntry;
     }
 
     public int getThrottleStage() {
         return this.throttleStage;
     }
 
-    public void setHumEntry(HumEntry humEntry) {
-        this.humEntry = humEntry;
-    }
-
-    public void setShellTheme(ResourceLocation shellTheme) {
-        this.shellTheme = shellTheme;
+    public void setThrottleStage(int stage) {
+        this.throttleStage = stage;
     }
 
     public ResourceLocation getShellPattern() {
@@ -124,14 +119,12 @@ public class TardisClientData {
         this.shellPattern = shellPattern;
     }
 
-    public int landingTime = 0, takeOffTime = 0;
+    public boolean isFlying() {
+        return flying;
+    }
 
     public void setFlying(boolean flying) {
         this.flying = flying;
-    }
-
-    public boolean isFlying() {
-        return flying;
     }
 
     public void setIsLanding(boolean landing) {
@@ -169,16 +162,18 @@ public class TardisClientData {
     public double getFuel() {
         return fuel;
     }
+
     public void setFuel(double fuel) {
         this.fuel = fuel;
     }
+
     public double getMaximumFuel() {
         return maximumFuel;
     }
+
     public void setMaximumFuel(double fuel) {
         this.maximumFuel = fuel;
     }
-
 
     /**
      * Serializes the Tardis instance to a CompoundTag.
@@ -239,38 +234,6 @@ public class TardisClientData {
      */
     public void sync() {
         new SyncTardisClientDataMessage(getLevelKey(), serializeNBT()).sendToAll();
-    }
-
-
-    private static final List<TardisClientData> DATA = new ArrayList<>();
-
-    public static void add(TardisClientData tardisClientData) {
-        DATA.add(tardisClientData);
-    }
-
-    /**
-     * Retrieves information about a Tardis instance.
-     *
-     * @param levelResourceKey The resource key of the level the Tardis is in.
-     * @return The TardisIntReactions instance containing information about the Tardis.
-     */
-    public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey) {
-        for (TardisClientData data : DATA) {
-            if (data.getLevelKey().equals(levelResourceKey)) {
-                return data;
-            }
-        }
-        TardisClientData newData = new TardisClientData(levelResourceKey);
-        DATA.add(newData);
-        return newData;
-    }
-
-    public static List<TardisClientData> getAllEntries() {
-        return new ArrayList<>(DATA);
-    }
-
-    public static void clearAll() {
-        DATA.clear();
     }
 
     public Vec3 fogColor(boolean isCrashing) {

@@ -23,7 +23,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.client.TardisClientData;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -33,22 +32,11 @@ import whocraft.tardis_refined.registry.TRControlRegistry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class KeyItem extends Item {
 
     public KeyItem(Properties properties) {
         super(properties);
-    }
-
-    @Override
-    public Component getName(ItemStack itemStack) {
-
-        if (getKeychain(itemStack).size() >= 2) {
-            return Component.translatable(ModMessages.ITEM_KEYCHAIN);
-        }
-
-        return super.getName(itemStack);
     }
 
     public static ItemStack addTardis(ItemStack itemStack, ResourceKey<Level> levelResourceKey) {
@@ -122,6 +110,16 @@ public class KeyItem extends Item {
         return keychain.contains(levelResourceKey);
     }
 
+    @Override
+    public Component getName(ItemStack itemStack) {
+
+        if (getKeychain(itemStack).size() >= 2) {
+            return Component.translatable(ModMessages.ITEM_KEYCHAIN);
+        }
+
+        return super.getName(itemStack);
+    }
+
     public boolean interactMonitor(ItemStack itemStack, Player player, ControlEntity control, InteractionHand interactionHand) {
 
         if (control.level() instanceof ServerLevel serverLevel) {
@@ -132,7 +130,9 @@ public class KeyItem extends Item {
                     setKeychain(itemStack, new ArrayList<>(List.of(serverLevel.dimension())));
 
 
-                    if (keychainContains(itemStack, tardis)) {return false;}
+                    if (keychainContains(itemStack, tardis)) {
+                        return false;
+                    }
 
                     player.setItemInHand(interactionHand, addTardis(itemStack, tardis));
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.MSG_KEY_BOUND, tardis.location().getPath()), true);
@@ -158,7 +158,7 @@ public class KeyItem extends Item {
                     Collections.rotate(keychain.subList(0, keychain.size()), -1);
                     setKeychain(context.getItemInHand(), keychain);
                     context.getPlayer().displayClientMessage(Component.translatable(ModMessages.MSG_KEY_CYCLED, keychain.get(0).location().getPath()), true);
-                    context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 1,2);
+                    context.getLevel().playSound(null, context.getPlayer().blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 1, 2);
                 }
             }
         }
@@ -182,14 +182,12 @@ public class KeyItem extends Item {
             }
 
 
-
             list.add(Component.translatable(ModMessages.TOOLTIP_TARDIS_LIST_TITLE));
 
             for (int i = 0; i < keychain.size(); i++) {
                 MutableComponent hyphen = Component.literal((i == 0) ? ChatFormatting.YELLOW + "> " : "- ");
                 list.add(hyphen.append(Component.literal(keychain.get(i).location().getPath().substring(0, 5))));
             }
-
 
 
         }

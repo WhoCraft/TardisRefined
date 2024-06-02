@@ -23,8 +23,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.block.device.AstralManipulatorBlock;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorBlockResult;
-import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingRecipe;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingIngredient;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingRecipe;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorItemResult;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.items.ScrewdriverMode;
@@ -269,8 +269,8 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
 
                 if (recipe.result() instanceof ManipulatorBlockResult blockResult) {
                     BlockState blockState = blockResult.recipeOutput();
-                    if (blockState != null){
-                        Vec3 centerVector =  new AABB(pointABlockPos, pointBBlockPos).getCenter();
+                    if (blockState != null) {
+                        Vec3 centerVector = new AABB(pointABlockPos, pointBBlockPos).getCenter();
                         int min = Math.min(pointABlockPos.getY(), pointBBlockPos.getY());
 
                         BlockPos centerPos = new BlockPos((int) centerVector.x, min, (int) centerVector.z);
@@ -280,7 +280,7 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                 } else {
                     if (recipe.result() instanceof ManipulatorItemResult itemResult) {
                         ItemStack itemStack = itemResult.recipeOutput();
-                        if (itemStack != null){
+                        if (itemStack != null) {
                             ItemEntity item = new ItemEntity(level, getBlockPos().getX() + 0.5f, getBlockPos().getY() + 1, getBlockPos().getZ() + 0.5f, itemStack);
                             level.addFreshEntity(item);
                         }

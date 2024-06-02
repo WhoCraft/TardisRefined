@@ -4,7 +4,6 @@ package whocraft.tardis_refined.registry.fabric;
 import com.mojang.serialization.Codec;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -12,7 +11,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
 import java.util.Map;
 import java.util.Set;
@@ -70,23 +68,24 @@ public class DeferredRegistryImpl {
         }
 
         /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
-        @Override
-        public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
-            ResourceLocation registeredId = new ResourceLocation(this.modid, id);
-            Registry.register(this.registry.get(), registeredId, sup.get()); //Need to call this explicitly to register the object
-            RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.resourceKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
-            return registryHolder;
-        }
-        */
+         @Override public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
+         ResourceLocation registeredId = new ResourceLocation(this.modid, id);
+         Registry.register(this.registry.get(), registeredId, sup.get()); //Need to call this explicitly to register the object
+         RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.resourceKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
+         return registryHolder;
+         }
+         */
 
-        /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
-        @Override
-        public Supplier<Registry<T>> getRegistry() {
-            return () -> this.registry.get();
-        } */
+        /**
+         * 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
+         *
+         * @Override public Supplier<Registry<T>> getRegistry() {
+         * return () -> this.registry.get();
+         * }
+         */
 
         @Override
-        public ResourceKey<? extends Registry<T>> key(){
+        public ResourceKey<? extends Registry<T>> key() {
             return this.resourceKey;
         }
 

@@ -16,13 +16,15 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 // Responsible for all the tedious generation of the desktop;
 public class TardisArchitectureHandler {
 
     public static final BlockPos DESKTOP_CENTER_POS = new BlockPos(0, 100, 0);
-    public static final BlockPos EYE_OF_HARMONY_PLACEMENT = new BlockPos(991,41,31);
+    public static final BlockPos EYE_OF_HARMONY_PLACEMENT = new BlockPos(991, 41, 31);
     public static final int INTERIOR_SIZE = 150;
 
     public static String currentArsStage = "one";
@@ -83,7 +85,7 @@ public class TardisArchitectureHandler {
             }
         }
     }
-    
+
     public static void generateArsTree(TardisLevelOperator tardisLevelOperator, ServerLevel level) {
         if (!currentArsStage.equals("one") && Objects.equals(tardisLevelOperator.getUpgradeHandler().getProgressLevel(), currentArsStage))
             return;

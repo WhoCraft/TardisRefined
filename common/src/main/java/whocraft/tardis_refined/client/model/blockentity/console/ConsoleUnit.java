@@ -25,6 +25,7 @@ public interface ConsoleUnit {
     }
 
     ResourceLocation getDefaultTexture();
+
     ResourceLocation getConsoleTheme();
 
 

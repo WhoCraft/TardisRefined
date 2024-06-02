@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -18,19 +17,19 @@ public class FuelToggleControl extends Control {
     public FuelToggleControl(ResourceLocation id) {
         super(id);
     }
-    public FuelToggleControl(ResourceLocation id, String langId){
+
+    public FuelToggleControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-        if (!operator.getLevel().isClientSide()){
+        if (!operator.getLevel().isClientSide()) {
             if (operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY) {
                 return false;
             }
 
             TardisPilotingManager pilotManager = operator.getPilotingManager();
-
 
 
             boolean successful = pilotManager.setPassivelyRefuelling(!pilotManager.isPassivelyRefuelling());
@@ -62,9 +61,9 @@ public class FuelToggleControl extends Control {
 
         boolean offline = operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY;
         if (offline) {
-            return Component.translatable(  ModMessages.FUEL_OFFLINE);
+            return Component.translatable(ModMessages.FUEL_OFFLINE);
         }
 
-        return Component.translatable(  ModMessages.FUEL).append(String.valueOf((Math.round((operator.getPilotingManager().getFuelPercentage() * 100))))).append("%");
+        return Component.translatable(ModMessages.FUEL).append(String.valueOf((Math.round((operator.getPilotingManager().getFuelPercentage() * 100))))).append("%");
     }
 }

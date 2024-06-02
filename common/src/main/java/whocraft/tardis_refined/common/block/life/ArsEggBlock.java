@@ -39,7 +39,8 @@ import java.util.stream.Stream;
 public class ArsEggBlock extends BaseEntityBlock {
 
     public static final BooleanProperty HANGING = BlockStateProperties.HANGING;
-    public static final BooleanProperty ALIVE = BooleanProperty.create("alive");;
+    public static final BooleanProperty ALIVE = BooleanProperty.create("alive");
+    ;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected static final VoxelShape AABB = Shapes.join(Stream.of(
@@ -51,9 +52,18 @@ public class ArsEggBlock extends BaseEntityBlock {
 
     private static final VoxelShape NO_CLAMP_AABB = Block.box(4, 0, 4, 12, 9, 12);
 
+    public ArsEggBlock(Properties properties) {
+        super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(HANGING, false).setValue(WATERLOGGED, false).setValue(ALIVE, true));
+    }
+
+    protected static Direction getConnectedDirection(BlockState blockState) {
+        return blockState.getValue(HANGING) ? Direction.DOWN : Direction.UP;
+    }
+
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return blockState.getValue(HANGING) ? AABB.move(0,0.3,0) : (blockState.getValue(ALIVE) ? AABB : NO_CLAMP_AABB);
+        return blockState.getValue(HANGING) ? AABB.move(0, 0.3, 0) : (blockState.getValue(ALIVE) ? AABB : NO_CLAMP_AABB);
     }
 
     @Override
@@ -74,11 +84,6 @@ public class ArsEggBlock extends BaseEntityBlock {
         return null;
     }
 
-    public ArsEggBlock(Properties properties) {
-        super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(HANGING, false).setValue(WATERLOGGED, false).setValue(ALIVE, true));
-    }
-
     @Override
     public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType pathComputationType) {
         return false;
@@ -91,7 +96,6 @@ public class ArsEggBlock extends BaseEntityBlock {
         }
         return getConnectedDirection(blockState).getOpposite() == direction && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
     }
-
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -109,10 +113,6 @@ public class ArsEggBlock extends BaseEntityBlock {
         return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
     }
 
-    protected static Direction getConnectedDirection(BlockState blockState) {
-        return blockState.getValue(HANGING) ? Direction.DOWN : Direction.UP;
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -121,9 +121,9 @@ public class ArsEggBlock extends BaseEntityBlock {
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if(player instanceof ServerPlayer serverPlayer){
+        if (player instanceof ServerPlayer serverPlayer) {
             TardisLevelOperator.get(serverPlayer.serverLevel()).ifPresent(tardisLevelOperator -> {
-                if(TardisHelper.isInArsArea(blockPos)) {
+                if (TardisHelper.isInArsArea(blockPos)) {
                     CompoundTag upgradeNbt = tardisLevelOperator.getUpgradeHandler().saveData(new CompoundTag());
                     new S2CDisplayUpgradeScreen(upgradeNbt).send(serverPlayer);
                 }

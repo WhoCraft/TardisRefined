@@ -12,7 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -25,14 +25,16 @@ import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockE
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.tardis.CorridorGenerator;
 
+;
+
 
 public class AstralManipulatorBlock extends Block implements EntityBlock {
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+
+
     public AstralManipulatorBlock(Properties properties) {
         super(properties);
     }
-
-
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

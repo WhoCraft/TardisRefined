@@ -26,8 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 
-import java.util.List;
-
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -37,8 +35,8 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 30.0D, 11.0D);
     protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 2.0D, 16.0D, 30.0D, 16.0D);
-    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 11.0D,  30.0D, 16.0D);
-    protected static final VoxelShape EAST_AABB = Block.box(2.0D, 0.0D, 0.0D, 16.0D,  30.0D, 16.0D);
+    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 11.0D, 30.0D, 16.0D);
+    protected static final VoxelShape EAST_AABB = Block.box(2.0D, 0.0D, 0.0D, 16.0D, 30.0D, 16.0D);
 
     public ShellBaseBlock(Properties properties) {
         super(properties);
@@ -76,7 +74,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         levelAccessor.scheduleTick(blockPos, this, this.getDelayAfterPlace());
 */
 
-        if (blockState.getValue(WATERLOGGED)){
+        if (blockState.getValue(WATERLOGGED)) {
             levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
         }
 
@@ -117,8 +115,8 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
-        if (!level.isClientSide()){
-            ServerLevel serverLevel = (ServerLevel)level;
+        if (!level.isClientSide()) {
+            ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof ExteriorShell shellEntity) {
                 AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
                 if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {

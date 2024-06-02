@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.client.screen.components;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,10 +17,9 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     private int listLeft;
 
     /**
-     *
      * @param name
      * @param onSelection
-     * @param listLeft - the left position for the master {@link GenericMonitorSelectionList} so we can left align our text
+     * @param listLeft    - the left position for the master {@link GenericMonitorSelectionList} so we can left align our text
      */
     public SelectionListEntry(Component name, GenericListSelection onSelection, int listLeft) {
         this.itemDisplayName = name;
@@ -30,11 +28,10 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     }
 
     /**
-     *
      * @param name
      * @param onSelection
-     * @param listLeft - the left position for the master {@link GenericMonitorSelectionList} so we can left align our text
-     * @param enabled - Should the functionality of the button work?
+     * @param listLeft    - the left position for the master {@link GenericMonitorSelectionList} so we can left align our text
+     * @param enabled     - Should the functionality of the button work?
      */
     public SelectionListEntry(Component name, GenericListSelection onSelection, int listLeft, boolean enabled) {
         this.itemDisplayName = name;
@@ -60,13 +57,12 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     }
 
     /**
-     *
      * @param guiGraphics
      * @param index
-     * @param top - the top most y position for this particular entry's row from getRowTop
-     * @param left - the left most x position for this particular entry's row in the list from getRowLeft
-     * @param width - width for this particular entry's row
-     * @param height - height for this particular entry's row
+     * @param top         - the top most y position for this particular entry's row from getRowTop
+     * @param left        - the left most x position for this particular entry's row in the list from getRowLeft
+     * @param width       - width for this particular entry's row
+     * @param height      - height for this particular entry's row
      * @param mouseX
      * @param mouseY
      * @param isMouseOver
@@ -76,13 +72,12 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
 
 
-
-        int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() : (this.checked ? ChatFormatting.YELLOW.getColor() :  this.itemDisplayName.getStyle().getColor() != null ? this.itemDisplayName.getStyle().getColor().getValue() : ChatFormatting.GOLD.getColor());
+        int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() : (this.checked ? ChatFormatting.YELLOW.getColor() : this.itemDisplayName.getStyle().getColor() != null ? this.itemDisplayName.getStyle().getColor().getValue() : ChatFormatting.GOLD.getColor());
         Component text = Component.literal((this.checked ? "> " : "") + this.itemDisplayName.getString());
         this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
     }
 
-    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour){
+    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour) {
         int textWidth = Minecraft.getInstance().font.width(text);
 
         /*

@@ -19,9 +19,8 @@ import java.util.Map;
 
 public class SyncShellPatternsMessage extends MessageS2C {
 
-    protected Map<ResourceLocation, List<ShellPattern>> patterns = new HashMap<>();
-
     protected final UnboundedMapCodec<ResourceLocation, List<ShellPattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ShellPattern.CODEC.listOf().xmap(List::copyOf, List::copyOf));
+    protected Map<ResourceLocation, List<ShellPattern>> patterns = new HashMap<>();
 
     public SyncShellPatternsMessage(Map<ResourceLocation, List<ShellPattern>> patterns) {
         this.patterns = patterns;

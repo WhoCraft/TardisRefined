@@ -26,8 +26,6 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 
-import java.util.List;
-
 public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
@@ -66,11 +64,11 @@ public class InternalDoorBlock extends BaseEntityBlock {
         return this.getDoorBlockEntity();
     }
 
-    public void setBlockEntity(BlockEntity blockEntity){
+    public void setBlockEntity(BlockEntity blockEntity) {
         this.blockEntity = blockEntity;
     }
 
-    public BlockEntity getDoorBlockEntity(){
+    public BlockEntity getDoorBlockEntity() {
         return this.blockEntity;
     }
 
@@ -95,12 +93,12 @@ public class InternalDoorBlock extends BaseEntityBlock {
     public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
 
         if (!level.isClientSide()) {
-            ServerLevel serverLevel = (ServerLevel)level;
+            ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof TardisInternalDoor door) {
 
                 if (TardisLevelOperator.get(serverLevel).isPresent()) {
                     AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
-                    if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)){
+                    if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
                         door.onAttemptEnter(blockState, serverLevel, blockPos, entity);
                     }
                 }

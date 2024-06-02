@@ -49,7 +49,7 @@ public class AestheticHandler extends BaseHandler {
     }
 
     public ResourceLocation getShellTheme() {
-        if(shellTheme.getNamespace().contains("minecraft")){
+        if (shellTheme.getNamespace().contains("minecraft")) {
             return ShellTheme.HALF_BAKED.getId();
         }
         return shellTheme;
@@ -67,9 +67,9 @@ public class AestheticHandler extends BaseHandler {
     /**
      * Sets the shell theme ID for the Exterior Shell Block
      *
-     * @param theme       - the Shell Theme ID
+     * @param theme        - the Shell Theme ID
      * @param shellPattern - the Shell Theme Pattern
-     * @param setupTardis - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one. True if that is the case.
+     * @param setupTardis  - if the reason for setting the theme was because the Tardis is being converted from a Root Shell to a fully functioning one. True if that is the case.
      */
     public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis, TardisNavLocation tardisNavLocation) {
         setShellPattern(ShellPatterns.getPatternOrDefault(theme, shellPattern));

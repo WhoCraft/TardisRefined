@@ -13,7 +13,7 @@ public class ParticleGallifrey extends BaseAshSmokeParticle {
     protected ParticleGallifrey(ClientLevel arg, double d, double e, double f, double g, double h, double i, float j, SpriteSet arg2) {
         super(arg, d, e, f, 0.0F, 0.1F, 0.0F, g, h, i, j, arg2, 0.3F, 8, -0.1F, true);
         this.sprites = arg2;
-        setColor(1,1,1);
+        setColor(1, 1, 1);
         setLifetime(lifetime * 2);
     }
 

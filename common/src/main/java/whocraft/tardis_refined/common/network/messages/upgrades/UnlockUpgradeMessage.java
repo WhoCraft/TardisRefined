@@ -45,7 +45,7 @@ public class UnlockUpgradeMessage extends MessageC2S {
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
             boolean available = !upgradeHandler.isUpgradeUnlocked(upgrade) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired();
-            if(available){
+            if (available) {
                 upgradeHandler.setUpgradePoints(upgradeHandler.getUpgradePoints() - upgrade.getSkillPointsRequired());
                 upgradeHandler.unlockUpgrade(upgrade);
                 CompoundTag nbt = upgradeHandler.saveData(new CompoundTag());

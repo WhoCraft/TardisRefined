@@ -1,8 +1,6 @@
 package whocraft.tardis_refined;
 
 import com.google.common.collect.Lists;
-
-
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -32,7 +30,6 @@ public class TRConfig {
         CLIENT_SPEC = specClientPair.getRight();
         CLIENT = specClientPair.getLeft();
     }
-
 
 
     public static class Client {

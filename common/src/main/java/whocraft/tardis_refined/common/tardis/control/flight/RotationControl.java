@@ -4,7 +4,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
@@ -16,7 +15,8 @@ public class RotationControl extends Control {
     public RotationControl(ResourceLocation id) {
         super(id);
     }
-    public RotationControl(ResourceLocation id, String langId){
+
+    public RotationControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 
@@ -30,7 +30,7 @@ public class RotationControl extends Control {
         return this.rotateDir(operator, theme, controlEntity, player, false);
     }
 
-    private boolean rotateDir(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean clockwise){
+    private boolean rotateDir(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean clockwise) {
         if (!operator.getLevel().isClientSide()) {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 

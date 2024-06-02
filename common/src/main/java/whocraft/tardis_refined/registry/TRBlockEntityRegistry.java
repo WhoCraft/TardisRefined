@@ -5,9 +5,9 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.*;
-import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
@@ -36,7 +36,6 @@ public class TRBlockEntityRegistry {
     public static final RegistrySupplier<BlockEntityType<AstralManipulatorBlockEntity>> ASTRAL_MANIPULATOR = BLOCK_ENTITY_TYPES.register("astral_manipulator", () -> BlockEntityType.Builder.of(AstralManipulatorBlockEntity::new, TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<EyeBlockEntity>> THE_EYE = BLOCK_ENTITY_TYPES.register("the_eye", () -> BlockEntityType.Builder.of(EyeBlockEntity::new, TRBlockRegistry.THE_EYE.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<CorridorTeleporterBlockEntity>> CORRIDOR_TELEPORTER = BLOCK_ENTITY_TYPES.register("corridor_teleporter", () -> BlockEntityType.Builder.of(CorridorTeleporterBlockEntity::new, TRBlockRegistry.CORRIDOR_TELEPORTER.get()).build(null));
-
 
 
 }

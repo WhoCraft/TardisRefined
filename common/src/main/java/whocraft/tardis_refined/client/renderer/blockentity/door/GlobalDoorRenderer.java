@@ -29,8 +29,8 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
     @Override
     public void render(GlobalDoorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
-        if(ModCompatChecker.immersivePortals()){
-            if(ImmersivePortalsClient.shouldStopRenderingInPortal()){
+        if (ModCompatChecker.immersivePortals()) {
+            if (ImmersivePortalsClient.shouldStopRenderingInPortal()) {
                 return;
             }
         }

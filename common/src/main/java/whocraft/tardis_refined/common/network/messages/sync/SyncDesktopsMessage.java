@@ -17,10 +17,10 @@ import java.util.Map;
 
 public class SyncDesktopsMessage extends MessageS2C {
 
-    private Map<ResourceLocation, DesktopTheme> desktops = new HashMap<>();
     //We use an unboundedMapCodec. However it is limited in that it can only parse objects whose keys can be serialised to a string, such as ResourceLocation
     //E.g. If you used an int as a key, the unboundedMapCodec will not parse it and will error.
     private static final Codec<Map<ResourceLocation, DesktopTheme>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, DesktopTheme.getCodec());
+    private Map<ResourceLocation, DesktopTheme> desktops = new HashMap<>();
 
 
     public SyncDesktopsMessage(Map<ResourceLocation, DesktopTheme> desktops) {
@@ -39,7 +39,7 @@ public class SyncDesktopsMessage extends MessageS2C {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeNbt((CompoundTag)(MAPPER.encodeStart(NbtOps.INSTANCE, this.desktops).result().orElse(new CompoundTag())));
+        buf.writeNbt((CompoundTag) (MAPPER.encodeStart(NbtOps.INSTANCE, this.desktops).result().orElse(new CompoundTag())));
     }
 
     @Override

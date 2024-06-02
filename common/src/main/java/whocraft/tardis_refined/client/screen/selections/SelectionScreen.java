@@ -3,7 +3,6 @@ package whocraft.tardis_refined.client.screen.selections;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -12,24 +11,20 @@ import net.minecraft.util.RandomSource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
-import whocraft.tardis_refined.client.screen.components.SpriteIconButton;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.awt.*;
 
 public class SelectionScreen extends Screen {
 
-    private SelectionScreenRun onSubmit;
-    private SelectionScreenRun onCancel;
-    private final Component title;
-
-    private ObjectSelectionList list;
-
-    public int noiseX, noiseY, age;
-    public double noiseAlpha;
-
     public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/save.png");
     public static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/back.png");
+    private final Component title;
+    public int noiseX, noiseY, age;
+    public double noiseAlpha;
+    private SelectionScreenRun onSubmit;
+    private SelectionScreenRun onCancel;
+    private ObjectSelectionList list;
 
 
     public SelectionScreen(Component title) {

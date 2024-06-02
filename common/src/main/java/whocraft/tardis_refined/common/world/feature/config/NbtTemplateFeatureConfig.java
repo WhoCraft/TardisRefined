@@ -5,8 +5,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
-/** List of parameters for configuring an instance of the feature
- * */
+/**
+ * List of parameters for configuring an instance of the feature
+ */
 public class NbtTemplateFeatureConfig implements FeatureConfiguration {
 
     public static final Codec<NbtTemplateFeatureConfig> CODEC = RecordCodecBuilder.create((instance) -> instance.group(
@@ -17,7 +18,7 @@ public class NbtTemplateFeatureConfig implements FeatureConfiguration {
     public final int heightOffset;
     public final ResourceLocation templateLocation;
 
-    public NbtTemplateFeatureConfig(ResourceLocation templateLocation, int heightOffset){
+    public NbtTemplateFeatureConfig(ResourceLocation templateLocation, int heightOffset) {
         this.templateLocation = templateLocation;
         this.heightOffset = heightOffset;
     }

@@ -12,7 +12,7 @@ import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 public class QuickSimpleSound extends AbstractTickableSoundInstance {
 
-    public static QuickSimpleSound VOICE_QUICK_SOUND =  new QuickSimpleSound(TRSoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
+    public static QuickSimpleSound VOICE_QUICK_SOUND = new QuickSimpleSound(TRSoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
 
 
     public QuickSimpleSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
@@ -23,22 +23,22 @@ public class QuickSimpleSound extends AbstractTickableSoundInstance {
         volume = 0.5f;
     }
 
-    public void setVolume(float volume) {
-        this.volume = volume;
-    }
-
     @Override
     public float getVolume() {
         return volume;
     }
 
-    public void setPitch(float pitch) {
-        this.pitch = pitch;
+    public void setVolume(float volume) {
+        this.volume = volume;
     }
 
     @Override
     public float getPitch() {
         return pitch;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
     }
 
     public void setLocation(Vec3 location) {

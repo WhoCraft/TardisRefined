@@ -35,9 +35,9 @@ public class ProviderEntityTags extends EntityTypeTagsProvider {
         tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).add(EntityType.WITHER);
 
         //Add Create Mod entities to blacklist
-        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).addOptionalTag(new ResourceLocation("create","contraption"));
-        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).addOptionalTag(new ResourceLocation("create","gantry_contraption"));
-        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).addOptionalTag(new ResourceLocation("create","crafting_blueprint"));
+        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).addOptionalTag(new ResourceLocation("create", "contraption"));
+        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).addOptionalTag(new ResourceLocation("create", "gantry_contraption"));
+        tag(TRTagKeys.TARDIS_TELEPORT_BLACKLIST).addOptionalTag(new ResourceLocation("create", "crafting_blueprint"));
 
     }
 }

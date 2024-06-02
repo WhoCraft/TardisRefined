@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TardisWaypointManager extends BaseHandler{
+public class TardisWaypointManager extends BaseHandler {
 
     private final TardisLevelOperator operator;
     private List<TardisWaypoint> waypoints = new ArrayList<>();
@@ -47,6 +47,7 @@ public class TardisWaypointManager extends BaseHandler{
     public void tick() {
 
     }
+
     @Override
     public CompoundTag saveData(CompoundTag compoundTag) {
         ListTag waypointsList = new ListTag();
@@ -57,6 +58,7 @@ public class TardisWaypointManager extends BaseHandler{
         compoundTag.put("Waypoints", waypointsList);
         return compoundTag;
     }
+
     @Override
     public void loadData(CompoundTag tag) {
         waypoints.clear();
@@ -64,7 +66,7 @@ public class TardisWaypointManager extends BaseHandler{
         for (int i = 0; i < waypointsList.size(); i++) {
             CompoundTag locationTag = waypointsList.getCompound(i);
             TardisWaypoint waypoint = TardisWaypoint.deserialise(locationTag);
-            waypoints.add( waypoint);
+            waypoints.add(waypoint);
         }
     }
 }

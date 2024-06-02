@@ -34,10 +34,10 @@ import java.util.UUID;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
 
 public class TardisLevelOperator {
+    public static final int STATE_CAVE = 0;
+    public static final int STATE_TERRAFORMED_NO_EYE = 1;
+    public static final int STATE_EYE_OF_HARMONY = 2;
     private final Level level;
-    private boolean hasInitiallyGenerated = false;
-    private TardisInternalDoor internalDoor = null;
-
     // Managers
     private final TardisExteriorManager exteriorManager;
     private final TardisInteriorManager interiorManager;
@@ -47,13 +47,10 @@ public class TardisLevelOperator {
     private final TardisClientData tardisClientData;
     private final UpgradeHandler upgradeHandler;
     private final AestheticHandler aestheticHandler;
-
+    private boolean hasInitiallyGenerated = false;
+    private TardisInternalDoor internalDoor = null;
     // TARDIS state refers to different stages of TARDIS creation. This allows for different logic to operate in those moments.
     private int tardisState = 0;
-
-    public static final int STATE_CAVE = 0;
-    public static final int STATE_TERRAFORMED_NO_EYE = 1;
-    public static final int STATE_EYE_OF_HARMONY = 2;
 
 
     public TardisLevelOperator(Level level) {
@@ -66,6 +63,11 @@ public class TardisLevelOperator {
         this.upgradeHandler = new UpgradeHandler(this);
         this.aestheticHandler = new AestheticHandler(this);
         this.flightDanceManager = new FlightDanceManager(this);
+    }
+
+    @ExpectPlatform
+    public static Optional<TardisLevelOperator> get(ServerLevel level) {
+        throw new AssertionError();
     }
 
     public UpgradeHandler getUpgradeHandler() {
@@ -82,11 +84,6 @@ public class TardisLevelOperator {
 
     public FlightDanceManager getFlightDanceManager() {
         return this.flightDanceManager;
-    }
-
-    @ExpectPlatform
-    public static Optional<TardisLevelOperator> get(ServerLevel level) {
-        throw new AssertionError();
     }
 
     public CompoundTag serializeNBT() {
@@ -140,11 +137,17 @@ public class TardisLevelOperator {
 
     public void tick(ServerLevel level) {
 
-        if (interiorManager != null) {  interiorManager.tick(level);}
-        if (pilotingManager != null) {  pilotingManager.tick(level);}
-        if (flightDanceManager != null) {  flightDanceManager.tick();}
+        if (interiorManager != null) {
+            interiorManager.tick(level);
+        }
+        if (pilotingManager != null) {
+            pilotingManager.tick(level);
+        }
+        if (flightDanceManager != null) {
+            flightDanceManager.tick();
+        }
 
-        
+
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
             tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
@@ -196,9 +199,11 @@ public class TardisLevelOperator {
         return false;
 
     }
+
     public boolean isTardisReady() {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
+
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection, boolean ignoreDoor) {
 
         if (!ignoreDoor && !this.internalDoor.isOpen()) {
@@ -267,19 +272,6 @@ public class TardisLevelOperator {
         TardisCommonEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
     }
 
-    /**
-     * Sets the main operating door of an interior.
-     *
-     * @param door Internal door object.
-     **/
-    public void setInternalDoor(TardisInternalDoor door) {
-        if (this.internalDoor != null) {
-            this.internalDoor.onSetMainDoor(false);
-        }
-        this.internalDoor = door;
-        if (door != null) //If the new door value is not null
-            this.internalDoor.onSetMainDoor(true);
-    }
     public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
         this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
 
@@ -298,15 +290,33 @@ public class TardisLevelOperator {
     public TardisExteriorManager getExteriorManager() {
         return this.exteriorManager;
     }
+
     public TardisInternalDoor getInternalDoor() {
         return this.internalDoor;
     }
+
+    /**
+     * Sets the main operating door of an interior.
+     *
+     * @param door Internal door object.
+     **/
+    public void setInternalDoor(TardisInternalDoor door) {
+        if (this.internalDoor != null) {
+            this.internalDoor.onSetMainDoor(false);
+        }
+        this.internalDoor = door;
+        if (door != null) //If the new door value is not null
+            this.internalDoor.onSetMainDoor(true);
+    }
+
     public TardisInteriorManager getInteriorManager() {
         return this.interiorManager;
     }
+
     public TardisPilotingManager getPilotingManager() {
         return this.pilotingManager;
     }
+
     public TardisWaypointManager getTardisWaypointManager() {
         return tardisWaypointManager;
     }

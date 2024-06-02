@@ -51,7 +51,7 @@ public class UploadWaypointMessage extends MessageC2S {
         ServerLevel serverLevel = player.serverLevel();
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
-            if(coordInputType == CoordInputType.WAYPOINT) {
+            if (coordInputType == CoordInputType.WAYPOINT) {
                 TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
                 tardisWaypointManager.addWaypoint(tardisNavLocation, tardisNavLocation.getName());
             } else {

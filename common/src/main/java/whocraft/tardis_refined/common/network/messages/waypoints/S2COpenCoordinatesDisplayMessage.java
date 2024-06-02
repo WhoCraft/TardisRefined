@@ -21,9 +21,9 @@ import java.util.List;
 
 public class S2COpenCoordinatesDisplayMessage extends MessageS2C {
 
+    CoordInputType coordInputType;
     private TardisNavLocation tardisNavLocation;
     private List<ResourceKey<Level>> levels;
-    CoordInputType coordInputType;
 
     public S2COpenCoordinatesDisplayMessage(List<ResourceKey<Level>> waypoints, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
         this.levels = waypoints;
