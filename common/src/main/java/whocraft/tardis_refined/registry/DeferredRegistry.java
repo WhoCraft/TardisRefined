@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.registry;
 
-import com.mojang.serialization.Codec;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;

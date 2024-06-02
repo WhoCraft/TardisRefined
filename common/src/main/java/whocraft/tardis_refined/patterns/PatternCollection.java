@@ -3,7 +3,7 @@ package whocraft.tardis_refined.patterns;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
+import java.util.List;
 
 /** Collection for holding multiple patterns, to be assigned to a specific Console or Shell Theme
  * <br> This acts as a more debuggable bridging object between Themes and Patterns.

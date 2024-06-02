@@ -15,21 +15,23 @@ import java.util.Map;
  */
 public class TardisDesktops {
 
-    private static final CodecJsonReloadListener<DesktopTheme> RELOAD_LISTENER = createReloadListener();
-
-    private static Map<ResourceLocation,DesktopTheme> DEFAULT_DESKTOPS = new HashMap<>();
-
-    /** Static reference to the overgrown cave theme. <br> DO NOT REGISTER THIS, we don't want it to show in the selection screen. <br> It is only intended to be used once for the root shell.*/
+    /**
+     * Static reference to the overgrown cave theme. <br> DO NOT REGISTER THIS, we don't want it to show in the selection screen. <br> It is only intended to be used once for the root shell.
+     */
     public static final DesktopTheme DEFAULT_OVERGROWN_THEME = new DesktopTheme("default_overgrown", "cave/cave_generation_one");
-
-    /** A reference to the default Factory theme, intended for convenience. <br> DO NOT REGISTER THIS, it has already been included in the default list of desktops.*/
+    /**
+     * A reference to the default Factory theme, intended for convenience. <br> DO NOT REGISTER THIS, it has already been included in the default list of desktops.
+     */
     public static final DesktopTheme FACTORY_THEME = new DesktopTheme("factory", "desktop/factory");
     public static final DesktopTheme TERRAFORMED = new DesktopTheme("terraformed", "desktop/terraformed");
+    private static final CodecJsonReloadListener<DesktopTheme> RELOAD_LISTENER = createReloadListener();
+    private static Map<ResourceLocation, DesktopTheme> DEFAULT_DESKTOPS = new HashMap<>();
 
     /**
      * A factory method to create the instance of our reload listener.
      * <br> The TardisDesktops class itself is not a reload listener because the CodecJsonReloadListener needs platform specific implementations.
      * <br> That introduces side effects associated with generic types and the ExpectPlatform annotation, so we manually call this factory method to create an instance.
+     *
      * @return
      */
     private static CodecJsonReloadListener<DesktopTheme> createReloadListener() {
@@ -37,11 +39,11 @@ public class TardisDesktops {
         return instance;
     }
 
-    public static CodecJsonReloadListener<DesktopTheme> getReloadListener(){
+    public static CodecJsonReloadListener<DesktopTheme> getReloadListener() {
         return RELOAD_LISTENER;
     }
 
-    public static Map<ResourceLocation,DesktopTheme> getRegistry() {
+    public static Map<ResourceLocation, DesktopTheme> getRegistry() {
         return RELOAD_LISTENER.getData();
     }
 
@@ -52,9 +54,10 @@ public class TardisDesktops {
     /**
      * Creates and adds the Tardis Refined default list of DesktopThemes to a standalone map.
      * Can be used for datagenerators or as a fallback registry
+     *
      * @return
      */
-    public static Map<ResourceLocation,DesktopTheme> registerDefaultDesktops() {
+    public static Map<ResourceLocation, DesktopTheme> registerDefaultDesktops() {
         DEFAULT_DESKTOPS.clear();
         addDefaultDesktop(new DesktopTheme("arnet", "desktop/arnet"));
         addDefaultDesktop(new DesktopTheme("copper", "desktop/copper"));
@@ -73,7 +76,7 @@ public class TardisDesktops {
         addDefaultDesktop(new DesktopTheme("refurbished", "desktop/refurbished"));
         addDefaultDesktop(new DesktopTheme("toyota", "desktop/toyota"));
         addDefaultDesktop(new DesktopTheme("vapor", "desktop/vapor"));
-        addDefaultDesktop(new DesktopTheme("victorian","desktop/victorian"));
+        addDefaultDesktop(new DesktopTheme("victorian", "desktop/victorian"));
         addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
         addDefaultDesktop(new DesktopTheme("watchface", "desktop/watchface"));
 
@@ -86,8 +89,10 @@ public class TardisDesktops {
         DEFAULT_DESKTOPS.put(theme.getIdentifier(), theme);
     }
 
-    /** Gets a default list of Desktops added by Tardis Refined. Useful as a fallback list.*/
-    public static Map<ResourceLocation, DesktopTheme> getDefaultDesktops(){
+    /**
+     * Gets a default list of Desktops added by Tardis Refined. Useful as a fallback list.
+     */
+    public static Map<ResourceLocation, DesktopTheme> getDefaultDesktops() {
         return DEFAULT_DESKTOPS;
     }
 

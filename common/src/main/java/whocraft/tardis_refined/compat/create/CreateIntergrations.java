@@ -2,7 +2,6 @@ package whocraft.tardis_refined.compat.create;
 
 import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
 import com.simibubi.create.content.redstone.displayLink.DisplayBehaviour;
-import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -10,7 +9,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.ArrayList;
 
@@ -22,7 +20,7 @@ public class CreateIntergrations {
     private static ArrayList<QuickOneLineDisplaySource.TardisInfo> tardisInfos = new ArrayList<>();
     private static ArrayList<TardisNavLocationDisplaySource.TardisNavInfo> tardisNavInfos = new ArrayList<>();
 
-    public static void init(){
+    public static void init() {
 
         // Register big data
         DisplayBehaviour tardisOverallData = AllDisplayBehaviours.register(new ResourceLocation(TardisRefined.MODID, "tardis_bigdata"), new TardisDisplaySource());
@@ -105,11 +103,11 @@ public class CreateIntergrations {
 
     }
 
-    public static void registerBehaviour(QuickOneLineDisplaySource.TardisInfo displayBehaviour){
+    public static void registerBehaviour(QuickOneLineDisplaySource.TardisInfo displayBehaviour) {
         tardisInfos.add(displayBehaviour);
     }
 
-    public static void registerBehaviour(TardisNavLocationDisplaySource.TardisNavInfo displayBehaviour){
+    public static void registerBehaviour(TardisNavLocationDisplaySource.TardisNavInfo displayBehaviour) {
         tardisNavInfos.add(displayBehaviour);
     }
 

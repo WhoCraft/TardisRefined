@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.constants;
 
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.damagesource.DamageType;
 import whocraft.tardis_refined.TardisRefined;
 
 public class ModMessages {
@@ -131,7 +133,6 @@ public class ModMessages {
     public static final String CMD_ARG_DESKTOP_INVALID = cmdArgInvalid("desktop");
 
     public static final String CMD_ARG_SHELL_INVALID = cmdArgInvalid("shell");
-
 
 
     public static String message(String translationKey){

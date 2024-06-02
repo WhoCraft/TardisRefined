@@ -26,8 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 
-import java.util.List;
-
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

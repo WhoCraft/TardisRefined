@@ -19,12 +19,10 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-
 
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;

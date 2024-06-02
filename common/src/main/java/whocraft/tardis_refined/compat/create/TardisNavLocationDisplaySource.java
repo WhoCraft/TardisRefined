@@ -31,9 +31,9 @@ public class TardisNavLocationDisplaySource extends DisplaySource {
                 TardisNavLocation tardisNavLocation = tardisNavInfo.provideInfo(TardisLevelOperator.get(serverLevel).get());
                 List<MutableComponent> components = new ArrayList<>();
 
-                components.add(Component.literal("Position: " + tardisNavLocation.getPosition().toShortString()));
-                components.add(Component.literal("Direction: " + tardisNavLocation.getDirection().getName()));
-                components.add(Component.literal("Dimension: " + MiscHelper.getCleanDimensionName(tardisNavLocation.getDimensionKey())));
+                components.add(Component.translatable(ModMessages.POSITION, tardisNavLocation.getPosition().toShortString()));
+                components.add(Component.translatable(ModMessages.DIRECTION, tardisNavLocation.getDirection().getName()));
+                components.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getCleanDimensionName(tardisNavLocation.getDimensionKey())));
 
                 return components;
             }
@@ -48,6 +48,7 @@ public class TardisNavLocationDisplaySource extends DisplaySource {
 
     public interface TardisNavInfo {
         TardisNavLocation provideInfo(TardisLevelOperator tardisLevelOperator);
+
         ResourceLocation getId();
     }
 }

@@ -2,7 +2,6 @@ package whocraft.tardis_refined.compat.create;
 
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.displayLink.source.DisplaySource;
-import com.simibubi.create.content.redstone.displayLink.source.SingleLineDisplaySource;
 import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -52,7 +51,6 @@ public class TardisDisplaySource extends DisplaySource {
     public int getPassiveRefreshTicks() {
         return 10;
     }
-
 
 
 }

@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.mixin;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;

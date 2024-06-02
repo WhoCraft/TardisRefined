@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.world;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import whocraft.tardis_refined.TardisRefined;

@@ -2,8 +2,8 @@ package whocraft.tardis_refined.common.tardis.themes.console;
 
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
-import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.registry.TRControlRegistry;
 
 public class NukaConsoleTheme extends ConsoleThemeDetails {
 

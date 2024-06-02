@@ -14,11 +14,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.common.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import javax.annotation.Nullable;

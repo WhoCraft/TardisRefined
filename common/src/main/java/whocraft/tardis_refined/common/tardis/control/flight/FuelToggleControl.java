@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

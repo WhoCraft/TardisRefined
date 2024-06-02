@@ -18,14 +18,12 @@ public class QuickOneLineDisplaySource extends SingleLineDisplaySource {
         this.source = source;
     }
 
-
-
     @Override
     protected MutableComponent provideLine(DisplayLinkContext context, DisplayTargetStats stats) {
 
-        if(context.level() instanceof ServerLevel serverLevel){
+        if (context.level() instanceof ServerLevel serverLevel) {
             boolean isPresent = TardisLevelOperator.get(serverLevel).isPresent();
-            if(isPresent) {
+            if (isPresent) {
                 return source.provideInfo(TardisLevelOperator.get(serverLevel).get());
             }
         }
@@ -45,6 +43,7 @@ public class QuickOneLineDisplaySource extends SingleLineDisplaySource {
 
     public interface TardisInfo {
         MutableComponent provideInfo(TardisLevelOperator tardisLevelOperator);
+
         ResourceLocation getId();
     }
 }

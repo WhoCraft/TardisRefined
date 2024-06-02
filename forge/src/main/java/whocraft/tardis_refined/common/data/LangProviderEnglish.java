@@ -264,6 +264,9 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Create stuff*/
         add(ModMessages.DOOR_STATUS, "Door: %s");
         add(ModMessages.LOCK_STATUS, "Locked: %s");
+        add(ModMessages.DIMENSION, "Dimension: %s");
+        add(ModMessages.DIRECTION, "Direction: %s");
+        add(ModMessages.POSITION, "Position: %s");
 
         add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
         add(ModCompatMessages.createDisplaySource("gps"), "GPS");

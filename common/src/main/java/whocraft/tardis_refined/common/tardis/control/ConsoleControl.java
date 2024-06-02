@@ -1,9 +1,6 @@
 package whocraft.tardis_refined.common.tardis.control;
 
 import net.minecraft.util.StringRepresentable;
-import whocraft.tardis_refined.common.tardis.control.flight.*;
-import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
-import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
 
 import java.util.Locale;
 

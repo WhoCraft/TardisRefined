@@ -12,7 +12,6 @@ import whocraft.tardis_refined.common.util.MergeableCodecJsonReloadListener;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 import java.io.Reader;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Function;
 
