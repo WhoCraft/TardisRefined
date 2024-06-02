@@ -17,7 +17,7 @@ sourceSets {
 
 unifiedPublishing {
     project {
-        displayName = "[NeoForge] - Tardis Refined - v$project.version"
+        displayName = "[Forge] - Tardis Refined - v$project.version"
         releaseType = "release"
         changelog = new File("${rootProject.projectDir}/changelog.md").text
         gameVersions = ["$rootProject.minecraft_version"]

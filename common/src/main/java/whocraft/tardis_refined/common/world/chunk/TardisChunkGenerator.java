@@ -259,7 +259,6 @@ public class TardisChunkGenerator extends ChunkGenerator {
      * @return random corridor ARS piece from the registry.
      */
     private ARSStructurePiece getRandomCorridorPiece() {
-
         return TRARSStructurePieceRegistry.CORRIDORS.get(this.random.nextInt(TRARSStructurePieceRegistry.CORRIDORS.size()));
     }
 
