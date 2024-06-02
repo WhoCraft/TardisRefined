@@ -42,6 +42,8 @@ public class CommonBus {
         ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
         DimensionHandler.loadLevels(world);
 
+        TardisRefined.registerFallbackEntries();
+
     }
 
 
