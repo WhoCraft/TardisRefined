@@ -28,6 +28,7 @@ public abstract class LoopingTardisInteriorSound extends LoopingDimensionTypeSpe
 
     @Override
     public LoopingSound setLevel(Level targetLevel) {
+        this.level = targetLevel;
         return this.setTardisClientData(targetLevel);
     }
 

@@ -23,13 +23,17 @@ public class LoopingFlightSound extends LoopingTardisInteriorSound {
                 this.setLocation(player.position());
                 this.setVolume(0.5F);
             }
+            else {
+                this.setVolume(0F);
+            }
 
             //Stop playing this looping sound if the Tardis is out of fuel
-            //Applies to any looping sound that applies during
+            //Applies to any looping sound that is happening during flight
             if (this.getTardisClientData().getFuel() == 0f) {
                 this.setVolume(0F);
-                this.stop();
             }
+
+
         }
     }
 }

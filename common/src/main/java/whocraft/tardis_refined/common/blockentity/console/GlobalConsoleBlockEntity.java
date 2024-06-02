@@ -67,7 +67,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         return basePattern == null ? ConsolePatterns.DEFAULT : basePattern;
     }
 
-    public List<ControlEntity> getControlEnttityList() {
+    public List<ControlEntity> getControlEntityList() {
         return this.controlEntityList;
     }
 

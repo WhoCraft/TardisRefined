@@ -33,8 +33,16 @@ public class FlightDanceManager extends BaseHandler {
     }
 
     private List<ControlEntity> getNonCriticalControls(GlobalConsoleBlockEntity controllerConsole) {
-        var controls = controllerConsole.getControlEnttityList();
-        return controls.stream().filter(x -> !(x.controlSpecification().control().equals(TRControlRegistry.THROTTLE.get())) || !(x.controlSpecification().control().equals(TRControlRegistry.HANDBRAKE.get())) || !(x.controlSpecification().control().equals(TRControlRegistry.MONITOR.get()))).toList();
+        var allControlsOnConsole = controllerConsole.getControlEntityList();
+        List<ControlEntity> updatedList = new ArrayList<>(allControlsOnConsole); //Copy over all entries to a new which we can manipulate
+        for(ControlEntity controlEntity : allControlsOnConsole){ //Out of all controls in the original control list, remove any from our copy
+            if(controlEntity.controlSpecification().control() == TRControlRegistry.THROTTLE.get()
+                    || controlEntity.controlSpecification().control() == TRControlRegistry.HANDBRAKE.get()
+                    || controlEntity.controlSpecification().control() == TRControlRegistry.MONITOR.get()){
+                updatedList.remove(controlEntity); //Remove entries from our copy
+            }
+        }
+        return updatedList;
     }
 
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {

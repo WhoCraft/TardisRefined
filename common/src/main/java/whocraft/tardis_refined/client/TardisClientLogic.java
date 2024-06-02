@@ -135,7 +135,7 @@ public class TardisClientLogic {
         }
     }
 
-    /** Play looping sounds for anything that doesn't need to be played inside a Tardis dimension*/
+    /** Handle when to start playing looping sounds for anything that doesn't need to be played inside a Tardis dimension*/
     private static void handleNonTardisLoopingSounds(Player player, Level targetLevel){
         SoundManager soundManager = Minecraft.getInstance().getSoundManager();
         if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
@@ -144,7 +144,7 @@ public class TardisClientLogic {
             }
         }
     }
-
+    /** Handle when to trigger the looping sounds to start playing. This is not a duplicate of the logic in the LoopingSound implementation. Here we are only defining when we should start or continue playing the sound*/
     private static void handleTardisLoopingSounds(TardisClientData clientData, Player player, Level targetLevel){
 
         boolean isThisTardis = clientData.getLevelKey() == targetLevel.dimension();

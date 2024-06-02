@@ -9,7 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-
+/** Object to define a SoundEvent that can be looped. We can define how and when it should be played */
 public abstract class LoopingSound extends AbstractTickableSoundInstance {
 
     protected SoundEvent soundEvent;
@@ -92,7 +92,8 @@ public abstract class LoopingSound extends AbstractTickableSoundInstance {
         return this.soundEvent;
     }
 
-    /** Add logic here to set volume etc.*/
+    /** Add logic here to determine how the sound should be played given it is able to play.
+     * <br> Define logic such as volume, attenuation, delays etc.*/
     public void playSoundInstance(Player player){
 
     }

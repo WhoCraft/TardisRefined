@@ -435,7 +435,7 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
     /**
-     * Logic to handle starting flight
+     * Logic to handle starting flight. Must be synced to client
      *
      * @return false if didn't start flight, true if flight was started
      */
@@ -498,6 +498,8 @@ public class TardisPilotingManager extends BaseHandler {
             this.ticksInFlight = 0;
             this.ticksTakingOff = 1;
             this.operator.getExteriorManager().setIsTakingOff(true);
+
+            this.operator.tardisClientData().sync();//Sync to client
             //Debug if the blockstate at the current position during takeoff is air. If not air, it means we have forgotten to actually remove the exterior block which could be the cause of the duplication issue
 //            System.out.println(this.operator.getLevel().getBlockState(this.operator.getExteriorManager().getLastKnownLocation().getPosition()).getBlock().toString());
 
@@ -552,7 +554,7 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
     /**
-     * Logic to handle ending flight
+     * Logic to handle the start of ending the flight. Must be synced to client.
      *
      * @param forceFlightEnd Ignores the required flight time conditions for the TARDIS to land and lands.
      * @return false if didn't end flight, true if flight was ended
@@ -594,6 +596,8 @@ public class TardisPilotingManager extends BaseHandler {
                 PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + " XP"), true);
             }
 
+            this.operator.tardisClientData().sync();
+
             return true;
         }
         return false;
@@ -631,7 +635,7 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
     /**
-     * Start to remove the Tardis Shell block and set up fast return location data
+     * Start to remove the Tardis Shell block and set up fast return location data. This means we are no longer taking off.
      */
     public void enterTimeVortex() {
         operator.getExteriorManager().removeExteriorBlock();
@@ -643,8 +647,9 @@ public class TardisPilotingManager extends BaseHandler {
         if (this.currentConsole != null) {
             operator.getFlightDanceManager().startFlightDance(this.currentConsole);
         }
+        this.operator.tardisClientData().sync();
     }
-
+    /** Update data to indicate we have completed the landing process.*/
     public void onFlightEnd() {
         this.operator.getFlightDanceManager().stopDancing();
 
@@ -657,6 +662,7 @@ public class TardisPilotingManager extends BaseHandler {
         }
 
         TardisCommonEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().getPosition());
+        this.operator.tardisClientData().sync();
     }
 
     // Triggers the crash event.
@@ -701,6 +707,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         tardisExteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 1, 1);
         tarisLevel.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_CRASH_LAND.get(), SoundSource.BLOCKS, 10f, 1f);
+        this.operator.tardisClientData().sync();
     }
 
     public void onCrashEnd() {
