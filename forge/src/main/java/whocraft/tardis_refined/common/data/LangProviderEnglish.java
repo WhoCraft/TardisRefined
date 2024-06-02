@@ -7,14 +7,18 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
+import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.create.ModCompatMessages;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.*;
+
+import java.util.Map;
 
 public class LangProviderEnglish extends LanguageProvider {
 
@@ -42,10 +46,18 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), "Teleporter building up");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), "Teleporter used");
+        addSound(TRSoundRegistry.SCREWDRIVER_CONNECT.get(), "Screwdriver connected position");
         addSound(TRSoundRegistry.SCREWDRIVER_SHORT.get(), "Screwdriver used");
         addSound(TRSoundRegistry.INTERIOR_CREAKS.get(), "Creaks");
         addSound(TRSoundRegistry.SCREWDRIVER_DISCARD.get(), "Screwdriver discard data");
         addSound(TRSoundRegistry.GRAVITY_TUNNEL.get(), "Gravity tunnel winds");
+        addSound(TRSoundRegistry.LOW_FUEL.get(), "Low fuel warning");
+
+        //Hum Sounds
+        TardisHums.registerDefaultHums();
+        for(Map.Entry<ResourceLocation, HumEntry> entry : TardisHums.getDefaultHums().entrySet()){
+            addSound(entry.getValue().getSoundEventId(), "TARDIS hums");
+        }
 
         /*Block*/
         add(TRBlockRegistry.ARS_EGG.get(), "ARS Egg");
@@ -138,6 +150,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.HANDBRAKE_DISENGAGED, "Handbrake disengaged");
         add(ModMessages.CURRENT, "CURRENT");
         add(ModMessages.DESTINATION, "DESTINATION");
+
 
         /*Command*/
         add(ModMessages.CMD_DIM_NOT_A_TARDIS, ChatFormatting.RED + "%s is not a TARDIS Dimension!");
@@ -260,20 +273,6 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_III.get(), "Improved Generation III", "Lowers desktop wait times to 10 seconds");
 
 
-        /*Create stuff*/
-        add(ModMessages.DOOR_STATUS, "Door: %s");
-        add(ModMessages.LOCK_STATUS, "Locked: %s");
-        add(ModMessages.DIMENSION, "Dimension: %s");
-        add(ModMessages.DIRECTION, "Direction: %s");
-        add(ModMessages.POSITION, "Position: %s");
-
-        add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
-        add(ModCompatMessages.createDisplaySource("gps"), "GPS");
-        add(ModCompatMessages.createDisplaySource("destination"), "GPS Destination");
-        add(ModCompatMessages.createDisplaySource("tardis_bigdata"), "Tardis Summary");
-        add(ModCompatMessages.createDisplaySource("door"), "Door Status");
-        add(ModCompatMessages.createDisplaySource("locked"), "Lock Status");
-
     }
 
 
@@ -286,12 +285,17 @@ public class LangProviderEnglish extends LanguageProvider {
     }
 
     public void addUpgrade(Upgrade upgrade, String title, String description) {
-        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgrade)), title);
-        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgrade)) + ".description", description);
+        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)), title);
+        add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_REGISTRY.getKey(upgrade)) + ".description", description);
     }
 
     public void addSound(SoundEvent soundEvent, String lang) {
         String subtitleKey = SoundProvider.createSubtitle(soundEvent.getLocation().getPath());
+        add(subtitleKey, lang);
+    }
+
+    public void addSound(ResourceLocation soundId, String lang) {
+        String subtitleKey = SoundProvider.createSubtitle(soundId.getPath());
         add(subtitleKey, lang);
     }
 

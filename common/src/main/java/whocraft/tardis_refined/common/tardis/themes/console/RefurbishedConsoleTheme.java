@@ -18,7 +18,7 @@ public class RefurbishedConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.ROTATE, new Vector3f(1.68f, 0.50f, 0.11f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.RANDOM, new Vector3f(-1.07f, 0.56f, -0.65f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.DOOR_TOGGLE, new Vector3f(-0.33f, 0.50f, -1.51f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.89f, 0.94f, -0.07f), EntityDimensions.scalable(0.25f, 0.25f)),
+                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.815f, 0.915f, -0.005f), EntityDimensions.scalable(0.35f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(1.30f, 0.50f, -0.78f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-0.48f, 0.50f, -1.51f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.READOUT, new Vector3f(0.80f, 0.71f, 0.93f), EntityDimensions.scalable(0.13f, 0.12f)),

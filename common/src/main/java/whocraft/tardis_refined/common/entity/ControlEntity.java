@@ -87,8 +87,8 @@ public class ControlEntity extends Entity {
         this.controlSpecification = specification;
         this.consoleTheme = theme;
         if (this.controlSpecification != null) {
-            float width = controlSpecification.scale().width;
-            float height = controlSpecification.scale().height;
+            float width = controlSpecification.size().width;
+            float height = controlSpecification.size().height;
             this.setSizeData(width, height);
             this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
         }
@@ -237,6 +237,7 @@ public class ControlEntity extends Entity {
 
         if (this.entityData.get(TICKING_DOWN)) {
             realignControl();
+            return InteractionResult.SUCCESS;
         } else {
             this.handleRightClick(player, serverLevel, interactionHand);
         }

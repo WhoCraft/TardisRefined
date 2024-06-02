@@ -19,7 +19,7 @@ public class CopperConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.ROTATE, new Vector3f(0.74f, 0.50f, 0.93f), EntityDimensions.scalable(0.19f, 0.19f)),
                 new ControlSpecification(TRControlRegistry.RANDOM, new Vector3f(0.68f, 0.25f, -1.26f), EntityDimensions.scalable(0.19f, 0.19f)),
                 new ControlSpecification(TRControlRegistry.DOOR_TOGGLE, new Vector3f(-0.20f, 0.63f, -1.26f), EntityDimensions.scalable(0.19f, 0.19f)),
-                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(0.99f, 1.44f, -0.64f), EntityDimensions.scalable(0.25f, 0.25f)),
+                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(0.89f, 1.39f, -0.515f), EntityDimensions.scalable(0.45f, 0.4f)),
                 new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(0.35f, 0.63f, 1.11f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-0.79f, 0.53f, -0.95f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.71f, 0.47f, -0.91f), EntityDimensions.scalable(0.13f, 0.13f)),

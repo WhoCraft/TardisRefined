@@ -31,6 +31,7 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -127,6 +128,13 @@ public class TardisHelper {
 
 
             BlockPos targetTeleportPos = destinationPos;
+
+            /**If for some reason we are trying to enter the Tardis, but the destination dimension is not a Tardis dimension type, don't teleport
+            This can occur if the exterior shell we are entering has an invalid {@link whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity#TARDIS_ID} which will occur for older releases due to a bug that was present until 2.0.2
+             */
+            if(enterTardis && destinationLevel.dimensionTypeId() != TRDimensionTypes.TARDIS){
+                return false;
+            }
 
             //Calculate entity motion and rotation, taking into account for the internal door's direction and rotation
             float entityYRot = entity.getYRot();

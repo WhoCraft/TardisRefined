@@ -1,6 +1,8 @@
-package whocraft.tardis_refined.common.dimension.forge;
+package whocraft.tardis_refined.common.dimension.neoforge;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -19,15 +21,22 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.sync.SyncLevelListMessage;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.util.forge.PlatformImpl.getServer;
+import static whocraft.tardis_refined.common.util.neoforge.PlatformImpl.getServer;
 
 public class DimensionHandlerImpl {
+
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
