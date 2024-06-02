@@ -17,6 +17,7 @@ import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -42,7 +43,7 @@ public class ModEvents {
 
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
-            DimensionHandlerImpl.loadLevels(world);
+            DimensionHandler.loadLevels(world);
 
         });
 
