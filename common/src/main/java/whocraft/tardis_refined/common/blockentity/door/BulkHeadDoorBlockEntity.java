@@ -56,8 +56,8 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
      */
     public void toggleDoor(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
 
-        if(level.getBlockState(blockPos).hasProperty(OPEN) && level.getBlockState(blockPos).getValue(OPEN) != isOpen) {
-            level.playSound(null, blockPos, !isOpen ? SoundEvents.PISTON_EXTEND :  SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
+        if (level.getBlockState(blockPos).hasProperty(OPEN) && level.getBlockState(blockPos).getValue(OPEN) != isOpen) {
+            level.playSound(null, blockPos, !isOpen ? SoundEvents.PISTON_EXTEND : SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
         }
         level.setBlock(blockPos, blockState.setValue(OPEN, isOpen), Block.UPDATE_CLIENTS);
     }

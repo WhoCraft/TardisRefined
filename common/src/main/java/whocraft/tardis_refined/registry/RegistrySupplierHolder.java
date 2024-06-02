@@ -20,12 +20,32 @@ import java.util.stream.Stream;
 /**
  * An implementation of vanilla's Holder where it is a Holder constructed only with a ResourceKey.
  * It will be populated with the underlying Holder from the registry when available.
+ *
  * @param <T> The type of object being held by this RegistryHolder
  *
- * <br> Based off NeoForge's DeferredHolder
- * <br> https://github.com/neoforged/NeoForge/blob/1.20.x/src/main/java/net/neoforged/neoforge/registries/DeferredHolder.java
- * */
+ *            <br> Based off NeoForge's DeferredHolder
+ *            <br> https://github.com/neoforged/NeoForge/blob/1.20.x/src/main/java/net/neoforged/neoforge/registries/DeferredHolder.java
+ */
 public class RegistrySupplierHolder<R, T extends R> implements Holder<R>, Supplier<T> {
+
+    protected final ResourceKey<R> key;
+    @Nullable
+    private Holder<R> holder = null;
+
+
+    /**
+     * Creates a new RegistrySupplierHolder with a ResourceKey.
+     * Attempts to bind immediately if possible.
+     * Params:
+     *
+     * @param key – The resource key of the target object.
+     * @see #create(ResourceLocation, ResourceLocation)
+     * @see #create(ResourceKey, ResourceLocation)
+     */
+    protected RegistrySupplierHolder(ResourceKey<R> key) {
+        this.key = Objects.requireNonNull(key);
+        this.bind(false);
+    }
 
     /**
      * Creates a new RegistrySupplierHolder targeting the value with the specified name in the specified registry.
@@ -48,25 +68,6 @@ public class RegistrySupplierHolder<R, T extends R> implements Holder<R>, Suppli
      */
     public static <R, T extends R> RegistrySupplierHolder<R, T> create(ResourceLocation registryName, ResourceLocation valueName) {
         return create(ResourceKey.createRegistryKey(registryName), valueName);
-    }
-
-
-    protected final ResourceKey<R> key;
-
-    @Nullable
-    private Holder<R> holder = null;
-
-    /**
-     * Creates a new RegistrySupplierHolder with a ResourceKey.
-     * Attempts to bind immediately if possible.
-     * Params:
-     * @param key – The resource key of the target object.
-     * @see #create(ResourceLocation, ResourceLocation)
-     * @see #create(ResourceKey, ResourceLocation)
-     */
-    protected RegistrySupplierHolder(ResourceKey<R> key) {
-        this.key = Objects.requireNonNull(key);
-        this.bind(false);
     }
 
     public static <R, T extends R> RegistrySupplierHolder<R, T> create(ResourceKey<R> key) {

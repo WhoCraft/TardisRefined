@@ -10,7 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-/** Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister.
+/**
+ * Abstraction of a Registry handler based off the design patterns of Forge's DeferredRegister.
  * This also acts as a dedicated wrapper object for object types that require a custom registry.
  * <br> This object stores a vanilla {@link Registry} instance based of a {@link ResourceKey<Registry<T>>} which means as long as mods register to the same {@link ResourceKey}, they will be correctly appending new entries correctly.
  * <br> For example, here is what the main Tardis Refined mod's registry class might look like:
@@ -31,7 +32,7 @@ import java.util.function.Supplier;
  *
  *     //Unfortunately, we cannot register using RegistrySupplierHolder in 1.20.1 because Forge's Registries are isolated from vanilla, so in order to have unified modding interface we must only use suppliers
  *
- *}
+ * }
  *
  * public class TardisConsoleBlock {
  *
@@ -71,34 +72,15 @@ import java.util.function.Supplier;
  * <br> As you can see, the Addon Mod just needs to create its own DeferredRegistry instance and reference the TardisRefined Registry's ResourceKey.
  * <br> This way, registering objects is greatly simplified along with the ability to append new entries to an existing registry
  * <br> This also ensures that there is a global source of truth for all our TardisRefined object types, and we don't accidentally restrict the mod to only use Tardis Refined's entries in areas where addon mods are likely to add additional content. E.g. Upgrades
- * */
+ */
 public abstract class DeferredRegistry<T> {
-    /** Call in main mod constructor to classload the registry class. On Forge/NeoForge environments, the necessary event buses for registries will be called*/
-    public abstract void registerToModBus();
-    /** Register using a Supplier */
-    public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
-
-    /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
-    /** Create a RegistrySupplierHolder. This has similar behaviour to a Supplier but has vanilla Holder attributes such as use in tags
-    public abstract <I extends T> RegistrySupplierHolder<T, I> registerHolder(final String name, final Supplier<I> sup);
-    */
-
-    /** 1.20.1: Must comment this out because of Forge 1.20.1 not exposing the underlying vanilla registry
-     *  Therefore, to maintain a consistent API for both Fabric and Forge, we cannot grab the vanilla registry unfortunately.
-     *  This means we cannot utilise vanilla registry features such as compatibility with tags in datapacks
-    /** Get the underlying registry, which includes all entries added by any mod that has a DeferredRegistry with the same ResourceKey.
-     * All lookup methods should be called from here.
-    public abstract Supplier<Registry<T>> getRegistry();
-     */
-
-
-
     /**
      * Create a DeferredRegistry instance for vanilla registries
-     * @param modid - Your Mod's unique identifier
+     *
+     * @param modid       - Your Mod's unique identifier
      * @param resourceKey - Resource Key for the Registry
-     * @return
      * @param <T>
+     * @return
      */
     @ExpectPlatform
     public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
@@ -107,18 +89,44 @@ public abstract class DeferredRegistry<T> {
 
     /**
      * Create a DeferredRegistry instance for custom registries
-     * @param modid - Your Mod's unique identifier
-     * @param resourceKey - Resource Key for the Registry
+     *
+     * @param modid        - Your Mod's unique identifier
+     * @param resourceKey  - Resource Key for the Registry
      * @param syncToClient - True if we want the objects to sync to the client.
-     * @return
      * @param <T>
+     * @return
      */
     @ExpectPlatform
     public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
         throw new AssertionError();
     }
 
-    /** Below are exposing of the methods in Registry for convenience. This reduces verbosity for lookup operations which we will often be performing*/
+    /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
+     /** Create a RegistrySupplierHolder. This has similar behaviour to a Supplier but has vanilla Holder attributes such as use in tags
+     public abstract <I extends T> RegistrySupplierHolder<T, I> registerHolder(final String name, final Supplier<I> sup);
+     */
+
+    /** 1.20.1: Must comment this out because of Forge 1.20.1 not exposing the underlying vanilla registry
+     *  Therefore, to maintain a consistent API for both Fabric and Forge, we cannot grab the vanilla registry unfortunately.
+     *  This means we cannot utilise vanilla registry features such as compatibility with tags in datapacks
+     /** Get the underlying registry, which includes all entries added by any mod that has a DeferredRegistry with the same ResourceKey.
+     * All lookup methods should be called from here.
+     public abstract Supplier<Registry<T>> getRegistry();
+     */
+
+    /**
+     * Call in main mod constructor to classload the registry class. On Forge/NeoForge environments, the necessary event buses for registries will be called
+     */
+    public abstract void registerToModBus();
+
+    /**
+     * Register using a Supplier
+     */
+    public abstract <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier);
+
+    /**
+     * Below are exposing of the methods in Registry for convenience. This reduces verbosity for lookup operations which we will often be performing
+     */
 
     public abstract ResourceKey<? extends Registry<T>> key();
 
@@ -128,14 +136,18 @@ public abstract class DeferredRegistry<T> {
 
     public abstract Set<ResourceLocation> keySet();
 
-    /** Gets the values in the underlying registry ordered by key. This is sufficient for most purposes */
+    /**
+     * Gets the values in the underlying registry ordered by key. This is sufficient for most purposes
+     */
     public abstract Set<Map.Entry<ResourceKey<T>, T>> entrySet();
 
     public abstract boolean containsKey(ResourceLocation key);
 
 
-    /** Gets the underlying Codec for the registry object type, if defined.
-     * <br> Required for reading/writing data to different formats for data-driven features*/
+    /**
+     * Gets the underlying Codec for the registry object type, if defined.
+     * <br> Required for reading/writing data to different formats for data-driven features
+     */
     public abstract Supplier<Codec<T>> getCodec();
 
 }

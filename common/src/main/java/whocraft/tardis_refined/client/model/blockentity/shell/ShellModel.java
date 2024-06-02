@@ -18,10 +18,71 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 
 public abstract class ShellModel extends HierarchicalModel {
 
+    public static final AnimationDefinition MODEL_TAKEOFF = AnimationDefinition.Builder.withLength(12f)
+            .addAnimation("fade_value",
+                    new AnimationChannel(AnimationChannel.Targets.POSITION,
+                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 9.5f, 0f),
+                                    AnimationChannel.Interpolations.LINEAR),
+                            new Keyframe(1f, KeyframeAnimations.posVec(0f, 9.5f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(2.125f, KeyframeAnimations.posVec(0f, 5f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(3f, KeyframeAnimations.posVec(0f, 10f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(4f, KeyframeAnimations.posVec(0f, 3f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(5f, KeyframeAnimations.posVec(0f, 6f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(5.791677f, KeyframeAnimations.posVec(0f, 3f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(6.916767f, KeyframeAnimations.posVec(0f, 5f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(8f, KeyframeAnimations.posVec(0f, 2f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(9.167666f, KeyframeAnimations.posVec(0f, 4f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(12f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM))).build();
+    ModelPart fade_value;
+    float initAlpha = 0;
+    float ANIMATION_SPEED = 1.1f;
+    AnimationDefinition MODEL_LAND = AnimationDefinition.Builder.withLength(11f)
+            .addAnimation("fade_value",
+                    new AnimationChannel(AnimationChannel.Targets.POSITION,
+                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(1f, KeyframeAnimations.posVec(0f, 1f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(3f, KeyframeAnimations.posVec(0f, 2f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(5f, KeyframeAnimations.posVec(0f, 4f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(7f, KeyframeAnimations.posVec(0f, 6f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(8f, KeyframeAnimations.posVec(0f, 2f, 0f),
+                                    AnimationChannel.Interpolations.CATMULLROM),
+                            new Keyframe(9.5F, KeyframeAnimations.posVec(0f, 10f, 0f),
+                                    AnimationChannel.Interpolations.LINEAR))).build();
+    private float currentAlpha = 0;
+
+    public ShellModel(ModelPart root) {
+        this.fade_value = root.getChild("fade_value");
+        this.initAlpha = this.fade_value.y;
+    }
+
+    public static void addMaterializationPart(PartDefinition partDefinition) {
+        partDefinition.addOrReplaceChild("fade_value", CubeListBuilder.create().texOffs(128, 128), PartPose.offset(-24.0F, 24.0F, 0.0F));
+    }
+
     public abstract void setDoorPosition(boolean open);
 
     public abstract void renderShell(GlobalShellBlockEntity entity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
-
 
     public ResourceLocation getShellTexture(ShellPattern pattern, boolean isEmmissive) {
         return texture(pattern, isEmmissive);
@@ -36,16 +97,6 @@ public abstract class ShellModel extends HierarchicalModel {
         return isEmmissive ? pattern.exteriorDoorTexture().emissiveTexture() : pattern.exteriorDoorTexture().texture();
     }
 
-    ModelPart fade_value;
-
-    float initAlpha = 0;
-    float ANIMATION_SPEED = 1.1f;
-
-    public ShellModel(ModelPart root) {
-        this.fade_value = root.getChild("fade_value");
-        this.initAlpha = this.fade_value.y;
-    }
-
     public float initAlpha() {
         return initAlpha;
     }
@@ -53,8 +104,6 @@ public abstract class ShellModel extends HierarchicalModel {
     public ModelPart fadeValue() {
         return fade_value;
     }
-
-    private float currentAlpha = 0;
 
     public float getCurrentAlpha() {
         return currentAlpha;
@@ -86,59 +135,4 @@ public abstract class ShellModel extends HierarchicalModel {
     public void handleSpecialAnimation(GlobalShellBlockEntity entity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float baseAlpha) {
 
     }
-
-
-    public static void addMaterializationPart(PartDefinition partDefinition) {
-        partDefinition.addOrReplaceChild("fade_value", CubeListBuilder.create().texOffs(128, 128), PartPose.offset(-24.0F, 24.0F, 0.0F));
-    }
-
-    AnimationDefinition MODEL_LAND = AnimationDefinition.Builder.withLength(11f)
-            .addAnimation("fade_value",
-                    new AnimationChannel(AnimationChannel.Targets.POSITION,
-                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(1f, KeyframeAnimations.posVec(0f, 1f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(2f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(3f, KeyframeAnimations.posVec(0f, 2f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(4f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(5f, KeyframeAnimations.posVec(0f, 4f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(6f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(7f, KeyframeAnimations.posVec(0f, 6f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(8f, KeyframeAnimations.posVec(0f, 2f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(9.5F, KeyframeAnimations.posVec(0f, 10f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR))).build();
-
-    public static final AnimationDefinition MODEL_TAKEOFF = AnimationDefinition.Builder.withLength(12f)
-            .addAnimation("fade_value",
-                    new AnimationChannel(AnimationChannel.Targets.POSITION,
-                            new Keyframe(0f, KeyframeAnimations.posVec(0f, 9.5f, 0f),
-                                    AnimationChannel.Interpolations.LINEAR),
-                            new Keyframe(1f, KeyframeAnimations.posVec(0f, 9.5f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(2.125f, KeyframeAnimations.posVec(0f, 5f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(3f, KeyframeAnimations.posVec(0f, 10f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(4f, KeyframeAnimations.posVec(0f, 3f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(5f, KeyframeAnimations.posVec(0f, 6f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(5.791677f, KeyframeAnimations.posVec(0f, 3f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(6.916767f, KeyframeAnimations.posVec(0f, 5f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(8f, KeyframeAnimations.posVec(0f, 2f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(9.167666f, KeyframeAnimations.posVec(0f, 4f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM),
-                            new Keyframe(12f, KeyframeAnimations.posVec(0f, 0f, 0f),
-                                    AnimationChannel.Interpolations.CATMULLROM))).build();
 }

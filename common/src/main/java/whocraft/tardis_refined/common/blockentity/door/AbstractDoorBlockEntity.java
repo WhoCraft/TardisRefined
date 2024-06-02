@@ -63,7 +63,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     @Override
     public void setClosed(boolean state) {
         BlockState blockState = this.getLevel().getBlockState(getDoorPosition());
-        if (blockState.getBlock() instanceof InternalDoorBlock){
+        if (blockState.getBlock() instanceof InternalDoorBlock) {
             Level currentLevel = getLevel();
             currentLevel.setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), Block.UPDATE_CLIENTS);
             currentLevel.playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
@@ -121,7 +121,6 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     }
 
 
-
     @Override
     protected void saveAdditional(CompoundTag compoundTag) {
         super.saveAdditional(compoundTag);
@@ -141,7 +140,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
     @Override
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos doorPos, Entity entity) {
-        if(!entity.level().isClientSide() && level instanceof ServerLevel serverLevel){
+        if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
             Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
             data.ifPresent(tardisLevelOperator -> {
                 tardisLevelOperator.setInternalDoor(this);

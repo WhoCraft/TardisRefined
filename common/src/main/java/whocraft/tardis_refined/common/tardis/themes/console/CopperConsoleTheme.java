@@ -10,7 +10,7 @@ public class CopperConsoleTheme extends ConsoleThemeDetails {
 
     @Override
     public ControlSpecification[] getControlSpecification() {
-        return new ControlSpecification[] {
+        return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(0.11f, 0.69f, -1.26f), EntityDimensions.scalable(0.19f, 0.19f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(0.68f, 0.97f, 0.14f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.Y, new Vector3f(0.68f, 0.97f, -0.01f), EntityDimensions.scalable(0.13f, 0.12f)),

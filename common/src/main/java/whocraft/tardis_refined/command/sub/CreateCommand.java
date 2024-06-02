@@ -28,10 +28,10 @@ public class CreateCommand {
     public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
         return Commands.literal("create")
                 .then(
-                    Commands.argument("shell", ShellArgumentType.shellArgumentType())
-                        .then(Commands.argument("desktop", DesktopArgumentType.desktopArgumentType())
-                            .executes(CreateCommand::createTardis)
-                        )
+                        Commands.argument("shell", ShellArgumentType.shellArgumentType())
+                                .then(Commands.argument("desktop", DesktopArgumentType.desktopArgumentType())
+                                        .executes(CreateCommand::createTardis)
+                                )
                 );
     }
 
@@ -51,7 +51,7 @@ public class CreateCommand {
 
         context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
-        if (TardisHelper.createTardis(pos, level, generatedLevelKey, shellTheme, desktopTheme)){
+        if (TardisHelper.createTardis(pos, level, generatedLevelKey, shellTheme, desktopTheme)) {
             context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
         }
 

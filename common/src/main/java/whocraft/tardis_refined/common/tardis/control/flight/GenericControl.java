@@ -11,7 +11,8 @@ public class GenericControl extends Control {
     public GenericControl(ResourceLocation id) {
         super(id);
     }
-    public GenericControl(ResourceLocation id, String langId){
+
+    public GenericControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 

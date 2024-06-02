@@ -7,7 +7,7 @@ import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class FlightDetectorBlockEntity extends BlockEntity {
 
-    public FlightDetectorBlockEntity( BlockPos blockPos, BlockState blockState) {
+    public FlightDetectorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.FLIGHT_DETECTOR.get(), blockPos, blockState);
     }
 }

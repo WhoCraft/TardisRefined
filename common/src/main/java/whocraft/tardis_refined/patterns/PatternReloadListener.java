@@ -15,11 +15,34 @@ import java.io.Reader;
 import java.util.*;
 import java.util.function.Function;
 
-/** Slightly modified version of CodecJsonReloadListener to account for needing to call setThemeId on the PatternCollection*/
+/**
+ * Slightly modified version of CodecJsonReloadListener to account for needing to call setThemeId on the PatternCollection
+ */
 public class PatternReloadListener<T extends PatternCollection, B extends BasePattern> extends MergeableCodecJsonReloadListener<T, List<B>> {
 
     protected PatternReloadListener(String folderName, Codec<T> codec, final Function<List<T>, List<B>> merger) {
         super(folderName, codec, merger);
+    }
+
+    public static <B extends BasePattern, C extends PatternCollection> ArrayList<B> processPatternCollections(final List<C> patternCollections) {
+        return patternCollections.stream().reduce(new ArrayList<B>(), PatternReloadListener::mergeOrReplacePatterns, MiscHelper::unionList);
+    }
+
+    public static <B extends BasePattern, C extends PatternCollection> ArrayList<B> mergeOrReplacePatterns(ArrayList<B> set, final C nextPatternCollection) {
+        return addPatterns(nextPatternCollection.isReplace() ? new ArrayList<B>() : set, nextPatternCollection.patterns());
+    }
+
+    public static <B extends BasePattern> ArrayList<B> addPatterns(final List<B> finalPatterns, final List<B> patterns) {
+        ArrayList<B> finalPatternsModified = MiscHelper.unionList(finalPatterns, patterns);
+        return finalPatternsModified;
+    }
+
+    /**
+     * Need to create this static method here as the Architectuary ExpectPlatform Annotation used in CodecJsonReloadListener requires a static builder method to construct an instance
+     */
+    @ExpectPlatform
+    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger) {
+        throw new AssertionError();
     }
 
     @Override
@@ -33,8 +56,8 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
             String fullPath = fullId.getPath(); // includes folderName/ and .json
             ResourceLocation key = new ResourceLocation(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
 
-            for (Resource resource : entry.getValue()){
-                try(Reader reader = resource.openAsReader()) {
+            for (Resource resource : entry.getValue()) {
+                try (Reader reader = resource.openAsReader()) {
                     JsonElement element = JsonParser.parseReader(reader);
 
                     // if we fail to parse json, log an error and continue
@@ -43,10 +66,10 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
                             .get()
                             .ifLeft(result -> {
                                 raws.add((T) result.getFirst().setThemeId(key));
-                                TardisRefined.LOGGER.info("Adding entry for {}", key);})
+                                TardisRefined.LOGGER.info("Adding entry for {}", key);
+                            })
                             .ifRight(partial -> TardisRefined.LOGGER.error("Error deserializing json {} in folder {} from pack {}: {}", key, this.folderName, resource.sourcePackId(), partial.message()));
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     TardisRefined.LOGGER.error(String.format(Locale.ENGLISH, "Error reading resource %s in folder %s from pack %s: ", key, this.folderName, resource.sourcePackId()), e);
                 }
             }
@@ -54,24 +77,5 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
             entries.put(key, this.merger.apply(raws));
         }
         return entries;
-    }
-
-    public static <B extends BasePattern, C extends PatternCollection> ArrayList<B> processPatternCollections(final List<C> patternCollections) {
-        return patternCollections.stream().reduce(new ArrayList<B>(), PatternReloadListener::mergeOrReplacePatterns, MiscHelper::unionList);
-    }
-
-    public static <B extends BasePattern, C extends PatternCollection> ArrayList<B> mergeOrReplacePatterns(ArrayList<B> set, final C nextPatternCollection){
-        return addPatterns(nextPatternCollection.isReplace() ? new ArrayList<B>() : set, nextPatternCollection.patterns());
-    }
-
-    public static <B extends BasePattern> ArrayList<B> addPatterns(final List<B> finalPatterns, final List<B> patterns){
-        ArrayList<B> finalPatternsModified = MiscHelper.unionList(finalPatterns, patterns);
-        return finalPatternsModified;
-    }
-
-    /** Need to create this static method here as the Architectuary ExpectPlatform Annotation used in CodecJsonReloadListener requires a static builder method to construct an instance*/
-    @ExpectPlatform
-    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger) {
-        throw new AssertionError();
     }
 }

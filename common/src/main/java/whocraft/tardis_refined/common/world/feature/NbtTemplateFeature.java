@@ -18,8 +18,9 @@ import whocraft.tardis_refined.common.world.feature.config.NbtTemplateFeatureCon
 
 import java.util.Optional;
 
-/** Custom Feature implementation that allows for use of NBT templates
- * */
+/**
+ * Custom Feature implementation that allows for use of NBT templates
+ */
 public class NbtTemplateFeature extends Feature<NbtTemplateFeatureConfig> {
 
     private final BlockIgnoreProcessor IGNORE_STRUCTURE_VOID = new BlockIgnoreProcessor(ImmutableList.of(Blocks.STRUCTURE_VOID));

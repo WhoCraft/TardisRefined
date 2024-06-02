@@ -17,8 +17,11 @@ import java.util.Collection;
 public class RequestWaypointsMessage extends MessageC2S {
 
 
-    public RequestWaypointsMessage(FriendlyByteBuf friendlyByteBuf){}
-    public RequestWaypointsMessage(){}
+    public RequestWaypointsMessage(FriendlyByteBuf friendlyByteBuf) {
+    }
+
+    public RequestWaypointsMessage() {
+    }
 
     @NotNull
     @Override

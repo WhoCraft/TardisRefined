@@ -31,7 +31,7 @@ public class InteriorCommand implements Command<CommandSourceStack> {
         return Commands.literal("interior")
                 .then(Commands.argument("tardis", DimensionArgument.dimension()).suggests(CommandHelper.SUGGEST_TARDISES).executes(context -> teleportToInterior(context, List.of(Objects.requireNonNull(context.getSource().getPlayer())), DimensionArgument.getDimension(context, "tardis")))
                         .then(Commands.argument("entities", EntityArgument.entities())
-                                        .executes(context -> teleportToInterior(context, EntityArgument.getEntities(context, "entities"), DimensionArgument.getDimension(context, "tardis")))));
+                                .executes(context -> teleportToInterior(context, EntityArgument.getEntities(context, "entities"), DimensionArgument.getDimension(context, "tardis")))));
     }
 
     private static int teleportToInterior(CommandContext<CommandSourceStack> context, Collection<? extends Entity> entities, ServerLevel tardis) {
@@ -40,8 +40,8 @@ public class InteriorCommand implements Command<CommandSourceStack> {
         ServerPlayer sender = context.getSource().getPlayer();
 
         if (tardisData.isPresent()) {
-            for(Entity entity : entities){
-                if (!teleportToInterior(tardisData.get(), entity)){ //If internal door doesn't exist during teleport attempt, stop teleporting and notify the command sender.
+            for (Entity entity : entities) {
+                if (!teleportToInterior(tardisData.get(), entity)) { //If internal door doesn't exist during teleport attempt, stop teleporting and notify the command sender.
                     Component tpCommandSuggestion = CommandHelper.createComponentSuggestCommand("Default Teleport", "/execute in " + tardis.dimension().location().toString() + " run tp 0 100 0");
                     PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_NO_INTERNAL_DOOR, tardis.dimension().location().toString(), tpCommandSuggestion), false);
                     return 0;

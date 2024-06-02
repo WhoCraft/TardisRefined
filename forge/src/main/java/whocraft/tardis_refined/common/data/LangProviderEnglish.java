@@ -10,7 +10,6 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
-import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.create.ModCompatMessages;

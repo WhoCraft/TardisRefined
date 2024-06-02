@@ -8,11 +8,11 @@ import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class ArsEggBlockEntity extends BlockEntity {
 
+    private AnimationState liveliness = new AnimationState();
+
     public ArsEggBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.ARS_EGG.get(), blockPos, blockState);
     }
-
-    private AnimationState liveliness = new AnimationState();
 
     public AnimationState getLiveliness() {
         return liveliness;

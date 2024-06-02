@@ -40,14 +40,12 @@ import java.util.*;
 
 public class TardisPilotingManager extends BaseHandler {
 
+    public static final int MAX_THROTTLE_STAGE = 5;
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
     private static final int TICKS_COOLDOWN_MAX = (10 * 60) * 20;
     private static final double DEFAULT_MAXIMUM_FUEL = 1000;
     private static final double FLIGHT_COST = 0.5f;
-
-    public static final int MAX_THROTTLE_STAGE = 5;
-
     private final TardisLevelOperator operator;
 
     // Location based.
@@ -280,8 +278,6 @@ public class TardisPilotingManager extends BaseHandler {
         }
 
 
-
-
     }
 
 
@@ -418,7 +414,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     /**
      * Check if the block at the target position is a valid block to land inside.
-     * **/
+     **/
     public boolean isLegalLandingBlock(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         // Can land in air or override any block that can be marked as "replaceable" such as snow, tall grass etc.
@@ -466,13 +462,11 @@ public class TardisPilotingManager extends BaseHandler {
         }
 
 
-
         if (this.canBeginFlight()) {
             this.autoLand = autoLand;
             this.isPassivelyRefuelling = false;
             this.flightDistance = 0;
             this.distanceCovered = 0;
-
 
 
             this.fastReturnLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
@@ -488,7 +482,6 @@ public class TardisPilotingManager extends BaseHandler {
             if (!autoLand) {
                 this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
             }
-
 
 
             operator.setDoorClosed(true);
@@ -572,7 +565,7 @@ public class TardisPilotingManager extends BaseHandler {
 
             currentLocation = location;
 
-            if(currentConsole != null) {
+            if (currentConsole != null) {
                 level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
             }
 
@@ -653,7 +646,7 @@ public class TardisPilotingManager extends BaseHandler {
         this.autoLand = false;
 
         if (this.getFuel() < getMaximumFuel() * 0.1) {
-            this.operator.getLevel().playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.LOW_FUEL.get(), SoundSource.AMBIENT, 1000, 1 );
+            this.operator.getLevel().playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.LOW_FUEL.get(), SoundSource.AMBIENT, 1000, 1);
         }
 
         TardisCommonEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().getPosition());
@@ -737,6 +730,10 @@ public class TardisPilotingManager extends BaseHandler {
         return this.targetLocation;
     }
 
+    public void setTargetLocation(TardisNavLocation targetLocation) {
+        this.targetLocation = targetLocation;
+    }
+
     /**
      * @return the current fast return location
      */
@@ -744,16 +741,13 @@ public class TardisPilotingManager extends BaseHandler {
         return this.fastReturnLocation;
     }
 
-    public void setTargetLocation(TardisNavLocation targetLocation) {
-        this.targetLocation = targetLocation;
+    public TardisNavLocation getCurrentLocation() {
+        return Objects.requireNonNullElse(this.currentLocation, TardisNavLocation.ORIGIN);
+
     }
 
     public void setCurrentLocation(TardisNavLocation currentLocation) {
         this.currentLocation = currentLocation;
-    }
-    public TardisNavLocation getCurrentLocation() {
-        return Objects.requireNonNullElse(this.currentLocation, TardisNavLocation.ORIGIN);
-
     }
 
     public void setTargetPosition(BlockPos pos) {
@@ -851,7 +845,7 @@ public class TardisPilotingManager extends BaseHandler {
 
             Level level = this.currentConsole.getLevel();
 
-            if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity ) {
+            if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
 
                 ResourceLocation oldTheme = consoleBlockEntity.theme();
                 ConsolePattern oldPattern = consoleBlockEntity.pattern();
@@ -871,7 +865,7 @@ public class TardisPilotingManager extends BaseHandler {
 
         Level level = this.currentConsole.getLevel();
 
-        if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity ) {
+        if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
 
             ResourceLocation oldTheme = consoleBlockEntity.theme();
             ConsolePattern oldPattern = consoleBlockEntity.pattern();
@@ -920,6 +914,21 @@ public class TardisPilotingManager extends BaseHandler {
         return this.fuel;
     }
 
+    public void setFuel(double fuel) {
+        double previous = this.fuel;
+
+        this.fuel = Mth.clamp(fuel, 0, this.getMaximumFuel());
+
+        if (this.isOutOfFuel() && previous > 0) {
+            this.onRunOutOfFuel();
+            return;
+        }
+        if (!this.isOutOfFuel() && previous == 0) {
+            this.onRestoreFuel();
+            return;
+        }
+    }
+
     /**
      * Accessor for the maximum amount of fuel a Tardis can hold
      * Will be adjustable in future to allow for upgrades etc.
@@ -954,21 +963,6 @@ public class TardisPilotingManager extends BaseHandler {
         return this.fuel == 0;
     }
 
-    public void setFuel(double fuel) {
-        double previous = this.fuel;
-
-        this.fuel = Mth.clamp(fuel, 0, this.getMaximumFuel());
-
-        if (this.isOutOfFuel() && previous > 0) {
-            this.onRunOutOfFuel();
-            return;
-        }
-        if (!this.isOutOfFuel() && previous == 0) {
-            this.onRestoreFuel();
-            return;
-        }
-    }
-
     /**
      * Removes fuel from the Tardis.
      * Clamps fuel to 0 if it goes below 0
@@ -981,11 +975,14 @@ public class TardisPilotingManager extends BaseHandler {
 
     /**
      * Is the TARDIS set to refuel passively?
-     * **/
-    public boolean isPassivelyRefuelling() {return this.isPassivelyRefuelling;}
+     **/
+    public boolean isPassivelyRefuelling() {
+        return this.isPassivelyRefuelling;
+    }
 
     /**
      * Sets the TARDIS to passively fuel
+     *
      * @return Returns if it was successful in updating the state. Will fail if the TARDIS is in flight or has crashed.
      */
     public boolean setPassivelyRefuelling(boolean refuel) {

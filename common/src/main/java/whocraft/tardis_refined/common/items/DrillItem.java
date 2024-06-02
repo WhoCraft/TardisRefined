@@ -45,7 +45,6 @@ public class DrillItem extends Item {
     }
 
 
-
     private void destroyGrowthBlock(Level level, BlockPos pos) {
         if (level.getBlockState(pos).getBlock() == TRBlockRegistry.FOOLS_STONE.get()) {
             level.destroyBlock(pos, true);

@@ -21,6 +21,11 @@ public class SyncLevelListMessage extends MessageS2C {
         this.add = add;
     }
 
+    public SyncLevelListMessage(FriendlyByteBuf buf) {
+        this.level = buf.readResourceKey(Registries.DIMENSION);
+        this.add = buf.readBoolean();
+    }
+
     @NotNull
     @Override
     public MessageType getType() {
@@ -31,11 +36,6 @@ public class SyncLevelListMessage extends MessageS2C {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.level);
         buf.writeBoolean(this.add);
-    }
-
-    public SyncLevelListMessage(FriendlyByteBuf buf) {
-        this.level = buf.readResourceKey(Registries.DIMENSION);
-        this.add = buf.readBoolean();
     }
 
     @Override

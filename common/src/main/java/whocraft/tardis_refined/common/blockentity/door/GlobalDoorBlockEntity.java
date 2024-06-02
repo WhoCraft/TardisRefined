@@ -45,14 +45,14 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
         setChanged();
     }
 
-    public ResourceLocation theme(){
-        if (this.shellTheme == null){
+    public ResourceLocation theme() {
+        if (this.shellTheme == null) {
             this.shellTheme = ShellTheme.HALF_BAKED.getId();
         }
         return this.shellTheme;
     }
 
-    public void setShellTheme(ResourceLocation shellTheme){
+    public void setShellTheme(ResourceLocation shellTheme) {
         this.shellTheme = shellTheme;
         this.setChanged();
     }
@@ -81,12 +81,12 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
 
         if (pTag.contains(NbtConstants.PATTERN)) {
             ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
-            if (ShellPatterns.doesPatternExist( this.shellTheme, currentPattern)) {
+            if (ShellPatterns.doesPatternExist(this.shellTheme, currentPattern)) {
                 this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
             }
         }
 
-        if (this.shellTheme == null){
+        if (this.shellTheme == null) {
             this.shellTheme = this.theme();
         }
 
@@ -94,7 +94,6 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
             this.basePattern = pattern();
         }
     }
-
 
 
     @Override
@@ -117,7 +116,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
                 if (cap.getInternalDoor() != door) {
                     cap.setInternalDoor(door);
                 }
-                if(player.isShiftKeyDown() && !cap.getPilotingManager().isInFlight()) {
+                if (player.isShiftKeyDown() && !cap.getPilotingManager().isInFlight()) {
                     cap.getExteriorManager().setLocked(!door.locked());
                     door.setLocked(!door.locked());
                     cap.setDoorClosed(true);

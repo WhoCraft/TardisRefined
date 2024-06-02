@@ -36,41 +36,41 @@ import static net.minecraft.world.phys.shapes.BooleanOp.OR;
 public class TerraformerBlock extends Block {
 
     public static BooleanProperty ACTIVE = BlockStateProperties.POWERED;
-    
+
     public static VoxelShape SHAPE = Stream.of(
             Stream.of(
-            Block.box(0.5, 5, 13.5, 2.5, 10, 15.5),
-            Block.box(1.5, 10, 13.5, 1.5, 18, 15.5),
-            Block.box(0, 0, 13, 3, 5, 16)
+                    Block.box(0.5, 5, 13.5, 2.5, 10, 15.5),
+                    Block.box(1.5, 10, 13.5, 1.5, 18, 15.5),
+                    Block.box(0, 0, 13, 3, 5, 16)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(0.5, 5, 0.5, 2.5, 10, 2.5),
-            Block.box(1.5, 10, 0.5, 1.5, 18, 2.5),
-            Block.box(0, 0, 0, 3, 5, 3)
+                    Block.box(0.5, 5, 0.5, 2.5, 10, 2.5),
+                    Block.box(1.5, 10, 0.5, 1.5, 18, 2.5),
+                    Block.box(0, 0, 0, 3, 5, 3)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(13.5, 5, 0.5, 15.5, 10, 2.5),
-            Block.box(14.5, 10, 0.5, 14.5, 18, 2.5),
-            Block.box(13, 0, 0, 16, 5, 3)
+                    Block.box(13.5, 5, 0.5, 15.5, 10, 2.5),
+                    Block.box(14.5, 10, 0.5, 14.5, 18, 2.5),
+                    Block.box(13, 0, 0, 16, 5, 3)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(13.5, 5, 13.5, 15.5, 10, 15.5),
-            Block.box(14.5, 10, 13.5, 14.5, 18, 15.5),
-            Block.box(13, 0, 13, 16, 5, 16)
+                    Block.box(13.5, 5, 13.5, 15.5, 10, 15.5),
+                    Block.box(14.5, 10, 13.5, 14.5, 18, 15.5),
+                    Block.box(13, 0, 13, 16, 5, 16)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Stream.of(
-            Block.box(12.5, 17.5, 12.5, 16.5, 21.5, 16.5),
-            Block.box(0, 19, 0, 16, 19, 16),
-            Block.box(12.5, 17.5, -0.5, 16.5, 21.5, 3.5),
-            Block.box(-0.5, 17.5, -0.5, 3.5, 21.5, 3.5),
-            Block.box(-0.5, 17.5, 12.5, 3.5, 21.5, 16.5),
-            Block.box(2, 17, 2, 14, 20, 14),
-            Block.box(5, 15.5, 5, 11, 17.5, 11)
+                    Block.box(12.5, 17.5, 12.5, 16.5, 21.5, 16.5),
+                    Block.box(0, 19, 0, 16, 19, 16),
+                    Block.box(12.5, 17.5, -0.5, 16.5, 21.5, 3.5),
+                    Block.box(-0.5, 17.5, -0.5, 3.5, 21.5, 3.5),
+                    Block.box(-0.5, 17.5, 12.5, 3.5, 21.5, 16.5),
+                    Block.box(2, 17, 2, 14, 20, 14),
+                    Block.box(5, 15.5, 5, 11, 17.5, 11)
             ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get(),
             Block.box(2, 0, 2, 14, 4, 14),
             Block.box(4, 4, 4, 12, 6, 12)
-            ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get();
-    
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, OR)).get();
+
     public TerraformerBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(ACTIVE, false));
@@ -158,7 +158,7 @@ public class TerraformerBlock extends Block {
             return false;
         }
 
-        BlockPos startingCorner = new BlockPos(blockPos.getX() - 1, blockPos.getY()-1, blockPos.getZ()-1);
+        BlockPos startingCorner = new BlockPos(blockPos.getX() - 1, blockPos.getY() - 1, blockPos.getZ() - 1);
         for (int x = startingCorner.getX(); x < startingCorner.getX() + 3; x++) {
             for (int z = startingCorner.getZ(); z < startingCorner.getZ() + 3; z++) {
 
@@ -179,9 +179,10 @@ public class TerraformerBlock extends Block {
         return true;
 
     }
+
     private void destroyStructure(Level level, BlockPos blockPos) {
         if (level instanceof ServerLevel serverLevel) {
-            BlockPos startingCorner = new BlockPos(blockPos.getX() - 1, blockPos.getY()-1, blockPos.getZ()-1);
+            BlockPos startingCorner = new BlockPos(blockPos.getX() - 1, blockPos.getY() - 1, blockPos.getZ() - 1);
             for (int x = startingCorner.getX(); x < startingCorner.getX() + 3; x++) {
                 for (int z = startingCorner.getZ(); z < startingCorner.getZ() + 3; z++) {
                     serverLevel.destroyBlock(new BlockPos(x, startingCorner.getY(), z), false);

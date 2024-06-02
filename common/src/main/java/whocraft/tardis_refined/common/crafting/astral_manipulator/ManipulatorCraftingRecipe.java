@@ -22,22 +22,18 @@ import java.util.List;
 
 /**
  * Main recipe object for the Astral Manipulator.
- * **/
+ **/
 public class ManipulatorCraftingRecipe implements CraftingRecipe {
-    // List of ingredient blocks for the recipe to work.
-    private List<ManipulatorCraftingIngredient> ingredients;
-
-    private ManipulatorCraftingResult result;
-
-    private ResourceLocation id;
-
-
     public static final Codec<ManipulatorCraftingRecipe> CODEC = RecordCodecBuilder.create(
             builder -> builder.group(
                     ManipulatorCraftingIngredient.CODEC.listOf().fieldOf("ingredients").forGetter(ManipulatorCraftingRecipe::ingredients),
                     ManipulatorCraftingResult.RESULT_CODEC.fieldOf("result").forGetter(ManipulatorCraftingRecipe::result)
             ).apply(builder, ManipulatorCraftingRecipe::new)
     );
+    // List of ingredient blocks for the recipe to work.
+    private List<ManipulatorCraftingIngredient> ingredients;
+    private ManipulatorCraftingResult result;
+    private ResourceLocation id;
 
     public ManipulatorCraftingRecipe(List<ManipulatorCraftingIngredient> itemList, ManipulatorCraftingResult recipeOutput) {
         this.ingredients = itemList;
@@ -52,31 +48,36 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
         this(ingredients, new ManipulatorBlockResult(recipeOutput));
     }
 
-    /** Get the unique id for this recipe. Needed for debugging purposes, and also to make sure we keep track of the recipes in some manner*/
-    public ResourceLocation getId() {
-        return this.id;
-    }
-
-    /** Sets the id for this recipe. ALWAYS call this when making a new instance of this, as the registry name is null by default*/
-    public ManipulatorCraftingRecipe setRegistryId(ResourceLocation id) {
-        this.id = id;
-        return this;
-    }
-
-    /** Helper to get all recipes without needing to use a Container. In 1.21+ recipes will be decoupled from Containers but until them, we will need this workaround*/
-    public static List<ManipulatorCraftingRecipe> getAllRecipes(Level level){
+    /**
+     * Helper to get all recipes without needing to use a Container. In 1.21+ recipes will be decoupled from Containers but until them, we will need this workaround
+     */
+    public static List<ManipulatorCraftingRecipe> getAllRecipes(Level level) {
         List<ManipulatorCraftingRecipe> recipeHolders = level.getRecipeManager().getAllRecipesFor(TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get());
         List<ManipulatorCraftingRecipe> recipeList = new ArrayList<>();
         recipeHolders.forEach(recipeHolder -> recipeList.add(recipeHolder.setRegistryId(recipeHolder.id))); //Make sure to set registry id
         return recipeList;
     }
 
+    /**
+     * Get the unique id for this recipe. Needed for debugging purposes, and also to make sure we keep track of the recipes in some manner
+     */
+    public ResourceLocation getId() {
+        return this.id;
+    }
 
+    /**
+     * Sets the id for this recipe. ALWAYS call this when making a new instance of this, as the registry name is null by default
+     */
+    public ManipulatorCraftingRecipe setRegistryId(ResourceLocation id) {
+        this.id = id;
+        return this;
+    }
 
     /**
      * Compares a ManipulatorCraftingRecipe to another by sorting by size, then registered block entries
+     *
      * @param comparedItemList The items of the recipe to compare to.
-     * **/
+     **/
     public boolean hasSameItems(List<ManipulatorCraftingIngredient> comparedItemList) {
 
         if (ingredients.size() != comparedItemList.size()) {
@@ -99,17 +100,23 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
         return true;
     }
 
-    /** Provides the result of the recipe. This can be either a blockstate or itemstack depending on the result type*/
-    public ManipulatorCraftingResult result(){
+    /**
+     * Provides the result of the recipe. This can be either a blockstate or itemstack depending on the result type
+     */
+    public ManipulatorCraftingResult result() {
         return this.result;
     }
 
-    /** Provides the list of ingredients for the recipe, in the form of a list of blockstate to block position offsets*/
-    public List<ManipulatorCraftingIngredient> ingredients(){
+    /**
+     * Provides the list of ingredients for the recipe, in the form of a list of blockstate to block position offsets
+     */
+    public List<ManipulatorCraftingIngredient> ingredients() {
         return this.ingredients;
     }
 
-    /** Default vanilla data, we will add dummy values as we won't be using them*/
+    /**
+     * Default vanilla data, we will add dummy values as we won't be using them
+     */
     @Override
     public CraftingBookCategory category() {
         return CraftingBookCategory.MISC;
@@ -132,22 +139,28 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
 
     @Override
     public ItemStack getResultItem(RegistryAccess registryAccess) {
-        if(result.type() instanceof ManipulatorItemResult manipulatorItemResult){
+        if (result.type() instanceof ManipulatorItemResult manipulatorItemResult) {
             return manipulatorItemResult.recipeOutput();
         }
 
-        if(result.type() instanceof ManipulatorBlockResult manipulatorBlockResult){
+        if (result.type() instanceof ManipulatorBlockResult manipulatorBlockResult) {
             return new ItemStack(manipulatorBlockResult.recipeOutput().getBlock().asItem());
         }
 
         return ItemStack.EMPTY;
     }
-    /** Required to allow vanilla to parse the recipe during datapack parsing*/
+
+    /**
+     * Required to allow vanilla to parse the recipe during datapack parsing
+     */
     @Override
     public RecipeSerializer<?> getSerializer() {
         return TRCraftingRecipeSerializers.ASTRAL_MANIPULATOR.get();
     }
-    /** Required to allow vanilla to parse the recipe during datapack parsing*/
+
+    /**
+     * Required to allow vanilla to parse the recipe during datapack parsing
+     */
     @Override
     public RecipeType<?> getType() {
         return TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get();

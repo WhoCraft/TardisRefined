@@ -17,11 +17,6 @@ public class GroeningDoorModel extends ShellDoorModel {
     private final ModelPart bone2;
     private final ModelPart bb_main;
 
-    @Override
-    public void setDoorPosition(boolean open) {
-        this.door.yRot = (open) ? -275f : 0;
-    }
-
     public GroeningDoorModel(ModelPart root) {
         this.root = root;
         this.door = root.getChild("door");
@@ -53,6 +48,10 @@ public class GroeningDoorModel extends ShellDoorModel {
         return LayerDefinition.create(meshdefinition, 128, 128);
     }
 
+    @Override
+    public void setDoorPosition(boolean open) {
+        this.door.yRot = (open) ? -275f : 0;
+    }
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {

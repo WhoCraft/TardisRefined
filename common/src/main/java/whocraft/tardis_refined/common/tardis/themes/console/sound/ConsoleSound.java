@@ -13,9 +13,10 @@ public class ConsoleSound {
 
     /**
      * Datatype for referencing a sound event for how a player would interact with a control.
-     * @param leftClick the sound event fired when a control is left-clicked.;
+     *
+     * @param leftClick  the sound event fired when a control is left-clicked.;
      * @param rightClick the sound event fired when a control is right-clicked;
-     * */
+     */
     public ConsoleSound(@Nullable PitchedSound leftClick, @Nullable PitchedSound rightClick) {
         this.leftClick = leftClick;
         this.rightClick = rightClick;

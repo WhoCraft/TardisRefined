@@ -34,16 +34,16 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         super(properties);
     }
 
+    public static ItemStack forceColor(ItemStack itemStack, int color) {
+        itemStack.getOrCreateTagElement("display").putInt("color", color);
+        return itemStack;
+    }
+
     @Override
 
     public int getColor(ItemStack itemStack) {
         CompoundTag compoundTag = itemStack.getTagElement("display");
         return compoundTag != null && compoundTag.contains("color", 99) ? compoundTag.getInt("color") : DyeColor.PINK.getTextColor();
-    }
-
-    public static ItemStack forceColor(ItemStack itemStack, int color){
-        itemStack.getOrCreateTagElement("display").putInt("color", color);
-        return itemStack;
     }
 
     @Override
@@ -141,13 +141,13 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         CompoundTag itemtag = stack.getOrCreateTag();
         if (itemtag.contains(LINKED_MANIPULATOR_POS)) {
             BlockPos manipulator = NbtUtils.readBlockPos(itemtag.getCompound(LINKED_MANIPULATOR_POS));
-           if ( level.getBlockEntity(manipulator) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
+            if (level.getBlockEntity(manipulator) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
 
-               if (!astralManipulatorBlockEntity.setProjectionBlockPos(pos, isPointA)) {
-                   setScrewdriverMode(stack, ScrewdriverMode.DISABLED, pos, level);
-               }
+                if (!astralManipulatorBlockEntity.setProjectionBlockPos(pos, isPointA)) {
+                    setScrewdriverMode(stack, ScrewdriverMode.DISABLED, pos, level);
+                }
 
-           }
+            }
 
         }
     }
@@ -156,7 +156,7 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         CompoundTag itemtag = stack.getOrCreateTag();
         if (itemtag.contains(LINKED_MANIPULATOR_POS)) {
             BlockPos manipulator = NbtUtils.readBlockPos(itemtag.getCompound(LINKED_MANIPULATOR_POS));
-            if ( level.getBlockEntity(manipulator) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
+            if (level.getBlockEntity(manipulator) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
                 astralManipulatorBlockEntity.clearDisplay();
             }
 

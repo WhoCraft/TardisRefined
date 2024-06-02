@@ -107,7 +107,7 @@ public class NbtConstants {
         tag.putInt(prefix + NbtConstants.LOCATION_ROTATION, location.getDirection().get2DDataValue());
 
 
-        if(location == null || location.getDimensionKey() == null) return;
+        if (location == null || location.getDimensionKey() == null) return;
         ResourceKey<Level> dimKey = location.getDimensionKey();
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_MODID, dimKey.location().getNamespace());
         tag.putString(prefix + NbtConstants.LOCATION_DIMENSION_PATH, dimKey.location().getPath());

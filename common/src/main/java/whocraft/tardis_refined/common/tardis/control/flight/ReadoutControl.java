@@ -15,7 +15,8 @@ public class ReadoutControl extends Control {
     public ReadoutControl(ResourceLocation id) {
         super(id);
     }
-    public ReadoutControl(ResourceLocation id, String langId){
+
+    public ReadoutControl(ResourceLocation id, String langId) {
         super(id, langId);
     }
 
@@ -23,7 +24,7 @@ public class ReadoutControl extends Control {
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation currentPosition = operator.getPilotingManager().getCurrentLocation();
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(  " - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY()+ " Z: " + currentPosition.getPosition().getZ() +  " F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(" - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY() + " Z: " + currentPosition.getPosition().getZ() + " F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
 
 
         return true;
@@ -33,7 +34,7 @@ public class ReadoutControl extends Control {
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY()+ " Z: " + targetLocation.getPosition().getZ() +  " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
 
         return true;
     }

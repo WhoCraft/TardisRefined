@@ -16,7 +16,6 @@ import whocraft.tardis_refined.client.TRItemColouring;
 import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -64,7 +63,7 @@ public class ModEvents {
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             DimensionHandlerImpl.clear();
 
-            if(ModCompatChecker.immersivePortals()){
+            if (ModCompatChecker.immersivePortals()) {
                 ImmersivePortals.onServerStopping(server);
             }
         });

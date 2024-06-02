@@ -32,10 +32,11 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+
 public class DatapackHelper {
 
-    public static boolean writeDesktopToFile(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, ResourceLocation structure, DesktopTheme desktop, String datapackName){
-        MinecraftServerStorageAccessor accessor = (MinecraftServerStorageAccessor)level.getServer();
+    public static boolean writeDesktopToFile(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, ResourceLocation structure, DesktopTheme desktop, String datapackName) {
+        MinecraftServerStorageAccessor accessor = (MinecraftServerStorageAccessor) level.getServer();
         Path rootDir = accessor.getStorageSource().getLevelPath(LevelResource.DATAPACK_DIR).normalize();
         Path datapackRoot = rootDir.resolve(datapackName);
         Path datapackDataFolder = datapackRoot.resolve("data");
@@ -46,28 +47,27 @@ public class DatapackHelper {
                 }).orThrow().getAsJsonObject();
         Path output = createAndValidatePathToDatapackObject(datapackDataFolder, desktop.getIdentifier(), TardisDesktops.getReloadListener(), fileExtension);
         createPackDefinition(datapackRoot);
-        if (createStructure(level, bottomCorner, topCorner, includeEntities, structure, datapackDataFolder)){
+        if (createStructure(level, bottomCorner, topCorner, includeEntities, structure, datapackDataFolder)) {
             if (saveJsonToPath(currentDesktop, output))
                 return true;
         }
         return false;
     }
 
-    public static boolean saveJsonToPath(JsonElement jsonElement, Path path){
+    public static boolean saveJsonToPath(JsonElement jsonElement, Path path) {
         try {
             Files.createDirectories(path.getParent());
             try (BufferedWriter writer = Files.newBufferedWriter(path)) {
                 writer.write(TardisRefined.GSON.toJson(jsonElement));
             }
             return true;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             TardisRefined.LOGGER.error(e.getMessage().toString());
             return false;
         }
     }
 
-    public static void createPackDefinition(Path packRoot){
+    public static void createPackDefinition(Path packRoot) {
         Path metaFile = packRoot.resolve("pack.mcmeta");
         if (!Files.exists(metaFile)) {
             JsonObject pack = new JsonObject();
@@ -82,14 +82,13 @@ public class DatapackHelper {
                 try (BufferedWriter writer = Files.newBufferedWriter(metaFile)) {
                     writer.write(TardisRefined.GSON.toJson(root));
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 TardisRefined.LOGGER.error(e.getMessage().toString());
             }
         }
     }
 
-    public static boolean createStructure(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, ResourceLocation structure, Path packRoot){
+    public static boolean createStructure(ServerLevel level, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, ResourceLocation structure, Path packRoot) {
         StructureTemplateManager structureTemplateManager = level.getStructureManager();
 
         StructureTemplate structureTemplate;
@@ -106,11 +105,10 @@ public class DatapackHelper {
         // This mimics using the Structure Block's Detect Size feature with CORNER mode, where the start and end corners need to be placed one block diagonally outside the structure area.
 
         //Add two to account for the corner blocks so we get the right size dimensions. If we didn't the size will be oversize by one on all sides, when we call StructureTemplate#fillFromWorld
-        int xSize = (int)boundingBox.getXsize() + 2;
-        int ySize = (int)boundingBox.getYsize() + 2;
-        int zSize = (int)boundingBox.getZsize() + 2;
+        int xSize = (int) boundingBox.getXsize() + 2;
+        int ySize = (int) boundingBox.getYsize() + 2;
+        int zSize = (int) boundingBox.getZsize() + 2;
         Vec3i structureSize = new Vec3i(xSize, ySize, zSize).north().west().below(); //1.19.3+ - use joml maths version
-
 
 
         //Add one to each dimension to move the bottom corner position one block inwards, diagonally and upwards.

@@ -29,12 +29,12 @@ import whocraft.tardis_refined.common.tardis.CorridorGenerator;
 
 
 public class AstralManipulatorBlock extends Block implements EntityBlock {
+    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
+
+
     public AstralManipulatorBlock(Properties properties) {
         super(properties);
     }
-
-
-    public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

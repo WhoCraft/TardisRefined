@@ -32,7 +32,6 @@ public class TRConfig {
     }
 
 
-
     public static class Client {
         public final ForgeConfigSpec.BooleanValue CONTROL_NAMES;
         public final ForgeConfigSpec.BooleanValue PLAY_CONSOLE_IDLE_ANIMATIONS;

@@ -64,7 +64,7 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
             Component reloadCommandSuggestion = CommandHelper.createComponentSuggestCommand("/reload", "/reload");
 
             Component githubReleasePage = CommandHelper.createComponentOpenUrl("Tardis Refined Github Release Page", ModMessages.GITHUB_RELEASE_PAGE);
-            
+
             PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_SUCCESS, loc, path, reloadCommandSuggestion), false);
             PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_EXPORT_DESKTOP_RESOURCE_PACK, githubReleasePage), false);
             return Command.SINGLE_SUCCESS;

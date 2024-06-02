@@ -49,13 +49,12 @@ public class TardisHums {
             SoundEvents.AMBIENT_WARPED_FOREST_LOOP.value().getLocation(),
             createSoundList(SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS.value(), SoundEvents.AMBIENT_WARPED_FOREST_MOOD.value())
     );
-    private static final CodecJsonReloadListener<HumEntry> RELOAD_LISTENER = createReloadListener();
-    private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
-
     public static final HumEntry AVIATRAX = new HumEntry(
             new ResourceLocation(TardisRefined.MODID, "aviatrax"),
-            TRSoundRegistry.HUM_AVIATRAX.getId(),new ArrayList<>()
+            TRSoundRegistry.HUM_AVIATRAX.getId(), new ArrayList<>()
     );
+    private static final CodecJsonReloadListener<HumEntry> RELOAD_LISTENER = createReloadListener();
+    private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
     private static List<ResourceLocation> createSoundList(SoundEvent... sounds) {
         ArrayList<ResourceLocation> soundList = new ArrayList<>();

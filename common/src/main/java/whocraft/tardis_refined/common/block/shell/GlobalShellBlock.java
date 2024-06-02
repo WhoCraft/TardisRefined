@@ -26,9 +26,12 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
-public class GlobalShellBlock extends ShellBaseBlock{
+public class GlobalShellBlock extends ShellBaseBlock {
 
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
+    //The collision box for the briefcase shell
+    //overrides the default collision shape from ShellBaseBlock.java
+    protected static final VoxelShape BRIEFCASE_COLLISION_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
 
     public GlobalShellBlock(Properties properties) {
         super(properties);
@@ -46,12 +49,6 @@ public class GlobalShellBlock extends ShellBaseBlock{
         return super.getStateForPlacement(blockPlaceContext);
     }
 
-    //The collision box for the briefcase shell
-    //overrides the default collision shape from ShellBaseBlock.java
-    protected static final VoxelShape BRIEFCASE_COLLISION_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
-
-
-
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
@@ -64,7 +61,7 @@ public class GlobalShellBlock extends ShellBaseBlock{
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
-            if(shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
+            if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
                 return BRIEFCASE_COLLISION_SHAPE;
         }
         return super.getShape(blockState, blockGetter, blockPos, collisionContext);
@@ -83,7 +80,8 @@ public class GlobalShellBlock extends ShellBaseBlock{
             if (t instanceof ShellBaseBlockEntity shellBaseBlockEntity) {
                 shellBaseBlockEntity.tick(level1, blockPos, blockState, shellBaseBlockEntity);
             }
-        };    }
+        };
+    }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {

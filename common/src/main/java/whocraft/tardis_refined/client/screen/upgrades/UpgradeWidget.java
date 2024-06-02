@@ -1,14 +1,11 @@
 package whocraft.tardis_refined.client.screen.upgrades;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.StringSplitter;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.advancements.AdvancementWidgetType;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
@@ -24,27 +21,25 @@ import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
-
-import static net.minecraft.client.gui.components.AbstractWidget.WIDGETS_LOCATION;
 
 public class UpgradeWidget {
 
 
     private static final int[] TEST_SPLIT_OFFSETS = new int[]{0, 10, -10, 25, -25};
+    private static final ResourceLocation TITLE_BOX_SPRITE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/title_box.png");
+    public final Upgrade upgradeEntry;
     private final UpgradeTab tab;
     private final UpgradeHandler upgradeHandler;
-    public final Upgrade upgradeEntry;
     private final FormattedCharSequence title;
     private final int width;
     private final List<FormattedCharSequence> description;
     private final Minecraft minecraft;
+    public double gridX, gridY;
+    public boolean fixedPosition = false;
     List<UpgradeWidget> parents = new LinkedList<>();
     List<UpgradeWidget> children = new LinkedList<>();
     private int x;
     private int y;
-    public double gridX, gridY;
-    public boolean fixedPosition = false;
 
     public UpgradeWidget(UpgradeTab tab, Minecraft mc, UpgradeHandler upgradeHandler, Upgrade upgradeEntry) {
         this.tab = tab;
@@ -64,6 +59,10 @@ public class UpgradeWidget {
         }
 
         this.width = l + 3 + 5;
+    }
+
+    private static float getMaxWidth(StringSplitter manager, List<FormattedText> text) {
+        return (float) text.stream().mapToDouble(manager::stringWidth).max().orElse(0.0);
     }
 
     public UpgradeWidget updatePosition(double x, double y, UpgradeTab tab) {
@@ -114,10 +113,6 @@ public class UpgradeWidget {
         return this;
     }
 
-    private static float getMaxWidth(StringSplitter manager, List<FormattedText> text) {
-        return (float) text.stream().mapToDouble(manager::stringWidth).max().orElse(0.0);
-    }
-
     private List<FormattedText> findOptimalLines(Component component, int maxWidth) {
         StringSplitter stringSplitter = this.minecraft.font.getSplitter();
         List<FormattedText> list = null;
@@ -146,24 +141,22 @@ public class UpgradeWidget {
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
             //Display Lock
-            guiGraphics.blit(UpgradesScreen.LOCKED, x - 5, y - 5, 0,0, 26, 26,26, 26);
+            guiGraphics.blit(UpgradesScreen.LOCKED, x - 5, y - 5, 0, 0, 26, 26, 26, 26);
         }
     }
 
     public void drawIcon(Minecraft mc, GuiGraphics guiGraphics, int x, int y) {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        boolean isUnlocked =this.upgradeEntry.isUnlocked(upgradeHandler);
+        boolean isUnlocked = this.upgradeEntry.isUnlocked(upgradeHandler);
 
-        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), x - 13, y - 13, 0,0, 26, 26,26, 26);
+        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), isUnlocked), x - 13, y - 13, 0, 0, 26, 26, 26, 26);
         this.drawDisplayIcon(mc, guiGraphics, x - 8, y - 8);
     }
 
     public int getWidth() {
         return this.width;
     }
-
-    private static final ResourceLocation TITLE_BOX_SPRITE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/title_box.png");
 
     public void drawHover(GuiGraphics guiGraphics, int x, int y, float fade, int width, int height) {
         boolean bl = width + x + this.x + this.width + 26 >= this.tab.getScreen().width;
@@ -212,18 +205,18 @@ public class UpgradeWidget {
             if (bl2) {
                 guiGraphics.blitNineSliced(UpgradesScreen.WIDGETS, m + 2, l + 26 - n, this.width, n, 10, 200, 26, 0, 52);
             } else {
-                guiGraphics.blitNineSliced(UpgradesScreen.WIDGETS,  m, l, this.width, n, 10, 200, 26, 0, 52);
+                guiGraphics.blitNineSliced(UpgradesScreen.WIDGETS, m, l, this.width, n, 10, 200, 26, 0, 52);
             }
         }
 
         //blit(ResourceLocation atlasLocation, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight)
 
-      //  guiGraphics.blit(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 0,0, 200, 26,200, 26);
+        //  guiGraphics.blit(UpgradesScreen.getBox(upgradeEntry.isUnlocked(upgradeHandler)), i + this.x + 3, j + this.y, 0,0, 200, 26,200, 26);
 
         guiGraphics.blit(UpgradesScreen.WIDGETS, m, l, 0, advancementWidgetType.getIndex() * 26, j, 26);
         guiGraphics.blit(UpgradesScreen.WIDGETS, m + j, l, 200 - k, advancementWidgetType2.getIndex() * 26, k, 26);
 
-        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), x + this.x + 3, y + this.y, 0,0, 26, 26,26, 26);
+        guiGraphics.blit(UpgradesScreen.getFrame(upgradeEntry.getUpgradeType(), upgradeEntry.isUnlocked(upgradeHandler)), x + this.x + 3, y + this.y, 0, 0, 26, 26, 26, 26);
 
 
         if (bl) {

@@ -17,16 +17,16 @@ import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 
 public class RootPlantRenderer implements BlockEntityRenderer<RootPlantBlockEntity>, BlockEntityRendererProvider<RootPlantBlockEntity> {
 
-    private static RootPlantStateOneModel rootPlantStateOneModel;
-    private static RootPlantStateTwoModel rootPlantStateTwoModel;
-    private static RootPlantStateThreeModel rootPlantStateThreeModel;
-    private static RootPlantStateFourModel rootPlantStateFourModel;
-    private static RootPlantStateFiveModel rootPlantStateFiveModel;
     private static final ResourceLocation rootPlantOneTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_one.png");
     private static final ResourceLocation rootPlantTwoTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_two.png");
     private static final ResourceLocation rootPlantThreeTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_three.png");
     private static final ResourceLocation rootPlantFourTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_four.png");
     private static final ResourceLocation rootPlantFiveTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_five.png");
+    private static RootPlantStateOneModel rootPlantStateOneModel;
+    private static RootPlantStateTwoModel rootPlantStateTwoModel;
+    private static RootPlantStateThreeModel rootPlantStateThreeModel;
+    private static RootPlantStateFourModel rootPlantStateFourModel;
+    private static RootPlantStateFiveModel rootPlantStateFiveModel;
 
     public RootPlantRenderer(BlockEntityRendererProvider.Context context) {
         rootPlantStateOneModel = new RootPlantStateOneModel(context.bakeLayer((ModelRegistry.ROOT_PLANT_STATE_ONE)));
@@ -58,8 +58,8 @@ public class RootPlantRenderer implements BlockEntityRenderer<RootPlantBlockEnti
                         i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
                 break;
 
-                case 3:
-                    rootPlantStateFourModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(rootPlantFourTexture)),
+            case 3:
+                rootPlantStateFourModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(rootPlantFourTexture)),
                         i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
                 break;
 

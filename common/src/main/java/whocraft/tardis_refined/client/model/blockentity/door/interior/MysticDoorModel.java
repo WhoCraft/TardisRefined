@@ -9,7 +9,7 @@ import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 
 public class MysticDoorModel extends ShellDoorModel {
-    
+
     private final ModelPart right_door;
     private final ModelPart left_door;
     private final ModelPart root_door;
@@ -63,7 +63,8 @@ public class MysticDoorModel extends ShellDoorModel {
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);    }
+        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
 
     @Override
     public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {

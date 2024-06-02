@@ -14,14 +14,15 @@ import whocraft.tardis_refined.TardisRefined;
 
 import java.util.List;
 
-/** The recipe serialiser implementation.
+/**
+ * The recipe serialiser implementation.
  * <br> Making this allows vanilla to automatically add our recipe types onto its recipe packet entry and reload listener
- * */
+ */
 public class ManipulatorCraftingRecipeSerializer implements RecipeSerializer<ManipulatorCraftingRecipe> {
 
     public static ResourceLocation SERIALIZER_ID = new ResourceLocation(TardisRefined.MODID, "astral_manipulator");
 
-    public ManipulatorCraftingRecipeSerializer(){
+    public ManipulatorCraftingRecipeSerializer() {
 
     }
 
@@ -36,7 +37,7 @@ public class ManipulatorCraftingRecipeSerializer implements RecipeSerializer<Man
                 .decode(new Dynamic<>(JsonOps.INSTANCE, jsonObject.get("result"))), JsonParseException::new).getFirst();
         List<ManipulatorCraftingIngredient> ingredients =
                 Util.getOrThrow(ManipulatorCraftingIngredient.CODEC.listOf()
-                        .decode(new Dynamic<>(JsonOps.INSTANCE, jsonObject.get("ingredients"))), JsonParseException::new)
+                                .decode(new Dynamic<>(JsonOps.INSTANCE, jsonObject.get("ingredients"))), JsonParseException::new)
                         .getFirst();
 
         return new ManipulatorCraftingRecipe(ingredients, result).setRegistryId(resourceLocation);

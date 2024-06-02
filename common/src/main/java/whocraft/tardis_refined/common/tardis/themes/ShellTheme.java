@@ -10,10 +10,14 @@ import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
 public class ShellTheme implements Theme {
 
-    /** Registry Key for the ShellTheme registry. For addon mods, use this as the registry key*/
+    /**
+     * Registry Key for the ShellTheme registry. For addon mods, use this as the registry key
+     */
     public static final ResourceKey<Registry<ShellTheme>> SHELL_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "shell_theme"));
 
-    /** Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
+    /**
+     * Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only
+     */
     public static final DeferredRegistry<ShellTheme> SHELL_THEME_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, SHELL_THEME_REGISTRY_KEY, true);
 
     public static final RegistrySupplier<ShellTheme> HALF_BAKED = registerShellTheme("half_baked"); // The default shell. Do not remove.
@@ -36,38 +40,35 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplier<ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
     public static final RegistrySupplier<ShellTheme> CASTLE = registerShellTheme("castle");
     public static final RegistrySupplier<ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
-
-
-    public static ShellTheme getShellTheme(ResourceLocation resourceLocation){
-        ShellTheme potentialTheme = SHELL_THEME_DEFERRED_REGISTRY.get(resourceLocation);
-        if(potentialTheme != null){
-            return potentialTheme;
-        }
-        return HALF_BAKED.get();
-    }
-
-    public static ResourceLocation getKey(ShellTheme shellTheme){
-        return SHELL_THEME_DEFERRED_REGISTRY.getKey(shellTheme);
-    }
-
     private ResourceLocation translationKey;
     private boolean producesLight;
 
     public ShellTheme(ResourceLocation translationKey) {
         this.translationKey = translationKey;
     }
-
     public ShellTheme(ResourceLocation translationKey, boolean producesLight) {
         this.translationKey = translationKey;
         this.producesLight = producesLight;
     }
 
-    private static RegistrySupplier<ShellTheme> registerShellTheme(String id){
-        return SHELL_THEME_DEFERRED_REGISTRY.register(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+    public static ShellTheme getShellTheme(ResourceLocation resourceLocation) {
+        ShellTheme potentialTheme = SHELL_THEME_DEFERRED_REGISTRY.get(resourceLocation);
+        if (potentialTheme != null) {
+            return potentialTheme;
+        }
+        return HALF_BAKED.get();
     }
 
-    private static RegistrySupplier<ShellTheme> registerShellTheme(String id, boolean producesLight){
-        return SHELL_THEME_DEFERRED_REGISTRY.register(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
+    public static ResourceLocation getKey(ShellTheme shellTheme) {
+        return SHELL_THEME_DEFERRED_REGISTRY.getKey(shellTheme);
+    }
+
+    private static RegistrySupplier<ShellTheme> registerShellTheme(String id) {
+        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+    }
+
+    private static RegistrySupplier<ShellTheme> registerShellTheme(String id, boolean producesLight) {
+        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
     }
 
     @Override

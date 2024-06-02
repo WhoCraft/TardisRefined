@@ -9,7 +9,7 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
 
     @Override
     public ControlSpecification[] getControlSpecification() {
-        return new ControlSpecification[] {
+        return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(0.87f, 0.58f, -0.45f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(-0.29f, 0.65f, 0.73f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.Y, new Vector3f(-0.29f, 0.59f, 0.86f), EntityDimensions.scalable(0.13f, 0.12f)),

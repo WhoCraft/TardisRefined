@@ -15,7 +15,7 @@ public class PlayerEntityMixin {
     @Inject(method = "travel(Lnet/minecraft/world/phys/Vec3;)V", at = @At("TAIL"), cancellable = true)
     private void move(Vec3 vec3, CallbackInfo info) {
         Player player = (Player) (Object) this;
-        if(!player.level().isClientSide) return;
+        if (!player.level().isClientSide) return;
         GravityClient.moveGravity(player, info);
     }
 
@@ -23,7 +23,7 @@ public class PlayerEntityMixin {
     @Inject(method = "tick()V", at = @At("TAIL"))
     private void tick(CallbackInfo ci) {
         Player player = (Player) (Object) this;
-        if(GravityUtil.isInGravityShaft(player)){
+        if (GravityUtil.isInGravityShaft(player)) {
             player.resetFallDistance();
         }
     }

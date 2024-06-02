@@ -20,7 +20,7 @@ public class ShellPattern extends BasePattern {
     private final PatternTexture exteriorDoorTexture;
 
     public ShellPattern(String identifier, PatternTexture exteriorDoorTexture, PatternTexture interiorDoorTexture) {
-        this(new ResourceLocation(TardisRefined.MODID,identifier), exteriorDoorTexture, interiorDoorTexture);
+        this(new ResourceLocation(TardisRefined.MODID, identifier), exteriorDoorTexture, interiorDoorTexture);
     }
 
     public ShellPattern(ResourceLocation identifier, PatternTexture exteriorDoorTexture, PatternTexture interiorDoorTexture) {
@@ -35,9 +35,13 @@ public class ShellPattern extends BasePattern {
         this.interiorDoorTexture = interiorDoorTexture;
     }
 
-    public PatternTexture exteriorDoorTexture(){return this.exteriorDoorTexture;}
+    public PatternTexture exteriorDoorTexture() {
+        return this.exteriorDoorTexture;
+    }
 
-    public PatternTexture interiorDoorTexture(){return this.interiorDoorTexture;}
+    public PatternTexture interiorDoorTexture() {
+        return this.interiorDoorTexture;
+    }
 
     @Override
     public Codec<ShellPattern> getCodec() {

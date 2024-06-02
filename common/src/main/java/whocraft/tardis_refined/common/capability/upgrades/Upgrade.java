@@ -20,18 +20,13 @@ public class Upgrade {
 
     private final Supplier<Upgrade> parent;
     private final UpgradeType upgradeType;
+    private final Supplier<ItemStack> icon;
     private int cost = 1;
     private boolean posSet = false;
     private double posX = 0, posY = 0;
-    private final Supplier<ItemStack> icon;
-
-    public enum UpgradeType {
-        MAIN_UPGRADE, SUB_UPGRADE;
-    }
     private ResourceLocation translationKey;
 
     /**
-     *
      * @param icon
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
@@ -43,9 +38,8 @@ public class Upgrade {
     }
 
     /**
-     *
      * @param icon
-     * @param parent - the parent Upgrade object before we can unlock this current upgrade
+     * @param parent         - the parent Upgrade object before we can unlock this current upgrade
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
     public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey, UpgradeType upgradeType) {
@@ -59,11 +53,6 @@ public class Upgrade {
         return this.icon.get();
     }
 
-    public Upgrade setSkillPointsRequired(int cost) {
-        this.cost = cost;
-        return this;
-    }
-
     public UpgradeType getUpgradeType() {
         return upgradeType;
     }
@@ -71,10 +60,16 @@ public class Upgrade {
     /**
      * Currently, the Tardis has a XP system, every successful flight event supplies a certain amount of Tardis XP
      * 50 Tardis XP becomes 1 skill point
+     *
      * @return Skill points required before the upgrade unlocks
      */
     public int getSkillPointsRequired() {
         return this.cost;
+    }
+
+    public Upgrade setSkillPointsRequired(int cost) {
+        this.cost = cost;
+        return this;
     }
 
     public Upgrade setPosition(double x, double y) {
@@ -129,6 +124,10 @@ public class Upgrade {
             return true;
         }
         return upgradeHandler.isUpgradeUnlocked(this);
+    }
+
+    public enum UpgradeType {
+        MAIN_UPGRADE, SUB_UPGRADE;
     }
 
 }

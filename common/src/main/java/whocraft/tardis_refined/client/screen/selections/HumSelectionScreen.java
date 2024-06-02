@@ -20,18 +20,20 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public class HumSelectionScreen extends SelectionScreen {
-    private HumEntry currentHumEntry;
-
-
+    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
     protected int imageWidth = 256;
     protected int imageHeight = 173;
+    private HumEntry currentHumEntry;
     private int leftPos, topPos;
-
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
 
 
     public HumSelectionScreen() {
         super(Component.translatable(""));
+    }
+
+    public static void selectHum(HumEntry theme) {
+        new ChangeHumMessage(Minecraft.getInstance().player.level().dimension(), theme).send();
+        Minecraft.getInstance().setScreen(null);
     }
 
     @Override
@@ -89,11 +91,6 @@ public class HumSelectionScreen extends SelectionScreen {
 
     }
 
-    public static void selectHum(HumEntry theme) {
-        new ChangeHumMessage(Minecraft.getInstance().player.level().dimension(), theme).send();
-        Minecraft.getInstance().setScreen(null);
-    }
-
     @Override
     public Component getSelectedDisplayName() {
         return Component.Serializer.fromJson(currentHumEntry.getName());
@@ -120,7 +117,7 @@ public class HumSelectionScreen extends SelectionScreen {
             }
 
             selectionList.children().add(new SelectionListEntry(name, (entry) -> {
-               // previousImage = humEntry.getPreviewTexture();
+                // previousImage = humEntry.getPreviewTexture();
                 this.currentHumEntry = humEntry;
 
                 for (Object child : selectionList.children()) {

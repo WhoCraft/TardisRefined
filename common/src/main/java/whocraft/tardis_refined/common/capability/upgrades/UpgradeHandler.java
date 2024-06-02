@@ -25,10 +25,10 @@ public class UpgradeHandler {
 
     @NotNull
     private final TardisLevelOperator tardisLevelOperator;
+    private final List<Upgrade> unlockedUpgrades = new ArrayList<>();
     private int upgradeXP = 0;
     private int upgradePoints = 0;
     private int overallTardisPoints = 0;
-    private final List<Upgrade> unlockedUpgrades = new ArrayList<>();
 
     public UpgradeHandler(@NotNull TardisLevelOperator tardisLevelOperator) {
         this.tardisLevelOperator = tardisLevelOperator;
@@ -71,16 +71,16 @@ public class UpgradeHandler {
                 '}';
     }
 
-    public void setUpgradeXP(int upgradeXP) {
-        this.upgradeXP = Mth.clamp(upgradeXP, 0, 49);
-    }
-
     public List<Upgrade> getUnlockedUpgrades() {
         return this.unlockedUpgrades;
     }
 
     public int getUpgradeXP() {
         return this.upgradeXP;
+    }
+
+    public void setUpgradeXP(int upgradeXP) {
+        this.upgradeXP = Mth.clamp(upgradeXP, 0, 49);
     }
 
     public void addUpgradeXP(int upgradeXP) {
@@ -110,12 +110,12 @@ public class UpgradeHandler {
         return XP_PER_UPGRADE_POINT - this.upgradeXP;
     }
 
-    public void setUpgradePoints(int upgradePoints) {
-        this.upgradePoints = Mth.clamp(upgradePoints, 0, Integer.MAX_VALUE);
-    }
-
     public int getUpgradePoints() {
         return this.upgradePoints;
+    }
+
+    public void setUpgradePoints(int upgradePoints) {
+        this.upgradePoints = Mth.clamp(upgradePoints, 0, Integer.MAX_VALUE);
     }
 
     public int getOverallTardisPoints() {
@@ -157,7 +157,7 @@ public class UpgradeHandler {
             this.unlockedUpgrades.add(upgrade);
             upgrade.onUnlocked(this.tardisLevelOperator, this);
 
-            if(this.tardisLevelOperator.getLevel() instanceof ServerLevel serverLevel) {
+            if (this.tardisLevelOperator.getLevel() instanceof ServerLevel serverLevel) {
                 generateArsTree(tardisLevelOperator, serverLevel);
             }
 
