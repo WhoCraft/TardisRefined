@@ -4,10 +4,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
@@ -163,8 +161,8 @@ public class TardisClientLogic {
 
         //Play hums, and use the dedicated HumSoundManager to stop and start sounds
         HumEntry humEntry = clientData.getHumEntry();
-        if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
-            HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
+        if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
+            HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSoundEventId()));
         }
 
         //Hum ambient sounds

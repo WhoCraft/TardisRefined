@@ -56,7 +56,7 @@ public class LangProviderEnglish extends LanguageProvider {
         //Hum Sounds
         TardisHums.registerDefaultHums();
         for(Map.Entry<ResourceLocation, HumEntry> entry : TardisHums.getDefaultHums().entrySet()){
-            addSound(entry.getValue().getSound(), "TARDIS hums");
+            addSound(entry.getValue().getSoundEventId(), "TARDIS hums");
         }
 
         /*Block*/
