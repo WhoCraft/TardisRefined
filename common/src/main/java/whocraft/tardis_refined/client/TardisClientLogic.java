@@ -160,6 +160,7 @@ public class TardisClientLogic {
         //Play the Tardis flight loop sound when the Tardis is in flight but not taking off or landing or crashing, to minimise sound overlap
         if (isThisTardis && !clientData.isTakingOff() && !clientData.isLanding() && !clientData.isCrashing() && clientData.isFlying()) {
             if (!soundManager.isActive(TRSoundInstances.TARDIS_SINGLE_FLY)) {
+                TRSoundInstances.TARDIS_SINGLE_FLY.restartSoundPlaying(); //Explicity tell the LoopingSound to set its volume to a non-zero value so that the SoundEngine will play it again.
                 soundManager.play(TRSoundInstances.TARDIS_SINGLE_FLY.setPlayer(player).setLevel(targetLevel));
             }
         }

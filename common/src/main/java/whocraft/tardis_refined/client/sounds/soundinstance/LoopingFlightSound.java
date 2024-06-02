@@ -24,7 +24,7 @@ public class LoopingFlightSound extends LoopingTardisInteriorSound {
                 this.setVolume(0.5F);
             }
             else {
-                this.setVolume(0F);
+                this.setVolume(0F); //This will stop the sound from playing when landing is starting. However, we must set volume to be above zero when we need it to play once more. We currently use LoopingSound#restartSoundPlaying when we need to play the sound via vanilla SoundManager
             }
 
             //Stop playing this looping sound if the Tardis is out of fuel

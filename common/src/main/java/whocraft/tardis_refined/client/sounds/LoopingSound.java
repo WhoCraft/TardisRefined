@@ -15,6 +15,7 @@ public abstract class LoopingSound extends AbstractTickableSoundInstance {
     protected SoundEvent soundEvent;
     protected Player player;
     protected Level level;
+    protected float defaultVolume = 0.5F;
 
     public LoopingSound(SoundEvent soundEvent, SoundSource soundSource, Attenuation attenuation) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
@@ -96,6 +97,32 @@ public abstract class LoopingSound extends AbstractTickableSoundInstance {
      * <br> Define logic such as volume, attenuation, delays etc.*/
     public void playSoundInstance(Player player){
 
+    }
+
+    /** Gets the default volume that will be used if the sound needs to be replayed after having its volume set to zero in a previous tick
+     * <br> If volume is zero, the sound won't be played again, so it must be set to a value larger than zero to be 'restarted'*/
+    public float getDefaultVolume(){
+        return this.defaultVolume;
+    }
+
+    public LoopingSound setDefaultVolume(float defaultVolume){
+        this.defaultVolume = defaultVolume;
+        return this;
+    }
+
+    /**
+     * Helper method to restart a sound if it was at volume of zero before.
+     * It sets the volume to a value (should be higher than zero) using the default volume via {@link LoopingSound#getDefaultVolume()}
+     * @return
+     */
+    public LoopingSound restartSoundPlaying(){
+        if (this.getVolume() <= 0){
+            if(this.getDefaultVolume() > 0)
+                this.setVolume(this.getDefaultVolume());
+            else
+                this.setVolume(0.5F);
+        }
+        return this;
     }
 
 }
