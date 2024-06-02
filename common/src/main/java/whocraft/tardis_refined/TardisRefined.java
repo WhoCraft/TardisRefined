@@ -61,7 +61,7 @@ public class TardisRefined {
         TRControlRegistry.CONTROL_DEFERRED_REGISTRY.registerToModBus();
         TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.registerToModBus();
 
-        TRPointOfInterestTypes.init(); // Cannot defer this one, has to be done through the helper.
+        TRPointOfInterestTypes.POIS.registerToModBus(); // Cannot defer this one, has to be done through the helper.
         TRVillagerProfession.PROFESSIONS.registerToModBus();
 
         TRTagKeys.init();
