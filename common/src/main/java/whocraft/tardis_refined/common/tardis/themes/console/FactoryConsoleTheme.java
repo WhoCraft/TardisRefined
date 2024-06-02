@@ -18,7 +18,7 @@ public class FactoryConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.ROTATE, new Vector3f(0.13f, 0.56f, 0.91f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.RANDOM, new Vector3f(0.86f, 0.56f, 0.42f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.DOOR_TOGGLE, new Vector3f(-0.01f, 0.63f, -1.00f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.65f, 0.53f, -0.65f), EntityDimensions.scalable(0.25f, 0.25f)),
+                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.6f, 0.53f, -0.575f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(-0.65f, 0.53f, -0.87f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-1.04f, 0.55f, -0.16f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.READOUT, new Vector3f(-0.90f, 0.50f, 0.44f), EntityDimensions.scalable(0.13f, 0.13f)),

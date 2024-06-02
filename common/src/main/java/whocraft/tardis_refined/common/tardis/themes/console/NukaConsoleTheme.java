@@ -21,7 +21,7 @@ public class NukaConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(0.395f, 1.06f, 0.24f), EntityDimensions.scalable(0.4f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.375f, 1.06f, 0.265f), EntityDimensions.scalable(0.4f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.015f, 1.06f, -0.45f), EntityDimensions.scalable(0.5f, 0.25f)),
-                new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(0.13f, 0.58f, 0.94f), EntityDimensions.scalable(0.25f, 0.25f)),
+                new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(0.205f, 0.58f, 0.99f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(0.15f, 0.83f, 0.73f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.11f, 0.67f, 0.91f), EntityDimensions.scalable(0.06f, 0.06f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.01f, 0.67f, 0.91f), EntityDimensions.scalable(0.06f, 0.06f)),
