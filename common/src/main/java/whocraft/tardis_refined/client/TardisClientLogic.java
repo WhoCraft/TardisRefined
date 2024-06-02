@@ -51,7 +51,7 @@ public class TardisClientLogic {
             ClientLevel tardisLevel = Minecraft.getInstance().level;
 
             createWorldAmbience(player);
-            handleSounds(clientData, player, tardisLevel);
+            handleTardisLoopingSounds(clientData, player, tardisLevel);
             handleScreenShake(clientData, player);
             handleAestheticEffects(clientData, tardisLevel);
 
@@ -105,12 +105,7 @@ public class TardisClientLogic {
             return;
         }
 
-        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
-            SoundManager soundManager = Minecraft.getInstance().getSoundManager();
-            if (!soundManager.isActive(TRSoundInstances.GRAVITY_LOOP)) {
-                soundManager.play(TRSoundInstances.GRAVITY_LOOP);
-            }
-        }
+        handleNonTardisLoopingSounds(client.player, client.level);
 
         for (TardisClientData tardisClientData : TardisClientData.getAllEntries()) {
             TardisClientLogic.tickClientside(tardisClientData);
@@ -140,7 +135,17 @@ public class TardisClientLogic {
         }
     }
 
-    private static void handleSounds(TardisClientData clientData, Player player, Level targetLevel){
+    /** Play looping sounds for anything that doesn't need to be played inside a Tardis dimension*/
+    private static void handleNonTardisLoopingSounds(Player player, Level targetLevel){
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+            if (!soundManager.isActive(TRSoundInstances.GRAVITY_LOOP)) {
+                soundManager.play(TRSoundInstances.GRAVITY_LOOP.setPlayer(player).setLevel(targetLevel));
+            }
+        }
+    }
+
+    private static void handleTardisLoopingSounds(TardisClientData clientData, Player player, Level targetLevel){
 
         boolean isThisTardis = clientData.getLevelKey() == targetLevel.dimension();
 
@@ -148,21 +153,21 @@ public class TardisClientLogic {
 
         if (isInArsArea(player.blockPosition())) {
             if (!soundManager.isActive(TRSoundInstances.ARS_HUMMING)) {
-                soundManager.play(TRSoundInstances.ARS_HUMMING);
+                soundManager.play(TRSoundInstances.ARS_HUMMING.setPlayer(player).setLevel(targetLevel));
             }
         }
 
         //Play the Tardis flight loop sound when the Tardis is in flight but not taking off or landing or crashing, to minimise sound overlap
         if (isThisTardis && !clientData.isTakingOff() && !clientData.isLanding() && !clientData.isCrashing() && clientData.isFlying()) {
             if (!soundManager.isActive(TRSoundInstances.TARDIS_SINGLE_FLY)) {
-                soundManager.play(TRSoundInstances.TARDIS_SINGLE_FLY);
+                soundManager.play(TRSoundInstances.TARDIS_SINGLE_FLY.setPlayer(player).setLevel(targetLevel));
             }
         }
 
         //Play hums, and use the dedicated HumSoundManager to stop and start sounds
         HumEntry humEntry = clientData.getHumEntry();
         if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
-            HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSoundEventId()));
+            HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSoundEventId()), player, targetLevel);
         }
 
         //Hum ambient sounds

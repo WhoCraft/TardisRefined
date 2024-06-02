@@ -18,7 +18,7 @@ public class GravityUtil {
     private static final int MAX_Y = 30; // The most a shaft can carry a player up
     private static final double ACCELERATION = 0.2;
     public static boolean isInAntiGrav(Player playerBox, AABB box, Level level) {
-        if(level.dimensionTypeId() != TRDimensionTypes.TARDIS) return false;
+//        if(level.dimensionTypeId() != TRDimensionTypes.TARDIS) return false; //Allow sound to play no matter what dimension the block is placed in
         for (BlockPos pos : betweenClosed(new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ), new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ))) {
             BlockState blockState = level.getBlockState(pos);
             if (blockState.getBlock() instanceof AntiGravityBlock) {

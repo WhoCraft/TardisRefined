@@ -4,6 +4,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.sounds.soundinstance.LoopingHumSound;
 
 public class HumSoundManager {
     private static final Minecraft MC = Minecraft.getInstance();
@@ -11,9 +14,9 @@ public class HumSoundManager {
     private static LoopingHumSound currentSound;
     private static SoundEvent currentRawSound = SoundEvents.CAT_DEATH;
 
-    public static void playHum(SoundEvent soundEvent) {
+    public static void playHum(SoundEvent soundEvent, Player player, Level targetLevel) {
         stopCurrentHum();
-        LoopingHumSound newSound = createHumSound(soundEvent);
+        LoopingHumSound newSound = createHumSound(soundEvent, player, targetLevel);
         currentSound = newSound;
         currentRawSound = soundEvent;
         MC.getSoundManager().play(newSound);
@@ -42,7 +45,7 @@ public class HumSoundManager {
         }
     }
 
-    private static LoopingHumSound createHumSound(SoundEvent soundEvent) {
-        return new LoopingHumSound(soundEvent, SoundSource.AMBIENT);
+    private static LoopingHumSound createHumSound(SoundEvent soundEvent, Player player, Level targetLevel) {
+        return (LoopingHumSound) new LoopingHumSound(soundEvent, SoundSource.AMBIENT).setPlayer(player).setLevel(targetLevel);
     }
 }

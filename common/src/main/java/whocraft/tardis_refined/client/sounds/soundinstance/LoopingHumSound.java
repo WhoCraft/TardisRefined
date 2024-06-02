@@ -1,49 +1,28 @@
-package whocraft.tardis_refined.client.sounds;
+package whocraft.tardis_refined.client.sounds.soundinstance;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.client.sounds.LoopingTardisInteriorSound;
 import whocraft.tardis_refined.constants.NbtConstants;
-import whocraft.tardis_refined.registry.TRDimensionTypes;
 
-public class LoopingHumSound extends LoopingSound{
+public class LoopingHumSound extends LoopingTardisInteriorSound {
 
     public LoopingHumSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource);
-        this.soundEvent = soundEvent;
-    }
-
-    public void setSoundEvent(SoundEvent soundEvent) {
-        this.soundEvent = soundEvent;
     }
 
     @Override
-    public void tick() {
-
-        this.volume = 0.10F;
-        LocalPlayer player = Minecraft.getInstance().player;
-
+    public void playSoundInstance(Player player) {
+        setLocation(player.position());
         if(soundEvent.getLocation().getNamespace().contains(NbtConstants.MINECRAFT)){
             this.volume = 1f;
         } else {
-            this.volume = 0.10F;
+            this.setVolume(0.10F);
         }
-
-        if(player != null){
-            setLocation(player.position());
-
-            if(player.level().dimensionTypeId() != TRDimensionTypes.TARDIS){
-                this.stop();
-                stopSound();
-            }
-
-        }
-
-
     }
 
     // So, I don't like this. But it is necessary else we are making another Mixin, which isn't a bad thing but better to avoid
