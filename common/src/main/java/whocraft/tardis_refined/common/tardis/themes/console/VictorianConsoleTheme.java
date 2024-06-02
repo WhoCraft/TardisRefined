@@ -10,7 +10,7 @@ public class VictorianConsoleTheme extends ConsoleThemeDetails {
     @Override
     public ControlSpecification[] getControlSpecification() {
         return new ControlSpecification[] {
-                new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(-0.70f , 0.50f, 0.61f), EntityDimensions.scalable(0.25f , 0.25f)),
+                new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(-0.55f , 0.50f, 0.61f), EntityDimensions.scalable(0.25f , 0.25f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(-0.58f , 0.78f, 0.11f), EntityDimensions.scalable(0.13f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.Y, new Vector3f(-0.48f , 0.78f, 0.25f), EntityDimensions.scalable(0.13f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.Z, new Vector3f(-0.40f , 0.77f, 0.39f), EntityDimensions.scalable(0.13f , 0.13f)),
@@ -19,9 +19,8 @@ public class VictorianConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.RANDOM, new Vector3f(-0.26f , 0.66f, -0.74f), EntityDimensions.scalable(0.13f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.DOOR_TOGGLE, new Vector3f(0.83f , 0.56f, -0.16f), EntityDimensions.scalable(0.13f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.6375f , 0.5625f, -0.3875f), EntityDimensions.scalable(0.25f , 0.25f)),
-                new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(0.80f , 0.50f, -0.86f), EntityDimensions.scalable(0.13f , 0.13f)),
+                new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(0.80f , 0.50f, -0.83f), EntityDimensions.scalable(0.23f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(0.72f , 0.75f, -0.09f), EntityDimensions.scalable(0.06f , 0.06f)),
-
                 new ControlSpecification(TRControlRegistry.HANDBRAKE, new Vector3f(0.32f , 0.50f, 0.85f), EntityDimensions.scalable(0.13f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.FUEL, new Vector3f(-0.34f , 0.50f, 0.85f), EntityDimensions.scalable(0.13f , 0.13f)),
                 new ControlSpecification(TRControlRegistry.READOUT, new Vector3f(-0.01f , 0.75f, 0.65f), EntityDimensions.scalable(0.13f , 0.13f)),

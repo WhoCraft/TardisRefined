@@ -20,7 +20,7 @@ public class CrystalConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.DOOR_TOGGLE, new Vector3f(1.18f, 0.52f, -0.35f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(-0.0149f, 0.94f, 1.38f), EntityDimensions.scalable(0.43f, 0.43f)),
                 new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(0.65f, 0.5f, -0.42f), EntityDimensions.scalable(0.33f, 0.3f)),
-                new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-0.39f, 0.39f, -1.26f), EntityDimensions.scalable(0.25f, 0.25f)),
+                new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-0.29f, 0.39f, -1.21f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.11f, 0.56f, 0.11f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(1.11f, 0.56f, -0.16f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.61f, 0.56f, -0.96f), EntityDimensions.scalable(0.13f, 0.13f)),
