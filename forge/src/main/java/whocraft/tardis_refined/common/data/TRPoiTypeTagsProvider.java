@@ -19,7 +19,6 @@ public class TRPoiTypeTagsProvider extends PoiTypeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider arg) {
-        super.addTags(arg);
         var appender = tag(PoiTypeTags.ACQUIRABLE_JOB_SITE);
         appender.add(TRPointOfInterestTypes.PILOT);
     }
