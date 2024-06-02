@@ -132,7 +132,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             ResourceLocation themeId = this.theme();
             ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEME_REGISTRY.get(themeId);
             ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
-            Arrays.stream(controls).toList().forEach(control -> {
+            for (ControlSpecification control : Arrays.stream(controls).toList()) {
                 // Spawn a control!
                 ControlEntity controlEntity = new ControlEntity(getLevel());
 
@@ -143,7 +143,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
                 serverLevel.addFreshEntity(controlEntity);
                 controlEntityList.add(controlEntity);
-            });
+            }
 
             this.shouldSpawnControls = false;
         }
