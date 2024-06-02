@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TREntityRegistry;
 import whocraft.tardis_refined.registry.TRItemRegistry;
@@ -49,7 +50,7 @@ public class ProviderLootTable extends LootTableProvider {
             ArrayList<@NotNull Block> blocks = new ArrayList<>();
             for (Map.Entry<ResourceKey<Block>, Block> entry : TRBlockRegistry.BLOCKS.entrySet()) {
                 ResourceLocation blockId = TRBlockRegistry.BLOCKS.getKey(entry.getValue());
-                if (!blockId.toString().contains("minecraft")) {
+                if (blockId.toString().contains(TardisRefined.MODID)) {
                     blocks.add(entry.getValue());
                 }
             }

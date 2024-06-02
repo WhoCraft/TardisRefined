@@ -108,6 +108,12 @@ public class ModMessages {
     public static String TOOLTIP_TARDIS_LIST_TITLE = tooltip("tardis_list");
     public static String TOOLTIP_SCREWDRIVER_DESCRIPTION = tooltip("screwdriver_description");
 
+    public static String POSITION = ui("position");
+    public static String DIRECTION = ui("direction");
+    public static String DIMENSION = ui("dimension");
+    public static String DOOR_STATUS = message("door_status");
+    public static String LOCK_STATUS = message("lock_status");
+
     public static String message(String translationKey) {
         return "message." + TardisRefined.MODID + "." + translationKey;
     }

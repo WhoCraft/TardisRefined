@@ -1,7 +1,9 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.Util;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.DeferredRegistry;

@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.registry;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorBlockResult;
