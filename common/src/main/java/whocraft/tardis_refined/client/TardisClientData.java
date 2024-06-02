@@ -1,47 +1,20 @@
 package whocraft.tardis_refined.client;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.AnimationState;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.client.sounds.HumSoundManager;
-import whocraft.tardis_refined.client.sounds.LoopingSound;
-import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
-import whocraft.tardis_refined.common.GravityUtil;
-import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.SyncTardisClientDataMessage;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.TRDimensionTypes;
-import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
-import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CENTER;
 
 public class TardisClientData {
     public static int FOG_TICK_DELTA = 0; // This is for the fading in and out of the fog.
@@ -240,7 +213,6 @@ public class TardisClientData {
     public void sync() {
         new SyncTardisClientDataMessage(getLevelKey(), serializeNBT()).sendToAll();
     }
-
 
     private static final List<TardisClientData> DATA = new ArrayList<>();
 

@@ -19,7 +19,7 @@ public class CoralConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.ROTATE, new Vector3f(-0.47f, 0.63f, 0.91f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.RANDOM, new Vector3f(-0.37f, 0.55f, -1.28f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.DOOR_TOGGLE, new Vector3f(0.25f, 0.56f, -1.04f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(0.72f, 0.94f, -0.61f), EntityDimensions.scalable(0.37f, 0.38f)),
+                new ControlSpecification(TRControlRegistry.MONITOR, new Vector3f(0.745f, 0.89f, -0.46f), EntityDimensions.scalable(0.37f, 0.38f)),
                 new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(1.19f, 0.59f, -0.33f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-1.14f, 0.44f, 0.44f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.04f, 0.49f, 0.70f), EntityDimensions.scalable(0.06f, 0.06f)),

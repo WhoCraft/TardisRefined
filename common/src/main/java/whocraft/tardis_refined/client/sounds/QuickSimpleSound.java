@@ -12,9 +12,6 @@ import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 public class QuickSimpleSound extends AbstractTickableSoundInstance {
 
-    public static QuickSimpleSound VOICE_QUICK_SOUND =  new QuickSimpleSound(TRSoundRegistry.INTERIOR_VOICE.get(), SoundSource.AMBIENT);
-
-
     public QuickSimpleSound(@NotNull SoundEvent soundEvent, SoundSource soundSource) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
         attenuation = Attenuation.NONE;

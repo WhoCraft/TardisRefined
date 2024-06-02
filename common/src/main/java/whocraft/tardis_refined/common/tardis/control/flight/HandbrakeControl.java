@@ -14,10 +14,10 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 public class HandbrakeControl extends Control {
     public HandbrakeControl(ResourceLocation id) {
-        super(id);
+        super(id, true);
     }
     public HandbrakeControl(ResourceLocation id, String langId){
-        super(id, langId);
+        super(id, langId, true);
     }
 
     @Override

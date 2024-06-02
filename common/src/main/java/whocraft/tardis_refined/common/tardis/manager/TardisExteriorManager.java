@@ -24,6 +24,8 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
+import java.util.Optional;
+
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
 
@@ -36,7 +38,7 @@ public class TardisExteriorManager extends BaseHandler {
     private final TardisLevelOperator operator;
 
     public boolean locked() {
-        return locked;
+        return this.locked;
     }
 
     public void setLocked(boolean locked) {
@@ -120,8 +122,8 @@ public class TardisExteriorManager extends BaseHandler {
 
     public void setDoorClosed(boolean closed) {
 
-        if (locked) {
-            closed = true;
+        if (this.locked) {
+            closed = true; //If the exterior thinks the door is already locked, then this means we should automatically close the door too.
         }
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
@@ -133,12 +135,12 @@ public class TardisExteriorManager extends BaseHandler {
         BlockState state = lastKnownLocationLevel.getBlockState(currentPosition.getPosition());
         if (state.hasProperty(ShellBaseBlock.OPEN)) {
             lastKnownLocationLevel.setBlock(currentPosition.getPosition(), state.setValue(ShellBaseBlock.OPEN, !closed), 2);
-            playSoundAtShell(locked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
+            playSoundAtShell(closed ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, closed ? 1.4F : 1F);
         }
     }
 
 
-    public void triggerShellRegenState() {
+    public void triggerShellRegenState(boolean startRegen) {
 
         TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
         if (pilotingManager == null) {
@@ -152,8 +154,10 @@ public class TardisExteriorManager extends BaseHandler {
 
         BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocationPosition);
         if (lastKnownLocationLevel == null) return;
-        if (!lastKnownLocationLevel.getBlockState(lastKnownLocationPosition).hasProperty(REGEN)) return;
-        lastKnownLocationLevel.setBlock(lastKnownLocationPosition, state.setValue(ShellBaseBlock.REGEN, true), Block.UPDATE_ALL);
+        if (state.getBlock() instanceof ShellBaseBlock shellBaseBlock && state.hasProperty(REGEN)) { //Check if this is our shell block and that its type has a Regen block state
+            BlockState updatedBlockState = state.setValue(ShellBaseBlock.REGEN, startRegen);
+            this.setOrUpdateExteriorBlock(this.operator, currentPosition, Optional.of(updatedBlockState), false);
+        }
     }
 
     public void removeExteriorBlock() {
@@ -179,23 +183,8 @@ public class TardisExteriorManager extends BaseHandler {
             lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to not be force loaded after we remove the block
         }
     }
-
-    public void placeExteriorBlock(TardisLevelOperator operator, TardisNavLocation location) {
-        AestheticHandler aestheticHandler = operator.getAestheticHandler();
-        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
-        ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
-        ShellPattern shellPattern = aestheticHandler.getShellTheme() != null ? aestheticHandler.shellPattern() : null;
-
-        //remove the exterior block
-        location.getLevel().setBlock(location.getPosition(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-
-        BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
-                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
-                .setValue(GlobalShellBlock.REGEN, false)
-                .setValue(LOCKED, operator.getExteriorManager().locked)
-                .setValue(GlobalShellBlock.LIT, shellTheme.producesLight())
-                .setValue(GlobalShellBlock.WATERLOGGED, location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
-
+    /** Setup the landing data updates and physical placement of the shell block */
+    public void startLanding(TardisLevelOperator operator, TardisNavLocation location) {
         ServerLevel targetLevel = location.getLevel();
         BlockPos lastKnownLocationPosition = location.getPosition();
         ChunkPos chunkPos = location.getLevel().getChunk(lastKnownLocationPosition).getPos();
@@ -203,11 +192,39 @@ public class TardisExteriorManager extends BaseHandler {
         //Force load target chunk
         targetLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly place block
 
+        this.setOrUpdateExteriorBlock(operator, location, Optional.empty(), true);
+
+        //Un-force load target chunk
+        targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
+
+        this.isLanding = true;
+    }
+
+    /** Common logic to set or update the exterior shell block. This is needed to ensure we preserve data on the exterior shell such as Shell Patterns*/
+    public void setOrUpdateExteriorBlock(TardisLevelOperator operator, TardisNavLocation location, Optional<BlockState> targetBlockState, boolean placeNewBlock){
+        AestheticHandler aestheticHandler = operator.getAestheticHandler();
+        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
+        ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
+        ShellPattern shellPattern = aestheticHandler.getShellTheme() != null ? aestheticHandler.shellPattern() : null;
+
+        ServerLevel targetLevel = location.getLevel();
+        BlockPos lastKnownLocationPosition = location.getPosition();
+
+        BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState()
+                .setValue(GlobalShellBlock.FACING, location.getDirection().getOpposite())
+                .setValue(GlobalShellBlock.REGEN, false)
+                .setValue(LOCKED, operator.getExteriorManager().locked)
+                .setValue(GlobalShellBlock.LIT, shellTheme.producesLight())
+                .setValue(GlobalShellBlock.WATERLOGGED, location.getLevel().getBlockState(location.getPosition()).getFluidState().getType() == Fluids.WATER);
+
+        //If the supplied blockstate somehow doesn't have a value, provide a fallback value by using a recreated blockstate
+        BlockState finalBlockstate = placeNewBlock ? newExteriorBlock : (targetBlockState.orElse(newExteriorBlock));
+
         //Place the exterior block
-        location.getLevel().setBlock(location.getPosition(), targetBlockState, Block.UPDATE_ALL);
+        targetLevel.setBlock(lastKnownLocationPosition, finalBlockstate, Block.UPDATE_ALL);
         //Copy over important data points
-        if (location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity globalShell) {
-            globalShell.setTardisId(operator.getLevel().dimension());
+        if (targetLevel.getBlockEntity(lastKnownLocationPosition) instanceof GlobalShellBlockEntity globalShell) {
+            globalShell.setTardisId(operator.getLevel().dimension()); //DO NOT set the target dimension, otherwise the TARDIS_ID on the exterior will never be correct and key locking features will be broken
             globalShell.setShellTheme(theme);
 
             if (shellPattern != null) {
@@ -216,13 +233,8 @@ public class TardisExteriorManager extends BaseHandler {
 
             globalShell.sendUpdates();
 
-            location.getLevel().sendBlockUpdated(location.getPosition(), targetBlockState, targetBlockState, Block.UPDATE_CLIENTS);
+            targetLevel.sendBlockUpdated(lastKnownLocationPosition, finalBlockstate, finalBlockstate, Block.UPDATE_CLIENTS);
         }
-
-        //Un-force load target chunk
-        targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
-
-        this.isLanding = true;
     }
 
 

@@ -100,7 +100,7 @@ public class HumSelectionScreen extends SelectionScreen {
 
     @Override
     public Component getSelectedDisplayName() {
-        return Component.Serializer.fromJson(currentHumEntry.getName());
+        return Component.Serializer.fromJson(currentHumEntry.getNameComponent());
     }
 
     @Override
@@ -110,17 +110,17 @@ public class HumSelectionScreen extends SelectionScreen {
         selectionList.setRenderBackground(false);
 
         Collection<HumEntry> knownHums = TardisHums.getRegistry().values();
-        knownHums = knownHums.stream().sorted(Comparator.comparing(HumEntry::getName)).toList();
+        knownHums = knownHums.stream().sorted(Comparator.comparing(HumEntry::getNameComponent)).toList();
 
         for (HumEntry humEntry : knownHums) {
             Component name = Component.literal(MiscHelper.getCleanName(humEntry.getIdentifier().getPath()));
 
             // Check for if the tellraw name is incomplete, or fails to pass.
             try {
-                var json = Component.Serializer.fromJson(new StringReader(humEntry.getName()).toString());
+                var json = Component.Serializer.fromJson(new StringReader(humEntry.getNameComponent()));
                 name = json;
             } catch (Exception ex) {
-                TardisRefined.LOGGER.error("Could not process Name for datapack desktop " + humEntry.getIdentifier().toString());
+                TardisRefined.LOGGER.error("Could not process Name for hum " + humEntry.getIdentifier().toString());
             }
 
             selectionList.children().add(new SelectionListEntry(name, (entry) -> {

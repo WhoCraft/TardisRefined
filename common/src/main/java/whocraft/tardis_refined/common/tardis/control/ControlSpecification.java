@@ -8,16 +8,16 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 public class ControlSpecification {
     private Control control;
     private Vector3f offsetPosition;
-    private EntityDimensions scale;
+    private EntityDimensions size;
 
-    public ControlSpecification(Control control, Vector3f offsetPosition, EntityDimensions scale) {
+    public ControlSpecification(Control control, Vector3f offsetPosition, EntityDimensions size) {
         this.control = control;
         this.offsetPosition = offsetPosition;
-        this.scale = scale;
+        this.size = size;
     }
 
-    public ControlSpecification(RegistrySupplier<Control> controlRegistrySupplier, Vector3f offsetPosition, EntityDimensions scalable) {
-        this(controlRegistrySupplier.get(), offsetPosition, scalable);
+    public ControlSpecification(RegistrySupplier<Control> controlRegistrySupplier, Vector3f offsetPosition, EntityDimensions size) {
+        this(controlRegistrySupplier.get(), offsetPosition, size);
     }
 
     public Control control() {
@@ -38,12 +38,12 @@ public class ControlSpecification {
         return this;
     }
 
-    public EntityDimensions scale() {
-        return scale;
+    public EntityDimensions size() {
+        return size;
     }
 
-    public ControlSpecification setScale(EntityDimensions scale) {
-        this.scale = scale;
+    public ControlSpecification setSize(EntityDimensions size) {
+        this.size = size;
         return this;
     }
 }

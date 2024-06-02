@@ -17,10 +17,10 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 public class MonitorControl extends Control {
     public MonitorControl(ResourceLocation id) {
-        super(id);
+        super(id, true);
     }
     public MonitorControl(ResourceLocation id, String langId){
-        super(id, langId);
+        super(id, langId, true);
     }
 
     @Override

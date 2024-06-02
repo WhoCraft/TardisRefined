@@ -4,7 +4,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,13 +14,11 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.client.sounds.HumSoundManager;
-import whocraft.tardis_refined.client.sounds.LoopingSound;
-import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
+import whocraft.tardis_refined.client.sounds.*;
 import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.hum.HumEntry;
-import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -30,37 +27,11 @@ import java.util.List;
 import static whocraft.tardis_refined.client.TardisClientData.FOG_TICK_DELTA;
 import static whocraft.tardis_refined.client.TardisClientData.MAX_FOG_TICK_DELTA;
 import static whocraft.tardis_refined.common.util.TardisHelper.isInArsArea;
-import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CENTER;
 
 public class TardisClientLogic {
 
-
-    /**
-     * Higher means more fog, lower means less fog
-     * @return 0 -> 1 float based off fog tick delta
-     */
-    public static float getFogTickDelta(BlockPos playerPosition) {
-        return TardisHelper.isInArsArea(playerPosition) ? 1f :  1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
-    }
-
-    public static void tickFog(boolean hasFuel) {
-        if (!hasFuel && (FOG_TICK_DELTA <= MAX_FOG_TICK_DELTA) && (FOG_TICK_DELTA > 0)) {
-            FOG_TICK_DELTA--; // Fading in the fog
-            return;
-        }
-
-        if (hasFuel && (FOG_TICK_DELTA != MAX_FOG_TICK_DELTA)) {
-            FOG_TICK_DELTA++; // Fading out the fog
-            return;
-        }
-    }
-
-
     @Environment(EnvType.CLIENT)
     public static void tickClientside(TardisClientData clientData) {
-
-        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
-
 
         if (clientData.isTakingOff()) {
             clientData.takeOffTime++;
@@ -73,103 +44,19 @@ public class TardisClientLogic {
             clientData.takeOffTime = 0;
         }
 
+        Player player = Minecraft.getInstance().player;
 
-        if (Minecraft.getInstance().player.level().dimensionTypeId() == TRDimensionTypes.TARDIS) {
+        if (player.level().dimensionTypeId() == TRDimensionTypes.TARDIS) {
 
             ClientLevel tardisLevel = Minecraft.getInstance().level;
-            boolean isThisTardis = clientData.getLevelKey() == tardisLevel.dimension();
 
-            createWorldAmbience(Minecraft.getInstance().player);
+            createWorldAmbience(player);
+            handleTardisLoopingSounds(clientData, player, tardisLevel);
+            handleScreenShake(clientData, player);
+            handleAestheticEffects(clientData, tardisLevel);
 
-            if (LoopingSound.ARS_HUMMING == null) {
-                LoopingSound.setupSounds();
-            }
-
-            if (isInArsArea(Minecraft.getInstance().player.blockPosition())) {
-                if (!soundManager.isActive(LoopingSound.ARS_HUMMING)) {
-                    LoopingSound.ARS_HUMMING.setLocation(ARS_TREE_CENTER);
-                    soundManager.play(LoopingSound.ARS_HUMMING);
-                }
-            }
-
-            if (isThisTardis && clientData.isFlying()) {
-                if (!soundManager.isActive(LoopingSound.FLIGHT_LOOP)) {
-                    soundManager.play(LoopingSound.FLIGHT_LOOP);
-                }
-            }
-
-            HumEntry humEntry = clientData.getHumEntry();
-            if (isThisTardis && humEntry != null && !humEntry.getSound().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentSound())) {
-                HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSound()));
-            }
-
-            if (isThisTardis && tardisLevel.getGameTime() % clientData.nextAmbientNoiseCall == 0) {
-
-
-                clientData.nextAmbientNoiseCall = tardisLevel.random.nextInt(400, 2400);
-                List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
-                if (ambientSounds != null && !ambientSounds.isEmpty()) {
-                    RandomSource randomSource = tardisLevel.random;
-
-                    ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
-                    SoundEvent randomSoundEvent = SoundEvent.createVariableRangeEvent(randomSoundLocation);
-
-                    QuickSimpleSound simpleSoundInstance = new QuickSimpleSound(randomSoundEvent, SoundSource.AMBIENT);
-                    simpleSoundInstance.setVolume(0.3F);
-
-                    playAmbientSound(simpleSoundInstance, randomSource, 0.3f);
-
-                }
-            }
-
-            if (LoopingSound.shouldMinecraftMusicStop(soundManager)) {
-                Minecraft.getInstance().getMusicManager().stopPlaying();
-            }
-
-
-
-            if (isThisTardis && tardisLevel.getGameTime() % clientData.nextVoiceAmbientCall == 0) {
-                clientData.nextVoiceAmbientCall = tardisLevel.random.nextInt(6000, 36000);
-
-                RandomSource randomSource = tardisLevel.random;
-                playAmbientSound(QuickSimpleSound.VOICE_QUICK_SOUND, randomSource, 0.3f);
-            }
-
-
-            // Responsible for screen-shake. Not sure of a better solution at this point in time.
-
-            if (Minecraft.getInstance().player.level().dimension() == clientData.getLevelKey()) {
-                var player = Minecraft.getInstance().player;
-                if (clientData.isCrashing()) {
-                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) *  0.5f);
-                } else {
-                    if (clientData.isFlying()) {
-                        player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
-                        player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
-                    }
-                }
-            }
-
-            if (isThisTardis) {
-                tickFog(  clientData.getTardisState() < TardisLevelOperator.STATE_EYE_OF_HARMONY || clientData.getFuel() != 0);
-            }
-
-            if (isThisTardis && clientData.getTardisState() == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
-                tardisLevel.addParticle(ParticleTypes.CLOUD, (double)1013 + 0.5 - 2 + tardisLevel.random.nextInt(4), 71, (double)55 + 0.5- 2 + tardisLevel.random.nextInt(4),0, 0.1 + tardisLevel.random.nextFloat() / 2 ,0);
-            }
         }
 
-    }
-
-    public static void playAmbientSound(QuickSimpleSound sound, RandomSource randomSource, float volume) {
-        sound.setVolume(volume);
-        LocalPlayer player = Minecraft.getInstance().player;
-        double randomX = player.getX() + (randomSource.nextDouble() - 0.5) * 100;
-        double randomY = player.getY() + (randomSource.nextDouble() - 0.5) * 100;
-        double randomZ = player.getZ() + (randomSource.nextDouble() - 0.5) * 100;
-        sound.setLocation(new Vec3(randomX, randomY, randomZ));
-        Minecraft.getInstance().getSoundManager().play(sound);
     }
 
     /**
@@ -218,17 +105,7 @@ public class TardisClientLogic {
             return;
         }
 
-        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
-
-        if (LoopingSound.ARS_HUMMING == null) {
-            LoopingSound.setupSounds();
-        }
-
-        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
-            if (!soundManager.isActive(LoopingSound.GRAVITY_LOOP)) {
-                soundManager.play(LoopingSound.GRAVITY_LOOP);
-            }
-        }
+        handleNonTardisLoopingSounds(client.player, client.level);
 
         for (TardisClientData tardisClientData : TardisClientData.getAllEntries()) {
             TardisClientLogic.tickClientside(tardisClientData);
@@ -239,6 +116,7 @@ public class TardisClientLogic {
         if (player.tickCount % 120 == 0 && !isInArsArea(player.blockPosition())) return;
         RandomSource random = player.level().random;
         Level level = player.level();
+        ClientLevel clientLevel = (ClientLevel)level;
         double originX = player.getX();
         double originY = player.getY();
         double originZ = player.getZ();
@@ -249,13 +127,131 @@ public class TardisClientLogic {
             double velocityX = (random.nextDouble() - 0.5) * 0.02;
             double velocityY = (random.nextDouble() - 0.5) * 0.02;
             double velocityZ = (random.nextDouble() - 0.5) * 0.02;
-            if (isInArsArea(new BlockPos((int) particleX, (int) particleY, (int) particleZ))) {
-                level.addParticle(TRParticles.ARS_LEAVES.get(), particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
-                level.addParticle(ParticleTypes.END_ROD, particleX, particleY, particleZ, velocityX, velocityY, velocityZ);
+            BlockPos position = new BlockPos((int) particleX, (int) particleY, (int) particleZ);
+            if (isInArsArea(position)) {
+                ClientHelper.playParticle(clientLevel, TRParticles.ARS_LEAVES.get(), position, velocityX, velocityY, velocityZ);
+                ClientHelper.playParticle(clientLevel, ParticleTypes.END_ROD, position, velocityX, velocityY, velocityZ);
             }
         }
     }
 
+    /** Handle when to start playing looping sounds for anything that doesn't need to be played inside a Tardis dimension*/
+    private static void handleNonTardisLoopingSounds(Player player, Level targetLevel){
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+        if (GravityUtil.isInGravityShaft(Minecraft.getInstance().player)) {
+            if (!soundManager.isActive(TRSoundInstances.GRAVITY_LOOP)) {
+                soundManager.play(TRSoundInstances.GRAVITY_LOOP.setPlayer(player).setLevel(targetLevel));
+            }
+        }
+    }
+    /** Handle when to trigger the looping sounds to start playing. This is not a duplicate of the logic in the LoopingSound implementation. Here we are only defining when we should start or continue playing the sound*/
+    private static void handleTardisLoopingSounds(TardisClientData clientData, Player player, Level targetLevel){
 
+        boolean isThisTardis = clientData.getLevelKey() == targetLevel.dimension();
+
+        SoundManager soundManager = Minecraft.getInstance().getSoundManager();
+
+        if (isInArsArea(player.blockPosition())) {
+            if (!soundManager.isActive(TRSoundInstances.ARS_HUMMING)) {
+                soundManager.play(TRSoundInstances.ARS_HUMMING.setPlayer(player).setLevel(targetLevel));
+            }
+        }
+
+        //Play the Tardis flight loop sound when the Tardis is in flight but not taking off or landing or crashing, to minimise sound overlap
+        if (isThisTardis && !clientData.isTakingOff() && !clientData.isLanding() && !clientData.isCrashing() && clientData.isFlying()) {
+            if (!soundManager.isActive(TRSoundInstances.TARDIS_SINGLE_FLY)) {
+                TRSoundInstances.TARDIS_SINGLE_FLY.restartSoundPlaying(); //Explicity tell the LoopingSound to set its volume to a non-zero value so that the SoundEngine will play it again.
+                soundManager.play(TRSoundInstances.TARDIS_SINGLE_FLY.setPlayer(player).setLevel(targetLevel));
+            }
+        }
+
+        //Play hums, and use the dedicated HumSoundManager to stop and start sounds
+        HumEntry humEntry = clientData.getHumEntry();
+        if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
+            HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSoundEventId()), player, targetLevel);
+        }
+
+        //Hum ambient sounds
+        if (isThisTardis && targetLevel.getGameTime() % clientData.nextAmbientNoiseCall == 0) {
+            clientData.nextAmbientNoiseCall = targetLevel.random.nextInt(400, 2400);
+            List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
+            if (ambientSounds != null && !ambientSounds.isEmpty()) {
+                RandomSource randomSource = targetLevel.random;
+
+                ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
+                SoundEvent randomSoundEvent = SoundEvent.createVariableRangeEvent(randomSoundLocation);
+
+                QuickSimpleSound simpleSoundInstance = new QuickSimpleSound(randomSoundEvent, SoundSource.AMBIENT);
+                simpleSoundInstance.setVolume(0.3F);
+
+                ClientHelper.playAmbientSound(simpleSoundInstance, randomSource, 0.3f);
+
+            }
+        }
+
+        if (TRSoundInstances.shouldMinecraftMusicStop(soundManager)) {
+            Minecraft.getInstance().getMusicManager().stopPlaying();
+        }
+
+        //Interior Voice
+        if (isThisTardis && targetLevel.getGameTime() % clientData.nextVoiceAmbientCall == 0) {
+            clientData.nextVoiceAmbientCall = targetLevel.random.nextInt(6000, 36000);
+
+            RandomSource randomSource = targetLevel.random;
+            ClientHelper.playAmbientSound(TRSoundInstances.INTERIOR_VOICE, randomSource, 0.3f);
+        }
+    }
+
+    private static void handleScreenShake(TardisClientData clientData, Player player){
+        // Responsible for screen-shake. Not sure of a better solution at this point in time.
+
+        if (player.level().dimension() == clientData.getLevelKey()) {
+            if (clientData.isCrashing()) {
+                player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) *  0.5f);
+            } else {
+                if (clientData.isFlying()) {
+                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
+                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
+                }
+            }
+        }
+    }
+
+    /**
+     * Higher means more fog, lower means less fog
+     * @return 0 -> 1 float based off fog tick delta
+     */
+    public static float getFogTickDelta(BlockPos playerPosition) {
+        return TardisHelper.isInArsArea(playerPosition) ? 1f :  1f - (float) FOG_TICK_DELTA / (float) MAX_FOG_TICK_DELTA;
+    }
+
+    public static void tickFog(boolean hasFuel) {
+        if (!hasFuel && (FOG_TICK_DELTA <= MAX_FOG_TICK_DELTA) && (FOG_TICK_DELTA > 0)) {
+            FOG_TICK_DELTA--; // Fading in the fog
+            return;
+        }
+
+        if (hasFuel && (FOG_TICK_DELTA != MAX_FOG_TICK_DELTA)) {
+            FOG_TICK_DELTA++; // Fading out the fog
+            return;
+        }
+    }
+
+    private static void handleAestheticEffects(TardisClientData clientData, Level targetLevel){
+        boolean isThisTardis = clientData.getLevelKey() == targetLevel.dimension();
+
+        if (isThisTardis) {
+            tickFog(  clientData.getTardisState() < TardisLevelOperator.STATE_EYE_OF_HARMONY || clientData.getFuel() != 0);
+        }
+
+        if (isThisTardis && clientData.getTardisState() == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
+            double motionX = 0;
+            double motionY = 0.1 + targetLevel.random.nextFloat() / 2;
+            double motionZ = 0;
+            Vec3 position = new Vec3((double)1013 + 0.5 - 2 + targetLevel.random.nextInt(4), 71, (double)55 + 0.5- 2 + targetLevel.random.nextInt(4));
+            ClientHelper.playParticle((ClientLevel) targetLevel, ParticleTypes.CLOUD, position, motionX, motionY, motionZ);
+        }
+    }
 
 }

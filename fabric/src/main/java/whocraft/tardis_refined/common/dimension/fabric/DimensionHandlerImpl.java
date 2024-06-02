@@ -40,26 +40,6 @@ import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 public class DimensionHandlerImpl {
 
-    public static void loadLevels(ServerLevel serverLevel) {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        if (!file.exists()) return;
-
-        Reader reader = null;
-        try {
-            reader = Files.newBufferedReader(file.toPath());
-
-            JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
-            for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
-                TardisRefined.LOGGER.info("Attempting to load {}", dimension.getAsString());
-                DimensionHandler.getOrCreateInterior(serverLevel, new ResourceLocation(dimension.getAsString()));
-            }
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
-
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
         if (ModCompatChecker.immersivePortals()) {
