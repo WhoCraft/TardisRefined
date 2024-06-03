@@ -63,6 +63,8 @@ public class TardisRefined {
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncConsolePatternsMessage::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncShellPatternsMessage::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncHumsMessage::new);
+
+        TRARSStructurePieceRegistry.register();
     }
 
     /**
@@ -79,7 +81,7 @@ public class TardisRefined {
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
 
-        TRARSStructurePieceRegistry.register();
+
 
     }
 
