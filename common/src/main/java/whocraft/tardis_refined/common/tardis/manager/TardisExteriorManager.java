@@ -156,7 +156,7 @@ public class TardisExteriorManager extends BaseHandler {
         if (lastKnownLocationLevel == null) return;
         if (state.getBlock() instanceof ShellBaseBlock shellBaseBlock && state.hasProperty(REGEN)) { //Check if this is our shell block and that its type has a Regen block state
             BlockState updatedBlockState = state.setValue(ShellBaseBlock.REGEN, startRegen);
-            this.setOrUpdateExteriorBlock(this.operator, currentPosition, Optional.of(updatedBlockState), false);
+            this.setOrUpdateExteriorBlock(this.operator, currentPosition, Optional.of(updatedBlockState), !startRegen);
         }
     }
 
