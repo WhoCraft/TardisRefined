@@ -19,7 +19,7 @@ import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.hum.TardisHums;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
+import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -231,16 +231,17 @@ public class TardisLevelOperator{
             TardisNavLocation targetLocation = this.pilotingManager.getCurrentLocation();
             BlockPos exteriorPos = targetLocation.getPosition();
             ServerLevel targetLevel = targetLocation.getLevel();
-            Direction exteriorDirection = targetLocation.getDirection().getOpposite();
+            Direction targetDirection = targetLocation.getDirection().getOpposite();
 
             BlockPos teleportPos = exteriorPos;
 
             if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
                 teleportPos = exteriorShell.getExitPosition();
+                targetDirection = exteriorShell.getExitRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
             }
 
             TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, exteriorDirection, targetLevel);
+            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
 
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
         }
@@ -272,7 +273,7 @@ public class TardisLevelOperator{
             this.setDoorLocked(startRegen); //Set the exterior shell door to be locked.
 
             //Fetch a new instance of the Blockstate after we have applied the door closing and locking updates above.
-            //This is needed to ensure the LOCKED and OPEN blockstate properties on the Shell block are being kept
+            //This is needed to ensure the LOCKED and OPEN blockstate properties on the Shell block are being kept.
             BlockState blockStateAfterDoorUpdates = currentLevel.getBlockState(currentBlockPos);
 
             //Extra sanity check to ensure the player didn't rapidly replace the block at this position with another block.
@@ -291,11 +292,11 @@ public class TardisLevelOperator{
      * <br> Fires the CloseDoor/OpenDoor events*/
     public void setDoorClosed(boolean closeDoor) {
         TardisInternalDoor intDoor = getInternalDoor();
-
+        //Closed the internal door
         if (intDoor != null) {
             intDoor.setClosed(closeDoor);
         }
-
+        //Close the exterior shell door
         if (this.pilotingManager != null) {
             if (this.pilotingManager.getCurrentLocation() != null) {
                 this.exteriorManager.setDoorClosed(closeDoor);

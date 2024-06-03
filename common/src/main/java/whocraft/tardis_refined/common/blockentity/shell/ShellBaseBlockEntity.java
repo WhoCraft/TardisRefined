@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
@@ -24,7 +25,6 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
@@ -130,12 +130,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     @Override
-    public BlockPos getExitPosition() {
-        Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
-        return this.getBlockPos().offset(direction.getOpposite().getNormal());
-    }
-
-    @Override
     public DesktopTheme getAssociatedTheme() {
         return TardisDesktops.FACTORY_THEME;
     }
@@ -170,5 +164,46 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
             });
         }
+    }
+
+    @Override
+    public boolean isOpen() {
+        return this.getBlockState().getValue(ShellBaseBlock.OPEN);
+    }
+
+    @Override
+    public void setClosed(boolean closeDoor) {
+        this.getBlockState().setValue(ShellBaseBlock.OPEN, closeDoor);
+    }
+
+    @Override
+    public void onEntityExit(ServerEntity entity) {
+
+    }
+
+    @Override
+    public void setLocked(boolean locked) {
+        this.getBlockState().setValue(ShellBaseBlock.LOCKED, locked);
+    }
+
+    @Override
+    public boolean locked() {
+        return this.getBlockState().getValue(ShellBaseBlock.LOCKED);
+    }
+
+    @Override
+    public BlockPos getExitPosition() {
+        Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
+        return this.getBlockPos().offset(direction.getOpposite().getNormal());
+    }
+
+    @Override
+    public Direction getShellRotation() {
+        return this.getBlockState().getValue(ShellBaseBlock.FACING);
+    }
+
+    @Override
+    public Direction getExitRotation() {
+        return this.getBlockState().getValue(ShellBaseBlock.FACING).getOpposite();
     }
 }

@@ -23,10 +23,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
+import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.util.TRTeleporter;
-
-import java.util.List;
 
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 

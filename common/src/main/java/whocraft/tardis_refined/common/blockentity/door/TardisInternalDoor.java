@@ -18,10 +18,11 @@ public interface TardisInternalDoor {
     void setID(String id);
 
     boolean isOpen();
-    void setClosed(boolean state);
+    /** Source of truth logic for setting this Internal Door to be opened/closed. */
+    void setClosed(boolean closeDoor);
 
     BlockPos getDoorPosition();
-    /** Get the direction which we want the player to face for teleportation purposes.
+    /** Get the direction which we want the player to face when it is arrived at the internal door block, for teleportation purposes.
      * @implNote This should be the opposite facing of the internal door block*/
     BlockPos getEntryPosition();
     Direction getEntryRotation();

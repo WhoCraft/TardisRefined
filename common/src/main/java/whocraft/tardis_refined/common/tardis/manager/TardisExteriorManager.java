@@ -5,12 +5,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -19,7 +17,7 @@ import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.door.AbstractDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
+import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -29,7 +27,6 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 import java.util.Optional;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
-import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
 
 /**
  * External Shell data.
@@ -58,10 +55,10 @@ public class TardisExteriorManager extends BaseHandler {
             TardisNavLocation currentLocation = pilotingManager.getCurrentLocation();
             Level level = currentLocation.getLevel();
             BlockPos extPos = currentLocation.getPosition();
-            if (level.getBlockState(extPos) != null) {
-                BlockState extState = level.getBlockState(extPos);
-                if (extState.getBlock() instanceof ShellBaseBlock shellBlock) {
-                    level.setBlock(extPos, extState.setValue(LOCKED, locked), Block.UPDATE_ALL);
+            if (level.getBlockEntity(extPos) != null) {
+                BlockEntity extShellBlockEntity = level.getBlockEntity(extPos);
+                if (extShellBlockEntity instanceof ExteriorShell exteriorShell) {
+                    exteriorShell.setLocked(locked);
                 }
             }
         }
@@ -117,7 +114,7 @@ public class TardisExteriorManager extends BaseHandler {
 
 
     }
-
+    /** Sets the Exterior Shell to be opened or closed*/
     public void setDoorClosed(boolean closeDoor) {
 
         TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
@@ -127,8 +124,8 @@ public class TardisExteriorManager extends BaseHandler {
 
         // Get the exterior block.
         BlockEntity blockEntity = lastKnownLocationLevel.getBlockEntity(currentPosition.getPosition());
-        if (blockEntity instanceof AbstractDoorBlockEntity doorBlockEntity) {
-            doorBlockEntity.setClosed(closeDoor);
+        if (blockEntity instanceof ExteriorShell exteriorShell) {
+            exteriorShell.setClosed(closeDoor);
         }
     }
 
