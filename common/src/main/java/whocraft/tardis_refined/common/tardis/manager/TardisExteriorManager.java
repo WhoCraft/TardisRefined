@@ -196,7 +196,7 @@ public class TardisExteriorManager extends BaseHandler {
         BlockState selectedBlockState = targetBlockState.orElse(newExteriorBlock);
 
         //Update the FACING, REGEN, LOCKED and WATERLOGGED blockstate property on the Shell block.
-        // Do not update the OPEN property, because that should be manually called when player interacts with the door, or the DoorControl updates the doors
+        //Do not update the OPEN property, because that should be manually called when player interacts with the door, or the DoorControl updates the doors
         BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
                 .setValue(ShellBaseBlock.REGEN, false)
                 .setValue(LOCKED, this.locked)
