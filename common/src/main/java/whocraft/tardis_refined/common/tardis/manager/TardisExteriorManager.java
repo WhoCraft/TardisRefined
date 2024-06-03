@@ -195,11 +195,10 @@ public class TardisExteriorManager extends BaseHandler {
         //If the supplied blockstate is empty, utilise a new blockstate. Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
         BlockState selectedBlockState = targetBlockState.orElse(newExteriorBlock);
 
-        //Update the FACING, REGEN, LOCKED and WATERLOGGED blockstate property on the Shell block.
-        //Do not update the OPEN property, because that should be manually called when player interacts with the door, or the DoorControl updates the doors
+        //Update the FACING, REGEN and WATERLOGGED blockstate property on the Shell block.
+        //Do not update the OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
         BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
                 .setValue(ShellBaseBlock.REGEN, false)
-                .setValue(LOCKED, this.locked)
                 .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
 
         if (updatedBlockState.hasProperty(GlobalShellBlock.LIT)){ //Special logic to account for RootedShellBlock not having the LIT blockstate property

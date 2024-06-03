@@ -74,7 +74,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         if (this.TARDIS_ID == null) {
-            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (could this be an invalid block?) [" + this.getBlockPos().toShortString() + "]");
+            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
             return;
         }
 
@@ -99,7 +99,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos externalShellPos, Entity entity) {
         if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
             if (this.TARDIS_ID == null) {
-                TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (could this be an invalid block?) [" + externalShellPos.toShortString() + "]");
+                TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (Invalid block or not terraformed yet?) [" + externalShellPos.toShortString() + "]");
                 return;
             }
             ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.location());
