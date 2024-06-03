@@ -190,7 +190,7 @@ public class TardisLevelOperator{
         if (this.level instanceof ServerLevel targetServerLevel) {
 
             BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
-            Direction doorDirection = internalDoor != null ? internalDoor.getDoorRotation() : entity.getDirection();
+            Direction doorDirection = internalDoor != null ? internalDoor.getEntryRotation() : entity.getDirection();
 
             TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
             TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
@@ -228,10 +228,10 @@ public class TardisLevelOperator{
 
         if (this.pilotingManager.getCurrentLocation() != null) {
 
-            TardisNavLocation targetLocation = this.pilotingManager.getCurrentLocation();
-            BlockPos exteriorPos = targetLocation.getPosition();
-            ServerLevel targetLevel = targetLocation.getLevel();
-            Direction targetDirection = targetLocation.getDirection().getOpposite();
+            TardisNavLocation currentLocation = this.pilotingManager.getCurrentLocation();
+            BlockPos exteriorPos = currentLocation.getPosition();
+            ServerLevel targetLevel = currentLocation.getLevel();
+            Direction targetDirection = currentLocation.getDirection().getOpposite();
 
             BlockPos teleportPos = exteriorPos;
 
@@ -244,9 +244,10 @@ public class TardisLevelOperator{
             TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
 
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     /** Unified logic to update blockstates and data

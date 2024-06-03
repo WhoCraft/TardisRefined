@@ -123,7 +123,7 @@ public class TardisHelper {
 
             BlockPos destinationPos = destinationLocation.getPosition();
             ServerLevel destinationLevel = destinationLocation.getLevel();
-            Direction destinationDirection = destinationLocation.getDirection().getOpposite(); //Use the opposite facing of the destination so that when teleported, the entity faces away from the doorway
+            Direction destinationDirection = destinationLocation.getDirection(); //Do not use the opposite facing of the destination, we will handle the correct facing outside of this method.
 
             Direction sourceDirection = sourceLocation.getDirection();
 

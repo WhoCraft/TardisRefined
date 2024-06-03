@@ -15,4 +15,10 @@ public class RootShellDoorBlockEntity extends InternalDoorBlockEntity {
         // Left blank to remove parent functionality.
     }
 
+
+    @Override
+    public boolean isOpen() {
+        return true; //This needs to be always true so that it matches the visual look of the door having a "hole" to teleport the player through
+    }
+
 }
