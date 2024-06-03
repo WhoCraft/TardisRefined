@@ -13,6 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -109,7 +110,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public boolean onRightClick(BlockState blockState, ItemStack stack, Level level, BlockPos blockPos, Player player) {
 
-        // We do not want interactions if the TARDIS is in Flight
+        // We do not want interactions if the TARDIS is regenerating itself
         if (blockState.getValue(ShellBaseBlock.REGEN)) {
             return false;
         }
@@ -123,9 +124,8 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 TardisPilotingManager tardisPilotingManager = tardisLevelOperator.getPilotingManager();
                 AestheticHandler aestheticHandler = tardisLevelOperator.getAestheticHandler();
                 TardisExteriorManager exteriorManager = tardisLevelOperator.getExteriorManager();
-                TardisInternalDoor internalDoor = tardisLevelOperator.getInternalDoor();
 
-                // We do not want interactions in Flight
+                // We do not want interactions if the Tardis is still taking off or landing
                 if (tardisPilotingManager.isInFlight()) return false;
 
                 // Shearing the TARDIS
@@ -139,15 +139,14 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 boolean validKey = KeyItem.keychainContains(stack, TARDIS_ID);
                 if (validKey) {
                     boolean locked = !exteriorManager.locked();
-                    exteriorManager.setLocked(locked);
-                    internalDoor.setLocked(locked);
+                    tardisLevelOperator.setDoorLocked(locked);
                     tardisLevelOperator.setDoorClosed(locked);
                     return true;
                 }
 
-                if(!exteriorManager.locked()){
-                    level.setBlock(blockPos, blockState.cycle(GlobalShellBlock.OPEN), Block.UPDATE_ALL);
-                    tardisLevelOperator.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
+                if(!exteriorManager.locked()){ //If the Tardis thinks it is not locked, open this shell's door
+                    level.setBlock(blockPos, blockState.cycle(GlobalShellBlock.OPEN), Block.UPDATE_ALL); //Cycle the door to open/closed
+                    tardisLevelOperator.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN)); //Now update both the internal door and re-update the external shell for good measure too.
                     return true;
                 }
             }
@@ -157,7 +156,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public void sendUpdates() {
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), Block.UPDATE_ALL);
         setChanged();
     }
 

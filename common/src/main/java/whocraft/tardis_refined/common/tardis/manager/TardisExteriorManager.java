@@ -38,11 +38,11 @@ public class TardisExteriorManager extends BaseHandler {
     private double fuelForShellChange = 15; // Amount of fuel required to change the shell
 
     private final TardisLevelOperator operator;
-
+    /** Determine if the Tardis's doors, no matter the external shell or internal door, should be locked*/
     public boolean locked() {
         return this.locked;
     }
-
+    /** Update the external shell block's locked property so that players cannot enter it without a synced Key item*/
     public void setLocked(boolean locked) {
 
         TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
@@ -164,12 +164,17 @@ public class TardisExteriorManager extends BaseHandler {
         //Force load target chunk
         targetLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly place block
 
-        this.setOrUpdateExteriorBlock(operator, location, Optional.empty());
+        this.placeExteriorBlockForLanding(operator, location);
 
         //Un-force load target chunk
         targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
 
         this.isLanding = true;
+    }
+
+    /** Convenience method to place the exterior block when the Tardis is landing */
+    public void placeExteriorBlockForLanding(TardisLevelOperator operator, TardisNavLocation location){
+        this.setOrUpdateExteriorBlock(operator, location, Optional.empty());
     }
 
     /** Common logic to set or update the exterior shell block. This is needed to ensure we preserve data on the exterior shell such as Shell Patterns.
@@ -187,11 +192,14 @@ public class TardisExteriorManager extends BaseHandler {
         ServerLevel targetLevel = location.getLevel();
         BlockPos targetLocation = location.getPosition();
         //Check the target location and update the existing blockstate if needed. Otherwise, utilise a new blockstate instance of the exterior block
+        //New instance of an exterior block is needed for landing the Tardis
         BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState();
 
         //If the supplied blockstate is empty, utilise a new blockstate. Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
         BlockState selectedBlockState = targetBlockState.orElse(newExteriorBlock);
 
+        //Update the FACING, REGEN, LOCKED and WATERLOGGED blockstate property on the Shell block.
+        // Do not update the OPEN property, because that should be manually called when player interacts with the door, or the DoorControl updates the doors
         BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
                 .setValue(ShellBaseBlock.REGEN, false)
                 .setValue(LOCKED, this.locked)

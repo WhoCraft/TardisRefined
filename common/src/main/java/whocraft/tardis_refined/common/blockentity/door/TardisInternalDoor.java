@@ -21,7 +21,8 @@ public interface TardisInternalDoor {
     void setClosed(boolean state);
 
     BlockPos getDoorPosition();
-
+    /** Get the direction which we want the player to face for teleportation purposes.
+     * @implNote This should be the opposite facing of the internal door block*/
     BlockPos getEntryPosition();
     Direction getEntryRotation();
 
@@ -29,9 +30,11 @@ public interface TardisInternalDoor {
     Direction getDoorRotation();
 
     void onEntityExit(ServerEntity entity);
-
+    /** Sets the internal door to be locked*/
     void setLocked(boolean locked);
-
+    /** Determines if this particular door block thinks it is locked or not.
+     * <br> When multiple internal doors are placed inside a Tardis dimension, and the player interacts on a door that is not the main door, the TardisExteriorManager may still be tracking the previous door's data
+     * <br> Hence the ExteriorManager will need to check this door's local value.*/
     boolean locked();
     void onAttemptEnter(BlockState blockState, Level level, BlockPos doorPos, Entity entity);
 

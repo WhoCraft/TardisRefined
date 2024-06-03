@@ -251,27 +251,39 @@ public class TardisLevelOperator{
     /** Unified logic to update blockstates and data
      *
      * @param startRegen - True if we should mark the Tardis is regenerating itself.
+     * @return True if successfully triggered, false if failed
      */
-    public void triggerRegenState(boolean startRegen) {
+    public boolean triggerRegenState(boolean startRegen) {
 
         TardisPilotingManager pilotingManager = this.getPilotingManager();
         if (pilotingManager == null) {
-            return;
+            return false;
         }
 
         TardisNavLocation currentPosition = this.getPilotingManager().getCurrentLocation();
-        if(currentPosition == null) return;
-        BlockPos lastKnownLocationPosition = currentPosition.getPosition();
-        ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
+        if(currentPosition == null) return false;
+        BlockPos currentBlockPos = currentPosition.getPosition();
+        ServerLevel currentLevel = currentPosition.getLevel();
 
-        BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocationPosition);
-        if (lastKnownLocationLevel == null) return;
+        BlockState state = currentLevel.getBlockState(currentBlockPos);
+        if (currentLevel == null) return false;
         if (state.getBlock() instanceof ShellBaseBlock shellBaseBlock && state.hasProperty(REGEN)) { //Check if this is our shell block and that its type has a Regen block state
             this.setDoorClosed(startRegen); //Set the door closed. Must call this instead of simply updating the blockstate because it updates the internal door too.
             this.setDoorLocked(startRegen); //Set the exterior shell door to be locked.
-            BlockState updatedBlockState = state.setValue(ShellBaseBlock.REGEN, startRegen); //Set the block to be in a regenerating state
-            this.getExteriorManager().setOrUpdateExteriorBlock(this, currentPosition, Optional.of(updatedBlockState));
+
+            //Fetch a new instance of the Blockstate after we have applied the door closing and locking updates above.
+            //This is needed to ensure the LOCKED and OPEN blockstate properties on the Shell block are being kept
+            BlockState blockStateAfterDoorUpdates = currentLevel.getBlockState(currentBlockPos);
+
+            //Extra sanity check to ensure the player didn't rapidly replace the block at this position with another block.
+            //Unlikely, but you never know what players are capable of.
+            if (blockStateAfterDoorUpdates.hasProperty(ShellBaseBlock.REGEN)){
+                BlockState updatedBlockState = blockStateAfterDoorUpdates.setValue(ShellBaseBlock.REGEN, startRegen); //Set the block to be in a regenerating state
+                this.getExteriorManager().setOrUpdateExteriorBlock(this, currentPosition, Optional.of(updatedBlockState));
+                return true;
+            }
         }
+        return false;
     }
 
     /** Unified logic to close or open a door
@@ -310,7 +322,9 @@ public class TardisLevelOperator{
 
         if (this.pilotingManager != null) {
             if (this.pilotingManager.getCurrentLocation() != null) {
-                this.exteriorManager.setLocked(lockDoor);
+                if (this.exteriorManager != null){
+                    this.exteriorManager.setLocked(lockDoor);
+                }
             }
         }
         //After locking/unlocking both exterior and interior doors, fire the events

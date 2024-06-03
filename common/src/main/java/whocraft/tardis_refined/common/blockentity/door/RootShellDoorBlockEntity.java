@@ -15,10 +15,4 @@ public class RootShellDoorBlockEntity extends InternalDoorBlockEntity {
         // Left blank to remove parent functionality.
     }
 
-
-    @Override
-    public boolean isOpen() {
-        return true;
-    }
-
 }

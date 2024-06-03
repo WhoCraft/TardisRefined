@@ -115,11 +115,12 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
             // we know that in this instance the serverlevel has a capability.
             TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
                 if (cap.getInternalDoor() != door) {
-                    cap.setInternalDoor(door);
+                    cap.setInternalDoor(door); //Set the main door and also tell this door block that it is the main door.
                 }
                 if(player.isShiftKeyDown() && !cap.getPilotingManager().isInFlight()) {
-                    cap.getExteriorManager().setLocked(!door.locked());
-                    door.setLocked(!door.locked());
+                    /*When multiple internal doors are in a Tardis, and the player is locking a different door, use the door block's data to update the Tardis' data */
+                    cap.getExteriorManager().setLocked(!door.locked()); //Tell the Tardis that the door is locked
+                    door.setLocked(!door.locked()); //Also update the door block itself
                     cap.setDoorClosed(true);
                     return;
                 }

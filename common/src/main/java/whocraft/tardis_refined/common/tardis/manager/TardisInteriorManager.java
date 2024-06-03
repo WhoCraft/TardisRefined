@@ -360,12 +360,13 @@ public class TardisInteriorManager extends TickableHandler {
             }
 
             if (level.players().isEmpty()) {
-                this.operator.triggerRegenState(true);
-                TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
-                this.generateDesktop(this.preparedTheme);
+                if (this.operator.triggerRegenState(true)){ //Make sure we actually triggered the regen state before thinking we are good to go
+                    TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
+                    this.generateDesktop(this.preparedTheme);
 
-                this.isWaitingToGenerate = false;
-                this.isGeneratingDesktop = true;
+                    this.isWaitingToGenerate = false;
+                    this.isGeneratingDesktop = true;
+                }
             }
         }
 
@@ -376,8 +377,8 @@ public class TardisInteriorManager extends TickableHandler {
             }
 
             if (interiorGenerationCooldown == 0) {
-                this.operator.triggerRegenState(false);
-                this.isGeneratingDesktop = false;
+                if (this.operator.triggerRegenState(false)) //Make sure we actually triggered the regen state before saying we are good to go.
+                   this.isGeneratingDesktop = false;
             }
 
             if (level.getGameTime() % 60 == 0) {

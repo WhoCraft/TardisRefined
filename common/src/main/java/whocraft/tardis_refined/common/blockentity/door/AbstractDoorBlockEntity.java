@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -23,8 +24,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class AbstractDoorBlockEntity extends BlockEntity implements TardisInternalDoor {
-
-    private boolean isLocked = false;
     private String uuid_id;
     private boolean isMainDoor = false;
 
@@ -37,7 +36,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
     @Override
     public boolean isMainDoor() {
-        return isMainDoor;
+        return this.isMainDoor;
     }
 
     @Override
@@ -101,13 +100,18 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
     @Override
     public void setLocked(boolean locked) {
-        this.isLocked = locked;
+        BlockState blockState = this.getLevel().getBlockState(getDoorPosition());
+        if (blockState.getBlock() instanceof InternalDoorBlock){
+            Level currentLevel = getLevel();
+            currentLevel.setBlock(this.getDoorPosition(), blockState.setValue(InternalDoorBlock.LOCKED, locked), Block.UPDATE_CLIENTS);
+            currentLevel.playSound(null, getDoorPosition(), locked ? BlockSetType.IRON.doorClose() : BlockSetType.IRON.doorOpen(), SoundSource.BLOCKS, 1, locked ? 1.4F : 1F);
+        }
         this.setChanged();
     }
 
     @Override
     public boolean locked() {
-        return isLocked;
+        return this.getBlockState().getValue(InternalDoorBlock.LOCKED);
     }
 
     public TardisLevelOperator getOperator() {
@@ -129,7 +133,6 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
         compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
         compoundTag.putString(NbtConstants.DOOR_ID, this.uuid_id);
-        compoundTag.putBoolean(NbtConstants.DOOR_IS_LOCKED, this.isLocked);
     }
 
     @Override
@@ -137,7 +140,6 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
         super.load(compoundTag);
         this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
         this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
-        this.isLocked = compoundTag.getBoolean(NbtConstants.DOOR_IS_LOCKED);
     }
 
     @Override
