@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
@@ -173,7 +174,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void setClosed(boolean closeDoor) {
-        this.getBlockState().setValue(ShellBaseBlock.OPEN, closeDoor);
+        BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
+        if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
+            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.OPEN, closeDoor), Block.UPDATE_CLIENTS);
+            this.setChanged();
+        }
     }
 
     @Override
@@ -183,7 +188,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void setLocked(boolean locked) {
-        this.getBlockState().setValue(ShellBaseBlock.LOCKED, locked);
+        BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
+        if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
+            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.LOCKED, locked), Block.UPDATE_CLIENTS);
+            this.setChanged();
+        }
     }
 
     @Override
