@@ -79,8 +79,7 @@ public class TardisHelper {
 
                 //Set the shell with this level
                 shellBaseBlockEntity.setTardisId(generatedLevelKey);
-                shellBaseBlockEntity.setShellTheme(shellTheme);
-                shellBaseBlockEntity.setPattern(ShellPatterns.getPatternsForTheme(shellTheme).get(0));
+
                 //Create the Level on demand which will create our capability
                 ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, shellBaseBlockEntity.getTardisId().location());
 
@@ -100,6 +99,7 @@ public class TardisHelper {
                         intManager.openTheEye(true);
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                         generated.set(true);
+                        tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), false);
                     }
                 });
 

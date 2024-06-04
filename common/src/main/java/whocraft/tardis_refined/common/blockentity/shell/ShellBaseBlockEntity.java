@@ -176,7 +176,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void setClosed(boolean closeDoor) {
         BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
         if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
-            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.OPEN, closeDoor), Block.UPDATE_CLIENTS);
+            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.OPEN, !closeDoor), Block.UPDATE_ALL);
             this.setChanged();
         }
     }
@@ -190,7 +190,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void setLocked(boolean locked) {
         BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
         if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
-            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.LOCKED, locked), Block.UPDATE_CLIENTS);
+            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.LOCKED, locked), Block.UPDATE_ALL);
             this.setChanged();
         }
     }

@@ -48,8 +48,7 @@ public class ToggleDoorControl extends Control {
         if (!operator.getLevel().isClientSide()) {
             //Update both internal and exterior shell doors with the value from the exterior manager, which is the Tardis' current data
             if (operator.getExteriorManager() != null)
-                operator.getExteriorManager().setLocked(!operator.getExteriorManager().locked());
-
+                operator.setDoorLocked(!operator.getExteriorManager().locked());
             operator.setDoorClosed(true);
             return true;
         }

@@ -119,13 +119,12 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
                 }
                 if(player.isShiftKeyDown() && !cap.getPilotingManager().isInFlight()) {
                     /*When multiple internal doors are in a Tardis, and the player is locking a different door, use the door block's data to update the Tardis' data */
-                    cap.getExteriorManager().setLocked(!door.locked()); //Tell the Tardis that the door is locked
-                    door.setLocked(!door.locked()); //Also update the door block itself
-                    cap.setDoorClosed(true);
+                    cap.setDoorLocked(!door.locked()); //Tell the Tardis that the door is locked
+                    cap.setDoorClosed(true); //Tell the Tardis that the door should be closed
                     return;
                 }
                 if (!cap.getPilotingManager().isInFlight() && !door.locked()) {
-                    cap.setDoorClosed(!this.isOpen());
+                    cap.setDoorClosed(door.isOpen()); //Tell the Tardis that the door should be closed if currently open, and should be open if currently closed.
                 }
             });
         }
