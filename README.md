@@ -54,6 +54,15 @@ We welcome contributions to TARDIS Refined. If you have an idea for a new featur
 </table>
 
 With special thanks to Commoble, Lucraft, starray1000000, The Judge, Monsterwaill and Sea Pickle<br/><hr/>
+
+Additionally, thanks to the additional builders who contributed desktops:
+"Radiance" by Getsuga Tenno
+"Watchface" by t___cup
+"Vapor" by Tank
+"Newwave" by Muffled
+
+Other builds made by members of the team. 
+
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
 ## Immersive Portals Support
