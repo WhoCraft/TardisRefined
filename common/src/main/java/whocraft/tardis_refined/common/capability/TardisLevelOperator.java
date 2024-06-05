@@ -270,7 +270,7 @@ public class TardisLevelOperator{
         BlockState state = currentLevel.getBlockState(currentBlockPos);
         if (currentLevel == null) return false;
         if (state.getBlock() instanceof ShellBaseBlock shellBaseBlock && state.hasProperty(REGEN)) { //Check if this is our shell block and that its type has a Regen block state
-            this.setDoorClosed(startRegen); //Set the door closed. Must call this instead of simply updating the blockstate because it updates the internal door too.
+            this.setDoorClosed(true); //Set the door closed. Must call this instead of simply updating the blockstate because this way we update the internal door too.
             this.setDoorLocked(startRegen); //Set the exterior shell door to be locked.
 
             //Fetch a new instance of the Blockstate after we have applied the door closing and locking updates above.

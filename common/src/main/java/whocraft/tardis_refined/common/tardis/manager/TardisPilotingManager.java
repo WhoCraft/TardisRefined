@@ -227,7 +227,7 @@ public class TardisPilotingManager extends TickableHandler {
 
                     // If this tick was enough to push us over.
                     if (distanceCovered >= flightDistance) {
-                        if (distanceCovered >= flightDistance && this.currentConsole != null) {
+                        if (this.currentConsole != null) {
                             level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
                             this.operator.getFlightDanceManager().stopDancing();
                         }
@@ -472,7 +472,7 @@ public class TardisPilotingManager extends TickableHandler {
             this.fastReturnLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
 
-            TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
+            TardisNavLocation targetPosition = this.getTargetLocation();
             TardisNavLocation lastKnownLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
             // Do we not have a last known location?
