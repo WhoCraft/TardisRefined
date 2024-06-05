@@ -10,6 +10,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -174,9 +176,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void setClosed(boolean closeDoor) {
-        BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
+        BlockPos blockPos = this.getBlockPos();
+        BlockState blockState = this.getLevel().getBlockState(blockPos);
         if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
-            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.OPEN, !closeDoor), Block.UPDATE_ALL);
+            this.getLevel().setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, !closeDoor), Block.UPDATE_ALL);
+            this.getLevel().playSound(null, blockPos, closeDoor ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, closeDoor ? 1.4F : 1F);
             this.setChanged();
         }
     }

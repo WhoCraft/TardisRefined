@@ -125,7 +125,7 @@ public class AestheticHandler extends BaseHandler {
                 // Create a new Global Shell Door instance and copy over all attributes from the existing shell
                 tardisOperator.getLevel().setBlock(internalDoorPos,
                         TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.OPEN, state.getValue(RootedShellBlock.OPEN))
-                                .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), 2);
+                                .setValue(GlobalShellBlock.FACING, state.getValue(RootedShellBlock.FACING)), Block.UPDATE_ALL);
 
                 var potentialDoor = tardisOperator.getLevel().getBlockEntity(internalDoorPos);
                 if (potentialDoor instanceof GlobalDoorBlockEntity doorBlockEntity) {
