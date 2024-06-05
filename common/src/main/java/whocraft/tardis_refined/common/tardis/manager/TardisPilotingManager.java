@@ -175,9 +175,8 @@ public class TardisPilotingManager extends TickableHandler {
     public void tick(ServerLevel level) {
 
         if (targetLocation == null) {
-            var location = currentLocation;
-            if (targetLocation != null) {
-                this.targetLocation = location;
+            if (this.currentLocation != null) { //If the target location is somehow null and the current location isn't null, set target location to the current location
+                this.targetLocation = currentLocation;
             } else {
                 this.targetLocation = TardisNavLocation.ORIGIN;
             }
