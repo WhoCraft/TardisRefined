@@ -59,7 +59,7 @@ public class AntiGravityBlock extends Block {
             player.swing(interactionHand, true);
 
             level.setBlockAndUpdate(blockPos, blockState.setValue(SPACE, newSpace));
-            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
         }
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
