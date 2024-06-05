@@ -71,17 +71,19 @@ public class GlobalDoorBlock extends InternalDoorBlock{
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (interactionHand == InteractionHand.MAIN_HAND) {
-            if (level instanceof ServerLevel serverLevel) {
-                if (TardisLevelOperator.get(serverLevel).isPresent()) {
-                    if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
-                        entity.onRightClick(blockState, entity, player);
-                        return InteractionResult.SUCCESS;
+            if (!player.level().isClientSide()) {
+                if (level instanceof  ServerLevel serverLevel) {
+                    if (TardisLevelOperator.get(serverLevel).isPresent()) {
+                        if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
+                            entity.onRightClick(blockState, entity, player);
+                            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+                        }
                     }
                 }
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
     }
 
     @Override

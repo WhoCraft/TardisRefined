@@ -87,19 +87,20 @@ public class GlobalShellBlock extends ShellBaseBlock{
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        if (!player.level().isClientSide()) {
+            if (level instanceof ServerLevel serverLevel) {
 
-        if (level instanceof ServerLevel serverLevel) {
+                if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
+                    if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
+                        ItemStack itemStack = player.getItemInHand(interactionHand);
+                        entity.onRightClick(blockState, itemStack, level, blockPos, player);
+                        return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+                    }
 
-            if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
-                if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
-                    ItemStack itemStack = player.getItemInHand(interactionHand);
-                    entity.onRightClick(blockState, itemStack, level, blockPos, player);
-                    return InteractionResult.SUCCESS;
                 }
-
             }
         }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
     }
 }

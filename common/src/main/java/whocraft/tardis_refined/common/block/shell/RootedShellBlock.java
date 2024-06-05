@@ -50,31 +50,28 @@ public class RootedShellBlock extends ShellBaseBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if(!player.getMainHandItem().is(Items.SHEARS)) {
-
-            if (!blockState.getValue(OPEN)) {
-                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.ROOT_PLANT_CUT_OPEN), true);
-                level.playSound(player, blockPos, SoundEvents.AZALEA_LEAVES_HIT, SoundSource.BLOCKS, 1, 0.75f + level.getRandom().nextFloat());
-                return InteractionResult.SUCCESS;
+        if (!player.level().isClientSide()){
+            if(!player.getMainHandItem().is(Items.SHEARS)) {
+                if (!blockState.getValue(OPEN)) { //If there are roots covering the entrance, tell the player
+                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.ROOT_PLANT_CUT_OPEN), true);
+                    level.playSound(player, blockPos, SoundEvents.AZALEA_LEAVES_HIT, SoundSource.BLOCKS, 1, 0.75f + level.getRandom().nextFloat());
+                    return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for serverside side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+                }
+                return InteractionResult.FAIL; //Return fail result if the entrance is now opened, so that we don't play the message and exit this method early.
             }
-
-
-            return InteractionResult.FAIL;
         }
-
-
-
+        //If above logic for shearing doesn't return fail, start setting up the Tardis dimension
         this.setUpTardis(blockState, level, blockPos);
 
-        if (player != null) {
-
-            player.getMainHandItem().hurtAndBreak(1, player, arg2 -> arg2.broadcastBreakEvent(interactionHand));
-            level.playSound(player, player.blockPosition(), SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0f, 1.0f);
-            level.playSound(player, player.blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1.0f, 1.0f);
+        if(!player.level().isClientSide()){
+            if (player != null) {
+                player.getMainHandItem().hurtAndBreak(1, player, entity -> entity.broadcastBreakEvent(interactionHand));
+                level.playSound(player, player.blockPosition(), SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1.0f, 1.0f);
+                level.playSound(player, player.blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1.0f, 1.0f);
+            }
         }
 
-
-        return InteractionResult.SUCCESS; //Prevents processing the ShellBaseBlockEntity generating another UUID and causing a second dimension to be created
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) which returns InteractionResult.SUCCESS, which prevents the ShellBaseBlockEntity generating another UUID and causing a second dimension to be created.
     }
 
 
