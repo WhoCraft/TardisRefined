@@ -872,13 +872,13 @@ public class TardisPilotingManager extends TickableHandler {
             ResourceLocation oldTheme = consoleBlockEntity.theme();
             ConsolePattern oldPattern = consoleBlockEntity.pattern();
 
-            level.setBlock(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true), Block.UPDATE_ALL);
-            GlobalConsoleBlockEntity updated = (GlobalConsoleBlockEntity) level.getBlockEntity(this.currentConsole.getBlockPos());
+            level.setBlock(this.currentConsoleBlockPos, this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true), Block.UPDATE_ALL);
+            GlobalConsoleBlockEntity updated = (GlobalConsoleBlockEntity) level.getBlockEntity(this.currentConsoleBlockPos);
             updated.setConsoleTheme(oldTheme);
             updated.setPattern(oldPattern);
             updated.sendUpdates();
 
-            level.playSound(null, this.currentConsole.getBlockPos(), TRSoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
+            level.playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
 
         }
     }

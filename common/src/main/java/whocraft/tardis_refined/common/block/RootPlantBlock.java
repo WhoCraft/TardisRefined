@@ -156,11 +156,7 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
 
         if(level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS){
             TardisLevelOperator.get(serverLevel).ifPresent(TardisHelper::playCloisterBell);
-            level.removeBlock(blockPos, false);
-            ItemEntity item = new ItemEntity(EntityType.ITEM, level);
-            item.setItem(new ItemStack(TRBlockRegistry.ROOT_PLANT_BLOCK.get()));
-            item.setPos(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-            level.addFreshEntity(item);
+            serverLevel.destroyBlock(blockPos, true); //Use Level#destroyBlock with boolean flag to TRUE so that it both destroys the block and drops its resources based off its loot table, which is the source of truth.
             return;
         }
 

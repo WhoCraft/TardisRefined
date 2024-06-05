@@ -76,14 +76,14 @@ public class GlobalDoorBlock extends InternalDoorBlock{
                     if (TardisLevelOperator.get(serverLevel).isPresent()) {
                         if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
                             entity.onRightClick(blockState, entity, player);
-                            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+                            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
                         }
                     }
                 }
             }
         }
 
-        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 
     @Override
