@@ -2,7 +2,7 @@
   "argument.tardis_refined.desktop.invalid": "无效的控制室 ID %s",
   "argument.tardis_refined.shell.invalid": "无效的外观 ID %s",
   "argument.tardis_refined.upgrade.invalid": "无效的升级 ID %s",
-  "block.tardis_refined.air_lock_generator": "气锁生成器",
+  "block.tardis_refined.air_lock_generator": "气闸生成器",
   "block.tardis_refined.ars_egg": "ARS 蛋",
   "block.tardis_refined.ars_leaves": "ARS 树叶",
   "block.tardis_refined.ars_leaves_fence": "ARS 围栏",
