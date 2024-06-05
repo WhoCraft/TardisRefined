@@ -568,10 +568,6 @@ public class TardisPilotingManager extends TickableHandler {
 
             currentLocation = location;
 
-            if(currentConsole != null) {
-                level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
-            }
-
             exteriorManager.startLanding(operator, location);
 
             exteriorManager.playSoundAtShell(TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
