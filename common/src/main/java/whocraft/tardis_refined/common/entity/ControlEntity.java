@@ -439,7 +439,7 @@ public class ControlEntity extends Entity {
     }
 
     private boolean handleLeftClick(Player player, ServerLevel serverLevel) {
-        if (TardisLevelOperator.get(serverLevel).isPresent()){
+        if (!TardisLevelOperator.get(serverLevel).isPresent()){
             return false;
         }
         else {
@@ -463,7 +463,7 @@ public class ControlEntity extends Entity {
     }
 
     private boolean handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand) {
-        if (TardisLevelOperator.get(serverLevel).isPresent()){
+        if (!TardisLevelOperator.get(serverLevel).isPresent()){
             return false;
         }
         else {
