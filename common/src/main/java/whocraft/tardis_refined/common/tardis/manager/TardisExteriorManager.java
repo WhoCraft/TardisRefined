@@ -189,16 +189,18 @@ public class TardisExteriorManager extends BaseHandler {
         ServerLevel targetLevel = location.getLevel();
         BlockPos targetLocation = location.getPosition();
         //Check the target location and update the existing blockstate if needed. Otherwise, utilise a new blockstate instance of the exterior block
+        //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
         //New instance of an exterior block is needed for landing the Tardis
-        BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState();
+        BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
+                .setValue(ShellBaseBlock.REGEN, false)
+                .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
 
         //If the supplied blockstate is empty, utilise a new blockstate. Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
         BlockState selectedBlockState = targetBlockState.orElse(newExteriorBlock);
 
-        //Update the FACING, REGEN and WATERLOGGED blockstate property on the Shell block.
-        //Do not update the OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
+        //Update the FACING and WATERLOGGED blockstate property on the Shell block.
+        //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
         BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
-                .setValue(ShellBaseBlock.REGEN, false)
                 .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
 
         if (updatedBlockState.hasProperty(GlobalShellBlock.LIT)){ //Special logic to account for RootedShellBlock not having the LIT blockstate property
