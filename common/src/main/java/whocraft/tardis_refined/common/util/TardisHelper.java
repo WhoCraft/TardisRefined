@@ -5,7 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +31,6 @@ import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -184,6 +185,28 @@ public class TardisHelper {
         }
 
         return false;
+    }
+
+    /** Common logic that we should apply to players if they happen to teleport to, respawn, or login to a Tardis
+     * <br> Ejecting players that happen to login to a Tardis dimension whilst the Tardis is still generating a desktop, we don't want them to suffocate*/
+    public static void handlePlayerJoinWorldEvents(ServerPlayer serverPlayer){
+        if (serverPlayer != null){
+            if (serverPlayer.serverLevel() != null){
+                ServerLevel playerLevel = serverPlayer.serverLevel();
+                if(TardisLevelOperator.get(playerLevel).isPresent()){
+                    TardisLevelOperator cap = TardisLevelOperator.get(playerLevel).get();
+
+                    //Handle ejecting players if they login to a Tardis dimension where the Tardis is in progress of generating a desktop
+                    if (cap.getInteriorManager().isGeneratingDesktop()){
+                        //Delay the force ejecting to account for the chunk not being fully loaded, which can happen in the player change dimension event.
+                        playerLevel.getServer().tell(new TickTask(10, () ->
+                                cap.forceEjectPlayer(serverPlayer)
+                        ));
+                    }
+
+                }
+            }
+        }
     }
 
 }

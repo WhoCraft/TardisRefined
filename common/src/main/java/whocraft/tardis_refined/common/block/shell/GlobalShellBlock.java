@@ -83,7 +83,8 @@ public class GlobalShellBlock extends ShellBaseBlock{
             if (t instanceof ShellBaseBlockEntity shellBaseBlockEntity) {
                 shellBaseBlockEntity.tick(level1, blockPos, blockState, shellBaseBlockEntity);
             }
-        };    }
+        };
+    }
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {

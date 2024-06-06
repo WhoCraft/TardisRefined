@@ -358,9 +358,11 @@ public class TardisInteriorManager extends TickableHandler {
             if (level.random.nextInt(100) == 0) {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
             }
-
+            //This check doesn't actually work for players that respawn, login or teleport to the Tardis dimension when the Tardis is waiting to generate because our tick method is being called at the start of the server tick.
+            //To mitigate the problem where players become stuck inside the stone and suffocate to death, we call TardisLevelOperator#ejectPlayer in the relevant Events.
             if (level.players().isEmpty()) {
                 if (this.operator.triggerRegenState(true)){ //Make sure we actually triggered the regen state before thinking we are good to go
+                    this.operator.forceEjectAllPlayers(); //Teleport all players to the exterior in case they still remain.
                     TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
                     this.generateDesktop(this.preparedTheme);
 

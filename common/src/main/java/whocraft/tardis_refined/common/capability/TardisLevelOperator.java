@@ -8,15 +8,20 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
@@ -24,10 +29,14 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ShellPattern;
+import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -250,6 +259,24 @@ public class TardisLevelOperator{
         return false;
     }
 
+    public void forceEjectAllPlayers(){
+        for (Player player : this.level.players()){
+            if (player instanceof ServerPlayer serverPlayer){
+                this.forceEjectPlayer(serverPlayer);
+            }
+        }
+    }
+
+    /** Helper to automatically teleport the player to the Tardis' current location
+     * <br> Used for emergency eject feature or to prevent players from remaining in the Tardis during desktop generaton*/
+    public boolean forceEjectPlayer(ServerPlayer player){
+        if (player != null) {
+            TardisNavLocation location = this.getPilotingManager().getCurrentLocation();
+            return this.exitTardis(player, location.getLevel(), location.getPosition(), location.getDirection(), true);
+        }
+        return false;
+    }
+
     /** Unified logic to update blockstates and data
      *
      * @param startRegen - True if we should mark the Tardis is regenerating itself.
@@ -270,7 +297,8 @@ public class TardisLevelOperator{
         BlockState state = currentLevel.getBlockState(currentBlockPos);
         if (currentLevel == null) return false;
         if (state.getBlock() instanceof ShellBaseBlock shellBaseBlock && state.hasProperty(REGEN)) { //Check if this is our shell block and that its type has a Regen block state
-            this.setDoorClosed(true); //Set the door closed. Must call this instead of simply updating the blockstate because this way we update the internal door too.
+            if (startRegen) //Only close the door if we are starting the regeneration process. Otherwise, don't update the door.
+                this.setDoorClosed(true); //Set the door closed. Must call this instead of simply updating the blockstate because this way we update the internal door too.
             this.setDoorLocked(startRegen); //Set the exterior shell door to be locked.
 
             //Fetch a new instance of the Blockstate after we have applied the door closing and locking updates above.
@@ -281,11 +309,58 @@ public class TardisLevelOperator{
             //Unlikely, but you never know what players are capable of.
             if (blockStateAfterDoorUpdates.hasProperty(ShellBaseBlock.REGEN)){
                 BlockState updatedBlockState = blockStateAfterDoorUpdates.setValue(ShellBaseBlock.REGEN, startRegen); //Set the block to be in a regenerating state
-                this.getExteriorManager().setOrUpdateExteriorBlock(this, currentPosition, Optional.of(updatedBlockState));
+                this.setOrUpdateExteriorBlock(currentPosition, Optional.of(updatedBlockState));
                 return true;
             }
         }
         return false;
+    }
+    /** Convenience method to use when we are going to update the exterior block but we are not setting up a new Tardis
+     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, boolean)}
+     * */
+    public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> targetBlockState){
+        setOrUpdateExteriorBlock(location, targetBlockState, false);
+    }
+
+    /** Common logic to set or update the exterior shell block. This is needed to ensure we preserve data on the exterior shell such as Shell Patterns.
+     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, boolean)}
+     * @param location - target position we are performing block updates on.
+     * @param targetBlockState - Optional value if we want to pass in a blockstate that will override a newly created blockstate
+     */
+    public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> targetBlockState, boolean setupTardis){
+        AestheticHandler aestheticHandler = this.getAestheticHandler();
+        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
+        ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
+        ShellPattern shellPattern = aestheticHandler.getShellTheme() != null ? aestheticHandler.shellPattern() : null;
+
+        ServerLevel targetLevel = location.getLevel();
+        BlockPos targetLocation = location.getPosition();
+        //Check the target location and update the existing blockstate if needed. Otherwise, utilise a new blockstate instance of the exterior block
+        //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
+        //New instance of an exterior block is needed for landing the Tardis
+        BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
+                .setValue(ShellBaseBlock.REGEN, false)
+                .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
+
+        //If the supplied blockstate is empty or we are setting up a Tardis for the first time, utilise a new blockstate. Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
+        BlockState selectedBlockState = setupTardis ? newExteriorBlock : targetBlockState.orElse(newExteriorBlock);
+
+        //Update the FACING and WATERLOGGED blockstate property on the Shell block.
+        //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
+        BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
+                .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
+
+        if (updatedBlockState.hasProperty(GlobalShellBlock.LIT)){ //Special logic to account for RootedShellBlock not having the LIT blockstate property
+            updatedBlockState.setValue(GlobalShellBlock.LIT, shellTheme.producesLight());
+        }
+
+
+        //Place the exterior block
+        targetLevel.setBlock(targetLocation, updatedBlockState, Block.UPDATE_ALL);
+        //Copy over important data points such as patterns, and update the internal doors
+        this.setShellTheme(theme, shellPattern.getThemeId(), setupTardis);
+
+        targetLevel.sendBlockUpdated(targetLocation, updatedBlockState, updatedBlockState, Block.UPDATE_CLIENTS);
     }
 
     /** Unified logic to close or open a door
@@ -339,7 +414,7 @@ public class TardisLevelOperator{
     }
 
     public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis) {
-        this.getAestheticHandler().setShellTheme(theme, shellPattern, setupTardis, this.getPilotingManager().getCurrentLocation());
+        this.getAestheticHandler().setShellTheme(theme, shellPattern, this.getPilotingManager().getCurrentLocation());
         tardisClientData.setShellTheme(theme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();
@@ -359,6 +434,9 @@ public class TardisLevelOperator{
         if (door != null) //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
     }
+    /** Sets up data and prepares the desktop theme for when the Tardis is generating for the first time.
+     * <br> DO NOT update the exterior/internal doors here, because door updating logic is unified in {@link TardisLevelOperator#triggerRegenState(boolean)}
+     * <br> We do not need to open the Tardis doors here because it is always being called in {@link whocraft.tardis_refined.common.block.shell.RootedShellBlock}*/
     public void setupInitialCave(ServerLevel shellServerLevel, BlockState shellBlockState, BlockPos shellBlockPos) {
         this.interiorManager.generateDesktop(TardisDesktops.DEFAULT_OVERGROWN_THEME);
 
@@ -366,8 +444,6 @@ public class TardisLevelOperator{
         TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);
         this.pilotingManager.setCurrentLocation(navLocation);
         this.pilotingManager.setTargetLocation(navLocation);
-
-        shellServerLevel.setBlock(shellBlockPos, shellBlockState.setValue(OPEN, true), Block.UPDATE_ALL);
 
         this.setInitiallyGenerated(true);
         this.setTardisState(TardisLevelOperator.STATE_CAVE);

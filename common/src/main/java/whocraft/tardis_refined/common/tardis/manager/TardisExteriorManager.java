@@ -161,7 +161,7 @@ public class TardisExteriorManager extends BaseHandler {
         //Force load target chunk
         targetLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly place block
 
-        this.placeExteriorBlockForLanding(operator, location);
+        this.placeExteriorBlockForLanding(location);
 
         //Un-force load target chunk
         targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
@@ -170,59 +170,8 @@ public class TardisExteriorManager extends BaseHandler {
     }
 
     /** Convenience method to place the exterior block when the Tardis is landing */
-    public void placeExteriorBlockForLanding(TardisLevelOperator operator, TardisNavLocation location){
-        this.setOrUpdateExteriorBlock(operator, location, Optional.empty());
-    }
-
-    /** Common logic to set or update the exterior shell block. This is needed to ensure we preserve data on the exterior shell such as Shell Patterns.
-     *
-     * @param operator - The TardisLevelOperator instance
-     * @param location - target position we are performing block updates on.
-     * @param targetBlockState - Optional value if we want to pass in a blockstate that will override a newly created blockstate
-     */
-    public void setOrUpdateExteriorBlock(TardisLevelOperator operator, TardisNavLocation location, Optional<BlockState> targetBlockState){
-        AestheticHandler aestheticHandler = operator.getAestheticHandler();
-        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
-        ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
-        ShellPattern shellPattern = aestheticHandler.getShellTheme() != null ? aestheticHandler.shellPattern() : null;
-
-        ServerLevel targetLevel = location.getLevel();
-        BlockPos targetLocation = location.getPosition();
-        //Check the target location and update the existing blockstate if needed. Otherwise, utilise a new blockstate instance of the exterior block
-        //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
-        //New instance of an exterior block is needed for landing the Tardis
-        BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
-                .setValue(ShellBaseBlock.REGEN, false)
-                .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
-
-        //If the supplied blockstate is empty, utilise a new blockstate. Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
-        BlockState selectedBlockState = targetBlockState.orElse(newExteriorBlock);
-
-        //Update the FACING and WATERLOGGED blockstate property on the Shell block.
-        //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
-        BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
-                .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
-
-        if (updatedBlockState.hasProperty(GlobalShellBlock.LIT)){ //Special logic to account for RootedShellBlock not having the LIT blockstate property
-            updatedBlockState.setValue(GlobalShellBlock.LIT, shellTheme.producesLight());
-        }
-
-
-        //Place the exterior block
-        targetLevel.setBlock(targetLocation, updatedBlockState, Block.UPDATE_ALL);
-        //Copy over important data points
-        if (targetLevel.getBlockEntity(targetLocation) instanceof GlobalShellBlockEntity globalShell) {
-            globalShell.setTardisId(operator.getLevel().dimension()); //DO NOT set the target dimension, otherwise the TARDIS_ID on the exterior will never be correct and key locking features will be broken
-            globalShell.setShellTheme(theme);
-
-            if (shellPattern != null) {
-                globalShell.setPattern(shellPattern);
-            }
-
-            globalShell.sendUpdates();
-
-            targetLevel.sendBlockUpdated(targetLocation, updatedBlockState, updatedBlockState, Block.UPDATE_CLIENTS);
-        }
+    public void placeExteriorBlockForLanding(TardisNavLocation location){
+        this.operator.setOrUpdateExteriorBlock(location, Optional.empty());
     }
 
 

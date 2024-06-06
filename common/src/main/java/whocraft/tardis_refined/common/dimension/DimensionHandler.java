@@ -113,8 +113,14 @@ public class DimensionHandler {
                 TardisRefined.LOGGER.info("Attempting to load {}", dimension.getAsString());
                 ResourceLocation id = new ResourceLocation(dimension.getAsString());
                 ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
-                if (getExistingLevel(serverLevel, levelKey) == null)
-                    DimensionHandler.getOrCreateInterior(serverLevel, id);
+                if (getExistingLevel(serverLevel, levelKey) == null) {
+                    TardisRefined.LOGGER.warn("Level {} not found! Creating new level instance", dimension.getAsString());
+                    if(DimensionHandler.getOrCreateInterior(serverLevel, id) != null)
+                        TardisRefined.LOGGER.warn("Successfully created and loaded new level {}", dimension.getAsString());
+                }
+                else{
+                    TardisRefined.LOGGER.info("Successfully loaded existing level {}", dimension.getAsString());
+                }
             }
 
         } catch (IOException e) {
