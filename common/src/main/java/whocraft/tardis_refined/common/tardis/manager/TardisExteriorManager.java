@@ -188,7 +188,7 @@ public class TardisExteriorManager extends BaseHandler {
         BlockPos lastKnownLocationPosition = currentPosition.getPosition();
         ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
         if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof ExteriorShell shellBaseBlockEntity) {
-            BlockPos landingArea = shellBaseBlockEntity.getExitPosition();
+            BlockPos landingArea = shellBaseBlockEntity.getTeleportPosition();
             if (lastKnownLocationLevel.getBlockState(landingArea).isAir()) {
                 return lastKnownLocationLevel.getBlockState(landingArea.above()).isAir();
             }

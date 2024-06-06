@@ -10,7 +10,7 @@ import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
 
 public abstract class Control {
     protected final ResourceLocation id;

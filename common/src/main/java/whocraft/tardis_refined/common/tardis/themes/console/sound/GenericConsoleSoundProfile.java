@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.themes.console.sound;
 
 import net.minecraft.sounds.SoundEvents;
+import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
 
 public class GenericConsoleSoundProfile extends ConsoleSoundProfile {
 

@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.themes.console.sound;
+package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.sounds.SoundEvent;
 

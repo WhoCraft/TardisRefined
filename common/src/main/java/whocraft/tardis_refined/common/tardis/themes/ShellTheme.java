@@ -6,6 +6,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.themes.shell.GenericShellThemeDetails;
+import whocraft.tardis_refined.common.tardis.themes.shell.ShellThemeDetails;
+import whocraft.tardis_refined.common.tardis.themes.shell.sound.GenericShellSoundProfile;
+import whocraft.tardis_refined.common.tardis.themes.shell.sound.HalfBakedSoundProfile;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
@@ -20,7 +24,7 @@ public class ShellTheme implements Theme {
     /** Instance of registry containing all ShellTheme entries. Addon mod entries will be included in this registry as long as they are use the same ResourceKey<Registry<ObjectType>>. */
     public static final Registry<ShellTheme> SHELL_THEME_REGISTRY = SHELL_THEME_DEFERRED_REGISTRY.getRegistry().get();
 
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HALF_BAKED = registerShellTheme("half_baked"); // The default shell. Do not remove.
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> HALF_BAKED = registerShellTheme("half_baked", new GenericShellThemeDetails().setSoundProfile(new HalfBakedSoundProfile())); // The default shell. Do not remove.
 
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> FACTORY = registerShellTheme("factory");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> POLICE_BOX = registerShellTheme("police_box", true);
@@ -57,21 +61,41 @@ public class ShellTheme implements Theme {
     private ResourceLocation translationKey;
     private boolean producesLight;
 
-    public ShellTheme(ResourceLocation translationKey) {
-        this.translationKey = translationKey;
+    public ShellThemeDetails getShellThemeDetails() {
+        return shellThemeDetails;
     }
-    public ShellTheme(ResourceLocation translationKey, boolean producesLight) {
+
+    private final ShellThemeDetails shellThemeDetails;
+
+    public ShellTheme(ResourceLocation translationKey, ShellThemeDetails shellThemeDetails) {
         this.translationKey = translationKey;
+        this.shellThemeDetails = shellThemeDetails;
+    }
+    public ShellTheme(ResourceLocation translationKey, ShellThemeDetails shellThemeDetails, boolean producesLight) {
+        this(translationKey, shellThemeDetails);
         this.producesLight = producesLight;
     }
 
+    public ShellTheme(ResourceLocation translationKey, boolean producesLight) {
+        this(translationKey, new GenericShellThemeDetails().setSoundProfile(new GenericShellSoundProfile()), producesLight);
+    }
+
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
-        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), new GenericShellThemeDetails().setSoundProfile(new GenericShellSoundProfile())));
+    }
+
+    private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, ShellThemeDetails shellThemeDetails){
+        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), shellThemeDetails));
     }
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, boolean producesLight){
         return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
     }
+
+    private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, ShellThemeDetails shellThemeDetails, boolean producesLight){
+        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), shellThemeDetails, producesLight));
+    }
+
 
     @Override
     public String getTranslationKey() {
@@ -86,5 +110,7 @@ public class ShellTheme implements Theme {
     public boolean producesLight() {
         return producesLight;
     }
+
+
 
 }

@@ -198,8 +198,8 @@ public class TardisLevelOperator{
 
         if (this.level instanceof ServerLevel targetServerLevel) {
 
-            BlockPos targetPosition = internalDoor != null ? internalDoor.getEntryPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
-            Direction doorDirection = internalDoor != null ? internalDoor.getEntryRotation() : entity.getDirection();
+            BlockPos targetPosition = internalDoor != null ? internalDoor.getTeleportPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
+            Direction doorDirection = internalDoor != null ? internalDoor.getTeleportRotation() : entity.getDirection();
 
             TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
             TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
@@ -245,8 +245,8 @@ public class TardisLevelOperator{
             BlockPos teleportPos = exteriorPos;
 
             if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
-                teleportPos = exteriorShell.getExitPosition();
-                targetDirection = exteriorShell.getExitRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
+                teleportPos = exteriorShell.getTeleportPosition();
+                targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
             }
 
             TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);

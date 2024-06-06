@@ -6,7 +6,7 @@ import whocraft.tardis_refined.common.tardis.themes.console.sound.GenericConsole
 
 public abstract class ConsoleThemeDetails {
 
-    ConsoleSoundProfile soundProfile = new GenericConsoleSoundProfile();
+    private ConsoleSoundProfile soundProfile = new GenericConsoleSoundProfile();
 
     public ControlSpecification[] getControlSpecification() {
         return null;

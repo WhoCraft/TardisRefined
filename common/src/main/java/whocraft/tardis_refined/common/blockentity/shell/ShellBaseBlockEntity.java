@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -180,7 +181,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         BlockState blockState = this.getLevel().getBlockState(blockPos);
         if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
             this.getLevel().setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, !closeDoor), Block.UPDATE_ALL);
-            this.getLevel().playSound(null, blockPos, closeDoor ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, closeDoor ? 1.4F : 1F);
+            this.playDoorCloseSound(closeDoor);
             this.setChanged();
         }
     }
@@ -195,6 +196,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
         if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
             this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.LOCKED, locked), Block.UPDATE_ALL);
+            this.playDoorLockedSound(locked);
             this.setChanged();
         }
     }
@@ -205,18 +207,34 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     @Override
-    public BlockPos getExitPosition() {
+    public BlockPos getTeleportPosition() {
         Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
         return this.getBlockPos().offset(direction.getOpposite().getNormal());
     }
 
     @Override
-    public Direction getShellRotation() {
+    public Direction getRotation() {
         return this.getBlockState().getValue(ShellBaseBlock.FACING);
     }
 
     @Override
-    public Direction getExitRotation() {
+    public Direction getTeleportRotation() {
         return this.getBlockState().getValue(ShellBaseBlock.FACING).getOpposite();
+    }
+
+    @Override
+    public BlockPos getDoorPosition() {
+        return this.getBlockPos();
+    }
+
+    public void playDoorCloseSound(boolean closeDoor){
+        Level currentLevel = getLevel();
+        currentLevel.playSound(null, this.getBlockPos(), closeDoor ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, closeDoor ? 1.4F : 1F);
+        this.setChanged();
+    }
+
+    public void playDoorLockedSound(boolean lockDoor){
+        Level currentLevel = getLevel();
+        currentLevel.playSound(null, this.getBlockPos(), lockDoor ? BlockSetType.IRON.doorClose() : BlockSetType.IRON.doorOpen(), SoundSource.BLOCKS, 1, lockDoor ? 1.4F : 1F);
     }
 }

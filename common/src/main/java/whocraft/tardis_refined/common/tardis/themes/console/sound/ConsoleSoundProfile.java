@@ -9,6 +9,7 @@ public abstract class ConsoleSoundProfile {
     private ConsoleSound doorOpen;
     private ConsoleSound doorClose;
     private ConsoleSound doorLocked;
+    private ConsoleSound doorUnlocked;
     private ConsoleSound generic;
 
 
@@ -65,6 +66,14 @@ public abstract class ConsoleSoundProfile {
     }
 
     public void setDoorLocked(ConsoleSound doorLocked) { this.doorLocked = doorLocked;}
+
+    public ConsoleSound getDoorUnlocked() {
+        return doorUnlocked;
+    }
+
+    public void setDoorUnlocked(ConsoleSound doorUnlocked) {
+        this.doorUnlocked = doorUnlocked;
+    }
 
     public ConsoleSound getGeneric() {
         return generic;

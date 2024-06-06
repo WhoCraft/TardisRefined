@@ -24,6 +24,7 @@ import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -167,6 +168,34 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             ItemStack coralItem = new ItemStack(Items.HORN_CORAL_FAN);
             BlockPos currentPos = getBlockPos();
             Containers.dropItemStack(level, currentPos.getX(), currentPos.getY(), currentPos.getZ() , coralItem);
+        }
+    }
+
+    @Override
+    public void playDoorCloseSound(boolean closeDoor) {
+        if (this.shellTheme != null){
+            ShellTheme theme = ShellTheme.getShellTheme(this.shellTheme);
+            if (theme != null){
+                Level currentLevel = this.getLevel();
+                PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorClose();
+                if (pitchedSound != null){
+                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1F, pitchedSound.getPitch());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void playDoorLockedSound(boolean lockDoor) {
+        if (this.shellTheme != null){
+            ShellTheme theme = ShellTheme.getShellTheme(this.shellTheme);
+            if (theme != null){
+                Level currentLevel = this.getLevel();
+                PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorLocked();
+                if (pitchedSound != null){
+                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1F, pitchedSound.getPitch());
+                }
+            }
         }
     }
 }

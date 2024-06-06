@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.common.tardis.themes.console.sound;
 
+import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
+
 import javax.annotation.Nullable;
 
 

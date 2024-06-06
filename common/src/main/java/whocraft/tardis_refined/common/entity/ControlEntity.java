@@ -36,7 +36,7 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.manager.FlightDanceManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;

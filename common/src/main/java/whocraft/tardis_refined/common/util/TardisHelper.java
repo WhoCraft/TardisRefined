@@ -35,6 +35,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
@@ -101,6 +102,7 @@ public class TardisHelper {
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                         generated.set(true);
                         tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), false);
+                        tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.empty(), true);
                     }
                 });
 
