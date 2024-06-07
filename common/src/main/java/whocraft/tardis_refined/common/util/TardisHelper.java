@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.api.event.ShellChangeSource;
+import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -101,8 +103,8 @@ public class TardisHelper {
                         intManager.openTheEye(true);
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                         generated.set(true);
-                        tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), false);
-                        tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.empty(), true);
+                        tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
+                        tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.of(targetBlockState), false, ShellChangeSources.ROOT_TO_TARDIS);
                     }
                 });
 

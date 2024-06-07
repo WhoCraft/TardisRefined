@@ -132,7 +132,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 // Shearing the TARDIS
                 if (stack.is(Items.SHEARS) && aestheticHandler.getShellTheme() == ShellTheme.HALF_BAKED.getId()) {
                     aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(), tardisPilotingManager.getCurrentLocation());
-                    level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
+                    level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1, 1);
                     spawnCoralItems();
                     return true;
                 }
@@ -179,7 +179,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 Level currentLevel = this.getLevel();
                 PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorClose();
                 if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1F, pitchedSound.getPitch());
+                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), closeDoor ? 1.4F : 1F);
                 }
             }
         }
@@ -193,7 +193,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 Level currentLevel = this.getLevel();
                 PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorLocked();
                 if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1F, pitchedSound.getPitch());
+                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), lockDoor ? 1.4F : 1F);
                 }
             }
         }

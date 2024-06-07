@@ -143,7 +143,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
                 Level currentLevel = this.getLevel();
                 PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorClose();
                 if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getDoorPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1F, pitchedSound.getPitch());
+                    currentLevel.playSound(null, this.getDoorPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), closeDoor ? 1.4F : 1F);
                 }
             }
         }
@@ -157,7 +157,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
                 Level currentLevel = this.getLevel();
                 PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorLocked();
                 if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getDoorPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, 1F, pitchedSound.getPitch());
+                    currentLevel.playSound(null, this.getDoorPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), lockDoor ? 1.4F : 1F);
                 }
             }
         }

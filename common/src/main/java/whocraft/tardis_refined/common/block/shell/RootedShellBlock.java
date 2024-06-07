@@ -94,6 +94,7 @@ public class RootedShellBlock extends ShellBaseBlock {
                         }
                         //After we setup the data and desktop, open the doors.
                         tardisLevelOperator.setDoorClosed(false);
+                        serverLevel.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
                     });
 
                     return true;

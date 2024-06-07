@@ -62,7 +62,7 @@ public class AestheticHandler extends BaseHandler {
 
         BlockPos lastKnownLocationPosition = tardisNavLocation.getPosition();
         ServerLevel lastKnownLocationLevel = tardisNavLocation.getLevel();
-        //Copy over important data such as Tardis ID
+        //Copy over important data such as Tardis ID to the internal door and exterior shell
         updateShellBlock(theme, shellPattern, lastKnownLocationLevel, lastKnownLocationPosition);
         updateInteriorDoors(theme, shellPattern);
 

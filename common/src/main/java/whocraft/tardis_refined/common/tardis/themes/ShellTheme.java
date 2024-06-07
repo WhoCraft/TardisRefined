@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.shell.GenericShellThemeDetails;
 import whocraft.tardis_refined.common.tardis.themes.shell.ShellThemeDetails;
+import whocraft.tardis_refined.common.tardis.themes.shell.sound.DrifterSoundProfile;
 import whocraft.tardis_refined.common.tardis.themes.shell.sound.GenericShellSoundProfile;
 import whocraft.tardis_refined.common.tardis.themes.shell.sound.HalfBakedSoundProfile;
 import whocraft.tardis_refined.registry.DeferredRegistry;
@@ -31,7 +32,7 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PHONE_BOOTH = registerShellTheme("phone_booth", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> MYSTIC = registerShellTheme("mystic", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> PRESENT = registerShellTheme("present");
-    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> DRIFTER = registerShellTheme("drifter");
+    public static final RegistrySupplierHolder<ShellTheme, ShellTheme> DRIFTER = registerShellTheme("drifter", new GenericShellThemeDetails().setSoundProfile( new DrifterSoundProfile()));
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> VENDING = registerShellTheme("vending", true);
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> BRIEFCASE = registerShellTheme("briefcase");
     public static final RegistrySupplierHolder<ShellTheme, ShellTheme> GROENING = registerShellTheme("groening", true);
@@ -67,13 +68,15 @@ public class ShellTheme implements Theme {
 
     private final ShellThemeDetails shellThemeDetails;
 
-    public ShellTheme(ResourceLocation translationKey, ShellThemeDetails shellThemeDetails) {
+
+    public ShellTheme(ResourceLocation translationKey, ShellThemeDetails shellThemeDetails, boolean producesLight) {
         this.translationKey = translationKey;
         this.shellThemeDetails = shellThemeDetails;
-    }
-    public ShellTheme(ResourceLocation translationKey, ShellThemeDetails shellThemeDetails, boolean producesLight) {
-        this(translationKey, shellThemeDetails);
         this.producesLight = producesLight;
+    }
+
+    public ShellTheme(ResourceLocation translationKey, ShellThemeDetails shellThemeDetails) {
+        this(translationKey, shellThemeDetails, false);
     }
 
     public ShellTheme(ResourceLocation translationKey, boolean producesLight) {

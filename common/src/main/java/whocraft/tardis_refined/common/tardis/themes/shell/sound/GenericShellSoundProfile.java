@@ -8,8 +8,8 @@ public class GenericShellSoundProfile extends ShellSoundProfile {
 
     public GenericShellSoundProfile() {
         this.setDoorOpen(new PitchedSound(SoundEvents.IRON_DOOR_OPEN, 1F));
-        this.setDoorClose(new PitchedSound(SoundEvents.IRON_DOOR_CLOSE, 1.4F));
-        this.setDoorLocked(new PitchedSound(BlockSetType.IRON.doorClose(), 1.4F));
+        this.setDoorClose(new PitchedSound(SoundEvents.IRON_DOOR_CLOSE, 1F));
+        this.setDoorLocked(new PitchedSound(BlockSetType.IRON.doorClose(), 1F));
         this.setDoorUnlocked(new PitchedSound(BlockSetType.IRON.doorOpen(), 1F));
     }
 

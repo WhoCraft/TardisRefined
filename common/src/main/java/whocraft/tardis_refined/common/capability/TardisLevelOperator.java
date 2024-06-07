@@ -15,6 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import whocraft.tardis_refined.api.event.ShellChangeSource;
+import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
@@ -309,25 +311,37 @@ public class TardisLevelOperator{
             //Unlikely, but you never know what players are capable of.
             if (blockStateAfterDoorUpdates.hasProperty(ShellBaseBlock.REGEN)){
                 BlockState updatedBlockState = blockStateAfterDoorUpdates.setValue(ShellBaseBlock.REGEN, startRegen); //Set the block to be in a regenerating state
-                this.setOrUpdateExteriorBlock(currentPosition, Optional.of(updatedBlockState));
+                if (this.getTardisState() == STATE_CAVE || this.getTardisState() == STATE_TERRAFORMED_NO_EYE){ //If either in a cave state or terraformed without an activated eye of harmony, assume we are transforming from root shell to half baked Tardis
+                    //If starting regen for a root shell, update, but do not, create a new blockstate instance
+                    //We only want to create a new blockstate instance when generation is finished so that a new GlobalShellBlockEntity instance can be placed with the half-baked theme applied
+                    //The logic to handle whether to use the passed in blockstate is being handled in setOrUpdateExteriorBlock
+                    this.setOrUpdateExteriorBlock(currentPosition, Optional.of(updatedBlockState), startRegen, ShellChangeSources.ROOT_TO_TARDIS);
+                }
+                else {
+                    this.setOrUpdateExteriorBlock(currentPosition, Optional.of(updatedBlockState), startRegen, ShellChangeSources.REGEN_EXISTING_TARDIS);
+                }
                 return true;
             }
         }
         return false;
     }
     /** Convenience method to use when we are going to update the exterior block but we are not setting up a new Tardis
-     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, boolean)}
+     * @param location - location of the block we are updating
+     * @param targetBlockState - Only leave this empty if we are landing the Tardis after finishing flight, otherwise provide a value to indicate we are updating specific data on an existing Tardis shell.
+     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, ShellChangeSource)}
      * */
     public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> targetBlockState){
-        setOrUpdateExteriorBlock(location, targetBlockState, false);
+        setOrUpdateExteriorBlock(location, targetBlockState, false, ShellChangeSources.GENERIC_UPDATE);
     }
 
     /** Common logic to set or update the exterior shell block. This is needed to ensure we preserve data on the exterior shell such as Shell Patterns.
-     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, boolean)}
+     * @implNote If we have updated the ShellTheme but haven't updated the Exterior data yet, you must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, ShellChangeSource)}
      * @param location - target position we are performing block updates on.
-     * @param targetBlockState - Optional value if we want to pass in a blockstate that will override a newly created blockstate
+     * @param overridingBlockState - Pass in an updated exterior shell blockstate with the data you want to include. Only leave this empty if we are landing the Tardis after finishing flight, otherwise provide a value to indicate we are updating specific data on an existing Tardis shell.
+     * @param startingRegen - If we are starting or finishing the regenerating of the Tardis. e.g. During Desktop generation.
+     * @param shellChangeSource - Source of the shell update. If the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version.
      */
-    public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> targetBlockState, boolean setupTardis){
+    public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> overridingBlockState, boolean startingRegen, ShellChangeSource shellChangeSource){
         AestheticHandler aestheticHandler = this.getAestheticHandler();
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
@@ -335,22 +349,34 @@ public class TardisLevelOperator{
 
         ServerLevel targetLevel = location.getLevel();
         BlockPos targetLocation = location.getPosition();
-        //Check the target location and update the existing blockstate if needed. Otherwise, utilise a new blockstate instance of the exterior block
+
+        //In the below logic, we will check if we need to update the existing blockstate. Otherwise, utilise a new blockstate instance of the exterior block
+
+        //New instance of an exterior block created if we need to use it, such as for when the Tardis starts landing after flight, or finishing the root shell to half baked terraforming
         //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
-        //New instance of an exterior block is needed for landing the Tardis
         BlockState newExteriorBlock = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
                 .setValue(ShellBaseBlock.REGEN, false)
                 .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
 
-        //If the supplied blockstate is empty or we are setting up a Tardis for the first time, utilise a new blockstate. Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
-        BlockState selectedBlockState = setupTardis ? newExteriorBlock : targetBlockState.orElse(newExteriorBlock);
+        //If the Tardis is landing after a flight or we are setting up a Tardis for the first time, utilise a new blockstate.
+        //Otherwise, simply update the values of the passed-in blockstate so that we don't need to change things we don't want.
+        BlockState selectedBlockState;
+        if (shellChangeSource == ShellChangeSources.ROOT_TO_TARDIS){
+            //If starting regen for a root shell, update, but do not, create a new blockstate instance
+            //We only want to create a new blockstate instance when generation is finished so that a new GlobalShellBlockEntity instance can be placed with the half-baked theme applied
+            selectedBlockState = startingRegen ? overridingBlockState.orElse(newExteriorBlock) : newExteriorBlock;
+        }
+        else {
+            //Otherwise, if we are regenerating a Tardis that is fully terraformed and eye of harmony is activated, use the passed in blockstate for specific data updates, or if the provided blockstate is NULL, use the new exterior shell instance
+            selectedBlockState = overridingBlockState.orElse(newExteriorBlock);
+        }
 
         //Update the FACING and WATERLOGGED blockstate property on the Shell block.
         //Do not update the REGEN, OPEN or LOCKED property, because that should be manually called when player interacts with the door, or during events the Tardis triggers such as regenerating desktop, or the DoorControl
         BlockState updatedBlockState = selectedBlockState.setValue(ShellBaseBlock.FACING, location.getDirection().getOpposite())
                 .setValue(ShellBaseBlock.WATERLOGGED, location.getLevel().getBlockState(targetLocation).getFluidState().getType() == Fluids.WATER);
 
-        if (updatedBlockState.hasProperty(GlobalShellBlock.LIT)){ //Special logic to account for RootedShellBlock not having the LIT blockstate property
+        if (updatedBlockState.hasProperty(GlobalShellBlock.LIT) && shellTheme != null){ //Special logic to account for RootedShellBlock not having the LIT blockstate property
             updatedBlockState.setValue(GlobalShellBlock.LIT, shellTheme.producesLight());
         }
 
@@ -358,7 +384,9 @@ public class TardisLevelOperator{
         //Place the exterior block
         targetLevel.setBlock(targetLocation, updatedBlockState, Block.UPDATE_ALL);
         //Copy over important data points such as patterns, and update the internal doors
-        this.setShellTheme(theme, shellPattern.getThemeId(), setupTardis);
+        //TODO: Implement a system that allows updating of specific Tardis data, so that we don't need to update the theme and patterns when we don't need to.
+        if (theme != null && shellPattern != null)
+            this.setShellTheme(theme, shellPattern.getThemeId(), shellChangeSource);
 
         targetLevel.sendBlockUpdated(targetLocation, updatedBlockState, updatedBlockState, Block.UPDATE_CLIENTS);
     }
@@ -413,12 +441,13 @@ public class TardisLevelOperator{
 
     }
 
-    public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis) {
-        this.getAestheticHandler().setShellTheme(theme, shellPattern, this.getPilotingManager().getCurrentLocation());
-        tardisClientData.setShellTheme(theme);
+    /** Unified logic to update the Tardis' ShellTheme and Pattern, as well as the exterior and internal doors*/
+    public void setShellTheme(ResourceLocation shellTheme, ResourceLocation shellPattern, ShellChangeSource shellChangeSource) {
+        this.getAestheticHandler().setShellTheme(shellTheme, shellPattern, this.getPilotingManager().getCurrentLocation());
+        tardisClientData.setShellTheme(shellTheme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();
-        TardisCommonEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, theme, setupTardis);
+        TardisCommonEvents.SHELL_CHANGE_EVENT.invoker().onShellChange(this, shellTheme, shellChangeSource);
     }
 
     /**

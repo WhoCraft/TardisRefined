@@ -364,7 +364,7 @@ public class TardisInteriorManager extends TickableHandler {
                 if (this.operator.triggerRegenState(true)){ //Make sure we actually triggered the regen state before thinking we are good to go
                     this.operator.forceEjectAllPlayers(); //Teleport all players to the exterior in case they still remain.
                     TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
-                    this.generateDesktop(this.preparedTheme);
+                    this.generateDesktop(this.preparedTheme); //During desktop generation, if the state is still the initial cave state, we will update it to terraformed but no eye activated
 
                     this.isWaitingToGenerate = false;
                     this.isGeneratingDesktop = true;
@@ -394,7 +394,7 @@ public class TardisInteriorManager extends TickableHandler {
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
 
-            if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) {
+            if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) { //If transforming from root shell to half baked Tardis, set the state to terraformed but no eye activated
                 this.operator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE);
             }
 
