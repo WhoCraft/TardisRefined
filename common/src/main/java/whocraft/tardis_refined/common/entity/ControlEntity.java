@@ -36,11 +36,13 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.manager.FlightDanceManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TREntityRegistry;
@@ -446,7 +448,7 @@ public class ControlEntity extends Entity {
             TardisLevelOperator cap = TardisLevelOperator.get(serverLevel).get();
 
             if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
-                cap.getPilotingManager().setCurrentConsole(getConsoleBlockEntity());
+                cap.getPilotingManager().setCurrentConsole(this.getConsoleBlockEntity());
             }
 
             if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this)){
@@ -455,9 +457,9 @@ public class ControlEntity extends Entity {
 
             Control control = this.controlSpecification.control();
 
-            boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
-            PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
-            control.playControlPitchedSound(cap, this, playedSound);
+            boolean successfulUse = control.onLeftClick(cap, this.consoleTheme, this, player);
+            ConfiguredSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
+            control.playControlConfiguredSound(cap, this, playedSound);
             return successfulUse;
         }
     }
@@ -490,8 +492,8 @@ public class ControlEntity extends Entity {
 
             Control control = this.controlSpecification.control();
             boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
-            PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
-            control.playControlPitchedSound(cap, this, playedSound);
+            ConfiguredSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
+            control.playControlConfiguredSound(cap, this, playedSound);
             return successfulUse;
         }
     }

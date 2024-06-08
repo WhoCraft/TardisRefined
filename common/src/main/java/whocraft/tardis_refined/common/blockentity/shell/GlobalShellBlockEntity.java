@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -13,27 +12,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
-import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
@@ -173,28 +168,24 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     @Override
     public void playDoorCloseSound(boolean closeDoor) {
-        if (this.shellTheme != null){
-            ShellTheme theme = ShellTheme.getShellTheme(this.shellTheme);
-            if (theme != null){
-                Level currentLevel = this.getLevel();
-                PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorClose();
-                if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), closeDoor ? 1.4F : 1F);
-                }
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            ConfiguredSound configuredSound = pattern.soundProfile().getDoorClose();
+            if (configuredSound != null){
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }
 
     @Override
     public void playDoorLockedSound(boolean lockDoor) {
-        if (this.shellTheme != null){
-            ShellTheme theme = ShellTheme.getShellTheme(this.shellTheme);
-            if (theme != null){
-                Level currentLevel = this.getLevel();
-                PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorLocked();
-                if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getBlockPos(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), lockDoor ? 1.4F : 1F);
-                }
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            ConfiguredSound configuredSound = pattern.soundProfile().getDoorLocked();
+            if (configuredSound != null){
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }

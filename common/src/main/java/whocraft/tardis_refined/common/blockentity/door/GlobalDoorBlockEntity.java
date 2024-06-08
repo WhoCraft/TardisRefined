@@ -7,16 +7,14 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
@@ -137,28 +135,24 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
 
     @Override
     public void playDoorCloseSound(boolean closeDoor) {
-        if (this.shellTheme != null){
-            ShellTheme theme = ShellTheme.getShellTheme(this.shellTheme);
-            if (theme != null){
-                Level currentLevel = this.getLevel();
-                PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorClose();
-                if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getDoorPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), closeDoor ? 1.4F : 1F);
-                }
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            ConfiguredSound configuredSound = pattern.soundProfile().getDoorClose();
+            if (configuredSound != null){
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }
 
     @Override
     public void playDoorLockedSound(boolean lockDoor) {
-        if (this.shellTheme != null){
-            ShellTheme theme = ShellTheme.getShellTheme(this.shellTheme);
-            if (theme != null){
-                Level currentLevel = this.getLevel();
-                PitchedSound pitchedSound = theme.getShellThemeDetails().getSoundProfile().getDoorLocked();
-                if (pitchedSound != null){
-                    currentLevel.playSound(null, this.getDoorPosition(), pitchedSound.getSoundEvent(), SoundSource.BLOCKS, pitchedSound.getPitch(), lockDoor ? 1.4F : 1F);
-                }
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            ConfiguredSound configuredSound = pattern.soundProfile().getDoorLocked();
+            if (configuredSound != null){
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }

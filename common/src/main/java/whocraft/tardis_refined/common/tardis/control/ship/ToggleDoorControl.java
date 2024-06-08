@@ -4,12 +4,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.AbstractDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 
 public class ToggleDoorControl extends Control {
     public ToggleDoorControl(ResourceLocation id) {
@@ -53,13 +55,13 @@ public class ToggleDoorControl extends Control {
     }
 
     @Override
-    public PitchedSound getSuccessSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
+    public ConfiguredSound getSuccessSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
         if (!operator.getLevel().isClientSide()) {
             BlockEntity blockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
             if (blockEntity != null){
-                if (blockEntity instanceof TardisInternalDoor internalDoor){
+                if (blockEntity instanceof GlobalDoorBlockEntity internalDoor){
                     var isDoorOpen = internalDoor.isOpen();
-                    var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().getDoorClose().getRightClick() : theme.getSoundProfile().getDoorOpen().getRightClick();
+                    var pitchedSound = (isDoorOpen) ? internalDoor.pattern().soundProfile().getDoorClose() : internalDoor.pattern().soundProfile().getDoorOpen();
                     if (pitchedSound != null) {
                         return pitchedSound;
                     }
@@ -71,7 +73,7 @@ public class ToggleDoorControl extends Control {
     }
 
     @Override
-    public PitchedSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
-        return new PitchedSound(SoundEvents.NOTE_BLOCK_BIT.value());
+    public ConfiguredSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
+        return new ConfiguredSound(SoundEvents.NOTE_BLOCK_BIT.value());
     }
 }

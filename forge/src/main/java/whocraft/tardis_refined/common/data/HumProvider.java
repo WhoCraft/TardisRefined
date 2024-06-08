@@ -72,7 +72,7 @@ public class HumProvider implements DataProvider {
                     String outputPath = "data/" + hum.getIdentifier().getNamespace() + "/" + TardisHums.getReloadListener().getFolderName() + "/" + hum.getIdentifier().getPath().replace("/", "_") + ".json";
                     futures.add(DataProvider.saveStable(arg, currentHum, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
-                    TardisRefined.LOGGER.debug("Issue writing Hum {}! Error: {}", hum.getIdentifier(), exception.getMessage());
+                    TardisRefined.LOGGER.error("Issue writing Hum {}! Error: {}", hum.getIdentifier(), exception.getMessage());
                 }
             });
         }

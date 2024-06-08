@@ -60,7 +60,7 @@ public class DesktopProvider implements DataProvider {
                     String outputPath = "data/" + desktop.getIdentifier().getNamespace() + "/" + TardisDesktops.getReloadListener().getFolderName() + "/" + desktop.getIdentifier().getPath().replace("/", "_") + ".json";
                     futures.add(DataProvider.saveStable(arg, currentDesktop, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
-                    TardisRefined.LOGGER.debug("Issue writing Desktop {}! Error: {}", entry.getValue().getIdentifier(), exception.getMessage());
+                    TardisRefined.LOGGER.error("Issue writing Desktop {}! Error: {}", entry.getValue().getIdentifier(), exception.getMessage());
                 }
             });
         }

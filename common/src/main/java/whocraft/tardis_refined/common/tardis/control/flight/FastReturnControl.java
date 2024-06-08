@@ -8,7 +8,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.PitchedSound;
+import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 
 public class FastReturnControl extends Control {
     public FastReturnControl(ResourceLocation id) {
@@ -36,7 +36,7 @@ public class FastReturnControl extends Control {
         return false;
     }
     @Override
-    public PitchedSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
-        return new PitchedSound(SoundEvents.NOTE_BLOCK_BIT.value(), 1F);
+    public ConfiguredSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
+        return new ConfiguredSound(SoundEvents.NOTE_BLOCK_BIT.value(), 1F);
     }
 }
