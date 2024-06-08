@@ -171,7 +171,8 @@ public class ShellPatterns {
         for (ResourceLocation shellTheme : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
             boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC.getId() || shellTheme == ShellTheme.NUKA.getId() || shellTheme == ShellTheme.PAGODA.getId() || shellTheme == ShellTheme.PHONE_BOOTH.getId() || shellTheme == ShellTheme.POLICE_BOX.getId() || shellTheme == ShellTheme.VENDING.getId();
             String textureName = shellTheme.getPath();
-            ShellSoundProfile soundProfile = TRShellSoundProfiles.DEFAULT_SOUND_PROFILE;
+            ShellSoundProfile soundProfile = TRShellSoundProfiles.defaultSoundProfilesByTheme().getOrDefault(shellTheme, TRShellSoundProfiles.DEFAULT_SOUND_PROFILE);
+
             //Use an overload version of the method for default shells because the texture files were named based on shell theme name
             ShellPattern pattern = new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
                     , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission), soundProfile);
@@ -195,7 +196,7 @@ public class ShellPatterns {
 
         addDefaultPattern(ShellTheme.MYSTIC.getId(), "dwarven", false);
 
-        addDefaultPattern(ShellTheme.BIG_BEN.getId(), "gothic", false, TRShellSoundProfiles.WOODEN_SOUND_PROFILE);
+        addDefaultPattern(ShellTheme.BIG_BEN.getId(), "gothic", false);
 
         Map<ResourceLocation, List<ShellPattern>> patternsByCollection = new HashMap<>();
         patternsByCollection.putAll(DEFAULT_PATTERNS);
