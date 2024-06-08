@@ -43,7 +43,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.FLIGHT_FAIL_START.get(), "Failing TARDIS groans");
         addSound(TRSoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
         addSound(TRSoundRegistry.INTERIOR_VOICE.get(), "...?");
-        addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
+        addSound(TRSoundRegistry.ARTRON_PILLAR_ACTIVE.get(), "Artron pillar activated");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), "Teleporter building up");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), "Teleporter used");
         addSound(TRSoundRegistry.SCREWDRIVER_CONNECT.get(), "Screwdriver connected position");

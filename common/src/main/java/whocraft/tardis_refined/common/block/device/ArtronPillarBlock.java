@@ -30,7 +30,7 @@ public class ArtronPillarBlock extends BaseEntityBlock {
 
         if (level.getBlockState(blockPos.below()).getBlock() == TRBlockRegistry.ARTRON_PILLAR_PORT.get()) {
             level.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
-            level.playSound(null, blockPos, TRSoundRegistry.ARTRON_PILLAR.get(), SoundSource.BLOCKS, 100, 1 + (level.getRandom().nextFloat() * 0.25f));
+            level.playSound(null, blockPos, TRSoundRegistry.ARTRON_PILLAR_ACTIVE.get(), SoundSource.BLOCKS, 100, 1 + (level.getRandom().nextFloat() * 0.25f));
         }
 
 
