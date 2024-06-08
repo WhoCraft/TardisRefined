@@ -124,7 +124,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
                     return;
                 }
                 if (!cap.getPilotingManager().isInFlight() && !door.locked()) {
-                    cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
+                    cap.setDoorClosed(!this.isOpen());
                 }
             });
         }

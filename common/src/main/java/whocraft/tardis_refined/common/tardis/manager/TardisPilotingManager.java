@@ -38,7 +38,7 @@ import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.*;
 
-public class TardisPilotingManager extends BaseHandler {
+public class TardisPilotingManager extends TickableHandler {
 
     // CONSTANTS
     private static final int TICKS_LANDING_MAX = 9 * 20;
@@ -132,11 +132,6 @@ public class TardisPilotingManager extends BaseHandler {
     }
 
     @Override
-    public void tick() {
-
-    }
-
-    @Override
     public CompoundTag saveData(CompoundTag tag) {
         tag.putBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT, this.isInFlight);
         tag.putBoolean(NbtConstants.CONTROL_AUTOLAND, this.autoLand);
@@ -176,8 +171,8 @@ public class TardisPilotingManager extends BaseHandler {
 
         return tag;
     }
-
-    public void tick(Level level) {
+    @Override
+    public void tick(ServerLevel level) {
 
         if (targetLocation == null) {
             var location = currentLocation;
@@ -216,7 +211,7 @@ public class TardisPilotingManager extends BaseHandler {
 
     }
 
-    private void onFlightTick(Level level) {
+    private void onFlightTick(ServerLevel level) {
         // Don't continue the flight if the throttle isn't active!!!
 
         if (this.throttleStage != 0 || this.autoLand) {

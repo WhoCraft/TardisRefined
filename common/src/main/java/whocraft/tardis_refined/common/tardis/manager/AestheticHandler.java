@@ -159,11 +159,6 @@ public class AestheticHandler extends BaseHandler {
     }
 
     @Override
-    public void tick() {
-
-    }
-
-    @Override
     public CompoundTag saveData(CompoundTag baseTag) {
         CompoundTag aestheticTag = new CompoundTag();
 

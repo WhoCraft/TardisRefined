@@ -32,13 +32,15 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
+    /** To be used as a visual indicator ONLY. The source of truth is the {@link whocraft.tardis_refined.common.blockentity.door.AbstractDoorBlockEntity#isLocked} field*/
+    public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     protected static final VoxelShape COLLISION = Block.box(0, 0, 0, 16, 32, 16);
     protected static BlockEntity blockEntity;
 
 
     public InternalDoorBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false));
     }
 
     @Override
@@ -77,13 +79,13 @@ public class InternalDoorBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(OPEN, FACING);
+        builder.add(OPEN, FACING, LOCKED);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false);
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class DesktopTheme {
      * <br> The display name is set to the identifier using a standard String Text Component.
      * @param id
      * @param structureLocation
-     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/ui/desktops/
+     * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/gui/desktops/
      */
     public DesktopTheme(String id, String structureLocation) {
         this(new ResourceLocation(TardisRefined.MODID, id), new ResourceLocation(TardisRefined.MODID, structureLocation), TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(id)).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));

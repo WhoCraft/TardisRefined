@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -32,9 +33,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.OPEN;
+import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
 
-public class TardisLevelOperator {
+public class TardisLevelOperator{
     private final Level level;
+    private final ResourceKey<Level> levelKey;
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
 
@@ -58,6 +61,7 @@ public class TardisLevelOperator {
 
     public TardisLevelOperator(Level level) {
         this.level = level;
+        this.levelKey = level.dimension();
         this.exteriorManager = new TardisExteriorManager(this);
         this.interiorManager = new TardisInteriorManager(this);
         this.pilotingManager = new TardisPilotingManager(this);
@@ -135,14 +139,18 @@ public class TardisLevelOperator {
     }
 
     public Level getLevel() {
-        return level;
+        return this.level;
+    }
+
+    public ResourceKey<Level> getLevelKey() {
+        return this.levelKey;
     }
 
     public void tick(ServerLevel level) {
 
         if (interiorManager != null) {  interiorManager.tick(level);}
         if (pilotingManager != null) {  pilotingManager.tick(level);}
-        if (flightDanceManager != null) {  flightDanceManager.tick();}
+        if (flightDanceManager != null) {  flightDanceManager.tick(level);}
 
         
         var shouldSync = level.getGameTime() % 40 == 0;
@@ -240,16 +248,40 @@ public class TardisLevelOperator {
         return true;
     }
 
+    /** Unified logic to update blockstates and data
+     *
+     * @param startRegen - True if we should mark the Tardis is regenerating itself.
+     */
+    public void triggerRegenState(boolean startRegen) {
+
+        TardisPilotingManager pilotingManager = this.getPilotingManager();
+        if (pilotingManager == null) {
+            return;
+        }
+
+        TardisNavLocation currentPosition = this.getPilotingManager().getCurrentLocation();
+        if(currentPosition == null) return;
+        BlockPos lastKnownLocationPosition = currentPosition.getPosition();
+        ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
+
+        BlockState state = lastKnownLocationLevel.getBlockState(lastKnownLocationPosition);
+        if (lastKnownLocationLevel == null) return;
+        if (state.getBlock() instanceof ShellBaseBlock shellBaseBlock && state.hasProperty(REGEN)) { //Check if this is our shell block and that its type has a Regen block state
+            this.setDoorClosed(startRegen); //Set the door closed. Must call this instead of simply updating the blockstate because it updates the internal door too.
+            this.setDoorLocked(startRegen); //Set the exterior shell door to be locked.
+            BlockState updatedBlockState = state.setValue(ShellBaseBlock.REGEN, startRegen); //Set the block to be in a regenerating state
+            this.getExteriorManager().setOrUpdateExteriorBlock(this, currentPosition, Optional.of(updatedBlockState));
+        }
+    }
+
+    /** Unified logic to close or open a door
+     * <br> Updates both internal door and exterior shell door OPEN state
+     * <br> Fires the CloseDoor/OpenDoor events*/
     public void setDoorClosed(boolean closeDoor) {
         TardisInternalDoor intDoor = getInternalDoor();
 
         if (intDoor != null) {
             intDoor.setClosed(closeDoor);
-        }
-        if (closeDoor) {
-            TardisCommonEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
-        } else {
-            TardisCommonEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
         }
 
         if (this.pilotingManager != null) {
@@ -257,6 +289,37 @@ public class TardisLevelOperator {
                 this.exteriorManager.setDoorClosed(closeDoor);
             }
         }
+
+        //After closing/opening both exterior and interior doors, fire the events
+        if (closeDoor) {
+            TardisCommonEvents.DOOR_CLOSED_EVENT.invoker().onDoorClosed(this);
+        } else {
+            TardisCommonEvents.DOOR_OPENED_EVENT.invoker().onDoorOpen(this);
+        }
+
+    }
+    /** Unified logic to lock or unlock a door
+     * <br> Updates both internal door and exterior shell door LOCK state
+     * <br> Fires the LockDoor/UnlockDoor events*/
+    public void setDoorLocked(boolean lockDoor) {
+        TardisInternalDoor intDoor = getInternalDoor();
+
+        if (intDoor != null) {
+            intDoor.setLocked(lockDoor);
+        }
+
+        if (this.pilotingManager != null) {
+            if (this.pilotingManager.getCurrentLocation() != null) {
+                this.exteriorManager.setLocked(lockDoor);
+            }
+        }
+        //After locking/unlocking both exterior and interior doors, fire the events
+        if (lockDoor) {
+            TardisCommonEvents.DOOR_LOCKED_EVENT.invoker().onDoorLocked(this);
+        } else {
+            TardisCommonEvents.DOOR_UNLOCKED_EVENT.invoker().onDoorUnlocked(this);
+        }
+
     }
 
     public void setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, boolean setupTardis) {
