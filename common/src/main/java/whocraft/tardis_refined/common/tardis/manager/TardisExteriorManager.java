@@ -146,7 +146,7 @@ public class TardisExteriorManager extends BaseHandler {
             lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly remove block
             //Remove block
             if (lastKnownLocationLevel.getBlockState(lastKnownLocationPosition).getBlock() instanceof GlobalShellBlock shellBlock) {
-                lastKnownLocationLevel.destroyBlock(lastKnownLocationPosition, false); //Set block to air with drop items flag to false
+                lastKnownLocationLevel.removeBlock(lastKnownLocationPosition, false); //Set block to air with drop items flag to false
             }
             //Un-force load chunk
             lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to not be force loaded after we remove the block
