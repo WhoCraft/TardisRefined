@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
@@ -140,7 +140,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
             Level currentLevel = this.getLevel();
             ConfiguredSound configuredSound = pattern.soundProfile().getDoorClose();
             if (configuredSound != null){
-                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }
@@ -152,7 +152,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
             Level currentLevel = this.getLevel();
             ConfiguredSound configuredSound = pattern.soundProfile().getDoorLocked();
             if (configuredSound != null){
-                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }

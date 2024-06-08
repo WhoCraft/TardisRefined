@@ -8,7 +8,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 
 public class FastReturnControl extends Control {
     public FastReturnControl(ResourceLocation id) {

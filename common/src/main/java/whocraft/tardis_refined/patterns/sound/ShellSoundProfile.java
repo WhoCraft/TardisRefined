@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 import whocraft.tardis_refined.patterns.PatternResourceConstants;
 
 import java.util.HashMap;
@@ -34,10 +33,6 @@ public class ShellSoundProfile {
 
     public Map<ResourceLocation, ConfiguredSound> getSoundEntries() {
         return shellSoundEntries;
-    }
-
-    public UnboundedMapCodec<ResourceLocation, ConfiguredSound> unboundedMapCode(){
-        return UNBOUNDED_MAP_CODEC;
     }
 
     public ConfiguredSound getDoorOpen() {

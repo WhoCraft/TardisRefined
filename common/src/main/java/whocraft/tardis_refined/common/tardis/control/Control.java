@@ -11,7 +11,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 
@@ -38,8 +38,8 @@ public abstract class Control {
         this(id, false);
     }
 
-    private ConfiguredSound successSound = new ConfiguredSound(SoundEvents.ARROW_HIT_PLAYER.getLocation());
-    private ConfiguredSound failSound = new ConfiguredSound(SoundEvents.ITEM_BREAK.getLocation());
+    private ConfiguredSound successSound = new ConfiguredSound(SoundEvents.ARROW_HIT_PLAYER);
+    private ConfiguredSound failSound = new ConfiguredSound(SoundEvents.ITEM_BREAK);
 
     public abstract boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player);
 
@@ -82,7 +82,7 @@ public abstract class Control {
     }
 
     public void playControlConfiguredSound(TardisLevelOperator operator, ControlEntity controlEntity, ConfiguredSound pitchedSound, SoundSource source, float volume, float pitch, boolean ignorePitch){
-        controlEntity.level().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(operator.getLevel()), source, volume, ignorePitch ? pitch : pitchedSound.getPitch());
+        controlEntity.level().playSound(null, controlEntity.blockPosition(), pitchedSound.getSoundEvent(), source, volume, ignorePitch ? pitch : pitchedSound.getPitch());
     }
 
     public void playControlConfiguredSound(TardisLevelOperator operator, ControlEntity controlEntity, ConfiguredSound pitchedSound, float pitch){

@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.patterns.sound;
 
 import net.minecraft.sounds.SoundEvents;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 
 public class TRConsoleSoundProfiles {
 

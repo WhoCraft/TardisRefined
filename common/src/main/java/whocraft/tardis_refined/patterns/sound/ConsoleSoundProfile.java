@@ -35,10 +35,6 @@ public class ConsoleSoundProfile {
         return consoleSoundEntries;
     }
 
-    public UnboundedMapCodec<ResourceLocation, ConsoleSound> unboundedMapCode(){
-        return UNBOUNDED_MAP_CODEC;
-    }
-
     public ConsoleSound getThrottleEnable() {
         return this.consoleSoundEntries.get(PatternResourceConstants.THROTTLE_ENABLE_KEY);
     }

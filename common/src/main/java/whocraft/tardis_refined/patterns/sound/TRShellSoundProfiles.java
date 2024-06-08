@@ -2,7 +2,6 @@ package whocraft.tardis_refined.patterns.sound;
 
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 
 public class TRShellSoundProfiles {
 

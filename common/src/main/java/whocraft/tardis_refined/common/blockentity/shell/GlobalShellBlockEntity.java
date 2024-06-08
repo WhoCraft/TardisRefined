@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
@@ -173,7 +173,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             Level currentLevel = this.getLevel();
             ConfiguredSound configuredSound = pattern.soundProfile().getDoorClose();
             if (configuredSound != null){
-                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }
@@ -185,7 +185,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             Level currentLevel = this.getLevel();
             ConfiguredSound configuredSound = pattern.soundProfile().getDoorLocked();
             if (configuredSound != null){
-                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(currentLevel), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }

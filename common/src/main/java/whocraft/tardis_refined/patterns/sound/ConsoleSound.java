@@ -2,8 +2,6 @@ package whocraft.tardis_refined.patterns.sound;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.common.tardis.themes.ConfiguredSound;
 
 import javax.annotation.Nullable;
 
