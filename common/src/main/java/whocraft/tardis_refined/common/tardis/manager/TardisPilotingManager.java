@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -320,28 +321,99 @@ public class TardisPilotingManager extends TickableHandler {
 
     public TardisNavLocation findClosestValidPosition(TardisNavLocation location) {
         ServerLevel level = location.getLevel();
+        BlockPos position = location.getPosition();
+        Direction direction = location.getDirection();
+
+        ChunkPos chunkPos = level.getChunk(position).getPos();
 
         var maxBuildHeight = level.getMaxBuildHeight();
         var minHeight = level.getMinBuildHeight();
 
-        return findValidLocationInColumn(location, level, minHeight, maxBuildHeight);
+        List<TardisNavLocation> solutionsInRow = new ArrayList<>();
+
+        //Force load chunk to search positions
+        level.setChunkForced(chunkPos.x, chunkPos.z, true);
+
+        //Set the default location to 0,0,0 at the target level. DO NOT set this to null else we cause a game crash
+        TardisNavLocation closest = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, level);
+
+        //First manually check if the exact target position can allow us to place the Tardis
+        if (this.canPlaceTardis(location) && this.isExitPositionSafe(location)) {
+            solutionsInRow.add(location);
+        }
+
+        // If the exact target location was a valid area, let's set it as the final position to use for landing, no extra searching needed.
+        if (!solutionsInRow.isEmpty()) {
+            closest = location;
+        }
+        else{
+
+            //If the exact target location isn't valid, check blocks in the vertical column
+            List<TardisNavLocation> nextValidLocations = this.findValidLocationInColumn(level, position, direction, minHeight, maxBuildHeight);
+            if (!nextValidLocations.isEmpty()){
+                solutionsInRow.addAll(nextValidLocations);
+            }
+            else {
+                //If the vertical column is not valid, let's check the surrounding area at the same y level.
+                List<BlockPos> surroundingPositionsSameYLevel = LevelHelper.getBlockPosInRadius(position, 1, true, false);
+                for (BlockPos directionOffset : surroundingPositionsSameYLevel) {
+                    TardisNavLocation nextLocation = new TardisNavLocation(directionOffset, location.getDirection(), location.getLevel());
+                    if (this.canPlaceTardis(nextLocation) && this.isExitPositionSafe(nextLocation)) {
+                        solutionsInRow.add(nextLocation);
+                    }
+                }
+
+                //If the surrounding areas also aren't suitable, search vertically in the original location as well as surrounding areas
+                //This is a much more expensive search so ideally we don't want to do this.
+                if (solutionsInRow.isEmpty()) {
+
+                    List<BlockPos> surroundingPositionsForColumn = LevelHelper.getBlockPosInRadius(position, 1, true, true);
+
+                    for(BlockPos pos : surroundingPositionsForColumn){
+                        List<TardisNavLocation> surroundingColumn = this.findValidLocationInColumn(level, pos, direction, minHeight, maxBuildHeight);
+                        if (!surroundingColumn.isEmpty()){
+                            solutionsInRow.addAll(surroundingColumn);
+                        }
+                    }
+                }
+            }
+
+            //Now after we have searched all possible solutions, find the closest solution.
+            closest = this.findClosestValidPositionFromTarget(solutionsInRow, location);
+
+        }
+
+        //Unforce chunk after we are done searching
+        level.setChunkForced(chunkPos.x, chunkPos.z, false);
+
+        return closest;
     }
 
-    private TardisNavLocation findValidLocationInColumn(TardisNavLocation location, ServerLevel level, int minHeight, int maxBuildHeight) {
+    private List<TardisNavLocation> findValidLocationInColumn(TardisNavLocation location, int minHeight, int maxBuildHeight) {
+        return this.findValidLocationInColumn(location.getLevel(), location.getPosition(), location.getDirection(), minHeight, maxBuildHeight);
+    }
 
-        ChunkPos chunkPos = level.getChunk(location.getPosition()).getPos();
-        //Force load chunk
-        level.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly remove block
+    /** Within all Y level positions for a given position, search for valid landing positions
+     * @param level - target Level we are trying to land in
+     * @param position - the original position we are searching vertically in
+     * @param direction - the direction we are landing at
+     * @param minHeight - minimum height to search upwards from
+     * @param maxBuildHeight - the maximum height to search under
+     * @return
+     */
+    private List<TardisNavLocation> findValidLocationInColumn(ServerLevel level, BlockPos position, Direction direction, int minHeight, int maxBuildHeight) {
+
+        List<TardisNavLocation> solutionsInRow = new ArrayList<>();
 
         // Fetch the row of blocks and filter them all out to air.
-        List<BlockPos> blockColumn = getBlockPosColumn(location.getPosition(), minHeight, maxBuildHeight);
+        List<BlockPos> blockColumn = this.getBlockPosColumn(position, minHeight, maxBuildHeight);
         List<BlockPos> filteredForAir = blockColumn.stream().filter(x -> isLegalLandingBlock(level, x)).toList();
         List<BlockPos> filteredForNonAir = blockColumn.stream().filter(x -> !isLegalLandingBlock(level, x)).toList();
 
-        List<TardisNavLocation> solutionsInRow = new ArrayList<>();
+        //Out of all the positions which are considered empty spaces (air), check if each position allows for the Tardis exterior to be placed and the area outside the door is safe
         for (BlockPos airPos : filteredForAir) {
 
-            // Ignore any higher scans above the roof.
+            // Ignore any higher scans above the nether roof.
             if (level.dimension() == Level.NETHER && airPos.getY() > 125) {
                 continue;
             }
@@ -349,60 +421,44 @@ public class TardisPilotingManager extends TickableHandler {
             BlockPos below = airPos.below();
             BlockPos above = airPos.above();
 
-            // Does this position have the space for a TARDIS?
+            // Check if this position have the space for a TARDIS.
             if (filteredForNonAir.contains(below) && filteredForAir.contains(above)) {
-
-                // Can we find a rotation for the TARDIS?
-
-                // Check front
-                Direction[] directions = new Direction[]{location.getDirection(), location.getDirection().getOpposite(), Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST};
-
-                for (Direction direction : directions) {
-                    BlockPos directionOffset = BlockPos.of(BlockPos.offset(airPos.asLong(), direction));
-                    // Check that the column in the direction is empty and doesn't have a drop.
-                    if (isLegalLandingBlock(level, directionOffset)) {
-                        if (isLegalLandingBlock(level, directionOffset.above()) && !isLegalLandingBlock(level, directionOffset.below()) && !isLegalLandingBlock(level, directionOffset.below(2))) {
-                            solutionsInRow.add(new TardisNavLocation(airPos, direction, location.getLevel()));
-
-                        }
-                    }
-                }
-
-            }
-        }
-
-
-        // We have all solutions. Let's find the closest.
-
-
-        if (solutionsInRow.size() > 0) {
-
-            TardisNavLocation closest = null;
-            int distance = Integer.MAX_VALUE;
-
-            for (TardisNavLocation potentialLocation : solutionsInRow) {
-                int distanceBetween = Math.abs(potentialLocation.getPosition().distManhattan(location.getPosition()));
-                if (distanceBetween < distance) {
-                    distance = distanceBetween;
-                    closest = potentialLocation;
+                // Check if the exit position allows an entity to be teleported without suffocating or falling.
+                if (this.canPlaceTardis(level, airPos) && this.isExitPositionSafe(level, airPos, direction)) {
+                    solutionsInRow.add(new TardisNavLocation(airPos, direction, level));
                 }
             }
-
-            return closest;
-
-        } else {
-
-            BlockPos directionOffset = BlockPos.of(BlockPos.offset(location.getPosition().asLong(), location.getDirection()));
-            TardisNavLocation nextLocation = new TardisNavLocation(directionOffset, location.getDirection(), location.getLevel());
-            return findValidLocationInColumn(nextLocation, level, minHeight, maxBuildHeight);
         }
+        return solutionsInRow;
     }
 
-    private List<BlockPos> getBlockPosColumn(BlockPos referencePoint, int bottomLevel, int topLevel) {
+    /** Finds the closest valid position out of a list of possible solutions, from the original intended landing location*/
+    private TardisNavLocation findClosestValidPositionFromTarget(List<TardisNavLocation> validPositions, TardisNavLocation targetLocation){
+        int distance = Integer.MAX_VALUE;
+        TardisNavLocation intendedLocation = targetLocation;
+        TardisNavLocation closestSolution = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, intendedLocation.getLevel());
+        for (TardisNavLocation potentialLocation : validPositions) {
+            int distanceBetween = Math.abs(potentialLocation.getPosition().distManhattan(intendedLocation.getPosition()));
+            if (distanceBetween < distance) {
+                distance = distanceBetween;
+                closestSolution = potentialLocation;
+            }
+        }
+        return closestSolution;
+    }
+
+    /**
+     * Gets a list of block positions in the same y level as the reference point
+     * @param referencePoint - the position to search vertically in
+     * @param min - The minimum Y value to search upwards from
+     * @param max - The maximum Y value to search downwards from (this max value is included in the search)
+     * @return
+     */
+    private List<BlockPos> getBlockPosColumn(BlockPos referencePoint, int min, int max) {
 
         List<BlockPos> positions = new ArrayList<>();
 
-        for (int i = bottomLevel; i <= topLevel; i++) {
+        for (int i = min; i <= max; i++) {
             positions.add(new BlockPos(referencePoint.getX(), i, referencePoint.getZ()));
         }
 
@@ -413,10 +469,38 @@ public class TardisPilotingManager extends TickableHandler {
     /**
      * Check if the block at the target position is a valid block to land inside.
      * **/
-    public boolean isLegalLandingBlock(ServerLevel level, BlockPos pos) {
+    private boolean isLegalLandingBlock(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         // Can land in air or override any block that can be marked as "replaceable" such as snow, tall grass etc.
-        return state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty());
+        return state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty() && !state.isCollisionShapeFullBlock(level, pos));
+    }
+
+    private boolean isExitPositionSafe(TardisNavLocation location){
+        return this.isExitPositionSafe(location.getLevel(), location.getPosition(), location.getDirection());
+    }
+
+    private boolean isExitPositionSafe(ServerLevel level, BlockPos pos, Direction offsetDirection){
+        BlockPos exitPosition = pos.offset(offsetDirection.getNormal()); //Check the block that is facing away from the doors.
+        if (this.isLegalLandingBlock(level, exitPosition.above())
+                && this.isLegalLandingBlock(level, exitPosition) //If there is a 2 block space for the entity to be placed at
+                && !this.isLegalLandingBlock(level, exitPosition.below()) //If there is a solid block beneath the exit position for the entity to stand on
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    /** If there is a 2 block vertical space for the exterior to be placed at, and the block below the exterior is solid*/
+    private boolean canPlaceTardis(TardisNavLocation location){
+        ServerLevel targetLevel = location.getLevel();
+        BlockPos pos = location.getPosition();
+        boolean isBelowNetherRoof = (targetLevel.dimension() == Level.NETHER && pos.getY() <= 125);
+        return isBelowNetherRoof && this.isLegalLandingBlock(targetLevel, pos) && isLegalLandingBlock(targetLevel, pos.above()) && !isLegalLandingBlock(targetLevel, pos.below());
+    }
+
+    /** If there is a 2 block vertical space for the exterior to be placed at, and the block below the exterior is solid*/
+    private boolean canPlaceTardis(ServerLevel level, BlockPos pos){
+        return this.isLegalLandingBlock(level, pos) && isLegalLandingBlock(level, pos.above()) && !isLegalLandingBlock(level, pos.below());
     }
 
     /**
