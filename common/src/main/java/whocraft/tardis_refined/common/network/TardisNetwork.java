@@ -13,13 +13,14 @@ import whocraft.tardis_refined.common.network.messages.screens.OpenShellSelectio
 import whocraft.tardis_refined.common.network.messages.sync.*;
 import whocraft.tardis_refined.common.network.messages.upgrades.S2CDisplayUpgradeScreen;
 import whocraft.tardis_refined.common.network.messages.upgrades.UnlockUpgradeMessage;
+import whocraft.tardis_refined.common.network.messages.voice.VoiceMessage;
 import whocraft.tardis_refined.common.network.messages.waypoints.*;
 
 public class TardisNetwork {
 
     public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
 
-    public static MessageType OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C,
+    public static MessageType VOICE, OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C,
             REQUEST_SHELL_C2S, CLIENT_OPEN_COORDS_SCREEN, SERVER_OPEN_COORDS_SCREEN, CLIENT_OPEN_EDIT_COORDS_SCREEN, SERVER_OPEN_EDIT_COORDS_SCREEN, UPLOAD_WAYPOINT,
             EDIT_WAYPOINT, SET_WAYPOINT, CHANGE_HUM, REQUEST_WAYPOINTS, SYNC_DESKTOPS, SYNC_CONSOLE_PATTERNS, SYNC_SHELL_PATTERNS, SYNC_LEVELS, INT_REACTION,
             OPEN_MONITOR, CHANGE_SHELL, CHANGE_DESKTOP, CANCEL_CHANGE_DESKTOP, UNLOCK_UPGRADE, EJECT_PLAYER;
@@ -56,6 +57,7 @@ public class TardisNetwork {
         REQUEST_SHELL_C2S = NETWORK.registerC2S("request_shell_c2s", C2SRequestShellSelection::new);
         CHANGE_HUM = NETWORK.registerC2S("change_hum", ChangeHumMessage::new);
         EJECT_PLAYER = NETWORK.registerC2S("eject_player", EjectPlayerFromConsoleMessage::new);
+        VOICE = NETWORK.registerC2S("voice", VoiceMessage::new);
     }
 
 

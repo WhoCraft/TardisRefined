@@ -93,6 +93,11 @@ repositories {
         name = "Mod Menu Maven"
         url = "https://maven.terraformersmc.com/"
     }
+
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 
@@ -126,6 +131,12 @@ dependencies {
     modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
     modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
     modImplementation "curse.maven:huge-structure-blocks-474114:4803539"
+
+    modImplementation "maven.modrinth:sodium:mc1.20.1-0.5.8"
+    modImplementation "maven.modrinth:iris:1.7.0+1.20.1"
+
+    implementation group: 'net.java.dev.jna', name: 'jna', version: '5.7.0'
+    implementation group: 'com.alphacephei', name: 'vosk', version: '0.3.38'
 
     // Forge Config API Port
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}"

@@ -41,6 +41,8 @@ allprojects {
         maven {
             url "https://cursemaven.com"
         }
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 
         // mavens for Create Fabric and dependencies
         maven { url = "https://api.modrinth.com/maven" } // LazyDFU

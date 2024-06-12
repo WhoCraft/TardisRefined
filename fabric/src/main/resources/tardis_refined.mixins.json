@@ -4,7 +4,9 @@
   "package": "whocraft.tardis_refined.mixin.fabric",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockItemMixin"
+    "BlockItemMixin",
+    "SodiumIdMapMixin",
+    "SodiumLegacyIdMapMixin"
   ],
   "client": [
   ],

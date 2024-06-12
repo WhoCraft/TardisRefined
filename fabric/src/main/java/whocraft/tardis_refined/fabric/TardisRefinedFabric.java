@@ -24,6 +24,7 @@ import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.fabric.PortalsCompatFabric;
+import whocraft.tardis_refined.experiment.voice.VoiceActions;
 import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -89,6 +90,7 @@ public class TardisRefinedFabric implements ModInitializer {
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton")));
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton_small")));
 
+        VoiceActions.init();
 
     }
 }

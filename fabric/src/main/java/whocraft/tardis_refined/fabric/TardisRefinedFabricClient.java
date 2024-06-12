@@ -27,6 +27,7 @@ import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRender
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
+import whocraft.tardis_refined.experiment.voice.Voice;
 import whocraft.tardis_refined.fabric.events.ModEvents;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -43,6 +44,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         ModEvents.addClientEvents();
         particles();
         registerEntityRenderers();
+        Voice.init();
     }
 
     private void particles() {

@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -23,6 +24,7 @@ import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.experiment.voice.Voice;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
 
@@ -64,7 +66,12 @@ public class ModEvents {
     }
 
     public static void addClientEvents() {
-        ClientTickEvents.START_CLIENT_TICK.register(TardisClientLogic::tickClientData);
+        ClientTickEvents.START_CLIENT_TICK.register(new ClientTickEvents.StartTick() {
+            @Override
+            public void onStartTick(Minecraft client) {
+                TardisClientLogic.tickClientData(client);
+            }
+        });
         ColorProviderRegistry.ITEM.register(TRItemColouring.SCREWDRIVER_COLORS, TRItemRegistry.SCREWDRIVER.get());
         HudRenderCallback.EVENT.register((matrixStack, tickDelta) -> GravityOverlay.renderOverlay(matrixStack.pose()));
     }
