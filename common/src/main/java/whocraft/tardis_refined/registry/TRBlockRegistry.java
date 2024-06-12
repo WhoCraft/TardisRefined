@@ -112,4 +112,6 @@ public class TRBlockRegistry {
     public static final RegistrySupplier<LanternBlock> ZEITON_LANTERN = register("zeiton_lantern", () -> new LanternBlock(BlockBehaviour.Properties.copy(Blocks.LANTERN).requiresCorrectToolForDrops()), true, true);
     public static final RegistrySupplier<Block> ARTRON_PILLAR_PORT = register("artron_pillar_port", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BEDROCK)), false, false);
 
+    public static final RegistrySupplier<Block> ASTRAL_MAP = register("astral_map", () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE)), true, true);
+
 }
