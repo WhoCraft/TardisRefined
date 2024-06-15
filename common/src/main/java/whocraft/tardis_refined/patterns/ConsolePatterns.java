@@ -20,7 +20,7 @@ public class ConsolePatterns{
 
     private static Map<ResourceLocation, List<ConsolePattern>> DEFAULT_PATTERNS = new HashMap();
 
-    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(ConsoleTheme.FACTORY.getId(), ConsoleTheme.FACTORY.getId().getPath() + "_console"), true), TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE).setThemeId(ConsoleTheme.FACTORY.getId());
+    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(ConsoleTheme.FACTORY.getId(), ConsoleTheme.FACTORY.getId().getPath() + "_console"), true), Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE)).setThemeId(ConsoleTheme.FACTORY.getId());
 
     public static PatternReloadListener<ConsolePatternCollection, ConsolePattern> getReloadListener(){
         return PATTERNS;
@@ -101,7 +101,7 @@ public class ConsolePatterns{
     }
 
     private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture) {
-        return addDefaultPattern(themeId, patternId, textureName, hasEmissiveTexture, TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE);
+        return addDefaultPattern(themeId, patternId, textureName, hasEmissiveTexture, Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE));
     }
 
 
@@ -110,7 +110,7 @@ public class ConsolePatterns{
      * <br> Also assigns the {@link ConsolePattern} its parent {@link ConsoleTheme}'s ID
      * @implSpec INTERNAL USE ONLY
      * */
-    private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture, ConsoleSoundProfile soundProfile) {
+    private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture, Optional<ConsoleSoundProfile> soundProfile) {
         List<ConsolePattern> consolePatternList;
         ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(themeId,textureName), hasEmissiveTexture), soundProfile).setThemeId(themeId);
 

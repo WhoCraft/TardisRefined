@@ -60,7 +60,7 @@ public class ToggleDoorControl extends Control {
             if (blockEntity != null){
                 if (blockEntity instanceof GlobalDoorBlockEntity internalDoor){
                     var isDoorOpen = internalDoor.isOpen();
-                    var pitchedSound = (isDoorOpen) ? internalDoor.pattern().soundProfile().getDoorClose() : internalDoor.pattern().soundProfile().getDoorOpen();
+                    var pitchedSound = (isDoorOpen) ? internalDoor.pattern().soundProfile().get().getDoorClose() : internalDoor.pattern().soundProfile().get().getDoorOpen();
                     if (pitchedSound != null) {
                         return pitchedSound;
                     }
