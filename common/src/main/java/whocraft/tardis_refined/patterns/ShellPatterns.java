@@ -18,7 +18,7 @@ public class ShellPatterns {
     private static Map<ResourceLocation, List<ShellPattern>> DEFAULT_PATTERNS = new HashMap();
 
     public static final ShellPattern DEFAULT = (ShellPattern) new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(exteriorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)
-            , new PatternTexture(interiorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false), TRShellSoundProfiles.DEFAULT_SOUND_PROFILE).setThemeId(ConsoleTheme.FACTORY.getId());
+            , new PatternTexture(interiorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false), Optional.of(TRShellSoundProfiles.DEFAULT_SOUND_PROFILE)).setThemeId(ConsoleTheme.FACTORY.getId());
 
     public static PatternReloadListener<ShellPatternCollection, ShellPattern> getReloadListener(){
         return PATTERNS;
@@ -124,10 +124,10 @@ public class ShellPatterns {
     }
 
     public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture) {
-        return addDefaultPattern(themeId, patternName, hasEmissiveTexture, TRShellSoundProfiles.DEFAULT_SOUND_PROFILE);
+        return addDefaultPattern(themeId, patternName, hasEmissiveTexture, Optional.of(TRShellSoundProfiles.DEFAULT_SOUND_PROFILE));
     }
 
-    public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture, ShellSoundProfile soundProfile) {
+    public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture, Optional<ShellSoundProfile> soundProfile) {
         ShellPattern pattern = (ShellPattern) new ShellPattern(patternName, new PatternTexture(exteriorTextureLocation(themeId, patternName), hasEmissiveTexture)
                 , new PatternTexture(interiorTextureLocation(themeId, patternName), hasEmissiveTexture), soundProfile).setThemeId(themeId);
         return addDefaultPattern(themeId, pattern);
@@ -175,7 +175,7 @@ public class ShellPatterns {
 
             //Use an overload version of the method for default shells because the texture files were named based on shell theme name
             ShellPattern pattern = new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
-                    , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission), soundProfile);
+                    , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission), Optional.of(soundProfile));
             addDefaultPattern(shellTheme, pattern);
         }
 
