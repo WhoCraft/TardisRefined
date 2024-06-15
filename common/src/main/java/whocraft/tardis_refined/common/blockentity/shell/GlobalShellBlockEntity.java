@@ -177,7 +177,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         ShellPattern pattern = this.pattern();
         if (pattern != null){
             Level currentLevel = this.getLevel();
-            ConfiguredSound configuredSound = pattern.soundProfile().getDoorClose();
+            ConfiguredSound configuredSound = pattern.soundProfile().get().getDoorClose();
             if (configuredSound != null){
                 currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
@@ -189,10 +189,12 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         ShellPattern pattern = this.pattern();
         if (pattern != null){
             Level currentLevel = this.getLevel();
-            ConfiguredSound configuredSound = pattern.soundProfile().getDoorLocked();
+            ConfiguredSound configuredSound = pattern.soundProfile().get().getDoorLocked();
             if (configuredSound != null){
                 currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
     }
+
+
 }

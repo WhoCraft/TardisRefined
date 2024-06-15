@@ -66,7 +66,7 @@ public abstract class Control {
             pattern = consoleBlockEntity.pattern();
         }
 
-        var pitchedSound = (leftClick) ? pattern.soundProfile().getGeneric().leftClick(): pattern.soundProfile().getGeneric().rightClick();
+        var pitchedSound = (leftClick) ? pattern.soundProfile().get().getGeneric().leftClick(): pattern.soundProfile().get().getGeneric().rightClick();
         if (pitchedSound != null){
             this.successSound = pitchedSound;
         }
