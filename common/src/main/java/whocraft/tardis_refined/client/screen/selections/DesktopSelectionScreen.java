@@ -20,6 +20,9 @@ import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
+import java.util.Collection;
+import java.util.Comparator;
+
 import static whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen.NOISE;
 
 public class DesktopSelectionScreen extends SelectionScreen {
@@ -119,8 +122,10 @@ public class DesktopSelectionScreen extends SelectionScreen {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 57, 80, leftPos, this.topPos + 30, this.topPos + this.imageHeight - 60, 12);
         selectionList.setRenderBackground(false);
 
-        for (DesktopTheme desktop : TardisDesktops.getRegistry().values()) {
+        Collection<DesktopTheme> values = TardisDesktops.getRegistry().values();
+        values = values.stream().sorted(Comparator.comparing(DesktopTheme::getName)).toList();
 
+        for (DesktopTheme desktop : values) {
 
             Component name = Component.literal(MiscHelper.getCleanName(desktop.getIdentifier().getPath()));
 
