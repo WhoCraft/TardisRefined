@@ -55,12 +55,21 @@ public class NetworkManagerImpl extends NetworkManager {
     }
 
     @Override
+    public void sendToTrackingAndSelf(ServerPlayer player, MessageS2C message) {
+        if (!this.toClient.containsValue(message.getType())) {
+            TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
+            return;
+        }
+        this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), message);
+    }
+
+    @Override
     public void sendToTracking(Entity entity, MessageS2C message) {
         if (!this.toClient.containsValue(message.getType())) {
             TardisRefined.LOGGER.error("Message type not registered: " + message.getType().getId());
             return;
         }
-        this.channel.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), message);
+        this.channel.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), message);
     }
 
     @Override
