@@ -12,6 +12,10 @@ public abstract class MessageS2C extends Message {
         this.getType().getNetworkManager().sendToPlayer(player, this);
     }
 
+    public void sendToTrackingAndSelf(ServerPlayer player) {
+        this.getType().getNetworkManager().sendToTrackingAndSelf(player, this);
+    }
+
     public void sendToDimension(Level level) {
         this.getType().getNetworkManager().sendToDimension(level, this);
     }

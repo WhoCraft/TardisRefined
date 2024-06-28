@@ -47,6 +47,8 @@ public abstract class NetworkManager {
 
     public abstract void sendToPlayer(ServerPlayer player, MessageS2C message);
 
+    public abstract void sendToTrackingAndSelf(ServerPlayer player, MessageS2C message);
+
     public abstract void sendToTracking(Entity entity, MessageS2C message);
 
     public abstract void sendToTracking(BlockEntity entity, MessageS2C message);
