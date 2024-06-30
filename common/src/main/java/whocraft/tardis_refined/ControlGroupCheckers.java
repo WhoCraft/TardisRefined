@@ -20,11 +20,12 @@ public class ControlGroupCheckers {
 
     public static final ControlGroupCheckers INSTANCE = new ControlGroupCheckers();
     private static final String API_URL = "https://mc.craig.software/api/skin/beta_players";
-    private final List<String> uuidList;
+    private final List<String> uuidList = new ArrayList<>();
 
     public ControlGroupCheckers() {
-        this.uuidList = new ArrayList<>();
-        fetchUUIDsFromAPI();
+        if(IS_CONTROL_GROUP) {
+            fetchUUIDsFromAPI();
+        }
     }
 
     public static void tickServer(MinecraftServer serverLevel) {
