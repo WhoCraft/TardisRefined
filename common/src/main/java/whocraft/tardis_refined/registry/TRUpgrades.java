@@ -7,6 +7,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
+import whocraft.tardis_refined.common.capability.upgrades.SpeedUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 
@@ -70,6 +71,16 @@ public class TRUpgrades {
     public static final RegistrySupplier<Upgrade> LANDING_PAD = UPGRADE_DEFERRED_REGISTRY.register("landing_pad", () -> new Upgrade(TRBlockRegistry.LANDING_PAD.get().asItem()::getDefaultInstance, NAVIGATION_SYSTEM, RegistryHelper.makeKey("landing_pad"), Upgrade.UpgradeType.SUB_UPGRADE)
             .setSkillPointsRequired(10).setPosition(8, 2));
 
+    // Flight Upgrades
+    public static final RegistrySupplier<Upgrade> FLIGHT_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("flight_system", () -> new Upgrade(Items.ELYTRA::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("flight_system"), Upgrade.UpgradeType.MAIN_UPGRADE)
+            .setSkillPointsRequired(1).setPosition(9, 1));
 
+    public static final RegistrySupplier<Upgrade> SPEED_I = UPGRADE_DEFERRED_REGISTRY.register("speed_i", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, FLIGHT_SYSTEM, RegistryHelper.makeKey("speed_i"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(2)
+            .setSkillPointsRequired(10).setPosition(9, 2));
 
+    public static final RegistrySupplier<Upgrade> SPEED_II = UPGRADE_DEFERRED_REGISTRY.register("speed_ii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_I, RegistryHelper.makeKey("speed_ii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(5)
+            .setSkillPointsRequired(20).setPosition(9, 3));
+
+    public static final RegistrySupplier<Upgrade> SPEED_III = UPGRADE_DEFERRED_REGISTRY.register("speed_iii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_II, RegistryHelper.makeKey("speed_iii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(10)
+            .setSkillPointsRequired(30).setPosition(9, 4));
 }
