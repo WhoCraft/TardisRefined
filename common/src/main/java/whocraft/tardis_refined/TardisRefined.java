@@ -16,7 +16,6 @@ import whocraft.tardis_refined.common.network.messages.sync.SyncDesktopsMessage;
 import whocraft.tardis_refined.common.network.messages.sync.SyncHumsMessage;
 import whocraft.tardis_refined.common.network.messages.sync.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
@@ -56,7 +55,7 @@ public class TardisRefined {
         Features.FEATURES.registerToModBus();
         TRParticles.TYPES.registerToModBus();
         TRUpgrades.UPGRADE_DEFERRED_REGISTRY.registerToModBus();
-        ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.registerToModBus();
+        TRConsoleThemes.CONSOLE_THEME_DEFERRED_REGISTRY.registerToModBus();
         ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.registerToModBus();
         TRControlRegistry.CONTROL_DEFERRED_REGISTRY.registerToModBus();
         TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.registerToModBus();

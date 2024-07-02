@@ -10,9 +10,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 public class ConsoleConfigurationBlockEntity extends BlockEntity {
 
@@ -20,12 +20,12 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
 
     public ConsoleConfigurationBlockEntity( BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), blockPos, blockState);
-        this.consoleTheme = ConsoleTheme.FACTORY.getId();
+        this.consoleTheme = TRConsoleThemes.FACTORY.getId();
     }
 
     public ResourceLocation theme(){
         if (this.consoleTheme == null){
-            this.consoleTheme = ConsoleTheme.FACTORY.getId();
+            this.consoleTheme = TRConsoleThemes.FACTORY.getId();
         }
         return this.consoleTheme;
     }

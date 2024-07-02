@@ -16,11 +16,9 @@ import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollecti
 import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-
-import java.util.Objects;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
@@ -54,11 +52,11 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
         poseStack.popPose();
 
         if (blockEntity != null && blockEntity.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
-            if (theme.toString().equals(ConsoleTheme.CRYSTAL.getId().toString())) {
+            if (theme.toString().equals(TRConsoleThemes.CRYSTAL.getId().toString())) {
                 renderHoloShell(crystalHolo,270, blockEntity, poseStack, bufferSource, packedLight, crystalHoloColor);
             }
 
-            if (theme.toString().equals(ConsoleTheme.INITIATIVE.getId().toString())) {
+            if (theme.toString().equals(TRConsoleThemes.INITIATIVE.getId().toString())) {
                 renderHoloShell(initiativeHolo, -30 + 180, blockEntity, poseStack, bufferSource, packedLight, initiativeHoloColor);
             }
         }

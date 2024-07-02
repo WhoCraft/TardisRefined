@@ -6,6 +6,7 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class ConsolePatterns{
 
     private static Map<ResourceLocation, List<ConsolePattern>> DEFAULT_PATTERNS = new HashMap();
 
-    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(ConsoleTheme.FACTORY.getId(), ConsoleTheme.FACTORY.getId().getPath() + "_console"), true)).setThemeId(ConsoleTheme.FACTORY.getId());
+    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(TRConsoleThemes.FACTORY.getId(), TRConsoleThemes.FACTORY.getId().getPath() + "_console"), true)).setThemeId(TRConsoleThemes.FACTORY.getId());
 
     public static PatternReloadListener<ConsolePatternCollection, ConsolePattern> getReloadListener(){
         return PATTERNS;
@@ -51,10 +52,10 @@ public class ConsolePatterns{
         Map<ResourceLocation, List<ConsolePattern>> entries = ConsolePatterns.getRegistry();
         for (Map.Entry<ResourceLocation, List<ConsolePattern>> entry : entries.entrySet()){
             if (pattern.getThemeId() == entry.getKey()){
-                return ConsoleTheme.CONSOLE_THEME_REGISTRY.get(entry.getKey());
+                return TRConsoleThemes.CONSOLE_THEME_REGISTRY.get(entry.getKey());
             }
         }
-        return ConsoleTheme.FACTORY.get();
+        return TRConsoleThemes.FACTORY.get();
     }
 
     /** Sanity check to make sure a Pattern for a ConsoleTheme exists
@@ -149,46 +150,46 @@ public class ConsolePatterns{
     public static Map<ResourceLocation, List<ConsolePattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
-        for (ResourceLocation consoleTheme : ConsoleTheme.CONSOLE_THEME_REGISTRY.keySet()) {
-            boolean hasDefaultEmission = consoleTheme == ConsoleTheme.COPPER.getId() || consoleTheme == ConsoleTheme.CRYSTAL.getId() || consoleTheme == ConsoleTheme.CORAL.getId() || consoleTheme == ConsoleTheme.FACTORY.getId() || consoleTheme == ConsoleTheme.INITIATIVE.getId() || consoleTheme == ConsoleTheme.TOYOTA.getId() || consoleTheme == ConsoleTheme.VICTORIAN.getId();
+        for (ResourceLocation consoleTheme : TRConsoleThemes.CONSOLE_THEME_REGISTRY.keySet()) {
+            boolean hasDefaultEmission = consoleTheme == TRConsoleThemes.COPPER.getId() || consoleTheme == TRConsoleThemes.CRYSTAL.getId() || consoleTheme == TRConsoleThemes.CORAL.getId() || consoleTheme == TRConsoleThemes.FACTORY.getId() || consoleTheme == TRConsoleThemes.INITIATIVE.getId() || consoleTheme == TRConsoleThemes.TOYOTA.getId() || consoleTheme == TRConsoleThemes.VICTORIAN.getId();
             addDefaultPattern(consoleTheme, ResourceConstants.DEFAULT_PATTERN_ID.getPath(), consoleTheme.getPath() + "_console", hasDefaultEmission);
         }
 
         /*Coral*/
-        addDefaultPattern(ConsoleTheme.CORAL.getId(), "war", "coral_console_war", true);
-        addDefaultPattern(ConsoleTheme.CORAL.getId(), "blue", "coral_console_blue", true);
+        addDefaultPattern(TRConsoleThemes.CORAL.getId(), "war", "coral_console_war", true);
+        addDefaultPattern(TRConsoleThemes.CORAL.getId(), "blue", "coral_console_blue", true);
 
         /*Factory*/
-        addDefaultPattern(ConsoleTheme.FACTORY.getId(), "vintage", "factory_console_vintage", true);
-        addDefaultPattern(ConsoleTheme.FACTORY.getId(), "mint", "factory_console_mint", true);
-        addDefaultPattern(ConsoleTheme.FACTORY.getId(), "wood", "factory_console_wood", true);
+        addDefaultPattern(TRConsoleThemes.FACTORY.getId(), "vintage", "factory_console_vintage", true);
+        addDefaultPattern(TRConsoleThemes.FACTORY.getId(), "mint", "factory_console_mint", true);
+        addDefaultPattern(TRConsoleThemes.FACTORY.getId(), "wood", "factory_console_wood", true);
 
         /*Toyota*/
-        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "violet", "toyota_console_purple", true);
-        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "blue", "toyota_console_blue", true);
-        addDefaultPattern(ConsoleTheme.TOYOTA.getId(), "skulk", "toyota_console_skulk", false);
+        addDefaultPattern(TRConsoleThemes.TOYOTA.getId(), "violet", "toyota_console_purple", true);
+        addDefaultPattern(TRConsoleThemes.TOYOTA.getId(), "blue", "toyota_console_blue", true);
+        addDefaultPattern(TRConsoleThemes.TOYOTA.getId(), "skulk", "toyota_console_skulk", false);
 
         /*Crystal*/
-        addDefaultPattern(ConsoleTheme.CRYSTAL.getId(), "corrupted", "crystal_console_corrupted", true);
+        addDefaultPattern(TRConsoleThemes.CRYSTAL.getId(), "corrupted", "crystal_console_corrupted", true);
 
         /*Myst*/
-        addDefaultPattern(ConsoleTheme.MYST.getId(), "molten", "myst_console_molten", false);
+        addDefaultPattern(TRConsoleThemes.MYST.getId(), "molten", "myst_console_molten", false);
 
         /*Victorian*/
-        addDefaultPattern(ConsoleTheme.VICTORIAN.getId(), "smissmass", "victorian_console_smissmass", false);
-        addDefaultPattern(ConsoleTheme.VICTORIAN.getId(), "grant", "victorian_console_grant", false);
+        addDefaultPattern(TRConsoleThemes.VICTORIAN.getId(), "smissmass", "victorian_console_smissmass", false);
+        addDefaultPattern(TRConsoleThemes.VICTORIAN.getId(), "grant", "victorian_console_grant", false);
 
         /*Initiative*/
-        addDefaultPattern(ConsoleTheme.INITIATIVE.getId(), "aperture", "initiative_console_aperture", true);
-        addDefaultPattern(ConsoleTheme.INITIATIVE.getId(), "blue", "initiative_console_blue", true);
-        addDefaultPattern(ConsoleTheme.INITIATIVE.getId(), "construction", "initiative_console_construction", false);
+        addDefaultPattern(TRConsoleThemes.INITIATIVE.getId(), "aperture", "initiative_console_aperture", true);
+        addDefaultPattern(TRConsoleThemes.INITIATIVE.getId(), "blue", "initiative_console_blue", true);
+        addDefaultPattern(TRConsoleThemes.INITIATIVE.getId(), "construction", "initiative_console_construction", false);
 
         // Nuka
-        addDefaultPattern(ConsoleTheme.NUKA.getId(), "industrial", "nuka_industrial", false);
-        addDefaultPattern(ConsoleTheme.NUKA.getId(), "cool", "nuka_cool", false);
+        addDefaultPattern(TRConsoleThemes.NUKA.getId(), "industrial", "nuka_industrial", false);
+        addDefaultPattern(TRConsoleThemes.NUKA.getId(), "cool", "nuka_cool", false);
 
         /*Copper*/
-        addDefaultPattern(ConsoleTheme.COPPER.getId(), "sculk", "copper_console_sculk", false);
+        addDefaultPattern(TRConsoleThemes.COPPER.getId(), "sculk", "copper_console_sculk", false);
 
         return new HashMap<>(DEFAULT_PATTERNS);
     }

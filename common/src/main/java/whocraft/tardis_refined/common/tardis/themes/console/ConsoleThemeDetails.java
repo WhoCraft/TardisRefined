@@ -1,19 +1,14 @@
 package whocraft.tardis_refined.common.tardis.themes.console;
 
+import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.GenericConsoleSoundProfile;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public abstract class ConsoleThemeDetails {
+public abstract class ConsoleThemeDetails extends ConsoleTheme {
 
-    ConsoleSoundProfile soundProfile = new GenericConsoleSoundProfile();
-
-    public ControlSpecification[] getControlSpecification() {
-        return null;
+    protected ConsoleThemeDetails(ControlSpecification[] controlSpecifications) {
+        super(new ResourceLocation("f"), null, controlSpecifications);
     }
 
-    public ConsoleSoundProfile getSoundProfile() {
-        return soundProfile;
-    }
 
 }

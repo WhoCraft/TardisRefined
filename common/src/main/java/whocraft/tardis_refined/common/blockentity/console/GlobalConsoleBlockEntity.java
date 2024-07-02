@@ -27,6 +27,7 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,13 +47,13 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
-        this.consoleTheme = ConsoleTheme.FACTORY.getId();
+        this.consoleTheme = TRConsoleThemes.FACTORY.getId();
         this.basePattern = this.pattern();
     }
 
     public ResourceLocation theme() {
         if (this.consoleTheme == null) {
-            this.consoleTheme = ConsoleTheme.FACTORY.getId();
+            this.consoleTheme = TRConsoleThemes.FACTORY.getId();
         }
         return this.consoleTheme;
     }
@@ -130,7 +131,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
             killControls();
             ResourceLocation themeId = this.theme();
-            ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEME_REGISTRY.get(themeId);
+            ConsoleTheme consoleTheme = TRConsoleThemes.CONSOLE_THEME_REGISTRY.get(themeId);
             ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
             for (ControlSpecification control : Arrays.stream(controls).toList()) {
                 // Spawn a control!

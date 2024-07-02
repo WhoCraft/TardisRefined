@@ -11,8 +11,6 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -22,10 +20,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-
-import java.util.List;
-import java.util.Set;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -3600,7 +3595,7 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 
 	@Override
 	public ResourceLocation getConsoleTheme() {
-		return ConsoleTheme.CORAL.getId();
+		return TRConsoleThemes.CORAL.getId();
 	}
 
 	@Override

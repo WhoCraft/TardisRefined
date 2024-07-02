@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.util;
 
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +10,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 /** Helper for creating common objects.
  * Allows for smoother transition to future versions where registries change*/
@@ -37,7 +37,7 @@ public class RegistryHelper {
     }
 
     public static ResourceLocation getKey(ConsoleTheme theme){
-        return ConsoleTheme.CONSOLE_THEME_REGISTRY.getKey(theme);
+        return TRConsoleThemes.CONSOLE_THEME_REGISTRY.getKey(theme);
     }
 
     public static ResourceLocation getKey(ShellTheme theme){
