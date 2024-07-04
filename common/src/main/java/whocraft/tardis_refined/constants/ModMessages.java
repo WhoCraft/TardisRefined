@@ -126,6 +126,10 @@ public class ModMessages {
 
     public static final String CMD_CREATE_TARDIS_SUCCESS = cmdOutput("create.success");
 
+    public static final String CMD_CONTROL_INDEX_SUCCESS = cmdOutput("get_control_index.success");
+
+    public static final String CMD_CONTROL_INDEX_INVALID_ENTITY = cmdArgInvalid("get_control_index.entity");
+
     public static final String CMD_ARG_UPGRADE_INVALID = cmdArgInvalid("upgrade");
 
     public static final String CMD_ARG_DESKTOP_INVALID = cmdArgInvalid("desktop");

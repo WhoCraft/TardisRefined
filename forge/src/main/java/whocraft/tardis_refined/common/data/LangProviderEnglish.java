@@ -12,7 +12,6 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.hum.HumEntry;
 import whocraft.tardis_refined.common.hum.TardisHums;
-import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -173,6 +172,9 @@ public class LangProviderEnglish extends LanguageProvider {
 
         add(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, "Attempting to create Tardis %s, generation in progress");
         add(ModMessages.CMD_CREATE_TARDIS_SUCCESS, "Successfully created Tardis with id %s");
+
+        add(ModMessages.CMD_CONTROL_INDEX_SUCCESS, "The selected control has index %s");
+        add(ModMessages.CMD_CONTROL_INDEX_INVALID_ENTITY, "%s is not a TARDIS control");
 
         add(ModMessages.CMD_ARG_UPGRADE_INVALID, "Invalid Upgrade of ID %s");
         add(ModMessages.CMD_ARG_DESKTOP_INVALID, "Invalid Desktop of ID %s");

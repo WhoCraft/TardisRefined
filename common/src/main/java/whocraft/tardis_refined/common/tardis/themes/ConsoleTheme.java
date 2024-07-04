@@ -25,10 +25,12 @@ public abstract class ConsoleTheme implements Theme {
 
     public ConsoleTheme(ResourceLocation translationKey) {
         this.translationKey = translationKey;
-        this.addControlSpecifications();
     }
 
     public final List<ControlSpecification> getControlSpecificationList() {
+        if (controlSpecifications.isEmpty()) {
+            this.addControlSpecifications();
+        }
         return controlSpecifications;
     }
 
