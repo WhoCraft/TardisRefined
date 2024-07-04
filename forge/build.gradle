@@ -27,23 +27,23 @@ unifiedPublishing {
 
         }
 
-        var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
-        if (CURSE_API_KEY != "") {
-            curseforge {
-                token = CURSE_API_KEY
-                id = "782697"
-                gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
-            }
-        }
-
-        var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
-        if (MODRINTH_TOKEN != "") {
-            modrinth {
-                token = MODRINTH_TOKEN
-                id = "nqVt6aES"
-                version = "$project.version+$project.name"
-            }
-        }
+//        var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
+//        if (CURSE_API_KEY != "") {
+//            curseforge {
+//                token = CURSE_API_KEY
+//                id = "782697"
+//                gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
+//            }
+//        }
+//
+//        var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
+//        if (MODRINTH_TOKEN != "") {
+//            modrinth {
+//                token = MODRINTH_TOKEN
+//                id = "nqVt6aES"
+//                version = "$project.version+$project.name"
+//            }
+//        }
     }
 }
 
