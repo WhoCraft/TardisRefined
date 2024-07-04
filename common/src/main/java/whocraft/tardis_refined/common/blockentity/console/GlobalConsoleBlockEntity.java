@@ -30,7 +30,6 @@ import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
@@ -132,8 +131,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             killControls();
             ResourceLocation themeId = this.theme();
             ConsoleTheme consoleTheme = TRConsoleThemes.CONSOLE_THEME_REGISTRY.get(themeId);
-            ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
-            for (ControlSpecification control : Arrays.stream(controls).toList()) {
+            for (ControlSpecification control : consoleTheme.getControlSpecificationList()) {
                 // Spawn a control!
                 ControlEntity controlEntity = new ControlEntity(getLevel());
 
