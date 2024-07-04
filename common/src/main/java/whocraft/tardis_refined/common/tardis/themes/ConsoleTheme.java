@@ -52,9 +52,9 @@ public abstract class ConsoleTheme implements Theme {
         addControl(TRControlRegistry.GENERIC_NO_SHOW, x, y, z);
     }
 
-    public void replaceControl(RegistrySupplier<Control> replacementControl, int controlIndex) {
+    public void replaceControl(Control replacementControl, int controlIndex) {
         try {
-            controlSpecifications.get(controlIndex).setControl(replacementControl.get());
+            controlSpecifications.get(controlIndex).setControl(replacementControl);
         } catch (IndexOutOfBoundsException exception) {
             TardisRefined.LOGGER.error("No control present at index " + controlIndex);
         }

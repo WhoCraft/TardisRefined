@@ -4,9 +4,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.console.*;
 import whocraft.tardis_refined.common.util.RegistryHelper;
+
+import java.util.Map;
 
 public class TRConsoleThemes {
     /**
@@ -34,4 +37,19 @@ public class TRConsoleThemes {
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> INITIATIVE = CONSOLE_THEME_DEFERRED_REGISTRY.registerHolder("initiative", () -> new InitiativeConsoleTheme(RegistryHelper.makeKey("initiative")));
     public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> REFURBISHED = CONSOLE_THEME_DEFERRED_REGISTRY.registerHolder("refurbished", () -> new RefurbishedConsoleTheme(RegistryHelper.makeKey("refurbished")));
 
+    // Convenience function for addon mod developers to replace empty controls
+    public void registerReplacementControl(Control replacementControl,  Map<RegistrySupplierHolder<ConsoleTheme, ConsoleTheme>, Integer> replacements) {
+        for (RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> holder : replacements.keySet()) {
+            if (CONSOLE_THEME_REGISTRY.containsKey(holder.getKey())) {
+                int index = replacements.get(holder);
+                ConsoleTheme consoleTheme = holder.get();
+                Control originalControl = consoleTheme.getControlSpecificationList().get(index).control();
+                if (originalControl.equals(TRControlRegistry.GENERIC_NO_SHOW.get())) {
+                    consoleTheme.replaceControl(replacementControl, index);
+                } else {
+                    TardisRefined.LOGGER.error("Could not replace non-empty control {} at index {}", originalControl.getId(), index);
+                }
+            }
+        }
+    }
 }
