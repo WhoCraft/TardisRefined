@@ -614,9 +614,9 @@ public class TardisPilotingManager extends BaseHandler {
         BlockPos targetPosition = this.targetLocation.getPosition();
         BlockPos startingPosition = this.getCurrentLocation().getPosition();
         float percentage = this.getFlightPercentageCovered();
-        float percentageX = (targetPosition.getX() - startingPosition.getX()) * percentage;
-        float percentageY = (targetPosition.getY() - startingPosition.getY()) * percentage;
-        float percentageZ = (targetPosition.getZ() - startingPosition.getZ()) * percentage;
+        float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
+        float percentageY = startingPosition.getY() + (targetPosition.getY() - startingPosition.getY()) * percentage;
+        float percentageZ = startingPosition.getZ() + (targetPosition.getZ() - startingPosition.getZ()) * percentage;
 
         TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.getCurrentLocation().getLevel());
         this.targetLocation = newLocation;
