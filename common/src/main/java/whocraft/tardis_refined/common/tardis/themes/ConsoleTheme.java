@@ -6,7 +6,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
@@ -31,7 +30,6 @@ public abstract class ConsoleTheme implements Theme {
     public final List<ControlSpecification> getControlSpecificationList() {
         if (controlSpecifications.isEmpty()) {
             this.addControlSpecifications();
-            TardisCommonEvents.ADD_CONTROL_SPECIFICATIONS.invoker().onControlSpecificationsAdded(this);
         }
         return controlSpecifications;
     }

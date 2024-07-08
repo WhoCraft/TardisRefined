@@ -10,9 +10,9 @@ import whocraft.tardis_refined.registry.TRControlRegistry;
 import java.util.Map;
 
 /**
- * This record is used for addon mods to register replacements for "switch" controls registered as {@link TRControlRegistry#GENERIC_NO_SHOW}
+ * This record is used for addon mods to register replacements for generic controls registered as {@link TRControlRegistry#GENERIC_NO_SHOW}
  * @param control - The control to replace the {@link TRControlRegistry#GENERIC_NO_SHOW}
- * @param replacements - A {@link Map} of the {@link ConsoleTheme} and index of the "switch" control to replace in the list of {@link ControlSpecification}s
+ * @param replacements - A {@link Map} of the {@link ConsoleTheme} and index of the generic control to replace in the list of {@link ControlSpecification}s
  */
 public record ControlReplacement(Control control, Map<RegistrySupplierHolder<ConsoleTheme, ConsoleTheme>, Integer> replacements) {
 
