@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
-import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.sync.SyncConsolePatternsMessage;
@@ -16,13 +15,15 @@ import whocraft.tardis_refined.common.network.messages.sync.SyncDesktopsMessage;
 import whocraft.tardis_refined.common.network.messages.sync.SyncHumsMessage;
 import whocraft.tardis_refined.common.network.messages.sync.SyncShellPatternsMessage;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
-import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
+
+import java.util.Map;
 
 public class TardisRefined {
 
@@ -55,9 +56,9 @@ public class TardisRefined {
         Features.FEATURES.registerToModBus();
         TRParticles.TYPES.registerToModBus();
         TRUpgrades.UPGRADE_DEFERRED_REGISTRY.registerToModBus();
+        TRControlRegistry.CONTROL_DEFERRED_REGISTRY.registerToModBus();
         TRConsoleThemes.CONSOLE_THEME_DEFERRED_REGISTRY.registerToModBus();
         ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.registerToModBus();
-        TRControlRegistry.CONTROL_DEFERRED_REGISTRY.registerToModBus();
         TRArgumentTypeRegistry.COMMAND_ARGUMENT_TYPES.registerToModBus();
         TRTagKeys.init();
         TardisNetwork.init();
@@ -67,6 +68,8 @@ public class TardisRefined {
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, SyncHumsMessage::new);
 
         registerFallbackEntries();
+        ConsoleTheme.registerReplacementControl(TRControlRegistry.DIMENSION, Map.of(TRConsoleThemes.CORAL.get(), 11, TRConsoleThemes.CRYSTAL.get(), 6012));
+
     }
 
     /** Register default entries for data-driven registries. This is encapsulated in a method to call at different game load stages depending on the mod-loader

@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
@@ -15,6 +16,7 @@ import whocraft.tardis_refined.registry.TRControlRegistry;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public abstract class ConsoleTheme implements Theme {
@@ -25,12 +27,11 @@ public abstract class ConsoleTheme implements Theme {
 
     public ConsoleTheme(ResourceLocation translationKey) {
         this.translationKey = translationKey;
+        this.addControlSpecifications();
+        TardisCommonEvents.CONSOLE_THEME_REGISTERED.invoker().onThemeRegistered(this);
     }
 
     public final List<ControlSpecification> getControlSpecificationList() {
-        if (controlSpecifications.isEmpty()) {
-            this.addControlSpecifications();
-        }
         return controlSpecifications;
     }
 
@@ -52,11 +53,16 @@ public abstract class ConsoleTheme implements Theme {
         addControl(TRControlRegistry.GENERIC_NO_SHOW, x, y, z);
     }
 
-    public void replaceControl(Control replacementControl, int controlIndex) {
+    public void replaceControl(Control replacementControl, int controlIndex, ConsoleTheme consoleTheme) {
         try {
-            controlSpecifications.get(controlIndex).setControl(replacementControl);
+            Control originalControl = consoleTheme.getControlSpecificationList().get(controlIndex).control();
+            if (originalControl.equals(TRControlRegistry.GENERIC_NO_SHOW.get())) {
+                controlSpecifications.get(controlIndex).setControl(replacementControl);
+            } else {
+                TardisRefined.LOGGER.error("Could not replace non-empty control {} at index {} on console {}", originalControl.getId(), controlIndex, consoleTheme.translationKey.toString());
+            }
         } catch (IndexOutOfBoundsException exception) {
-            TardisRefined.LOGGER.error("No control present at index " + controlIndex);
+            TardisRefined.LOGGER.error("Could not replace control: no control present at index {} on console {}", controlIndex, consoleTheme.translationKey.toString());
         }
     }
 
@@ -72,5 +78,15 @@ public abstract class ConsoleTheme implements Theme {
 
     public ConsoleSoundProfile getSoundProfile() {
         return soundProfile;
+    }
+
+    // Convenience function for addon mod developers to replace empty controls
+    public static void registerReplacementControl(RegistrySupplier<Control> replacementControl,  Map<ConsoleTheme, Integer> replacements) {
+        for (ConsoleTheme consoleTheme : replacements.keySet()) {
+            int index = replacements.get(consoleTheme);
+            System.out.println("yeah heck");
+
+            consoleTheme.replaceControl(replacementControl.get(), index, consoleTheme);
+        }
     }
 }

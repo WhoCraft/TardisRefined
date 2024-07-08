@@ -9,6 +9,7 @@ import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class TardisCommonEvents {
 
@@ -74,7 +75,11 @@ public class TardisCommonEvents {
      */
     public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
 
-
+    public static final Event<ConsoleThemeRegistered> CONSOLE_THEME_REGISTERED = new Event<>(ConsoleThemeRegistered.class, listeners -> theme -> {
+        for (ConsoleThemeRegistered listener : listeners) {
+            listener.onThemeRegistered(theme);
+        }
+    });
 
     /**
      * Functional interface to define the conditions for using player control.
@@ -238,5 +243,19 @@ public class TardisCommonEvents {
          * @param upgrade       The Upgrade
          */
         void onUpgradeUnlock(TardisLevelOperator tardisLevelOperator, Upgrade upgrade);
+    }
+
+    /**
+     * An event that is triggered when a {@link ConsoleTheme} is registered
+     */
+    @FunctionalInterface
+    public interface ConsoleThemeRegistered {
+        /**
+         * Called when a {@link ConsoleTheme} is registered, to allow addon mods to replace empty control switches
+         * Use {@link ConsoleTheme#replaceControl(Control, int, ConsoleTheme)}
+         *
+         * @param theme The {@link ConsoleTheme} being registered
+         */
+        void onThemeRegistered(ConsoleTheme theme);
     }
 }
