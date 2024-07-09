@@ -207,13 +207,5 @@
   "upgrade.tardis_refined.tardis_xp": "System Upgrades",
   "upgrade.tardis_refined.tardis_xp.description": "Allows upgrades to the TARDIS",
   "upgrade.tardis_refined.waypoints": "Waypoints",
-  "upgrade.tardis_refined.waypoints.description": "Allows the Pilot to create saved locations",
-  "upgrade.tardis_refined.flight_system": "Flight System",
-  "upgrade.tardis_refined.flight_system.description": "Allows upgrades to the TARDIS Flight System",
-  "upgrade.tardis_refined.speed_i": "Speed I",
-  "upgrade.tardis_refined.speed_i.description": "Flight speed is 2x faster",
-  "upgrade.tardis_refined.speed_ii": "Speed II",
-  "upgrade.tardis_refined.speed_ii.description": "Flight speed is 5x faster",
-  "upgrade.tardis_refined.speed_iii": "Speed III",
-  "upgrade.tardis_refined.speed_iii.description": "Flight speed is 10x faster"
+  "upgrade.tardis_refined.waypoints.description": "Allows the Pilot to create saved locations"
 }

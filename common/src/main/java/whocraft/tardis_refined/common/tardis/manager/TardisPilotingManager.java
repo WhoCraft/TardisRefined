@@ -1048,11 +1048,13 @@ public class TardisPilotingManager extends BaseHandler {
         UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
         Upgrade upgrade = TRUpgrades.SPEED_III.get();
 
-        while (upgrade instanceof SpeedUpgrade)
+        for (int i = 0; i < 3; i++)
         {
-            if (upgradeHandler.isUpgradeUnlocked(upgrade)) {
+            if (!(upgrade instanceof SpeedUpgrade))
+                return this.speedModifier;
+
+            if (upgradeHandler.isUpgradeUnlocked(upgrade))
                 return ((SpeedUpgrade) upgrade).getSpeedModifier();
-            }
 
             upgrade = upgrade.getParent();
         }
