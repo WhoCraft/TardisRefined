@@ -79,6 +79,7 @@ public class NbtConstants {
     // Flight
     public static final String FLIGHT_DISTANCE = "flight_distance";
     public static final String DISTANCE_COVERED = "distance_covered";
+    public static final String SPEED_MODIFIER = "speed_modifier";
 
 
     // Piloting Manager
