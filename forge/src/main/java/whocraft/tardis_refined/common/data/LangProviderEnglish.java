@@ -150,6 +150,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.HANDBRAKE_DISENGAGED, "Handbrake disengaged");
         add(ModMessages.CURRENT, "CURRENT");
         add(ModMessages.DESTINATION, "DESTINATION");
+        add(ModMessages.DOOR_LOCKED, "Door locked");
+        add(ModMessages.DOOR_UNLOCKED, "Door unlocked");
 
 
         /*Command*/
