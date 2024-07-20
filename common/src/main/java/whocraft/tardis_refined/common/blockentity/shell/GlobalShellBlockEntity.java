@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -24,7 +25,9 @@ import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -142,6 +145,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                     exteriorManager.setLocked(locked);
                     internalDoor.setLocked(locked);
                     tardisLevelOperator.setDoorClosed(locked);
+                    PlayerUtil.sendMessage(player, Component.translatable(locked ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED), true);
                     return true;
                 }
 
