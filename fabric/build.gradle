@@ -17,7 +17,7 @@ loom {
 if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
     unifiedPublishing {
         project {
-            displayName = "[Fabric] - Tardis Refined - v$project.version"
+            displayName = "[Fabric] Tardis Refined - $project.version"
             releaseType = "release"
             changelog = new File("${rootProject.projectDir}/changelog.md").text
             gameVersions = ["$rootProject.minecraft_version"]
@@ -48,7 +48,7 @@ if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
                 modrinth {
                     token = MODRINTH_TOKEN
                     id = "nqVt6aES"
-                    version = "$project.version+$project.name"
+                    version = "fabric-$project.version"
                 }
             }
         }
