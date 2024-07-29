@@ -42,7 +42,7 @@ if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
                 modrinth {
                     token = MODRINTH_TOKEN
                     id = "nqVt6aES"
-                    version = "$project.version+$project.name"
+                    version = "forge-$project.version"
                 }
             }
         }
