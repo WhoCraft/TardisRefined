@@ -294,6 +294,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(Util.makeDescriptionId("upgrade", TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgrade)) + ".description", description);
     }
 
+
+
     public void addSound(SoundEvent soundEvent, String lang) {
         String subtitleKey = SoundProvider.createSubtitle(soundEvent.getLocation().getPath());
         add(subtitleKey, lang);
@@ -308,5 +310,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add("death.attack." + damageSource.location().getPath(), message);
         add("death.attack." + damageSource.location().getPath() + ".player", message);
     }
+
+
 
 }

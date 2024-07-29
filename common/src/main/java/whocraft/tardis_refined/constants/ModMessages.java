@@ -140,6 +140,9 @@ public class ModMessages {
     public static String DOOR_STATUS = message("door_status");
     public static String LOCK_STATUS = message("lock_status");
 
+    public static String DOOR_LOCKED = message("door_locked");
+    public static String DOOR_UNLOCKED = message("door_unlocked");
+
     public static String message(String translationKey){
         return "message." + TardisRefined.MODID + "." + translationKey;
     }

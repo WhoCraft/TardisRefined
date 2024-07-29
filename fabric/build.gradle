@@ -12,7 +12,7 @@ loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 
-if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
+//if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
 
     unifiedPublishing {
         project {
@@ -52,7 +52,7 @@ if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
             }
         }
     }
-}
+//}
 
 configurations {
     common
