@@ -79,6 +79,7 @@ public class TardisDesktops {
         addDefaultDesktop(new DesktopTheme("victorian", "desktop/victorian"));
         addDefaultDesktop(new DesktopTheme("violet_eye", "desktop/violet_eye"));
         addDefaultDesktop(new DesktopTheme("watchface", "desktop/watchface"));
+        addDefaultDesktop(new DesktopTheme("classic", "desktop/classic"));
 
         return DEFAULT_DESKTOPS;
     }
