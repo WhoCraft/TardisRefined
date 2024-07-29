@@ -39,6 +39,9 @@ public class ModMessages {
     public static String STOP_REFUEL = message("refuel_stopped");
     public static String FUEL_OFFLINE = message("fuel_offline");
 
+    public static String DOOR_LOCKED = message("door_locked");
+    public static String DOOR_UNLOCKED = message("door_unlocked");
+
     public static String NO_DESKTOP_NO_FUEL = message("desktop_cancel_not_enough_fuel");
 
     public static String ASTRAL_MANIPULATOR_ENGAGED = message("astral_manipulator_engaged");
