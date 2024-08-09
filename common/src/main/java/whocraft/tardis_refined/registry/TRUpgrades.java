@@ -75,12 +75,18 @@ public class TRUpgrades {
     public static final RegistrySupplier<Upgrade> FLIGHT_SYSTEM = UPGRADE_DEFERRED_REGISTRY.register("flight_system", () -> new Upgrade(Items.ELYTRA::getDefaultInstance, TARDIS_XP, RegistryHelper.makeKey("flight_system"), Upgrade.UpgradeType.MAIN_UPGRADE)
             .setSkillPointsRequired(1).setPosition(9, 1));
 
-    public static final RegistrySupplier<Upgrade> SPEED_I = UPGRADE_DEFERRED_REGISTRY.register("speed_i", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, FLIGHT_SYSTEM, RegistryHelper.makeKey("speed_i"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(2)
+    public static final RegistrySupplier<Upgrade> SPEED_I = UPGRADE_DEFERRED_REGISTRY.register("speed_i", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, FLIGHT_SYSTEM, RegistryHelper.makeKey("speed_i"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(5)
             .setSkillPointsRequired(10).setPosition(9, 2));
 
-    public static final RegistrySupplier<Upgrade> SPEED_II = UPGRADE_DEFERRED_REGISTRY.register("speed_ii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_I, RegistryHelper.makeKey("speed_ii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(5)
+    public static final RegistrySupplier<Upgrade> SPEED_II = UPGRADE_DEFERRED_REGISTRY.register("speed_ii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_I, RegistryHelper.makeKey("speed_ii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(10)
             .setSkillPointsRequired(20).setPosition(9, 3));
 
-    public static final RegistrySupplier<Upgrade> SPEED_III = UPGRADE_DEFERRED_REGISTRY.register("speed_iii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_II, RegistryHelper.makeKey("speed_iii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(10)
+    public static final RegistrySupplier<Upgrade> SPEED_III = UPGRADE_DEFERRED_REGISTRY.register("speed_iii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_II, RegistryHelper.makeKey("speed_iii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(25)
             .setSkillPointsRequired(30).setPosition(9, 4));
+
+    public static final RegistrySupplier<Upgrade> SPEED_IV = UPGRADE_DEFERRED_REGISTRY.register("speed_iv", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_II, RegistryHelper.makeKey("speed_iv"), Upgrade.UpgradeType.SUB_UPGRADE)
+            .setSpeedModifier(50)
+            .setSkillPointsRequired(50)
+            .setPosition(9, 5));
+
 }

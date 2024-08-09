@@ -27,7 +27,6 @@ import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.SpeedUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -36,6 +35,7 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.*;
 
@@ -1046,19 +1046,16 @@ public class TardisPilotingManager extends BaseHandler {
      */
     private int getLatestSpeedModifier() {
         UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
-        Upgrade upgrade = TRUpgrades.SPEED_III.get();
 
-        for (int i = 0; i < 3; i++)
-        {
-            if (!(upgrade instanceof SpeedUpgrade))
-                return this.speedModifier;
-
-            if (upgradeHandler.isUpgradeUnlocked(upgrade))
-                return ((SpeedUpgrade) upgrade).getSpeedModifier();
-
-            upgrade = upgrade.getParent();
-        }
-
+        this.speedModifier = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(upgrade -> upgrade instanceof SpeedUpgrade)
+                .map(upgrade -> (SpeedUpgrade) upgrade)
+                .filter(upgradeHandler::isUpgradeUnlocked)
+                .mapToInt(SpeedUpgrade::getSpeedModifier)
+                .max()
+                .orElse(1);
         return this.speedModifier;
     }
+
 }
