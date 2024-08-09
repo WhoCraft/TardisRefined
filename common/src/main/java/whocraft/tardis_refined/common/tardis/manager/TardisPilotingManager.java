@@ -38,6 +38,8 @@ import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class TardisPilotingManager extends BaseHandler {
 
@@ -1047,19 +1049,16 @@ public class TardisPilotingManager extends BaseHandler {
      */
     private int getLatestSpeedModifier() {
         UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
-        Upgrade upgrade = TRUpgrades.SPEED_III.get();
 
-        for (int i = 0; i < 3; i++)
-        {
-            if (!(upgrade instanceof SpeedUpgrade))
-                return this.speedModifier;
-
-            if (upgradeHandler.isUpgradeUnlocked(upgrade))
-                return ((SpeedUpgrade) upgrade).getSpeedModifier();
-
-            upgrade = upgrade.getParent();
-        }
-
+        this.speedModifier = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(upgrade -> upgrade instanceof SpeedUpgrade)
+                .map(upgrade -> (SpeedUpgrade) upgrade)
+                .filter(upgradeHandler::isUpgradeUnlocked)
+                .mapToInt(SpeedUpgrade::getSpeedModifier)
+                .max()
+                .orElse(1);
         return this.speedModifier;
     }
+
 }
