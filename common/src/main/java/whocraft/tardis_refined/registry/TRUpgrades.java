@@ -83,7 +83,7 @@ public class TRUpgrades {
     public static final RegistrySupplier<Upgrade> SPEED_III = UPGRADE_DEFERRED_REGISTRY.register("speed_iii", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_II, RegistryHelper.makeKey("speed_iii"), Upgrade.UpgradeType.SUB_UPGRADE).setSpeedModifier(25)
             .setSkillPointsRequired(30).setPosition(9, 4));
 
-    public static final RegistrySupplier<Upgrade> SPEED_IV = UPGRADE_DEFERRED_REGISTRY.register("speed_iv", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_II, RegistryHelper.makeKey("speed_iv"), Upgrade.UpgradeType.SUB_UPGRADE)
+    public static final RegistrySupplier<Upgrade> SPEED_IV = UPGRADE_DEFERRED_REGISTRY.register("speed_iv", () -> new SpeedUpgrade(Items.FIREWORK_ROCKET::getDefaultInstance, SPEED_III, RegistryHelper.makeKey("speed_iv"), Upgrade.UpgradeType.SUB_UPGRADE)
             .setSpeedModifier(50)
             .setSkillPointsRequired(50)
             .setPosition(9, 5));
