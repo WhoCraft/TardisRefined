@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
@@ -11,6 +12,9 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
+import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 
 public class ToggleDoorControl extends Control {
     public ToggleDoorControl(ResourceLocation id) {
@@ -47,6 +51,8 @@ public class ToggleDoorControl extends Control {
             //Update both internal and exterior shell doors with the value from the exterior manager, which is the Tardis' current data
             if (operator.getExteriorManager() != null)
                 operator.setDoorLocked(!operator.getExteriorManager().locked());
+                operator.getExteriorManager().setLocked(!operator.getExteriorManager().locked());
+            PlayerUtil.sendMessage(player, Component.translatable(operator.getExteriorManager().locked() ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED), true);
             operator.setDoorClosed(true);
             return true;
         }
