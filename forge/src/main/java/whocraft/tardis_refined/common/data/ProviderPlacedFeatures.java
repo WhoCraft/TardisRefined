@@ -2,13 +2,16 @@ package whocraft.tardis_refined.common.data;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
+import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraft.world.level.material.Fluids;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.TRFeatureKeys;
 
@@ -31,7 +34,8 @@ public class ProviderPlacedFeatures {
                         List.of(
                                 RarityFilter.onAverageOnceEvery(25),
                                 InSquarePlacement.spread(),
-                                HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20))))
+                                HeightRangePlacement.uniform(VerticalAnchor.absolute(-50), VerticalAnchor.absolute(20)),
+                                BlockPredicateFilter.forPredicate(BlockPredicate.not(BlockPredicate.matchesFluids(new Vec3i(0, 5, 0), Fluids.WATER)))))
         );
 
 
