@@ -1,9 +1,9 @@
-# Version 2.0.5
+# Version 2.0.6
 
 ![TARDIS Refined](https://wiki.tardisrefined.net/TARDIS-Refined-Wiki/tardis_refined_v2.png)
 
-## Bug Fix
-- Door locking/unlocking now has a hotbar message
-- Adds Classic Interior
-- Fixed ending the flight early placing the TARDIS at the wrong location
-- Speed Upgrades :)
+## Changes
+- Added 50x speed upgrade
+
+## Fixes
+- Fixed Speed Upgrades not correctly applying
