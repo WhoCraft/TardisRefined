@@ -10,6 +10,7 @@ public class TardisClientEvents {
         }
     });
 
+    /*Provides a safe place for addon makers to register their shell and interior door models*/
     @FunctionalInterface
     public interface SetupModels {
         void setUpShellAndInteriorModels(EntityModelSet context);
