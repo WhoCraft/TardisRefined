@@ -24,6 +24,7 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
+import whocraft.tardis_refined.common.capability.upgrades.SpeedUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.util.LevelHelper;
@@ -36,6 +37,7 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.*;
 
@@ -68,6 +70,7 @@ public class TardisPilotingManager extends TickableHandler {
 
     private boolean isCrashing = false;
 
+    private int speedModifier = 1;
 
     private boolean canUseControls = true;
 
@@ -115,7 +118,7 @@ public class TardisPilotingManager extends TickableHandler {
         this.ticksCrashing = tag.getInt("ticksCrashing");
         this.ticksSinceCrash = tag.getInt("ticksSinceCrash");
         this.flightDistance = tag.getInt(NbtConstants.FLIGHT_DISTANCE);
-        this.distanceCovered = tag.getInt(NbtConstants.FLIGHT_DISTANCE);
+        this.distanceCovered = tag.getInt(NbtConstants.DISTANCE_COVERED);
         this.canUseControls = tag.getBoolean("canUseControls");
 
         if (this.targetLocation == null) {
@@ -123,6 +126,7 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
+        this.speedModifier = tag.getInt(NbtConstants.SPEED_MODIFIER);
 
         this.fuel = tag.getDouble(NbtConstants.FUEL);
         this.maximumFuel = tag.getDouble(NbtConstants.MAXIMUM_FUEL);
@@ -138,6 +142,7 @@ public class TardisPilotingManager extends TickableHandler {
         tag.putBoolean(NbtConstants.CONTROL_AUTOLAND, this.autoLand);
         tag.putBoolean(NbtConstants.IS_HANDBRAKE_ON, this.isHandbrakeOn);
         tag.putInt(NbtConstants.THROTTLE_STAGE, this.throttleStage);
+        tag.putInt(NbtConstants.SPEED_MODIFIER, this.speedModifier);
 
         tag.putInt("ticksCrashing", this.ticksCrashing);
         tag.putInt("ticksSinceCrash", this.ticksSinceCrash);
@@ -224,7 +229,7 @@ public class TardisPilotingManager extends TickableHandler {
 
             if (this.operator.getLevel().getGameTime() % (20) == 0) {
                 if (distanceCovered <= flightDistance) {
-                    distanceCovered += throttleStage + (0.5 * throttleStage);
+                    distanceCovered += (int) (throttleStage + (0.5 * throttleStage * speedModifier));
 
                     // If this tick was enough to push us over.
                     if (distanceCovered >= flightDistance) {
@@ -550,8 +555,7 @@ public class TardisPilotingManager extends TickableHandler {
             this.isPassivelyRefuelling = false;
             this.flightDistance = 0;
             this.distanceCovered = 0;
-
-
+            this.speedModifier = this.getLatestSpeedModifier();
 
             this.fastReturnLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
@@ -559,7 +563,6 @@ public class TardisPilotingManager extends TickableHandler {
             TardisNavLocation targetPosition = this.getTargetLocation();
             TardisNavLocation lastKnownLocation = new TardisNavLocation(this.getCurrentLocation().getPosition(), this.getCurrentLocation().getDirection(), this.getCurrentLocation().getLevel());
 
-            // Do we not have a last known location?
 
             this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
 
@@ -688,9 +691,9 @@ public class TardisPilotingManager extends TickableHandler {
         BlockPos targetPosition = this.targetLocation.getPosition();
         BlockPos startingPosition = this.getCurrentLocation().getPosition();
         float percentage = this.getFlightPercentageCovered();
-        float percentageX = (targetPosition.getX() - startingPosition.getX()) * percentage;
-        float percentageY = (targetPosition.getY() - startingPosition.getY()) * percentage;
-        float percentageZ = (targetPosition.getZ() - startingPosition.getZ()) * percentage;
+        float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
+        float percentageY = startingPosition.getY() + (targetPosition.getY() - startingPosition.getY()) * percentage;
+        float percentageZ = startingPosition.getZ() + (targetPosition.getZ() - startingPosition.getZ()) * percentage;
 
         TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.targetLocation.getDirection(), percentage > 0.49f ? this.targetLocation.getLevel() : this.getCurrentLocation().getLevel());
         this.targetLocation = newLocation;
@@ -1112,4 +1115,23 @@ public class TardisPilotingManager extends TickableHandler {
         // Temporary sfx
         this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 1000f, 0.6f);
     }
+
+    /**
+     * Returns the speed modifier as determined by which speed upgrades
+     * are unlocked.
+     */
+    private int getLatestSpeedModifier() {
+        UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
+
+        this.speedModifier = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet().stream()
+                .map(Map.Entry::getValue)
+                .filter(upgrade -> upgrade instanceof SpeedUpgrade)
+                .map(upgrade -> (SpeedUpgrade) upgrade)
+                .filter(upgradeHandler::isUpgradeUnlocked)
+                .mapToInt(SpeedUpgrade::getSpeedModifier)
+                .max()
+                .orElse(1);
+        return this.speedModifier;
+    }
+
 }

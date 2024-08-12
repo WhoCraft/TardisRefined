@@ -65,7 +65,8 @@ Other builds made by members of the team.
 
 ![image](https://user-images.githubusercontent.com/34910888/209611682-abeaedc6-cf9a-465f-a693-9ba85f38cca6.png)
 
-## Immersive Portals Support
+## Immersive Portals Support (Developer Note)
 This mod has dedicated support for being compatible and integrating with Immersive Portals when Immersive Portals is present.
 By default, Immersive Portals is not enabled in dev and fabrics build.gradle file must be edited to allow for this.
 Instructions on how to do this can be found in the relevant build.gradle
+If you are a user, the above is not relevant to you. All you should need to do is install Fabric TR and Fabric IP and you will be all ready to go.
