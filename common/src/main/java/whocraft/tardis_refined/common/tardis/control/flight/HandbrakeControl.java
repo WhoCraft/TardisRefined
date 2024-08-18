@@ -3,10 +3,8 @@ package whocraft.tardis_refined.common.tardis.control.flight;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -40,10 +38,6 @@ public class HandbrakeControl extends Control {
 
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
-
-        var pitchedSound = theme.getSoundProfile().getThrottleEnable().getRightClick();
-        this.setSuccessSound(pitchedSound);
-
         if (operator.getPilotingManager().isInFlight()) {
 
             PlayerUtil.sendMessage(player, Component.translatable( ModMessages.HANDBRAKE_WARNING), true);
@@ -53,9 +47,5 @@ public class HandbrakeControl extends Control {
             PlayerUtil.sendMessage(player, Component.translatable(operator.getPilotingManager().isHandbrakeOn() ?  ModMessages.HANDBRAKE_ENGAGED : ModMessages.HANDBRAKE_DISENGAGED), true);
             return true;
         }
-
-
-
-
     }
 }

@@ -15,4 +15,14 @@ public class RootedShellBlockEntity extends ShellBaseBlockEntity {
     public DesktopTheme getAssociatedTheme() {
         return TardisDesktops.DEFAULT_OVERGROWN_THEME;
     }
+
+    @Override
+    public void playDoorCloseSound(boolean closeDoor) {
+        //Leave blank
+    }
+
+    @Override
+    public void playDoorLockedSound(boolean lockDoor) {
+        //Leave blank
+    }
 }

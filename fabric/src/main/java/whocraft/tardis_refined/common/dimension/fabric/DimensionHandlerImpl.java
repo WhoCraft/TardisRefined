@@ -1,12 +1,13 @@
 package whocraft.tardis_refined.common.dimension.fabric;
 
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Lifecycle;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
@@ -22,16 +23,12 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.mixin.MappedRegistryAccessor;
 import whocraft.tardis_refined.common.network.messages.sync.SyncLevelListMessage;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.nio.file.Files;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
@@ -62,6 +59,17 @@ public class DimensionHandlerImpl {
         WorldData serverConfig = server.getWorldData();
         DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
 
+        //Actually register our dimension
+        Registry<LevelStem> dimensionRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+        if (dimensionRegistry instanceof MappedRegistry<LevelStem> writableRegistry) {
+            MappedRegistryAccessor accessor = (MappedRegistryAccessor)writableRegistry;
+            accessor.setFrozen(false); //Must unfreeze registry to allow our dimension to persist
+            writableRegistry.register(dimensionKey, dimension, Lifecycle.stable());
+        }
+        else {
+            throw new IllegalStateException(String.format("Unable to register dimension %s -- dimension registry not writable", dimensionKey.location()));
+        }
+
         // now we have everything we need to create the world instance
         ServerLevel newLevel = new ServerLevel(
                 server,
@@ -86,8 +94,10 @@ public class DimensionHandlerImpl {
 
         server.levels.put(id, newLevel);
 
+        ServerWorldEvents.LOAD.invoker().onWorldLoad(server, newLevel);
 
         new SyncLevelListMessage(newLevel.dimension(), true).sendToAll();
+
 
         BlockPos blockPos = new BlockPos(0, 0, 0);
         ChunkPos chunkPos = new ChunkPos(blockPos);

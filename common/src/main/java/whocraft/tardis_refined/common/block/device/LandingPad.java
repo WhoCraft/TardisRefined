@@ -61,50 +61,52 @@ public class LandingPad extends Block {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if (level instanceof ServerLevel serverLevel) {
-            ItemStack itemStack = player.getItemInHand(interactionHand);
-            if (itemStack.getItem() instanceof KeyItem) {
-                var keyChain = KeyItem.getKeychain(itemStack);
-                if (!keyChain.isEmpty()) {
-                    ResourceKey<Level> dimension = KeyItem.getKeychain(itemStack).get(0);
+        if (!player.level().isClientSide()) {
+            if (level instanceof ServerLevel serverLevel) {
+                ItemStack itemStack = player.getItemInHand(interactionHand);
+                if (itemStack.getItem() instanceof KeyItem) {
+                    var keyChain = KeyItem.getKeychain(itemStack);
+                    if (!keyChain.isEmpty()) {
+                        ResourceKey<Level> dimension = KeyItem.getKeychain(itemStack).get(0);
 
-                    if (serverLevel.isEmptyBlock(blockPos.above()) && DimensionUtil.isAllowedDimension(level.dimension())) {
-                        var tardisLevel = Platform.getServer().getLevel(dimension);
+                        if (serverLevel.isEmptyBlock(blockPos.above()) && DimensionUtil.isAllowedDimension(level.dimension())) {
+                            var tardisLevel = Platform.getServer().getLevel(dimension);
 
 
-                        var operatorOptional = TardisLevelOperator.get(tardisLevel);
-                        if (operatorOptional.isEmpty()) {
-                            return InteractionResult.PASS;
-                        }
-
-                        var operator = operatorOptional.get();
-                        TardisPilotingManager pilotManager = operator.getPilotingManager();
-                        UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
-
-                        if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isOnCooldown()) {
-                            pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
-                            serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
-                            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
-                            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
-                        } else {
-
-                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler)) {
-                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_TRANSIENT), true);
-                                serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
-                            } else {
-                                serverLevel.playSound(null, blockPos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1f, 1f);
-                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_NOT_UNLOCKED), true);
+                            var operatorOptional = TardisLevelOperator.get(tardisLevel);
+                            if (operatorOptional.isEmpty()) {
+                                return InteractionResult.PASS;
                             }
 
-                            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
-                        }
-                    }
+                            var operator = operatorOptional.get();
+                            TardisPilotingManager pilotManager = operator.getPilotingManager();
+                            UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
+                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isOnCooldown()) {
+                                pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
+                                serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
+                                return InteractionResult.PASS;
+                            } else {
+
+                                if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler)) {
+                                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_TRANSIENT), true);
+                                    serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
+                                } else {
+                                    serverLevel.playSound(null, blockPos, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1f, 1f);
+                                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_NOT_UNLOCKED), true);
+                                }
+
+                                return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                            }
+                        }
+
+                        serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
+                    }
                 }
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return InteractionResult.PASS;
     }
 }

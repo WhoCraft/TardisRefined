@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -9,7 +10,7 @@ import whocraft.tardis_refined.registry.TRControlRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FlightDanceManager extends BaseHandler {
+public class FlightDanceManager extends TickableHandler {
 
 
     private TardisLevelOperator operator;
@@ -49,10 +50,10 @@ public class FlightDanceManager extends BaseHandler {
     }
 
     @Override
-    public void tick() {
+    public void tick(ServerLevel operatorLevel) {
         if (this.weAreDancing) {
-            if (this.operator.getLevel().getGameTime() % (1 * 20) == 0) {
-                this.onDanceTick();
+            if (operatorLevel.getGameTime() % (1 * 20) == 0) {
+                this.onDanceTick(operatorLevel);
             }
         }
     }
@@ -75,7 +76,7 @@ public class FlightDanceManager extends BaseHandler {
     }
 
     // A dance tick that runs every 20 ticks.
-    private void onDanceTick() {
+    private void onDanceTick(ServerLevel operatorLevel) {
 
         if (damagedControlCount >= 5) {
             this.stopDancing();
@@ -84,7 +85,7 @@ public class FlightDanceManager extends BaseHandler {
         }
 
         int chance = 20 - this.operator.getPilotingManager().getThrottleStage() * 2;
-        if (this.operator.getLevel().random.nextInt(chance) == 0) {
+        if (operatorLevel.random.nextInt(chance) == 0) {
             this.triggerNextEvent();
         }
 

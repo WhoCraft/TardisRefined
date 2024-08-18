@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.ShellDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
@@ -39,10 +40,10 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
         poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
         BlockState blockstate = blockEntity.getBlockState();
-        float rotation = blockstate.getValue(GlobalDoorBlock.FACING).toYRot();
+        float rotation = blockstate.getValue(InternalDoorBlock.FACING).toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
         ResourceLocation theme = blockEntity.theme();
-        boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
+        boolean isOpen = blockstate.getValue(InternalDoorBlock.OPEN);
 
         // Render slightly off the wall to prevent z-fighting.
         poseStack.translate(0, 0, -0.01);
