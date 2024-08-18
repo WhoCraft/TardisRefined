@@ -170,50 +170,44 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-
-        if (level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
-
-            TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
-                TardisPilotingManager pilotingManager = operator.getPilotingManager();
-
-                if (serverLevel.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
-                    if (pilotingManager.getCurrentConsole() != null) {
-                        if (pilotingManager.getCurrentConsole() != consoleBlockEntity) {
-
-                            if (!pilotingManager.isInFlight()) {
-                                pilotingManager.setCurrentConsole(consoleBlockEntity);
-
-                            } else {
-                                PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
+        if (!player.level().isClientSide()) {
+            if (level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
+                TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
+                    TardisPilotingManager pilotingManager = operator.getPilotingManager();
+                    if (serverLevel.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+                        if (pilotingManager.getCurrentConsole() != null) {
+                            if (pilotingManager.getCurrentConsole() != consoleBlockEntity) {
+                                if (!pilotingManager.isInFlight()) {
+                                    pilotingManager.setCurrentConsole(consoleBlockEntity);
+                                } else {
+                                    PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
+                                }
                             }
-
+                        } else {
+                            pilotingManager.setCurrentConsole(consoleBlockEntity);
+                            consoleBlockEntity.getUpdatePacket();
                         }
-                    } else {
-                        pilotingManager.setCurrentConsole(consoleBlockEntity);
-                        consoleBlockEntity.getUpdatePacket();
                     }
-                }
 
-            });
+                });
 
-            // Creative only: Quickly complete the cooldown.
-            if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
-                var operatorOptional = TardisLevelOperator.get(serverLevel);
-                if (operatorOptional.isPresent()) {
-                    var operator = operatorOptional.get();
-                    TardisPilotingManager pilotManager = operator.getPilotingManager();
+                // Creative only: Quickly complete the cooldown.
+                if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
+                    var operatorOptional = TardisLevelOperator.get(serverLevel);
+                    if (operatorOptional.isPresent()) {
+                        var operator = operatorOptional.get();
+                        TardisPilotingManager pilotManager = operator.getPilotingManager();
 
-                    if (pilotManager.isOnCooldown()) {
-                        pilotManager.endCoolDown();
-
-
-                        return InteractionResult.CONSUME_PARTIAL;
+                        if (pilotManager.isOnCooldown()) {
+                            pilotManager.endCoolDown();
+                            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                        }
                     }
-                }
 
+                }
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 }

@@ -64,7 +64,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
                 if (itemStack == ItemStack.EMPTY) {
                     astralManipulatorBlockEntity.clearDisplay();
 
-                    return InteractionResult.CONSUME;
+                    return InteractionResult.sidedSuccess(false);
                 } else {
 
                     if (itemStack.getItem() instanceof ScrewdriverItem) {

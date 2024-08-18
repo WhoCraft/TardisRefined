@@ -66,7 +66,7 @@ public class ShellPatternProvider implements DataProvider {
                     Path output = getPath(patternCollection.themeId());
                     futures.add(DataProvider.saveStable(arg, currentPatternCollection, output));
                 } catch (Exception exception) {
-                    TardisRefined.LOGGER.debug("Issue writing ShellPatternCollection {}! Error: {}", patternCollection.themeId(), exception.getMessage());
+                    TardisRefined.LOGGER.error("Issue writing ShellPatternCollection {}! Error: {}", patternCollection.themeId(), exception.getMessage());
                 }
             });
         }

@@ -5,7 +5,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.api.event.ShellChangeSource;
+import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -29,11 +33,11 @@ import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
@@ -79,8 +83,7 @@ public class TardisHelper {
 
                 //Set the shell with this level
                 shellBaseBlockEntity.setTardisId(generatedLevelKey);
-                shellBaseBlockEntity.setShellTheme(shellTheme);
-                shellBaseBlockEntity.setPattern(ShellPatterns.getPatternsForTheme(shellTheme).get(0));
+
                 //Create the Level on demand which will create our capability
                 ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, shellBaseBlockEntity.getTardisId().location());
 
@@ -100,6 +103,8 @@ public class TardisHelper {
                         intManager.openTheEye(true);
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                         generated.set(true);
+                        tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
+                        tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.of(targetBlockState), false, ShellChangeSources.ROOT_TO_TARDIS);
                     }
                 });
 
@@ -123,7 +128,7 @@ public class TardisHelper {
 
             BlockPos destinationPos = destinationLocation.getPosition();
             ServerLevel destinationLevel = destinationLocation.getLevel();
-            Direction destinationDirection = destinationLocation.getDirection().getOpposite(); //Use the opposite facing of the destination so that when teleported, the entity faces away from the doorway
+            Direction destinationDirection = destinationLocation.getDirection(); //Do not use the opposite facing of the destination, we will handle the correct facing outside of this method.
 
             Direction sourceDirection = sourceLocation.getDirection();
 
@@ -184,6 +189,28 @@ public class TardisHelper {
         }
 
         return false;
+    }
+
+    /** Common logic that we should apply to players if they happen to teleport to, respawn, or login to a Tardis
+     * <br> Ejecting players that happen to login to a Tardis dimension whilst the Tardis is still generating a desktop, we don't want them to suffocate*/
+    public static void handlePlayerJoinWorldEvents(ServerPlayer serverPlayer){
+        if (serverPlayer != null){
+            if (serverPlayer.serverLevel() != null){
+                ServerLevel playerLevel = serverPlayer.serverLevel();
+                if(TardisLevelOperator.get(playerLevel).isPresent()){
+                    TardisLevelOperator cap = TardisLevelOperator.get(playerLevel).get();
+
+                    //Handle ejecting players if they login to a Tardis dimension where the Tardis is in progress of generating a desktop
+                    if (cap.getInteriorManager().isGeneratingDesktop()){
+                        //Delay the force ejecting to account for the chunk not being fully loaded, which can happen in the player change dimension event.
+                        playerLevel.getServer().tell(new TickTask(10, () ->
+                                cap.forceEjectPlayer(serverPlayer)
+                        ));
+                    }
+
+                }
+            }
+        }
     }
 
 }

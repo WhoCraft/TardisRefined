@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -23,8 +25,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class AbstractDoorBlockEntity extends BlockEntity implements TardisInternalDoor {
-
-    private boolean isLocked = false;
     private String uuid_id;
     private boolean isMainDoor = false;
 
@@ -37,7 +37,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
     @Override
     public boolean isMainDoor() {
-        return isMainDoor;
+        return this.isMainDoor;
     }
 
     @Override
@@ -62,12 +62,12 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     }
 
     @Override
-    public void setClosed(boolean state) {
+    public void setClosed(boolean closeDoor) {
         BlockState blockState = this.getLevel().getBlockState(getDoorPosition());
         if (blockState.getBlock() instanceof InternalDoorBlock){
             Level currentLevel = getLevel();
-            currentLevel.setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !state), Block.UPDATE_CLIENTS);
-            currentLevel.playSound(null, getDoorPosition(), isLocked ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, isLocked ? 1.4F : 1F);
+            currentLevel.setBlock(getDoorPosition(), blockState.setValue(GlobalDoorBlock.OPEN, !closeDoor), Block.UPDATE_ALL);
+            this.playDoorCloseSound(closeDoor);
             this.setChanged();
         }
     }
@@ -78,19 +78,19 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     }
 
     @Override
-    public BlockPos getEntryPosition() {
+    public BlockPos getTeleportPosition() {
         Direction direction = this.getBlockState().getValue(InternalDoorBlock.FACING);
         return this.getBlockPos().offset(direction.getOpposite().getNormal());
 
     }
 
     @Override
-    public Direction getEntryRotation() {
+    public Direction getTeleportRotation() {
         return this.getBlockState().getValue(InternalDoorBlock.FACING).getOpposite();
     }
 
     @Override
-    public Direction getDoorRotation() {
+    public Direction getRotation() {
         return this.getBlockState().getValue(InternalDoorBlock.FACING);
     }
 
@@ -101,13 +101,18 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
     @Override
     public void setLocked(boolean locked) {
-        this.isLocked = locked;
-        this.setChanged();
+        BlockState blockState = this.getLevel().getBlockState(getDoorPosition());
+        if (blockState.getBlock() instanceof InternalDoorBlock){
+            Level currentLevel = getLevel();
+            currentLevel.setBlock(this.getDoorPosition(), blockState.setValue(InternalDoorBlock.LOCKED, locked), Block.UPDATE_ALL);
+            this.playDoorLockedSound(locked);
+            this.setChanged();
+        }
     }
 
     @Override
     public boolean locked() {
-        return isLocked;
+        return this.getBlockState().getValue(InternalDoorBlock.LOCKED);
     }
 
     public TardisLevelOperator getOperator() {
@@ -129,7 +134,6 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
         compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
         compoundTag.putString(NbtConstants.DOOR_ID, this.uuid_id);
-        compoundTag.putBoolean(NbtConstants.DOOR_IS_LOCKED, this.isLocked);
     }
 
     @Override
@@ -137,7 +141,6 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
         super.load(compoundTag);
         this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
         this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
-        this.isLocked = compoundTag.getBoolean(NbtConstants.DOOR_IS_LOCKED);
     }
 
     @Override
@@ -149,6 +152,17 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
                 tardisLevelOperator.exitTardis(entity, serverLevel, doorPos, blockState.getValue(InternalDoorBlock.FACING), false);
             });
         }
+    }
+
+    public void playDoorCloseSound(boolean closeDoor){
+        Level currentLevel = getLevel();
+        currentLevel.playSound(null, this.getDoorPosition(), closeDoor ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, closeDoor ? 1.4F : 1F);
+        this.setChanged();
+    }
+
+    public void playDoorLockedSound(boolean lockDoor){
+        Level currentLevel = getLevel();
+        currentLevel.playSound(null, this.getDoorPosition(), lockDoor ? BlockSetType.IRON.doorClose() : BlockSetType.IRON.doorOpen(), SoundSource.BLOCKS, 1, lockDoor ? 1.4F : 1F);
     }
 
 }

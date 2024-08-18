@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -22,6 +23,7 @@ import whocraft.tardis_refined.common.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -109,7 +111,16 @@ public class DimensionHandler {
             JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
             for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
                 TardisRefined.LOGGER.info("Attempting to load {}", dimension.getAsString());
-                DimensionHandler.getOrCreateInterior(serverLevel, new ResourceLocation(dimension.getAsString()));
+                ResourceLocation id = new ResourceLocation(dimension.getAsString());
+                ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
+                if (getExistingLevel(serverLevel, levelKey) == null) {
+                    TardisRefined.LOGGER.warn("Level {} not found! Creating new level instance", dimension.getAsString());
+                    if(DimensionHandler.getOrCreateInterior(serverLevel, id) != null)
+                        TardisRefined.LOGGER.warn("Successfully created and loaded new level {}", dimension.getAsString());
+                }
+                else{
+                    TardisRefined.LOGGER.info("Successfully loaded existing level {}", dimension.getAsString());
+                }
             }
 
         } catch (IOException e) {

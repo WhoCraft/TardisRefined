@@ -6,6 +6,8 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.patterns.sound.ShellSoundProfile;
+import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
 
 import java.util.*;
 
@@ -15,8 +17,8 @@ public class ShellPatterns {
 
     private static Map<ResourceLocation, List<ShellPattern>> DEFAULT_PATTERNS = new HashMap();
 
-    public static final ShellPattern DEFAULT = (ShellPattern) new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID.getPath(), new PatternTexture(exteriorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)
-            , new PatternTexture(interiorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)).setThemeId(ConsoleTheme.FACTORY.getId());
+    public static final ShellPattern DEFAULT = (ShellPattern) new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(exteriorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)
+            , new PatternTexture(interiorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false), TRShellSoundProfiles.DEFAULT_SOUND_PROFILE).setThemeId(ConsoleTheme.FACTORY.getId());
 
     public static PatternReloadListener<ShellPatternCollection, ShellPattern> getReloadListener(){
         return PATTERNS;
@@ -122,8 +124,12 @@ public class ShellPatterns {
     }
 
     public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture) {
+        return addDefaultPattern(themeId, patternName, hasEmissiveTexture, TRShellSoundProfiles.DEFAULT_SOUND_PROFILE);
+    }
+
+    public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture, ShellSoundProfile soundProfile) {
         ShellPattern pattern = (ShellPattern) new ShellPattern(patternName, new PatternTexture(exteriorTextureLocation(themeId, patternName), hasEmissiveTexture)
-                , new PatternTexture(interiorTextureLocation(themeId, patternName), hasEmissiveTexture)).setThemeId(themeId);
+                , new PatternTexture(interiorTextureLocation(themeId, patternName), hasEmissiveTexture), soundProfile).setThemeId(themeId);
         return addDefaultPattern(themeId, pattern);
     }
 
@@ -165,9 +171,11 @@ public class ShellPatterns {
         for (ResourceLocation shellTheme : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
             boolean hasDefaultEmission = shellTheme == ShellTheme.MYSTIC.getId() || shellTheme == ShellTheme.NUKA.getId() || shellTheme == ShellTheme.PAGODA.getId() || shellTheme == ShellTheme.PHONE_BOOTH.getId() || shellTheme == ShellTheme.POLICE_BOX.getId() || shellTheme == ShellTheme.VENDING.getId();
             String textureName = shellTheme.getPath();
+            ShellSoundProfile soundProfile = TRShellSoundProfiles.defaultSoundProfilesByTheme().getOrDefault(shellTheme, TRShellSoundProfiles.DEFAULT_SOUND_PROFILE);
+
             //Use an overload version of the method for default shells because the texture files were named based on shell theme name
-            ShellPattern pattern = new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID.getPath(), new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
-                    , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission));
+            ShellPattern pattern = new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(exteriorTextureLocation(shellTheme, textureName), hasDefaultEmission)
+                    , new PatternTexture(interiorTextureLocation(shellTheme, textureName), hasDefaultEmission), soundProfile);
             addDefaultPattern(shellTheme, pattern);
         }
 

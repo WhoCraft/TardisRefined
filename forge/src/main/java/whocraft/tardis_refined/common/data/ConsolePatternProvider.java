@@ -64,9 +64,8 @@ public class ConsolePatternProvider implements DataProvider {
                             }).orThrow().getAsJsonObject();
                     Path output = getPath(patternCollection.themeId());
                     futures.add(DataProvider.saveStable(arg, currentPatternCollection, output));
-                    ;
                 } catch (Exception exception) {
-                    TardisRefined.LOGGER.debug("Issue writing ConsolePatternCollection {}! Error: {}", entry.getValue().themeId(), exception.getMessage());
+                    TardisRefined.LOGGER.error("Issue writing ConsolePatternCollection {}! Error: {}", entry.getValue().themeId(), exception.getMessage());
                 }
             });
         }

@@ -287,7 +287,7 @@ public class ImmersivePortals {
 
 
         TardisNavLocation location = pilotingManager.getCurrentLocation();
-        BlockPos entryPositionBPos = door.getEntryPosition();
+        BlockPos entryPositionBPos = door.getTeleportPosition();
         Vec3 entryPosition = new Vec3(entryPositionBPos.getX() + 0.5, entryPositionBPos.getY() + 1, entryPositionBPos.getZ() + 0.5);
         BlockPos exteriorEntryBPos = location.getPosition();
         Vec3 exteriorEntryPosition = new Vec3(exteriorEntryBPos.getX() + 0.5, exteriorEntryBPos.getY() + 1, exteriorEntryBPos.getZ() + 0.5);
@@ -307,14 +307,14 @@ public class ImmersivePortals {
             case NORTH -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.north());
         }
 
-        switch (door.getEntryRotation()) {
+        switch (door.getTeleportRotation()) {
             case EAST -> entryPosition = entryPosition.add(interiorDoor.east());
             case SOUTH -> entryPosition = entryPosition.add(interiorDoor.south());
             case WEST -> entryPosition = entryPosition.add(interiorDoor.west());
             case NORTH -> entryPosition = entryPosition.add(interiorDoor.north());
         }
         DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
-        DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getEntryRotation().toYRot());
+        DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getTeleportRotation().toYRot());
 
         BOTIPortalEntity exteriorPortal = createPortal(location.getLevel(), exteriorEntryPosition, entryPosition, operatorLevel.dimension(), extQuat);
         BOTIPortalEntity interiorPortal = createDestPortal(exteriorPortal, entryPosition, ImmersivePortals.BOTI_PORTAL.get(), interiorQuat);

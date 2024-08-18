@@ -32,13 +32,16 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
+    /** This is this door instance's understanding of if it is locked or not.
+     * <br> This is needed to account for when multiple internal doors are in a Tardis, and the player is locking a different door*/
+    public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     protected static final VoxelShape COLLISION = Block.box(0, 0, 0, 16, 32, 16);
     protected static BlockEntity blockEntity;
 
 
     public InternalDoorBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false));
     }
 
     @Override
@@ -77,13 +80,13 @@ public class InternalDoorBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(OPEN, FACING);
+        builder.add(OPEN, FACING, LOCKED);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false);
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false);
     }
 
     @Override

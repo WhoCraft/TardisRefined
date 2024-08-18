@@ -36,7 +36,7 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.manager.FlightDanceManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -47,7 +47,9 @@ import whocraft.tardis_refined.registry.TREntityRegistry;
 
 public class ControlEntity extends Entity {
 
-    public static int TotalControlHealth = 10;
+    /** The total amount of control alignment health points before a control will start causing the Tardis to crash.
+     * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used. */
+    private int totalControlHealth = 10;
 
     private ControlSpecification controlSpecification;
     private ConsoleTheme consoleTheme;
@@ -58,12 +60,19 @@ public class ControlEntity extends Entity {
         super(entityTypeIn, level);
     }
 
+    /** Flag to determine if this Control can continue to become more mis-aligned and thus lose "health".
+     * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used.
+     * <br> True - if able to keep being mis-aligned, False if cannot be further mis-aligned*/
     private static final EntityDataAccessor<Boolean> TICKING_DOWN = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Flag to determine if this Control is far too mis-aligned and is considered "dead".
+     * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used. */
     private static final EntityDataAccessor<Boolean> IS_DEAD = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
+    /** Attribute to determine how far this Control is mis-aligned.
+     * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used. */
     private static final EntityDataAccessor<Integer> CONTROL_HEALTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> SHOW_PARTICLE = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Float> SCALE_WIDTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> SCALE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SIZE_WIDTH = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> SIZE_HEIGHT = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.FLOAT);
 
     public ControlEntity(Level level) {
         super(TREntityRegistry.CONTROL_ENTITY.get(), level);
@@ -101,8 +110,8 @@ public class ControlEntity extends Entity {
      * Sets the Entity size to an EntityDataAccessor which gets synced to the client next time it updates
      */
     protected void setSizeData(float width, float height) {
-        this.getEntityData().set(SCALE_WIDTH, width);
-        this.getEntityData().set(SCALE_HEIGHT, height);
+        this.getEntityData().set(SIZE_WIDTH, width);
+        this.getEntityData().set(SIZE_HEIGHT, height);
     }
 
     /**
@@ -123,8 +132,8 @@ public class ControlEntity extends Entity {
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        if (this.getEntityData().get(SCALE_WIDTH) != null && this.getEntityData().get(SCALE_HEIGHT) != null) {
-            return EntityDimensions.scalable(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
+        if (this.getEntityData().get(SIZE_WIDTH) != null && this.getEntityData().get(SIZE_HEIGHT) != null) {
+            return EntityDimensions.scalable(this.getEntityData().get(SIZE_WIDTH), this.getEntityData().get(SIZE_HEIGHT));
         }
         return super.getDimensions(pose);
     }
@@ -138,10 +147,14 @@ public class ControlEntity extends Entity {
         return Component.translatable(this.controlSpecification.control().getTranslationKey());
     }
 
-    public void setTickingDown(FlightDanceManager manager) {
+    /** Tell the Tardis that the control is currently continuing to be misaligned
+     * @param manager
+     * @return true if can continue to become more misaligned, false if already too misaligned.
+     */
+    public boolean setTickingDown(FlightDanceManager manager) {
 
         if (this.getEntityData().get(IS_DEAD)) {
-            return;
+            return false;
         }
 
         this.entityData.set(TICKING_DOWN, true);
@@ -149,6 +162,7 @@ public class ControlEntity extends Entity {
         this.level().playSound(null, this.blockPosition(), SoundEvents.ARROW_HIT, SoundSource.BLOCKS, 0.5f, 2f);
 
         this.setCustomName(Component.translatable("!"));
+        return true;
     }
 
     @Override
@@ -156,15 +170,15 @@ public class ControlEntity extends Entity {
         getEntityData().define(SHOW_PARTICLE, false);
         getEntityData().define(TICKING_DOWN, false);
         getEntityData().define(IS_DEAD, false);
-        getEntityData().define(SCALE_WIDTH, 1F);
-        getEntityData().define(SCALE_HEIGHT, 1F);
+        getEntityData().define(SIZE_WIDTH, 1F);
+        getEntityData().define(SIZE_HEIGHT, 1F);
         getEntityData().define(CONTROL_HEALTH, 10);
 
     }
 
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
-        this.setSizeAndUpdate(this.getEntityData().get(SCALE_WIDTH), this.getEntityData().get(SCALE_HEIGHT));
+        this.setSizeAndUpdate(this.getEntityData().get(SIZE_WIDTH), this.getEntityData().get(SIZE_HEIGHT));
     }
 
 
@@ -173,8 +187,8 @@ public class ControlEntity extends Entity {
         if (consoleBlockPos != null) {
             compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
         }
-        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SCALE_WIDTH));
-        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SCALE_HEIGHT));
+        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
+        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
         return super.save(compound);
     }
 
@@ -205,8 +219,8 @@ public class ControlEntity extends Entity {
             compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
         }
 
-        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SCALE_WIDTH));
-        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SCALE_HEIGHT));
+        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
+        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
 
     }
 
@@ -219,19 +233,21 @@ public class ControlEntity extends Entity {
     public boolean hurt(DamageSource damageSource, float f) {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
             if (this.level() instanceof ServerLevel serverLevel) {
-
-                if (entityData.get(IS_DEAD)) {
-                    return false;
+                if(!player.level().isClientSide()) {
+                    if (entityData.get(IS_DEAD)) {
+                        return false;
+                    }
+                    if (this.entityData.get(TICKING_DOWN)) {
+                        this.realignControl();
+                        //Return early here because we want the player to re-align the control, but not actually activate the control's original function.
+                        //e.g. If Randomiser control is re-aligned we shouldn't actually tell the Tardis to randomise its coordinates.
+                        return true;
+                    } else {
+                        if (handleLeftClick(player, serverLevel)) {
+                            return true;
+                        }
+                    }
                 }
-
-                if (this.entityData.get(TICKING_DOWN)) {
-                    realignControl();
-                } else {
-                    handleLeftClick(player, serverLevel);
-                }
-
-
-                return true;
             }
         }
         return super.hurt(damageSource, f);
@@ -239,40 +255,45 @@ public class ControlEntity extends Entity {
 
     @Override
     public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
-        if (interactionHand != InteractionHand.MAIN_HAND || !(this.level() instanceof ServerLevel serverLevel)) {
-            return InteractionResult.FAIL;
+        if (this.level() instanceof ServerLevel serverLevel) {
+            if (!player.level().isClientSide()) {
+                if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
+                    this.handleControlSizeAndPositionAdjustment(player);
+                    return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                }
+
+                if (entityData.get(IS_DEAD)) {
+                    return InteractionResult.FAIL;
+                }
+
+                if (this.entityData.get(TICKING_DOWN)) {
+                    this.realignControl();
+                    //Return an InteractionResult here because we want the player to re-align the control, but not actually activate the control's original function.
+                    //e.g. If Randomiser control is re-aligned we shouldn't actually tell the Tardis to randomise its coordinates.
+                    return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                } else {
+                    if (this.handleRightClick(player, serverLevel, interactionHand)) {
+                        //Return an InteractionResult here because we want to tell the player that the control was correctly interacted with.
+                        return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                    }
+                }
+            }
         }
 
-        if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
-            this.handleControlSizeAndPositionAdjustment(player);
-            return InteractionResult.SUCCESS;
-        }
-
-        if (entityData.get(IS_DEAD)) {
-            return InteractionResult.FAIL;
-        }
-
-        if (this.entityData.get(TICKING_DOWN)) {
-            realignControl();
-            return InteractionResult.SUCCESS;
-        } else {
-            this.handleRightClick(player, serverLevel, interactionHand);
-        }
-
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 
     public boolean isTickingDown() {
         return getEntityData().get(TICKING_DOWN);
     }
-
+    /** Restores the control alignment points to a higher value so that it won't cause the Tardis to crash*/
     private void realignControl() {
         int currentHealth = this.entityData.get(CONTROL_HEALTH);
         int nextHealth = currentHealth + 2;
 
-        if (nextHealth >= TotalControlHealth) {
+        if (nextHealth >= this.totalControlHealth) {
             this.entityData.set(TICKING_DOWN, false);
-            this.entityData.set(CONTROL_HEALTH, TotalControlHealth);
+            this.entityData.set(CONTROL_HEALTH, totalControlHealth);
             this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
 
         } else {
@@ -367,8 +388,8 @@ public class ControlEntity extends Entity {
 
 
     private void handleControlSizeAndPositionAdjustment(Player player) {
-        float width = this.getEntityData().get(SCALE_WIDTH);
-        float height = this.getEntityData().get(SCALE_HEIGHT);
+        float width = this.getEntityData().get(SIZE_WIDTH);
+        float height = this.getEntityData().get(SIZE_HEIGHT);
         float incrementAmount = 0.05F;
         float posIncrementAmount = 0.025F;
         Item offhandItem = player.getOffhandItem().getItem();
@@ -383,8 +404,8 @@ public class ControlEntity extends Entity {
                 double z = this.position().z() - centre.z;
                 TardisRefined.LOGGER.info("Offset: " + x + "F, " + y + "F, " + z + "F");
             }
-            float finalWidth = this.getEntityData().get(SCALE_WIDTH);
-            float finalHeight = this.getEntityData().get(SCALE_HEIGHT);
+            float finalWidth = this.getEntityData().get(SIZE_WIDTH);
+            float finalHeight = this.getEntityData().get(SIZE_HEIGHT);
             TardisRefined.LOGGER.info("Size (Width, Height): " + finalWidth + "F, " + finalHeight + "F");
         } else {
             if (offhandItem == Items.EMERALD) { //Adjust X
@@ -417,27 +438,36 @@ public class ControlEntity extends Entity {
         return false;
     }
 
-    private void handleLeftClick(Player player, ServerLevel serverLevel) {
-        TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+    private boolean handleLeftClick(Player player, ServerLevel serverLevel) {
+        if (!TardisLevelOperator.get(serverLevel).isPresent()){
+            return false;
+        }
+        else {
+            TardisLevelOperator cap = TardisLevelOperator.get(serverLevel).get();
 
             if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
-                cap.getPilotingManager().setCurrentConsole(getConsoleBlockEntity());
+                cap.getPilotingManager().setCurrentConsole(this.getConsoleBlockEntity());
             }
 
-            if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this))
-                return;
-
+            if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this)){
+                return false;
+            }
 
             Control control = this.controlSpecification.control();
 
-            boolean successfulUse = control.onLeftClick(cap, consoleTheme, this, player);
-            PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
-            control.playControlPitchedSound(cap, this, playedSound);
-        });
+            boolean successfulUse = control.onLeftClick(cap, this.consoleTheme, this, player);
+            ConfiguredSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, true) : control.getFailSound(cap, this.consoleTheme, true);
+            control.playControlConfiguredSound(cap, this, playedSound);
+            return successfulUse;
+        }
     }
 
-    private void handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand) {
-        TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+    private boolean handleRightClick(Player player, ServerLevel serverLevel, InteractionHand interactionHand) {
+        if (!TardisLevelOperator.get(serverLevel).isPresent()){
+            return false;
+        }
+        else {
+            TardisLevelOperator cap = TardisLevelOperator.get(serverLevel).get();
 
             if (cap.getPilotingManager().getCurrentConsole() == null || cap.getPilotingManager().getCurrentConsole() != getConsoleBlockEntity()) {
                 cap.getPilotingManager().setCurrentConsole(getConsoleBlockEntity());
@@ -451,19 +481,19 @@ public class ControlEntity extends Entity {
                     DamageSource source = MiscHelper.getDamageSource(serverLevel, DamageTypes.ON_FIRE);
                     player.hurt(source, 0.1F);
                 }
-                return;
+                return false;
             }
 
-            if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this))
-                return;
-
+            if (!controlSpecification.control().canUseControl(cap, controlSpecification.control(), this)) {
+                return false;
+            }
 
             Control control = this.controlSpecification.control();
             boolean successfulUse = control.onRightClick(cap, consoleTheme, this, player);
-            PitchedSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
-            control.playControlPitchedSound(cap, this, playedSound);
-
-        });
+            ConfiguredSound playedSound = successfulUse ? control.getSuccessSound(cap, this.consoleTheme, false) : control.getFailSound(cap, this.consoleTheme, false);
+            control.playControlConfiguredSound(cap, this, playedSound);
+            return successfulUse;
+        }
     }
 
 
@@ -502,4 +532,12 @@ public class ControlEntity extends Entity {
         return false;
     }
 
+    /** Gets the total amount of control alignment health points before a control will start causing the Tardis to crash*/
+    public int getTotalControlHealth() {
+        return this.totalControlHealth;
+    }
+
+    public void setTotalControlHealth(int totalControlHealth) {
+        this.totalControlHealth = totalControlHealth;
+    }
 }

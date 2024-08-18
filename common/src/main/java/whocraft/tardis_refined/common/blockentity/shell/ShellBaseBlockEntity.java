@@ -8,7 +8,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -18,13 +21,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.tardis.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
@@ -74,7 +78,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     @Override
     protected void saveAdditional(CompoundTag pTag) {
         if (this.TARDIS_ID == null) {
-            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (could this be an invalid block?) [" + this.getBlockPos().toShortString() + "]");
+            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
             return;
         }
 
@@ -99,7 +103,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos externalShellPos, Entity entity) {
         if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
             if (this.TARDIS_ID == null) {
-                TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (could this be an invalid block?) [" + externalShellPos.toShortString() + "]");
+                TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (Invalid block or not terraformed yet?) [" + externalShellPos.toShortString() + "]");
                 return;
             }
             ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.location());
@@ -127,12 +131,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             });
         }
 
-    }
-
-    @Override
-    public BlockPos getExitPosition() {
-        Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
-        return this.getBlockPos().offset(direction.getOpposite().getNormal());
     }
 
     @Override
@@ -170,5 +168,73 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
             });
         }
+    }
+
+    @Override
+    public boolean isOpen() {
+        return this.getBlockState().getValue(ShellBaseBlock.OPEN);
+    }
+
+    @Override
+    public void setClosed(boolean closeDoor) {
+        BlockPos blockPos = this.getBlockPos();
+        BlockState blockState = this.getLevel().getBlockState(blockPos);
+        if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
+            this.getLevel().setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, !closeDoor), Block.UPDATE_ALL);
+            this.playDoorCloseSound(closeDoor);
+            this.setChanged();
+        }
+    }
+
+    @Override
+    public void onEntityExit(ServerEntity entity) {
+
+    }
+
+    @Override
+    public void setLocked(boolean locked) {
+        BlockState blockState = this.getLevel().getBlockState(this.getBlockPos());
+        if (blockState.getBlock() instanceof ShellBaseBlock shellBaseBlock){
+            this.getLevel().setBlock(this.getBlockPos(), blockState.setValue(ShellBaseBlock.LOCKED, locked), Block.UPDATE_ALL);
+            this.playDoorLockedSound(locked);
+            this.setChanged();
+        }
+    }
+
+    @Override
+    public boolean locked() {
+        return this.getBlockState().getValue(ShellBaseBlock.LOCKED);
+    }
+
+    @Override
+    public BlockPos getTeleportPosition() {
+        Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
+        return this.getBlockPos().offset(direction.getOpposite().getNormal());
+    }
+
+    @Override
+    public Direction getRotation() {
+        return this.getBlockState().getValue(ShellBaseBlock.FACING);
+    }
+
+    @Override
+    public Direction getTeleportRotation() {
+        return this.getBlockState().getValue(ShellBaseBlock.FACING).getOpposite();
+    }
+
+    @Override
+    public BlockPos getDoorPosition() {
+        return this.getBlockPos();
+    }
+
+    public void playDoorCloseSound(boolean closeDoor){
+        Level currentLevel = getLevel();
+        currentLevel.playSound(null, this.getBlockPos(), closeDoor ? SoundEvents.IRON_DOOR_CLOSE : SoundEvents.IRON_DOOR_OPEN, SoundSource.BLOCKS, 1, closeDoor ? 1.4F : 1F);
+        this.setChanged();
+    }
+
+    public void playDoorLockedSound(boolean lockDoor){
+        Level currentLevel = getLevel();
+        currentLevel.playSound(null, this.getBlockPos(), lockDoor ? BlockSetType.IRON.doorClose() : BlockSetType.IRON.doorOpen(), SoundSource.BLOCKS, 1, lockDoor ? 1.4F : 1F);
     }
 }

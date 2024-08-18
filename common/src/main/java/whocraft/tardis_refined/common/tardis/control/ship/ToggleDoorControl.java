@@ -4,12 +4,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
-import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -29,10 +31,13 @@ public class ToggleDoorControl extends Control {
                 if(operator.getExteriorManager().locked() || operator.getPilotingManager().isInFlight()) {
                     return false;
                 }
-                if (!operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).isAir()){
-                    var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
-                    operator.setDoorClosed(isDoorOpen);
-                    return true;
+                BlockEntity blockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
+                if (blockEntity != null){
+                    if (blockEntity instanceof TardisInternalDoor internalDoor){
+                        var isDoorOpen = internalDoor.isOpen();
+                        operator.setDoorClosed(isDoorOpen);
+                        return true;
+                    }
                 }
             }
             return false;
@@ -43,13 +48,11 @@ public class ToggleDoorControl extends Control {
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!operator.getLevel().isClientSide()) {
-            if (operator.getInternalDoor() != null)
-                operator.getInternalDoor().setLocked(!operator.getExteriorManager().locked());
+            //Update both internal and exterior shell doors with the value from the exterior manager, which is the Tardis' current data
             if (operator.getExteriorManager() != null)
+                operator.setDoorLocked(!operator.getExteriorManager().locked());
                 operator.getExteriorManager().setLocked(!operator.getExteriorManager().locked());
-
             PlayerUtil.sendMessage(player, Component.translatable(operator.getExteriorManager().locked() ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED), true);
-
             operator.setDoorClosed(true);
             return true;
         }
@@ -57,21 +60,25 @@ public class ToggleDoorControl extends Control {
     }
 
     @Override
-    public PitchedSound getSuccessSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
+    public ConfiguredSound getSuccessSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
         if (!operator.getLevel().isClientSide()) {
-            if (!operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).isAir()){
-                var isDoorOpen = operator.getLevel().getBlockState(operator.getInternalDoor().getDoorPosition()).getValue(GlobalDoorBlock.OPEN);
-                var pitchedSound = (isDoorOpen) ? theme.getSoundProfile().getDoorClose().getRightClick() : theme.getSoundProfile().getDoorOpen().getRightClick();
-                if (pitchedSound != null) {
-                    return pitchedSound;
+            BlockEntity blockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
+            if (blockEntity != null){
+                if (blockEntity instanceof GlobalDoorBlockEntity internalDoor){
+                    var isDoorOpen = internalDoor.isOpen();
+                    var pitchedSound = (isDoorOpen) ? internalDoor.pattern().soundProfile().getDoorClose() : internalDoor.pattern().soundProfile().getDoorOpen();
+                    if (pitchedSound != null) {
+                        return pitchedSound;
+                    }
                 }
+
             }
         }
         return super.getSuccessSound(operator, theme, leftClick);
     }
 
     @Override
-    public PitchedSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
-        return new PitchedSound(SoundEvents.NOTE_BLOCK_BIT.value());
+    public ConfiguredSound getFailSound(TardisLevelOperator operator, ConsoleTheme theme, boolean leftClick) {
+        return new ConfiguredSound(SoundEvents.NOTE_BLOCK_BIT.value());
     }
 }

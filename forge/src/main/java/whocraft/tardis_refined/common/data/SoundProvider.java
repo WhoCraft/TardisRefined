@@ -46,7 +46,7 @@ public class SoundProvider extends SoundDefinitionsProvider {
         add(TRSoundRegistry.GRAVITY_TUNNEL.get(), basicSound("gravity_tunnel", new ResourceLocation(TardisRefined.MODID, "gravity_tunnel")));
         add(TRSoundRegistry.INTERIOR_VOICE.get(), basicSound("interior_voice", new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w1"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w2"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w3"), new ResourceLocation(TardisRefined.MODID, "tardis/ambience/w4")));
         add(TRSoundRegistry.LOW_FUEL.get(), basicSound("low_fuel", new ResourceLocation(TardisRefined.MODID, "tardis/low_fuel")));
-        add(TRSoundRegistry.ARTRON_PILLAR.get(), basicSound("artron_pillar", new ResourceLocation(TardisRefined.MODID, "blocks/artron_pillar_active")));
+        add(TRSoundRegistry.ARTRON_PILLAR_ACTIVE.get(), basicSound("artron_pillar", new ResourceLocation(TardisRefined.MODID, "blocks/artron_pillar_active")));
         add(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), basicSound("corridor_teleporter", new ResourceLocation(TardisRefined.MODID, "blocks/corridor_teleporter")));
         add(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), basicSound("corridor_teleporter_success", new ResourceLocation(TardisRefined.MODID, "blocks/corridor_teleporter_success")));
     }

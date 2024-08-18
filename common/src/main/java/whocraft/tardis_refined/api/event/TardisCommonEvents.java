@@ -44,9 +44,21 @@ public class TardisCommonEvents {
         }
     });
 
-    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme, isSetupTardis) -> {
+    public static final Event<LockDoor> DOOR_LOCKED_EVENT = new Event<>(LockDoor.class, listeners -> (tardisLevelOperator) -> {
+        for(LockDoor listener : listeners) {
+            listener.onDoorLocked(tardisLevelOperator);
+        }
+    });
+
+    public static final Event<UnlockDoor> DOOR_UNLOCKED_EVENT = new Event<>(UnlockDoor.class, listeners -> (tardisLevelOperator) -> {
+        for(UnlockDoor listener : listeners) {
+            listener.onDoorUnlocked(tardisLevelOperator);
+        }
+    });
+
+    public static final Event<ShellChange> SHELL_CHANGE_EVENT = new Event<>(ShellChange.class, listeners -> (tardisLevelOperator, theme, shellChangeSource) -> {
         for (ShellChange listener : listeners) {
-            listener.onShellChange(tardisLevelOperator, theme, isSetupTardis);
+            listener.onShellChange(tardisLevelOperator, theme, shellChangeSource);
         }
     });
 
@@ -136,9 +148,35 @@ public class TardisCommonEvents {
         void onDoorOpen(TardisLevelOperator tardisLevelOperator);
     }
 
+    /**
+     * An event that is triggered when the TARDIS Door is locked.
+     */
+    @FunctionalInterface
+    public interface LockDoor {
+        /**
+         * Called when the TARDIS door is locked.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDoorLocked(TardisLevelOperator tardisLevelOperator);
+    }
 
     /**
-     * An event that is triggered when the TARDIS desktp is changed.
+     * An event that is triggered when the TARDIS Door is unlocked.
+     */
+    @FunctionalInterface
+    public interface UnlockDoor {
+        /**
+         * Called when the TARDIS door is unlocked.
+         *
+         * @param tardisLevelOperator The operator of the TARDIS level.
+         */
+        void onDoorUnlocked(TardisLevelOperator tardisLevelOperator);
+    }
+
+
+    /**
+     * An event that is triggered when the TARDIS desktop is changed.
      * Note: Only fired once all players have left the dimension
      */
     @FunctionalInterface
@@ -177,9 +215,9 @@ public class TardisCommonEvents {
          *
          * @param tardisLevelOperator The operator of the TARDIS level.
          * @param theme The theme the TARDIS changed to.
-         * @param isSetupTardis if the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
+         * @param shellChangeSource - Finds the source of the Shell Update. E.g. If the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
          */
-        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, boolean isSetupTardis);
+        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, ShellChangeSource shellChangeSource);
     }
 
     /**

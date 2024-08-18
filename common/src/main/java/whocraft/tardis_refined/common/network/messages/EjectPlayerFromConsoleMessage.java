@@ -49,8 +49,7 @@ public class EjectPlayerFromConsoleMessage extends MessageC2S {
             TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
 
                 if (!operator.getPilotingManager().isInFlight()) {
-                    TardisNavLocation location = operator.getPilotingManager().getCurrentLocation();
-                    operator.exitTardis(player, location.getLevel(), location.getPosition(), location.getDirection(), true);
+                    operator.forceEjectPlayer(player);
                 } else {
                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.UI_EJECT_CANNOT_IN_FLIGHT), true);
                     player.playSound(SoundEvents.ITEM_BREAK);
