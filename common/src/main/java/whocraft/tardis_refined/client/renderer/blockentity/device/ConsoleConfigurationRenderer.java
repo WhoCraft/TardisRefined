@@ -58,4 +58,9 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
 
         poseStack.popPose();
     }
+
+    @Override
+    public boolean shouldRenderOffScreen(ConsoleConfigurationBlockEntity blockEntity) {
+        return true;
+    }
 }

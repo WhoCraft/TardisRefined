@@ -27,10 +27,9 @@ import whocraft.tardis_refined.common.capability.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.SpeedUpgrade;
 import whocraft.tardis_refined.common.capability.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.util.LevelHelper;
-import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -301,7 +300,9 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private void onCrashCooldownTick() {
+
         ticksSinceCrash++;
+
         // After 10 minutes
         if (ticksSinceCrash >= TICKS_COOLDOWN_MAX) {
             this.canUseControls = true;
@@ -309,6 +310,7 @@ public class TardisPilotingManager extends TickableHandler {
             this.operator.getLevel().playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, TRSoundRegistry.TARDIS_SINGLE_FLY.get(), SoundSource.AMBIENT, 100f, 0.25f);
         }
     }
+
 
     /**
      * Load the fast return into the target location.
