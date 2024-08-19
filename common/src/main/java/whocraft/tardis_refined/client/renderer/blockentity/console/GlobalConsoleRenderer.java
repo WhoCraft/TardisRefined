@@ -20,8 +20,6 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
-import java.util.Objects;
-
 public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleBlockEntity>, BlockEntityRendererProvider<GlobalConsoleBlockEntity> {
 
     private static final Vec3 crystalHolo = new Vec3(0.3f, -1.725, 0.655);
@@ -105,5 +103,6 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     public BlockEntityRenderer<GlobalConsoleBlockEntity> create(BlockEntityRendererProvider.Context context) {
         return new GlobalConsoleRenderer(context);
     }
-    
+
+
 }

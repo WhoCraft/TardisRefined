@@ -11,10 +11,9 @@ import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
-import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.PitchedSound;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 
 public class ToggleDoorControl extends Control {
     public ToggleDoorControl(ResourceLocation id) {
