@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.dimension.neoforge;
+package whocraft.tardis_refined.common.dimension.forge;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
