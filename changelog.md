@@ -1,4 +1,4 @@
-# Version 2.0.7
+# Version 2.0.6
 
 ![TARDIS Refined](https://wiki.tardisrefined.net/TARDIS-Refined-Wiki/tardis_refined_v2.png)
 
@@ -12,7 +12,7 @@
 **Note:** These additions are optional fields, meaning all existing Pattern datapacks will not need to be updated.
 
 ## Gameplay Fixes
-
+- Fixes occasional legacyrandom crash within Gra- I mean Mavity Well
 - Fixes left clicking controls during flight dance activating the control's function unexpectedly. E.g. Left clicking X
   Coordinate control actually changing the X coordinate when re-aligning a control
 - Fixed blocks causing player's hand to swing twice in every interaction. Caused by the wrong InteractionResult being
