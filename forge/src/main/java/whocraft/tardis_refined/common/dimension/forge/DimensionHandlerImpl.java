@@ -24,21 +24,15 @@ import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
 import net.minecraft.world.level.storage.WorldData;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.level.LevelEvent;
-import whocraft.tardis_refined.TardisRefined;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.level.LevelEvent;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.sync.SyncLevelListMessage;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.util.neoforge.PlatformImpl.getServer;
+import static whocraft.tardis_refined.common.util.forge.PlatformImpl.getServer;
 
 public class DimensionHandlerImpl {
 
@@ -98,7 +92,7 @@ public class DimensionHandlerImpl {
 
         server.markWorldsDirty();
 
-        NeoForge.EVENT_BUS.post(new LevelEvent.Load(newLevel));
+        MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(newLevel));
 
         new SyncLevelListMessage(newLevel.dimension(), true).sendToAll();
 

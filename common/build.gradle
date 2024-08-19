@@ -1,5 +1,8 @@
 architectury {
-    common(rootProject.enabled_platforms.split(","))
+    common(rootProject.enabled_platforms.split(",")) {
+        // This means map neoforge to forge
+        it.platformPackage "neoforge", "forge"
+    }
 }
 
 loom {

@@ -4,7 +4,7 @@
   "package": "whocraft.tardis_refined.mixin.forge",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "ClientHooksMixin"
+    "BlockEntityRendererMixin"
   ],
   "client": [
   ],
