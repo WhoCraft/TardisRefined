@@ -12,8 +12,6 @@ import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -23,7 +21,7 @@ import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 public class VictorianConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -2322,6 +2320,6 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 
 	@Override
 	public ResourceLocation getConsoleTheme() {
-		return ConsoleTheme.VICTORIAN.getId();
+		return TRConsoleThemes.VICTORIAN.getId();
 	}
 }

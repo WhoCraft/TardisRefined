@@ -17,7 +17,7 @@ import whocraft.tardis_refined.client.model.blockentity.console.animations.Refur
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 public class RefurbishedConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
@@ -1242,7 +1242,7 @@ public class RefurbishedConsoleModel extends HierarchicalModel implements Consol
 
 	@Override
 	public ResourceLocation getConsoleTheme() {
-		return ConsoleTheme.REFURBISHED.getId();
+		return TRConsoleThemes.REFURBISHED.getId();
 	}
 
 	@Override

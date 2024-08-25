@@ -32,7 +32,8 @@ import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.dimension.DimensionHandler.*;
+import static whocraft.tardis_refined.common.dimension.DimensionHandler.LEVELS;
+import static whocraft.tardis_refined.common.dimension.DimensionHandler.addDimension;
 import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 public class DimensionHandlerImpl {

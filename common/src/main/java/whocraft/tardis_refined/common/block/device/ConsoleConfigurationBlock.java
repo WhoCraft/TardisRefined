@@ -29,13 +29,13 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.ResourceConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRConsoleThemes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
@@ -247,7 +247,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     private ResourceLocation nextTheme(ConsoleConfigurationBlockEntity blockEntity){
         ResourceLocation consoleThemeId = blockEntity.theme();
         //Get next console theme
-        List<ResourceLocation> themesList = ConsoleTheme.CONSOLE_THEME_REGISTRY.keySet().stream().toList();
+        List<ResourceLocation> themesList = TRConsoleThemes.CONSOLE_THEME_REGISTRY.keySet().stream().toList();
         int index = themesList.indexOf(consoleThemeId);
         int nextIndex = index + 1;
         if(nextIndex >= themesList.size()) {

@@ -86,8 +86,6 @@ public class TardisCommonEvents {
      */
     public static final Event<CanControlBeUsed> PLAYER_CONTROL_INTERACT = new Event<>(CanControlBeUsed.class, listeners -> (tardisLevelOperator, control, controlEntity) -> Event.result(listeners, takeOff -> takeOff.canControlBeUsed(tardisLevelOperator, control, controlEntity)));
 
-
-
     /**
      * Functional interface to define the conditions for using player control.
      */

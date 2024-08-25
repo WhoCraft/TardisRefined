@@ -1,54 +1,65 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
 import net.minecraft.Util;
-import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityDimensions;
+import org.joml.Vector3f;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
-import whocraft.tardis_refined.common.tardis.themes.console.*;
-import whocraft.tardis_refined.patterns.sound.ConsoleSoundProfile;
-import whocraft.tardis_refined.registry.DeferredRegistry;
-import whocraft.tardis_refined.registry.RegistrySupplierHolder;
+import whocraft.tardis_refined.registry.RegistrySupplier;
+import whocraft.tardis_refined.registry.TRControlRegistry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
-public class ConsoleTheme implements Theme {
+public abstract class ConsoleTheme implements Theme {
 
-    /** Registry Key for the ConsoleTheme registry. For addon mods, use this as the registry key*/
-    public static final ResourceKey<Registry<ConsoleTheme>> CONSOLE_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "console_theme"));
+    private final ArrayList<ControlSpecification> controlSpecifications = new ArrayList<>();
+    private final ResourceLocation translationKey;
 
-    /** Tardis Refined instance of the ConsoleTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
-    public static final DeferredRegistry<ConsoleTheme> CONSOLE_THEME_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, CONSOLE_THEME_REGISTRY_KEY, true);
-    /** Instance of registry containing all ConsoleTheme entries. Addon mod entries will be included in this registry as long as they are use the same ResourceKey<Registry<ObjectType>>. */
-    public static final Registry<ConsoleTheme> CONSOLE_THEME_REGISTRY = CONSOLE_THEME_DEFERRED_REGISTRY.getRegistry().get();
-
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> FACTORY = registerConsoleTheme("factory", new FactoryConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> CRYSTAL = registerConsoleTheme("crystal", new CrystalConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> COPPER = registerConsoleTheme("copper", new CopperConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> CORAL = registerConsoleTheme("coral", new CoralConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> TOYOTA = registerConsoleTheme("toyota", new ToyotaConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> VICTORIAN = registerConsoleTheme("victorian", new VictorianConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> MYST = registerConsoleTheme("myst", new MystConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> NUKA = registerConsoleTheme("nuka", new NukaConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> INITIATIVE = registerConsoleTheme("initiative", new InitiativeConsoleTheme());
-    public static final RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> REFURBISHED = registerConsoleTheme("refurbished", new RefurbishedConsoleTheme());
-
-    private ResourceLocation translationKey;
-    private final ConsoleThemeDetails consoleThemeDetails;
-
-    public ConsoleTheme(ResourceLocation translationKey, ConsoleThemeDetails consoleThemeDetails) {
+    public ConsoleTheme(ResourceLocation translationKey) {
         this.translationKey = translationKey;
-        this.consoleThemeDetails = consoleThemeDetails;
     }
 
-    public ControlSpecification[] getControlSpecificationList() {
-        return consoleThemeDetails.getControlSpecification();
+    public final List<ControlSpecification> getControlSpecificationList() {
+        if (controlSpecifications.isEmpty()) {
+            this.addControlSpecifications();
+        }
+        return controlSpecifications;
     }
 
+    protected abstract void addControlSpecifications();
 
-    private static RegistrySupplierHolder<ConsoleTheme, ConsoleTheme> registerConsoleTheme(String id, ConsoleThemeDetails themeDetails){
-        return CONSOLE_THEME_DEFERRED_REGISTRY.registerHolder(id, () -> new ConsoleTheme(new ResourceLocation(TardisRefined.MODID, id), themeDetails));
+    protected void addControl(RegistrySupplier<Control> controlRegistrySupplier, float x, float y, float z, float width, float height) {
+        controlSpecifications.add(new ControlSpecification(controlRegistrySupplier, new Vector3f(x, y, z), EntityDimensions.scalable(width, height)));
+    }
+
+    protected void addControl(RegistrySupplier<Control> controlRegistrySupplier, float x, float y, float z) {
+        controlSpecifications.add(new ControlSpecification(controlRegistrySupplier, new Vector3f(x, y, z), EntityDimensions.scalable(0.13f, 0.13f)));
+    }
+
+    protected void addEmptyControl(float x, float y, float z, float width, float height){
+        addControl(TRControlRegistry.GENERIC_NO_SHOW, x, y, z, width, height);
+    }
+
+    protected void addEmptyControl(float x, float y, float z) {
+        addControl(TRControlRegistry.GENERIC_NO_SHOW, x, y, z);
+    }
+
+    public void replaceControl(Control replacementControl, int controlIndex) {
+        try {
+            Control originalControl = this.getControlSpecificationList().get(controlIndex).control();
+            if (originalControl.equals(TRControlRegistry.GENERIC_NO_SHOW.get())) {
+                controlSpecifications.get(controlIndex).setControl(replacementControl);
+            } else {
+                TardisRefined.LOGGER.error("Could not replace non-generic control {} at index {} on console {}", originalControl.getId(), controlIndex, translationKey.toString());
+            }
+        } catch (IndexOutOfBoundsException exception) {
+            TardisRefined.LOGGER.error("Could not replace control: no control present at index {} on console {}", controlIndex, translationKey.toString());
+        }
     }
 
     @Override
