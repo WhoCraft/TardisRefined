@@ -67,7 +67,7 @@ public class ManipulatorRecipeProvider implements DataProvider {
                     String outputPath = "data/" + recipe.getId().getNamespace() + "/" + "recipes/astral_manipulator" + "/" + recipe.getId().getPath().replace("/", "_") + ".json";
                     futures.add(DataProvider.saveStable(arg, currentRecipe, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
-                    TardisRefined.LOGGER.debug("Issue writing ManipulatorRecipe {}! Error: {}", entry.getValue().getId(), exception.getMessage());
+                    TardisRefined.LOGGER.error("Issue writing ManipulatorRecipe {}! Error: {}", entry.getValue().getId(), exception.getMessage());
                 }
             });
         }

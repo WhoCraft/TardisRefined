@@ -2,11 +2,9 @@ package whocraft.tardis_refined.common.block.console;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -19,8 +17,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RedStoneOreBlock;
-import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -170,50 +166,44 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-
-        if (level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
-
-            TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
-                TardisPilotingManager pilotingManager = operator.getPilotingManager();
-
-                if (serverLevel.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
-                    if (pilotingManager.getCurrentConsole() != null) {
-                        if (pilotingManager.getCurrentConsole() != consoleBlockEntity) {
-
-                            if (!pilotingManager.isInFlight()) {
-                                pilotingManager.setCurrentConsole(consoleBlockEntity);
-
-                            } else {
-                                PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
+        if (!player.level().isClientSide()) {
+            if (level instanceof ServerLevel serverLevel && level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
+                TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
+                    TardisPilotingManager pilotingManager = operator.getPilotingManager();
+                    if (serverLevel.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+                        if (pilotingManager.getCurrentConsole() != null) {
+                            if (pilotingManager.getCurrentConsole() != consoleBlockEntity) {
+                                if (!pilotingManager.isInFlight()) {
+                                    pilotingManager.setCurrentConsole(consoleBlockEntity);
+                                } else {
+                                    PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
+                                }
                             }
-
+                        } else {
+                            pilotingManager.setCurrentConsole(consoleBlockEntity);
+                            consoleBlockEntity.getUpdatePacket();
                         }
-                    } else {
-                        pilotingManager.setCurrentConsole(consoleBlockEntity);
-                        consoleBlockEntity.getUpdatePacket();
                     }
-                }
 
-            });
+                });
 
-            // Creative only: Quickly complete the cooldown.
-            if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
-                var operatorOptional = TardisLevelOperator.get(serverLevel);
-                if (operatorOptional.isPresent()) {
-                    var operator = operatorOptional.get();
-                    TardisPilotingManager pilotManager = operator.getPilotingManager();
+                // Creative only: Quickly complete the cooldown.
+                if (player.isCreative() && player.getItemInHand(interactionHand).getItem() == Items.ICE) {
+                    var operatorOptional = TardisLevelOperator.get(serverLevel);
+                    if (operatorOptional.isPresent()) {
+                        var operator = operatorOptional.get();
+                        TardisPilotingManager pilotManager = operator.getPilotingManager();
 
-                    if (pilotManager.isOnCooldown()) {
-                        pilotManager.endCoolDown();
-
-
-                        return InteractionResult.CONSUME_PARTIAL;
+                        if (pilotManager.isOnCooldown()) {
+                            pilotManager.endCoolDown();
+                            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                        }
                     }
-                }
 
+                }
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 }

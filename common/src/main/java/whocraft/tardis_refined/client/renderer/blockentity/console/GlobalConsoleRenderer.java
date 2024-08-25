@@ -103,5 +103,6 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
     public BlockEntityRenderer<GlobalConsoleBlockEntity> create(BlockEntityRendererProvider.Context context) {
         return new GlobalConsoleRenderer(context);
     }
-    
+
+
 }

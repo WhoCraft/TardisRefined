@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.block.device;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -11,7 +10,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +57,7 @@ public class AntiGravityBlock extends Block {
             player.swing(interactionHand, true);
 
             level.setBlockAndUpdate(blockPos, blockState.setValue(SPACE, newSpace));
-            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
         }
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }

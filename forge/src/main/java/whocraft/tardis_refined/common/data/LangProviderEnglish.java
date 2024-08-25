@@ -42,7 +42,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addSound(TRSoundRegistry.FLIGHT_FAIL_START.get(), "Failing TARDIS groans");
         addSound(TRSoundRegistry.CONSOLE_POWER_ON.get(), "Console power on");
         addSound(TRSoundRegistry.INTERIOR_VOICE.get(), "...?");
-        addSound(TRSoundRegistry.ARTRON_PILLAR.get(), "Artron pillar activated");
+        addSound(TRSoundRegistry.ARTRON_PILLAR_ACTIVE.get(), "Artron pillar activated");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER.get(), "Teleporter building up");
         addSound(TRSoundRegistry.CORRIDOR_TELEPORTER_SUCCESS.get(), "Teleporter used");
         addSound(TRSoundRegistry.SCREWDRIVER_CONNECT.get(), "Screwdriver connected position");
@@ -149,6 +149,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.HANDBRAKE_DISENGAGED, "Handbrake disengaged");
         add(ModMessages.CURRENT, "CURRENT");
         add(ModMessages.DESTINATION, "DESTINATION");
+        add(ModMessages.DOOR_LOCKED, "Door locked");
+        add(ModMessages.DOOR_UNLOCKED, "Door unlocked");
 
 
         /*Command*/
@@ -273,7 +275,11 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_I.get(), "Improved Generation I", "Lowers desktop wait times to 120 seconds");
         addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_II.get(), "Improved Generation II", "Lowers desktop wait times to 60 seconds");
         addUpgrade(TRUpgrades.IMPROVED_GENERATION_TIME_III.get(), "Improved Generation III", "Lowers desktop wait times to 10 seconds");
-
+        addUpgrade(TRUpgrades.FLIGHT_SYSTEM.get(), "Flight System", "Allows upgrades to the TARDIS Flight System");
+        addUpgrade(TRUpgrades.SPEED_I.get(), "Speed I", "Flight speed is 5x faster");
+        addUpgrade(TRUpgrades.SPEED_II.get(), "Speed II", "Flight speed is 10x faster");
+        addUpgrade(TRUpgrades.SPEED_III.get(), "Speed III", "Flight speed is 25x faster");
+        addUpgrade(TRUpgrades.SPEED_IV.get(), "Speed IV", "Flight speed is 50x faster");
 
     }
 

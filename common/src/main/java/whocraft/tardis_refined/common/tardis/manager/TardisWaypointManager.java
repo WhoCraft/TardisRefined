@@ -44,10 +44,6 @@ public class TardisWaypointManager extends BaseHandler{
     }
 
     @Override
-    public void tick() {
-
-    }
-    @Override
     public CompoundTag saveData(CompoundTag compoundTag) {
         ListTag waypointsList = new ListTag();
         for (TardisWaypoint waypoint : waypoints) {

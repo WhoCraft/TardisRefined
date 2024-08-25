@@ -57,21 +57,24 @@ public class ShellTheme implements Theme {
     private ResourceLocation translationKey;
     private boolean producesLight;
 
-    public ShellTheme(ResourceLocation translationKey) {
-        this.translationKey = translationKey;
-    }
+
     public ShellTheme(ResourceLocation translationKey, boolean producesLight) {
         this.translationKey = translationKey;
         this.producesLight = producesLight;
     }
 
+    public ShellTheme(ResourceLocation translationKey) {
+        this(translationKey, false);
+    }
+
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
-        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), false));
     }
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, boolean producesLight){
         return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
     }
+
 
     @Override
     public String getTranslationKey() {
@@ -86,5 +89,7 @@ public class ShellTheme implements Theme {
     public boolean producesLight() {
         return producesLight;
     }
+
+
 
 }

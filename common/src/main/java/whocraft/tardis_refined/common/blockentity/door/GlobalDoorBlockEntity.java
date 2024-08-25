@@ -7,16 +7,18 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
@@ -115,16 +117,46 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity {
             // we know that in this instance the serverlevel has a capability.
             TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
                 if (cap.getInternalDoor() != door) {
-                    cap.setInternalDoor(door);
+                    cap.setInternalDoor(door); //Set the main door and also tell this door block that it is the main door.
                 }
                 if(player.isShiftKeyDown() && !cap.getPilotingManager().isInFlight()) {
-                    cap.getExteriorManager().setLocked(!door.locked());
-                    door.setLocked(!door.locked());
-                    cap.setDoorClosed(true);
+                    /*When multiple internal doors are in a Tardis, and the player is locking a different door, use the door block's data to update the Tardis' data */
+                    cap.setDoorLocked(!door.locked()); //Tell the Tardis that the door is locked
+                    if (door.locked())
+                        cap.setDoorClosed(true); //Tell the Tardis that the door should be closed only if the door is being locked
                     return;
                 }
                 if (!cap.getPilotingManager().isInFlight() && !door.locked()) {
-                    cap.setDoorClosed(blockState.getValue(GlobalDoorBlock.OPEN));
+                    cap.setDoorClosed(door.isOpen()); //Tell the Tardis that the door should be closed if currently open, and should be open if currently closed.
+                }
+            });
+        }
+    }
+
+    @Override
+    public void playDoorCloseSound(boolean closeDoor) {
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+
+            pattern.soundProfile().ifPresent(shellSoundProfile -> {
+                ConfiguredSound configuredSound = shellSoundProfile.getDoorClose();
+                if (configuredSound != null) {
+                    currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+                }
+            });
+        }
+    }
+
+    @Override
+    public void playDoorLockedSound(boolean lockDoor) {
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            pattern.soundProfile().ifPresent(shellSoundProfile -> {
+                ConfiguredSound configuredSound = shellSoundProfile.getDoorClose();
+                if (configuredSound != null) {
+                    currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
                 }
             });
         }

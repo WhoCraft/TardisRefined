@@ -6,6 +6,8 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ResourceConstants;
+import whocraft.tardis_refined.patterns.sound.ConsoleSoundProfile;
+import whocraft.tardis_refined.patterns.sound.TRConsoleSoundProfiles;
 import whocraft.tardis_refined.registry.TRConsoleThemes;
 
 import java.util.*;
@@ -19,7 +21,7 @@ public class ConsolePatterns{
 
     private static Map<ResourceLocation, List<ConsolePattern>> DEFAULT_PATTERNS = new HashMap();
 
-    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(TRConsoleThemes.FACTORY.getId(), TRConsoleThemes.FACTORY.getId().getPath() + "_console"), true)).setThemeId(TRConsoleThemes.FACTORY.getId());
+    public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(TRConsoleThemes.FACTORY.getId(), TRConsoleThemes.FACTORY.getId().getPath() + "_console"), true), Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE)).setThemeId(TRConsoleThemes.FACTORY.getId());
 
     public static PatternReloadListener<ConsolePatternCollection, ConsolePattern> getReloadListener(){
         return PATTERNS;
@@ -99,15 +101,19 @@ public class ConsolePatterns{
         return patterns.get(prevIndex + 1);
     }
 
+    private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture) {
+        return addDefaultPattern(themeId, patternId, textureName, hasEmissiveTexture, Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE));
+    }
+
 
     /** Constructs and a {@link ConsolePattern}, then adds it to a {@link ConsolePatternCollection}, which is assigned to a {@link ConsoleTheme}.
      * <br> The {@link ConsolePatternCollection} is then added to an internal default map
      * <br> Also assigns the {@link ConsolePattern} its parent {@link ConsoleTheme}'s ID
      * @implSpec INTERNAL USE ONLY
      * */
-    private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture) {
+    private static ConsolePattern addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture, Optional<ConsoleSoundProfile> soundProfile) {
         List<ConsolePattern> consolePatternList;
-        ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(themeId,textureName), hasEmissiveTexture)).setThemeId(themeId);
+        ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(themeId,textureName), hasEmissiveTexture), soundProfile).setThemeId(themeId);
 
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
             consolePatternList = DEFAULT_PATTERNS.get(themeId);

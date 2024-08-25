@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
-import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.items.KeyItem;
@@ -24,14 +23,15 @@ import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
@@ -109,7 +109,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public boolean onRightClick(BlockState blockState, ItemStack stack, Level level, BlockPos blockPos, Player player) {
 
-        // We do not want interactions if the TARDIS is in Flight
+        // We do not want interactions if the TARDIS is regenerating itself
         if (blockState.getValue(ShellBaseBlock.REGEN)) {
             return false;
         }
@@ -123,15 +123,14 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 TardisPilotingManager tardisPilotingManager = tardisLevelOperator.getPilotingManager();
                 AestheticHandler aestheticHandler = tardisLevelOperator.getAestheticHandler();
                 TardisExteriorManager exteriorManager = tardisLevelOperator.getExteriorManager();
-                TardisInternalDoor internalDoor = tardisLevelOperator.getInternalDoor();
 
-                // We do not want interactions in Flight
+                // We do not want interactions if the Tardis is still taking off or landing
                 if (tardisPilotingManager.isInFlight()) return false;
 
                 // Shearing the TARDIS
                 if (stack.is(Items.SHEARS) && aestheticHandler.getShellTheme() == ShellTheme.HALF_BAKED.getId()) {
                     aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(), tardisPilotingManager.getCurrentLocation());
-                    level.playSound(null, blockPos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 1, 1);
+                    level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1, 1);
                     spawnCoralItems();
                     return true;
                 }
@@ -139,15 +138,15 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 boolean validKey = KeyItem.keychainContains(stack, TARDIS_ID);
                 if (validKey) {
                     boolean locked = !exteriorManager.locked();
-                    exteriorManager.setLocked(locked);
-                    internalDoor.setLocked(locked);
+                    tardisLevelOperator.setDoorLocked(locked);
                     tardisLevelOperator.setDoorClosed(locked);
+                    PlayerUtil.sendMessage(player, Component.translatable(locked ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED), true);
                     return true;
                 }
 
-                if(!exteriorManager.locked()){
-                    level.setBlock(blockPos, blockState.cycle(GlobalShellBlock.OPEN), Block.UPDATE_ALL);
-                    tardisLevelOperator.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN));
+                if(!exteriorManager.locked()){ //If the Tardis thinks it is not locked, open this shell's door
+                    level.setBlock(blockPos, blockState.cycle(GlobalShellBlock.OPEN), Block.UPDATE_ALL); //Cycle the door to open/closed
+                    tardisLevelOperator.setDoorClosed(blockState.getValue(GlobalShellBlock.OPEN)); //Now update both the internal door and re-update the external shell for good measure too.
                     return true;
                 }
             }
@@ -157,7 +156,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     public void sendUpdates() {
         level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
-        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), 3);
+        level.sendBlockUpdated(worldPosition, level.getBlockState(worldPosition), level.getBlockState(worldPosition), Block.UPDATE_ALL);
         setChanged();
     }
 
@@ -170,4 +169,30 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
             Containers.dropItemStack(level, currentPos.getX(), currentPos.getY(), currentPos.getZ() , coralItem);
         }
     }
+
+    @Override
+    public void playDoorCloseSound(boolean closeDoor) {
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            ConfiguredSound configuredSound = pattern.soundProfile().get().getDoorClose();
+            if (configuredSound != null){
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+            }
+        }
+    }
+
+    @Override
+    public void playDoorLockedSound(boolean lockDoor) {
+        ShellPattern pattern = this.pattern();
+        if (pattern != null){
+            Level currentLevel = this.getLevel();
+            ConfiguredSound configuredSound = pattern.soundProfile().get().getDoorLocked();
+            if (configuredSound != null){
+                currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
+            }
+        }
+    }
+
+
 }

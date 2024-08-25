@@ -3,7 +3,8 @@ package whocraft.tardis_refined.common.block.device;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -29,8 +30,8 @@ public class ArtronPillarBlock extends BaseEntityBlock {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
         if (level.getBlockState(blockPos.below()).getBlock() == TRBlockRegistry.ARTRON_PILLAR_PORT.get()) {
-            level.setBlock(blockPos, blockState.setValue(ACTIVE, true), 3);
-            level.playSound(null, blockPos, TRSoundRegistry.ARTRON_PILLAR.get(), SoundSource.BLOCKS, 100, 1 + (level.getRandom().nextFloat() * 0.25f));
+            level.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
+            level.playSound(null, blockPos, TRSoundRegistry.ARTRON_PILLAR_ACTIVE.get(), SoundSource.BLOCKS, 100, 1 + (level.getRandom().nextFloat() * 0.25f));
         }
 
 

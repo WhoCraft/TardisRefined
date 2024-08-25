@@ -39,7 +39,7 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TardisInteriorManager extends BaseHandler {
+public class TardisInteriorManager extends TickableHandler {
     private final TardisLevelOperator operator;
     private boolean isWaitingToGenerate = false;
     private boolean isGeneratingDesktop = false;
@@ -65,12 +65,12 @@ public class TardisInteriorManager extends BaseHandler {
 
     private double fuelForIntChange = 100; // The amount of fuel required to change interior
 
-    public DesktopTheme preparedTheme() {
-        return preparedTheme;
-    }
-
     public TardisInteriorManager(TardisLevelOperator operator) {
         this.operator = operator;
+    }
+
+    public DesktopTheme preparedTheme() {
+        return preparedTheme;
     }
 
     public boolean isGeneratingDesktop() {
@@ -95,11 +95,12 @@ public class TardisInteriorManager extends BaseHandler {
 
         return new ProtectedZone[]{ctrlRoomAirlck, hubAirlck, arsRoom};
     }
-
+    /** Gets the @{@link DesktopTheme} which is currently used by this Tardis*/
     public DesktopTheme currentTheme() {
-        return currentTheme;
+        return this.currentTheme;
     }
-
+    /** Updates the current @{@link DesktopTheme}.
+     * @implNote Should only be used when we are preparing to start a Desktop change*/
     public TardisInteriorManager setCurrentTheme(DesktopTheme currentTheme) {
         this.currentTheme = currentTheme;
         return this;
@@ -109,9 +110,12 @@ public class TardisInteriorManager extends BaseHandler {
         return currentTheme == TardisDesktops.DEFAULT_OVERGROWN_THEME;
     }
 
-    @Override
-    public void tick() {
+    public HumEntry getHumEntry() {
+        return humEntry;
+    }
 
+    public void setHumEntry(HumEntry humEntry) {
+        this.humEntry = humEntry;
     }
 
     @Override
@@ -154,15 +158,7 @@ public class TardisInteriorManager extends BaseHandler {
         }
     }
 
-
-    public HumEntry getHumEntry() {
-        return humEntry;
-    }
-
-    public void setHumEntry(HumEntry humEntry) {
-        this.humEntry = humEntry;
-    }
-
+    @Override
     public void tick(ServerLevel level) {
 
         RandomSource rand = level.getRandom();
@@ -181,41 +177,7 @@ public class TardisInteriorManager extends BaseHandler {
             return;
         }
 
-        if (this.isWaitingToGenerate) {
-            if (level.random.nextInt(30) == 0) {
-                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
-            }
-
-            if (level.random.nextInt(100) == 0) {
-                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
-            }
-
-            if (level.players().isEmpty()) {
-                exteriorManager.triggerShellRegenState(true);
-                operator.setDoorClosed(true);
-                TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
-                generateDesktop(this.preparedTheme);
-
-                this.isWaitingToGenerate = false;
-                this.isGeneratingDesktop = true;
-            }
-        }
-
-        if (this.isGeneratingDesktop) {
-
-            if (!level.isClientSide()) {
-                interiorGenerationCooldown--;
-            }
-
-            if (interiorGenerationCooldown == 0) {
-                exteriorManager.triggerShellRegenState(false);
-                this.isGeneratingDesktop = false;
-            }
-
-            if (level.getGameTime() % 60 == 0) {
-                exteriorManager.playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getLevel().getRandom().nextFloat(), 0.1f);
-            }
-        }
+        this.handleDesktopGeneration(level);
 
         /// Airlock Logic
 
@@ -377,11 +339,62 @@ public class TardisInteriorManager extends BaseHandler {
         return airlock.contains(livingEntity) || corridor.contains(livingEntity);
     }
 
+    public void setCorridorAirlockCenter(BlockPos center) {
+        this.corridorAirlockCenter = center;
+    }
+
+    public BlockPos getCorridorAirlockCenter() {
+        return this.corridorAirlockCenter;
+    }
+
+    /** Master logic that schedules the desktop preparation, generation and aesthetic effects in one place
+     * <br> Should be called in the {@link TardisInteriorManager#tick()}*/
+    public void handleDesktopGeneration(ServerLevel level){
+        if (this.isWaitingToGenerate) {
+            if (level.random.nextInt(30) == 0) {
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
+            }
+
+            if (level.random.nextInt(100) == 0) {
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
+            }
+            //This check doesn't actually work for players that respawn, login or teleport to the Tardis dimension when the Tardis is waiting to generate because our tick method is being called at the start of the server tick.
+            //To mitigate the problem where players become stuck inside the stone and suffocate to death, we call TardisLevelOperator#ejectPlayer in the relevant Events.
+            if (level.players().isEmpty()) {
+                if (this.operator.triggerRegenState(true)){ //Make sure we actually triggered the regen state before thinking we are good to go
+                    this.operator.forceEjectAllPlayers(); //Teleport all players to the exterior in case they still remain.
+                    TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
+                    this.generateDesktop(this.preparedTheme); //During desktop generation, if the state is still the initial cave state, we will update it to terraformed but no eye activated
+
+                    this.isWaitingToGenerate = false;
+                    this.isGeneratingDesktop = true;
+                }
+            }
+        }
+
+        if (this.isGeneratingDesktop) {
+
+            if (!level.isClientSide()) {
+                interiorGenerationCooldown--;
+            }
+
+            if (interiorGenerationCooldown == 0) {
+                if (this.operator.triggerRegenState(false)) //Make sure we actually triggered the regen state before saying we are good to go.
+                   this.isGeneratingDesktop = false;
+            }
+
+            if (level.getGameTime() % 60 == 0) {
+                this.operator.getExteriorManager().playSoundAtShell(SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 1.0F + operator.getLevel().getRandom().nextFloat(), 0.1f);
+            }
+        }
+    }
+
+    /** Performs the desktop generation tasks such as block removal and placement tasks*/
     public void generateDesktop(DesktopTheme theme) {
 
         if (operator.getLevel() instanceof ServerLevel serverLevel) {
 
-            if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) {
+            if (this.operator.getTardisState() == TardisLevelOperator.STATE_CAVE) { //If transforming from root shell to half baked Tardis, set the state to terraformed but no eye activated
                 this.operator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE);
             }
 
@@ -400,14 +413,7 @@ public class TardisInteriorManager extends BaseHandler {
         }
     }
 
-    public void setCorridorAirlockCenter(BlockPos center) {
-        this.corridorAirlockCenter = center;
-    }
-
-    public BlockPos getCorridorAirlockCenter() {
-        return this.corridorAirlockCenter;
-    }
-
+    /** Prepares the Tardis for desktop generation but doesn't actually start it. Handles cooldowns etc.*/
     public void prepareDesktop(DesktopTheme theme) {
         this.preparedTheme = theme;
         this.isWaitingToGenerate = true;

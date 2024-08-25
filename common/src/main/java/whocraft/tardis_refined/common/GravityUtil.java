@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +15,6 @@ public class GravityUtil {
 
     private static final int MAX_Y = 30; // The most a shaft can carry a player up
     private static final double ACCELERATION = 0.2;
-    private static final RandomSource randomSource = RandomSource.create();
 
     public static boolean isInAntiGrav(Player player, AABB box, Level level) {
         if (level.dimensionTypeId() != TRDimensionTypes.TARDIS) return false;
@@ -40,9 +38,9 @@ public class GravityUtil {
 
     private static void spawnParticlesWithinAABB(Level level, AABB box) {
         for (int i = 0; i < 2; i++) {
-            double x = box.minX + (box.maxX - box.minX) * randomSource.nextDouble();
-            double y = box.minY + (box.maxY - box.minY) * randomSource.nextDouble();
-            double z = box.minZ + (box.maxZ - box.minZ) * randomSource.nextDouble();
+            double x = box.minX + (box.maxX - box.minX) * level.random.nextDouble();
+            double y = box.minY + (box.maxY - box.minY) * level.random.nextDouble();
+            double z = box.minZ + (box.maxZ - box.minZ) * level.random.nextDouble();
             level.addParticle(ParticleTypes.ASH, x, y, z, 0, 0.2, 0);
         }
     }

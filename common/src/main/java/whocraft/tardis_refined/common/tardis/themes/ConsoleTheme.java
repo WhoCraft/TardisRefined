@@ -8,8 +8,6 @@ import org.joml.Vector3f;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.ConsoleSoundProfile;
-import whocraft.tardis_refined.common.tardis.themes.console.sound.GenericConsoleSoundProfile;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRControlRegistry;
 
@@ -20,7 +18,6 @@ import java.util.List;
 public abstract class ConsoleTheme implements Theme {
 
     private final ArrayList<ControlSpecification> controlSpecifications = new ArrayList<>();
-    private final ConsoleSoundProfile soundProfile = new GenericConsoleSoundProfile();
     private final ResourceLocation translationKey;
 
     public ConsoleTheme(ResourceLocation translationKey) {
@@ -74,9 +71,4 @@ public abstract class ConsoleTheme implements Theme {
     public Component getDisplayName() {
         return Component.translatable(this.getTranslationKey());
     }
-
-    public ConsoleSoundProfile getSoundProfile() {
-        return soundProfile;
-    }
-
 }
