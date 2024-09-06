@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.blockentity.shell;
 
+import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -31,6 +32,7 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.Optional;
@@ -175,10 +177,15 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     @Override
     public void playDoorCloseSound(boolean closeDoor) {
         ShellPattern pattern = this.pattern();
-        if (pattern != null){
+        if (pattern != null) {
             Level currentLevel = this.getLevel();
-            ConfiguredSound configuredSound = pattern.soundProfile().get().getDoorClose();
-            if (configuredSound != null){
+            ConfiguredSound configuredSound;
+            if (closeDoor) {
+                configuredSound = pattern.soundProfile().get() != null ? pattern.soundProfile().get().getDoorClose() : TRShellSoundProfiles.DEFAULT_SOUND_PROFILE.getDoorClose();
+            } else {
+                configuredSound = pattern.soundProfile().get() != null ? pattern.soundProfile().get().getDoorOpen() : TRShellSoundProfiles.DEFAULT_SOUND_PROFILE.getDoorOpen();
+            }
+            if (configuredSound != null) {
                 currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
@@ -187,10 +194,15 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     @Override
     public void playDoorLockedSound(boolean lockDoor) {
         ShellPattern pattern = this.pattern();
-        if (pattern != null){
+        if (pattern != null) {
             Level currentLevel = this.getLevel();
-            ConfiguredSound configuredSound = pattern.soundProfile().get().getDoorLocked();
-            if (configuredSound != null){
+            ConfiguredSound configuredSound;
+            if (lockDoor) {
+                configuredSound = pattern.soundProfile().get() != null ? pattern.soundProfile().get().getDoorLocked() : TRShellSoundProfiles.DEFAULT_SOUND_PROFILE.getDoorLocked();
+            } else {
+                configuredSound = pattern.soundProfile().get() != null ? pattern.soundProfile().get().getDoorUnlocked() : TRShellSoundProfiles.DEFAULT_SOUND_PROFILE.getDoorUnlocked();
+            }
+            if (configuredSound != null) {
                 currentLevel.playSound(null, this.getBlockPos(), configuredSound.getSoundEvent(), SoundSource.BLOCKS, configuredSound.getPitch(), configuredSound.getVolume());
             }
         }
