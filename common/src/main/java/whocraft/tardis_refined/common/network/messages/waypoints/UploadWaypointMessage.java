@@ -53,10 +53,10 @@ public class UploadWaypointMessage extends MessageC2S {
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             if(coordInputType == CoordInputType.WAYPOINT) {
                 TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
-                tardisWaypointManager.addWaypoint(tardisNavLocation, tardisNavLocation.getName());
+                tardisWaypointManager.addWaypoint(tardisNavLocation.copy(), tardisNavLocation.getName());
             } else {
                 TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
-                pilotManager.setTargetLocation(tardisNavLocation);
+                pilotManager.setTargetLocation(tardisNavLocation.copy());
             }
         });
     }
