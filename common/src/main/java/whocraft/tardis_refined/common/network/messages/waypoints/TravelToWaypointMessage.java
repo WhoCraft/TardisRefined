@@ -56,7 +56,7 @@ public class TravelToWaypointMessage extends MessageC2S {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
 
             TardisWaypoint waypoint = tardisWaypointManager.getWaypointById(waypointId);
-            TardisNavLocation waypointLoc = waypoint.getLocation();
+            TardisNavLocation waypointLoc = waypoint.getLocation().copy();
 
             TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
             pilotManager.setTargetLocation(waypointLoc);

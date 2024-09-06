@@ -383,6 +383,13 @@ public class TardisLevelOperator{
 
         //Place the exterior block
         targetLevel.setBlock(targetLocation, updatedBlockState, Block.UPDATE_ALL);
+
+        // Set TARDIS Id, so the block actually knows what it is
+        if(targetLevel.getBlockEntity(targetLocation) instanceof GlobalShellBlockEntity globalShellBlockEntity){
+            globalShellBlockEntity.setTardisId(levelKey);
+            globalShellBlockEntity.sendUpdates();
+        }
+
         //Copy over important data points such as patterns, and update the internal doors
         //TODO: Implement a system that allows updating of specific Tardis data, so that we don't need to update the theme and patterns when we don't need to.
         if (theme != null && shellPattern != null)
