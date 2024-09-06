@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import whocraft.tardis_refined.TardisRefined;
@@ -35,6 +36,10 @@ public class RegistryHelper {
 
     public static TagKey<Biome> makeBiomeTagForFeature(String name) {
         return TagKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, "has_structure/" + name));
+    }
+
+    public static TagKey<Block> makeBlockTag(String modid, String name) {
+        return TagKey.create(Registries.BLOCK, new ResourceLocation(modid, name));
     }
 
     public static ResourceLocation getKey(ConsoleTheme theme) {

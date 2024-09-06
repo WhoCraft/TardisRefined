@@ -383,10 +383,20 @@ public class TardisLevelOperator{
 
         //Place the exterior block
         targetLevel.setBlock(targetLocation, updatedBlockState, Block.UPDATE_ALL);
+
+        System.out.println(shellPattern.id());
+
+        // Set TARDIS Id, so the block actually knows what it is
+        if(targetLevel.getBlockEntity(targetLocation) instanceof GlobalShellBlockEntity globalShellBlockEntity){
+            globalShellBlockEntity.setTardisId(levelKey);
+            globalShellBlockEntity.setPattern(shellPattern);
+            globalShellBlockEntity.sendUpdates();
+        }
+
         //Copy over important data points such as patterns, and update the internal doors
         //TODO: Implement a system that allows updating of specific Tardis data, so that we don't need to update the theme and patterns when we don't need to.
         if (theme != null && shellPattern != null)
-            this.setShellTheme(theme, shellPattern.getThemeId(), shellChangeSource);
+            this.setShellTheme(theme, shellPattern.id(), shellChangeSource);
 
         targetLevel.sendBlockUpdated(targetLocation, updatedBlockState, updatedBlockState, Block.UPDATE_CLIENTS);
     }
@@ -443,7 +453,9 @@ public class TardisLevelOperator{
 
     /** Unified logic to update the Tardis' ShellTheme and Pattern, as well as the exterior and internal doors*/
     public void setShellTheme(ResourceLocation shellTheme, ResourceLocation shellPattern, ShellChangeSource shellChangeSource) {
-        this.getAestheticHandler().setShellTheme(shellTheme, shellPattern, this.getPilotingManager().getCurrentLocation());
+        aestheticHandler.setShellTheme(shellTheme, shellPattern, this.getPilotingManager().getCurrentLocation());
+        aestheticHandler.setShellPattern(ShellPatterns.getPatternOrDefault(shellTheme, shellPattern));
+
         tardisClientData.setShellTheme(shellTheme);
         tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
         tardisClientData.sync();

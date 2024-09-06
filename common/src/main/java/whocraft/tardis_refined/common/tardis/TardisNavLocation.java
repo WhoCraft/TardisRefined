@@ -140,5 +140,11 @@ public class TardisNavLocation {
         return position;
     }
 
+    public TardisNavLocation copy() {
+        TardisNavLocation copy = new TardisNavLocation(this.position, this.direction, this.dimensionKey);
+        copy.setName(this.name);
+        return copy;
+    }
+
 
 }
