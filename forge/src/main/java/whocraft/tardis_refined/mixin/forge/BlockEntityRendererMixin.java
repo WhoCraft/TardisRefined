@@ -9,10 +9,11 @@ import net.minecraftforge.common.extensions.IForgeBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 
-@Mixin({ConsoleConfigurationBlockEntity.class, GlobalShellBlockEntity.class, RootShellDoorBlockEntity.class, GlobalShellBlockEntity.class, GlobalConsoleBlockEntity.class})
+@Mixin({ConsoleConfigurationBlockEntity.class, GlobalShellBlockEntity.class, RootShellDoorBlockEntity.class, GlobalShellBlockEntity.class, GlobalConsoleBlockEntity.class, BulkHeadDoorBlockEntity.class})
 public class BlockEntityRendererMixin extends BlockEntity implements IForgeBlockEntity {
 
     public BlockEntityRendererMixin(BlockEntityType<?> arg, BlockPos arg2, BlockState arg3) {
