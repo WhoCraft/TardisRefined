@@ -35,9 +35,9 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         ResourceLocation leavesTexture = new ResourceLocation("tardis_refined:block/ars_leaves");
 
 
-        myFenceInventory(new ResourceLocation(TardisRefined.MODID, "ars_leaves_fence_inventory"), leavesTexture);
+        myFenceInventory(TardisRefined.modLocation( "ars_leaves_fence_inventory"), leavesTexture);
 
-        blockItem(TRBlockRegistry.ARS_LEAVES_FENCE.getId(), new ResourceLocation(TardisRefined.MODID, "item/ars_leaves_fence_inventory"));
+        blockItem(TRBlockRegistry.ARS_LEAVES_FENCE.getId(), TardisRefined.modLocation( "item/ars_leaves_fence_inventory"));
         blockItem(TRBlockRegistry.TERRAFORMER_BLOCK.getId());
         blockItem(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.getId());
         blockItem(TRBlockRegistry.GRAVITY_WELL.getId());

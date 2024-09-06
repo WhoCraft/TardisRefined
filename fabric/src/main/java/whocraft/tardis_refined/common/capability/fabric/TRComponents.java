@@ -11,7 +11,7 @@ import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class TRComponents implements WorldComponentInitializer {
 
-    public static final ComponentKey<TardisLevelOperatorImpl> TARDIS_DATA = ComponentRegistryV3.INSTANCE.getOrCreate(new ResourceLocation(TardisRefined.MODID, "tardis_data"), TardisLevelOperatorImpl.class);
+    public static final ComponentKey<TardisLevelOperatorImpl> TARDIS_DATA = ComponentRegistryV3.INSTANCE.getOrCreate(TardisRefined.modLocation( "tardis_data"), TardisLevelOperatorImpl.class);
 
     /**
      * Registers the appropriate world component factory for the current environment.

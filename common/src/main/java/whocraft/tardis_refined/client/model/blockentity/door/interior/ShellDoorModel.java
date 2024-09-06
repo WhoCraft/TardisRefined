@@ -11,7 +11,7 @@ import whocraft.tardis_refined.patterns.ShellPattern;
 
 public abstract class ShellDoorModel extends HierarchicalModel {
 
-    public abstract void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+    public abstract void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color);
 
     @Override
     public ModelPart root() {

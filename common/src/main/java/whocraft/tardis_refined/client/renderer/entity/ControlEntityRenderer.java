@@ -26,11 +26,11 @@ import whocraft.tardis_refined.common.items.GlassesItem;
 
 public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
-    private static ResourceLocation ICON_GOOD = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_good.png");
-    private static ResourceLocation ICON_SLIPPING = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_slipping.png");
-    private static ResourceLocation ICON_WARNING = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_warning.png");
-    private static ResourceLocation ICON_ALERT = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_alert.png");
-    private static ResourceLocation ICON_DANGER = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_danger.png");
+    private static ResourceLocation ICON_GOOD = TardisRefined.modLocation( "textures/gui/sprites/control/control_good.png");
+    private static ResourceLocation ICON_SLIPPING = TardisRefined.modLocation( "textures/gui/sprites/control/control_slipping.png");
+    private static ResourceLocation ICON_WARNING = TardisRefined.modLocation( "textures/gui/sprites/control/control_warning.png");
+    private static ResourceLocation ICON_ALERT = TardisRefined.modLocation( "textures/gui/sprites/control/control_alert.png");
+    private static ResourceLocation ICON_DANGER = TardisRefined.modLocation( "textures/gui/sprites/control/control_danger.png");
 
     public ControlEntityRenderer(EntityRendererProvider.Context context) {
         super(context);

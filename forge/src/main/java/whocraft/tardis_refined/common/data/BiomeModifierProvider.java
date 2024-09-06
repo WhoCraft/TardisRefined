@@ -23,8 +23,8 @@ public class BiomeModifierProvider {
 
     private static final ResourceKey<BiomeModifier> ADD_TARDIS_ROOT_CLUSTER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TRFeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
-    private static final ResourceKey<BiomeModifier> ZEITON = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(TardisRefined.MODID, "zeiton"));
-    private static final ResourceKey<BiomeModifier> ZEITON_SMALL = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, new ResourceLocation(TardisRefined.MODID, "zeiton_small"));
+    private static final ResourceKey<BiomeModifier> ZEITON = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TardisRefined.modLocation( "zeiton"));
+    private static final ResourceKey<BiomeModifier> ZEITON_SMALL = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, TardisRefined.modLocation( "zeiton_small"));
 
 
     public static void bootstrap(BootstapContext<BiomeModifier> context) {

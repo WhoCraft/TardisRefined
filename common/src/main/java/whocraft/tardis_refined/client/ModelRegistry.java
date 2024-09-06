@@ -86,69 +86,69 @@ public class ModelRegistry {
 
 
     public static void init() {
-        ROOT_PLANT_STATE_ONE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_one"), "root_plant_one"), RootPlantStateOneModel::createBodyLayer);
-        ROOT_PLANT_STATE_TWO = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_two"), "root_plant_two"), RootPlantStateTwoModel::createBodyLayer);
-        ROOT_PLANT_STATE_THREE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_three"), "root_plant_three"), RootPlantStateThreeModel::createBodyLayer);
-        ROOT_PLANT_STATE_FOUR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_four"), "root_plant_four"), RootPlantStateFourModel::createBodyLayer);
-        ROOT_PLANT_STATE_FIVE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_plant_five"), "root_plant_five"), RootPlantStateFiveModel::createBodyLayer);
+        ROOT_PLANT_STATE_ONE = register(new ModelLayerLocation(TardisRefined.modLocation( "root_plant_one"), "root_plant_one"), RootPlantStateOneModel::createBodyLayer);
+        ROOT_PLANT_STATE_TWO = register(new ModelLayerLocation(TardisRefined.modLocation( "root_plant_two"), "root_plant_two"), RootPlantStateTwoModel::createBodyLayer);
+        ROOT_PLANT_STATE_THREE = register(new ModelLayerLocation(TardisRefined.modLocation( "root_plant_three"), "root_plant_three"), RootPlantStateThreeModel::createBodyLayer);
+        ROOT_PLANT_STATE_FOUR = register(new ModelLayerLocation(TardisRefined.modLocation( "root_plant_four"), "root_plant_four"), RootPlantStateFourModel::createBodyLayer);
+        ROOT_PLANT_STATE_FIVE = register(new ModelLayerLocation(TardisRefined.modLocation( "root_plant_five"), "root_plant_five"), RootPlantStateFiveModel::createBodyLayer);
 
-        FACTORY_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_console"), "factory_console"), FactoryConsoleModel::createBodyLayer);
-        NUKA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_console"), "nuka_console"), NukaConsoleModel::createBodyLayer);
-        COPPER_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "copper_console"), "copper_console"), CopperConsoleModel::createBodyLayer);
-        CORAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "coral_console"), "coral_console"), CoralConsoleModel::createBodyLayer);
-        TOYOTA_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "toyota_console"), "toyota_console"), ToyotaConsoleModel::createBodyLayer);
-        CRYSTAL_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "crystal_console"), "crystal_console"), CrystalConsoleModel::createBodyLayer);
-        VICTORIAN_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "victorian_console"), "victorian_console"), VictorianConsoleModel::createBodyLayer);
-        MYST_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "myst_console"), "myst_console"), MystConsoleModel::createBodyLayer);
-        INITIATIVE_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "initiative_console"), "initiative_console"), InitiativeConsoleModel::createBodyLayer);
-        REFURBISHED_CONSOLE = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "refurbished_console"), "refurbished_console"), RefurbishedConsoleModel::createBodyLayer);
+        FACTORY_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "factory_console"), "factory_console"), FactoryConsoleModel::createBodyLayer);
+        NUKA_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "nuka_console"), "nuka_console"), NukaConsoleModel::createBodyLayer);
+        COPPER_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "copper_console"), "copper_console"), CopperConsoleModel::createBodyLayer);
+        CORAL_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "coral_console"), "coral_console"), CoralConsoleModel::createBodyLayer);
+        TOYOTA_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "toyota_console"), "toyota_console"), ToyotaConsoleModel::createBodyLayer);
+        CRYSTAL_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "crystal_console"), "crystal_console"), CrystalConsoleModel::createBodyLayer);
+        VICTORIAN_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "victorian_console"), "victorian_console"), VictorianConsoleModel::createBodyLayer);
+        MYST_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "myst_console"), "myst_console"), MystConsoleModel::createBodyLayer);
+        INITIATIVE_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "initiative_console"), "initiative_console"), InitiativeConsoleModel::createBodyLayer);
+        REFURBISHED_CONSOLE = register(new ModelLayerLocation(TardisRefined.modLocation( "refurbished_console"), "refurbished_console"), RefurbishedConsoleModel::createBodyLayer);
 
-        ROOT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
-        FACTORY_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_shell"), "factory_shell"), FactoryShellModel::createBodyLayer);
-        POLICE_BOX_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "police_box_shell"), "police_box_shell"), PoliceBoxModel::createBodyLayer);
-        PHONE_BOOTH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "phone_booth_shell"), "phone_booth_shell"), PhoneBoothModel::createBodyLayer);
-        MYSTIC_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "mystic_shell"), "mystic_shell"), MysticShellModel::createBodyLayer);
-        DRIFTER_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "drifter_shell"), "drifter_shell"), DrifterShellModel::createBodyLayer);
-        PRESENT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "present_shell"), "present_shell"), PresentShellModel::createBodyLayer);
-        VENDING_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "vending_shell"), "vending_shell"), VendingMachineShellModel::createBodyLayer);
-        BRIEFCASE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "briefcase_shell"), "briefcase_shell"), BriefcaseShellModel::createBodyLayer);
-        GROENING_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_shell"), "groening_shell"), GroeningShellModel::createBodyLayer);
-        BIG_BEN_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_shell"), "big_ben_shell"), BigBenShellModel::createBodyLayer);
-        NUKA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_shell"), "nuka_shell"), NukaShellModel::createBodyLayer);
-        GROWTH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_shell"), "growth_shell"), GrowthShellModel::createBodyLayer);
-        PORTALOO_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_shell"), "portaloo_shell"), PortalooShellModel::createBodyLayer);
-        PAGODA_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pagoda_shell"), "pagoda_shell"), PagodaShellModel::createBodyLayer);
-        LIFT_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_shell"), "lift_shell"), LiftShellModel::createBodyLayer);
-        HIEROGLYPH_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_shell"), "hieroglyph_shell"), HieroglyphModel::createBodyLayer);
-        CASTLE_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_shell"), "castle_shell"), CastleShellModel::createBodyLayer);
-        PATHFINDER_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pathfinder_shell"), "pathfinder_shell"), PathfinderShellModel::createBodyLayer);
-        HALF_BAKED_SHELL = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "half_baked_shell"), "half_baked_shell"), HalfBakedShellModel::createBodyLayer);
+        ROOT_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "root_shell"), "root_shell"), RootShellModel::createBodyLayer);
+        FACTORY_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "factory_shell"), "factory_shell"), FactoryShellModel::createBodyLayer);
+        POLICE_BOX_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "police_box_shell"), "police_box_shell"), PoliceBoxModel::createBodyLayer);
+        PHONE_BOOTH_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "phone_booth_shell"), "phone_booth_shell"), PhoneBoothModel::createBodyLayer);
+        MYSTIC_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "mystic_shell"), "mystic_shell"), MysticShellModel::createBodyLayer);
+        DRIFTER_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "drifter_shell"), "drifter_shell"), DrifterShellModel::createBodyLayer);
+        PRESENT_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "present_shell"), "present_shell"), PresentShellModel::createBodyLayer);
+        VENDING_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "vending_shell"), "vending_shell"), VendingMachineShellModel::createBodyLayer);
+        BRIEFCASE_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "briefcase_shell"), "briefcase_shell"), BriefcaseShellModel::createBodyLayer);
+        GROENING_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "groening_shell"), "groening_shell"), GroeningShellModel::createBodyLayer);
+        BIG_BEN_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "big_ben_shell"), "big_ben_shell"), BigBenShellModel::createBodyLayer);
+        NUKA_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "nuka_shell"), "nuka_shell"), NukaShellModel::createBodyLayer);
+        GROWTH_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "growth_shell"), "growth_shell"), GrowthShellModel::createBodyLayer);
+        PORTALOO_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "portaloo_shell"), "portaloo_shell"), PortalooShellModel::createBodyLayer);
+        PAGODA_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "pagoda_shell"), "pagoda_shell"), PagodaShellModel::createBodyLayer);
+        LIFT_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "lift_shell"), "lift_shell"), LiftShellModel::createBodyLayer);
+        HIEROGLYPH_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "hieroglyph_shell"), "hieroglyph_shell"), HieroglyphModel::createBodyLayer);
+        CASTLE_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "castle_shell"), "castle_shell"), CastleShellModel::createBodyLayer);
+        PATHFINDER_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "pathfinder_shell"), "pathfinder_shell"), PathfinderShellModel::createBodyLayer);
+        HALF_BAKED_SHELL = register(new ModelLayerLocation(TardisRefined.modLocation( "half_baked_shell"), "half_baked_shell"), HalfBakedShellModel::createBodyLayer);
 
 
-        ROOT_SHELL_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
-        FACTORY_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "factory_door"), "factory_door"), FactoryDoorModel::createBodyLayer);
-        POLICE_BOX_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "police_box_door"), "police_box_door"), PoliceBoxDoorModel::createBodyLayer);
-        PHONE_BOOTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "phone_booth_door"), "phone_booth_door"), PhoneBoothDoorModel::createBodyLayer);
-        MYSTIC_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "mystic_door"), "mystic_door"), MysticDoorModel::createBodyLayer);
-        DRIFTER_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "drifter_door"), "drifter_door"), DrifterDoorModel::createBodyLayer);
-        PRESENT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "present_door"), "present_door"), PresentDoorModel::createBodyLayer);
-        VENDING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "vending_door"), "vending_door"), VendingMachineDoorModel::createBodyLayer);
-        BRIEFCASE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "briefcase_door"), "briefcase_door"), BriefcaseDoorModel::createBodyLayer);
-        GROENING_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "groening_door"), "groening_door"), GroeningDoorModel::createBodyLayer);
-        BIG_BEN_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "big_ben_door"), "big_ben_door"), BigBenDoorModel::createBodyLayer);
-        NUKA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "nuka_door"), "nuka_door"), NukaDoorModel::createBodyLayer);
-        GROWTH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "growth_door"), "growth_door"), GrowthDoorModel::createBodyLayer);
-        PORTALOO_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "portaloo_door"), "portaloo_door"), PortalooDoorModel::createBodyLayer);
-        PAGODA_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pagoda_door"), "pagoda_door"), PagodaDoorModel::createBodyLayer);
-        LIFT_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "lift_door"), "lift_door"), LiftShellDoorModel::createBodyLayer);
-        HIEROGLYPH_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
-        CASTLE_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
-        PATHFINDER_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "pathfinder_door"), "pathfinder_door"), PathfinderShellModel::createBodyLayer);
-        HALF_BAKED_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "half_baked_door"), "half_baked_door"), HalfBakedDoorModel::createBodyLayer);
+        ROOT_SHELL_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "root_shell_door"), "root_shell_door"), RootShellDoorModel::createBodyLayer);
+        FACTORY_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "factory_door"), "factory_door"), FactoryDoorModel::createBodyLayer);
+        POLICE_BOX_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "police_box_door"), "police_box_door"), PoliceBoxDoorModel::createBodyLayer);
+        PHONE_BOOTH_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "phone_booth_door"), "phone_booth_door"), PhoneBoothDoorModel::createBodyLayer);
+        MYSTIC_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "mystic_door"), "mystic_door"), MysticDoorModel::createBodyLayer);
+        DRIFTER_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "drifter_door"), "drifter_door"), DrifterDoorModel::createBodyLayer);
+        PRESENT_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "present_door"), "present_door"), PresentDoorModel::createBodyLayer);
+        VENDING_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "vending_door"), "vending_door"), VendingMachineDoorModel::createBodyLayer);
+        BRIEFCASE_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "briefcase_door"), "briefcase_door"), BriefcaseDoorModel::createBodyLayer);
+        GROENING_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "groening_door"), "groening_door"), GroeningDoorModel::createBodyLayer);
+        BIG_BEN_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "big_ben_door"), "big_ben_door"), BigBenDoorModel::createBodyLayer);
+        NUKA_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "nuka_door"), "nuka_door"), NukaDoorModel::createBodyLayer);
+        GROWTH_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "growth_door"), "growth_door"), GrowthDoorModel::createBodyLayer);
+        PORTALOO_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "portaloo_door"), "portaloo_door"), PortalooDoorModel::createBodyLayer);
+        PAGODA_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "pagoda_door"), "pagoda_door"), PagodaDoorModel::createBodyLayer);
+        LIFT_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "lift_door"), "lift_door"), LiftShellDoorModel::createBodyLayer);
+        HIEROGLYPH_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "hieroglyph_door"), "hieroglyph_door"), HieroglyphShellDoor::createBodyLayer);
+        CASTLE_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "castle_door"), "castle_door"), CastleShellDoorModel::createBodyLayer);
+        PATHFINDER_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "pathfinder_door"), "pathfinder_door"), PathfinderShellModel::createBodyLayer);
+        HALF_BAKED_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "half_baked_door"), "half_baked_door"), HalfBakedDoorModel::createBodyLayer);
 
-        ARS_EGG = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
-        BULK_HEAD_DOOR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
-        ARTRON_PILLAR = register(new ModelLayerLocation(new ResourceLocation(TardisRefined.MODID, "artron_pillar"), "artron_pillar"), ArtronPillarBlockModel::createBodyLayer);
+        ARS_EGG = register(new ModelLayerLocation(TardisRefined.modLocation( "ars_egg"), "ars_egg"), ArsEggModel::createBodyLayer);
+        BULK_HEAD_DOOR = register(new ModelLayerLocation(TardisRefined.modLocation( "bulk_head_door"), "bulk_head_door"), BulkHeadDoorModel::createBodyLayer);
+        ARTRON_PILLAR = register(new ModelLayerLocation(TardisRefined.modLocation( "artron_pillar"), "artron_pillar"), ArtronPillarBlockModel::createBodyLayer);
 
     }
 

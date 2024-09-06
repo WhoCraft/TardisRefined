@@ -81,14 +81,14 @@ public class PagodaDoorModel extends ShellDoorModel {
 	}
 
 	@Override
-	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone13.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone13.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

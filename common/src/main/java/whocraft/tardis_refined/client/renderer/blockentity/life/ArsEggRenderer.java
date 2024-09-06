@@ -15,6 +15,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 
@@ -24,8 +25,8 @@ import static whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel.
 public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, BlockEntityRendererProvider<ArsEggBlockEntity> {
 
     private final ArsEggModel arsEggModel;
-    private final ResourceLocation arsEggTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg.png");
-    private final ResourceLocation arsEggTextureEmissive = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg_emissive.png");
+    private final ResourceLocation arsEggTexture = TardisRefined.modLocation( "textures/blockentity/life/ars_egg.png");
+    private final ResourceLocation arsEggTextureEmissive = TardisRefined.modLocation( "textures/blockentity/life/ars_egg_emissive.png");
 
     public ArsEggRenderer(BlockEntityRendererProvider.Context context) {
         this.arsEggModel = new ArsEggModel(context.bakeLayer(ModelRegistry.ARS_EGG));
@@ -60,11 +61,11 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
         }
 
         arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(arsEggTexture)),
-                i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                i, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, 1f));
 
         if(blockState.getValue(ArsEggBlock.ALIVE)) {
             arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(arsEggTextureEmissive)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1F);
+                    i, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, 1F));
         }
 
         poseStack.popPose();

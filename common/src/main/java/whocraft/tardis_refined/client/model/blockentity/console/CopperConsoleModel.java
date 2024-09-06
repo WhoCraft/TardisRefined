@@ -1267,7 +1267,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 							new Keyframe(2.76f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.LINEAR))).build();
 	
-	private static final ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
+	private static final ResourceLocation COPPER_TEXTURE = TardisRefined.modLocation( "textures/blockentity/console/copper/copper_console.png");
 
 	private final ModelPart root;
 	private final ModelPart rotor;
@@ -2228,20 +2228,20 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		misc5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		north_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		north_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		east.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		south_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		south_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		west.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		misc.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		misc2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		misc3.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		misc4.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		misc5.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		north_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		north_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		east.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		south_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		south_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		west.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
@@ -2255,7 +2255,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
@@ -2272,7 +2272,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		this.handbrake.zRot = !reactions.isHandbrakeEngaged() ? 1f : -1f;
 
-		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

@@ -51,14 +51,14 @@ public class BriefcaseDoorModel extends ShellDoorModel {
 
 
 	@Override
-	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		if (isDoorOpen) {
-			door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+			door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 		} else {
-			door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+			door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 		}
 
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

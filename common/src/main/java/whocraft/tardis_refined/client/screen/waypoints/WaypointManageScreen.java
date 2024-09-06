@@ -37,7 +37,7 @@ public class WaypointManageScreen extends Screen {
     private int leftPos, topPos;
 
     protected EditBox waypointName;
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
+    public static ResourceLocation MONITOR_TEXTURE = TardisRefined.modLocation( "textures/gui/monitor.png");
     private TardisWaypoint preExistingWaypoint = null;
     private TardisNavLocation tardisNavLocation = TardisNavLocation.ORIGIN;
     private SpriteIconButton onSaveWaypoint;

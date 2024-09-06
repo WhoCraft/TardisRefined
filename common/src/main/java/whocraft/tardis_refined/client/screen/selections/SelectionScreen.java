@@ -26,8 +26,8 @@ public class SelectionScreen extends Screen {
     public int noiseX, noiseY, age;
     public double noiseAlpha;
 
-    public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "save");
-    public static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "back");
+    public static final ResourceLocation BUTTON_LOCATION = TardisRefined.modLocation( "save");
+    public static final ResourceLocation BCK_LOCATION = TardisRefined.modLocation( "back");
 
 
     public SelectionScreen(Component title) {

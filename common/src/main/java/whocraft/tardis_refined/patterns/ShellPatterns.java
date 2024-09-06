@@ -134,7 +134,7 @@ public class ShellPatterns {
     }
 
     public static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String textureName){
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
+        return TardisRefined.modLocation( "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
     }
 
     public static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String modid, String textureName){
@@ -146,7 +146,7 @@ public class ShellPatterns {
     }
 
     public static ResourceLocation interiorTextureLocation(ResourceLocation themeId, String textureName){
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
+        return TardisRefined.modLocation( "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
     }
 
     /** Gets a default list of Shell Patterns added by Tardis Refined. Useful as a fallback list.

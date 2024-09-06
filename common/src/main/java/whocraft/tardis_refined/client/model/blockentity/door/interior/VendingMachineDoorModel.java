@@ -36,9 +36,9 @@ public class VendingMachineDoorModel extends ShellDoorModel {
     }
 
     @Override
-    public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone11.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        bone11.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 
     @Override

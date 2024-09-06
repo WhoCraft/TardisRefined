@@ -25,10 +25,6 @@ public class GlassesItem extends Item implements Equipable {
         return EquipmentSlot.HEAD;
     }
 
-    @Override
-    public SoundEvent getEquipSound() {
-        return Equipable.super.getEquipSound();
-    }
 
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         return this.swapWithEquipmentSlot(this, level, player, interactionHand);

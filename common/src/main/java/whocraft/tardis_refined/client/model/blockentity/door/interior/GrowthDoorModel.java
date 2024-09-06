@@ -45,14 +45,14 @@ public class GrowthDoorModel extends ShellDoorModel {
 	boolean isDoorOpen = false;
 
 	@Override
-	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		door_closed.visible = !isDoorOpen;
 		door_open.visible = isDoorOpen;
 
-		door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

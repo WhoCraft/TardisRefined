@@ -142,7 +142,7 @@ public class DimensionHandler {
 
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, String id) {
-        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, id)));
+        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, TardisRefined.modLocation( id)));
     }
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, ResourceKey<Level> levelResourceKey) {

@@ -19,11 +19,11 @@ public class PatternTexture{
     });
 
     public PatternTexture(String textureLocation, boolean hasEmissiveTexture) {
-        this(new ResourceLocation(TardisRefined.MODID, textureLocation), hasEmissiveTexture);
+        this(TardisRefined.modLocation( textureLocation), hasEmissiveTexture);
     }
 
     public PatternTexture(String textureLocation) {
-        this(new ResourceLocation(TardisRefined.MODID, textureLocation));
+        this(TardisRefined.modLocation( textureLocation));
     }
 
     public PatternTexture(ResourceLocation textureLocation) {

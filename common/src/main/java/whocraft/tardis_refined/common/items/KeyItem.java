@@ -109,7 +109,7 @@ public class KeyItem extends Item {
 
         for (Tag tag : keychain) {
             String string = tag.getAsString();
-            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(string));
+            ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(string));
             levels.add(key);
         }
 
@@ -168,9 +168,7 @@ public class KeyItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, list, tooltipFlag);
-
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         ArrayList<ResourceKey<Level>> keychain = KeyItem.getKeychain(itemStack);
 
         if (!keychain.isEmpty()) {
@@ -182,16 +180,13 @@ public class KeyItem extends Item {
             }
 
 
-
             list.add(Component.translatable(ModMessages.TOOLTIP_TARDIS_LIST_TITLE));
 
             for (int i = 0; i < keychain.size(); i++) {
                 MutableComponent hyphen = Component.literal((i == 0) ? ChatFormatting.YELLOW + "> " : "- ");
                 list.add(hyphen.append(Component.literal(keychain.get(i).location().getPath().substring(0, 5))));
             }
-
-
-
         }
+        super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
     }
 }

@@ -30,7 +30,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 	private final ModelPart throttleLever;
 	private final ModelPart handbrake;
 
-	private static final ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
+	private static final ResourceLocation FACTORY_TEXTURE = TardisRefined.modLocation( "textures/blockentity/console/factory/factory_console.png");
 
 
 	public static final AnimationDefinition IDLE = AnimationDefinition.Builder.withLength(10f).looping()
@@ -2250,14 +2250,14 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		root().getAllParts().forEach(ModelPart::resetPose);
-		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
@@ -2276,7 +2276,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
 
 		this.handbrake.xRot = reactions.isHandbrakeEngaged() ? -155f : -125f;
 
-		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		console_factory.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 

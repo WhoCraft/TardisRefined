@@ -28,7 +28,7 @@ public class ProviderConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> TARDIS_ROOT_CLUSTER_CONF_FEATURE = ResourceKey.create(Registries.CONFIGURED_FEATURE, TRFeatureKeys.TARDIS_ROOT_CLUSTER_RL);
 
     public static ResourceKey<ConfiguredFeature<?, ?>> createKey(String name) {
-        return ResourceKey.create(Registries.CONFIGURED_FEATURE, new ResourceLocation(TardisRefined.MODID, name));
+        return ResourceKey.create(Registries.CONFIGURED_FEATURE, TardisRefined.modLocation( name));
     }
 
     public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
@@ -36,7 +36,7 @@ public class ProviderConfiguredFeatures {
         RuleTest stoneReplaceable = new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES);
         RuleTest deepslateReplaceable = new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES);
 
-        ResourceLocation templateLocation = new ResourceLocation(TardisRefined.MODID, "cave/tardis_root_cluster_deepslate");
+        ResourceLocation templateLocation = TardisRefined.modLocation( "cave/tardis_root_cluster_deepslate");
         ConfiguredFeature<NbtTemplateFeatureConfig, NbtTemplateFeature> tardisRootCluster = new ConfiguredFeature<>(Features.NBT_FEATURE.get(), new NbtTemplateFeatureConfig(templateLocation, 0));
 
         HolderGetter<ConfiguredFeature<?, ?>> configuredFeatures = context.lookup(Registries.CONFIGURED_FEATURE);

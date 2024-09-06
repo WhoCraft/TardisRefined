@@ -95,7 +95,7 @@ public class ConsolePatternProvider implements DataProvider {
     }
 
     private ResourceLocation createConsolePatternLocation(String path) {
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + path + ".png");
+        return TardisRefined.modLocation( "textures/blockentity/console/" + path + ".png");
     }
 
     protected Path getPath(ResourceLocation themeId) {

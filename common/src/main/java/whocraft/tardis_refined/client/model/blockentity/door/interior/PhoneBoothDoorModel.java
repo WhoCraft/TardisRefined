@@ -55,11 +55,11 @@ public class PhoneBoothDoorModel extends ShellDoorModel {
 	}
 
 	@Override
-	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		Door2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		Door2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone5.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

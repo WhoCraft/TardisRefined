@@ -15,7 +15,7 @@ public class TRTagKeys {
     public static TagKey<Block> DIAGONAL_COMPAT = RegistryHelper.makeBlockTag("diagonalwalls", "non_diagonal_walls");
 
     /** Entity tag used to blacklist entities from being teleported into the Tardis via the doors or being landed on by the exterior shell*/
-    public static final TagKey<EntityType<?>> TARDIS_TELEPORT_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(TardisRefined.MODID, "tardis_teleport_blacklist"));
+    public static final TagKey<EntityType<?>> TARDIS_TELEPORT_BLACKLIST = TagKey.create(Registries.ENTITY_TYPE, TardisRefined.modLocation( "tardis_teleport_blacklist"));
 
     public static void init(){}
 }

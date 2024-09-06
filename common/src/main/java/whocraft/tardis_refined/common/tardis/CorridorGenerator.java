@@ -275,7 +275,7 @@ public class CorridorGenerator {
     }
 
     private static ResourceLocation createResourceLocation(String id) {
-        return new ResourceLocation(TardisRefined.MODID, "corridor_template/" + id);
+        return TardisRefined.modLocation( "corridor_template/" + id);
     }
 
 }

@@ -25,7 +25,7 @@ public class RefurbishedConsoleModel extends HierarchicalModel implements Consol
 	private final ModelPart throttle;
 	private final ModelPart handbrake;
 
-	private static final ResourceLocation REFURBISHED_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/refurbished/refurbished_console.png");
+	private static final ResourceLocation REFURBISHED_TEXTURE = TardisRefined.modLocation( "textures/blockentity/console/refurbished/refurbished_console.png");
 
 	public RefurbishedConsoleModel(ModelPart root) {
 		this.root = root;
@@ -1203,8 +1203,8 @@ public class RefurbishedConsoleModel extends HierarchicalModel implements Consol
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
@@ -1213,7 +1213,7 @@ public class RefurbishedConsoleModel extends HierarchicalModel implements Consol
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
@@ -1232,7 +1232,7 @@ public class RefurbishedConsoleModel extends HierarchicalModel implements Consol
 
 		handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
-		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

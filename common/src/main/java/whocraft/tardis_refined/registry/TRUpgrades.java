@@ -13,7 +13,7 @@ import whocraft.tardis_refined.common.util.RegistryHelper;
 
 public class TRUpgrades {
 
-    public static final ResourceKey<Registry<Upgrade>> UPGRADE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "upgrade"));
+    public static final ResourceKey<Registry<Upgrade>> UPGRADE_REGISTRY_KEY = ResourceKey.createRegistryKey(TardisRefined.modLocation( "upgrade"));
 
     /** Tardis Refined instance of the Upgrade registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
     public static final DeferredRegistry<Upgrade> UPGRADE_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, UPGRADE_REGISTRY_KEY, true);

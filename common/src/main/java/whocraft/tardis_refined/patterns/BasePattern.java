@@ -18,7 +18,7 @@ public abstract class BasePattern {
     protected ResourceLocation themeId;
 
     public BasePattern(String id) {
-        this(new ResourceLocation(TardisRefined.MODID, id));
+        this(TardisRefined.modLocation( id));
     }
 
     public BasePattern(ResourceLocation identifier) {

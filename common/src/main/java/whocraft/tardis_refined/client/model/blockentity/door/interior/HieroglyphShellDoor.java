@@ -92,13 +92,13 @@ public class HieroglyphShellDoor extends ShellDoorModel{
 
 
     @Override
-    public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        pillars.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone18.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        pillars.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        bone18.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 
         door_closed.visible = !open;
         door_open.visible = open;

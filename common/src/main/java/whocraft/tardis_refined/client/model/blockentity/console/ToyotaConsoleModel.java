@@ -27,7 +27,7 @@ import java.util.Calendar;
 
 public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-	private static final ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
+	private static final ResourceLocation TOYOTA_TEXTURE = TardisRefined.modLocation( "textures/blockentity/console/toyota/toyota_console.png");
 
 
 	public static final AnimationDefinition LOOP = AnimationDefinition.Builder.withLength(6f).looping()
@@ -1475,8 +1475,8 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
@@ -1490,7 +1490,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
@@ -1510,7 +1510,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
 		this.handbrake.yRot = reactions.isHandbrakeEngaged() ? 2f : -1f;
 
-		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

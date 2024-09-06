@@ -2,7 +2,10 @@ package whocraft.tardis_refined.common.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.game.*;
+import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
+import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
+import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -15,18 +18,21 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import qouteall.imm_ptl.core.IPGlobal;
-import qouteall.imm_ptl.core.api.PortalAPI;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TRTeleporter {
@@ -160,7 +166,7 @@ public class TRTeleporter {
         if(teleportedEntity instanceof LivingEntity livingEntity) {
             if (livingEntity instanceof ServerPlayer serverPlayer) {
                 for(MobEffectInstance effectInstance : new ArrayList<>(livingEntity.getActiveEffects())) {
-                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effectInstance));
+                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effectInstance, false));
                 }
             }
             else {
@@ -206,7 +212,7 @@ public class TRTeleporter {
 
             ServerPlayer teleportedPlayer = serverPlayer;
 
-            double vehicleOffset = teleportedPlayer.getMyRidingOffset(vehicle);
+            double vehicleOffset = teleportedPlayer.getPassengerRidingPosition(vehicle).y; //TODO Validate
 
             teleportedPlayer.stopRiding(); //Dismount the player from riding the vehicle
 
@@ -470,7 +476,7 @@ public class TRTeleporter {
             return false;
         }
 
-        double vehicleOffset = entity.getMyRidingOffset(vehicle);
+        double vehicleOffset = entity.getPassengerRidingPosition(vehicle).y; //TODO Validate
 
         Vec3 oldMotion = vehicle.getDeltaMovement();
 
@@ -522,13 +528,23 @@ public class TRTeleporter {
         return passengerList.stream().anyMatch(passenger -> passenger instanceof Player);
     }
 
-    public static boolean canTeleportTo(BlockPos pPos, Level level, Entity entity) {
-        BlockPathTypes blockpathtypes = WalkNodeEvaluator.getBlockPathTypeStatic(level, pPos.mutable());
-        if (blockpathtypes != BlockPathTypes.WALKABLE) {
+    private static boolean canTeleportTo(BlockPos pPos, Level level, Entity entity) {
+
+        if (level.isInWorldBounds(pPos)) {
+            return false;
+        }
+
+        PathType pathType = WalkNodeEvaluator.getPathTypeFromState(level, pPos);
+        if (pathType != PathType.WALKABLE) {
             return false;
         } else {
-            BlockPos blockpos = pPos.subtract(entity.blockPosition());
-            return level.noCollision(entity, entity.getBoundingBox().move(blockpos));
+            BlockState blockState = level.getBlockState(pPos.below());
+            if (blockState.getBlock() instanceof LeavesBlock) {
+                return false;
+            } else {
+                BlockPos blockPos2 = pPos.subtract(entity.blockPosition());
+                return level.noCollision(entity, entity.getBoundingBox().move(blockPos2));
+            }
         }
     }
 

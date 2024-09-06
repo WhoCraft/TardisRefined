@@ -35,12 +35,12 @@ public class WaypointListScreen extends SelectionScreen {
     private SpriteIconButton editButton;
     private SpriteIconButton trashButton;
 
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
+    public static ResourceLocation MONITOR_TEXTURE = TardisRefined.modLocation( "textures/gui/monitor.png");
     private Collection<TardisWaypoint> WAYPOINTS = new ArrayList<>();
     private TardisWaypoint waypoint = null;
-    public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "trash");
-    public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "okay");
-    public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "edit");
+    public static final ResourceLocation TRASH_LOCATION = TardisRefined.modLocation( "trash");
+    public static final ResourceLocation OKAY_TEXTURE = TardisRefined.modLocation( "okay");
+    public static final ResourceLocation EDIT_TEXTURE = TardisRefined.modLocation( "edit");
 
     private final Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
 

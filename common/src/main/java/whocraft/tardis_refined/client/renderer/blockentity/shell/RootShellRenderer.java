@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.shell.rootplant.RootShellModel;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
@@ -21,8 +22,8 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
 
     private static RootShellModel rootShellModel;
 
-    private static final ResourceLocation rootShellTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell.png");
-    private static final ResourceLocation rootShellClosed = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell_closed.png");
+    private static final ResourceLocation rootShellTexture = TardisRefined.modLocation( "textures/blockentity/shell/root/root_shell.png");
+    private static final ResourceLocation rootShellClosed = TardisRefined.modLocation( "textures/blockentity/shell/root/root_shell_closed.png");
 
     public RootShellRenderer(BlockEntityRendererProvider.Context context) {
         rootShellModel = new RootShellModel(context.bakeLayer((ModelRegistry.ROOT_SHELL)));
@@ -40,7 +41,7 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
         boolean isOpen = blockEntity.getBlockState().getValue(ShellBaseBlock.OPEN);
 
         rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent( (isOpen) ? rootShellTexture : rootShellClosed)),
-                i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+                i, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, 1f));
 
         float sine = 0;
         if (blockstate.getValue(ShellBaseBlock.REGEN)) {
@@ -48,7 +49,7 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
             if (sine < 0) {sine =0;}
 
             rootShellModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(rootShellClosed)),
-                    i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                    i, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, sine));
         }
 
 

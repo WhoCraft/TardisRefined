@@ -12,7 +12,7 @@ import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 public class ShellTheme implements Theme {
 
     /** Registry Key for the ShellTheme registry. For addon mods, use this as the registry key*/
-    public static final ResourceKey<Registry<ShellTheme>> SHELL_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "shell_theme"));
+    public static final ResourceKey<Registry<ShellTheme>> SHELL_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(TardisRefined.modLocation( "shell_theme"));
 
     /** Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only*/
     public static final DeferredRegistry<ShellTheme> SHELL_THEME_DEFERRED_REGISTRY = DeferredRegistry.createCustom(TardisRefined.MODID, SHELL_THEME_REGISTRY_KEY, true);
@@ -68,11 +68,11 @@ public class ShellTheme implements Theme {
     }
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id){
-        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), false));
+        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(TardisRefined.modLocation( id), false));
     }
 
     private static RegistrySupplierHolder<ShellTheme, ShellTheme> registerShellTheme(String id, boolean producesLight){
-        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
+        return SHELL_THEME_DEFERRED_REGISTRY.registerHolder(id,  () -> new ShellTheme(TardisRefined.modLocation( id), producesLight));
     }
 
 

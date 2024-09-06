@@ -60,16 +60,16 @@ public class MysticDoorModel extends ShellDoorModel {
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);    }
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);    }
 
     @Override
-    public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        root_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
     }
 
     @Override

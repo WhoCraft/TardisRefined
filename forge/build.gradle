@@ -92,8 +92,9 @@ configurations {
 }
 
 repositories {
-    maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
     maven { url "https://maven.neoforged.net/releases/" }
+
+    maven { url = "https://pkgs.dev.azure.com/djtheredstoner/DevAuth/_packaging/public/maven/v1" }
 }
 
 dependencies {
@@ -127,7 +128,7 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          neoforge_version_range: neoforge_version_range, neoforge_minecraft_version_range: neoforge_minecraft_version_range,
                          neoforge_loader_version_range: neoforge_loader_version_range,
                          pack_format: pack_format,
-                         neoforge_resource_pack_format: forge_resource_pack_format,
+                         neoforge_resource_pack_format: neoforge_resource_pack_format,
                          neoforge_data_pack_format: neoforge_data_pack_format,
                          // forge_immersive_portals_version_range: forge_immersive_portals_version_range
                          // ,display_test_type: display_test_type
@@ -183,7 +184,7 @@ tasks.withType(JavaCompile) {
     // this fixes some edge cases with special characters not displaying correctly // see [http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html](http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html)
     // If Javadoc is generated, this must be specified in that task too.
     options.encoding = "UTF-8"
-    options.release = 17
+    options.release = 21
 }
 publishing {
     publications {

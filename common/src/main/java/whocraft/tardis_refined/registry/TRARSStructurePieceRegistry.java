@@ -97,11 +97,11 @@ public class TRARSStructurePieceRegistry {
     }
 
     private static ResourceLocation createCorridorResourceLocation(String id) {
-        return new ResourceLocation(TardisRefined.MODID, "corridors/" + id);
+        return TardisRefined.modLocation( "corridors/" + id);
     }
 
     private static ResourceLocation createRoomResourceLocation(String id) {
-        return new ResourceLocation(TardisRefined.MODID, "rooms/" + id);
+        return TardisRefined.modLocation( "rooms/" + id);
     }
 
 

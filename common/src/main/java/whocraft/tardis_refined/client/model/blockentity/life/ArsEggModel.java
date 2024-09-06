@@ -67,20 +67,20 @@ public class ArsEggModel extends HierarchicalModel {
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
 
-	public void renderToBuffer(ArsEggBlockEntity arsEggBlockEntity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderToBuffer(ArsEggBlockEntity arsEggBlockEntity, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		BlockState blockState = arsEggBlockEntity.getBlockState();
 
 		if (blockState.hasProperty(ArsEggBlock.ALIVE)) {
 			clamp.visible = blockState.getValue(ArsEggBlock.ALIVE);
 		}
 
-		Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

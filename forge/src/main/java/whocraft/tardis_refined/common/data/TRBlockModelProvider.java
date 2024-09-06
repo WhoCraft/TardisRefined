@@ -25,22 +25,22 @@ public class TRBlockModelProvider extends BlockStateProvider {
     }
 
     public JsonObject emptyBlockState(Block block) {
-        VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer"))).build());
+        VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> ConfiguredModel.builder().modelFile(models().getExistingFile(TardisRefined.modLocation( "block/terraformer"))).build());
         return builder.toJson();
     }
 
     public JsonObject terraformer(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> blockState.getValue(TerraformerBlock.ACTIVE) ?
-                ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer_on"))).build() :
-                ConfiguredModel.builder().modelFile(models().getExistingFile(new ResourceLocation(TardisRefined.MODID, "block/terraformer"))).build());
+                ConfiguredModel.builder().modelFile(models().getExistingFile(TardisRefined.modLocation( "block/terraformer_on"))).build() :
+                ConfiguredModel.builder().modelFile(models().getExistingFile(TardisRefined.modLocation( "block/terraformer"))).build());
 
         return builder.toJson();
     }
 
     public JsonObject lantern(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block).forAllStates(blockState -> blockState.getValue(LanternBlock.HANGING) ?
-                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern_hanging", new ResourceLocation("block/template_hanging_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build() :
-                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern", new ResourceLocation("block/template_lantern")).texture("lantern", new ResourceLocation(TardisRefined.MODID, "block/zeiton_lantern"))).build());
+                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern_hanging", new ResourceLocation("block/template_hanging_lantern")).texture("lantern", TardisRefined.modLocation( "block/zeiton_lantern"))).build() :
+                ConfiguredModel.builder().modelFile(models().withExistingParent("block/zeiton_lantern", new ResourceLocation("block/template_lantern")).texture("lantern", TardisRefined.modLocation( "block/zeiton_lantern"))).build());
 
         return builder.toJson();
     }
@@ -57,7 +57,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
 
     public ResourceLocation getBlockTextureResourceLocation(Block block) {
         ResourceLocation blockTex = BLOCKS.getRegistry().get().getKey(block);
-        return new ResourceLocation(TardisRefined.MODID, "block/" + blockTex.getPath());
+        return TardisRefined.modLocation( "block/" + blockTex.getPath());
     }
 
     public JsonObject customLocation(Block block, ResourceLocation resourceLocation) {
@@ -70,10 +70,10 @@ public class TRBlockModelProvider extends BlockStateProvider {
 
     public JsonObject antiGravityBlock(Block block) {
         VariantBlockStateBuilder builder = getVariantBuilder(block);
-        ResourceLocation modelLocation0 = new ResourceLocation(TardisRefined.MODID, "block/gravity_well");
+        ResourceLocation modelLocation0 = TardisRefined.modLocation( "block/gravity_well");
 
         for (int space = 0; space <= 5; space++) {
-            ResourceLocation modelLocation = space == 0 ? modelLocation0 : new ResourceLocation(TardisRefined.MODID, "block/gravity_well_" + space);
+            ResourceLocation modelLocation = space == 0 ? modelLocation0 : TardisRefined.modLocation( "block/gravity_well_" + space);
             builder.partialState().with(AntiGravityBlock.SPACE, space).modelForState()
                     .modelFile(models().getExistingFile(modelLocation))
                     .addModel();
@@ -102,8 +102,8 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(TRBlockRegistry.THE_EYE.get());
 
 
-        threeDeeRotating(TRBlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
-        threeDeeRotating(TRBlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));
+        threeDeeRotating(TRBlockRegistry.LANDING_PAD.get(), TardisRefined.modLocation( "block/landing_pad"));
+        threeDeeRotating(TRBlockRegistry.FLIGHT_DETECTOR.get(), TardisRefined.modLocation( "block/flight_detector"));
 
         terraformer(TRBlockRegistry.TERRAFORMER_BLOCK.get());
 
@@ -115,8 +115,8 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(TRBlockRegistry.FOOLS_STONE.get());
         simpleBlock(TRBlockRegistry.ARTRON_PILLAR_PORT.get());
 
-        customLocation(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/astral_manipulator"));
-        customLocation(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), new ResourceLocation(TardisRefined.MODID, "block/corridor_teleporter"));
+        customLocation(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), TardisRefined.modLocation( "block/astral_manipulator"));
+        customLocation(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), TardisRefined.modLocation( "block/corridor_teleporter"));
         customLocation(TRBlockRegistry.ZEITON_FUSED_COPPER_BLOCK.get());
         customLocation(TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get());
         customLocation(TRBlockRegistry.ZEITON_ORE.get());
@@ -136,7 +136,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         slabBlock(TRBlockRegistry.ARS_LEAVES_SLAB.get(), leavesTexture, leavesTexture, leavesTexture, leavesTexture);
 
 
-        threeDeeRotating(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), new ResourceLocation(TardisRefined.MODID, "block/console_configuration"));
+        threeDeeRotating(TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get(), TardisRefined.modLocation( "block/console_configuration"));
 
         lantern(TRBlockRegistry.ZEITON_LANTERN.get());
     }

@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.items;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -38,14 +40,17 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     @Override
-
     public int getColor(ItemStack itemStack) {
-        CompoundTag compoundTag = itemStack.getTagElement("display");
-        return compoundTag != null && compoundTag.contains("color", 99) ? compoundTag.getInt("color") : DyeColor.PINK.getTextColor();
+        DyedItemColor dyedItemColor = itemStack.get(DataComponents.DYED_COLOR);
+        if(dyedItemColor != null) {
+            return dyedItemColor.rgb();
+        }
+
+        return DyeColor.PINK.getTextColor();
     }
 
     public static ItemStack forceColor(ItemStack itemStack, int color){
-        itemStack.getOrCreateTagElement("display").putInt("color", color);
+        itemStack.set(DataComponents.DYED_COLOR, new DyedItemColor(color, false));
         return itemStack;
     }
 
@@ -70,7 +75,6 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     public void setScrewdriverMode(ItemStack stack, ScrewdriverMode mode, BlockPos sourceChange, @Nullable ServerLevel serverLevel) {
-        CompoundTag itemtag = stack.getOrCreateTag();
 
         if (itemtag.contains(SCREWDRIVER_MODE)) {
             ScrewdriverMode currentMode = ScrewdriverMode.valueOf(itemtag.getString(SCREWDRIVER_MODE));
@@ -199,11 +203,12 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         return listOfBlockPos;
     }
 
-    @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, list, tooltipFlag);
 
+    @Override
+    public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, tooltipContext, list, tooltipFlag);
         list.add(Component.translatable(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION));
+
     }
 }
 

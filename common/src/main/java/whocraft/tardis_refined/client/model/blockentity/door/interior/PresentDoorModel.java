@@ -44,10 +44,10 @@ public class PresentDoorModel extends ShellDoorModel {
 	}
 
 	@Override
-	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		bone2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderInteriorDoor(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		bone2.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		door.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

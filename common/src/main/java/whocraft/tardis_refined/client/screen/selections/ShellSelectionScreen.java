@@ -47,8 +47,8 @@ public class ShellSelectionScreen extends SelectionScreen {
     private int leftPos, topPos;
 
 
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/shell.png");
-    public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/gui/noise.png");
+    public static ResourceLocation MONITOR_TEXTURE = TardisRefined.modLocation( "textures/gui/shell.png");
+    public static ResourceLocation NOISE = TardisRefined.modLocation( "textures/gui/noise.png");
     private ShellPattern pattern;
 
     private List<ShellPattern> patternCollection;
@@ -67,7 +67,7 @@ public class ShellSelectionScreen extends SelectionScreen {
         globalShellBlockEntity = new GlobalShellBlockEntity(BlockPos.ZERO, TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
         assert Minecraft.getInstance().level != null;
         globalShellBlockEntity.setLevel(Minecraft.getInstance().level);
-        ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+        ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, TardisRefined.modLocation( UUID.randomUUID().toString()));
         globalShellBlockEntity.setTardisId(generatedLevelKey);
     }
 

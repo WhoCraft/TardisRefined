@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -51,15 +52,15 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
 
         var currentModel = ShellModelCollection.getInstance().getShellEntry(theme).getShellModel(pattern);
 
-        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getShellTexture(pattern, false))), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getShellTexture(pattern, false))), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, 1f));
 
         /*Emmissive*/
         Boolean isRegenerating = blockstate.getValue(ShellBaseBlock.REGEN);
         if (pattern.exteriorDoorTexture().emissive()) {
-            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, true))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
+            currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, true))), 15728640, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, (isRegenerating) ? sine : 1f));
         } else {
             if (isRegenerating) {
-                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, false))), 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, sine);
+                currentModel.renderShell(blockEntity, isOpen, false, poseStack, bufferSource.getBuffer(RenderType.entityTranslucentEmissive(currentModel.getShellTexture(pattern, false))), 15728640, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, sine));
             }
         }
 

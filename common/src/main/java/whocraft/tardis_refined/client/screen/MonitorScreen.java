@@ -36,7 +36,7 @@ public class MonitorScreen extends SelectionScreen {
     protected int imageHeight = 173;
     private int leftPos, topPos;
 
-    public static ResourceLocation MONITOR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor.png");
+    public static ResourceLocation MONITOR_TEXTURE = TardisRefined.modLocation( "textures/gui/monitor.png");
 
 
     public MonitorScreen(TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler) {

@@ -43,6 +43,14 @@ public class RenderHelper {
     }
 
 
+    public static int getColorInt(float x, float y, float z, float alpha) {
+        int red = (int) (x * 255);
+        int green = (int) (y * 255);
+        int blue = (int) (z * 255);
+        int rgba = (red << 16) | (green << 8) | blue | ((int) (alpha * 255) << 24);
+        return rgba;
+    }
+
 
     public static void drawGlowingBox(PoseStack poseStack, VertexConsumer consumer, float length, float height, float width, float red, float green, float blue, float alpha, int combinedLightIn) {
         AABB box = new AABB(-length / 2F, -height / 2f, -width / 2F, length / 2F, height / 2f, width / 2F);

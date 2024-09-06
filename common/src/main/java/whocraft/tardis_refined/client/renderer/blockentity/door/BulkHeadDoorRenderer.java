@@ -12,13 +12,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.BulkHeadDoorModel;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 
 public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlockEntity>, BlockEntityRendererProvider<BulkHeadDoorBlockEntity> {
 
     private final BulkHeadDoorModel bulkHeadDoorModel;
-    private final ResourceLocation bulkHeadDoorTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/door/bulk_head_door.png");
+    private final ResourceLocation bulkHeadDoorTexture = TardisRefined.modLocation( "textures/blockentity/door/bulk_head_door.png");
 
     public BulkHeadDoorRenderer(BlockEntityRendererProvider.Context context) {
         bulkHeadDoorModel = new BulkHeadDoorModel(context.bakeLayer((ModelRegistry.BULK_HEAD_DOOR)));
@@ -33,7 +34,7 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
         float rotation = blockstate.getValue(GlobalDoorBlock.FACING).toYRot();
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
         bulkHeadDoorModel.setDoorPosition(blockstate);
-        bulkHeadDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(bulkHeadDoorTexture)), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
+        bulkHeadDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(bulkHeadDoorTexture)), i, OverlayTexture.NO_OVERLAY, RenderHelper.getColorInt(1f, 1f, 1f, 1f));
         poseStack.popPose();
     }
 

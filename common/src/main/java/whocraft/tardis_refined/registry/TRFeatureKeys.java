@@ -8,6 +8,6 @@ import whocraft.tardis_refined.TardisRefined;
  * In 1.19.3+ most world gen objects will not work if registered via code*/
 public class TRFeatureKeys {
 
-    public static ResourceLocation TARDIS_ROOT_CLUSTER_RL = new ResourceLocation(TardisRefined.MODID, "tardis_root_cluster");
+    public static ResourceLocation TARDIS_ROOT_CLUSTER_RL = TardisRefined.modLocation( "tardis_root_cluster");
 
 }

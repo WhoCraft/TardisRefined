@@ -20,7 +20,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 public class RegistryHelper {
 
     public static ResourceLocation makeKey(String id) {
-        return new ResourceLocation(TardisRefined.MODID, id);
+        return TardisRefined.modLocation( id);
     }
 
     public static ResourceKey<ConfiguredFeature<?, ?>> makeConfiguredFeatureKey(ResourceLocation rl) {
@@ -32,11 +32,11 @@ public class RegistryHelper {
     }
 
     public static TagKey<Biome> makeGenericBiomeTagCollection(String name) {
-        return TagKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, "collections/" + name));
+        return TagKey.create(Registries.BIOME, TardisRefined.modLocation( "collections/" + name));
     }
 
     public static TagKey<Biome> makeBiomeTagForFeature(String name) {
-        return TagKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, "has_structure/" + name));
+        return TagKey.create(Registries.BIOME, TardisRefined.modLocation( "has_structure/" + name));
     }
 
     public static TagKey<Block> makeBlockTag(String modid, String name) {

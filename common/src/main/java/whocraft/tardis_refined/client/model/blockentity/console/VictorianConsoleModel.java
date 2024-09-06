@@ -1634,7 +1634,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 							new Keyframe(10f, KeyframeAnimations.degreeVec(0f, 0f, 0f),
 									AnimationChannel.Interpolations.CATMULLROM))).build();
 
-	private static final ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
+	private static final ResourceLocation VICTORIAN_TEXTURE = TardisRefined.modLocation( "textures/blockentity/console/victorian/victorian_console.png");
 
 	private final ModelPart root;
 	private final ModelPart upper_rotor;
@@ -2277,11 +2277,11 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		upper_rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		lower_rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-		base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+		upper_rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		lower_rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+		base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override
@@ -2295,7 +2295,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 	}
 
 	@Override
-	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+	public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
 		root().getAllParts().forEach(ModelPart::resetPose);
 		TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
@@ -2312,7 +2312,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 		float rot = -1f + ( 2 * ((float)reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
 		throttle_control.xRot = rot;
 
-		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
 	}
 
 	@Override

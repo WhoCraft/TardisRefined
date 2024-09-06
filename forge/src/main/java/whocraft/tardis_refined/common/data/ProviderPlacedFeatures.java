@@ -45,7 +45,7 @@ public class ProviderPlacedFeatures {
     }
 
     public static ResourceKey<PlacedFeature> createKey(String name) {
-        return ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, name));
+        return ResourceKey.create(Registries.PLACED_FEATURE, TardisRefined.modLocation( name));
     }
 
     private static List<PlacementModifier> orePlacement(PlacementModifier plMod, PlacementModifier plMod2) {

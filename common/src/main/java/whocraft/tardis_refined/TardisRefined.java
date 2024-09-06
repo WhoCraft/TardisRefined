@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
@@ -83,6 +84,10 @@ public class TardisRefined {
         TardisHums.registerDefaultHums();
 
         TRARSStructurePieceRegistry.register();
+    }
+
+    public static ResourceLocation modLocation(String path){
+        return ResourceLocation.tryBuild(TardisRefined.MODID, path);
     }
 
 }
