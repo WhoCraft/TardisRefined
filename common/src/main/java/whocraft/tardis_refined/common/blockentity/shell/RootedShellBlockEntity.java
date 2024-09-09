@@ -25,6 +25,7 @@ public class RootedShellBlockEntity extends ShellBaseBlockEntity{
     }
 
     private boolean runSetUpOnNextTick = false;
+    public static boolean setUpOnNextTick = false; // used in fabric MinecraftServer:getAllLevels mixin
 
     @Override
     public DesktopTheme getAssociatedTheme() {
@@ -50,7 +51,8 @@ public class RootedShellBlockEntity extends ShellBaseBlockEntity{
     }
 
     public void setUpTardisOnNextTick() {
-        runSetUpOnNextTick = true;
+        this.runSetUpOnNextTick = true;
+        setUpOnNextTick = true;
     }
 
     /** Generate the dimension and open the Root Shell */
