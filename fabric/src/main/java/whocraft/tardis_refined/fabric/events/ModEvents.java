@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.create.CreateIntergrations;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
@@ -49,6 +50,9 @@ public class ModEvents {
             ServerLevel world = server.getLevel(Level.OVERWORLD);
             DimensionHandler.loadLevels(world);
 
+            if (ModCompatChecker.create()) {
+                CreateIntergrations.init();
+            }
         });
 
         ServerTickEvents.START_SERVER_TICK.register(ControlGroupCheckers::tickServer);
