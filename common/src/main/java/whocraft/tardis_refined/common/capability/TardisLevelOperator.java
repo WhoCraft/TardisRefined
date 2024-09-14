@@ -208,6 +208,7 @@ public class TardisLevelOperator{
 
             this.pilotingManager.setCurrentLocation(new TardisNavLocation(externalShellPos, shellDirection.getOpposite(), shellLevel));
 
+            entity.setPortalCooldown();
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
             return true;
         }
@@ -254,6 +255,7 @@ public class TardisLevelOperator{
             TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
             TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
 
+            entity.setPortalCooldown();
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
             return true;
         }
