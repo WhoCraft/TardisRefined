@@ -163,24 +163,22 @@ public class TardisLevelOperator{
         if (pilotingManager != null) {  pilotingManager.tick(level);}
         if (flightDanceManager != null) {  flightDanceManager.tick(level);}
 
-        
-        var shouldSync = level.getGameTime() % 40 == 0;
-        if (shouldSync) {
-            tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
-            tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
-            tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
-            tardisClientData.setHumEntry(interiorManager.getHumEntry());
-            tardisClientData.setFuel(pilotingManager.getFuel());
-            tardisClientData.setMaximumFuel(pilotingManager.getMaximumFuel());
-            tardisClientData.setTardisState(tardisState);
 
-            tardisClientData.sync();
-        } else {
-            tardisClientData.setFlying(pilotingManager.isInFlight());
-            tardisClientData.setIsLanding(exteriorManager.isLanding());
-            tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
-            tardisClientData.setThrottleStage(pilotingManager.getThrottleStage());
-            tardisClientData.setHandbrakeEngaged(pilotingManager.isHandbrakeOn());
+        CompoundTag oldData = tardisClientData.serializeNBT();
+        tardisClientData.setIsOnCooldown(pilotingManager.isOnCooldown());
+        tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
+        tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
+        tardisClientData.setHumEntry(interiorManager.getHumEntry());
+        tardisClientData.setFuel(pilotingManager.getFuel());
+        tardisClientData.setMaximumFuel(pilotingManager.getMaximumFuel());
+        tardisClientData.setTardisState(tardisState);
+        tardisClientData.setFlying(pilotingManager.isInFlight());
+        tardisClientData.setIsLanding(exteriorManager.isLanding());
+        tardisClientData.setIsTakingOff(exteriorManager.isTakingOff());
+        tardisClientData.setThrottleStage(pilotingManager.getThrottleStage());
+        tardisClientData.setHandbrakeEngaged(pilotingManager.isHandbrakeOn());
+        CompoundTag newData = tardisClientData.serializeNBT();
+        if (!oldData.equals(newData)) {
             tardisClientData.sync();
         }
     }
