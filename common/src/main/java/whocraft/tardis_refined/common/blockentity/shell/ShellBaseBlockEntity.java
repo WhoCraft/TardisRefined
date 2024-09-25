@@ -80,11 +80,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
-        if (this.TARDIS_ID == null) {
-            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
-            return;
-        }
-
         super.saveAdditional(pTag);
         if (this.TARDIS_ID != null)
             pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
