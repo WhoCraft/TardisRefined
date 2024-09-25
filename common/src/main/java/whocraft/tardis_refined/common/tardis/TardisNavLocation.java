@@ -142,9 +142,16 @@ public class TardisNavLocation {
 
     public TardisNavLocation copy() {
         TardisNavLocation copy = new TardisNavLocation(this.position, this.direction, this.dimensionKey);
+        if (this.level != null) {
+            copy.level = this.level;
+        }
         copy.setName(this.name);
         return copy;
     }
 
+    @Override
+    public String toString() {
+        return "TardisNavLocation{Pos=(%s), Dim=%s, Dir=%s, Name=%s}".formatted(this.position.toShortString(), this.dimensionKey.location(), this.direction.getName(), this.name);
+    }
 
 }
