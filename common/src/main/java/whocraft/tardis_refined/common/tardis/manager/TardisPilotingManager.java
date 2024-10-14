@@ -218,7 +218,7 @@ public class TardisPilotingManager extends TickableHandler {
     private void onFlightTick(ServerLevel level) {
         // Don't continue the flight if the throttle isn't active!!!
 
-        if (this.throttleStage != 0 || this.autoLand) {
+        if (this.ticksTakingOff == 0 && (this.throttleStage != 0 || this.autoLand)) {
             ticksInFlight++;
 
             // Removing fuel once every 2.5 seconds
