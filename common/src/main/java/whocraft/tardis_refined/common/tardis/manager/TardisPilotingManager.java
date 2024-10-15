@@ -607,7 +607,7 @@ public class TardisPilotingManager extends TickableHandler {
      * @return true if able to, false if not
      */
     public boolean canEndFlight() {
-        return isInFlight && ticksInFlight >= (20 * 5) && ticksTakingOff <= 0 && (distanceCovered >= flightDistance || this.autoLand) && !this.isCrashing;
+        return isInFlight && ticksTakingOff <= 0 && (distanceCovered >= flightDistance || this.autoLand) && !this.isCrashing;
     }
 
     public void recalculateFlightDistance() {
