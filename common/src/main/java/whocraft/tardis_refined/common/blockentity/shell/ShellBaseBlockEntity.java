@@ -122,9 +122,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 TardisRefined.LOGGER.error("Error in onAttemptEnter: null Tardis ID (Invalid block or not terraformed yet?) [" + externalShellPos.toShortString() + "]");
                 return;
             }
-            if (entity.isOnPortalCooldown()) {
-                return;
-            }
             ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.location());
             TardisLevelOperator.get(interior).ifPresent(cap -> {
 

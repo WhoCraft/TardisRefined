@@ -144,9 +144,6 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     @Override
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos doorPos, Entity entity) {
         if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
-            if (entity.isOnPortalCooldown()) {
-                return;
-            }
             Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
             data.ifPresent(tardisLevelOperator -> {
                 tardisLevelOperator.setInternalDoor(this);
