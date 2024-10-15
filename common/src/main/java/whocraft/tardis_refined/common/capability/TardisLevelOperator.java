@@ -43,6 +43,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -186,9 +187,11 @@ public class TardisLevelOperator{
             tardisClientData.sync();
         }
 
-        for(ServerPlayer player : updatingMonitors) {
+        Iterator<ServerPlayer> updatingMonitorsIterator = updatingMonitors.iterator();
+        while(updatingMonitorsIterator.hasNext()) {
+            ServerPlayer player = updatingMonitorsIterator.next();
             if (player.isRemoved()) {
-                updatingMonitors.remove(player);
+                updatingMonitorsIterator.remove();
                 continue;
             }
 
