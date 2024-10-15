@@ -2,8 +2,11 @@ package whocraft.tardis_refined.common.network.messages.screens;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.ScreenHandler;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
@@ -19,13 +22,14 @@ public class OpenMonitorMessage extends MessageS2C {
     private final boolean desktopGenerating;
     private TardisNavLocation currentLocation, targetLocation;
     private CompoundTag upgradeHandlerNbt;
+    private ResourceKey<Level> tardisId;
 
-    public OpenMonitorMessage(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler) {
+    public OpenMonitorMessage(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler, ResourceKey<Level> tardisId) {
         this.desktopGenerating = desktopGenerating;
         this.currentLocation = currentLocation;
         this.targetLocation = targetLocation;
         this.upgradeHandlerNbt = upgradeHandler.saveData(new CompoundTag());
-
+        this.tardisId = tardisId;
     }
 
     public OpenMonitorMessage(FriendlyByteBuf friendlyByteBuf) {
@@ -33,6 +37,7 @@ public class OpenMonitorMessage extends MessageS2C {
         this.currentLocation = TardisNavLocation.deserialize(friendlyByteBuf.readNbt());
         this.targetLocation = TardisNavLocation.deserialize(friendlyByteBuf.readNbt());
         this.upgradeHandlerNbt = friendlyByteBuf.readNbt();
+        this.tardisId = friendlyByteBuf.readResourceKey(Registries.DIMENSION);
     }
 
     @NotNull
@@ -47,6 +52,7 @@ public class OpenMonitorMessage extends MessageS2C {
         buf.writeNbt(currentLocation.serialise());
         buf.writeNbt(targetLocation.serialise());
         buf.writeNbt(upgradeHandlerNbt);
+        buf.writeResourceKey(tardisId);
     }
 
 
@@ -58,7 +64,7 @@ public class OpenMonitorMessage extends MessageS2C {
     @Environment(EnvType.CLIENT)
     private void handleScreens() {
         // Open the monitor.
-        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation);
+        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation, tardisId);
     }
 
 }

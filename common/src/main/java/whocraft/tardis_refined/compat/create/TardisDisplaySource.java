@@ -10,7 +10,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.FlightDetectorBlockEntity;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
@@ -33,9 +36,14 @@ public class TardisDisplaySource extends DisplaySource {
                 boolean isPresent = TardisLevelOperator.get(serverLevel).isPresent();
                 if (isPresent) {
                     TardisLevelOperator levelOperator = TardisLevelOperator.get(serverLevel).get();
+                    TardisNavLocation currentLoc = levelOperator.getPilotingManager().getCurrentLocation();
+                    if (ModCompatChecker.valkyrienSkies()) {
+                        currentLoc = VSHelper.toWorldLocation(currentLoc);
+                    }
+
                     list.add(levelOperator.getPilotingManager().isInFlight() ? Component.literal("In Flight: True") : Component.literal("In Flight: False"));
-                    list.add(Component.literal("Pos: " + levelOperator.getPilotingManager().getCurrentLocation().getPosition().toShortString()));
-                    list.add(Component.literal("Dim: " + MiscHelper.getCleanDimensionName(levelOperator.getPilotingManager().getCurrentLocation().getDimensionKey())));
+                    list.add(Component.literal("Pos: " + currentLoc.getPosition().toShortString()));
+                    list.add(Component.literal("Dim: " + MiscHelper.getCleanDimensionName(currentLoc.getDimensionKey())));
                     list.add(Component.translatable(ModMessages.FUEL).append(String.valueOf((Math.round((levelOperator.getPilotingManager().getFuelPercentage() * 100))))).append("%"));
                     list.add(Component.literal("Shell: " + levelOperator.getAestheticHandler().getShellTheme().getPath()));
                     list.add(Component.literal("Journey Progress: " + levelOperator.getPilotingManager().getFlightPercentageCovered() * 100 + "%"));

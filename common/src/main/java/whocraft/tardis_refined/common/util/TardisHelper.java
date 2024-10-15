@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Math;
+import org.joml.Vector3d;
 import whocraft.tardis_refined.api.event.ShellChangeSource;
 import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
@@ -33,6 +35,8 @@ import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -123,6 +127,29 @@ public class TardisHelper {
     }
 
     public static boolean teleportEntityTardis(TardisLevelOperator cap, Entity entity, TardisNavLocation sourceLocation, TardisNavLocation destinationLocation, boolean enterTardis) {
+        float sourceYawRotation, destinationYawRotation;
+        if (ModCompatChecker.valkyrienSkies()) {
+            Vector3d sourceDirection = VSHelper.toWorldRotation(
+                sourceLocation.getLevel(),
+                sourceLocation.getPosition(),
+                sourceLocation.getDirection()
+            );
+            sourceYawRotation = (float) Math.toDegrees(-Math.atan2(sourceDirection.x, sourceDirection.z));
+            Vector3d destinationDirection = VSHelper.toWorldRotation(
+                destinationLocation.getLevel(),
+                destinationLocation.getPosition(),
+                destinationLocation.getDirection()
+            );
+            destinationYawRotation = (float) Math.toDegrees(-Math.atan2(destinationDirection.x, destinationDirection.z));
+        } else {
+            sourceYawRotation = sourceLocation.getDirection().toYRot();
+            destinationYawRotation = destinationLocation.getDirection().toYRot();
+        }
+
+        return teleportEntityTardis(cap, entity, sourceLocation, sourceYawRotation, destinationLocation, destinationYawRotation, enterTardis);
+    }
+
+    public static boolean teleportEntityTardis(TardisLevelOperator cap, Entity entity, TardisNavLocation sourceLocation, float sourceRotationYaw, TardisNavLocation destinationLocation, float destinationRotationYaw, boolean enterTardis) {
 
         if (entity.level() instanceof ServerLevel teleportingEntityLevel) {
 
@@ -144,8 +171,6 @@ public class TardisHelper {
 
             //Calculate entity motion and rotation, taking into account for the internal door's direction and rotation
             float entityYRot = entity.getYRot();
-            float destinationRotationYaw = destinationDirection.toYRot();
-            float sourceRotationYaw = sourceDirection.toYRot();
             //Calculate the difference between the entity's rotation and the source direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
             float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(sourceRotationYaw);
 

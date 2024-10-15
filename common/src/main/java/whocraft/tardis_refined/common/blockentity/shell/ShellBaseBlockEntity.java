@@ -47,6 +47,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     private final int DUPLICATION_CHECK_TIME = 1200; // A minute
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
+    private boolean doNotRemoveNextTick = false;
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -69,6 +70,23 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         super.load(pTag);
         if (pTag.contains(NbtConstants.TARDIS_ID))
             this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
+        updateCurrentLocation();
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        updateCurrentLocation();
+    }
+
+    private void updateCurrentLocation() {
+        if (this.getLevel() instanceof ServerLevel serverLevel) {
+            ServerLevel interior = serverLevel.getServer().getLevel(this.TARDIS_ID);
+            TardisLevelOperator.get(interior).ifPresent(cap -> {
+                cap.getPilotingManager().setCurrentLocationOnNextTick(this);
+                this.doNotRemoveNextTick = true;
+            });
+        }
     }
 
     @Override
@@ -141,7 +159,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
-        if (level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide) {
+        if (level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide && !this.doNotRemoveNextTick) {
             ResourceKey<Level> tardisId = getTardisId();
             if (tardisId == null) return;
             ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
@@ -167,6 +185,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
             });
         }
+        this.doNotRemoveNextTick = false;
     }
 
     @Override

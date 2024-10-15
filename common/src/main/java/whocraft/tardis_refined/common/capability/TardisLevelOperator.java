@@ -27,6 +27,7 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
+import whocraft.tardis_refined.common.network.messages.screens.MonitorPositionDataMessage;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -35,11 +36,13 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,6 +54,7 @@ public class TardisLevelOperator{
     private final ResourceKey<Level> levelKey;
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
+    public HashSet<ServerPlayer> updatingMonitors = new HashSet<>();
 
     // Managers
     private final TardisExteriorManager exteriorManager;
@@ -181,6 +185,19 @@ public class TardisLevelOperator{
         if (!oldData.equals(newData)) {
             tardisClientData.sync();
         }
+
+        for(ServerPlayer player : updatingMonitors) {
+            if (player.isRemoved()) {
+                updatingMonitors.remove(player);
+                continue;
+            }
+
+            TardisNavLocation location = this.pilotingManager.getCurrentLocation().copy();
+            if (ModCompatChecker.valkyrienSkies()) {
+                location = VSHelper.toWorldLocation(location);
+            }
+            new MonitorPositionDataMessage(location).send(player);
+        }
     }
 
     public boolean hasInitiallyGenerated() {
@@ -204,7 +221,6 @@ public class TardisLevelOperator{
             TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
             TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, doorDirection, targetServerLevel);
 
-            this.pilotingManager.setCurrentLocation(new TardisNavLocation(externalShellPos, shellDirection.getOpposite(), shellLevel));
 
             entity.setPortalCooldown();
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
@@ -483,8 +499,11 @@ public class TardisLevelOperator{
 
         Direction direction = shellBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
         TardisNavLocation navLocation = new TardisNavLocation(shellBlockPos, direction, shellServerLevel);
-        this.pilotingManager.setCurrentLocation(navLocation);
-        this.pilotingManager.setTargetLocation(navLocation);
+        if (ModCompatChecker.valkyrienSkies()) {
+            navLocation = VSHelper.toWorldLocation(navLocation);
+        }
+        this.pilotingManager.setCurrentLocation(navLocation.copy());
+        this.pilotingManager.setTargetLocation(navLocation.copy());
 
         this.setInitiallyGenerated(true);
         this.setTardisState(TardisLevelOperator.STATE_CAVE);
