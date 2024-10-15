@@ -47,6 +47,14 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     private final int DUPLICATION_CHECK_TIME = 1200; // A minute
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
+    /*
+        Because we assume it is possible for the tardis to change location without flying there,
+        the 'if (!myCurrentPosition.equals(currentLocation) && !myCurrentPosition.equals(wantedDestination))' block
+        in the duplication check that runs once every so often would mistakenly remove this tardis if it just loaded
+        in the same tick at a different location (if we are unlocky with tick order),
+        because the operator's currentPosition will be set in the tick after.
+        We therefore need a way to skip the duplication check for a single tick when loading in this blockentity.
+     */
     private boolean doNotRemoveNextTick = false;
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
