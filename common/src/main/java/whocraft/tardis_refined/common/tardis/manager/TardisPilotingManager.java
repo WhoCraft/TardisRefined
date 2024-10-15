@@ -899,20 +899,23 @@ public class TardisPilotingManager extends TickableHandler {
             newLocation.getLevel().removeBlock(newLocation.getPosition(), false);
             return;
         }
+
+        ServerLevel currentLevel = this.currentLocation.getLevel();
+
         boolean shellExistsSomewhereElse = false;
         // if the new position is different
-        if (!this.currentLocation.getLevel().equals(newLocation.getLevel())
+        if (!currentLevel.equals(newLocation.getLevel())
             || !this.currentLocation.getPosition().equals(newLocation.getPosition())
         ) {
             // if there is a tardis at the old current location
-            if (this.currentLocation.getLevel().getBlockState(this.currentLocation.getPosition()).getBlock() instanceof ShellBaseBlock
-                && this.currentLocation.getLevel().getBlockEntity(this.currentLocation.getPosition()) instanceof ShellBaseBlockEntity shellBlockEntity
+            if (currentLevel.getBlockState(this.currentLocation.getPosition()).getBlock() instanceof ShellBaseBlock
+                && currentLevel.getBlockEntity(this.currentLocation.getPosition()) instanceof ShellBaseBlockEntity shellBlockEntity
             ) {
                 // and it is the same tardis id
                 if (shellBlockEntity.getTardisId().equals(this.operator.getLevel().dimension())) {
                     if (ModCompatChecker.valkyrienSkies()) {
-                        boolean inshipyard = VSHelper.isBlockInShipyard(this.currentLocation.getLevel(), this.currentLocation.getPosition());
-                        boolean onShip = VSHelper.isBlockOnShip(this.currentLocation.getLevel(), this.currentLocation.getPosition());
+                        boolean inshipyard = VSHelper.isBlockInShipyard(currentLevel, this.currentLocation.getPosition());
+                        boolean onShip = VSHelper.isBlockOnShip(currentLevel, this.currentLocation.getPosition());
                         shellExistsSomewhereElse = onShip || !inshipyard;
                     } else {
                         shellExistsSomewhereElse = true;
