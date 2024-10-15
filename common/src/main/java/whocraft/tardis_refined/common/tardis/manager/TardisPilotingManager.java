@@ -476,7 +476,7 @@ public class TardisPilotingManager extends TickableHandler {
 
     /** Finds the closest valid position out of a list of possible solutions, from the original intended landing location*/
     private TardisNavLocation findClosestValidPositionFromTarget(List<TardisNavLocation> validPositions, TardisNavLocation targetLocation){
-        double distance = Integer.MAX_VALUE;
+        double distance = Double.MAX_VALUE;
         TardisNavLocation intendedLocation = targetLocation;
         Vec3 intendedPosition = targetLocation.getPosition().getCenter();
         TardisNavLocation closestSolution = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, intendedLocation.getLevel());
