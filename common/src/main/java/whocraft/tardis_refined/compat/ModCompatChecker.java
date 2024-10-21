@@ -16,4 +16,8 @@ public class ModCompatChecker {
     public static boolean create() {
         return Platform.isModLoaded("create");
     }
+
+    public static boolean valkyrienSkies() {
+        return Platform.isModLoaded("valkyrienskies");
+    }
 }

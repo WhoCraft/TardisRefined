@@ -8,6 +8,8 @@ import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
@@ -70,7 +72,11 @@ public class CreateIntergrations {
         registerBehaviour(new TardisNavLocationDisplaySource.TardisNavInfo() {
             @Override
             public TardisNavLocation provideInfo(TardisLevelOperator tardisLevelOperator) {
-                return tardisLevelOperator.getPilotingManager().getCurrentLocation();
+                TardisNavLocation currentLoc = tardisLevelOperator.getPilotingManager().getCurrentLocation();
+                if (ModCompatChecker.valkyrienSkies()) {
+                    currentLoc = VSHelper.toWorldLocation(currentLoc);
+                }
+                return currentLoc;
             }
 
             @Override

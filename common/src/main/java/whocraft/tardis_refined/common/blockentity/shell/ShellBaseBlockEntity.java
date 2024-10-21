@@ -47,6 +47,15 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     private final int DUPLICATION_CHECK_TIME = 1200; // A minute
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
+    /*
+        Because we assume it is possible for the tardis to change location without flying there,
+        the 'if (!myCurrentPosition.equals(currentLocation) && !myCurrentPosition.equals(wantedDestination))' block
+        in the duplication check that runs once every so often would mistakenly remove this tardis if it just loaded
+        in the same tick at a different location (if we are unlocky with tick order),
+        because the operator's currentPosition will be set in the tick after.
+        We therefore need a way to skip the duplication check for a single tick when loading in this blockentity.
+     */
+    private boolean doNotRemoveNextTick = false;
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -69,6 +78,23 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         super.load(pTag);
         if (pTag.contains(NbtConstants.TARDIS_ID))
             this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
+        updateCurrentLocation();
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        updateCurrentLocation();
+    }
+
+    private void updateCurrentLocation() {
+        if (this.getLevel() instanceof ServerLevel serverLevel) {
+            ServerLevel interior = serverLevel.getServer().getLevel(this.TARDIS_ID);
+            TardisLevelOperator.get(interior).ifPresent(cap -> {
+                cap.getPilotingManager().setCurrentLocationOnNextTick(this);
+                this.doNotRemoveNextTick = true;
+            });
+        }
     }
 
     @Override
@@ -80,11 +106,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
-        if (this.TARDIS_ID == null) {
-            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
-            return;
-        }
-
         super.saveAdditional(pTag);
         if (this.TARDIS_ID != null)
             pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
@@ -143,7 +164,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
-        if (level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide) {
+        if (level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide && !this.doNotRemoveNextTick) {
             ResourceKey<Level> tardisId = getTardisId();
             if (tardisId == null) return;
             ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
@@ -169,6 +190,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
             });
         }
+        this.doNotRemoveNextTick = false;
     }
 
     @Override

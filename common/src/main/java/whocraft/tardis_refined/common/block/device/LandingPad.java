@@ -82,11 +82,16 @@ public class LandingPad extends Block {
                             TardisPilotingManager pilotManager = operator.getPilotingManager();
                             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isOnCooldown()) {
+                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && !pilotManager.isOnCooldown()) {
+                                TardisNavLocation oldTarget = pilotManager.getTargetLocation();
                                 pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
-                                serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
-                                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
-                                return InteractionResult.PASS;
+                                if (pilotManager.beginFlight(true, null)) {
+                                    serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
+                                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
+                                    return InteractionResult.PASS;
+                                } else {
+                                    pilotManager.setTargetLocation(oldTarget);
+                                }
                             } else {
 
                                 if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler)) {

@@ -29,6 +29,7 @@ dependencies {
     }
 
     modCompileOnly("com.simibubi.create:create-fabric-${minecraft_version}:${create_version_fabric}")
+    modCompileOnly("maven.modrinth:valkyrien-skies:${minecraft_version}-fabric-${valkyrienskies_version}")
 
 }
 
