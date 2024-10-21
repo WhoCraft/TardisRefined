@@ -11,4 +11,4 @@ include("common")
 include("fabric")
 include("forge")
 
-rootProject.name = "Tardis Refined"
+rootProject.name = "Tardis Refined 1.20.1"

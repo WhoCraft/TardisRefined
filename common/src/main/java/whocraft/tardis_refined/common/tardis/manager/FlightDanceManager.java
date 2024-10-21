@@ -19,6 +19,7 @@ public class FlightDanceManager extends TickableHandler {
     private int damagedControlCount = 0;
 
     private boolean weAreDancing = false;
+    private GlobalConsoleBlockEntity console;
 
     public FlightDanceManager(TardisLevelOperator operator) {
         this.operator = operator;
@@ -47,6 +48,7 @@ public class FlightDanceManager extends TickableHandler {
     public void startFlightDance(GlobalConsoleBlockEntity controllerConsole) {
         this.controlEntityList = getNonCriticalControls(controllerConsole);
         this.weAreDancing = true;
+        this.console = controllerConsole;
     }
 
     @Override
@@ -92,8 +94,15 @@ public class FlightDanceManager extends TickableHandler {
     }
 
     private void triggerNextEvent() {
-        ControlEntity randomControl = controlEntityList.get(this.operator.getLevel().random.nextInt(controlEntityList.size() - 1));
-        randomControl.setTickingDown(this);
+        if (!controlEntityList.isEmpty()) {
+            int randomIndex = this.operator.getLevel().random.nextInt(controlEntityList.size());
+            ControlEntity randomControl = controlEntityList.get(randomIndex);
+            randomControl.setTickingDown(this);
+        } else {
+            if (console != null) {
+                this.controlEntityList = getNonCriticalControls(console);
+            }
+        }
     }
 
     public void updateDamageList() {
