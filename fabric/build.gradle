@@ -1,6 +1,5 @@
 plugins {
     id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "me.shedaniel.unified-publishing" version "0.1.+"
 }
 
 architectury {
@@ -12,48 +11,6 @@ loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 }
 //
-
-
-if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
-    unifiedPublishing {
-        project {
-            displayName = "[Fabric] Tardis Refined - $project.version"
-            releaseType = "release"
-            changelog = new File("${rootProject.projectDir}/changelog.md").text
-            gameVersions = ["$rootProject.minecraft_version"]
-            mainPublication tasks.remapJar
-            gameLoaders = ["fabric"]
-            relations {
-                depends {
-                    curseforge = "fabric-api"
-                    modrinth = "fabric-api"
-                }
-                optional {
-                    curseforge = "immersive-portals-mod"
-                    modrinth = "immersiveportals"
-                }
-            }
-
-            var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
-            if (CURSE_API_KEY != "") {
-                curseforge {
-                    token = CURSE_API_KEY
-                    id = "782697"
-                    gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
-                }
-            }
-
-            var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
-            if (MODRINTH_TOKEN != "") {
-                modrinth {
-                    token = MODRINTH_TOKEN
-                    id = "nqVt6aES"
-                    version = "fabric-$project.version"
-                }
-            }
-        }
-    }
-}
 
 configurations {
     common
