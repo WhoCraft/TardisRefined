@@ -1,8 +1,11 @@
-# Version 2.1.5 - HOTFIX
+# Version 2.1.6
 
 ![TARDIS Refined](https://wiki.tardisrefined.net/TARDIS-Refined-Wiki/tardis_refined_v2_1.png)
 
-All previous changes from 2.1.4: https://wiki.tardisrefined.net/version-2-1-4.html
 
 #### Bug Fix
-- Bug fix: Fixed class loading destroying other mods ability to load
+- Bug fix: Fixes Forge not having the same access level as Fabric (https://github.com/WhoCraft/TardisRefined/issues/477)
+- 
+
+
+
