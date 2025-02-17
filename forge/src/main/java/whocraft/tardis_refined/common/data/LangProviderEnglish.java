@@ -209,6 +209,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CMD_LEVEL_POINT_SET, "Set upgrade points for %s to %s");
         add(ModMessages.CMD_LEVEL_POINT_ADD, "Added %s points for %s, total points are now %s");
 
+
         add(ModMessages.CMD_LEVEL_XP_GET, "%s has %s XP");
         add(ModMessages.CMD_LEVEL_XP_SET, "Set XP for %s to %s");
         add(ModMessages.CMD_LEVEL_XP_ADD, "Added %s XP for %s, total XP is now %s");
@@ -302,7 +303,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.CASTLE.getId(), "Castle");
         addShell(ShellTheme.PATHFINDER.getId(), "Pathfinder");
         addShell(ShellTheme.HALF_BAKED.getId(), "Half Baked");
-        addShell(ShellTheme.SHULKER.getId(), "Half Baked");
+        addShell(ShellTheme.SHULKER.getId(), "Shulker Box");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, ChatFormatting.YELLOW + "< "
