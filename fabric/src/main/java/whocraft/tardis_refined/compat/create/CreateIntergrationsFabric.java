@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import static whocraft.tardis_refined.registry.TRBlockEntityRegistry.FLIGHT_DETECTOR;
 
 
-public class CreateIntergrations {
+public class CreateIntergrationsFabric {
 
     private static ArrayList<QuickOneLineDisplaySource.TardisInfo> tardisInfos = new ArrayList<>();
     private static ArrayList<TardisNavLocationDisplaySource.TardisNavInfo> tardisNavInfos = new ArrayList<>();

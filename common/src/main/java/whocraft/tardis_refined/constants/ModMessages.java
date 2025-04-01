@@ -138,7 +138,13 @@ public class ModMessages {
     public static String DIRECTION = message("direction");
     public static String DIMENSION = message("dimension");
 
+    public static String IN_FLIGHT = createDisplaySource("in_flight");
+    public static String SHELL = createDisplaySource("shell");
+    public static String JOURNEY_PROGRESS = createDisplaySource("journey_progress");
 
+    public static String createDisplaySource(String translationKey) {
+        return TardisRefined.MODID + ".display_source." + translationKey;
+    }
 
     public static String message(String translationKey) {
         return "message." + TardisRefined.MODID + "." + translationKey;

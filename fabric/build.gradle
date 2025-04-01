@@ -109,6 +109,9 @@ dependencies {
     modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}")
     modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:build:${rootProject.immersive_portals_version}")
 
+    modCompileOnly("com.simibubi.create:create-fabric-${minecraft_version}:${create_version_fabric}")
+    modCompileOnly("maven.modrinth:valkyrien-skies:${minecraft_version}-fabric-${valkyrienskies_version}")
+
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
 }

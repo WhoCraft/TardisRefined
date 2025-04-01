@@ -99,6 +99,9 @@ allprojects {
         maven { url = "https://jitpack.io/" } // Mixin Extras, Fabric ASM
         maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // Forge Config API Port
 
+        maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+        maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/" } // ForgeConfigAPIPort
+
         maven {
             name "tterrag maven"
             url "https://maven.tterrag.com/"

@@ -15,7 +15,6 @@ import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.compat.create.ModCompatMessages;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.*;
 
@@ -271,14 +270,15 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DOOR_STATUS, "Door: %s");
         add(ModMessages.LOCK_STATUS, "Locked: %s");
         add(ModMessages.POSITION, "Position: %s");
+        add(ModMessages.IN_FLIGHT, "Flight: %s");
         add(ModMessages.DIRECTION, "Direction: %s");
         add(ModMessages.DIMENSION, "Dimension: %s");
-        add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
-        add(ModCompatMessages.createDisplaySource("gps"), "GPS");
-        add(ModCompatMessages.createDisplaySource("destination"), "GPS Destination");
-        add(ModCompatMessages.createDisplaySource("tardis_bigdata"), "Tardis Summary");
-        add(ModCompatMessages.createDisplaySource("door"), "Door Status");
-        add(ModCompatMessages.createDisplaySource("locked"), "Lock Status");
+        add(ModMessages.createDisplaySource("fuel"), "Fuel");
+        add(ModMessages.createDisplaySource("gps"), "GPS");
+        add(ModMessages.createDisplaySource("destination"), "GPS Destination");
+        add(ModMessages.createDisplaySource("tardis_bigdata"), "Tardis Summary");
+        add(ModMessages.createDisplaySource("door"), "Door Status");
+        add(ModMessages.createDisplaySource("locked"), "Lock Status");
 
         add("curios.identifier.timelord_sight", "AR Glasses");
 
