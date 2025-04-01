@@ -41,6 +41,7 @@ import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 
+
 public class GlobalConsoleBlock extends BaseEntityBlock {
 
     public static final BooleanProperty POWERED = BooleanProperty.create("powered");

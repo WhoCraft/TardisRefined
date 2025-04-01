@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.compat.create;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
-import com.simibubi.create.content.redstone.displayLink.source.DisplaySource;
 import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -41,12 +41,13 @@ public class TardisDisplaySource extends DisplaySource {
                         currentLoc = VSHelper.toWorldLocation(currentLoc);
                     }
 
-                    list.add(levelOperator.getPilotingManager().isInFlight() ? Component.literal("In Flight: True") : Component.literal("In Flight: False"));
-                    list.add(Component.literal("Pos: " + currentLoc.getPosition().toShortString()));
-                    list.add(Component.literal("Dim: " + MiscHelper.getCleanDimensionName(currentLoc.getDimensionKey())));
-                    list.add(Component.translatable(ModMessages.FUEL).append(String.valueOf((Math.round((levelOperator.getPilotingManager().getFuelPercentage() * 100))))).append("%"));
-                    list.add(Component.literal("Shell: " + levelOperator.getAestheticHandler().getShellTheme().getPath()));
-                    list.add(Component.literal("Journey Progress: " + levelOperator.getPilotingManager().getFlightPercentageCovered() * 100 + "%"));
+                    list.add(Component.translatable(ModMessages.IN_FLIGHT, levelOperator.getPilotingManager().isInFlight()));
+                    list.add(Component.translatable(ModMessages.POSITION, currentLoc.getPosition().toShortString()));
+                    list.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getCleanDimensionName(currentLoc.getDimensionKey())));
+                    list.add(Component.translatable(ModMessages.FUEL).append(String.valueOf(Math.round(levelOperator.getPilotingManager().getFuelPercentage() * 100))).append("%"));
+                    list.add(Component.translatable(ModMessages.SHELL, levelOperator.getAestheticHandler().getShellTheme().getPath()));
+                    list.add(Component.translatable(ModMessages.JOURNEY_PROGRESS).append(levelOperator.getPilotingManager().getFlightPercentageCovered() * 100 + "%"));
+
                 }
                 return list;
             }

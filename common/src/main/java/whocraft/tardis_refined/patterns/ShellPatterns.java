@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.patterns;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -240,8 +239,9 @@ public class ShellPatterns {
         };
 
         for (String color : shulkerColors) {
-            addDefaultPattern(ShellTheme.SHULKER.getId(), "shulker_" + color, false, Optional.of(soundProfile));
+            addDefaultPattern(ShellTheme.SHULKER.getId(), color, false, Optional.of(soundProfile));
         }
+
         addDefaultPattern(ShellTheme.SHULKER.getId(), "shulker", false, Optional.of(soundProfile));
 
 

@@ -23,7 +23,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.create.CreateIntergrations;
+import whocraft.tardis_refined.compat.create.CreateIntergrationsForge;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -47,7 +47,7 @@ public class CommonBus {
         DimensionHandler.loadLevels(world);
 
         if (ModCompatChecker.create()) {
-            CreateIntergrations.init();
+            CreateIntergrationsForge.initAssignments();
         }
     }
 
