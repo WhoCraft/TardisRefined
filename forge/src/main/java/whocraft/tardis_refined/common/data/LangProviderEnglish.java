@@ -270,6 +270,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DOOR_STATUS, "Door: %s");
         add(ModMessages.LOCK_STATUS, "Locked: %s");
         add(ModMessages.POSITION, "Position: %s");
+        add(ModMessages.IN_FLIGHT, "Flight: %s");
         add(ModMessages.DIRECTION, "Direction: %s");
         add(ModMessages.DIMENSION, "Dimension: %s");
         add(ModMessages.createDisplaySource("fuel"), "Fuel");

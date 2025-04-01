@@ -90,7 +90,7 @@ public class TardisRefinedFabric implements ModInitializer {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
 
-        if(Platform.isModLoaded("create")){
+        if(ModCompatChecker.create()){
             CreateIntergrationsFabric.init();
         }
 
