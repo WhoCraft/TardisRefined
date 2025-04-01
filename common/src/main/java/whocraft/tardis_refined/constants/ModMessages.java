@@ -138,7 +138,9 @@ public class ModMessages {
     public static String DIRECTION = message("direction");
     public static String DIMENSION = message("dimension");
 
-
+    public static String createDisplaySource(String translationKey) {
+        return TardisRefined.MODID + ".display_source." + translationKey;
+    }
 
     public static String message(String translationKey) {
         return "message." + TardisRefined.MODID + "." + translationKey;

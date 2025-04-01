@@ -14,6 +14,7 @@ import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRec
 import whocraft.tardis_refined.common.data.*;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.create.CreateIntergrationsForge;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.neoforge.PortalsCompatForge;
 import whocraft.tardis_refined.compat.trinkets.CuriosUtil;
@@ -41,6 +42,10 @@ public class TardisRefinedForge {
             }
         } else {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
+        }
+
+        if (ModCompatChecker.create()) {
+            CreateIntergrationsForge.init();
         }
     }
 
