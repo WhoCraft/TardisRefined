@@ -6,6 +6,6 @@
 #### Bug Fix
 - Bug fix: Fixes Forge not having the same access level as Fabric (https://github.com/WhoCraft/TardisRefined/issues/477)
 - Bug fix: Fixed Shulker shells not having correct texture paths
-
+- Bug fix: Fixed the TARDIS forgetting its current dimension on world reload
 
 
