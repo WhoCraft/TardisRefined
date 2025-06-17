@@ -114,3 +114,5 @@ run/
 /fabric/bin/main/
 /forge/bin/main/
 /forge/src/generated/
+/neoforge/bin/main/
+/neoforge/src/generated/

@@ -1,45 +1,53 @@
-architectury {
-    common(rootProject.enabled_platforms.split(","))
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
 }
 
-loom {
-    accessWidenerPath = file("src/main/resources/tardis_refined.accesswidener")
+neoForge {
+    neoFormVersion = rootProject.neo_form_version
+    // Automatically enable AccessTransformers if the file exists
+    def at = file('src/main/resources/META-INF/accesstransformer_common.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    parchment {
+        minecraftVersion = "${rootProject.parchment_minecraft_version}"
+        mappingsVersion = "${rootProject.parchment_version}"
+    }
 }
+
 
 dependencies {
-    // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
-    // Do NOT use other classes from fabric loader
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+
+    compileOnly group: 'org.spongepowered', name: 'mixin', version: rootProject.mixin_version
+
+    // fabric and neoforge both bundle mixinextras, so it is safe to use it in common
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixin_extras_version}"))
 
     // Forge Config API Port
-    modCompileOnlyApi("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${rootProject.forge_config_api_port_version}") {
-        because "Ensure the dependency is resolved from the specified repository."
-    }
+//    compileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${rootProject.forge_config_api_port_version}"
+
+    //Cloth Config common module
+//    modCompileOnlyApi("me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}")
+
+//    include "me.shedaniel.cloth:cloth-config:${rootProject.cloth_config_version}"
 
     // Sodium
-    modImplementation "maven.modrinth:sodium:${rootProject.sodium_version}"
+//    modImplementation "maven.modrinth:sodium:${rootProject.sodium_version}"
+}
 
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}"){
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
     }
-
-    modCompileOnlyApi ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}"){
-        exclude(group: "net.fabricmc.fabric-api")
-        transitive(false)
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
     }
 }
 
-publishing {
-    publications {
-        mavenCommon(MavenPublication) {
-            artifactId = rootProject.archives_base_name
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-    }
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }

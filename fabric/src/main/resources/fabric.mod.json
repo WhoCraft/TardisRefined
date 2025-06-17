@@ -5,15 +5,15 @@
   "name": "${mod_name}",
   "description": "${mod_description}",
   "authors": [
-    "${mod_authors}"
+    "${mod_author}"
   ],
   "contributors": [
     "${credits}"
   ],
   "contact": {
-    "sources": "${display_url}",
+    "sources": "${sources}",
     "issues": "${issue_tracker_url}",
-    "homepage": "${homepage_url}"
+    "homepage": "${homepage}"
   },
   "license": "${license}",
   "icon": "${logo_file}",
@@ -21,12 +21,8 @@
   "entrypoints": {
     "main": [
       "whocraft.tardis_refined.fabric.TardisRefinedFabric"
-    ],
-    "cardinal-components": [
-      "whocraft.tardis_refined.common.capability.fabric.TRComponents",
-      "whocraft.tardis_refined.common.capability.player.fabric.TardisPlayerComponents"
-    ],
-    "client": [
+    ]
+    ,"client": [
       "whocraft.tardis_refined.fabric.TardisRefinedFabricClient"
     ]
   },
@@ -38,14 +34,5 @@
     "fabricloader": "${fabric_loader_version_range}",
     "minecraft": "${fabric_minecraft_version_range}",
     "fabric-api": "${fabric_api_version_range}"
-  },
-  "suggests": {
-    "imm_ptl_core": "${fabric_immersive_portals_version_range}"
-  },
-  "custom": {
-    "cardinal-components": [
-      "${mod_id}:tardis_data",
-      "${mod_id}:tardis_player_info"
-    ]
   }
 }

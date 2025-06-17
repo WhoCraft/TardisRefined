@@ -1,0 +1,76 @@
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
+}
+neoForge {
+    version = rootProject.neoforge_version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer_common.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+//    parchment {
+//        minecraftVersion = rootProject.parchment_minecraft_version
+//        mappingsVersion = rootProject.parchment_version
+//    }
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+        }
+        client {
+            client()
+        }
+        data {
+            clientData()
+            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        server {
+            server()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+//Use the existing Neoforge data generator for resource pack data
+def generatedResources = project(":neoforge").file("src/generated/resources")
+
+sourceSets {
+    main {
+        resources.srcDir generatedResources
+    }
+}
+
+repositories {
+    maven { url = uri("https://maven.neoforged.net/releases/") }
+    maven { url = uri("https://maven.architectury.dev/") }
+}
+
+dependencies {
+//    neoForge "net.neoforged:neoforge:${neoforge_version}"
+
+}
+
+publishing {
+    publications {
+        mavenForge(MavenPublication) {
+            artifactId = archives_base_name + "_" + project.name
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url = "https://mvn.jeryn.dev/snapshots/"
+            credentials {
+                username = project.findProperty("MAVEN_REPO_USERNAME") ?: System.getenv("MAVEN_REPO_USERNAME") ?: ""
+                password = project.findProperty("MAVEN_REPO_PASSWORD") ?: System.getenv("MAVEN_REPO_PASSWORD") ?: ""
+            }
+        }
+    }
+}

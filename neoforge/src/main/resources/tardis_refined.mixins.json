@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "whocraft.tardis_refined.mixin.neoforge",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ClientHooksMixin",
+    "ReloadableResourceManagerMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
