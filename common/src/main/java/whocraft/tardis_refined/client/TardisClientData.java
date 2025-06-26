@@ -40,6 +40,7 @@ public class TardisClientData {
     private boolean isInDangerZone = false;
     private boolean isCrashing = false;
     private boolean isOnCooldown = false;
+    private boolean isDeleted = false;
     private float flightShakeScale = 0;
     private double fuel = 0;
     private double maximumFuel = 0;
@@ -84,7 +85,7 @@ public class TardisClientData {
     }
 
     public static List<TardisClientData> getAllEntries() {
-        return new ArrayList<>(DATA);
+        return DATA.stream().filter(x -> !x.isDeleted).toList();
     }
 
     public static void clearAll() {
@@ -174,6 +175,10 @@ public class TardisClientData {
         this.isOnCooldown = isCooldown;
     }
 
+    public void setIsDeleted(boolean deleted) {
+        this.isDeleted = deleted;
+    }
+
     public boolean isInRecovery() {
         return isOnCooldown;
     }
@@ -203,6 +208,7 @@ public class TardisClientData {
         CompoundTag compoundTag = new CompoundTag();
 
         compoundTag.putBoolean("flying", flying);
+        compoundTag.putBoolean(NbtConstants.TARDIS_DELETED, isDeleted);
         compoundTag.putInt(NbtConstants.THROTTLE_STAGE, throttleStage);
         compoundTag.putInt("recoveryTicks", recoveryTicks);
         compoundTag.putFloat("journeyProgress", journeyProgress);
@@ -235,6 +241,7 @@ public class TardisClientData {
         throttleStage = compoundTag.getInt(NbtConstants.THROTTLE_STAGE);
         isHandbrakeEngaged = compoundTag.getBoolean(NbtConstants.HANDBRAKE_ENGAGED);
         isLanding = compoundTag.getBoolean("isLanding");
+        isDeleted = compoundTag.getBoolean("isDeleted");
         isTakingOff = compoundTag.getBoolean("isTakingOff");
         isInDangerZone = compoundTag.getBoolean("isInDangerZone");
         flightShakeScale = compoundTag.getFloat("flightShakeScale");

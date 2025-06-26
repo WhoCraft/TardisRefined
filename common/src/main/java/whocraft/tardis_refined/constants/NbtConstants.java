@@ -24,6 +24,7 @@ public class NbtConstants {
 
     public static final String POWERED = "powered";
 
+    public static final String TARDIS_DELETED = "tardis_deleted";
     public static final String TARDIS_IS_SETUP = "has_setup";
     public static final String TARDIS_INTERNAL_DOOR_ID = "internal_door_id";
     public static final String TARDIS_INTERNAL_DOOR_POSITION = "internal_door_pos";
