@@ -39,6 +39,9 @@ public class TRUpgrades {
     public static final RegistrySupplier<Upgrade> INSIDE_ARCHITECTURE = UPGRADE_DEFERRED_REGISTRY.register("inside_architecture", () -> new Upgrade(TRBlockRegistry.TERRAFORMER_BLOCK.get().asItem()::getDefaultInstance, ARCHITECTURE_SYSTEM, RegistryHelper.makeKey("inside_architecture"), Upgrade.UpgradeType.SUB_UPGRADE)
             .setSkillPointsRequired(20).setPosition(4, 2));
 
+    public static final RegistrySupplier<Upgrade> RESPAWN_ALLOWED = UPGRADE_DEFERRED_REGISTRY.register("respawn_allowed", () -> new Upgrade(Items.RED_BED::getDefaultInstance, ARCHITECTURE_SYSTEM, RegistryHelper.makeKey("respawn_allowed"), Upgrade.UpgradeType.SUB_UPGRADE)
+            .setSkillPointsRequired(10).setPosition(3, 2));
+
     public static final RegistrySupplier<Upgrade> IMPROVED_GENERATION_TIME_I = UPGRADE_DEFERRED_REGISTRY.register("improved_generation_time_i", () -> new Upgrade(Items.TURTLE_EGG::getDefaultInstance, INSIDE_ARCHITECTURE, RegistryHelper.makeKey("improved_generation_time_i"), Upgrade.UpgradeType.SUB_UPGRADE)
             .setSkillPointsRequired(10).setPosition(4, 3));
     public static final RegistrySupplier<Upgrade> IMPROVED_GENERATION_TIME_II = UPGRADE_DEFERRED_REGISTRY.register("improved_generation_time_ii", () -> new Upgrade(Items.RABBIT_FOOT::getDefaultInstance, IMPROVED_GENERATION_TIME_I, RegistryHelper.makeKey("improved_generation_time_ii"), Upgrade.UpgradeType.SUB_UPGRADE)
