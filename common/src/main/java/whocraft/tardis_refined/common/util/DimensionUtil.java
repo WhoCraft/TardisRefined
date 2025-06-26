@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.List;
@@ -42,12 +43,12 @@ public class DimensionUtil {
     public static boolean isAllowedDimension(ResourceKey<Level> level) {
         String namespace = level.location().getNamespace();
         var bannedDimensions = getDimensionPredicate(TRConfig.SERVER.BANNED_DIMENSIONS.get());
-        return !namespace.contains(TardisRefined.MODID) && !bannedDimensions.test(level);
+        return !namespace.contains(TardisRefined.MODID) && !bannedDimensions.test(level) && !DimensionHandler.isDimensionDeleted(level);
     }
     public static Set<ResourceKey<Level>> getTardisLevels(MinecraftServer server) {
         Set<ResourceKey<Level>> set = Sets.newHashSet();
         for (ServerLevel level : server.getAllLevels()) {
-            if (level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
+            if (level.dimensionTypeId() == TRDimensionTypes.TARDIS && !DimensionHandler.isDimensionDeleted(level.dimension())) {
                 set.add(level.dimension());
             }
         }

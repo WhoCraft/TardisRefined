@@ -28,6 +28,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.level.LevelEvent;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
@@ -36,6 +37,11 @@ import static whocraft.tardis_refined.common.util.forge.PlatformImpl.getServer;
 
 public class DimensionHandlerImpl {
 
+    public static void removeDimensionFromData(ResourceKey<Level> id) {
+        MinecraftServer server = Platform.getServer();
+        server.levels.remove(id);
+        new S2CSyncLevelList(id, false).sendToAll();
+    }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 

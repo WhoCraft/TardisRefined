@@ -59,13 +59,15 @@ public class ModEvents {
 
         START_WORLD_TICK.register(world -> {
             if (world.dimensionTypeId().location() == TRDimensionTypes.TARDIS.location()) {
-                TardisLevelOperator.get(world).get().tick(world);
+                TardisLevelOperator.get(world).ifPresent(x -> x.tick(world));
             }
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
+
+            DimensionHandler.deleteMarkedLevels();
             DimensionHandler.loadLevels(world);
 
             // We call this here to make sure blocks are registered
@@ -85,11 +87,14 @@ public class ModEvents {
         ServerTickEvents.END_SERVER_TICK.register(server -> TardisTeleportData.tick());
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+
             DimensionHandlerImpl.clear();
 
             if (ModCompatChecker.immersivePortals()) {
                 ImmersivePortals.onServerStopping(server);
             }
+
+
         });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));

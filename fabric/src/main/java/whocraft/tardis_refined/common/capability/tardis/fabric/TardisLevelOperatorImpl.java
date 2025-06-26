@@ -7,6 +7,7 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.fabric.TRComponents;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -21,6 +22,11 @@ public class TardisLevelOperatorImpl extends TardisLevelOperator implements Comp
         if (level == null) {
             return Optional.empty();
         }
+
+        if (DimensionHandler.REMOVED_LEVELS.stream().anyMatch(x -> x == level.dimension())) {
+            return Optional.empty();
+        }
+
         try {
             return Optional.of(TRComponents.TARDIS_DATA.get(level));
         } catch (Exception e) {

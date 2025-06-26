@@ -38,6 +38,12 @@ import static whocraft.tardis_refined.common.util.Platform.getServer;
 
 public class DimensionHandlerImpl {
 
+    public static void removeDimensionFromData(ResourceKey<Level> id) {
+        MinecraftServer server = getServer();
+        server.levels.remove(id);
+        new S2CSyncLevelList(id, false).sendToAll();
+    }
+
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
         if (ModCompatChecker.immersivePortals()) {

@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.FileUtil;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -13,6 +14,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
@@ -46,11 +48,25 @@ public class DimensionHandler {
 
     public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
 
+    // Create a record of the removed level so that we don't re-add it accidentally.
+    public static ArrayList<ResourceKey<Level>> REMOVED_LEVELS = new ArrayList<>();
+
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/DimensionHandler");
 
+    public static boolean isDimensionDeleted(ResourceKey<Level> resourceKey) {
+        return REMOVED_LEVELS.stream().anyMatch(x -> x == resourceKey);
+    }
 
     public static void addDimension(ResourceKey<Level> resourceKey) {
         LEVELS.add(resourceKey);
+        writeLevels();
+    }
+
+    public static void removeDimension(ResourceKey<Level> resourceKey) {
+        LEVELS.removeIf(x -> x.registry() == resourceKey.registry());
+        REMOVED_LEVELS.add(resourceKey);
+
+        removeDimensionFromData(resourceKey);
         writeLevels();
     }
 
@@ -66,14 +82,20 @@ public class DimensionHandler {
         File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
         JsonObject jsonObject = new JsonObject();
 
-        JsonArray dimensions = new JsonArray();
+        JsonArray activeDimensions = new JsonArray();
         for (ResourceKey<Level> level : LEVELS) {
-            dimensions.add(level.location().toString());
+            activeDimensions.add(level.location().toString());
         }
 
-        jsonObject.add("tardis_dimensions", dimensions);
+        JsonArray removedDimensions = new JsonArray();
+        for (ResourceKey<Level> level : REMOVED_LEVELS) {
+            removedDimensions.add(level.location().toString());
+        }
 
-        LOGGER.info("Writing {} to: {}", dimensions, file.getAbsolutePath());
+        jsonObject.add("tardis_dimensions", activeDimensions);
+        jsonObject.add("removed_dimensions", removedDimensions);
+
+        LOGGER.info("Writing dimension data to: {}", file.getAbsolutePath());
 
         try (FileWriter writer = new FileWriter(file)) {
             TardisRefined.GSON.toJson(jsonObject, writer);
@@ -87,6 +109,9 @@ public class DimensionHandler {
 
         ResourceKey<Level> levelResourceKey = ResourceKey.create(Registries.DIMENSION, resourceLocation);
 
+        if (isDimensionDeleted(levelResourceKey)) {
+            return null;
+        }
 
         if (ModCompatChecker.immersivePortals()) {
             return ImmersivePortals.createDimension(interactionLevel, levelResourceKey);
@@ -103,6 +128,37 @@ public class DimensionHandler {
         }
 
         return null;
+
+    }
+
+    public static void deleteMarkedLevels() {
+        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
+        if (!file.exists()) return;
+
+        Reader reader = null;
+        try {
+            reader = Files.newBufferedReader(file.toPath());
+
+            JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
+
+            try {
+                var removedDimensions = jsonObject.getAsJsonArray("removed_dimensions");
+
+                if (removedDimensions != null) {
+                    for (JsonElement removedDimension : jsonObject.get("removed_dimensions").getAsJsonArray()) {
+                        ResourceLocation id = new ResourceLocation(removedDimension.getAsString());
+                        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
+
+                        removeDimensionFromData(levelKey);
+                        FileUtils.deleteDirectory(getStorage().getDimensionPath(levelKey).toFile());
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Loading without the removed dimensions property.");
+            }
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -129,6 +185,24 @@ public class DimensionHandler {
                 }
             }
 
+            try {
+                var removedDimensions = jsonObject.getAsJsonArray("removed_dimensions");
+
+                if (removedDimensions != null) {
+                    for (JsonElement removedDimension : jsonObject.get("removed_dimensions").getAsJsonArray()) {
+                        ResourceLocation id = new ResourceLocation(removedDimension.getAsString());
+                        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
+                        LOGGER.info("Found removed dimension recorded. Marking it as so. {}", removedDimension.getAsString());
+                        REMOVED_LEVELS.add(levelKey);
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.warn("Loading without the removed dimensions property.");
+            }
+
+
+
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -137,6 +211,11 @@ public class DimensionHandler {
 
     @ExpectPlatform
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
+        throw new RuntimeException(PlatformWarning.addWarning(DimensionHandler.class));
+    }
+
+    @ExpectPlatform
+    public static void removeDimensionFromData(ResourceKey<Level> id) {
         throw new RuntimeException(PlatformWarning.addWarning(DimensionHandler.class));
     }
 

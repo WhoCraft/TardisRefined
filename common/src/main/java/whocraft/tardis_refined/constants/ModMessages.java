@@ -87,6 +87,7 @@ public class ModMessages {
     /*Messages*/
     public static String SPAWN_TARDIS_DIMENSION_FAIL = message("spawn_tardis_dimension_fail");
 
+    public static String DELETED_TARDIS = message("deleted_tardis");
     public static String MSG_EXTERIOR_COOLDOWN = message("exterior_cooldown");
     public static String MSG_KEY_BOUND = message("key_bound");
     public static String MSG_KEY_CYCLED = message("key_cycled");
