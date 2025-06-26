@@ -36,6 +36,7 @@ public class TRBlockEntityRegistry {
     public static final RegistrySupplier<BlockEntityType<AstralManipulatorBlockEntity>> ASTRAL_MANIPULATOR = BLOCK_ENTITY_TYPES.register("astral_manipulator", () -> BlockEntityType.Builder.of(AstralManipulatorBlockEntity::new, TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<EyeBlockEntity>> THE_EYE = BLOCK_ENTITY_TYPES.register("the_eye", () -> BlockEntityType.Builder.of(EyeBlockEntity::new, TRBlockRegistry.THE_EYE.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<CorridorTeleporterBlockEntity>> CORRIDOR_TELEPORTER = BLOCK_ENTITY_TYPES.register("corridor_teleporter", () -> BlockEntityType.Builder.of(CorridorTeleporterBlockEntity::new, TRBlockRegistry.CORRIDOR_TELEPORTER.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<ZeitonGlassBlockEntity>> ZEITON_GLASS = BLOCK_ENTITY_TYPES.register("zeiton_glass", () -> BlockEntityType.Builder.of(ZeitonGlassBlockEntity::new, TRBlockRegistry.ZEITON_GLASS.get()).build(null));
 
 
 }
