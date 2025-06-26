@@ -205,7 +205,7 @@ public class TardisPilotingManager extends TickableHandler {
                 this.setFuel(this.getMaximumFuel());
                 this.isPassivelyRefuelling = false;
             }
-        } else if (level.getGameTime() % 20 == 0 && !isPassivelyRefuelling && this.getFuel() < (this.getMaximumFuel() * 0.05)) {
+        } else if (level.getGameTime() % 20 == 0 && !isPassivelyRefuelling && this.getFuel() < (this.getMaximumFuel() * 0.05) && this.operator.getTardisState() == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
             if (currentConsole != null) {
                 level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.ALARM.get(), SoundSource.AMBIENT, 10f, 1f);
             }
