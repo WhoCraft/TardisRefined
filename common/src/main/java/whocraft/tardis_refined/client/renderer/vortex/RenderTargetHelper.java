@@ -15,6 +15,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
@@ -32,6 +33,7 @@ import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.ShellDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.life.PortalModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
@@ -145,6 +147,69 @@ public class RenderTargetHelper {
         stack.pushPose();
         stack.scale(10, 10, 10);
 
+        VORTEX.time.speed = (0.3f + tardisClientData.getThrottleStage() * 0.1f);
+        VORTEX.renderVortex(stack, 1, false);
+        stack.popPose();
+
+        GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        GL11.glColorMask(true, true, true, true);
+
+        // Disable stencil test and restore state
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        RenderSystem.depthMask(true);
+
+
+        stack.popPose();
+    }
+
+
+    public static void renderGeneric(PortalModel<?> mask, PoseStack stack, int packedLight, TardisClientData tardisClientData) {
+        if (ModCompatChecker.immersivePortals()) {
+            if (ImmersivePortalsClient.shouldStopRenderingInPortal()) {
+                return;
+            }
+        }
+
+        if(!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())){
+            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
+        }
+
+        stack.pushPose();
+
+        // Fix transform
+        stack.translate(0.5F, 1.5F, 0.5F);
+        stack.mulPose(Axis.ZP.rotationDegrees(180F));
+        stack.translate(0, 0, -0.01);
+
+        RenderSystem.depthMask(true);
+
+        MultiBufferSource.BufferSource imBuffer = stencilBufferStorage.getVertexConsumer();
+
+        // Enable and configure stencil buffer
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+
+        // Render portal mask with depth writing enabled
+        RenderSystem.depthMask(true);
+        stack.pushPose();
+        mask.renderPortalMask(stack, imBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)), packedLight, OverlayTexture.NO_OVERLAY, 0f, 0f, 0f, 1f);
+        imBuffer.endBatch();
+        stack.popPose();
+        RenderSystem.depthMask(false);
+
+        // Render vortex using stencil buffer
+        GL11.glStencilMask(0x00);
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+        GlStateManager._depthFunc(GL11.GL_ALWAYS);
+
+        GL11.glColorMask(true, true, true, false);
+        stack.pushPose();
+        stack.scale(60, 60, 60);
+        VORTEX.vortexType = VortexRegistry.VORTEX_REGISTRY.get(tardisClientData.getVortex());
         VORTEX.time.speed = (0.3f + tardisClientData.getThrottleStage() * 0.1f);
         VORTEX.renderVortex(stack, 1, false);
         stack.popPose();

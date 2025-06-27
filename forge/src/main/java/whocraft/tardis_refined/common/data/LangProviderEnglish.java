@@ -116,6 +116,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRBlockRegistry.ARTRON_PILLAR.get(), "Artron Pillar");
         add(TRBlockRegistry.ARTRON_PILLAR_PORT.get(), "Artron Pillar Port");
         add(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), "Corridor Teleporter");
+        add(TRBlockRegistry.ZEITON_GLASS.get(), "Zeiton Glass");
 
         /*Items*/
         add(TRItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
