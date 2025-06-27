@@ -33,6 +33,7 @@ import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRender
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.ZeitonGlassRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
@@ -116,6 +117,7 @@ public class ClientModBus {
         BlockEntityRenderers.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ZEITON_GLASS.get(), ZeitonGlassRenderer::new);
 
         EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 

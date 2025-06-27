@@ -78,6 +78,7 @@ public class ModelRegistry {
     public static ModelLayerLocation BULK_HEAD_DOOR = interiorDoor("bulk_head_door");
 
     public static ModelLayerLocation ARTRON_PILLAR = createLocation("artron_pillar", "technology");
+    public static ModelLayerLocation ZEITON_GLASS = createLocation("zeiton_glass", "living");
 
     private static ModelLayerLocation interiorDoor(String name) {
         return createLocation(name, "door");

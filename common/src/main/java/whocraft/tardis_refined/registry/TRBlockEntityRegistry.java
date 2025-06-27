@@ -10,6 +10,7 @@ import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
+import whocraft.tardis_refined.common.blockentity.life.ZeitonGlassBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
