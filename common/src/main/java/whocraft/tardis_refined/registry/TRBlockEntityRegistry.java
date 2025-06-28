@@ -3,6 +3,7 @@ package whocraft.tardis_refined.registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.block.door.BulkHeadDoorExtensionBlockEntity;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.*;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
@@ -30,6 +31,7 @@ public class TRBlockEntityRegistry {
 
     public static final RegistrySupplier<BlockEntityType<ArsEggBlockEntity>> ARS_EGG = BLOCK_ENTITY_TYPES.register("ars_egg", () -> BlockEntityType.Builder.of(ArsEggBlockEntity::new, TRBlockRegistry.ARS_EGG.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<BulkHeadDoorBlockEntity>> BULK_HEAD_DOOR = BLOCK_ENTITY_TYPES.register("bulk_head_door", () -> BlockEntityType.Builder.of(BulkHeadDoorBlockEntity::new, TRBlockRegistry.BULK_HEAD_DOOR.get()).build(null));
+    public static final RegistrySupplier<BlockEntityType<BulkHeadDoorExtensionBlockEntity>> BULK_HEAD_DOOR_EXT = BLOCK_ENTITY_TYPES.register("bulk_head_door_ext", () -> BlockEntityType.Builder.of(BulkHeadDoorExtensionBlockEntity::new, TRBlockRegistry.BULK_HEAD_DOOR.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<ConsoleConfigurationBlockEntity>> CONSOLE_CONFIGURATION = BLOCK_ENTITY_TYPES.register("console_configuration", () -> BlockEntityType.Builder.of(ConsoleConfigurationBlockEntity::new, TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<FlightDetectorBlockEntity>> FLIGHT_DETECTOR = BLOCK_ENTITY_TYPES.register("flight_detector", () -> BlockEntityType.Builder.of(FlightDetectorBlockEntity::new, TRBlockRegistry.FLIGHT_DETECTOR.get()).build(null));
     public static final RegistrySupplier<BlockEntityType<ArtronPillarBlockEntity>> ARTRON_PILLAR = BLOCK_ENTITY_TYPES.register("artron_pillar", () -> BlockEntityType.Builder.of(ArtronPillarBlockEntity::new, TRBlockRegistry.ARTRON_PILLAR.get()).build(null));
