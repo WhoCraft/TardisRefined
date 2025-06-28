@@ -10,6 +10,7 @@ import whocraft.tardis_refined.common.block.RootPlantBlock;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
+import whocraft.tardis_refined.common.block.door.BulkHeadDoorExtensionBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
 import whocraft.tardis_refined.common.block.life.ARSLeavesBlock;
@@ -19,7 +20,7 @@ import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
-import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorExtensionBlock;
+
 
 import java.util.function.Supplier;
 
@@ -39,7 +40,7 @@ public class TRBlockRegistry {
     // Roots
     public static final RegistrySupplier<RootPlantBlock> ROOT_PLANT_BLOCK = register("root_plant", () -> new RootPlantBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.CORAL_BLOCK)), true, true);
     public static final RegistrySupplier<BulkHeadDoorBlock> BULK_HEAD_DOOR = register("bulk_head_door", () -> new BulkHeadDoorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.CORAL_BLOCK)), true, true);
-    public static final RegistrySupplier<BulkHeadDoorExtensionBlock> BULK_HEAD_DOOR_EXT = register("bulk_head_door_ext", () -> new BulkHeadDoorExtensionBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.ANVIL)), true, true);
+    public static final RegistrySupplier<BulkHeadDoorExtensionBlock> BULK_HEAD_DOOR_EXT = register("bulk_head_door_ext", () -> new BulkHeadDoorExtensionBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.ANVIL)), false, false);
     // ARS Tree
     public static final RegistrySupplier<ArsEggBlock> ARS_EGG = register("ars_egg", () -> new ArsEggBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES).lightLevel((x) -> 12)), true, true);
     public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new ARSLeavesBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), false, true);

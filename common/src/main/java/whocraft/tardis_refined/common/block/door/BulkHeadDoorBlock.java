@@ -30,6 +30,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorExtensionBlockEntity;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRItemRegistry;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
@@ -94,23 +96,14 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
-        if (blockState.getValue(OPEN)) {
-            changeBlockStates(level, blockPos, blockState, Blocks.AIR.defaultBlockState());
-        } else {
-            changeBlockStates(level, blockPos, blockState, Blocks.BARRIER.defaultBlockState());
-        }
+        changeBlockStates(level, blockPos, blockState, blockState.getValue(OPEN));
     }
 
 
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (player.getItemInHand(interactionHand).getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
-            if (blockState.hasProperty(TYPE)) {
-                BlockState nextType = blockState.cycle(TYPE);
-                level.setBlock(blockPos, nextType, 3);
-                level.playSound(player, blockPos, TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                return InteractionResult.SUCCESS;
-            }
+        if (level.getBlockEntity(blockPos) instanceof BulkHeadDoorBlockEntity bulkHeadDoorBlockEntity) {
+            return bulkHeadDoorBlockEntity.onRightClick(blockState, level, blockPos, player, interactionHand, blockHitResult);
         }
 
         return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
@@ -126,34 +119,80 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
         super.destroy(levelAccessor, blockPos, blockState);
-
-        changeBlockStates((Level) levelAccessor, blockPos, blockState, Blocks.AIR.defaultBlockState());
+        clearDoor((Level) levelAccessor, blockPos, blockState);
     }
 
-    private void changeBlockStates(Level level, BlockPos blockPos, BlockState blockState, BlockState blockToSet) {
-        level.setBlock(blockPos.above(), blockToSet, Block.UPDATE_CLIENTS);
-        level.setBlock(blockPos.above(2), blockToSet, Block.UPDATE_CLIENTS);
+    private void changeBlockStates(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
 
+        updateDoorPosition(level, blockPos.above(), isOpen, blockPos);
+        updateDoorPosition(level, blockPos.above(2), isOpen, blockPos);
 
         if (blockState.getValue(FACING) == Direction.NORTH || blockState.getValue(FACING) == Direction.SOUTH) {
-            level.setBlock(blockPos.east(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().east(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).east(), blockToSet, Block.UPDATE_CLIENTS);
 
-            level.setBlock(blockPos.west(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().west(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).west(), blockToSet, Block.UPDATE_CLIENTS);
+            updateDoorPosition(level, blockPos.east(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above().east(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above(2).east(), isOpen, blockPos);
+
+            updateDoorPosition(level, blockPos.west(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above().west(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above(2).west(), isOpen, blockPos);
+
         }
 
         if (blockState.getValue(FACING) == Direction.EAST || blockState.getValue(FACING) == Direction.WEST) {
-            level.setBlock(blockPos.north(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().north(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).north(), blockToSet, Block.UPDATE_CLIENTS);
+            updateDoorPosition(level, blockPos.north(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above().north(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above(2).north(), isOpen, blockPos);
 
-            level.setBlock(blockPos.south(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().south(), blockToSet, Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).south(), blockToSet, Block.UPDATE_CLIENTS);
+            updateDoorPosition(level, blockPos.south(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above().south(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.above(2).south(), isOpen, blockPos);
         }
+    }
+
+    public static void clearDoor(Level level, BlockPos blockPos, BlockState blockState) {
+        level.setBlock(blockPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        level.setBlock(blockPos.above(2), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+
+
+        if (blockState.getValue(FACING) == Direction.NORTH || blockState.getValue(FACING) == Direction.SOUTH) {
+            level.setBlock(blockPos.east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above().east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above(2).east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+
+            level.setBlock(blockPos.west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above().west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above(2).west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+
+        if (blockState.getValue(FACING) == Direction.EAST || blockState.getValue(FACING) == Direction.WEST) {
+            level.setBlock(blockPos.north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above().north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above(2).north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+
+            level.setBlock(blockPos.south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above().south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.above(2).south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
+    private void updateDoorPosition(Level level, BlockPos pos, boolean isOpen, BlockPos originPos) {
+        BlockState currentState = level.getBlockState(pos);
+
+        if (currentState.getBlock() instanceof BulkHeadDoorExtensionBlock || pos == originPos) {
+            level.setBlock(pos, currentState.setValue(BulkHeadDoorExtensionBlock.OPEN, isOpen), Block.UPDATE_CLIENTS);
+        } else {
+
+            // If the position isn't a bulkhead door extension, set it up and start again.
+            level.setBlock(pos, TRBlockRegistry.BULK_HEAD_DOOR_EXT.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+
+            if (level.getBlockEntity(pos) instanceof BulkHeadDoorExtensionBlockEntity bex && level.getBlockEntity(originPos) instanceof BulkHeadDoorBlockEntity be) {
+                bex.setMasterDoorBlock(be);
+                updateDoorPosition(level, pos, isOpen, originPos);
+            }
+
+        }
+
     }
 
 
