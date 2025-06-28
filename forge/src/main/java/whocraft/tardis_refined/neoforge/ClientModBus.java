@@ -3,6 +3,8 @@ package whocraft.tardis_refined.neoforge;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -10,6 +12,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
@@ -40,10 +43,7 @@ import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.common.items.DimensionSamplerItem;
 import whocraft.tardis_refined.mixin.forge.ReloadableResourceManagerMixin;
 import whocraft.tardis_refined.overlays.TardisRefinedOverlay;
-import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
-import whocraft.tardis_refined.registry.TREntityRegistry;
-import whocraft.tardis_refined.registry.TRItemRegistry;
+import whocraft.tardis_refined.registry.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -122,6 +122,15 @@ public class ClientModBus {
         EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
         ItemProperties.register(TRItemRegistry.TEST_TUBE.get(), new ResourceLocation(TardisRefined.MODID, "is_sampled"), (itemStack, clientLevel, livingEntity, i) -> DimensionSamplerItem.hasDimAtAll(itemStack) ? 1 : 0);
+
+        event.enqueueWork(() -> {
+            for (Block block : TRBlockRegistry.BLOCKS.getRegistry().get()) {
+                ResourceLocation key = TRBlockRegistry.BLOCKS.getRegistry().get().getKey(block);
+                if (key != null && key.getNamespace().equals(TardisRefined.MODID)) {
+                    ItemBlockRenderTypes.setRenderLayer(block, RenderType.cutout());
+                }
+            }
+        });
 
     }
 

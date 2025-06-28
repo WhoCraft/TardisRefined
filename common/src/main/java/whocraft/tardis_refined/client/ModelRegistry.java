@@ -4,6 +4,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
+import whocraft.tardis_refined.client.model.blockentity.life.ZeitonGlassModel;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 
 import java.util.function.Supplier;
@@ -96,6 +97,8 @@ public class ModelRegistry {
     private static ModelLayerLocation createLocation(String name, String layer) {
         return new ModelLayerLocation(new ResourceLocation(MODID, name), layer);
     }
+
+    public static ZeitonGlassModel zeitonGlassModel;
 
     public static void init() {
 

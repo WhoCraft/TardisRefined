@@ -12,7 +12,7 @@ public class ZeitonGlassModel extends EntityModel implements PortalModel<ZeitonG
     private final ModelPart root;
 
     public ZeitonGlassModel(ModelPart root) {
-        this.root = root.getChild("root");
+        this.root = root;
     }
 
     @Override

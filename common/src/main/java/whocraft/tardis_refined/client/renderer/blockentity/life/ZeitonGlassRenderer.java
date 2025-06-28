@@ -5,9 +5,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.life.ZeitonGlassModel;
-import whocraft.tardis_refined.client.renderer.vortex.RenderTargetHelper;
 import whocraft.tardis_refined.common.blockentity.life.ZeitonGlassBlockEntity;
 
 public class ZeitonGlassRenderer implements BlockEntityRenderer<ZeitonGlassBlockEntity>, BlockEntityRendererProvider<ZeitonGlassBlockEntity> {
@@ -20,8 +18,6 @@ public class ZeitonGlassRenderer implements BlockEntityRenderer<ZeitonGlassBlock
 
     @Override
     public void render(ZeitonGlassBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay) {
-        TardisClientData tardisClientData = TardisClientData.getInstance(blockEntity.getLevel().dimension());
-        RenderTargetHelper.renderGeneric(zeitonGlassModel, poseStack, packedLight, tardisClientData);
     }
 
     @Override
