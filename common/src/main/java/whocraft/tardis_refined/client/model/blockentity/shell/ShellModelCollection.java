@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.api.event.TardisClientEvents;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.*;
+import whocraft.tardis_refined.client.model.blockentity.life.ZeitonGlassModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.internal.door.ShulkerDoorModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.shells.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -16,6 +17,8 @@ import whocraft.tardis_refined.compat.ModCompatChecker;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static whocraft.tardis_refined.client.ModelRegistry.ZEITON_GLASS;
 
 public class ShellModelCollection {
 
@@ -104,6 +107,8 @@ public class ShellModelCollection {
         halfBakedDoorModel = new HalfBakedDoorModel(context.bakeLayer((ModelRegistry.HALF_BAKED_DOOR)));
         shulkerDoorModel = new ShulkerDoorModel(context.bakeLayer((ModelRegistry.SHULKER_DOOR)));
 
+        EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
+        ModelRegistry.zeitonGlassModel = new ZeitonGlassModel(entityModels.bakeLayer(ZEITON_GLASS));
 
         TardisClientEvents.SHELLENTRY_MODELS_SETUP.invoker().setUpShellAndInteriorModels(context);
 
