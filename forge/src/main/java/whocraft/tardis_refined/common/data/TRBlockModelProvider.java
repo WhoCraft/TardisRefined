@@ -101,6 +101,8 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(TRBlockRegistry.ARTRON_PILLAR.get());
         emptyBlockState(TRBlockRegistry.THE_EYE.get());
 
+        simpleBlock(TRBlockRegistry.ZEITON_GLASS.get());
+
 
         threeDeeRotating(TRBlockRegistry.LANDING_PAD.get(), new ResourceLocation(TardisRefined.MODID, "block/landing_pad"));
         threeDeeRotating(TRBlockRegistry.FLIGHT_DETECTOR.get(), new ResourceLocation(TardisRefined.MODID, "block/flight_detector"));

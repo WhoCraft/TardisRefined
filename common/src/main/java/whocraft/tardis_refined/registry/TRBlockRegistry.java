@@ -12,10 +12,7 @@ import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
-import whocraft.tardis_refined.common.block.life.ARSLeavesBlock;
-import whocraft.tardis_refined.common.block.life.ArsEggBlock;
-import whocraft.tardis_refined.common.block.life.EyeBlock;
-import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
+import whocraft.tardis_refined.common.block.life.*;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -74,6 +71,7 @@ public class TRBlockRegistry {
     public static final RegistrySupplier<Block> THE_EYE = register("the_eye", () -> new EyeBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)), false, false);
     public static final RegistrySupplier<LanternBlock> ZEITON_LANTERN = register("zeiton_lantern", () -> new LanternBlock(BlockBehaviour.Properties.copy(Blocks.LANTERN).requiresCorrectToolForDrops()), true, true);
     public static final RegistrySupplier<Block> ARTRON_PILLAR_PORT = register("artron_pillar_port", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BEDROCK)), false, false);
+    public static final RegistrySupplier<Block> ZEITON_GLASS = register("zeiton_glass", () -> new ZeitonGlassBlock(BlockBehaviour.Properties.copy(Blocks.GLASS)), true, true);
   //  public static final RegistrySupplier<Block> ASTRAL_MAP = register("astral_map", () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE)), true, true);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, boolean addToTab, boolean registerItem) {
