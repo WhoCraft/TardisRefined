@@ -174,7 +174,7 @@ public class RenderTargetHelper {
 
         Vec3 camPos = camera.getPosition();
 
-        boolean DEBUG_SHOW_MASKS = false;
+        boolean DEBUG_SHOW_MASKS = !tardisClientData.isFlying();
         if (DEBUG_SHOW_MASKS) {
             for (ZeitonGlassBlockEntity entity : ZeitonGlassTracker.loadedGlass) {
 
