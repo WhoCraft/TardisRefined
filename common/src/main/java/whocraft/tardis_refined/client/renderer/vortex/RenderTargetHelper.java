@@ -218,6 +218,8 @@ public class RenderTargetHelper {
 
         stack.pushPose();
         for (ZeitonGlassBlockEntity entity : ZeitonGlassTracker.loadedGlass) {
+            if (Minecraft.getInstance().level != entity.getLevel()) continue;
+
             BlockPos pos = entity.getBlockPos();
             stack.pushPose();
             stack.translate(pos.getX() + 0.5 - camPos.x, pos.getY() + 1.5 - camPos.y, pos.getZ() + 0.5 - camPos.z);

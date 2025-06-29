@@ -16,6 +16,8 @@ public class ZeitonGlassTracker {
         loadedGlass.remove(entity);
     }
 
+
+
     public static void clear() {
         loadedGlass.clear();
     }
