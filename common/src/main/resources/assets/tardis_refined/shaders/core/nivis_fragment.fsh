@@ -24,7 +24,7 @@ void main() {
     // Sample snow texture
     vec2 scaledTexCoord = texCoord0 * 16.0;
     vec4 snowTex = texture(SamplerSnow, scaledTexCoord);
-    snowTex.a = 1.0; // Optional: force full opacity if snow texture has transparency
+    snowTex.a = 1.0;
 
     // Calculate snow direction factor
     float snowFactor = max(dot(normalize(snowDir.xyz), normalize(normal.xyz)), 0.0);
