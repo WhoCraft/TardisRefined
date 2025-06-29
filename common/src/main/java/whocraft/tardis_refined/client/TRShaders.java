@@ -41,6 +41,7 @@ public class TRShaders {
 
         // Create an ImmutableList of Triple for the textures
         ImmutableList<Triple<ResourceLocation, Boolean, Boolean>> textureList = ImmutableList.of(
+                Triple.of(texture, false, false),
                 Triple.of(snowTexture, false, false)
         );
 
