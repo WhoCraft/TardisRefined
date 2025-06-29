@@ -37,4 +37,5 @@ void main() {
     // Apply lightmap
     finalColor *= lightMapColor;
     fragColor = finalColor;
+
 }
