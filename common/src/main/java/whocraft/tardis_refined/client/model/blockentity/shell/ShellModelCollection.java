@@ -86,7 +86,7 @@ public class ShellModelCollection {
         bigBenDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)), 275f);
         phoneBoothDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)), (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f));
         portalooDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)), (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f));
-        groeningDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)), -275f);
+        groeningDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)), 275f);
 
         drifterDoorModel = new SingleTexInteriorDoorModel(context.bakeLayer((ModelRegistry.DRIFTER_DOOR)));
         vendingDoorModel = new SingleTexInteriorDoorModel(context.bakeLayer((ModelRegistry.VENDING_DOOR)));
@@ -98,7 +98,7 @@ public class ShellModelCollection {
 
         growthDoorModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
 
-        pagodaDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)), -275f);
+        pagodaDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)), 275f);
 
         liftDoorModel = new DualTexInteriorDoorModel(context.bakeLayer((ModelRegistry.LIFT_DOOR)));
 
