@@ -324,6 +324,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
         add(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR, "Render Vortex within interior door");
         add(ModMessages.CONFIG_CUSTOM_SHADERS, "Use Custom Shaders");
+        add(ModMessages.SCREEN_SHAKE_MULTIPLIER, "Screen Shake Multiplier");
 
         /*Overlay Messages*/
         add(ModMessages.ASCEND_KEY, "Ascend: %s");
