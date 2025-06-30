@@ -39,6 +39,7 @@ public class TRConfig {
         public final ModConfigSpec.BooleanValue PLAY_CONSOLE_IDLE_ANIMATIONS;
         public final ModConfigSpec.BooleanValue RENDER_VORTEX_IN_DOOR;
         public final ModConfigSpec.BooleanValue USE_INTERNAL_SHADERS;
+        public final ModConfigSpec.DoubleValue SCREEN_SHAKE_MULTIPLIER;
 
         public Client(ModConfigSpec.Builder builder) {
             builder.push("rendering");
@@ -46,6 +47,7 @@ public class TRConfig {
             PLAY_CONSOLE_IDLE_ANIMATIONS = builder.comment("Play idle console animations").translation(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS).define("console_idle_animations", true);
             RENDER_VORTEX_IN_DOOR = builder.comment("Skip Vortex rendering").translation(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR).define("render_vortex_in_door", true);
             USE_INTERNAL_SHADERS = builder.comment("Use Custom Internal Shaders").translation(ModMessages.CONFIG_CUSTOM_SHADERS).define("use_internal_shaders", true);
+            SCREEN_SHAKE_MULTIPLIER = builder.comment("Adjust the amount the game shakes the screen during travel").translation(ModMessages.SCREEN_SHAKE_MULTIPLIER).defineInRange("screen_shake_multiplier", 1d, 0, 2);
             builder.pop();
         }
     }

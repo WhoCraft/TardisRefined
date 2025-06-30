@@ -16,6 +16,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.client.sounds.TRSoundInstances;
@@ -274,12 +275,12 @@ public class TardisClientLogic {
 
         if (player.level().dimension() == clientData.getLevelKey()) {
             if (clientData.isCrashing()) {
-                player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
-                player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                player.setXRot((float) (player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f * TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
+                player.setYHeadRot((float) (player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f * TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
             } else {
                 if (clientData.isFlying()) {
-                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
+                    player.setXRot((float) (player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f)* TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
+                    player.setYHeadRot((float) (player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f)* TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
                 }
             }
         }
