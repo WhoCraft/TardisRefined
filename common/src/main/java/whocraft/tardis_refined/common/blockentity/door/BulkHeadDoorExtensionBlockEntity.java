@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
+import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class BulkHeadDoorExtensionBlockEntity extends BlockEntity {
@@ -27,14 +28,14 @@ public class BulkHeadDoorExtensionBlockEntity extends BlockEntity {
         super.saveAdditional(compoundTag);
 
         if (masterDoorBlockPos != null) {
-            compoundTag.put("MASTER_DOOR", NbtUtils.writeBlockPos(this.masterDoorBlockPos));
+            compoundTag.put(NbtConstants.MASTER_DOOR, NbtUtils.writeBlockPos(this.masterDoorBlockPos));
         }
 
     }
 
     @Override
     public void load(CompoundTag compoundTag) {
-        CompoundTag entityLocation = compoundTag.getCompound("MASTER_DOOR");
+        CompoundTag entityLocation = compoundTag.getCompound(NbtConstants.MASTER_DOOR);
         if (entityLocation != null) {
             this.masterDoorBlockPos = NbtUtils.readBlockPos(entityLocation);
         }

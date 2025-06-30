@@ -22,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -114,7 +115,9 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
-        changeBlockStates(level, blockPos, blockState, blockState.getValue(OPEN));
+        if (hasProperty(blockState, OPEN)) {
+            changeBlockStates(level, blockPos, blockState, blockState.getValue(OPEN));
+        }
     }
 
 
@@ -170,6 +173,12 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
     public static void clearDoor(Level level, BlockPos blockPos, BlockState blockState) {
 
+        // Somthing has gone wrong if we don't have this property. Be safe and don't grief just in case.
+        boolean hasFacingDir = blockState.hasProperty(FACING);
+        if (!hasFacingDir) {
+            return;
+        }
+
         level.setBlock(blockPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(blockPos.above(2), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
@@ -199,6 +208,8 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         BlockState currentState = level.getBlockState(pos);
         BlockState originState = level.getBlockState(originPos);
 
+        if (!hasProperty(currentState, BulkHeadDoorExtensionBlock.FACING ) || !hasProperty(originState, FACING )) { return;}
+
         if (currentState.getBlock() instanceof BulkHeadDoorExtensionBlock || pos == originPos) {
             level.setBlock(pos, currentState.setValue(BulkHeadDoorExtensionBlock.OPEN, isOpen), Block.UPDATE_CLIENTS);
         } else {
@@ -213,6 +224,10 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
         }
 
+    }
+
+    private boolean hasProperty(BlockState blockState, Property property) {
+        return blockState.hasProperty(property);
     }
 
 

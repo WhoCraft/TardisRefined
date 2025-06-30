@@ -61,7 +61,8 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        boolean isOpen = blockState.getValue(OPEN);
+
+        boolean isOpen = blockState.hasProperty(OPEN) && blockState.getValue(OPEN);
         if (isOpen) {
             return EMPTY;
         }
@@ -108,9 +109,8 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
 
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-;
-        if (((Level) levelAccessor).getBlockEntity(blockPos) instanceof BulkHeadDoorExtensionBlockEntity bulkHeadDoorBlockEntity) {
 
+        if (levelAccessor.getBlockEntity(blockPos) instanceof BulkHeadDoorExtensionBlockEntity bulkHeadDoorBlockEntity) {
             bulkHeadDoorBlockEntity.onDestroy((Level) levelAccessor, blockPos, blockState);
         }
         super.destroy(levelAccessor, blockPos, blockState);
