@@ -184,7 +184,6 @@ public class RenderTargetHelper {
                 stack.pushPose();
                 stack.translate(pos.getX() + 0.5 - camPos.x, pos.getY() + 1.5 - camPos.y, pos.getZ() + 0.5 - camPos.z);
                 stack.mulPose(Axis.ZP.rotationDegrees(180));
-                stack.translate(0, 0, -0.01);
                 mask.renderPortalMask(
                         stack,
                         bufferSource.getBuffer(RenderType.endPortal()),
@@ -224,7 +223,6 @@ public class RenderTargetHelper {
             stack.pushPose();
             stack.translate(pos.getX() + 0.5 - camPos.x, pos.getY() + 1.5 - camPos.y, pos.getZ() + 0.5 - camPos.z);
             stack.mulPose(Axis.ZP.rotationDegrees(180));
-            stack.translate(0, 0, -0.01);
             mask.renderPortalMask(
                     stack,
                     imBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)),
