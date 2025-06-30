@@ -91,7 +91,6 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
 
         if (itemInHand.getItem() == Items.NAME_TAG) {
             this.doorName = itemInHand.getDisplayName().getString();
-            System.out.println("Set the name");
             sendUpdates();
         }
 

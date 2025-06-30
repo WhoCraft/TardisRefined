@@ -173,8 +173,6 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         level.setBlock(blockPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         level.setBlock(blockPos.above(2), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
-        System.out.println(blockState.getValue(FACING));
-
         if (blockState.getValue(FACING) == Direction.NORTH || blockState.getValue(FACING) == Direction.SOUTH) {
             level.setBlock(blockPos.east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
             level.setBlock(blockPos.above().east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
