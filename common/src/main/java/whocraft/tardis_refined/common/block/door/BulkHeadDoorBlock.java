@@ -2,8 +2,6 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -32,10 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorExtensionBlockEntity;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
-import whocraft.tardis_refined.registry.TRItemRegistry;
-import whocraft.tardis_refined.registry.TRSoundRegistry;
-
-import java.util.Arrays;
 
 public class BulkHeadDoorBlock extends BaseEntityBlock {
 
@@ -59,10 +53,34 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     public static final EnumProperty<BulkHeadType> TYPE = EnumProperty.create("bulkhead", BulkHeadType.class);
 
+    protected static final VoxelShape EMPTY = Block.box(0.0, 0.0, 0, 0, 0, 0);
+    protected static final VoxelShape NS_COLLISION = Block.box(0.0, 0.0, 3.0, 16.0, 16.0, 13.0);
+    protected static final VoxelShape WE_COLLISION = Block.box(3.0, 0.0, 0.0, 13.0, 16.0, 16.0);
+
     public BulkHeadDoorBlock(Properties properties) {
         super(properties.sound(SoundType.ANVIL));
 
         this.registerDefaultState(this.stateDefinition.any().setValue(TYPE, BulkHeadType.MODERN).setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, true));
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        boolean isOpen = blockState.getValue(OPEN);
+        if (isOpen) {
+            return EMPTY;
+        }
+        return switch (blockState.getValue(FACING)) {
+            case EAST -> WE_COLLISION;
+            case SOUTH -> NS_COLLISION;
+            case WEST -> WE_COLLISION;
+            case NORTH -> NS_COLLISION;
+            default -> NS_COLLISION;
+        };
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
     @Override
@@ -112,14 +130,14 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
     @Override
     public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
-        super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
         destroy(level, blockPos, blockState);
+        super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
     }
 
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-        super.destroy(levelAccessor, blockPos, blockState);
         clearDoor((Level) levelAccessor, blockPos, blockState);
+        super.destroy(levelAccessor, blockPos, blockState);
     }
 
     private void changeBlockStates(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
@@ -151,40 +169,44 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     }
 
     public static void clearDoor(Level level, BlockPos blockPos, BlockState blockState) {
-        level.setBlock(blockPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-        level.setBlock(blockPos.above(2), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
 
+        level.setBlock(blockPos.above(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+        level.setBlock(blockPos.above(2), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+
+        System.out.println(blockState.getValue(FACING));
 
         if (blockState.getValue(FACING) == Direction.NORTH || blockState.getValue(FACING) == Direction.SOUTH) {
-            level.setBlock(blockPos.east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above().east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above(2).east(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 
-            level.setBlock(blockPos.west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above().west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above(2).west(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
 
         if (blockState.getValue(FACING) == Direction.EAST || blockState.getValue(FACING) == Direction.WEST) {
-            level.setBlock(blockPos.north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
 
-            level.setBlock(blockPos.south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above().south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
-            level.setBlock(blockPos.above(2).south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(blockPos.north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above().north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above(2).north(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+
+            level.setBlock(blockPos.south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above().south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(blockPos.above(2).south(), Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
         }
     }
 
     private void updateDoorPosition(Level level, BlockPos pos, boolean isOpen, BlockPos originPos) {
         BlockState currentState = level.getBlockState(pos);
+        BlockState originState = level.getBlockState(originPos);
 
         if (currentState.getBlock() instanceof BulkHeadDoorExtensionBlock || pos == originPos) {
             level.setBlock(pos, currentState.setValue(BulkHeadDoorExtensionBlock.OPEN, isOpen), Block.UPDATE_CLIENTS);
         } else {
 
             // If the position isn't a bulkhead door extension, set it up and start again.
-            level.setBlock(pos, TRBlockRegistry.BULK_HEAD_DOOR_EXT.get().defaultBlockState(), Block.UPDATE_CLIENTS);
+            level.setBlock(pos, TRBlockRegistry.BULK_HEAD_DOOR_EXT.get().defaultBlockState().setValue(FACING, originState.getValue(FACING)), Block.UPDATE_CLIENTS);
 
             if (level.getBlockEntity(pos) instanceof BulkHeadDoorExtensionBlockEntity bex && level.getBlockEntity(originPos) instanceof BulkHeadDoorBlockEntity be) {
                 bex.setMasterDoorBlock(be);
@@ -223,10 +245,7 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         return true;
     }
 
-    @Override
-    public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return blockState.getValue(OPEN) ? Block.box(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D) : Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
-    }
+
 
     @Nullable
     @Override

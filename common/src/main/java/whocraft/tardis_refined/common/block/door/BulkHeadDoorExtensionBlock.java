@@ -11,10 +11,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -34,6 +31,10 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
+
+    protected static final VoxelShape EMPTY = Block.box(0.0, 0.0, 0, 0, 0, 0);
+    protected static final VoxelShape NS_COLLISION = Block.box(0.0, 0.0, 3.0, 16.0, 16.0, 13.0);
+    protected static final VoxelShape WE_COLLISION = Block.box(3.0, 0.0, 0.0, 13.0, 16.0, 16.0);
 
     public BulkHeadDoorExtensionBlock(Properties properties) {
         super(properties.sound(SoundType.ANVIL));
@@ -59,8 +60,23 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
 
 
     @Override
+    public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        boolean isOpen = blockState.getValue(OPEN);
+        if (isOpen) {
+            return EMPTY;
+        }
+        return switch (blockState.getValue(FACING)) {
+            case EAST -> WE_COLLISION;
+            case SOUTH -> NS_COLLISION;
+            case WEST -> WE_COLLISION;
+            case NORTH -> NS_COLLISION;
+            default -> NS_COLLISION;
+        };
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return blockState.getValue(OPEN) ? Block.box(0.0D, 0.0D, 0.0D, 0.0D, 0.0D, 0.0D) : Block.box(0.0D, 0.0D, 0.0D, 16.0D, 16.0D, 16.0D);
+        return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
     @Nullable
@@ -80,18 +96,25 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
 
     @Override
     public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
+        destroy(level, blockPos, blockState);
         super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
+    }
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos blockPos, BlockState blockState, Player player) {
+        super.playerWillDestroy(level, blockPos, blockState, player);
         destroy(level, blockPos, blockState);
     }
 
     @Override
     public void destroy(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {
-        super.destroy(levelAccessor, blockPos, blockState);
+;
+        if (((Level) levelAccessor).getBlockEntity(blockPos) instanceof BulkHeadDoorExtensionBlockEntity bulkHeadDoorBlockEntity) {
 
-        if (levelAccessor.getBlockEntity(blockPos) instanceof BulkHeadDoorExtensionBlockEntity bulkHeadDoorBlockEntity) {
             bulkHeadDoorBlockEntity.onDestroy((Level) levelAccessor, blockPos, blockState);
         }
-
-
+        super.destroy(levelAccessor, blockPos, blockState);
     }
+
+
 }

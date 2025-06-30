@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -9,6 +10,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -26,6 +30,8 @@ import whocraft.tardis_refined.registry.TRSoundRegistry;
 import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.*;
 
 public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityTicker<BulkHeadDoorBlockEntity> {
+
+    private String doorName;
 
     public BulkHeadDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), blockPos, blockState);
@@ -72,7 +78,9 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
     }
 
     public InteractionResult onRightClick(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-        if (player.getItemInHand(interactionHand).getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
+        ItemStack itemInHand = player.getMainHandItem();
+
+        if (itemInHand.getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
             if (blockState.hasProperty(TYPE)) {
                 BlockState nextType = blockState.cycle(TYPE);
                 level.setBlock(blockPos, nextType, 3);
@@ -81,7 +89,45 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
             }
         }
 
+        if (itemInHand.getItem() == Items.NAME_TAG) {
+            this.doorName = itemInHand.getDisplayName().getString();
+            System.out.println("Set the name");
+            sendUpdates();
+        }
+
+
         return InteractionResult.SUCCESS;
     }
-    
+
+    public void sendUpdates() {
+        level.sendBlockUpdated(this.getBlockPos(), level.getBlockState(this.getBlockPos()), level.getBlockState(this.getBlockPos()), Block.UPDATE_CLIENTS);
+        setChanged();
+    }
+
+    public CompoundTag getUpdateTag() {
+        CompoundTag tag = super.getUpdateTag();
+        saveAdditional(tag);
+        return tag;
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag compoundTag) {
+
+        if (doorName != null) {
+            compoundTag.putString("bulkhead_door_name", doorName);
+        }
+
+
+        super.saveAdditional(compoundTag);
+    }
+
+    @Override
+    public void load(CompoundTag compoundTag) {
+        doorName = compoundTag.getString("bulkhead_door_name");
+        super.load(compoundTag);
+    }
+
+    public String getDoorName() {
+        return doorName;
+    }
 }

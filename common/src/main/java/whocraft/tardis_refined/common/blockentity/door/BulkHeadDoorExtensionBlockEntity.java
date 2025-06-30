@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.blockentity.door;
 
-import net.minecraft.BlockUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -9,11 +8,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
-import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class BulkHeadDoorExtensionBlockEntity extends BlockEntity {
@@ -82,7 +79,8 @@ public class BulkHeadDoorExtensionBlockEntity extends BlockEntity {
 
     public void onDestroy(Level level, BlockPos blockPos, BlockState blockState) {
         if (getMasterDoorBlockEntity() != null) {
-            BulkHeadDoorBlock.clearDoor(level, blockPos, blockState);
+            BulkHeadDoorBlock.clearDoor(level, this.masterDoorBlockPos, this.masterDoorBlockEntity.getBlockState());
+            this.getLevel().destroyBlock(this.masterDoorBlockPos, true);
         }
     }
 
