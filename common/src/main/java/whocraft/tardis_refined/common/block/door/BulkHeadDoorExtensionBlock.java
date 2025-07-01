@@ -33,8 +33,8 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
 
     protected static final VoxelShape EMPTY = Block.box(0.0, 0.0, 0, 0, 0, 0);
-    protected static final VoxelShape NS_COLLISION = Block.box(0.0, 0.0, 3.0, 16.0, 16.0, 13.0);
-    protected static final VoxelShape WE_COLLISION = Block.box(3.0, 0.0, 0.0, 13.0, 16.0, 16.0);
+    protected static final VoxelShape NS_COLLISION = Block.box(0.0, 0.0, 4.0, 16.0, 16.0, 12.0);
+    protected static final VoxelShape WE_COLLISION = Block.box(4.0, 0.0, 0.0, 12.0, 16.0, 16.0);
 
     public BulkHeadDoorExtensionBlock(Properties properties) {
         super(properties.sound(SoundType.ANVIL));
@@ -67,10 +67,7 @@ public class BulkHeadDoorExtensionBlock extends BaseEntityBlock {
             return EMPTY;
         }
         return switch (blockState.getValue(FACING)) {
-            case EAST -> WE_COLLISION;
-            case SOUTH -> NS_COLLISION;
-            case WEST -> WE_COLLISION;
-            case NORTH -> NS_COLLISION;
+            case EAST, WEST -> WE_COLLISION;
             default -> NS_COLLISION;
         };
     }

@@ -39,7 +39,7 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
         boolean isOpen = blockstate.getValue(GlobalDoorBlock.OPEN);
 
         poseStack.pushPose();
-        poseStack.translate(0.5F, 1.475F, 0.5F);
+        poseStack.translate(0.5F, 1.5F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
@@ -50,7 +50,7 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
             Matrix4f textMatrix = poseStack.last().pose();
             poseStack.scale(-0.025F, 0.025F, 0.025F);
             int verticalTextOffset = 0;
-            float offDoorOffset = 10f;
+            float offDoorOffset = 8f;
 
             Font font = Minecraft.getInstance().font;
 
@@ -60,13 +60,13 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
 
             FormattedCharSequence sequence = name.getVisualOrderText();
 
-            poseStack.translate(0, 10f, offDoorOffset -2.5f);
+            poseStack.translate(0, 10f, offDoorOffset*2-4.75);
 
 
             font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 1, textMatrix, multiBufferSource, 255);
 
             poseStack.mulPose(Axis.YP.rotationDegrees(180f));
-            poseStack.translate(0, 0, offDoorOffset*2 + 1.5);
+            poseStack.translate(0, 0, offDoorOffset*2+6);
 
             font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 1, textMatrix, multiBufferSource, 255);
         }
