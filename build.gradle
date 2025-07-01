@@ -63,7 +63,7 @@ publishMods {
     // CurseForge options used by both Fabric and Forge
     def cfOptions = curseforgeOptions {
         accessToken = providers.gradleProperty("CURSEFORGE_TOKEN")
-        minecraftVersions.add("1.21.6")
+        minecraftVersions.add("1.21.7")
         javaVersions.add(JavaVersion.VERSION_21)
         clientRequired = true
         dryRun = true //Always enable for debug
@@ -74,8 +74,8 @@ publishMods {
         accessToken = providers.gradleProperty("MODRINTH_TOKEN")
         projectId = "${modrinth_id}"
         minecraftVersionRange {
-            start = "1.21.6"
-            end = "1.21.6" // Set to "latest" to use the latest minecraft version
+            start = "1.21.7"
+            end = "1.21.7" // Set to "latest" to use the latest minecraft version
         }
         dryRun = true
     }

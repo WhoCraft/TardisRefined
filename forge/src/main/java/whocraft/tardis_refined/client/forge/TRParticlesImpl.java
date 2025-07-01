@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.client.neoforge;
+package whocraft.tardis_refined.client.forge;
 
 import net.minecraft.core.particles.SimpleParticleType;
 

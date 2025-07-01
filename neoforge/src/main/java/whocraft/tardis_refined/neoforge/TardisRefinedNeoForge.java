@@ -2,11 +2,10 @@ package whocraft.tardis_refined.neoforge;
 
 import net.minecraft.data.DataGenerator;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
@@ -17,14 +16,14 @@ import whocraft.tardis_refined.compat.trinkets.CuriosUtil;
 
 @Mod(TardisRefined.MODID)
 public class TardisRefinedNeoForge {
-    public TardisRefinedNeoForge() {
+    public TardisRefinedNeoForge(ModLoadingContext context) {
         TardisRefined.init();
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modEventBus = context.getActiveContainer().getEventBus();
         modEventBus.addListener(this::onGatherData);
 
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
+        ModList.get().getModContainerById(TardisRefined.MODID).get().registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
+        ModList.get().getModContainerById(TardisRefined.MODID).get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
+        ModList.get().getModContainerById(TardisRefined.MODID).get().registerConfig(ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
         if (Platform.isModLoaded("curios")) {
             CuriosUtil.init();
@@ -42,15 +41,15 @@ public class TardisRefinedNeoForge {
 
     public void onGatherData(GatherDataEvent e) {
         DataGenerator generator = e.getGenerator();
-        ExistingFileHelper existingFileHelper = e.getExistingFileHelper();
+;
         ManipulatorRecipes.registerRecipes();
 
         /*Resource Pack*/
-        generator.addProvider(e.includeClient(), new LangProviderEnglish(generator));
-        generator.addProvider(e.includeClient(), new ItemModelProvider(generator, existingFileHelper));
-        generator.addProvider(e.includeClient(), new TRBlockModelProvider(generator, existingFileHelper));
-        generator.addProvider(e.includeClient(), new SoundProvider(generator, existingFileHelper));
-        generator.addProvider(e.includeClient(), new ParticleProvider(generator));
+        generator.addProvider(true, new LangProviderEnglish(generator));
+        generator.addProvider(true, new ItemModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new TRBlockModelProvider(generator, existingFileHelper));
+        generator.addProvider(true, new SoundProvider(generator, existingFileHelper));
+        generator.addProvider(true, new ParticleProvider(generator));
 
         /*Data Pack*/
         ProviderBlockTags blocks = generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));

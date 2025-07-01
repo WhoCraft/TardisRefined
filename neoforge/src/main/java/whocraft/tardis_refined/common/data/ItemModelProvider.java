@@ -11,8 +11,8 @@ import whocraft.tardis_refined.registry.TRItemRegistry;
 
 public class ItemModelProvider extends net.neoforged.neoforge.client.model.generators.ItemModelProvider {
 
-    public ItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), TardisRefined.MODID, existingFileHelper);
+    public ItemModelProvider(DataGenerator generator) {
+        super(generator.getPackOutput(), TardisRefined.MODID);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.neoforge;
+package whocraft.tardis_refined.forge;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Camera;
