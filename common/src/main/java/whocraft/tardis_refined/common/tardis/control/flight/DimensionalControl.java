@@ -67,6 +67,8 @@ public class DimensionalControl extends Control {
     private boolean changeDim(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean forward) {
         if (!operator.getLevel().isClientSide()) {
 
+            if (failIfLocked(operator, player)) { return false;}
+
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 

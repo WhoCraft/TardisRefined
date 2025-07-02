@@ -114,6 +114,9 @@ public class ModMessages {
     public static String FUEL_OFFLINE = message("fuel_offline");
     public static String DOOR_LOCKED = message("door_locked");
     public static String DOOR_UNLOCKED = message("door_unlocked");
+    public static String TARGET_LOCKED = message("target_locked");
+    public static String LOCKED_CANNOT_USE = message("locked_cannot_used");
+    public static String TARGET_UNLOCKED = message("target_unlocked");
     public static String NO_DESKTOP_NO_FUEL = message("desktop_cancel_not_enough_fuel");
     public static String ASTRAL_MANIPULATOR_ENGAGED = message("astral_manipulator_engaged");
     public static String ROOT_PLANT_CUT_OPEN = message("root_plant_cut_open");

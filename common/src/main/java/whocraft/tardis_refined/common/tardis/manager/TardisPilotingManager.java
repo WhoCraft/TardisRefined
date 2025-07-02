@@ -96,6 +96,8 @@ public class TardisPilotingManager extends TickableHandler {
     private double fuel = 0;
     private double maximumFuel = DEFAULT_MAXIMUM_FUEL;
 
+    // Control states
+    private boolean targetLocked = false;
     private boolean isHandbrakeOn = false;
     private int throttleStage = 0;
 
@@ -121,6 +123,7 @@ public class TardisPilotingManager extends TickableHandler {
         this.autoLand = tag.getBoolean(NbtConstants.CONTROL_AUTOLAND);
         this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
 
+        this.targetLocked = tag.getBoolean(NbtConstants.IS_TARGET_LOCKED);
         this.isHandbrakeOn = tag.getBoolean(NbtConstants.IS_HANDBRAKE_ON);
         this.throttleStage = tag.getInt(NbtConstants.THROTTLE_STAGE);
 
@@ -156,6 +159,7 @@ public class TardisPilotingManager extends TickableHandler {
         tag.putBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT, this.isInFlight);
         tag.putBoolean(NbtConstants.CONTROL_AUTOLAND, this.autoLand);
         tag.putBoolean(NbtConstants.IS_HANDBRAKE_ON, this.isHandbrakeOn);
+        tag.putBoolean(NbtConstants.IS_TARGET_LOCKED, this.targetLocked);
         tag.putInt(NbtConstants.THROTTLE_STAGE, this.throttleStage);
         tag.putInt(NbtConstants.SPEED_MODIFIER, this.speedModifier);
 
@@ -1183,6 +1187,9 @@ public class TardisPilotingManager extends TickableHandler {
     public boolean canUseControls() {
         return canUseControls;
     }
+
+    public boolean isTargetLocked() {return targetLocked;}
+    public void setTargetLocked(boolean locked) { this.targetLocked = locked;}
 
     public boolean isHandbrakeOn() {
         return this.isHandbrakeOn;
