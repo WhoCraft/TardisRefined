@@ -115,9 +115,7 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
 
-        if (hasProperty(blockState, OPEN)) {
-            changeBlockStates(level, blockPos, blockState, blockState.getValue(OPEN));
-        }
+        changeBlockStates(level, blockPos, blockState, blockState.getValue(OPEN), true);
     }
 
 
@@ -143,31 +141,31 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         super.destroy(levelAccessor, blockPos, blockState);
     }
 
-    private void changeBlockStates(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
+    private void changeBlockStates(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen, boolean isInitialPlacement) {
 
-        updateDoorPosition(level, blockPos.above(), isOpen, blockPos);
-        updateDoorPosition(level, blockPos.above(2), isOpen, blockPos);
+        updateDoorPosition(level, blockPos.above(), isOpen, blockPos, isInitialPlacement);
+        updateDoorPosition(level, blockPos.above(2), isOpen, blockPos, isInitialPlacement);
 
         if (blockState.getValue(FACING) == Direction.NORTH || blockState.getValue(FACING) == Direction.SOUTH) {
 
-            updateDoorPosition(level, blockPos.east(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above().east(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above(2).east(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.east(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above().east(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above(2).east(), isOpen, blockPos, isInitialPlacement);
 
-            updateDoorPosition(level, blockPos.west(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above().west(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above(2).west(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.west(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above().west(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above(2).west(), isOpen, blockPos, isInitialPlacement);
 
         }
 
         if (blockState.getValue(FACING) == Direction.EAST || blockState.getValue(FACING) == Direction.WEST) {
-            updateDoorPosition(level, blockPos.north(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above().north(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above(2).north(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.north(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above().north(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above(2).north(), isOpen, blockPos, isInitialPlacement);
 
-            updateDoorPosition(level, blockPos.south(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above().south(), isOpen, blockPos);
-            updateDoorPosition(level, blockPos.above(2).south(), isOpen, blockPos);
+            updateDoorPosition(level, blockPos.south(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above().south(), isOpen, blockPos, isInitialPlacement);
+            updateDoorPosition(level, blockPos.above(2).south(), isOpen, blockPos, isInitialPlacement);
         }
     }
 
@@ -204,11 +202,11 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         }
     }
 
-    private void updateDoorPosition(Level level, BlockPos pos, boolean isOpen, BlockPos originPos) {
+    private void updateDoorPosition(Level level, BlockPos pos, boolean isOpen, BlockPos originPos, boolean isInitialPlacement) {
         BlockState currentState = level.getBlockState(pos);
         BlockState originState = level.getBlockState(originPos);
 
-        if (!hasProperty(currentState, BulkHeadDoorExtensionBlock.FACING ) || !hasProperty(originState, FACING )) { return;}
+        if ((!hasProperty(currentState, BulkHeadDoorExtensionBlock.FACING ) || !hasProperty(originState, FACING )) && !isInitialPlacement) { return;}
 
         if (currentState.getBlock() instanceof BulkHeadDoorExtensionBlock || pos == originPos) {
             level.setBlock(pos, currentState.setValue(BulkHeadDoorExtensionBlock.OPEN, isOpen), Block.UPDATE_CLIENTS);
@@ -219,9 +217,8 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
             if (level.getBlockEntity(pos) instanceof BulkHeadDoorExtensionBlockEntity bex && level.getBlockEntity(originPos) instanceof BulkHeadDoorBlockEntity be) {
                 bex.setMasterDoorBlock(be);
-                updateDoorPosition(level, pos, isOpen, originPos);
+                updateDoorPosition(level, pos, isOpen, originPos, isInitialPlacement);
             }
-
         }
 
     }
