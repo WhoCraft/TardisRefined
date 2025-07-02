@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -70,6 +71,11 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
      * @param isOpen     The current open state of the door.
      */
     public void toggleDoor(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
+
+        // Remove the old barrier blocks.
+        if (level.getBlockState(blockPos.above()).getBlock() instanceof BarrierBlock barrierBlock) {
+            BulkHeadDoorBlock.clearDoor(level, blockPos, blockState);
+        }
 
         if (level.getBlockState(blockPos).hasProperty(OPEN) && level.getBlockState(blockPos).getValue(OPEN) != isOpen) {
             level.playSound(null, blockPos, !isOpen ? SoundEvents.PISTON_EXTEND : SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
