@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.control.Control;
-import whocraft.tardis_refined.common.tardis.control.ExteriorDisplayControl;
+import whocraft.tardis_refined.common.tardis.control.ship.ExteriorDisplayControl;
 import whocraft.tardis_refined.common.tardis.control.flight.*;
 import whocraft.tardis_refined.common.tardis.control.ship.MonitorControl;
 import whocraft.tardis_refined.common.tardis.control.ship.ToggleDoorControl;
@@ -43,6 +43,7 @@ public class TRControlRegistry {
     public static final RegistrySupplier<Control> HANDBRAKE = register(new HandbrakeControl(new ResourceLocation(TardisRefined.MODID, "hand_brake")));
     public static final RegistrySupplier<Control> FUEL = register(new FuelToggleControl(new ResourceLocation(TardisRefined.MODID, "fuel")));
     public static final RegistrySupplier<Control> EXTERIOR_DISPLAY = register(new ExteriorDisplayControl(new ResourceLocation(TardisRefined.MODID, "exterior_display")));
+    public static final RegistrySupplier<Control> TARGET_LOCK = register(new TargetLockControl(new ResourceLocation(TardisRefined.MODID, "target_lock")));
 
     public static Control get(ResourceLocation id) {
         Control potentialTheme = CONTROL_REGISTRY.get(id);

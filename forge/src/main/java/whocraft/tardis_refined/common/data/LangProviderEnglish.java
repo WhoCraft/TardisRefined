@@ -157,6 +157,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(TRControlRegistry.FUEL.get(), "Fuel");
         addControl(TRControlRegistry.READOUT.get(), "GPS");
         addControl(TRControlRegistry.EXTERIOR_DISPLAY.get(), "Exterior Display");
+        addControl(TRControlRegistry.TARGET_LOCK.get(), "Coordinate Lock");
 
 
         String errorPrefix =  ChatFormatting.BOLD +  ChatFormatting.RED.toString() + "[ERROR] " + ChatFormatting.RESET;
@@ -189,6 +190,9 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DESTINATION, "DESTINATION");
         add(ModMessages.DOOR_LOCKED, "Door locked");
         add(ModMessages.DOOR_UNLOCKED, "Door unlocked");
+        add(ModMessages.TARGET_LOCKED, "Coordinates locked");
+        add(ModMessages.TARGET_UNLOCKED, "Coordinates unlocked");
+        add(ModMessages.LOCKED_CANNOT_USE, "Cannot use whilst coordinates are locked");
         add(ModMessages.RECOVERY_PROGRESS, "Recovery Progress: %s");
         add(ModMessages.SUBMIT, "Submit");
         add(ModMessages.VILLAGER_CAN_FLY, "Pilot?");

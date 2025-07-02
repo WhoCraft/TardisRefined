@@ -31,6 +31,9 @@ public class RotationControl extends whocraft.tardis_refined.common.tardis.contr
 
     private boolean rotateDir(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean clockwise) {
         if (!operator.getLevel().isClientSide()) {
+
+            if (failIfLocked(operator, player)) { return false;}
+
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 
             Direction dir = pilotManager.getTargetLocation().getDirection();

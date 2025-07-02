@@ -12,6 +12,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
@@ -161,5 +162,14 @@ public abstract class Control {
     public Control setCriticalForTardisOperation(boolean criticalForTardisOperation) {
         this.isCriticalForTardisOperation = criticalForTardisOperation;
         return this;
+    }
+
+    public boolean failIfLocked(TardisLevelOperator operator, Player player) {
+        if (operator.getPilotingManager().isTargetLocked()) {
+            player.displayClientMessage(Component.translatable(ModMessages.LOCKED_CANNOT_USE), true);
+            return true;
+        }
+
+        return false;
     }
 }

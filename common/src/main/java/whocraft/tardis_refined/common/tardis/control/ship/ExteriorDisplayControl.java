@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.common.tardis.control;
+package whocraft.tardis_refined.common.tardis.control.ship;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -7,6 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.network.messages.screens.S2COpenShellSelection;
+import whocraft.tardis_refined.common.tardis.control.Control;
+import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 

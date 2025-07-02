@@ -30,6 +30,7 @@ public class IncrementControl extends whocraft.tardis_refined.common.tardis.cont
 
     private boolean incrementCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, int incAmount) {
         if (!operator.getLevel().isClientSide()) {
+            if (failIfLocked(operator, player)) { return false;}
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             pilotManager.cycleCordIncrement(incAmount);
             int currentIncAmount = pilotManager.getCordIncrement();

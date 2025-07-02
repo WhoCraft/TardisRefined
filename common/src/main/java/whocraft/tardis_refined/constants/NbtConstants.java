@@ -60,6 +60,7 @@ public class NbtConstants {
     public static final String HANDBRAKE_ENGAGED = "handbrake_engaged";
     public static final String CONTROL_INCREMENT_INDEX = "ctrl_increment_index";
     public static final String CONTROL_AUTOLAND = "ctrl_autoland";
+    public static final String IS_TARGET_LOCKED = "target_locked";
 
     // Location Constant
     public static final String KEYCHAIN = "keychain";

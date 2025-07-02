@@ -22,6 +22,7 @@ public class RandomControl extends whocraft.tardis_refined.common.tardis.control
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!operator.getLevel().isClientSide()) {
+            if (failIfLocked(operator, player)) { return false;}
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 
             int increment = pilotManager.getCordIncrement();
