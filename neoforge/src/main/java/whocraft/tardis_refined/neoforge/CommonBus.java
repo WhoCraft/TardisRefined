@@ -6,9 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -58,7 +57,7 @@ public class CommonBus {
     }
 
     @SubscribeEvent
-    public static void onDatapack(AddReloadListenerEvent addReloadListenerEvent) {
+    public static void onDatapack(AddServerReloadListenersEvent addReloadListenerEvent) {
         addReloadListenerEvent.addListener(ConsolePatterns.getReloadListener());
 
         addReloadListenerEvent.addListener(TardisDesktops.getReloadListener());

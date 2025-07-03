@@ -54,7 +54,7 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
             List<T> raws = new ArrayList<>();
             ResourceLocation fullId = entry.getKey();
             String fullPath = fullId.getPath(); // includes folderName/ and .json
-            ResourceLocation key = new ResourceLocation(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
+            ResourceLocation key = ResourceLocation.tryBuild(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
 
             for (Resource resource : entry.getValue()) {
                 try (Reader reader = resource.openAsReader()) {

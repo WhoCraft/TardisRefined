@@ -16,7 +16,7 @@ import whocraft.tardis_refined.TardisRefined;
  */
 public class ManipulatorCraftingRecipeSerializer implements RecipeSerializer<ManipulatorCraftingRecipe> {
 
-    public static ResourceLocation SERIALIZER_ID = new ResourceLocation(TardisRefined.MODID, "astral_manipulator");
+    public static ResourceLocation SERIALIZER_ID = ResourceLocation.tryBuild(TardisRefined.MODID, "astral_manipulator");
 
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/ManipulatorCraftingRecipeSerializer");
 

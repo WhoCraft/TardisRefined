@@ -23,10 +23,10 @@ public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
 
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/nuka/flight.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/nuka/flight.json"));
 
 
-    private static final ResourceLocation NUKA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka/nuka_console.png");
+    private static final ResourceLocation NUKA_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/nuka/nuka_console.png");
     private final ModelPart rotor_zminus3_yplus5_rotateY;
     private final ModelPart panels;
     private final ModelPart console;
@@ -86,7 +86,7 @@ public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
         }
 
         float rot = -1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
-        throttle.xRot = rot;
+        throttle.xRot() = rot;
 
         rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

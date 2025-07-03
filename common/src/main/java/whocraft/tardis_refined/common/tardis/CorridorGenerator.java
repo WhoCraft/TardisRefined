@@ -20,6 +20,8 @@ import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
+import java.util.List;
+
 public class CorridorGenerator {
 
     private static int TEMPLATE_SIZE = 8;
@@ -33,10 +35,10 @@ public class CorridorGenerator {
 
                 String name = "gs_r" + level.getRandom().nextInt(1000);
                 StructureTemplateManager manager = level.getServer().getStructureManager();
-                StructureTemplate template = manager.getOrCreate(new ResourceLocation(name));
-                template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 28, 48), false, Blocks.STRUCTURE_VOID);
+                StructureTemplate template = manager.getOrCreate(ResourceLocation.tryParse(name));
+                template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 28, 48), false, List.of(Blocks.STRUCTURE_VOID));
                 template.setAuthor("");
-                manager.save(new ResourceLocation(name));
+                manager.save(ResourceLocation.tryParse(name));
 
                 PlayerUtil.sendMessage(player, Component.translatable("Generated structure at: " + name), false);
             }
@@ -132,7 +134,7 @@ public class CorridorGenerator {
             return createResourceLocation("room_entry_ew");
         }
 
-        return new ResourceLocation("");
+        return ResourceLocation.tryParse("");
     }
 
     private static ResourceLocation getRoomPieceResourceLocation(BlockState[] results) {
@@ -212,7 +214,7 @@ public class CorridorGenerator {
         }
 
 
-        return new ResourceLocation("");
+        return ResourceLocation.tryParse("");
     }
 
     private static boolean doesBlockExist(BlockState blockState) {
@@ -272,11 +274,11 @@ public class CorridorGenerator {
             return createResourceLocation("corridor_piece_nsw");
         }
 
-        return new ResourceLocation("");
+        return ResourceLocation.tryParse("");
     }
 
     private static ResourceLocation createResourceLocation(String id) {
-        return new ResourceLocation(TardisRefined.MODID, "corridor_template/" + id);
+        return ResourceLocation.tryBuild(TardisRefined.MODID, "corridor_template/" + id);
     }
 
 }

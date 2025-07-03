@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.registry;
 
 import com.mojang.serialization.Codec;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -21,7 +20,7 @@ import java.util.function.Supplier;
  * <pre>{@code
  * public class TRControlRegistry {
  *
- *     public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
+ *     public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.tryBuild(TardisRefined.MODID, "control"));
  *
  *     public static final DeferredRegistry<Control> TR_CONTROLS =  DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
  *
@@ -29,10 +28,10 @@ import java.util.function.Supplier;
  *     public static final Registry<Control> GLOBAL_CONTROL_REGISTRY = CONTROLS.getRegistry();
  *
  *     //Register using RegistrySupplier if you only need the raw object and no compatibiltiy with other vanilla features
- *     public static final RegistrySupplier<Control> THROTTLE = TR_CONTROLS.register("throttle", () -> new GenericControl(new ResourceLocation(TardisRefined.MODID, "throttle"));
+ *     public static final RegistrySupplier<Control> THROTTLE = TR_CONTROLS.register("throttle", () -> new GenericControl(ResourceLocation.tryBuild(TardisRefined.MODID, "throttle"));
  *
  *     //Alternatively, register using RegistrySupplierHolder for greater compatibiltiy with vanilla features such as datapack tags
- *     public static final RegistrySupplierHolder<Control, MyCustomControl> STABILISER = TR_CONTROLS.register("stabiliser", () -> new MyCustomControl(new ResourceLocation(TardisRefined.MODID, "stabiliser"));
+ *     public static final RegistrySupplierHolder<Control, MyCustomControl> STABILISER = TR_CONTROLS.register("stabiliser", () -> new MyCustomControl(ResourceLocation.tryBuild(TardisRefined.MODID, "stabiliser"));
  * }
  *
  * public class TardisConsoleBlock {
@@ -56,10 +55,10 @@ import java.util.function.Supplier;
  *     private static final DeferredRegistry<Control> MY_ADDON_CONTROLS =  DeferredRegistry.createCustom(MyAddonMod.MODID, TRControlRegistry.CONTROL_REGISTRY_KEY, true);
  *
  *     //Register entries to the addon mod's instance of the deferred registry using a RegistrySupplier
- *     public static final RegistrySupplier<Control> SPEED = MY_ADDON_CONTROLS.register("speed", () -> new GenericControl(new ResourceLocation(MyAddonMod.MODID, "speed"));
+ *     public static final RegistrySupplier<Control> SPEED = MY_ADDON_CONTROLS.register("speed", () -> new GenericControl(ResourceLocation.tryBuild(MyAddonMod.MODID, "speed"));
  *
  *     //Alternatively, register using RegistrySupplierHolder for greater compatibiltiy with vanilla features such as datapack tags
- *     public static final RegistrySupplierHolder<Control, SuperTemporalControl> TEMPORAL_PLOTTERS = TR_CONTROLS.register("temporal_plotters", () -> new SuperTemporalControl(new ResourceLocation(MyAddonMod.MODID, "temporal_plotters"));
+ *     public static final RegistrySupplierHolder<Control, SuperTemporalControl> TEMPORAL_PLOTTERS = TR_CONTROLS.register("temporal_plotters", () -> new SuperTemporalControl(ResourceLocation.tryBuild(MyAddonMod.MODID, "temporal_plotters"));
  * }
  *
  * public class MyAddonMod {
@@ -84,7 +83,6 @@ public abstract class DeferredRegistry<T> {
      * @param <T>
      * @return
      */
-    @ExpectPlatform
     public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
         throw new RuntimeException(PlatformWarning.addWarning(DeferredRegistry.class));
     }
@@ -98,8 +96,8 @@ public abstract class DeferredRegistry<T> {
      * @param <T>
      * @return
      */
-    @ExpectPlatform
-    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
+    
+    public <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
         throw new AssertionError();
     }
 
@@ -138,7 +136,7 @@ public abstract class DeferredRegistry<T> {
 
     /**
      * Gets the values in the underlying registry ordered by key. This is sufficient for most purposes
-     * <br> If you need to get values in order of registration, use {@link DeferredRegistry#getRegistry} then {@link Registry#holders}
+     * <br> If you need to get values in order of registration, use {@link DeferredRegistry#getRegistry} then {@link Registry#holderByNameCodec()}
      */
     public abstract Set<Map.Entry<ResourceKey<T>, T>> entrySet();
 

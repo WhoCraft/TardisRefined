@@ -75,7 +75,7 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
     }
 
     private ResourceLocation getTextureForState(BlockState blockstate) {
-        return  new ResourceLocation(TardisRefined.MODID, "textures/blockentity/door/bulk_head_door_"+ blockstate.getValue(BulkHeadDoorBlock.TYPE).getSerializedName() +".png");
+        return  ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/door/bulk_head_door_"+ blockstate.getValue(BulkHeadDoorBlock.TYPE).getSerializedName() +".png");
     }
 
     @Override

@@ -39,7 +39,7 @@ public class PonderScreen extends MonitorOS {
     private boolean isDragging = false;
 
     public PonderScreen(ManipulatorCraftingRecipe recipe) {
-        super(getResultName(recipe), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(getResultName(recipe), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
 
         this.setEvents(() -> {
 

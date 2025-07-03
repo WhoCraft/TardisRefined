@@ -34,14 +34,14 @@ public class WaypointManageScreen extends MonitorOS {
     private SpriteIconButton onSaveWaypoint;
 
     public WaypointManageScreen(List<ResourceKey<Level>> ignoredWorlds, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
-        super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.coordInputType = coordInputType;
         this.tardisNavLocation = tardisNavLocation;
         tardisNavLocation.setName("Waypoint");
     }
 
     public WaypointManageScreen(TardisWaypoint waypoint) {
-        super(Component.translatable("Edit waypoint"), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable("Edit waypoint"), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.preExistingWaypoint = waypoint;
         this.tardisNavLocation = waypoint.getLocation();
         this.coordInputType = CoordInputType.WAYPOINT;

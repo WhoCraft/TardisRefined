@@ -161,13 +161,13 @@ public class BedrockModelUtil {
         if (parent != null) {
             json.addProperty("parent", parent);
         }
-        var fixedPivot = new Vector3f(part.partPose.x, part.partPose.y, part.partPose.z);
+        var fixedPivot = new Vector3f(part.partPose.x(), part.partPose.y(), part.partPose.z());
         for (PartDefinition parentPart : parents) {
-            fixedPivot.add(parentPart.partPose.x, parentPart.partPose.y, parentPart.partPose.z);
+            fixedPivot.add(parentPart.partPose.x(), parentPart.partPose.y(), parentPart.partPose.z());
         }
         fixedPivot.sub(0, 24, 0).mul(1, -1, 1);
         json.add("pivot", vec3ToJsonArray(fixedPivot));
-        json.add("rotation", vec3ToJsonArray(Math.toDegrees(part.partPose.xRot), Math.toDegrees(part.partPose.yRot), Math.toDegrees(part.partPose.zRot)));
+        json.add("rotation", vec3ToJsonArray(Math.toDegrees(part.partPose.xRot()), Math.toDegrees(part.partPose.yRot()), Math.toDegrees(part.partPose.zRot())));
 
         var cubes = new JsonArray();
 

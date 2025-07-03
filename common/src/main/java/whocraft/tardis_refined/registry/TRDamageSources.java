@@ -11,13 +11,13 @@ import whocraft.tardis_refined.TardisRefined;
 
 public class TRDamageSources {
 
-    public static final ResourceKey<DamageType> EYE_OF_HARMONY = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(TardisRefined.MODID, "eye_of_harmony"));
-    public static final ResourceKey<DamageType> CHOKE = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(TardisRefined.MODID, "choke"));
+    public static final ResourceKey<DamageType> EYE_OF_HARMONY = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.tryBuild(TardisRefined.MODID, "eye_of_harmony"));
+    public static final ResourceKey<DamageType> CHOKE = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.tryBuild(TardisRefined.MODID, "choke"));
 
     public static DamageSource getSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey) {
         Holder.Reference<DamageType> damageType = level.registryAccess()
-                .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow(damageTypeResourceKey);
+                .getOrThrow(Registries.DAMAGE_TYPE)
+                .value().getOrThrow(damageTypeResourceKey);
         return new DamageSource(damageType);
     }
 

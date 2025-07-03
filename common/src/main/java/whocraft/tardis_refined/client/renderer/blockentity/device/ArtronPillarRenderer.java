@@ -23,8 +23,8 @@ public class ArtronPillarRenderer implements BlockEntityRenderer<ArtronPillarBlo
 
     private static final float HALF_SQRT_3 = (float) (Math.sqrt(3.0D) / 2.0D);
     private final GenericModel artronPillarBlockModel;
-    private final ResourceLocation POWER_ON = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/artron_pillar.png");
-    private final ResourceLocation POWER_OFF = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/artron_pillar_off.png");
+    private final ResourceLocation POWER_ON = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/artron_pillar.png");
+    private final ResourceLocation POWER_OFF = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/artron_pillar_off.png");
 
     public ArtronPillarRenderer(Context context) {
         artronPillarBlockModel = new GenericModel(context.bakeLayer((ModelRegistry.ARTRON_PILLAR)));

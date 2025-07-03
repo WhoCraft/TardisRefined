@@ -116,7 +116,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
         if (tag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.THEME));
+            ResourceLocation themeId = ResourceLocation.tryBuild(tag.getString(NbtConstants.THEME));
 
             ConsoleTheme theme = ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.get(themeId);
 
@@ -131,7 +131,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
 
         if (tag.contains(NbtConstants.PATTERN) && !needsDataFixed) {
-            ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
+            ResourceLocation currentPattern = ResourceLocation.tryBuild(tag.getString(NbtConstants.PATTERN));
             ResourceLocation theme = this.theme();
             if (ConsolePatterns.doesPatternExist(theme, currentPattern)) {
                 this.basePattern = ConsolePatterns.getPatternOrDefault(theme, currentPattern);

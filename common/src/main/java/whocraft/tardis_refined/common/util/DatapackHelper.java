@@ -168,13 +168,13 @@ public class DatapackHelper {
 
     private static Path createAndValidatePathToDatapackObject(Path path, ResourceLocation resourceLocation, String folderName, String fileExtension) {
         if (resourceLocation.getPath().contains("//")) {
-            throw new ResourceLocationException("Invalid resource path: " + resourceLocation);
+            throw ResourceLocation.tryBuildException("Invalid resource path: " + resourceLocation);
         } else {
             Path path2 = createPathToResult(path, resourceLocation, folderName, fileExtension);
             if (path2.startsWith(path) && FileUtil.isPathNormalized(path2) && FileUtil.isPathPortable(path2)) {
                 return path2;
             } else {
-                throw new ResourceLocationException("Invalid resource path: " + path2);
+                throw ResourceLocation.tryBuildException("Invalid resource path: " + path2);
             }
         }
     }
@@ -185,7 +185,7 @@ public class DatapackHelper {
             Path folder = datapackRoot.resolve(folderName);
             return FileUtil.createPathToResource(folder, resourceLocation.getPath(), fileExtension);
         } catch (InvalidPathException e) {
-            throw new ResourceLocationException("Invalid resource path: " + resourceLocation, e);
+            throw ResourceLocation.tryBuildException("Invalid resource path: " + resourceLocation, e);
         }
     }
 }

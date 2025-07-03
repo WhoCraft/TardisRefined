@@ -94,7 +94,7 @@ public class RenderTargetHelper {
     }
 
 
-    private static ResourceLocation BLACK = new ResourceLocation(TardisRefined.MODID, "textures/black_portal.png");
+    private static ResourceLocation BLACK = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/black_portal.png");
 
     private static void renderDoorOpen(GlobalDoorBlockEntity blockEntity, PoseStack stack, MultiBufferSource bufferSource, int packedLight, float rotation, ShellDoorModel currentModel, boolean isOpen, TardisClientData tardisClientData) {
         if (ModCompatChecker.immersivePortals()) {

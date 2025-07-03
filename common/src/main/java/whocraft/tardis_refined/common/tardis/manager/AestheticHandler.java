@@ -135,7 +135,7 @@ public class AestheticHandler extends BaseHandler {
             CompoundTag aestheticTag = tag.getCompound("aesthetic");
 
             if (aestheticTag.contains("vortex")) {
-                this.vortex = new ResourceLocation(aestheticTag.getString("vortex"));
+                this.vortex = ResourceLocation.tryBuild(aestheticTag.getString("vortex"));
             }
 
             // Shell
@@ -143,7 +143,7 @@ public class AestheticHandler extends BaseHandler {
                 CompoundTag shellInfo = aestheticTag.getCompound("shell");
 
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME)) {
-                    ResourceLocation themeId = new ResourceLocation(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
+                    ResourceLocation themeId = ResourceLocation.tryBuild(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
                     ShellTheme theme = ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.get(themeId);
 
                     if (theme == null) {
@@ -159,7 +159,7 @@ public class AestheticHandler extends BaseHandler {
                 }
 
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) && !needsDataFixed) {
-                    ResourceLocation currentPattern = new ResourceLocation(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN));
+                    ResourceLocation currentPattern = ResourceLocation.tryBuild(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN));
 
                     if (ShellPatterns.doesPatternExist(shellTheme, currentPattern)) {
                         this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, currentPattern);

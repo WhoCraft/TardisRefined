@@ -77,7 +77,7 @@ public class RegistrySupplierHolder<R, T extends R> implements Holder<R>, Suppli
     @Nullable
     @SuppressWarnings("unchecked")
     protected Registry<R> getRegistry() {
-        return (Registry<R>) BuiltInRegistries.REGISTRY.get(this.key.registry());
+        return (Registry<R>) BuiltInRegistries.REGISTRY.getValue(this.key.registry());
     }
 
     protected final void bind(boolean throwOnMissingRegistry) {
@@ -85,7 +85,7 @@ public class RegistrySupplierHolder<R, T extends R> implements Holder<R>, Suppli
 
         Registry<R> registry = getRegistry();
         if (registry != null) {
-            this.holder = registry.getHolder(this.key).orElse(null);
+            this.holder = registry.get(this.key).orElse(null);
         } else if (throwOnMissingRegistry) {
             throw new IllegalStateException("Registry not present for " + this + ": " + this.key.registry());
         }
@@ -162,6 +162,12 @@ public class RegistrySupplierHolder<R, T extends R> implements Holder<R>, Suppli
         return this.holder != null && this.holder.is(tag);
     }
 
+    @Override
+    public boolean is(Holder<R> holder) {
+        bind(false);
+        return this.holder != null && this.holder.is(holder);
+    }
+
     /**
      * {@return all tags present on the underlying object}
      *
@@ -204,6 +210,11 @@ public class RegistrySupplierHolder<R, T extends R> implements Holder<R>, Suppli
     public boolean canSerializeIn(HolderOwner<R> owner) {
         bind(false);
         return this.holder != null && this.holder.canSerializeIn(owner);
+    }
+
+    @Override
+    public String getRegisteredName() {
+        return Holder.super.getRegisteredName();
     }
 
     @Override

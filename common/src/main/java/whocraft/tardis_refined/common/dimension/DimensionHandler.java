@@ -117,7 +117,7 @@ public class DimensionHandler {
             JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
             for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
                 LOGGER.info("Attempting to load {}", dimension.getAsString());
-                ResourceLocation id = new ResourceLocation(dimension.getAsString());
+                ResourceLocation id = ResourceLocation.tryParse(dimension.getAsString());
                 ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
                 if (getExistingLevel(serverLevel, levelKey) == null) {
                     LOGGER.warn("Level {} not found! Creating new level instance", dimension.getAsString());
@@ -142,12 +142,12 @@ public class DimensionHandler {
     public static LevelStem formLevelStem(MinecraftServer server, ResourceKey<LevelStem> stem) {
         RegistryAccess access = server.registryAccess();
 
-        return new LevelStem(access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(TRDimensionTypes.TARDIS), new TardisChunkGenerator(access.registryOrThrow(Registries.BIOME).getHolderOrThrow(ChunkGenerators.TARDIS_BIOME)));
+        return new LevelStem(access.getOrThrow(Registries.DIMENSION_TYPE).value().getOrThrow(TRDimensionTypes.TARDIS), new TardisChunkGenerator(access.getOrThrow(Registries.BIOME).value().getOrThrow(ChunkGenerators.TARDIS_BIOME)));
     }
 
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, String id) {
-        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, id)));
+        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryBuild(TardisRefined.MODID, id)));
     }
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, ResourceKey<Level> levelResourceKey) {

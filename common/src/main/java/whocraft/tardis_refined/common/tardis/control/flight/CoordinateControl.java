@@ -26,7 +26,7 @@ public class CoordinateControl extends whocraft.tardis_refined.common.tardis.con
     }
 
     public CoordinateControl(CoordinateButton button, String modid) {
-        this(button, new ResourceLocation(modid, button.name().toLowerCase() + "_cord"));
+        this(button, ResourceLocation.tryBuild(modid, button.name().toLowerCase() + "_cord"));
     }
 
     @Override

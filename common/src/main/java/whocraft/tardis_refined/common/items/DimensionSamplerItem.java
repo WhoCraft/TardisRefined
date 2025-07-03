@@ -61,7 +61,7 @@ public class DimensionSamplerItem extends Item {
             if (!tag.contains(POTENTIAL_DIM_TAG) && DimensionUtil.isAllowedDimension(level.dimension())) {
                 forceColor(stack, serverLevel.getBlockTint(useOnContext.getClickedPos(), (biome, d, e) -> biome.getFogColor()));
                 savePotentialDim(tag, serverLevel.dimension());
-                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DIM_POTENTIAL, MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(SAVED_DIM_TAG))))), true);
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DIM_POTENTIAL, MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, ResourceLocation.tryBuild(tag.getString(SAVED_DIM_TAG))))), true);
             } else {
                 PlayerUtil.sendMessage(player, !DimensionUtil.isAllowedDimension(level.dimension()) ? ModMessages.DIM_NOT_ALLOWED : ModMessages.DIM_ALREADY_SAVED, true);
             }
@@ -106,7 +106,7 @@ public class DimensionSamplerItem extends Item {
             double progress = (double) timer / TIMER_MAX * 100;
             tooltip.add(Component.translatable(ModMessages.TOOLTIP_DIM_PROGRESS, Math.round(progress) + "%"));
         } else if (tag != null && tag.contains(SAVED_DIM_TAG)) {
-            tooltip.add(Component.translatable(ModMessages.TOOLTIP_DIM_SAVED, MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(SAVED_DIM_TAG))))));
+            tooltip.add(Component.translatable(ModMessages.TOOLTIP_DIM_SAVED, MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, ResourceLocation.tryBuild(tag.getString(SAVED_DIM_TAG))))));
         } else {
             tooltip.add(Component.translatable(ModMessages.TOOLTIP_NO_DIM_SAVED));
         }
@@ -125,7 +125,7 @@ public class DimensionSamplerItem extends Item {
         String dimensionTag = tag.contains(POTENTIAL_DIM_TAG) ? POTENTIAL_DIM_TAG : (tag.contains(SAVED_DIM_TAG) ? SAVED_DIM_TAG : null);
 
         if (dimensionTag != null) {
-            String dimension = MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(dimensionTag))));
+            String dimension = MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, ResourceLocation.tryBuild(tag.getString(dimensionTag))));
             return Component.literal(dimension + " Sample");
         }
 
@@ -157,7 +157,7 @@ public class DimensionSamplerItem extends Item {
         CompoundTag tag = stack.getOrCreateTag();
         if (tag != null && tag.contains(SAVED_DIM_TAG)) {
             String savedDimString = tag.getString(SAVED_DIM_TAG);
-            ResourceLocation savedDimLocation = new ResourceLocation(savedDimString);
+            ResourceLocation savedDimLocation = ResourceLocation.tryBuild(savedDimString);
             return ResourceKey.create(DIMENSION, savedDimLocation);
         }
         return null;
@@ -167,7 +167,7 @@ public class DimensionSamplerItem extends Item {
         CompoundTag tag = stack.getOrCreateTag();
         if (tag != null && tag.contains(POTENTIAL_DIM_TAG)) {
             String savedDimString = tag.getString(POTENTIAL_DIM_TAG);
-            ResourceLocation savedDimLocation = new ResourceLocation(savedDimString);
+            ResourceLocation savedDimLocation = ResourceLocation.tryBuild(savedDimString);
             return ResourceKey.create(DIMENSION, savedDimLocation);
         }
         return null;

@@ -20,11 +20,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/toyota/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/toyota/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/toyota/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/toyota/flight.json"));
 
 
-    private static final ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
+    private static final ResourceLocation TOYOTA_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
     private final ModelPart bone181;
     private final ModelPart throttle;
     private final ModelPart handbrake;
@@ -68,7 +68,7 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
         }
 
         float rot = 1f - (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
-        this.throttle.xRot = rot;
+        this.throttle.xRot() = rot;
 
         this.handbrake.yRot = reactions.isHandbrakeEngaged() ? 2f : -1f;
 

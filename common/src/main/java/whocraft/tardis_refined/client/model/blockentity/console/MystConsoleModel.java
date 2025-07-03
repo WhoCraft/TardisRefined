@@ -38,7 +38,7 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
                                     AnimationChannel.Interpolations.LINEAR),
                             new Keyframe(4f, KeyframeAnimations.degreeVec(0f, 240f, 0f),
                                     AnimationChannel.Interpolations.LINEAR))).build();
-    private static final ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
+    private static final ResourceLocation MYST_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
     private final ModelPart root;
     private final ModelPart base_console;
     private final ModelPart controls;
@@ -79,9 +79,9 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
         this.animate(reactions.ROTOR_ANIMATION, MODEL_ROTOR_LOOP, Minecraft.getInstance().player.tickCount);
 
         float rot = -1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
-        throttle_control.xRot = rot;
+        throttle_control.xRot() = rot;
 
-        handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
+        handbrake.xRot() = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
         this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }

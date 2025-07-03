@@ -32,7 +32,7 @@ public class TardisPlayerInfoImpl {
     @SubscribeEvent
     public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> e) {
         if (e.getObject() instanceof Player player) {
-            e.addCapability(new ResourceLocation(TardisRefined.MODID, "tardis_player_info"), new TardisPlayerInfoProvider(new TardisPlayerInfo(player)));
+            e.addCapability(ResourceLocation.tryBuild(TardisRefined.MODID, "tardis_player_info"), new TardisPlayerInfoProvider(new TardisPlayerInfo(player)));
         }
     }
 

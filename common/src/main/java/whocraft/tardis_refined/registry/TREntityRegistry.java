@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.registry;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -26,13 +28,13 @@ public class TREntityRegistry {
      * @return
      */
     public static <T extends Entity> EntityType<T> registerStatic(EntityType.EntityFactory<T> factory, MobCategory classification, float width, float height, int trackingRange, int updateFreq, String name) {
-        ResourceLocation loc = new ResourceLocation(TardisRefined.MODID, name);
+        ResourceKey<EntityType<?>> loc = ResourceKey.create(BuiltInRegistries.ENTITY_TYPE.key(), ResourceLocation.tryBuild(TardisRefined.MODID, name));
         EntityType.Builder<T> builder = EntityType.Builder.of(factory, classification);
         builder.clientTrackingRange(trackingRange);
         builder.updateInterval(updateFreq);
         builder.sized(width, height);
         builder.fireImmune();
-        return builder.build(loc.toString());
+        return builder.build(loc);
     }
 
 }

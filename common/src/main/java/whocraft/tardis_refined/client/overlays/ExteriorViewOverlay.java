@@ -20,8 +20,8 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 public class ExteriorViewOverlay {
 
-    public static final ResourceLocation BAR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/bar/journey_bar.png");
-    public static final ResourceLocation FUEL_BAR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/bar/fuel_bar.png");
+    public static final ResourceLocation BAR_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/bar/journey_bar.png");
+    public static final ResourceLocation FUEL_BAR_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/bar/fuel_bar.png");
     public static boolean shouldRender = true;
     private static final RenderHelper.CustomProgressBar PROGRESS_BAR = new RenderHelper.CustomProgressBar(BAR_TEXTURE, 256, 256, 5, 182, 60);
     public static final RenderHelper.CustomProgressBar FUEL_BAR = new RenderHelper.CustomProgressBar(FUEL_BAR_TEXTURE, 256, 256, 11, 127, 60);

@@ -116,8 +116,8 @@ public class TardisHums {
      */
     public static HumEntry getDefaultHum() {
         ArrayList<ResourceLocation> arrayList = new ArrayList();
-        arrayList.add(new ResourceLocation(TardisRefined.MODID, "interior_creaks"));
-        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral"), TRSoundRegistry.HUM_CORAL.getId(), arrayList);
+        arrayList.add(ResourceLocation.tryBuild(TardisRefined.MODID, "interior_creaks"));
+        return new HumEntry(ResourceLocation.tryBuild(TardisRefined.MODID, "coral"), TRSoundRegistry.HUM_CORAL.getId(), arrayList);
     }
 
     public static Map<ResourceLocation, HumEntry> getDefaultHums() {

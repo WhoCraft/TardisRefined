@@ -17,7 +17,7 @@ import java.util.List;
 public class PonderListScreen extends MonitorOS {
 
     public PonderListScreen() {
-        super(Component.literal(""), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.literal(""), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
     }
 
     @Override

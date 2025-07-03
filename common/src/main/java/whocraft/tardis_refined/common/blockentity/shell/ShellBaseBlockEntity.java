@@ -65,7 +65,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void load(CompoundTag pTag) {
         super.load(pTag);
         if (pTag.contains(NbtConstants.TARDIS_ID))
-            this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
+            this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryBuild(pTag.getString(NbtConstants.TARDIS_ID)));
         updateCurrentLocation();
     }
 

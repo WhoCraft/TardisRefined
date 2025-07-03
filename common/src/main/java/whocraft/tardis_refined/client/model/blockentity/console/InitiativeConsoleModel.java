@@ -22,11 +22,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class InitiativeConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/initiative/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/initiative/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/initiative/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/initiative/flight.json"));
 
 
-    private static final ResourceLocation INITIATIVE_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
+    private static final ResourceLocation INITIATIVE_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
     private final ModelPart root;
     private final ModelPart throttle;
     private final ModelPart handbrake;
@@ -70,9 +70,9 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
         }
 
         float rot = -1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
-        throttle.xRot = rot;
+        throttle.xRot() = rot;
 
-        handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
+        handbrake.xRot() = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
         root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }

@@ -95,7 +95,7 @@ public class ModelRegistry {
 
 
     private static ModelLayerLocation createLocation(String name, String layer) {
-        return new ModelLayerLocation(new ResourceLocation(MODID, name), layer);
+        return new ModelLayerLocation(ResourceLocation.tryBuild(MODID, name), layer);
     }
 
     public static ZeitonGlassModel zeitonGlassModel;

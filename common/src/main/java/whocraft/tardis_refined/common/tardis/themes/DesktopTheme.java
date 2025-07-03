@@ -33,7 +33,7 @@ public class DesktopTheme {
      * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/gui/desktops/
      */
     public DesktopTheme(String id, String structureLocation) {
-        this(new ResourceLocation(TardisRefined.MODID, id), new ResourceLocation(TardisRefined.MODID, structureLocation), TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(id)).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
+        this(ResourceLocation.tryBuild(TardisRefined.MODID, id), ResourceLocation.tryBuild(TardisRefined.MODID, structureLocation), TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(id)).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
     }
 
     /**
@@ -45,7 +45,7 @@ public class DesktopTheme {
      * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/gui/desktops/
      */
     public DesktopTheme(String id, String structureLocation, String name) {
-        this(new ResourceLocation(TardisRefined.MODID, id), new ResourceLocation(TardisRefined.MODID, structureLocation), name);
+        this(ResourceLocation.tryBuild(TardisRefined.MODID, id), ResourceLocation.tryBuild(TardisRefined.MODID, structureLocation), name);
     }
 
     /**
@@ -59,7 +59,7 @@ public class DesktopTheme {
     public DesktopTheme(ResourceLocation id, ResourceLocation structureLocation, String name) {
         this.identifier = id;
         this.structureLocation = structureLocation;
-        this.uiTexture = new ResourceLocation(id.getNamespace(), "textures/gui/desktops/" + id.getPath().toString() + ".png");
+        this.uiTexture = ResourceLocation.tryBuild(id.getNamespace(), "textures/gui/desktops/" + id.getPath().toString() + ".png");
         this.name = name;
     }
 

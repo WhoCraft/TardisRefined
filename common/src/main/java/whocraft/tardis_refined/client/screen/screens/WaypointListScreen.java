@@ -30,9 +30,9 @@ import java.util.Comparator;
 
 public class WaypointListScreen extends MonitorOS {
 
-    public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "trash");
-    public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "okay");
-    public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "edit");
+    public static final ResourceLocation TRASH_LOCATION = ResourceLocation.tryBuild(TardisRefined.MODID, "trash");
+    public static final ResourceLocation OKAY_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "okay");
+    public static final ResourceLocation EDIT_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "edit");
     private final Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
     private SpriteIconButton loadButton;
     private SpriteIconButton editButton;
@@ -41,7 +41,7 @@ public class WaypointListScreen extends MonitorOS {
     private TardisWaypoint waypoint = null;
 
     public WaypointListScreen(Collection<TardisWaypoint> waypoints) {
-        super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.WAYPOINTS = waypoints;
     }
 

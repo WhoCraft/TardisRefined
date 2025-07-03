@@ -3,7 +3,9 @@ package whocraft.tardis_refined.common.util;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
@@ -122,7 +124,7 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
             List<RAW> raws = new ArrayList<>();
             ResourceLocation fullId = entry.getKey();
             String fullPath = fullId.getPath(); // includes folderName/ and .json
-            ResourceLocation key = new ResourceLocation(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
+            ResourceLocation key = ResourceLocation.tryBuild(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
 
             for (Resource resource : entry.getValue()) {
                 try (Reader reader = resource.openAsReader()) {
@@ -130,13 +132,12 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
 
                     // if we fail to parse json, log an error and continue
                     // if we succeeded, add the resulting T to the map
-                    this.codec.decode(JsonOps.INSTANCE, element)
-                            .get()
-                            .ifLeft(result -> {
-                                raws.add(result.getFirst());
-                                LOGGER.info("Adding entry for {}", key);
-                            })
-                            .ifRight(partial -> LOGGER.error("Error deserializing json {} in folder {} from pack {}: {}", key, this.folderName, resource.sourcePackId(), partial.message()));
+                    final DataResult<Pair<RAW, PROCESSED>> result = this.codec.decode(JsonOps.INSTANCE, element);
+                    result.resultOrPartial().ifPresent(partial -> {
+                        raws.add(partial.getFirst());
+                        LOGGER.info("Adding entry for {}", key);
+                    });
+                    result.ifError(partial -> LOGGER.error("Error deserializing json {} in folder {} from pack {}: {}", key, this.folderName, resource.sourcePackId(), partial.message()));
                 } catch (Exception e) {
                     LOGGER.error(String.format(Locale.ENGLISH, "Error reading resource %s in folder %s from pack %s: ", key, this.folderName, resource.sourcePackId()), e);
                 }

@@ -49,7 +49,7 @@ public class RootedShellBlock extends ShellBaseBlock {
             if (!blockState.getValue(OPEN)) { //If there are roots covering the entrance, tell the player
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.ROOT_PLANT_CUT_OPEN), true);
                 level.playSound(player, blockPos, SoundEvents.AZALEA_LEAVES_HIT, SoundSource.BLOCKS, 1, 0.75f + level.getRandom().nextFloat());
-                return InteractionResult.sidedSuccess(level.isClientSide); //Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+                return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER; //Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
             }
             return InteractionResult.FAIL; //Return fail result if the entrance is now opened, so that we don't play the message and exit this method early.
         }
@@ -66,7 +66,7 @@ public class RootedShellBlock extends ShellBaseBlock {
             level.playSound(player, player.blockPosition(), SoundEvents.SLIME_JUMP, SoundSource.BLOCKS, 1.0f, 1.0f);
         }
 
-        return InteractionResult.sidedSuccess(level.isClientSide); //Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
+        return level.isClientSide ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER; //Stops hand swinging twice. If InteractionResult = SUCCESS then the hand swing packet is sent twice.
     }
 
     @Nullable

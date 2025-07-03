@@ -21,7 +21,7 @@ import java.awt.*;
 public class CancelDesktopScreen extends MonitorOS {
 
     public CancelDesktopScreen() {
-        super(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_DESKTOP), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(ModMessages.UI_DESKTOP_CANCEL_DESKTOP), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
     }
 
     @Override

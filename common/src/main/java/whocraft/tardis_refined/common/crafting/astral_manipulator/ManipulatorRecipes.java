@@ -180,7 +180,7 @@ public class ManipulatorRecipes {
     }
 
     public static ManipulatorCraftingRecipe register(String id, ManipulatorCraftingRecipe manipulatorCraftingRecipe) {
-        return register(new ResourceLocation(TardisRefined.MODID, id), manipulatorCraftingRecipe);
+        return register(ResourceLocation.tryBuild(TardisRefined.MODID, id), manipulatorCraftingRecipe);
     }
 
     public static ManipulatorCraftingRecipe register(ResourceLocation id, ManipulatorCraftingRecipe manipulatorCraftingRecipe) {

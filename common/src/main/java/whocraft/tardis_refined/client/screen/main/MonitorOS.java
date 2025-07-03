@@ -46,21 +46,21 @@ import java.util.UUID;
 
 public class MonitorOS extends Screen {
 
-    public static ResourceLocation FRAME = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/frame_brass.png");
+    public static ResourceLocation FRAME = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/frame_brass.png");
     protected static final int frameWidth = 256, frameHeight = 180;
     protected static final int monitorWidth = 230, monitorHeight = 130;
     public final ResourceLocation backdrop;
     public static final VortexRenderer VORTEX = new VortexRenderer(VortexRegistry.CLOUDS.get());
     public static ResourceLocation currentVortex = VortexRegistry.VORTEX_REGISTRY.getKey(VortexRegistry.CLOUDS.get());
-    public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/noise.png");
-    public static ResourceLocation SYMBLS = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/gallifreyan_symbols.png");
+    public static ResourceLocation NOISE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/noise.png");
+    public static ResourceLocation SYMBLS = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/gallifreyan_symbols.png");
 
     public MonitorOS LEFT;
     public MonitorOS RIGHT;
     public MonitorOS PREVIOUS;
 
-    public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "save");
-    public static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "back");
+    public static final ResourceLocation BUTTON_LOCATION = ResourceLocation.tryBuild(TardisRefined.MODID, "save");
+    public static final ResourceLocation BCK_LOCATION = ResourceLocation.tryBuild(TardisRefined.MODID, "back");
     public int shakeX, shakeY, age, transitionStartTime = -1;
     public float shakeAlpha;
     private MonitorOSRun onSubmit;
@@ -363,7 +363,7 @@ public class MonitorOS extends Screen {
             GLOBALSHELL_BLOCKENTITY = new GlobalShellBlockEntity(BlockPos.ZERO, TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
             assert Minecraft.getInstance().level != null;
             GLOBALSHELL_BLOCKENTITY.setLevel(Minecraft.getInstance().level);
-            ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+            ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryBuild(TardisRefined.MODID, UUID.randomUUID().toString()));
             GLOBALSHELL_BLOCKENTITY.setTardisId(generatedLevelKey);
             GLOBALSHELL_BLOCKENTITY.setShellTheme(ShellTheme.POLICE_BOX.getId());
             GLOBALSHELL_BLOCKENTITY.setPattern(ShellPatterns.DEFAULT);

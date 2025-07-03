@@ -52,24 +52,24 @@ public class TardisRefinedNeoForge {
         generator.addProvider(true, new ParticleProvider(generator));
 
         /*Data Pack*/
-        ProviderBlockTags blocks = generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
-        generator.addProvider(e.includeServer(), new ItemTagProvider(generator.getPackOutput(), e.getLookupProvider(), blocks.contentsGetter(), existingFileHelper));
-        generator.addProvider(e.includeServer(), new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider()));
+        ProviderBlockTags blocks = generator.addProvider(true, new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
+        generator.addProvider(true, new ItemTagProvider(generator.getPackOutput(), e.getLookupProvider(), blocks.contentsGetter(), existingFileHelper));
+        generator.addProvider(true, new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider()));
 
-        generator.addProvider(e.includeServer(), new ProviderLootTable(generator.getPackOutput()));
-        generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
-        generator.addProvider(e.includeServer(), new ConsolePatternProvider(generator));
-        generator.addProvider(e.includeServer(), new DesktopProvider(generator));
-        generator.addProvider(e.includeServer(), new HumProvider(generator));
-        generator.addProvider(e.includeServer(), new ShellPatternProvider(generator, TardisRefined.MODID));
-        generator.addProvider(e.includeServer(), new ManipulatorRecipeProvider(generator, TardisRefined.MODID));
+        generator.addProvider(true, new ProviderLootTable(generator.getPackOutput()));
+        generator.addProvider(true, new RecipeProvider(generator, e.getLookupProvider()));
+        generator.addProvider(true, new ConsolePatternProvider(generator));
+        generator.addProvider(true, new DesktopProvider(generator));
+        generator.addProvider(true, new HumProvider(generator));
+        generator.addProvider(true, new ShellPatternProvider(generator, TardisRefined.MODID));
+        generator.addProvider(true, new ManipulatorRecipeProvider(generator, TardisRefined.MODID));
 
 
         //Tags
-        generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
+        generator.addProvider(true, new TRBiomeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
-        generator.addProvider(e.includeServer(), new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
-        generator.addProvider(e.includeServer(), new TRPoiTypeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
+        generator.addProvider(true, new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
+        generator.addProvider(true, new TRPoiTypeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
     }
 }

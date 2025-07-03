@@ -150,7 +150,7 @@ public class ModelLayerManager extends SimpleJsonResourceReloadListener {
             return null;
         }
 
-        return new ModelLayerLocation(new ResourceLocation(path.getNamespace(), path.getPath().substring(idx + 1)), path.getPath().substring(0, idx));
+        return new ModelLayerLocation(ResourceLocation.tryBuild(path.getNamespace(), path.getPath().substring(idx + 1)), path.getPath().substring(0, idx));
     }
 
 

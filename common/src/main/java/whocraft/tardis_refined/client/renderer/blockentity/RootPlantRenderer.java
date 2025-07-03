@@ -17,11 +17,11 @@ import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 
 public class RootPlantRenderer implements BlockEntityRenderer<RootPlantBlockEntity>, BlockEntityRendererProvider<RootPlantBlockEntity> {
 
-    private static final ResourceLocation rootPlantOneTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_one.png");
-    private static final ResourceLocation rootPlantTwoTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_two.png");
-    private static final ResourceLocation rootPlantThreeTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_three.png");
-    private static final ResourceLocation rootPlantFourTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_four.png");
-    private static final ResourceLocation rootPlantFiveTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_five.png");
+    private static final ResourceLocation rootPlantOneTexture = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_one.png");
+    private static final ResourceLocation rootPlantTwoTexture = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_two.png");
+    private static final ResourceLocation rootPlantThreeTexture = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_three.png");
+    private static final ResourceLocation rootPlantFourTexture = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_four.png");
+    private static final ResourceLocation rootPlantFiveTexture = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/root/root_plant/stage_five.png");
     private static GenericModel rootPlantStateOneModel;
     private static GenericModel rootPlantStateTwoModel;
     private static GenericModel rootPlantStateThreeModel;

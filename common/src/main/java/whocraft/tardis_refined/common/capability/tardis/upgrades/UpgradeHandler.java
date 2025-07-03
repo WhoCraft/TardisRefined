@@ -205,7 +205,7 @@ public class UpgradeHandler {
         this.overallTardisPoints = nbt.getInt("OverallPoints");
         this.unlockedUpgrades.clear();
         for (Tag upgrade : nbt.getList("UnlockedUpgrades", StringTag.TAG_STRING)) {
-            this.unlockedUpgrades.add(TRUpgrades.UPGRADE_REGISTRY.get(new ResourceLocation(upgrade.getAsString())));
+            this.unlockedUpgrades.add(TRUpgrades.UPGRADE_REGISTRY.get(ResourceLocation.tryBuild(upgrade.getAsString())));
         }
     }
 }

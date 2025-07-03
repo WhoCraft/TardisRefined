@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Lifecycle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -55,10 +56,10 @@ public class DimensionHandlerImpl {
         DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
 
         //Actually register our dimension
-        Registry<LevelStem> dimensionRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+        Registry<LevelStem> dimensionRegistry = server.registryAccess().getOrThrow(Registries.LEVEL_STEM).value();
         if (dimensionRegistry instanceof MappedRegistry<LevelStem> writableRegistry) {
-            writableRegistry.unfreeze(); //Must unfreeze registry to allow our dimension to persist. This Neoforge method is deprecated so we may need to use an Accessor Mixin in the future.
-            writableRegistry.register(dimensionKey, dimension, Lifecycle.stable());
+            writableRegistry.unfreeze(true); //Must unfreeze registry to allow our dimension to persist. This Neoforge method is deprecated so we may need to use an Accessor Mixin in the future.
+            writableRegistry.register(dimensionKey, dimension, RegistrationInfo.BUILT_IN);
         } else {
             throw new IllegalStateException(String.format("Unable to register dimension %s -- dimension registry not writable", dimensionKey.location()));
         }
@@ -98,7 +99,7 @@ public class DimensionHandlerImpl {
         chunkListener.updateSpawnPos(chunkPos);
         ServerChunkCache serverchunkcache = newLevel.getChunkSource();
         serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
-        serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
+        serverchunkcache.addTicketWithRadius(TicketType.START, chunkPos, 11);
 
         return newLevel;
     }

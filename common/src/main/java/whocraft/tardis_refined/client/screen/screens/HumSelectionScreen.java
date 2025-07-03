@@ -30,7 +30,7 @@ public class HumSelectionScreen extends MonitorOS {
     private HumEntry currentHumEntry;
 
     public HumSelectionScreen() {
-        super(Component.translatable(ModMessages.UI_MONITOR_SELECT_HUM), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(ModMessages.UI_MONITOR_SELECT_HUM), ResourceLocation.tryBuild(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
     }
 
     public static void selectHum(HumEntry theme) {

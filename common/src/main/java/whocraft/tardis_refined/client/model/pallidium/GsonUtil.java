@@ -92,7 +92,7 @@ public class GsonUtil {
 
     public static ResourceLocation convertToResourceLocation(JsonElement json, String memberName) {
         if (json.isJsonPrimitive()) {
-            return new ResourceLocation(json.getAsString());
+            return ResourceLocation.tryBuild(json.getAsString());
         } else {
             throw new JsonSyntaxException("Expected " + memberName + " to be a resource location, was " + GsonHelper.getType(json));
         }
@@ -100,7 +100,7 @@ public class GsonUtil {
 
     public static ResourceLocation getAsResourceLocation(JsonObject json, String memberName) {
         if (json.has(memberName)) {
-            return new ResourceLocation(GsonHelper.getAsString(json, memberName));
+            return ResourceLocation.tryBuild(GsonHelper.getAsString(json, memberName));
         } else {
             throw new JsonSyntaxException("Missing " + memberName + ", expected to find a resource location");
         }
@@ -113,9 +113,9 @@ public class GsonUtil {
             String[] s = json.getAsString().split("#", 2);
 
             if (s.length == 1) {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), "main");
+                return new ModelLayerLocation(ResourceLocation.tryBuild(s[0]), "main");
             } else {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), s[1]);
+                return new ModelLayerLocation(ResourceLocation.tryBuild(s[0]), s[1]);
             }
         } else {
             throw new JsonSyntaxException("Expected " + memberName + " to be a model layer location, was " + GsonHelper.getType(json));
@@ -128,9 +128,9 @@ public class GsonUtil {
             String[] s = GsonHelper.getAsString(json, memberName).split("#", 2);
 
             if (s.length == 1) {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), "main");
+                return new ModelLayerLocation(ResourceLocation.tryBuild(s[0]), "main");
             } else {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), s[1]);
+                return new ModelLayerLocation(ResourceLocation.tryBuild(s[0]), s[1]);
             }
         } else {
             throw new JsonSyntaxException("Missing " + memberName + ", expected to find a model layer location");
@@ -527,7 +527,7 @@ public class GsonUtil {
 
     public static ItemStack readItemStack(JsonElement jsonElement) {
         if (jsonElement.isJsonPrimitive()) {
-            ResourceLocation id = new ResourceLocation(jsonElement.getAsString());
+            ResourceLocation id = ResourceLocation.tryBuild(jsonElement.getAsString());
 
             if (!BuiltInRegistries.ITEM.containsKey(id)) {
                 throw new JsonParseException("Unknown item '" + id + "'");
@@ -536,7 +536,7 @@ public class GsonUtil {
             return new ItemStack(BuiltInRegistries.ITEM.get(id));
         } else if (jsonElement.isJsonObject()) {
             var json = jsonElement.getAsJsonObject();
-            ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(json, "item"));
+            ResourceLocation id = ResourceLocation.tryBuild(GsonHelper.getAsString(json, "item"));
 
             if (!BuiltInRegistries.ITEM.containsKey(id)) {
                 throw new JsonParseException("Unknown item '" + id + "'");

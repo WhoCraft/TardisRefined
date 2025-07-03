@@ -74,11 +74,11 @@ public class TardisRefinedFabric implements ModInitializer {
         ForgeConfigRegistry.INSTANCE.register(TardisRefined.MODID, ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
 
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "console_patterns"), ConsolePatterns.getReloadListener());
+        register(SERVER_DATA, ResourceLocation.tryBuild(TardisRefined.MODID, TardisRefined.MODID + "/" + "console_patterns"), ConsolePatterns.getReloadListener());
 
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), ShellPatterns.getReloadListener());
-        register(SERVER_DATA, new ResourceLocation(TardisRefined.MODID, TardisRefined.MODID + "/" + "hums"), TardisHums.getReloadListener());
+        register(SERVER_DATA, ResourceLocation.tryBuild(TardisRefined.MODID, TardisRefined.MODID + "/" + "desktops"), TardisDesktops.getReloadListener());
+        register(SERVER_DATA, ResourceLocation.tryBuild(TardisRefined.MODID, TardisRefined.MODID + "/" + "shell_patterns"), ShellPatterns.getReloadListener());
+        register(SERVER_DATA, ResourceLocation.tryBuild(TardisRefined.MODID, TardisRefined.MODID + "/" + "hums"), TardisHums.getReloadListener());
 
         if (ModCompatChecker.immersivePortals()) {
             if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {
@@ -89,8 +89,8 @@ public class TardisRefinedFabric implements ModInitializer {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
 
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton")));
-        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton_small")));
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.tryBuild(TardisRefined.MODID, "ore_zeiton")));
+        BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, ResourceLocation.tryBuild(TardisRefined.MODID, "ore_zeiton_small")));
 
         if (Platform.isModLoaded("trinkets")) {
             CuriosTrinketsUtil.setInstance(new TrinketsUtil());

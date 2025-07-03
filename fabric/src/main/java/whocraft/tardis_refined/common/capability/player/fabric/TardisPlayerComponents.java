@@ -11,7 +11,7 @@ import whocraft.tardis_refined.TardisRefined;
 public class TardisPlayerComponents implements EntityComponentInitializer {
 
     public static final ComponentKey<TardisPlayerInfoImpl> TARDIS_PLAYER_INFO =
-            ComponentRegistryV3.INSTANCE.getOrCreate(new ResourceLocation(TardisRefined.MODID, "tardis_player_info"), TardisPlayerInfoImpl.class);
+            ComponentRegistryV3.INSTANCE.getOrCreate(ResourceLocation.tryBuild(TardisRefined.MODID, "tardis_player_info"), TardisPlayerInfoImpl.class);
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {

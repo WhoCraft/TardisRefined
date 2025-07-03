@@ -21,10 +21,10 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation(new ResourceLocation(TardisRefined.MODID, "frame/console/coral/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(new ResourceLocation(TardisRefined.MODID, "frame/console/coral/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation(ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/coral/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/coral/flight.json"));
 
-    private static final ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
+    private static final ResourceLocation CORAL_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
     private final ModelPart throttle;
     private final ModelPart handbrake;
     private final ModelPart base_console;
@@ -63,9 +63,9 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
         }
 
         float rot = 0f + (2f * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
-        this.throttle.xRot = rot;
+        this.throttle.xRot() = rot;
 
-        this.handbrake.xRot = !reactions.isHandbrakeEngaged() ? 1f : -0.25f;
+        this.handbrake.xRot() = !reactions.isHandbrakeEngaged() ? 1f : -0.25f;
 
         base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);

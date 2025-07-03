@@ -22,13 +22,13 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
 public class RefurbishedConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
-    private static final ResourceLocation REFURBISHED_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/refurbished/refurbished_console.png");
+    private static final ResourceLocation REFURBISHED_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/refurbished/refurbished_console.png");
     private final ModelPart root;
     private final ModelPart throttle;
     private final ModelPart handbrake;
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/refurbished/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/refurbished/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/refurbished/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/refurbished/flight.json"));
 
 
     public RefurbishedConsoleModel(ModelPart root) {
@@ -64,9 +64,9 @@ public class RefurbishedConsoleModel extends HierarchicalModel implements Consol
         }
 
         float rot = -1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
-        throttle.xRot = rot;
+        throttle.xRot() = rot;
 
-        handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
+        handbrake.xRot() = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
         this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
     }

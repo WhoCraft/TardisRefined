@@ -29,7 +29,7 @@ public class TRShaders {
 
 
     public static RenderType translucentWithSnow(ResourceLocation texture, boolean show) {
-        ResourceLocation snowTexture = new ResourceLocation("minecraft", "textures/block/snow.png");
+        ResourceLocation snowTexture = ResourceLocation.tryBuild("minecraft", "textures/block/snow.png");
 
 
         // Has to be separate, using java OR operator would allow the snow to render even if the user has internal shaders turned off

@@ -19,8 +19,8 @@ import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 
 public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEntity>, BlockEntityRendererProvider<RootedShellBlockEntity> {
 
-    private static final ResourceLocation rootShellTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell.png");
-    private static final ResourceLocation rootShellClosed = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell_closed.png");
+    private static final ResourceLocation rootShellTexture = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell.png");
+    private static final ResourceLocation rootShellClosed = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell_closed.png");
     private static GenericModel rootShellModel;
 
     public RootShellRenderer(BlockEntityRendererProvider.Context context) {

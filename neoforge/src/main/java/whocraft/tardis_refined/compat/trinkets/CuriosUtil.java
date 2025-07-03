@@ -21,7 +21,7 @@ public class CuriosUtil extends CuriosTrinketsUtil {
     }
 
     public static void interModQueue(InterModEnqueueEvent e) {
-        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("timelord_sight").size(1).icon(new ResourceLocation(TardisRefined.MODID, "item/timelord_sight")).build());
+        InterModComms.sendTo("curios", SlotTypeMessage.REGISTER_TYPE, () -> new SlotTypeMessage.Builder("timelord_sight").size(1).icon(ResourceLocation.tryBuild(TardisRefined.MODID, "item/timelord_sight")).build());
     }
 
     @Override

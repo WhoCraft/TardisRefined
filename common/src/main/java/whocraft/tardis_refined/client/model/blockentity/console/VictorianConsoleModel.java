@@ -21,13 +21,13 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 public class VictorianConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/flight.json"));
-    public static final AnimationDefinition CRASH = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/crash.json"));
-    public static final AnimationDefinition POWER_ON = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/power_on.json"));
-    public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/power_off.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/victorian/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/victorian/flight.json"));
+    public static final AnimationDefinition CRASH = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/victorian/crash.json"));
+    public static final AnimationDefinition POWER_ON = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/victorian/power_on.json"));
+    public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( ResourceLocation.tryBuild(TardisRefined.MODID, "frame/console/victorian/power_off.json"));
 
-    private static final ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
+    private static final ResourceLocation VICTORIAN_TEXTURE = ResourceLocation.tryBuild(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
 
     private final ModelPart root;
 

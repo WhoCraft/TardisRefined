@@ -61,8 +61,8 @@ public class ClientModBus {
 
     @SubscribeEvent
     public static void onItemColors(RegisterShadersEvent registerShadersEvent) throws IOException {
-        registerShadersEvent.registerShader(new ShaderInstance(registerShadersEvent.getResourceProvider(), new ResourceLocation(TardisRefined.MODID, "nivis"), DefaultVertexFormat.NEW_ENTITY), (e) -> TRShaders.SNOW_SHADER = e);
-        registerShadersEvent.registerShader(new ShaderInstance(registerShadersEvent.getResourceProvider(), new ResourceLocation(TardisRefined.MODID, "glow_shader"), DefaultVertexFormat.NEW_ENTITY), (e) -> TRShaders.GLOW_SHADER = e);
+        registerShadersEvent.registerShader(new ShaderInstance(registerShadersEvent.getResourceProvider(), ResourceLocation.tryBuild(TardisRefined.MODID, "nivis"), DefaultVertexFormat.NEW_ENTITY), (e) -> TRShaders.SNOW_SHADER = e);
+        registerShadersEvent.registerShader(new ShaderInstance(registerShadersEvent.getResourceProvider(), ResourceLocation.tryBuild(TardisRefined.MODID, "glow_shader"), DefaultVertexFormat.NEW_ENTITY), (e) -> TRShaders.GLOW_SHADER = e);
     }
 
 
@@ -124,7 +124,7 @@ public class ClientModBus {
 
         EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
-        ItemProperties.register(TRItemRegistry.TEST_TUBE.get(), new ResourceLocation(TardisRefined.MODID, "is_sampled"), (itemStack, clientLevel, livingEntity, i) -> DimensionSamplerItem.hasDimAtAll(itemStack) ? 1 : 0);
+        ItemProperties.register(TRItemRegistry.TEST_TUBE.get(), ResourceLocation.tryBuild(TardisRefined.MODID, "is_sampled"), (itemStack, clientLevel, livingEntity, i) -> DimensionSamplerItem.hasDimAtAll(itemStack) ? 1 : 0);
 
         event.enqueueWork(() -> {
             for (Block block : TRBlockRegistry.BLOCKS.getRegistry().get()) {
@@ -139,7 +139,7 @@ public class ClientModBus {
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void onRenderOverlay(RegisterGuiOverlaysEvent event) {
-        event.registerAboveAll(new ResourceLocation(TardisRefined.MODID, "overlay"), new TardisRefinedOverlay());
+        event.registerAboveAll(ResourceLocation.tryBuild(TardisRefined.MODID, "overlay"), new TardisRefinedOverlay());
     }
 
 }

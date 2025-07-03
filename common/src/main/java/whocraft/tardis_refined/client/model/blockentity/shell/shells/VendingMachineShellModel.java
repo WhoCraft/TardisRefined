@@ -29,7 +29,7 @@ public class VendingMachineShellModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.door.xRot = (open) ? 1.6f : 0;
+        this.door.xRot() = (open) ? 1.6f : 0;
     }
 
     @Override
