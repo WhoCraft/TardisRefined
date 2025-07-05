@@ -2,7 +2,7 @@ plugins {
     // see https://fabricmc.net/develop/ for new versions
     id 'fabric-loom' version '1.10-SNAPSHOT' apply false
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
-    id 'net.neoforged.moddev' version '2.0.82' apply false
+    id 'net.neoforged.moddev' version '2.0.97' apply false
     id "me.modmuss50.mod-publish-plugin" version "0.8.3"
     id 'net.minecraftforge.gradle' version '[6.0.24,6.2)' apply false
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT' apply false
