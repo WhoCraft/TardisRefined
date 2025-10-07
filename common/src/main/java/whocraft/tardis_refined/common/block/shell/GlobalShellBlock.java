@@ -68,9 +68,9 @@ public class GlobalShellBlock extends ShellBaseBlock {
     }
 
     @Nullable
-    @Override
+    @Override // Always assume it's placed by another mod. That setting is set to false when the TARDIS_ID is set.
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new GlobalShellBlockEntity(blockPos, blockState);
+        return new GlobalShellBlockEntity(blockPos, blockState).setPlacedByOtherMod(true);
     }
 
     @Nullable
