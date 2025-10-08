@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.ArrayList;
@@ -429,6 +430,11 @@ public class TRTeleporter {
      */
     public static boolean teleportIfCollided(ServerLevel serverLevel, BlockPos blockPos, Entity entity, AABB teleportAABB) {
         AABB entityBoundingBox = TRTeleporter.getBoundingBoxWithMovement(entity);
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            teleportAABB = VSHelper.toWorldAABB(serverLevel, blockPos, teleportAABB);
+        }
+
         double insideBlockExpansion = 1.0E-7D; //Hardcoded value replicates logic from Entity#checkInsideBlocks
         AABB inflatedEntityBoundingBox = entityBoundingBox.inflate(insideBlockExpansion);
         AABB inflatedTeleportBoundingBox = teleportAABB.inflate(insideBlockExpansion);

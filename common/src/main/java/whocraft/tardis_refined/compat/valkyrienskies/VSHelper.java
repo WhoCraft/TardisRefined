@@ -70,6 +70,21 @@ public class VSHelper {
         }
     }
 
+    public static AABB toWorldAABB(Level level, BlockPos pos, AABB aabb) {
+        Ship ship = VSGameUtilsKt.getShipManagingPos(level, pos);
+        if (ship != null) {
+            Vector3d min = new Vector3d();
+            Vector3d max = new Vector3d();
+            ship.getShipToWorld().transformAab(
+                    aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ,
+                    min, max
+            );
+            return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
+        } else {
+            return aabb;
+        }
+    }
+
     public static Vector3d toWorldRotation(Level level, BlockPos position, Direction direction) {
         Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
         if (ship != null) {
