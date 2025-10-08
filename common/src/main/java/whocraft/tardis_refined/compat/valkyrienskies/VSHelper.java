@@ -4,10 +4,12 @@ import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Math;
 import org.joml.Vector3d;
@@ -132,6 +134,14 @@ public class VSHelper {
         }
     }
 
+    public static Vec2 toWorldRotation(Level level, BlockPos blockPos, Vec2 rotation) {
+        var ship = VSGameUtilsKt.getShipManagingPos(level, blockPos);
+        if (ship != null) {
+            return vectorToRotation(ship.getShipToWorld().transformDirection(rotationToVector(rotation)));
+        }
+        return rotation;
+    }
+
     public static Vector3d blockPosToVector(BlockPos blockPos) {
         return new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
@@ -146,5 +156,21 @@ public class VSHelper {
 
     public static Direction vectorToDirection(Vector3d vector) {
         return Direction.getNearest(vector.x, vector.y, vector.z);
+    }
+
+    public static Vector3d rotationToVector(Vec2 rotation) {
+        var rot = Vec3.directionFromRotation(rotation);
+        return new Vector3d(rot.x, rot.y, rot.z);
+    }
+
+    public static Vec2 vectorToRotation(Vector3d vector) {
+        // Copied from Entity::lookAt
+        double x = vector.x;
+        double y = vector.y;
+        double z = vector.z;
+        double hor = java.lang.Math.sqrt(x * x + z * z);
+        float pitch = Mth.wrapDegrees((float)(-(Mth.atan2(y, hor) * Mth.RAD_TO_DEG)));
+        float yaw = Mth.wrapDegrees((float)(Mth.atan2(z, x) * Mth.RAD_TO_DEG) - 90.0f);
+        return new Vec2(pitch, yaw);
     }
 }
