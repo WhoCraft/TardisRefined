@@ -3,6 +3,7 @@ package whocraft.tardis_refined.compat.valkyrienskies;
 import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -68,6 +69,18 @@ public class VSHelper {
         } else {
             return true;
         }
+    }
+
+    public static ChunkPos toWorldShipCenterChunk(Level level, ChunkPos position) {
+        var ship = VSGameUtilsKt.getShipManagingPos(level, position);
+        if (ship != null) {
+            var pos = ship.getWorldAABB().center(new Vector3d());
+            return new ChunkPos(
+                    SectionPos.blockToSectionCoord(pos.x),
+                    SectionPos.blockToSectionCoord(pos.z)
+            );
+        }
+        return position;
     }
 
     public static AABB toWorldAABB(Level level, BlockPos pos, AABB aabb) {

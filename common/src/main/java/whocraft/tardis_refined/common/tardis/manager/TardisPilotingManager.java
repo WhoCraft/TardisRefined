@@ -33,6 +33,8 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
@@ -343,7 +345,7 @@ public class TardisPilotingManager extends TickableHandler {
         List<TardisNavLocation> solutionsInRow = new ArrayList<>();
 
         //Force load chunk to search positions
-        level.setChunkForced(chunkPos.x, chunkPos.z, true);
+        setChunkForced(level, chunkPos, true);
 
         //Set the default location to 0,0,0 at the target level. DO NOT set this to null else we cause a game crash
         TardisNavLocation closest = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, level);
@@ -393,7 +395,7 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         //Unforce chunk after we are done searching
-        level.setChunkForced(chunkPos.x, chunkPos.z, false);
+        setChunkForced(level, chunkPos, false);
 
         return closest;
     }
@@ -1165,5 +1167,12 @@ public class TardisPilotingManager extends TickableHandler {
                 .orElse(1);
         return this.speedModifier;
     }
+
+	public static void setChunkForced(ServerLevel level, ChunkPos pos, boolean forced) {
+		if (ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(pos)) {
+			pos = VSHelper.toWorldShipCenterChunk(level, pos); // We want load the ship, not the shipyard.
+		}
+		level.setChunkForced(pos.x, pos.z, forced);
+	}
 
 }
