@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.compat.valkyrienskies;
 
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
+import com.google.common.collect.Iterables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -8,6 +8,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
@@ -24,6 +25,35 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class VSHelper {
+    public static class VSShip {
+
+        private final Ship ship;
+
+        public VSShip(Ship ship) {
+            this.ship = ship;
+        }
+
+        private AABB toShipAABB(AABB aabb) {
+            AABBd worldAABB = VectorConversionsMCKt.toJOML(aabb);
+            return VectorConversionsMCKt.toMinecraft(worldAABB.transform(ship.getWorldToShip()));
+        }
+
+        public Direction toShipDirection(Direction direction) {
+            return vectorToDirection(ship.getWorldToShip().transformDirection(directionToVector(direction)));
+        }
+
+        public Stream<BlockPos> toShipPositions(AABB worldAABB) {
+            var shypAABB = toShipAABB(worldAABB);
+            return BlockPos.betweenClosedStream(shypAABB);
+        }
+
+        public boolean isHorizontalEnough() {
+            var angles = ship.getTransform().getShipToWorldRotation().getEulerAnglesZYX(new Vector3d());
+            return Math.abs(angles.x) < Math.PI / 2 || Math.abs(angles.z) < Math.PI / 2;
+        }
+
+    }
+
     public static boolean isChunkInShipyard(ChunkPos pos) {
         return VS2ChunkAllocator.INSTANCE.isChunkInShipyardCompanion(pos.x, pos.z);
     }
@@ -32,11 +62,19 @@ public class VSHelper {
         return VSGameUtilsKt.isBlockInShipyard(level, pos);
     }
 
+    public static Iterable<VSShip> getShipsIntersecting(Level level, AABB aabb) {
+        return Iterables.transform(VSGameUtilsKt.getShipsIntersecting(level, aabb), VSShip::new);
+    }
+
     public static void forEachShipInAABB(Level level, AABB aabb, Consumer<AABB> consumer) {
         AABBd worldAABB = VectorConversionsMCKt.toJOML(aabb);
         for (Ship ship : VSGameUtilsKt.getShipsIntersecting(level, aabb)) {
             consumer.accept(VectorConversionsMCKt.toMinecraft(worldAABB.transform(ship.getWorldToShip())));
         }
+    }
+
+    public static boolean collidesWithShip(Level level, BlockPos pos) {
+        return collidesWithShip(level, AABB.of(new BoundingBox(pos)));
     }
 
     public static boolean collidesWithShip(Level level, AABB boundingBox) {
