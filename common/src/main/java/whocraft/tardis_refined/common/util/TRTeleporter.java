@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
@@ -24,7 +25,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
@@ -136,6 +136,12 @@ public class TRTeleporter {
     private static Entity teleportLogicCommon(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float pYaw, float pPitch) {
 
         pEntity.setDeltaMovement(Vec3.ZERO);
+
+        LevelHelper.loadShips(
+                destination,
+                new ChunkPos(SectionPos.blockToSectionCoord(pX), SectionPos.blockToSectionCoord(pZ))
+        );
+
 
         Entity teleportedEntity;
         if (pEntity instanceof ServerPlayer serverPlayer) {

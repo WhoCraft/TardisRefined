@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -14,6 +15,7 @@ import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.NbtConstants;
 
@@ -161,7 +163,7 @@ public class TardisExteriorManager extends BaseHandler {
 
         //Force load target chunk
 	    TardisPilotingManager.setChunkForced(targetLevel, chunkPos, true); //Set chunk to be force loaded to properly place block
-        this.isLanding = true;
+	    this.isLanding = true;
         operator.tardisClientData().setIsLanding(true);
         operator.tardisClientData().sync();
 

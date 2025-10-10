@@ -73,16 +73,25 @@ public class VSHelper {
         }
     }
 
-    public static ChunkPos toWorldShipCenterChunk(Level level, ChunkPos position) {
+    public static Stream<ChunkPos> toWorldShipChunks(Level level, ChunkPos position) {
         var ship = VSGameUtilsKt.getShipManagingPos(level, position);
         if (ship != null) {
-            var pos = ship.getWorldAABB().center(new Vector3d());
-            return new ChunkPos(
-                    SectionPos.blockToSectionCoord(pos.x),
-                    SectionPos.blockToSectionCoord(pos.z)
+            AABBd chunk = VectorConversionsMCKt.toJOML(AABB.of(new BoundingBox(
+                    position.getMinBlockX(), level.getMinBuildHeight(), position.getMinBlockZ(),
+                    position.getMaxBlockX(), level.getMaxBuildHeight(), position.getMaxBlockZ()
+            )));
+            chunk.transform(ship.getShipToWorld());
+            var minPos = new ChunkPos(
+                    SectionPos.blockToSectionCoord(chunk.minX),
+                    SectionPos.blockToSectionCoord(chunk.minZ)
             );
+            var maxPos = new ChunkPos(
+                    SectionPos.blockToSectionCoord(chunk.maxX),
+                    SectionPos.blockToSectionCoord(chunk.maxZ)
+            );
+            return ChunkPos.rangeClosed(minPos, maxPos);
         }
-        return position;
+        return Stream.of(position);
     }
 
     public static AABB toWorldAABB(Level level, BlockPos pos, AABB aabb) {

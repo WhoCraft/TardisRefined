@@ -1170,9 +1170,12 @@ public class TardisPilotingManager extends TickableHandler {
 
 	public static void setChunkForced(ServerLevel level, ChunkPos pos, boolean forced) {
 		if (ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(pos)) {
-			pos = VSHelper.toWorldShipCenterChunk(level, pos); // We want load the ship, not the shipyard.
+			VSHelper.toWorldShipChunks(level, pos).forEach(p -> {
+				level.setChunkForced(p.x, p.z, forced);
+			});
+		} else {
+			level.setChunkForced(pos.x, pos.z, forced);
 		}
-		level.setChunkForced(pos.x, pos.z, forced);
 	}
 
 }
