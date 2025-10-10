@@ -638,6 +638,11 @@ public class TardisPilotingManager extends TickableHandler {
         BlockPos startingPointPos = startingPoint.getPosition();
         BlockPos endingPointPos = endingPoint.getPosition();
 
+        if (ModCompatChecker.valkyrienSkies()) {
+            startingPointPos = VSHelper.toWorldPosition(startingPoint.getLevel(), startingPointPos);
+            endingPointPos = VSHelper.toWorldPosition(endingPoint.getLevel(), endingPointPos);
+        }
+
         int distance = 1000;
 
         if (startingPointPos != null && endingPointPos != null && startingPointPos != BlockPos.ZERO && endingPointPos != BlockPos.ZERO) {
@@ -711,6 +716,12 @@ public class TardisPilotingManager extends TickableHandler {
 
         BlockPos targetPosition = this.getTargetLocation().getPosition();
         BlockPos startingPosition = this.getCurrentLocation().getPosition();
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            targetPosition = VSHelper.toWorldPosition(getTargetLocation().getLevel(), targetPosition);
+            startingPosition = VSHelper.toWorldPosition(getCurrentLocation().getLevel(), startingPosition);
+        }
+
         float percentage = this.getFlightPercentageCovered();
         float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
         float percentageY = startingPosition.getY() + (targetPosition.getY() - startingPosition.getY()) * percentage;
@@ -1168,14 +1179,14 @@ public class TardisPilotingManager extends TickableHandler {
         return this.speedModifier;
     }
 
-	public static void setChunkForced(ServerLevel level, ChunkPos pos, boolean forced) {
-		if (ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(pos)) {
-			VSHelper.toWorldShipChunks(level, pos).forEach(p -> {
-				level.setChunkForced(p.x, p.z, forced);
-			});
-		} else {
-			level.setChunkForced(pos.x, pos.z, forced);
-		}
-	}
+    public static void setChunkForced(ServerLevel level, ChunkPos pos, boolean forced) {
+        if (ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(pos)) {
+            VSHelper.toWorldShipChunks(level, pos).forEach(p -> {
+                level.setChunkForced(p.x, p.z, forced);
+            });
+        } else {
+            level.setChunkForced(pos.x, pos.z, forced);
+        }
+    }
 
 }
