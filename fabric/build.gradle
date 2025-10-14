@@ -54,6 +54,11 @@ repositories {
         name = "Mod Menu Maven"
         url = "https://maven.terraformersmc.com/"
     }
+
+    maven {
+        name = "Mod Maven"
+        url = uri("https://modmaven.dev/")
+    }
 }
 
 sourceSets.main.resources {
