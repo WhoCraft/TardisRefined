@@ -52,7 +52,7 @@ public class CreateCommand {
 
         context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
-        if (TardisHelper.createTardis(pos, level, generatedLevelKey, shellTheme, desktopTheme, Direction.NORTH)) {
+        if (TardisHelper.createTardis(pos, level, generatedLevelKey, shellTheme, desktopTheme, Direction.NORTH, true)) {
             context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
         }
 

@@ -131,7 +131,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
         add(TRItemRegistry.MALLET.get(), "Mallet");
         add(TRItemRegistry.TEST_TUBE.get(), "Test Tube");
-        add(TRItemRegistry.TARDIS.get(), "Tardis");
+        add(TRItemRegistry.TARDIS.get(), "Grown TARDIS");
 
         /*Damage Sources*/
         add(TRDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");

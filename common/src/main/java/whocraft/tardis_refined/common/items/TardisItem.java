@@ -48,7 +48,7 @@ public class TardisItem extends Item {
 
         ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
 
-        DesktopTheme desktopTheme = TardisDesktops.FACTORY_THEME;
+        DesktopTheme desktopTheme = TardisDesktops.DEFAULT_OVERGROWN_THEME;
 
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
@@ -67,7 +67,7 @@ public class TardisItem extends Item {
 
         context.getLevel().getServer().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
-        if (TardisHelper.createTardis(pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing)) {
+        if (TardisHelper.createTardis(pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing,false)) {
             context.getLevel().getServer().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
         }
 
