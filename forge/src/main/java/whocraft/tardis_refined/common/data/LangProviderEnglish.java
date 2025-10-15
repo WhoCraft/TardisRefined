@@ -162,6 +162,8 @@ public class LangProviderEnglish extends LanguageProvider {
         String errorPrefix =  ChatFormatting.BOLD +  ChatFormatting.RED.toString() + "[ERROR] " + ChatFormatting.RESET;
 
         /*Messages*/
+        add(ModMessages.MSG_EXTERIOR_COOLDOWN, ChatFormatting.RED + "You cannot spawn a TARDIS inside another TARDIS.");
+
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");

@@ -21,9 +21,13 @@ import whocraft.tardis_refined.command.arguments.ShellArgumentType;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.DimensionUtil;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
+import java.awt.*;
 import java.util.UUID;
 
 public class TardisItem extends Item {
@@ -40,6 +44,11 @@ public class TardisItem extends Item {
             return InteractionResult.PASS;
         }
 
+        if (!DimensionUtil.isAllowedDimension(level.dimension())) {
+            PlayerUtil.sendMessage(player, ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, true);
+            return InteractionResult.FAIL;
+        }
+
         Direction blockFace = context.getClickedFace();
         Direction playerFacing = player.getDirection();
 
@@ -47,8 +56,8 @@ public class TardisItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        ResourceLocation shellTheme = ShellTheme.FACTORY.getId();
-        DesktopTheme desktopTheme = TardisDesktops.DEFAULT_OVERGROWN_THEME;
+        ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
+        DesktopTheme desktopTheme = TardisDesktops.TERRAFORMED;
 
         BlockPos pos = context.getClickedPos();
         BlockState state = level.getBlockState(pos);
