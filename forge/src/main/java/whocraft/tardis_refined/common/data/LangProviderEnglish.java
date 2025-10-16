@@ -124,7 +124,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
         add(ModMessages.ITEM_GROUP, "Tardis Refined");
         add(TRItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
-        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
+        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, ChatFormatting.GRAY + "An amethyst frequency manipulator");
         add(TRItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(TRItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
         add(TRItemRegistry.GLASSES.get(), "AR Glasses");
