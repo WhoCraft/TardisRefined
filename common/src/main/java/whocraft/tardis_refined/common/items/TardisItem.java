@@ -40,47 +40,47 @@ public class TardisItem extends Item {
         Level level = context.getLevel();
         Player player = context.getPlayer();
 
-        if (!(level instanceof ServerLevel serverLevel) || player == null) {
-            return InteractionResult.PASS;
+        if (level instanceof ServerLevel serverLevel && player != null) {
+
+            if (!DimensionUtil.isAllowedDimension(level.dimension())) {
+                PlayerUtil.sendMessage(player, ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, true);
+                return InteractionResult.FAIL;
+            }
+
+            Direction blockFace = context.getClickedFace();
+            Direction playerFacing = player.getDirection();
+
+            if (blockFace != Direction.UP) {
+                return InteractionResult.FAIL;
+            }
+
+            ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
+            DesktopTheme desktopTheme = TardisDesktops.TERRAFORMED;
+
+            BlockPos pos = context.getClickedPos();
+            BlockState state = level.getBlockState(pos);
+            if (state.isSolid()) {
+                pos = pos.above();
+            }
+
+            MinecraftServer server = serverLevel.getServer();
+
+            ResourceKey<Level> generatedLevelKey = ResourceKey.create(
+                    Registries.DIMENSION,
+                    new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString())
+            );
+
+            MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.location());
+
+            server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
+
+            if (TardisHelper.createTardis(pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing, false)) {
+                server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
+            }
+
+            return super.useOn(context);
         }
 
-        if (!DimensionUtil.isAllowedDimension(level.dimension())) {
-            PlayerUtil.sendMessage(player, ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, true);
-            return InteractionResult.FAIL;
-        }
-
-        Direction blockFace = context.getClickedFace();
-        Direction playerFacing = player.getDirection();
-
-        if (blockFace != Direction.UP) {
-            return InteractionResult.FAIL;
-        }
-
-        ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
-        DesktopTheme desktopTheme = TardisDesktops.TERRAFORMED;
-
-        BlockPos pos = context.getClickedPos();
-        BlockState state = level.getBlockState(pos);
-        if (state.isSolid()) {
-            pos = pos.above();
-        }
-
-        MinecraftServer server = serverLevel.getServer();
-
-        ResourceKey<Level> generatedLevelKey = ResourceKey.create(
-                Registries.DIMENSION,
-                new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString())
-        );
-
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.location());
-
-        server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
-
-        if (TardisHelper.createTardis(pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing, false)) {
-            server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
-        }
-
-        return super.useOn(context);
+        return InteractionResult.PASS;
     }
-
 }
