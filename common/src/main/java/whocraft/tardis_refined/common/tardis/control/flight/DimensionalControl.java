@@ -20,8 +20,6 @@ import whocraft.tardis_refined.registry.TRUpgrades;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.minecraft.world.level.Level.OVERWORLD;
-
 public class DimensionalControl extends Control {
     public DimensionalControl(ResourceLocation id) {
         super(id);
@@ -64,7 +62,7 @@ public class DimensionalControl extends Control {
 
             if (!TRUpgrades.DIMENSION_TRAVEL.get().isUnlocked(upgradeHandler)) {
                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.HARDWARE_OFFLINE), true);
-                pilotManager.getTargetLocation().setDimensionKey(OVERWORLD);
+                pilotManager.getTargetLocation().setDimensionKey(pilotManager.getCurrentLocation().getDimensionKey());
                 return false;
             }
 
