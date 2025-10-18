@@ -74,6 +74,7 @@ public class TardisPilotingManager extends TickableHandler {
     private int distanceCovered = 0;
     private int ticksLanding = 0;
     private int ticksTakingOff = 0;
+    private boolean sentLandingError = false;
 
     // Crash Fields
     private int ticksCrashing = 0;
@@ -332,8 +333,26 @@ public class TardisPilotingManager extends TickableHandler {
             this.endFlightEarly(false);
         }
 
+        boolean justChanged = false;
         if (isInFlight && this.canEndFlight() && !this.isLanding() && !this.isTakingOff() && (this.isHandbrakeOn || this.throttleStage == 0)) {
-            this.endFlight(false, false);
+            if (!this.endFlight(false, false)) {
+                if (!sentLandingError) {
+                    operator.getLevel().players().forEach(player -> {
+                        PlayerUtil.sendMessage(
+                                player,
+                                Component.translatable(ModMessages.CANNOT_LAND).withStyle(
+                                        s -> s.withColor(ChatFormatting.DARK_RED)
+                                ),
+                                true
+                        );
+                    });
+                }
+                sentLandingError = true;
+                justChanged = true;
+            }
+        }
+        if (sentLandingError && !justChanged) {
+            sentLandingError = false;
         }
     }
 
