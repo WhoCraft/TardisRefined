@@ -116,8 +116,8 @@ public class TardisPilotingManager extends TickableHandler {
 
         this.isPassivelyRefuelling = tag.getBoolean(NbtConstants.IS_PASSIVELY_REFUELING);
 
-        setCurrentLocation(NbtConstants.getTardisNavLocation(tag, NbtConstants.CURRENT_LOCATION));
-        setTargetLocation(NbtConstants.getTardisNavLocation(tag, NbtConstants.TARGET_LOCATION));
+        this.currentLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.CURRENT_LOCATION);
+        this.targetLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.TARGET_LOCATION);
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.RETURN_LOCATION);
 
         this.currentConsoleBlockPos = NbtUtils.readBlockPos(tag.getCompound(CURRENT_CONSOLE_POS));
