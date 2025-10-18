@@ -32,7 +32,7 @@ public class DimensionalControl extends Control {
         super(id, langId);
     }
 
-    private List<ServerLevel> getAllowedDimensions(TardisLevelOperator tardisLevelOperator) {
+    public static List<ServerLevel> getAllowedDimensions(TardisLevelOperator tardisLevelOperator) {
         var filteredDimensions = new ArrayList<ServerLevel>();
 
         var filteredLevels = Platform.getServer().getAllLevels();
