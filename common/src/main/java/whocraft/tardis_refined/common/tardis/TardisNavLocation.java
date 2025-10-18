@@ -92,6 +92,10 @@ public class TardisNavLocation {
             return DimensionUtil.getLevel(dimensionKey);
         }
 
+        var level = Platform.getServer().getLevel(dimensionKey);
+        if (level != null) {
+            return level;
+        }
         return Platform.getServer().getLevel(Level.OVERWORLD);
     }
 
