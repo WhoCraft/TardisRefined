@@ -12,6 +12,8 @@ import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.*;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
@@ -82,6 +84,9 @@ public class DimensionalControl extends Control {
                 }
             }
 
+            if (ModCompatChecker.valkyrienSkies()) {
+                pilotManager.setTargetLocation(VSHelper.toWorldLocation(pilotManager.getTargetLocation()));
+            }
             pilotManager.setTargetDimension(dimensions.get(nextIndex));
 
             PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);

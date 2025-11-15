@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
@@ -24,9 +25,9 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.ArrayList;
@@ -135,6 +136,12 @@ public class TRTeleporter {
     private static Entity teleportLogicCommon(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float pYaw, float pPitch) {
 
         pEntity.setDeltaMovement(Vec3.ZERO);
+
+        LevelHelper.loadShips(
+                destination,
+                new ChunkPos(SectionPos.blockToSectionCoord(pX), SectionPos.blockToSectionCoord(pZ))
+        );
+
 
         Entity teleportedEntity;
         if (pEntity instanceof ServerPlayer serverPlayer) {
@@ -429,6 +436,11 @@ public class TRTeleporter {
      */
     public static boolean teleportIfCollided(ServerLevel serverLevel, BlockPos blockPos, Entity entity, AABB teleportAABB) {
         AABB entityBoundingBox = TRTeleporter.getBoundingBoxWithMovement(entity);
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            teleportAABB = VSHelper.toWorldAABB(serverLevel, blockPos, teleportAABB);
+        }
+
         double insideBlockExpansion = 1.0E-7D; //Hardcoded value replicates logic from Entity#checkInsideBlocks
         AABB inflatedEntityBoundingBox = entityBoundingBox.inflate(insideBlockExpansion);
         AABB inflatedTeleportBoundingBox = teleportAABB.inflate(insideBlockExpansion);

@@ -2,7 +2,11 @@ package whocraft.tardis_refined.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,5 +73,14 @@ public class LevelHelper {
         return posList;
     }
 
+	public static void loadShips(ServerLevel level, ChunkPos orgPos) {
+		// On Fabric, we fall through ships if we don't load the chunk in advance.
+		if (!Platform.isForge() && ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(orgPos)) {
+			List<ChunkPos> positions = VSHelper.toWorldShipChunks(level, orgPos).toList();
+			positions.forEach(p -> {
+				level.getChunk(p.x, p.z); // Load the chunk now.
+			});
+		}
+	}
 
 }

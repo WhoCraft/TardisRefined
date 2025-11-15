@@ -18,6 +18,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
@@ -33,6 +35,8 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
@@ -343,13 +347,22 @@ public class TardisPilotingManager extends TickableHandler {
         List<TardisNavLocation> solutionsInRow = new ArrayList<>();
 
         //Force load chunk to search positions
-        level.setChunkForced(chunkPos.x, chunkPos.z, true);
+        setChunkForced(level, chunkPos, true);
 
         //Set the default location to 0,0,0 at the target level. DO NOT set this to null else we cause a game crash
         TardisNavLocation closest = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, level);
 
+        boolean shouldLandOnShip = false;
+
+        // Make sure TARDIS lands as a part of the ship and not on top of it.
+        if (ModCompatChecker.valkyrienSkies()) {
+            if (!VSHelper.isBlockInShipyard(level, position) && VSHelper.collidesWithShip(level, position.below())) {
+                shouldLandOnShip = true;
+            }
+        }
+
         //First manually check if the exact target position can allow us to place the Tardis
-        if (this.canPlaceTardis(location) && this.isExitPositionSafe(location)) {
+        if (this.canPlaceTardis(location) && this.isExitPositionSafe(location) && !shouldLandOnShip) {
             solutionsInRow.add(location);
         }
 
@@ -393,7 +406,7 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         //Unforce chunk after we are done searching
-        level.setChunkForced(chunkPos.x, chunkPos.z, false);
+        setChunkForced(level, chunkPos, false);
 
         return closest;
     }
@@ -418,8 +431,21 @@ public class TardisPilotingManager extends TickableHandler {
 
         // Fetch the row of blocks and filter them all out to air.
         List<BlockPos> blockColumn = this.getBlockPosColumn(position, minHeight, maxBuildHeight);
-        List<BlockPos> filteredForAir = blockColumn.stream().filter(x -> isLegalLandingBlock(level, x)).toList();
-        List<BlockPos> filteredForNonAir = blockColumn.stream().filter(x -> !isLegalLandingBlock(level, x)).toList();
+        Map<BlockPos, Direction> directionOverrides = new HashMap<>();
+        if (ModCompatChecker.valkyrienSkies()) {
+            var box = AABB.of(BoundingBox.fromCorners(position.atY(minHeight), position.atY(maxBuildHeight)));
+            for (var ship : VSHelper.getShipsIntersecting(level, box)) {
+                if (!ship.isHorizontalEnough()) continue;
+                ship.toShipPositions(box).forEach(pos -> {
+                    var p = pos.immutable();
+                    blockColumn.add(p);
+                    directionOverrides.put(p, ship.toShipDirection(direction));
+                });
+            }
+        }
+
+        List<BlockPos> filteredForAir = blockColumn.stream().filter(x -> isLegalLandingBlock(level, x, LandingBlockType.AIR)).toList();
+        List<BlockPos> filteredForNonAir = blockColumn.stream().filter(x -> isLegalLandingBlock(level, x, LandingBlockType.GROUND)).toList();
 
         //Out of all the positions which are considered empty spaces (air), check if each position allows for the Tardis exterior to be placed and the area outside the door is safe
         for (BlockPos airPos : filteredForAir) {
@@ -432,15 +458,31 @@ public class TardisPilotingManager extends TickableHandler {
             BlockPos below = airPos.below();
             BlockPos above = airPos.above();
 
+            // Ignore positions on top of ships not in the shipyard. We want the TARDIS to land in the ship world.
+            if (ModCompatChecker.valkyrienSkies() && !VSHelper.isBlockInShipyard(level, below)) {
+                if (VSHelper.collidesWithShip(level, below)) continue;
+            }
+
             // Check if this position have the space for a TARDIS.
             if (filteredForNonAir.contains(below) && filteredForAir.contains(above)) {
                 // Check if the exit position allows an entity to be teleported without suffocating or falling.
                 if (this.canPlaceTardis(level, airPos) && this.isExitPositionSafe(level, airPos, direction)) {
-                    solutionsInRow.add(new TardisNavLocation(airPos, direction, level));
+                    var targetDirection = directionOverrides.getOrDefault(airPos, direction);
+                    solutionsInRow.add(new TardisNavLocation(airPos, targetDirection, level));
                 }
             }
         }
         return solutionsInRow;
+    }
+
+    private static int distManhattan(TardisNavLocation lhs, TardisNavLocation rhs) {
+        var lhsPos = lhs.getPosition();
+        var rhsPos = rhs.getPosition();
+        if (ModCompatChecker.valkyrienSkies()) {
+            lhsPos = VSHelper.toWorldPosition(lhs.getLevel(), lhsPos);
+            rhsPos = VSHelper.toWorldPosition(rhs.getLevel(), rhsPos);
+        }
+        return lhsPos.distManhattan(rhsPos);
     }
 
     /**
@@ -451,7 +493,7 @@ public class TardisPilotingManager extends TickableHandler {
         TardisNavLocation intendedLocation = targetLocation;
         TardisNavLocation closestSolution = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, intendedLocation.getLevel());
         for (TardisNavLocation potentialLocation : validPositions) {
-            int distanceBetween = Math.abs(potentialLocation.getPosition().distManhattan(intendedLocation.getPosition()));
+            int distanceBetween = Math.abs(distManhattan(potentialLocation, intendedLocation));
             if (distanceBetween < distance) {
                 distance = distanceBetween;
                 closestSolution = potentialLocation;
@@ -479,14 +521,48 @@ public class TardisPilotingManager extends TickableHandler {
         return positions;
     }
 
+    private enum LandingBlockType {
+        AIR(false, true),
+        GROUND(true, false);
+
+        private final boolean ground;
+        private final boolean checkWorldFromShipyard;
+
+        LandingBlockType(boolean ground, boolean checkWorldFromShipyard) {
+            this.ground = ground;
+            this.checkWorldFromShipyard = checkWorldFromShipyard;
+        }
+    }
+
+    private boolean isLegalLandingBlock(ServerLevel level, BlockPos pos, LandingBlockType type) {
+        if (ModCompatChecker.valkyrienSkies()) {
+            if (VSHelper.collidesWithShip(level, pos)) {
+                return type.ground;
+            }
+            if (VSHelper.isBlockInShipyard(level, pos)) {
+                if (type.checkWorldFromShipyard && !isLegalLandingBlockExcludeShips(level, VSHelper.toWorldPosition(level, pos), type)) {
+                    return false;
+                }
+            }
+        }
+
+
+        return isLegalLandingBlockExcludeShips(level, pos, type);
+    }
+
 
     /**
      * Check if the block at the target position is a valid block to land inside.
      **/
-    private boolean isLegalLandingBlock(ServerLevel level, BlockPos pos) {
+    private boolean isLegalLandingBlockExcludeShips(ServerLevel level, BlockPos pos, LandingBlockType type) {
         BlockState state = level.getBlockState(pos);
         // Can land in air or override any block that can be marked as "replaceable" such as snow, tall grass etc.
-        return state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty() && !state.isCollisionShapeFullBlock(level, pos));
+        boolean isSpaceEmpty = state.isAir() || (state.canBeReplaced() && state.getFluidState().isEmpty() && !state.isCollisionShapeFullBlock(level, pos));
+        if (type.ground) {
+            return !isSpaceEmpty;
+        } else {
+            return isSpaceEmpty;
+        }
     }
 
     private boolean isExitPositionSafe(TardisNavLocation location) {
@@ -495,9 +571,9 @@ public class TardisPilotingManager extends TickableHandler {
 
     private boolean isExitPositionSafe(ServerLevel level, BlockPos pos, Direction offsetDirection) {
         BlockPos exitPosition = pos.offset(offsetDirection.getNormal()); //Check the block that is facing away from the doors.
-        if (this.isLegalLandingBlock(level, exitPosition.above())
-                && this.isLegalLandingBlock(level, exitPosition) //If there is a 2 block space for the entity to be placed at
-                && !this.isLegalLandingBlock(level, exitPosition.below()) //If there is a solid block beneath the exit position for the entity to stand on
+        if (this.isLegalLandingBlock(level, exitPosition.above(), LandingBlockType.AIR)
+                && this.isLegalLandingBlock(level, exitPosition, LandingBlockType.AIR) //If there is a 2 block space for the entity to be placed at
+                && this.isLegalLandingBlock(level, exitPosition.below(), LandingBlockType.GROUND) //If there is a solid block beneath the exit position for the entity to stand on
         ) {
             return true;
         }
@@ -511,14 +587,14 @@ public class TardisPilotingManager extends TickableHandler {
         ServerLevel targetLevel = location.getLevel();
         BlockPos pos = location.getPosition();
         boolean isBelowNetherRoof = (targetLevel.dimension() == Level.NETHER && pos.getY() <= 125);
-        return isBelowNetherRoof && this.isLegalLandingBlock(targetLevel, pos) && isLegalLandingBlock(targetLevel, pos.above()) && !isLegalLandingBlock(targetLevel, pos.below());
+        return isBelowNetherRoof && this.isLegalLandingBlock(targetLevel, pos, LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.below(), LandingBlockType.GROUND);
     }
 
     /**
      * If there is a 2 block vertical space for the exterior to be placed at, and the block below the exterior is solid
      */
     private boolean canPlaceTardis(ServerLevel level, BlockPos pos) {
-        return this.isLegalLandingBlock(level, pos) && isLegalLandingBlock(level, pos.above()) && !isLegalLandingBlock(level, pos.below());
+        return this.isLegalLandingBlock(level, pos, LandingBlockType.AIR) && isLegalLandingBlock(level, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(level, pos.below(), LandingBlockType.GROUND);
     }
 
     /**
@@ -636,6 +712,11 @@ public class TardisPilotingManager extends TickableHandler {
         BlockPos startingPointPos = startingPoint.getPosition();
         BlockPos endingPointPos = endingPoint.getPosition();
 
+        if (ModCompatChecker.valkyrienSkies()) {
+            startingPointPos = VSHelper.toWorldPosition(startingPoint.getLevel(), startingPointPos);
+            endingPointPos = VSHelper.toWorldPosition(endingPoint.getLevel(), endingPointPos);
+        }
+
         int distance = 1000;
 
         if (startingPointPos != null && endingPointPos != null && startingPointPos != BlockPos.ZERO && endingPointPos != BlockPos.ZERO) {
@@ -709,6 +790,12 @@ public class TardisPilotingManager extends TickableHandler {
 
         BlockPos targetPosition = this.getTargetLocation().getPosition();
         BlockPos startingPosition = this.getCurrentLocation().getPosition();
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            targetPosition = VSHelper.toWorldPosition(getTargetLocation().getLevel(), targetPosition);
+            startingPosition = VSHelper.toWorldPosition(getCurrentLocation().getLevel(), startingPosition);
+        }
+
         float percentage = this.getFlightPercentageCovered();
         float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
         float percentageY = startingPosition.getY() + (targetPosition.getY() - startingPosition.getY()) * percentage;
@@ -1164,6 +1251,16 @@ public class TardisPilotingManager extends TickableHandler {
                 .max()
                 .orElse(1);
         return this.speedModifier;
+    }
+
+    public static void setChunkForced(ServerLevel level, ChunkPos pos, boolean forced) {
+        if (ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(pos)) {
+            VSHelper.toWorldShipChunks(level, pos).forEach(p -> {
+                level.setChunkForced(p.x, p.z, forced);
+            });
+        } else {
+            level.setChunkForced(pos.x, pos.z, forced);
+        }
     }
 
 }

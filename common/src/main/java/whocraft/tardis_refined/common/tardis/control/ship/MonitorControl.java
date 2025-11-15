@@ -17,6 +17,8 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class MonitorControl extends Control {
@@ -56,8 +58,15 @@ public class MonitorControl extends Control {
                 if (key.interactMonitor(hand, player, controlEntity, player.getUsedItemHand()))
                     isSyncingKey = true;
             }
-            if (!isSyncingKey)
-                new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), operator.getPilotingManager().getCurrentLocation(), operator.getPilotingManager().getTargetLocation(), operator.getUpgradeHandler(), operator.getAestheticHandler().getShellTheme()).send((ServerPlayer) player);
+            if (!isSyncingKey) {
+                var currentLocation = operator.getPilotingManager().getCurrentLocation();
+                var targetLocation = operator.getPilotingManager().getTargetLocation();
+                if (ModCompatChecker.valkyrienSkies()) {
+                    currentLocation = VSHelper.toWorldLocation(currentLocation);
+                    targetLocation = VSHelper.toWorldLocation(targetLocation);
+                }
+                new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), currentLocation, targetLocation, operator.getUpgradeHandler(), operator.getAestheticHandler().getShellTheme()).send((ServerPlayer) player);
+            }
             return true;
         }
         return false;
