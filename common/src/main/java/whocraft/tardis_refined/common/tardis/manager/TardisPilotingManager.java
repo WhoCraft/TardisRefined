@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -190,7 +191,10 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         if (isInFlight) {
+            loadConsolePosition(level);
             onFlightTick(level);
+        } else {
+            unloadConsolePosition(level);
         }
 
         checkThrottleStatesForFlight();
@@ -223,8 +227,6 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private void onFlightTick(ServerLevel level) {
-        // Don't continue the flight if the throttle isn't active!!!
-
         if (this.throttleStage != 0 || this.autoLand) {
             ticksInFlight++;
 
@@ -286,6 +288,34 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
 
+    }
+
+    private void loadConsolePosition(ServerLevel level) {
+        if (getCurrentConsole() != null) {
+            BlockPos consolePos = getCurrentConsole().getBlockPos();
+            ChunkPos chunkPos = new ChunkPos(consolePos);
+
+            level.getChunkSource().addRegionTicket(
+                    TicketType.PORTAL,
+                    chunkPos,
+                    1,
+                    consolePos
+            );
+        }
+    }
+
+    private void unloadConsolePosition(ServerLevel level) {
+        if (getCurrentConsole() != null) {
+            BlockPos consolePos = getCurrentConsole().getBlockPos();
+            ChunkPos chunkPos = new ChunkPos(consolePos);
+
+            level.getChunkSource().removeRegionTicket(
+                    TicketType.PORTAL,
+                    chunkPos,
+                    1,
+                    consolePos
+            );
+        }
     }
 
 

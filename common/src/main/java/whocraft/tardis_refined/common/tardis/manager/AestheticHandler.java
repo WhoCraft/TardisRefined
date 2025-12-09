@@ -29,7 +29,6 @@ public class AestheticHandler extends BaseHandler {
 
 
     public AestheticHandler(TardisLevelOperator tardisLevelOperator) {
-        super();
         this.tardisOperator = tardisLevelOperator;
     }
 
@@ -120,7 +119,7 @@ public class AestheticHandler extends BaseHandler {
 
 
         aestheticTag.put("shell", shellInfo);
-        shellInfo.putString("vortex", vortex.toString());
+        aestheticTag.putString("vortex", vortex.toString());
         baseTag.put("aesthetic", aestheticTag);
 
         return baseTag;
