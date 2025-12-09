@@ -1,12 +1,16 @@
 package whocraft.tardis_refined.compat.valkyrienskies;
 
-import net.fabricmc.loader.impl.lib.sat4j.core.Vec;
+import com.google.common.collect.Iterables;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Math;
 import org.joml.Vector3d;
@@ -21,6 +25,35 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class VSHelper {
+    public static class VSShip {
+
+        private final Ship ship;
+
+        public VSShip(Ship ship) {
+            this.ship = ship;
+        }
+
+        private AABB toShipAABB(AABB aabb) {
+            AABBd worldAABB = VectorConversionsMCKt.toJOML(aabb);
+            return VectorConversionsMCKt.toMinecraft(worldAABB.transform(ship.getWorldToShip()));
+        }
+
+        public Direction toShipDirection(Direction direction) {
+            return vectorToDirection(ship.getWorldToShip().transformDirection(directionToVector(direction)));
+        }
+
+        public Stream<BlockPos> toShipPositions(AABB worldAABB) {
+            var shypAABB = toShipAABB(worldAABB);
+            return BlockPos.betweenClosedStream(shypAABB);
+        }
+
+        public boolean isHorizontalEnough() {
+            var angles = ship.getTransform().getShipToWorldRotation().getEulerAnglesZYX(new Vector3d());
+            return Math.abs(angles.x) < Math.PI / 2 || Math.abs(angles.z) < Math.PI / 2;
+        }
+
+    }
+
     public static boolean isChunkInShipyard(ChunkPos pos) {
         return VS2ChunkAllocator.INSTANCE.isChunkInShipyardCompanion(pos.x, pos.z);
     }
@@ -29,11 +62,19 @@ public class VSHelper {
         return VSGameUtilsKt.isBlockInShipyard(level, pos);
     }
 
+    public static Iterable<VSShip> getShipsIntersecting(Level level, AABB aabb) {
+        return Iterables.transform(VSGameUtilsKt.getShipsIntersecting(level, aabb), VSShip::new);
+    }
+
     public static void forEachShipInAABB(Level level, AABB aabb, Consumer<AABB> consumer) {
         AABBd worldAABB = VectorConversionsMCKt.toJOML(aabb);
         for (Ship ship : VSGameUtilsKt.getShipsIntersecting(level, aabb)) {
             consumer.accept(VectorConversionsMCKt.toMinecraft(worldAABB.transform(ship.getWorldToShip())));
         }
+    }
+
+    public static boolean collidesWithShip(Level level, BlockPos pos) {
+        return collidesWithShip(level, AABB.of(new BoundingBox(pos)));
     }
 
     public static boolean collidesWithShip(Level level, AABB boundingBox) {
@@ -67,6 +108,42 @@ public class VSHelper {
             return false;
         } else {
             return true;
+        }
+    }
+
+    public static Stream<ChunkPos> toWorldShipChunks(Level level, ChunkPos position) {
+        var ship = VSGameUtilsKt.getShipManagingPos(level, position);
+        if (ship != null) {
+            AABBd chunk = VectorConversionsMCKt.toJOML(AABB.of(new BoundingBox(
+                    position.getMinBlockX(), level.getMinBuildHeight(), position.getMinBlockZ(),
+                    position.getMaxBlockX(), level.getMaxBuildHeight(), position.getMaxBlockZ()
+            )));
+            chunk.transform(ship.getShipToWorld());
+            var minPos = new ChunkPos(
+                    SectionPos.blockToSectionCoord(chunk.minX),
+                    SectionPos.blockToSectionCoord(chunk.minZ)
+            );
+            var maxPos = new ChunkPos(
+                    SectionPos.blockToSectionCoord(chunk.maxX),
+                    SectionPos.blockToSectionCoord(chunk.maxZ)
+            );
+            return ChunkPos.rangeClosed(minPos, maxPos);
+        }
+        return Stream.of(position);
+    }
+
+    public static AABB toWorldAABB(Level level, BlockPos pos, AABB aabb) {
+        Ship ship = VSGameUtilsKt.getShipManagingPos(level, pos);
+        if (ship != null) {
+            Vector3d min = new Vector3d();
+            Vector3d max = new Vector3d();
+            ship.getShipToWorld().transformAab(
+                    aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ,
+                    min, max
+            );
+            return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
+        } else {
+            return aabb;
         }
     }
 
@@ -104,6 +181,14 @@ public class VSHelper {
         }
     }
 
+    public static Vec2 toWorldRotation(Level level, BlockPos blockPos, Vec2 rotation) {
+        var ship = VSGameUtilsKt.getShipManagingPos(level, blockPos);
+        if (ship != null) {
+            return vectorToRotation(ship.getShipToWorld().transformDirection(rotationToVector(rotation)));
+        }
+        return rotation;
+    }
+
     public static Vector3d blockPosToVector(BlockPos blockPos) {
         return new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
@@ -118,5 +203,21 @@ public class VSHelper {
 
     public static Direction vectorToDirection(Vector3d vector) {
         return Direction.getNearest(vector.x, vector.y, vector.z);
+    }
+
+    public static Vector3d rotationToVector(Vec2 rotation) {
+        var rot = Vec3.directionFromRotation(rotation);
+        return new Vector3d(rot.x, rot.y, rot.z);
+    }
+
+    public static Vec2 vectorToRotation(Vector3d vector) {
+        // Copied from Entity::lookAt
+        double x = vector.x;
+        double y = vector.y;
+        double z = vector.z;
+        double hor = java.lang.Math.sqrt(x * x + z * z);
+        float pitch = Mth.wrapDegrees((float)(-(Mth.atan2(y, hor) * Mth.RAD_TO_DEG)));
+        float yaw = Mth.wrapDegrees((float)(Mth.atan2(z, x) * Mth.RAD_TO_DEG) - 90.0f);
+        return new Vec2(pitch, yaw);
     }
 }

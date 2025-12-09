@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
@@ -33,6 +34,8 @@ import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -164,6 +167,14 @@ public class TardisHelper {
             float entityYRot = entity.getYRot();
             float destinationRotationYaw = destinationDirection.toYRot();
             float sourceRotationYaw = sourceDirection.toYRot();
+
+            if (ModCompatChecker.valkyrienSkies()) {
+                var sourceRot = VSHelper.toWorldRotation(entity.level(), sourceLocation.getPosition(), new Vec2(0, sourceRotationYaw));
+                sourceRotationYaw = sourceRot.y;
+                var destinationRot = VSHelper.toWorldRotation(destinationLevel, destinationLocation.getPosition(), new Vec2(0, destinationRotationYaw));
+                destinationRotationYaw = destinationRot.y;
+            }
+
             //Calculate the difference between the entity's rotation and the source direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
             float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(sourceRotationYaw);
 

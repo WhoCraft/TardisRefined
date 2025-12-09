@@ -27,6 +27,7 @@ import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
@@ -44,6 +45,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
     private boolean hasPotentialToBeRemoved = false;
+    private boolean placedByOtherMod = false; // We don't serialize this by design, because other mods might still create duplicates.
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -54,11 +56,17 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         return this.TARDIS_ID;
     }
 
+    public ShellBaseBlockEntity setPlacedByOtherMod(boolean placedByOtherMod) {
+        this.placedByOtherMod = placedByOtherMod;
+        return this;
+    }
+
     @Override
     public void setTardisId(ResourceKey<Level> levelKey) {
         this.TARDIS_ID = levelKey;
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+        placedByOtherMod = false; // If any mod runs this function we can be sure they have probably set the current location property.
     }
 
     @Override
@@ -130,7 +138,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 AestheticHandler aesthetics = cap.getAestheticHandler();
 
-                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().isLanding() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().isLanding() && cap.getPilotingManager().isInFlight() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
                     if (aesthetics.getShellTheme() != null) {
                         ResourceLocation theme = aesthetics.getShellTheme();
 
@@ -161,6 +169,13 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             
             TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
                 if(!tardisLevelOperator.getPilotingManager().isInFlight()) {
+                    if (placedByOtherMod) { // If placed by another mod we don't want it to delete itself.
+                        var dir = level.getBlockState(blockPos).getOptionalValue(ShellBaseBlock.FACING).orElse(Direction.NORTH);
+                        tardisLevelOperator.getPilotingManager().setCurrentLocation(
+                                new TardisNavLocation(blockPos, dir, level.dimension())
+                        );
+                        placedByOtherMod = false;
+                    }
                     if (isInvalidTardis(tardisLevelOperator)) {
                         BlockPos myCurrentPosition = getBlockPos();
                         level.removeBlock(myCurrentPosition, false);

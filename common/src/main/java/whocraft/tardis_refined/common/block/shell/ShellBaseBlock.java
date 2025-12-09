@@ -19,12 +19,15 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.util.TRTeleporter;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
@@ -119,7 +122,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
             ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof ExteriorShell shellEntity) {
                 AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
-                if (blockState.getValue(OPEN) && TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
+                if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
                     shellEntity.onAttemptEnter(blockState, serverLevel, blockPos, entity);
                 }
             }

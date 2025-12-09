@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.network.messages.player.C2SExitTardisView;
 import whocraft.tardis_refined.common.network.messages.player.S2CResetPostShellView;
@@ -18,6 +19,8 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.TRTeleporter;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -104,9 +107,15 @@ public class TardisPlayerInfo implements TardisPilot {
         if (spectateTarget != null) {
 
             BlockPos spectatePos = spectateTarget.getPosition();
+            Vec3 accurateSpectatePos = Vec3.atBottomCenterOf(spectatePos);
 
-            if (spectateTarget.getPosition().distManhattan(new Vec3i((int) player.position().x, (int) player.position().y, (int) player.position().z)) > 3 || !player.level().dimension().location().toString().equals(spectateTarget.getDimensionKey().location().toString())) {
-                TRTeleporter.simpleTeleport(player, spectateTarget.getLevel(), spectatePos.getX() + 0.5, spectatePos.getY(), spectatePos.getZ() + 0.5, playerPreviousRot, playerPreviousYaw);
+            if (ModCompatChecker.valkyrienSkies()) {
+                accurateSpectatePos = VSHelper.toWorldPosition(spectateTarget.getLevel(), spectatePos, accurateSpectatePos);
+                spectatePos = VSHelper.toWorldPosition(spectateTarget.getLevel(), spectatePos);
+            }
+
+            if (spectatePos.distManhattan(new Vec3i((int) player.position().x, (int) player.position().y, (int) player.position().z)) > 3 || !player.level().dimension().location().toString().equals(spectateTarget.getDimensionKey().location().toString())) {
+                TRTeleporter.simpleTeleport(player, spectateTarget.getLevel(), accurateSpectatePos.x, accurateSpectatePos.y, accurateSpectatePos.z, playerPreviousRot, playerPreviousYaw);
             }
             updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), true);
             setRenderVortex(timeVortex);
