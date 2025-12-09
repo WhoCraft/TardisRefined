@@ -16,8 +16,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.command.arguments.DesktopArgumentType;
-import whocraft.tardis_refined.command.arguments.ShellArgumentType;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -25,9 +23,7 @@ import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.registry.TRDimensionTypes;
 
-import java.awt.*;
 import java.util.UUID;
 
 public class TardisItem extends Item {
@@ -35,12 +31,20 @@ public class TardisItem extends Item {
         super(properties);
     }
 
+    private static final int COOLDOWN_TICKS = 20 * 30; // 30 seconds
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
         Player player = context.getPlayer();
 
         if (level instanceof ServerLevel serverLevel && player != null) {
+
+            // Cooldown
+            if (player.getCooldowns().isOnCooldown(this)) {
+                return InteractionResult.FAIL;
+            }
+            player.getCooldowns().addCooldown(this, COOLDOWN_TICKS);
 
             if (!DimensionUtil.isAllowedDimension(level.dimension())) {
                 PlayerUtil.sendMessage(player, ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, true);
@@ -71,7 +75,6 @@ public class TardisItem extends Item {
             );
 
             MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.location());
-
             server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
             if (TardisHelper.createTardis(pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing, false)) {
@@ -83,4 +86,5 @@ public class TardisItem extends Item {
 
         return InteractionResult.PASS;
     }
+
 }
