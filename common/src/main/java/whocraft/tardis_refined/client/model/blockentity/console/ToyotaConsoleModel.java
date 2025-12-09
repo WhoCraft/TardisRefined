@@ -55,14 +55,17 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
     public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
 
+        int playerTicks = Minecraft.getInstance().player.tickCount;
+        float tickCount = playerTicks + Minecraft.getInstance().getFrameTime();
+
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
         if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
             if (reactions.isFlying()) {
-                this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+                this.animate(reactions.ROTOR_ANIMATION, FLIGHT, tickCount);
             } else {
                 if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
-                    this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+                    this.animate(globalConsoleBlock.liveliness, IDLE, tickCount);
                 }
             }
         }

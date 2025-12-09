@@ -96,11 +96,14 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
         this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
+        int playerTicks = Minecraft.getInstance().player.tickCount;
+        float tickCount = playerTicks + Minecraft.getInstance().getFrameTime();
+
         if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
             if (!reactions.isFlying() && TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
-                this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+                this.animate(globalConsoleBlock.liveliness, IDLE, tickCount);
             } else {
-                this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+                this.animate(reactions.ROTOR_ANIMATION, FLIGHT, tickCount);
             }
         }
 
