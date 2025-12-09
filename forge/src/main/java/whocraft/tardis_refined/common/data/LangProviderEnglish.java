@@ -131,6 +131,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
         add(TRItemRegistry.MALLET.get(), "Mallet");
         add(TRItemRegistry.TEST_TUBE.get(), "Test Tube");
+        add(TRItemRegistry.TARDIS.get(), "Grown TARDIS");
 
         /*Damage Sources*/
         add(TRDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");
@@ -161,6 +162,8 @@ public class LangProviderEnglish extends LanguageProvider {
         String errorPrefix =  ChatFormatting.BOLD +  ChatFormatting.RED.toString() + "[ERROR] " + ChatFormatting.RESET;
 
         /*Messages*/
+        add(ModMessages.MSG_EXTERIOR_COOLDOWN, ChatFormatting.RED + "You cannot spawn a TARDIS inside this dimension.");
+
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");

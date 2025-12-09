@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -51,7 +52,7 @@ public class CreateCommand {
 
         context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
-        if (TardisHelper.createTardis(pos, level, generatedLevelKey, shellTheme, desktopTheme)) {
+        if (TardisHelper.createTardis(pos, level, generatedLevelKey, shellTheme, desktopTheme, Direction.NORTH, true)) {
             context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
         }
 

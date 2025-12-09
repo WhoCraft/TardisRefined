@@ -89,12 +89,12 @@ public class TardisHelper {
         return blockPos.getX() >= minX && blockPos.getX() <= maxX && blockPos.getY() >= minY && blockPos.getY() <= maxY && blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
     }
 
-    public static boolean createTardis(BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme) {
+    public static boolean createTardis(BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, Direction facing, Boolean openEye) {
 
         AtomicBoolean generated = new AtomicBoolean(false);
 
         //Set global shell block
-        BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.FACING, Direction.NORTH).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, false).setValue(GlobalShellBlock.WATERLOGGED, serverLevel.getBlockState(blockPos).getFluidState().getType() == Fluids.WATER);
+        BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.FACING, facing).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, false).setValue(GlobalShellBlock.WATERLOGGED, serverLevel.getBlockState(blockPos).getFluidState().getType() == Fluids.WATER);
 
         serverLevel.setBlock(blockPos, targetBlockState, Block.UPDATE_ALL);
 
@@ -121,7 +121,7 @@ public class TardisHelper {
                         pilotManager.setFuel(pilotManager.getMaximumFuel());
                         tardisLevelOperator.setInitiallyGenerated(true);
                         tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
-                        intManager.openTheEye(true);
+                        intManager.openTheEye(openEye);
                         serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                         generated.set(true);
                         tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
