@@ -50,8 +50,7 @@ public class ConsoleConfigurationBlockEntity extends BlockEntity {
     public void load(CompoundTag tag) {
 
         if (tag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.THEME));
-            this.consoleTheme = themeId;
+            this.consoleTheme = new ResourceLocation(tag.getString(NbtConstants.THEME));
         }
 
         if (this.consoleTheme == null) {

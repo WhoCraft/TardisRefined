@@ -14,11 +14,14 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.*;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.common.util.*;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
     public DimensionalControl(ResourceLocation id) {
