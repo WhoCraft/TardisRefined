@@ -18,6 +18,7 @@
 - Bug fix: TARDIS does not take Valkyrien Skies ships into account when computing travel distance.
 - Bug fix: TARDIS does not automatically try to land on ships.
 - Bug fix: Flickering when spectating TARDIS exterior on a Valkyrien Skies ship.
+- Bug fix: Grown Tardis Item crashes the game if Valkyrien Skies is installed.
 
 - Bug fix: Fixes Console Textures having left over prefabs
 - Bug fix: Fixes Forge not having the same access level as Fabric (https://github.com/WhoCraft/TardisRefined/issues/477)
