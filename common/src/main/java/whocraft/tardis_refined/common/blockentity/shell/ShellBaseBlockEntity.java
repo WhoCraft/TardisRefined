@@ -23,22 +23,29 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
@@ -46,6 +53,8 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     protected ResourceKey<Level> TARDIS_ID;
     private boolean hasPotentialToBeRemoved = false;
     private boolean placedByOtherMod = false; // We don't serialize this by design, because other mods might still create duplicates.
+
+    private SetupState setupData = null;
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -124,6 +133,66 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         return false;
     }
 
+    private void setUpTardis(
+            BlockState blockState, Level level, BlockPos blockPos,
+            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Runnable onSuccess, Runnable onFail
+    ) {
+        if (shouldSetup() && level instanceof ServerLevel serverLevel) {
+
+            AtomicBoolean generated = new AtomicBoolean(false);
+
+            //Set the shell with this level
+            setTardisId(generatedLevelKey);
+
+            //Create the Level on demand which will create our capability
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, getTardisId().location());
+
+            TardisLevelOperator.get(interior).ifPresent(tardisLevelOperator -> {
+                TardisInteriorManager intManager = tardisLevelOperator.getInteriorManager();
+                TardisExteriorManager extManager = tardisLevelOperator.getExteriorManager();
+                TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
+                if (!tardisLevelOperator.hasInitiallyGenerated()) {
+                    intManager.generateDesktop(desktopTheme);
+                    tardisLevelOperator.getProgressionManager().addDiscoveredLevel(serverLevel.dimension());
+                    Direction direction = blockState.getValue(ShellBaseBlock.FACING).getOpposite();
+                    TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
+                    pilotManager.setCurrentLocation(navLocation);
+                    pilotManager.setTargetLocation(navLocation);
+                    pilotManager.setFuel(pilotManager.getMaximumFuel());
+                    tardisLevelOperator.setInitiallyGenerated(true);
+                    tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
+                    intManager.openTheEye(openEye);
+                    serverLevel.setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
+                    generated.set(true);
+                    tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
+                    tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.of(blockState), false, ShellChangeSources.ROOT_TO_TARDIS);
+                }
+            });
+
+            if (generated.get()) {
+                onSuccess.run();
+            } else {
+                onFail.run();
+            }
+        }
+    }
+
+    public void setUpTardisOnNextTickIfNecessary(
+            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Runnable onSuccess, Runnable onFail
+    ) {
+        if (ModCompatChecker.valkyrienSkies()) {
+            setupData = new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
+            RootedShellBlockEntity.setUpOnNextTick = true;
+        } else {
+            setUpTardis(
+                    getBlockState(), getLevel(), getBlockPos(), generatedLevelKey, shellTheme, desktopTheme, openEye,
+                    onSuccess, onFail
+            );
+        }
+    }
+
     @Override
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos externalShellPos, Entity entity) {
         if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
@@ -163,6 +232,14 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
         if (!level.isClientSide) {
+            if (setupData != null) {
+                setUpTardis(
+                        blockState, level, blockPos, setupData.generatedLevelKey, setupData.shellTheme, setupData.desktopTheme,
+                        setupData.openEye, setupData.onSuccess, setupData.onFail
+                );
+                setupData = null;
+            }
+
             ResourceKey<Level> tardisId = getTardisId();
             if (tardisId == null) return;
             ServerLevel tardisLevel = DimensionUtil.getLevel(tardisId);
@@ -263,4 +340,9 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
         return hasPotentialToBeRemoved && !myPosition.equals(currentLocation) && !myPosition.equals(wantedDestination);
     }
+
+    public record SetupState(
+            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Runnable onSuccess, Runnable onFail
+    ) {}
 }

@@ -20,30 +20,21 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
-import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.mixin.EndDragonFightAccessor;
-import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CORNER_A;
@@ -89,9 +80,18 @@ public class TardisHelper {
         return blockPos.getX() >= minX && blockPos.getX() <= maxX && blockPos.getY() >= minY && blockPos.getY() <= maxY && blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
     }
 
-    public static boolean createTardis(BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, Direction facing, Boolean openEye) {
+    public static boolean createTardis(
+            BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
+            DesktopTheme desktopTheme, Direction facing, Boolean openEye
+    ) {
+        createTardis(blockPos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, facing, openEye, () -> {}, () -> {});
+        return true;
+    }
 
-        AtomicBoolean generated = new AtomicBoolean(false);
+    public static void createTardis(
+            BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
+            DesktopTheme desktopTheme, Direction facing, boolean openEye, Runnable onSuccess, Runnable onFail
+    ) {
 
         //Set global shell block
         BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.FACING, facing).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, false).setValue(GlobalShellBlock.WATERLOGGED, serverLevel.getBlockState(blockPos).getFluidState().getType() == Fluids.WATER);
@@ -99,40 +99,8 @@ public class TardisHelper {
         serverLevel.setBlock(blockPos, targetBlockState, Block.UPDATE_ALL);
 
         if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBaseBlockEntity) {
-            if (shellBaseBlockEntity.shouldSetup()) {
-
-                //Set the shell with this level
-                shellBaseBlockEntity.setTardisId(generatedLevelKey);
-
-                //Create the Level on demand which will create our capability
-                ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, shellBaseBlockEntity.getTardisId().location());
-
-                TardisLevelOperator.get(interior).ifPresent(tardisLevelOperator -> {
-                    TardisInteriorManager intManager = tardisLevelOperator.getInteriorManager();
-                    TardisExteriorManager extManager = tardisLevelOperator.getExteriorManager();
-                    TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
-                    if (!tardisLevelOperator.hasInitiallyGenerated()) {
-                        intManager.generateDesktop(desktopTheme);
-                        tardisLevelOperator.getProgressionManager().addDiscoveredLevel(serverLevel.dimension());
-                        Direction direction = targetBlockState.getValue(ShellBaseBlock.FACING).getOpposite();
-                        TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
-                        pilotManager.setCurrentLocation(navLocation);
-                        pilotManager.setTargetLocation(navLocation);
-                        pilotManager.setFuel(pilotManager.getMaximumFuel());
-                        tardisLevelOperator.setInitiallyGenerated(true);
-                        tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
-                        intManager.openTheEye(openEye);
-                        serverLevel.setBlock(blockPos, targetBlockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
-                        generated.set(true);
-                        tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
-                        tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.of(targetBlockState), false, ShellChangeSources.ROOT_TO_TARDIS);
-                    }
-                });
-
-                return generated.get();
-            }
+            shellBaseBlockEntity.setUpTardisOnNextTickIfNecessary(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
         }
-        return false;
 
     }
 
