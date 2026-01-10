@@ -386,6 +386,15 @@ public class TardisPilotingManager extends TickableHandler {
 
     }
 
+
+    /**
+     * @deprecated Please use {@link TardisPilotingManager#findClosestValidPosition(TardisNavLocation, int) instead}
+     */
+    @Deprecated
+    public TardisNavLocation findClosestValidPosition(TardisNavLocation location) {
+        return findClosestValidPosition(location, 1).orElse(TardisNavLocation.ORIGIN);
+    }
+
     public Optional<TardisNavLocation> findClosestValidPosition(TardisNavLocation location, int radius) {
         ServerLevel level = location.getLevel();
         BlockPos position = location.getPosition();
