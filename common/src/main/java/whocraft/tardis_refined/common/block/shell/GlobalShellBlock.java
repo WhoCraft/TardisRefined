@@ -59,8 +59,7 @@ public class GlobalShellBlock extends ShellBaseBlock {
             if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
                 return BRIEFCASE_COLLISION_SHAPE;
             if (
-                    shellBlockEntity.isOpen() &&
-                    ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(ImmersivePortals.getUUIDForTARDIS(shellBlockEntity.getTardisId())) &&
+                    ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(shellBlockEntity.getTardisId()) &&
                     ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(shellBlockEntity.getLevel(), blockPos)
             ) {
                 return Shapes.empty();

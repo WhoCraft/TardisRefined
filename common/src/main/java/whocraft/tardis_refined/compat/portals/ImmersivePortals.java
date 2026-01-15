@@ -26,6 +26,7 @@ import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
@@ -74,6 +75,23 @@ public class ImmersivePortals {
 
     public static boolean doPortalsExistForTardis(UUID uuid) {
         return EXISTING_PORTALS.containsKey(uuid);
+    }
+
+    public static boolean isTeleportingPortalPresent(ResourceKey<Level> dim) {
+        try {
+            return isTeleportingPortalPresent(getUUIDForTARDIS(dim));
+        } catch (IllegalArgumentException ignored) { // Thrown when not a valid UUID.
+            return false;
+        }
+    }
+
+    public static boolean isTeleportingPortalPresent(UUID uuid) {
+        if (doPortalsExistForTardis(uuid)) {
+            var portal = getPortalsForTardis(uuid);
+            return portal.getInternalPortal().teleportable && portal.getShellPortal().teleportable;
+        } else {
+            return false;
+        }
     }
 
     public static PortalEntry getPortalsForTardis(UUID uuid) {
@@ -274,13 +292,14 @@ public class ImmersivePortals {
         return true;
     }
 
-    public record PositionHolder(Vec3 pos, Vec3 axisW, Vec3 axisH) {
+    public record PositionHolder(Vec3 pos, Vec3 axisW, Vec3 axisH, boolean airship) {
         public DQuaternion getQuaternion() {
             return DQuaternion.fromFacingVecs(axisW, axisH);
         }
     }
 
     private static PositionHolder getPortalPosition(Level level, BlockPos blockPos, Direction direction, Vec3 doorPos) {
+        boolean airship = false;
         Vec3 axisW = Vec3.atLowerCornerOf(direction.getCounterClockWise().getNormal());
 
         Vec3 axisH = Vec3.atLowerCornerOf(Direction.UP.getNormal());
@@ -289,8 +308,9 @@ public class ImmersivePortals {
             axisW = VSHelper.toWorldRotation(level, blockPos, axisW);
             axisH = VSHelper.toWorldRotation(level, blockPos, axisH);
             doorPos = VSHelper.toWorldPosition(level, blockPos, doorPos);
+            airship = VSHelper.isBlockOnShip(level, blockPos);
         }
-        return new PositionHolder(doorPos, axisW, axisH);
+        return new PositionHolder(doorPos, axisW, axisH, airship);
     }
 
     private static Vec3 getPortalPosForBlockPos(BlockPos pos, Direction direction, PortalOffets.OffsetData offset) {
@@ -382,6 +402,12 @@ public class ImmersivePortals {
         }
     }
 
+    private static void setAllowTeleportation(BotiPortalEntity portal, boolean isOnAirship) {
+        if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_VS.get() : TRConfig.SERVER.IP_TELEPORTATION.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
+            portal.setTeleportable(false);
+        }
+    }
+
     public static void createPortals(TardisLevelOperator operator) {
 
         if(operator.getPilotingManager().isInFlight()){
@@ -441,6 +467,7 @@ public class ImmersivePortals {
         var interior = getPortalPosition(operatorLevel, door.getDoorPosition(), door.getTeleportRotation(), entryPosition);
         exteriorEntryPosition = ext.pos;
         entryPosition = interior.pos;
+        boolean airship = ext.airship || interior.airship;
 
         var extQuat = ext.getQuaternion();
         var interiorQuat = interior.getQuaternion();
@@ -458,6 +485,8 @@ public class ImmersivePortals {
         interiorPortal.setInteractable(false);
         interiorPortal.setValid(true);
         exteriorPortal.setValid(true);
+        setAllowTeleportation(exteriorPortal, airship);
+        setAllowTeleportation(interiorPortal, airship);
 
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);

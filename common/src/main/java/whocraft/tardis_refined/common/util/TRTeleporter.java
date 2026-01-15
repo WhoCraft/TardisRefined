@@ -3,10 +3,7 @@ package whocraft.tardis_refined.common.util;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
-import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
-import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
+import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -16,6 +13,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -96,6 +94,14 @@ public class TRTeleporter {
             pEntity.setYRot(updatedYRot); //Set the desired yRot and xRot before teleportation. For non-players, this means the facing is copied over to the copy of the entity which we recreate. For players, it should update the rotation with the correct facing at the destination
             pEntity.setXRot(updatedXRot);
             ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);
+            // The rotation won't be set properly unless we set it afterward.
+            if (pEntity instanceof ServerPlayer player) {
+                player.connection.teleport(
+                        player.getX(), player.getY(), player.getZ(),
+                        updatedYRot, updatedXRot,
+                        Set.of(RelativeMovement.X, RelativeMovement.Y, RelativeMovement.Z)
+                );
+            }
             return true;
         }
 

@@ -66,11 +66,29 @@ public class TRConfig {
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> ADVENTURE_MODE_DEFAULTS;
         public final ForgeConfigSpec.BooleanValue ADVENTURE_MODE;
 
+        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION;
+        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_VS;
+
+        public enum IPTeleportationMode {
+            PORTAL,
+            ITP;
+
+            private static final String COMMENT = "PORTAL is the normal immersive portals with maximum smoothness. ITP instead teleports the player directly similar to when Immersive Portals integration is disabled, making the boti effect purely visual.";
+        }
+
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("travel");
             BANNED_DIMENSIONS = builder.translation("config.tardis_refined.banned_dimensions").comment("A list of Dimensions the TARDIS cannot land in.").defineList("banned_dimensions", Lists.newArrayList("example:dimension"), String.class::isInstance);
             ADVENTURE_MODE_DEFAULTS = builder.translation("config.tardis_refined.adventure_mode_defaults").comment("A list of Dimensions that are automatically sampled").defineList("adventure_mode_defaults", Lists.newArrayList("minecraft:overworld"), String.class::isInstance);
             ADVENTURE_MODE = builder.translation("config.tardis_refined.adventure_mode").comment("Toggles whether players must discover and sample dimensions before they can travel there").define("adventure_mode", false);
+            builder.pop();
+            builder.push("compatibility");
+            builder.push("immersive_portals");
+            IP_TELEPORTATION = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
+            builder.pop();
+            builder.push("immersive_portals_valkyrien_skies");
+            IP_TELEPORTATION_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_VS).defineEnum("teleportation_mode", IPTeleportationMode.ITP);
+            builder.pop();
             builder.pop();
         }
 
