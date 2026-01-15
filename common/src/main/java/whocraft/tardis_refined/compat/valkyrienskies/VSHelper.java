@@ -156,6 +156,15 @@ public class VSHelper {
         }
     }
 
+    public static Vec3 toWorldRotation(Level level, BlockPos position, Vec3 direction) {
+        Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
+        if (ship != null) {
+            return vectorToVector(ship.getShipToWorld().transformDirection(vectorToVector(direction)));
+        } else {
+            return direction;
+        }
+    }
+
     public static BlockPos toWorldPosition(Level level, BlockPos blockPos) {
         Vector3d pos = blockPosToVector(blockPos);
         Vector3d worldPos = VSGameUtilsKt.getWorldCoordinates(level, blockPos, pos);
@@ -191,6 +200,14 @@ public class VSHelper {
 
     public static Vector3d blockPosToVector(BlockPos blockPos) {
         return new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+    }
+
+    public static Vector3d vectorToVector(Vec3 vector) {
+        return new Vector3d(vector.x, vector.y, vector.z);
+    }
+
+    public static Vec3 vectorToVector(Vector3d vector) {
+        return new Vec3(vector.x, vector.y, vector.z);
     }
 
     public static BlockPos vectorToBlockPos(Vector3d vector) {

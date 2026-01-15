@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import qouteall.imm_ptl.core.portal.Portal;
+import qouteall.imm_ptl.core.portal.animation.TimingFunction;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 
@@ -25,6 +26,8 @@ public class BotiPortalEntity extends Portal {
 
     public BotiPortalEntity(EntityType<?> entityType, Level world) {
         super(entityType, world);
+        this.animation.defaultAnimation.durationTicks = 1;
+        this.animation.defaultAnimation.timingFunction = TimingFunction.linear;
     }
 
     public ShellTheme getShellTheme() {

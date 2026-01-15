@@ -19,12 +19,16 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class GlobalShellBlock extends ShellBaseBlock {
 
@@ -54,6 +58,13 @@ public class GlobalShellBlock extends ShellBaseBlock {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
             if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
                 return BRIEFCASE_COLLISION_SHAPE;
+            if (
+                    shellBlockEntity.isOpen() &&
+                    ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(ImmersivePortals.getUUIDForTARDIS(shellBlockEntity.getTardisId())) &&
+                    ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(shellBlockEntity.getLevel(), blockPos)
+            ) {
+                return Shapes.empty();
+            }
         }
         return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
     }

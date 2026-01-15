@@ -23,7 +23,11 @@ import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
@@ -71,6 +75,19 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
         return this;
+    }
+
+    @Override
+    public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
+        super.tick(level, blockPos, blockState, blockEntity);
+	    //noinspection ConstantValue IntelliJ got confused by this for some reason...
+	    if (
+                !level.isClientSide() &&
+                ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(level, blockPos) &&
+                ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(ImmersivePortals.getUUIDForTARDIS(TARDIS_ID))
+        ) {
+            TardisLevelOperator.get(DimensionUtil.getLevel(blockEntity.TARDIS_ID)).ifPresent(ImmersivePortals::updatePortalPositions);
+        }
     }
 
     @Override
