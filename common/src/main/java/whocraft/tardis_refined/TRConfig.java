@@ -53,9 +53,14 @@ public class TRConfig {
     public static class Common {
         public final ForgeConfigSpec.BooleanValue COMPATIBILITY_IP;
 
+        public final ForgeConfigSpec.BooleanValue IP_VS_COLLISION;
+
         public Common(ForgeConfigSpec.Builder builder) {
             builder.push("compatibility");
             COMPATIBILITY_IP = builder.comment("Toggle Immersive Portals compatibility (TR 2.0+). 2.0 has limited support").translation(ModMessages.CONFIG_IP_COMPAT).define("immersive_portals_support", true);
+            builder.push("immersive_portals_valkyrien_skies");
+            IP_VS_COLLISION = builder.comment("If false, the TARDIS door's collision box will be disabled when opened on a Valkyrien Skies ship if teleportation_mode_vs is set to PORTAL.").translation(ModMessages.CONFIG_IP_VS_COLLISION).define("open_door_ship_collision", true);
+            builder.pop();
             builder.pop();
         }
 
@@ -87,7 +92,7 @@ public class TRConfig {
             IP_TELEPORTATION = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
             builder.pop();
             builder.push("immersive_portals_valkyrien_skies");
-            IP_TELEPORTATION_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_VS).defineEnum("teleportation_mode", IPTeleportationMode.ITP);
+            IP_TELEPORTATION_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_VS).defineEnum("teleportation_mode_vs", IPTeleportationMode.ITP);
             builder.pop();
             builder.pop();
         }

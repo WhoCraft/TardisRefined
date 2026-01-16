@@ -44,6 +44,7 @@ public class ModMessages {
     public static final String UI_UPGRADES_BUY = ui("upgrades.buy_ability");
     public static final String UI_NO_INSTALLED_SUBSYSTEMS = ui("no_installed_subsystems");
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
+    public static final String CONFIG_IP_VS_COLLISION = config("immersive_portals_vs_collision");
     public static final String CONFIG_IP_TELEPORTATION = config("immersive_portals_teleportation_mode");
     public static final String CONFIG_IP_TELEPORTATION_VS = config("immersive_portals_teleportation_mode_vs");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
