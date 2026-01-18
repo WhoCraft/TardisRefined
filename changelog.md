@@ -25,4 +25,5 @@
 - Bug fix: Fixed the TARDIS forgetting its current dimension on world reload
 - Bug fix: Fix materialize around upgrade not working.
 - Bug fix: Fixed TARDIS being broken when created in a non-overworld dimension.
+- Bug fix: Respawn Anchor and /spawnpoint command not working inside the TARDIS
 
