@@ -7,6 +7,7 @@
 
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
+- Updated create-fabric integration to create 6.
 
 #### Bug Fix
 - Bug fix: TARDIS exterior disappears when moved by other mods.
