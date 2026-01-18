@@ -458,6 +458,10 @@ public class TardisInteriorManager extends TickableHandler {
         this.isWaitingToGenerate = false;
     }
 
+    public boolean canBedSetSpawn() {
+        return false; //TODO Upgrade?
+    }
+
     /**
      * Returns whether a Tardis has enough fuel to perform an interior change
      *
