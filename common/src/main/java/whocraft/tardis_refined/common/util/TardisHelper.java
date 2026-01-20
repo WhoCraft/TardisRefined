@@ -88,6 +88,7 @@ public class TardisHelper {
         return true;
     }
 
+    // Warning, onSuccess and onFail are not always guaranteed to run. Don't use them for anything important.
     public static void createTardis(
             BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
             DesktopTheme desktopTheme, Direction facing, boolean openEye, Runnable onSuccess, Runnable onFail

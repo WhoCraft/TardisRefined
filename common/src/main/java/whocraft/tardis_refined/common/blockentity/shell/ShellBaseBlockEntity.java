@@ -1,9 +1,12 @@
 package whocraft.tardis_refined.common.blockentity.shell;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
@@ -44,10 +47,13 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.Optional;
+import java.util.OptionalLong;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
+
+    private static final String SETUP_DATA = "setup_data";
 
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
@@ -55,6 +61,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     private boolean placedByOtherMod = false; // We don't serialize this by design, because other mods might still create duplicates.
 
     private SetupState setupData = null;
+    private OptionalLong setupTick = OptionalLong.empty(); // This is just to prevent a ConcurrentModicationException, should not be serialized.
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -84,6 +91,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         if (pTag.contains(NbtConstants.TARDIS_ID))
             this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
         updateCurrentLocation();
+        if (pTag.contains(SETUP_DATA)) {
+            SetupState.CODEC.parse(NbtOps.INSTANCE, pTag.get(SETUP_DATA)).result().ifPresent(setupData -> {
+                this.setupData = setupData;
+            });
+        }
     }
 
     @Override
@@ -111,14 +123,19 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     protected void saveAdditional(CompoundTag pTag) {
+        if (setupData != null) {
+            pTag.put(SETUP_DATA, SetupState.CODEC.encodeStart(NbtOps.INSTANCE, setupData).result().orElseThrow());
+        }
+        super.saveAdditional(pTag);
         if (this.TARDIS_ID == null) {
-            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
+            if (setupData == null) {
+                TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
+            }
             return;
         }
 
-        super.saveAdditional(pTag);
-        if (this.TARDIS_ID != null)
-            pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
+
+        pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
     }
 
     @Override
@@ -184,7 +201,6 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     ) {
         if (ModCompatChecker.valkyrienSkies()) {
             setupData = new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
-            RootedShellBlockEntity.setUpOnNextTick = true;
         } else {
             setUpTardis(
                     getBlockState(), getLevel(), getBlockPos(), generatedLevelKey, shellTheme, desktopTheme, openEye,
@@ -233,11 +249,17 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
         if (!level.isClientSide) {
             if (setupData != null) {
+                if (setupTick.isEmpty() || setupTick.getAsLong() != level.getGameTime()) {
+                    RootedShellBlockEntity.setUpOnNextTick = true;
+                    setupTick = OptionalLong.of(level.getGameTime()+1);
+                    return;
+                }
                 setUpTardis(
                         blockState, level, blockPos, setupData.generatedLevelKey, setupData.shellTheme, setupData.desktopTheme,
                         setupData.openEye, setupData.onSuccess, setupData.onFail
                 );
                 setupData = null;
+                setupTick = OptionalLong.empty();
             }
 
             ResourceKey<Level> tardisId = getTardisId();
@@ -343,6 +365,23 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     public record SetupState(
             ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
-            Runnable onSuccess, Runnable onFail
-    ) {}
+            Runnable onSuccess, Runnable onFail // We can't serialize onSuccess and onFail in a good way.
+    ) {
+
+        public SetupState(
+                ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
+                DesktopTheme desktopTheme, boolean openEye
+        ) {
+            this(generatedLevelKey, shellTheme, desktopTheme, openEye, () -> {}, () -> {});
+        }
+
+        public static final Codec<SetupState> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Level.RESOURCE_KEY_CODEC.fieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
+                        ResourceLocation.CODEC.fieldOf("shell_theme").forGetter(SetupState::shellTheme),
+                        DesktopTheme.getCodec().fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
+                        Codec.BOOL.fieldOf("open_eye").forGetter(SetupState::openEye)
+                ).apply(instance, SetupState::new)
+        );
+    }
 }
