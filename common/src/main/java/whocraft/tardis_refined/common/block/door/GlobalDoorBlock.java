@@ -106,7 +106,7 @@ public class GlobalDoorBlock extends InternalDoorBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        var blockEntity = blockGetter.getBlockEntity(blockPos);
+        BlockEntity blockEntity = blockGetter.getBlockEntity(blockPos);
         //noinspection ConstantValue IntelliJ got confused by this for some reason...
         if (
                 !TRConfig.COMMON.IP_VS_COLLISION.get() && blockEntity != null && blockEntity.getLevel() != null &&

@@ -120,7 +120,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
                 TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                     if (!tardisLevelOperator.getPilotingManager().isInFlight()) {
-                        var teleportShape = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity));
+                        VoxelShape teleportShape = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity));
                         if (teleportShape.isEmpty()) return;
                         AABB teleportAABB = teleportShape.bounds().move(blockPos);
                         if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
