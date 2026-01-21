@@ -32,13 +32,20 @@ public class DimensionalControl extends Control {
         super(id, langId);
     }
 
-    private List<ServerLevel> getAllowedDimensions(TardisLevelOperator tardisLevelOperator) {
+    public static List<ServerLevel> getAllowedDimensions(TardisLevelOperator tardisLevelOperator) {
         var filteredDimensions = new ArrayList<ServerLevel>();
 
         var filteredLevels = Platform.getServer().getAllLevels();
 
 
         filteredLevels.forEach(x -> {
+            // We want to filter out the end if the end hasn't been completed whilst the player is in flight.
+            // We can keep it pre-flight because we do some fancy sounds to tell the player it's not an option.
+            if (tardisLevelOperator.getPilotingManager().isInFlight()) {
+                if (x.dimension() == Level.END && !TardisHelper.hasTheEndBeenCompleted(x)) {
+                    return;
+                }
+            }
             if (tardisLevelOperator.getProgressionManager().isLevelDiscovered(x.dimension())) {
                 filteredDimensions.add(x);
             }
@@ -75,16 +82,6 @@ public class DimensionalControl extends Control {
 
             if(dimensions.isEmpty()){
                 return false;
-            }
-
-            var nextDimension = dimensions.get(nextIndex);
-
-            // We want to filter out the end if the end hasn't been completed whilst the player is in flight. We can keep it pre-flight because we do some fancy sounds to tell the player
-            // it's not an option.
-            if (nextDimension.dimension() == Level.END && pilotManager.isInFlight()) {
-                if (!TardisHelper.hasTheEndBeenCompleted(nextDimension)) {
-                    nextIndex += forward ? 1 : -1;
-                }
             }
 
             if (ModCompatChecker.valkyrienSkies()) {

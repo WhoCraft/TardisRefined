@@ -1,7 +1,8 @@
 package whocraft.tardis_refined.compat.create;
 
-import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
-import com.simibubi.create.content.redstone.displayLink.DisplayBehaviour;
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.registry.CreateBuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +26,8 @@ public class CreateIntergrationsFabric {
     public static void init() {
 
         // Register big data
-        DisplayBehaviour tardisOverallData = AllDisplayBehaviours.register(new ResourceLocation(TardisRefined.MODID, "tardis_bigdata"), new TardisDisplaySource());
-        AllDisplayBehaviours.assignBlockEntity(tardisOverallData, FLIGHT_DETECTOR.get());
+        DisplaySource tardisOverallData = Registry.register(CreateBuiltInRegistries.DISPLAY_SOURCE, new ResourceLocation(TardisRefined.MODID, "tardis_bigdata"), new TardisDisplaySource());
+        DisplaySource.BY_BLOCK_ENTITY.add(FLIGHT_DETECTOR.get(), tardisOverallData);
 
 
         // Fuel
@@ -100,11 +101,13 @@ public class CreateIntergrationsFabric {
 
         //Register all
         for (QuickOneLineDisplaySource.TardisInfo tardisInfo : tardisInfos) {
-            AllDisplayBehaviours.assignBlockEntity(AllDisplayBehaviours.register(tardisInfo.getId(), new QuickOneLineDisplaySource(tardisInfo)), FLIGHT_DETECTOR.get());
+            var s = Registry.register(CreateBuiltInRegistries.DISPLAY_SOURCE, tardisInfo.getId(), new QuickOneLineDisplaySource(tardisInfo));
+            DisplaySource.BY_BLOCK_ENTITY.add(FLIGHT_DETECTOR.get(), s);
         }
 
         for (TardisNavLocationDisplaySource.TardisNavInfo tardisInfo : tardisNavInfos) {
-            AllDisplayBehaviours.assignBlockEntity(AllDisplayBehaviours.register(tardisInfo.getId(), new TardisNavLocationDisplaySource(tardisInfo)), FLIGHT_DETECTOR.get());
+            var s = Registry.register(CreateBuiltInRegistries.DISPLAY_SOURCE, tardisInfo.getId(), new TardisNavLocationDisplaySource(tardisInfo));
+            DisplaySource.BY_BLOCK_ENTITY.add(FLIGHT_DETECTOR.get(), s);
         }
 
     }

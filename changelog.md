@@ -7,6 +7,7 @@
 
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
+- Updated create-fabric integration to create 6.
 
 #### Configs
 - New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
@@ -32,4 +33,5 @@
 - Bug fix: Fix materialize around upgrade not working.
 - Bug fix: Fixed TARDIS being broken when created in a non-overworld dimension.
 - Bug fix: Immersive Portals portal sometimes not spawning when opened from exterior.
+- Bug fix: Respawn Anchor and /spawnpoint command not working inside the TARDIS
 

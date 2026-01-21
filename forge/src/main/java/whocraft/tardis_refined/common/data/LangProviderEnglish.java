@@ -262,6 +262,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_EDIT, "Edit waypoint");
         add(ModMessages.UI_MONITOR_WAYPOINT_DELETE, "Delete waypoint");
         add(ModMessages.CANNOT_START_NO_FUEL, "Not enough fuel to start");
+        add(ModMessages.CANNOT_LAND, "TARDIS unable to find a safe landing position");
         add(ModMessages.UI_MONITOR_EJECT, "EMERGENCY EJECT");
         add(ModMessages.UI_EJECT_CANNOT_IN_FLIGHT, "Cannot eject whilst in flight");
         add(ModMessages.DIM_NOT_ALLOWED, "This dimension cannot be sampled");
