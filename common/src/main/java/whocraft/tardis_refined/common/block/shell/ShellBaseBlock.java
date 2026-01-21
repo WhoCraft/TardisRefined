@@ -121,7 +121,9 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         if (!level.isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof ExteriorShell shellEntity) {
-                AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
+                VoxelShape teleportShape = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity));
+                if (teleportShape.isEmpty()) return;
+                AABB teleportAABB = teleportShape.bounds().move(blockPos);
                 if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
                     shellEntity.onAttemptEnter(blockState, serverLevel, blockPos, entity);
                 }

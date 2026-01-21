@@ -48,7 +48,6 @@ import whocraft.tardis_refined.registry.TRDimensionTypes;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
 
@@ -304,7 +303,7 @@ public class TardisLevelOperator {
         if (aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                if (!ignoreDoor && level.dimensionTypeId() == TRDimensionTypes.TARDIS && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(doorLevel.dimension().location().getPath()))) {
+                if (!ignoreDoor && level.dimensionTypeId() == TRDimensionTypes.TARDIS && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.isTeleportingPortalPresent(doorLevel.dimension())) {
                     return false;
                 }
             }

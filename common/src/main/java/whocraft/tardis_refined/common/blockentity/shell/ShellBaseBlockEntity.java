@@ -38,7 +38,8 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
-import java.util.UUID;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
@@ -143,7 +144,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                         ResourceLocation theme = aesthetics.getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
-                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(TARDIS_ID.location().getPath()))) {
+                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.isTeleportingPortalPresent(TARDIS_ID)) {
                                 return;
                             }
                         }
