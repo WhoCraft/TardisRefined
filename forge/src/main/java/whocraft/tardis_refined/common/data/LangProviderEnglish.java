@@ -262,6 +262,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_EDIT, "Edit waypoint");
         add(ModMessages.UI_MONITOR_WAYPOINT_DELETE, "Delete waypoint");
         add(ModMessages.CANNOT_START_NO_FUEL, "Not enough fuel to start");
+        add(ModMessages.CANNOT_LAND, "TARDIS unable to find a safe landing position");
         add(ModMessages.UI_MONITOR_EJECT, "EMERGENCY EJECT");
         add(ModMessages.UI_EJECT_CANNOT_IN_FLIGHT, "Cannot eject whilst in flight");
         add(ModMessages.DIM_NOT_ALLOWED, "This dimension cannot be sampled");
@@ -321,6 +322,9 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
+        add(ModMessages.CONFIG_IP_VS_COLLISION, "Immersive Portals Valkyrien Skies Collision");
+        add(ModMessages.CONFIG_IP_TELEPORTATION, "Immersive Portals Teleportation Mode");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");

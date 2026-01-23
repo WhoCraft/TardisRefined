@@ -17,6 +17,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -172,6 +175,14 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements Bl
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, InternalDoorBlockEntity blockEntity) {
+        //noinspection ConstantValue IntelliJ got confused by this for some reason...
+        if (
+                !level.isClientSide() && level instanceof ServerLevel sl &&
+                ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(level, blockPos) &&
+                ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(level.dimension())
+        ) {
+            TardisLevelOperator.get(sl).ifPresent(ImmersivePortals::updatePortalPositions);
+        }
   /*      if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                 if (blockEntity.isOpen() && tardisLevelOperator.getPilotingManager().isInFlight()) {
