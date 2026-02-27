@@ -7,6 +7,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
@@ -25,6 +26,7 @@ public class TardisRefinedForge {
         TardisRefined.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::onGatherData);
+        modEventBus.addListener(this::onPostInit);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
@@ -34,7 +36,6 @@ public class TardisRefinedForge {
             CuriosUtil.init();
         }
 
-        //TODO IP compat for forge?
        if (ModCompatChecker.immersivePortals()) {
             if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();
@@ -46,6 +47,12 @@ public class TardisRefinedForge {
 
         if (ModCompatChecker.create()) {
             CreateIntergrationsForge.init();
+        }
+    }
+
+    public void onPostInit(InterModProcessEvent event) {
+        if (ModCompatChecker.immersivePortals() && TRConfig.COMMON.COMPATIBILITY_IP.get()) {
+            ImmersivePortals.postInit();
         }
     }
 

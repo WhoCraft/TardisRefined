@@ -88,7 +88,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
         if (ModCompatChecker.immersivePortals()) {
-            ImmersivePortalsClient.doClientRenderers();
+            ImmersivePortalsClient.doClientRenderers(EntityRendererRegistry::register);
         }
 
     }
