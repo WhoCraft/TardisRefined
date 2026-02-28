@@ -400,15 +400,10 @@ public class TardisPilotingManager extends TickableHandler {
         BlockPos position = location.getPosition();
         Direction direction = location.getDirection();
 
-        ChunkPos chunkPos = level.getChunk(position).getPos();
-
         var maxBuildHeight = level.getMaxBuildHeight();
         var minHeight = level.getMinBuildHeight();
 
         List<TardisNavLocation> solutionsInRow = new ArrayList<>();
-
-        //Force load chunk to search positions
-        setChunkForced(level, chunkPos, true);
 
         Optional<TardisNavLocation> closest = Optional.empty();
 
@@ -464,9 +459,6 @@ public class TardisPilotingManager extends TickableHandler {
             closest = this.findClosestValidPositionFromTarget(solutionsInRow, location);
 
         }
-
-        //Unforce chunk after we are done searching
-        setChunkForced(level, chunkPos, false);
 
         return closest;
     }
@@ -1398,16 +1390,6 @@ public class TardisPilotingManager extends TickableHandler {
                 .max()
                 .orElse(1);
         return this.speedModifier;
-    }
-
-    public static void setChunkForced(ServerLevel level, ChunkPos pos, boolean forced) {
-        if (ModCompatChecker.valkyrienSkies() && VSHelper.isChunkInShipyard(pos)) {
-            VSHelper.toWorldShipChunks(level, pos).forEach(p -> {
-                level.setChunkForced(p.x, p.z, forced);
-            });
-        } else {
-            level.setChunkForced(pos.x, pos.z, forced);
-        }
     }
 
 }

@@ -1,12 +1,10 @@
 package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
@@ -139,15 +137,10 @@ public class TardisExteriorManager extends BaseHandler {
         if (currentPosition != null) {
             BlockPos lastKnownLocationPosition = currentPosition.getPosition();
             ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
-            ChunkPos chunkPos = lastKnownLocationLevel.getChunk(lastKnownLocationPosition).getPos();
-            //Force load chunk
-            TardisPilotingManager.setChunkForced(lastKnownLocationLevel, chunkPos, true); //Set chunk to be force loaded to properly remove block
             //Remove block
             if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof GlobalShellBlockEntity globalShellBlockEntity) {
                 lastKnownLocationLevel.removeBlock(lastKnownLocationPosition, false); //Set block to air with drop items flag to false
             }
-            //Un-force load chunk
-	        TardisPilotingManager.setChunkForced(lastKnownLocationLevel, chunkPos, false); //Set chunk to not be force loaded after we remove the block
         }
     }
 
@@ -155,23 +148,11 @@ public class TardisExteriorManager extends BaseHandler {
      * Setup the landing data updates and physical placement of the shell block
      */
     public void startLanding(TardisLevelOperator operator, TardisNavLocation location) {
-        ServerLevel targetLevel = location.getLevel();
-        BlockPos lastKnownLocationPosition = location.getPosition();
-        ChunkPos chunkPos = location.getLevel().getChunk(lastKnownLocationPosition).getPos();
-
         this.isLanding = true;
-
-        //Force load target chunk
-	    TardisPilotingManager.setChunkForced(targetLevel, chunkPos, true); //Set chunk to be force loaded to properly place block
-	    this.isLanding = true;
         operator.tardisClientData().setIsLanding(true);
         operator.tardisClientData().sync();
 
         this.placeExteriorBlockForLanding(location);
-
-        //Un-force load target chunk
-	    TardisPilotingManager.setChunkForced(targetLevel, chunkPos, false); //Set chunk to be not be force loaded after we place the block
-
     }
 
     /**
