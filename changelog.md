@@ -20,7 +20,6 @@
 - Bug fix: Impossible to enter TARDIS when on a Valkyrien Skies ship.
 - Bug fix: TARDIS shows shipyard coordinates when on a Valkyrien Skies ship.
 - Bug fix: Player does not face the right horizontal direction when entering/exiting a TARDIS on a Valkyrien Skies ship.
-- Partial bug fix: Player falls through Valkyrien Skies ship when exiting the TARDIS.
 - Bug fix: TARDIS does not take Valkyrien Skies ships into account when computing travel distance.
 - Bug fix: TARDIS does not automatically try to land on ships.
 - Bug fix: Flickering when spectating TARDIS exterior on a Valkyrien Skies ship.
