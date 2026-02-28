@@ -35,4 +35,5 @@
 - Bug fix: Immersive Portals portal sometimes not spawning when opened from exterior.
 - Bug fix: Respawn Anchor and /spawnpoint command not working inside the TARDIS
 - Bug fix: Capability deserialization fails on Arclight
+- Bug fix: Immersive Portals compatibility crashing the game on Forge.
 
