@@ -720,7 +720,9 @@ public class TardisPilotingManager extends TickableHandler {
 
 
             operator.setDoorClosed(true);
-            operator.getLevel().playSound(null, currentConsoleBlockPos, TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
+            if (currentConsoleBlockPos != null) {
+                operator.getLevel().playSound(null, currentConsoleBlockPos, TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
+            }
             operator.getExteriorManager().playSoundAtShell(TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
 
 
