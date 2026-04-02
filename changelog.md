@@ -36,5 +36,9 @@
 - Bug fix: Immersive Portals portal sometimes not spawning when opened from exterior.
 - Bug fix: Respawn Anchor and /spawnpoint command not working inside the TARDIS
 - Bug fix: Capability deserialization fails on Arclight
+<<<<<<< dev/1.20.1-remove-forceloading
+- Bug fix: TARDIS removes forceloading when taking off and landing.
+=======
 - Bug fix: TARDIS takeoff sound plays from the interior door instead of the console.
+>>>>>>> dev/1.20.1
 
