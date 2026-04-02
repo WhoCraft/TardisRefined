@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -142,12 +141,6 @@ public class TRTeleporter {
     private static Entity teleportLogicCommon(Entity pEntity, ServerLevel destination, double pX, double pY, double pZ, float pYaw, float pPitch) {
 
         pEntity.setDeltaMovement(Vec3.ZERO);
-
-        LevelHelper.loadShips(
-                destination,
-                new ChunkPos(SectionPos.blockToSectionCoord(pX), SectionPos.blockToSectionCoord(pZ))
-        );
-
 
         Entity teleportedEntity;
         if (pEntity instanceof ServerPlayer serverPlayer) {

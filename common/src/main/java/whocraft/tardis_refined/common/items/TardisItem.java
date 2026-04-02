@@ -77,9 +77,10 @@ public class TardisItem extends Item {
             MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.location());
             server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
-            if (TardisHelper.createTardis(pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing, false)) {
-                server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId));
-            }
+            TardisHelper.createTardis(
+                    pos, serverLevel, generatedLevelKey, shellTheme, desktopTheme, playerFacing, false,
+                    () -> server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId)), () -> {}
+            );
 
             return super.useOn(context);
         }

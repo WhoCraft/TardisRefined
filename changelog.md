@@ -20,10 +20,10 @@
 - Bug fix: Impossible to enter TARDIS when on a Valkyrien Skies ship.
 - Bug fix: TARDIS shows shipyard coordinates when on a Valkyrien Skies ship.
 - Bug fix: Player does not face the right horizontal direction when entering/exiting a TARDIS on a Valkyrien Skies ship.
-- Partial bug fix: Player falls through Valkyrien Skies ship when exiting the TARDIS.
 - Bug fix: TARDIS does not take Valkyrien Skies ships into account when computing travel distance.
 - Bug fix: TARDIS does not automatically try to land on ships.
 - Bug fix: Flickering when spectating TARDIS exterior on a Valkyrien Skies ship.
+- Bug fix: Grown Tardis Item crashes the game if Valkyrien Skies is installed.
 - Bug fix: Immersive Portals portal is not rotated correctly when door is on a Valkyrien Skies ship.
 
 - Bug fix: Fixes Console Textures having left over prefabs
@@ -35,5 +35,6 @@
 - Bug fix: Immersive Portals portal sometimes not spawning when opened from exterior.
 - Bug fix: Respawn Anchor and /spawnpoint command not working inside the TARDIS
 - Bug fix: Capability deserialization fails on Arclight
+- Bug fix: TARDIS removes forceloading when taking off and landing.
 - Bug fix: TARDIS takeoff sound plays from the interior door instead of the console.
 - Bug fix: Immersive Portals compatibility crashing the game on Forge.
