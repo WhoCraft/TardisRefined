@@ -126,7 +126,9 @@ public class ImmersivePortals {
         BOTI_PORTAL = ENTITY_TYPES.register("boti_portal", () -> registerStatic(BotiPortalEntity::new, MobCategory.MISC, 1, 1, 96, 20, "boti_portal"));
 
         setupEvents();
+    }
 
+    public static void postInit() {
         // Set up for Portals!
         setupPortalsForShellThemes();
     }

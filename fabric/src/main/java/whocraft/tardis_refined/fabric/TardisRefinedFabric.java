@@ -84,6 +84,7 @@ public class TardisRefinedFabric implements ModInitializer {
         if (ModCompatChecker.immersivePortals()) {
             if (TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();
+                ImmersivePortals.postInit();
                 PortalsCompatFabric.init();
             }
         } else {
