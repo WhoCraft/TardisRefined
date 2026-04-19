@@ -38,7 +38,7 @@ public class LevelRendererMixin {
         matrices.pushPose();
         RenderTargetHelper.renderZeitonGlass(
                 camera,
-                ModelRegistry.zeitonGlassModel,
+                ModelRegistry.getZeitonGlassModel(),
                 matrices,
                 mc.renderBuffers().bufferSource(),
                 LightTexture.FULL_BLOCK,

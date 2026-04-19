@@ -1,6 +1,8 @@
 package whocraft.tardis_refined.client;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.resources.ResourceLocation;
@@ -98,7 +100,15 @@ public class ModelRegistry {
         return new ModelLayerLocation(new ResourceLocation(MODID, name), layer);
     }
 
-    public static ZeitonGlassModel zeitonGlassModel;
+    private static ZeitonGlassModel zeitonGlassModel;
+
+    public static ZeitonGlassModel getZeitonGlassModel() {
+        if (zeitonGlassModel == null) {
+            EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
+            zeitonGlassModel = new ZeitonGlassModel(entityModels.bakeLayer(ZEITON_GLASS));
+        }
+        return zeitonGlassModel;
+    }
 
     public static void init() {
 
