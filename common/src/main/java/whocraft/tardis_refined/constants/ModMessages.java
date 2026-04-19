@@ -51,6 +51,7 @@ public class ModMessages {
     public static final String CONFIG_IDLE_CONSOLE_ANIMS = config("console_idle_animations");
     public static final String CONFIG_RENDER_VORTEX_IN_DOOR = config("config_render_vortex_in_door");
     public static final String CONFIG_CUSTOM_SHADERS = config("config_custom_shaders");
+    public static final String SCREEN_SHAKE_MULTIPLIER = config("screen_shake_multiplier");
     public static final String CONFIG_BANNED_DIMENSIONS = config("banned_dimensions");
     public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
     public static final String CMD_NO_INTERNAL_DOOR = cmdOutput("no_internal_door");
