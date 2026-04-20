@@ -93,7 +93,7 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
             if (blockState.hasProperty(TYPE)) {
                 BlockState nextType = blockState.cycle(TYPE);
                 level.setBlock(blockPos, nextType, 3);
-                level.playSound(player, blockPos, TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(null, blockPos, TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 return InteractionResult.SUCCESS;
             }
         }
