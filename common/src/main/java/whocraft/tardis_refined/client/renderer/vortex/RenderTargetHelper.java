@@ -253,6 +253,7 @@ public class RenderTargetHelper {
         stack.popPose();
 
         GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
         GL11.glColorMask(true, true, true, true);
         GL11.glDisable(GL11.GL_STENCIL_TEST);
         GL11.glStencilMask(0xFF);
