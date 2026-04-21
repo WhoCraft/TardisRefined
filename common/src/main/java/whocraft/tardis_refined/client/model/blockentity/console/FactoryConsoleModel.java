@@ -26,10 +26,10 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
     public static final AnimationDefinition CRASH = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/crash.json"));
     public static final AnimationDefinition POWER_ON = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/power_on.json"));
     public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/power_off.json"));
-    
+
     private static final ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
-  
-  
+
+
     private final ModelPart root;
     private final ModelPart throttleLever;
     private final ModelPart handbrake;
@@ -56,7 +56,8 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
         boolean powered = globalConsoleBlock == null || globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED);
 
         // Store tick count for later use
-        int tickCount = Minecraft.getInstance().player.tickCount;
+        int playerTicks = Minecraft.getInstance().player.tickCount;
+        float tickCount = playerTicks + Minecraft.getInstance().getFrameTime();
 
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
@@ -67,7 +68,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
                 if (globalConsoleBlock.getTicksBooting() > 0) {
                     if (!globalConsoleBlock.powerOn.isStarted()) {
                         globalConsoleBlock.powerOff.stop();
-                        globalConsoleBlock.powerOn.start(tickCount);
+                        globalConsoleBlock.powerOn.start((int) tickCount);
                     }
                     this.animate(globalConsoleBlock.powerOn, POWER_ON, tickCount);
                 }
@@ -87,7 +88,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
                 // Power off animation if not booting
                 if (!globalConsoleBlock.powerOff.isStarted()) {
                     globalConsoleBlock.powerOn.stop();
-                    globalConsoleBlock.powerOff.start(tickCount);
+                    globalConsoleBlock.powerOff.start((int) tickCount);
                 }
                 this.animate(globalConsoleBlock.powerOff, POWER_OFF, tickCount);
             }

@@ -42,6 +42,8 @@ import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRend
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.common.items.DimensionSamplerItem;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.mixin.forge.ReloadableResourceManagerMixin;
 import whocraft.tardis_refined.overlays.TardisRefinedOverlay;
 import whocraft.tardis_refined.registry.*;
@@ -124,6 +126,10 @@ public class ClientModBus {
         EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
         ItemProperties.register(TRItemRegistry.TEST_TUBE.get(), new ResourceLocation(TardisRefined.MODID, "is_sampled"), (itemStack, clientLevel, livingEntity, i) -> DimensionSamplerItem.hasDimAtAll(itemStack) ? 1 : 0);
+
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortalsClient.doClientRenderers(EntityRenderers::register);
+        }
 
         event.enqueueWork(() -> {
             for (Block block : TRBlockRegistry.BLOCKS.getRegistry().get()) {

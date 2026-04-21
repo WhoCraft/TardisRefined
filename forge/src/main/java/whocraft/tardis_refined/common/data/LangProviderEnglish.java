@@ -125,13 +125,14 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
         add(ModMessages.ITEM_GROUP, "Tardis Refined");
         add(TRItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
-        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
+        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, ChatFormatting.GRAY + "An amethyst frequency manipulator");
         add(TRItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(TRItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
         add(TRItemRegistry.GLASSES.get(), "AR Glasses");
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
         add(TRItemRegistry.MALLET.get(), "Mallet");
         add(TRItemRegistry.TEST_TUBE.get(), "Test Tube");
+        add(TRItemRegistry.TARDIS.get(), "Grown TARDIS");
 
         /*Damage Sources*/
         add(TRDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");
@@ -162,6 +163,8 @@ public class LangProviderEnglish extends LanguageProvider {
         String errorPrefix =  ChatFormatting.BOLD +  ChatFormatting.RED.toString() + "[ERROR] " + ChatFormatting.RESET;
 
         /*Messages*/
+        add(ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, ChatFormatting.RED + "You cannot spawn a TARDIS inside this dimension.");
+
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
@@ -208,6 +211,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CMD_LEVEL_POINT_GET, "%s has %s upgrade points");
         add(ModMessages.CMD_LEVEL_POINT_SET, "Set upgrade points for %s to %s");
         add(ModMessages.CMD_LEVEL_POINT_ADD, "Added %s points for %s, total points are now %s");
+
 
         add(ModMessages.CMD_LEVEL_XP_GET, "%s has %s XP");
         add(ModMessages.CMD_LEVEL_XP_SET, "Set XP for %s to %s");
@@ -259,6 +263,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_EDIT, "Edit waypoint");
         add(ModMessages.UI_MONITOR_WAYPOINT_DELETE, "Delete waypoint");
         add(ModMessages.CANNOT_START_NO_FUEL, "Not enough fuel to start");
+        add(ModMessages.CANNOT_LAND, "TARDIS unable to find a safe landing position");
         add(ModMessages.UI_MONITOR_EJECT, "EMERGENCY EJECT");
         add(ModMessages.UI_EJECT_CANNOT_IN_FLIGHT, "Cannot eject whilst in flight");
         add(ModMessages.DIM_NOT_ALLOWED, "This dimension cannot be sampled");
@@ -275,6 +280,7 @@ public class LangProviderEnglish extends LanguageProvider {
        /* add(ModMessages.DOOR_STATUS, "Door: %s");
         add(ModMessages.LOCK_STATUS, "Locked: %s");
         add(ModMessages.POSITION, "Position: %s");
+        add(ModMessages.IN_FLIGHT, "Flight: %s");
         add(ModMessages.DIRECTION, "Direction: %s");
         add(ModMessages.DIMENSION, "Dimension: %s");
         add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
@@ -304,7 +310,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.CASTLE.getId(), "Castle");
         addShell(ShellTheme.PATHFINDER.getId(), "Pathfinder");
         addShell(ShellTheme.HALF_BAKED.getId(), "Half Baked");
-        addShell(ShellTheme.SHULKER.getId(), "Half Baked");
+        addShell(ShellTheme.SHULKER.getId(), "Shulker Box");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, ChatFormatting.YELLOW + "< "
@@ -319,6 +325,9 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
+        add(ModMessages.CONFIG_IP_VS_COLLISION, "Immersive Portals Valkyrien Skies Collision");
+        add(ModMessages.CONFIG_IP_TELEPORTATION, "Immersive Portals Teleportation Mode");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");

@@ -70,7 +70,8 @@ public class TardisRefined {
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncShellPatterns::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncHums::new);
 
-        registerFallbackEntries();
+        TRARSStructurePieceRegistry.register();
+        //registerFallbackEntries();
     }
 
     /**
@@ -87,7 +88,8 @@ public class TardisRefined {
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
 
-        TRARSStructurePieceRegistry.register();
+
+
     }
 
 }

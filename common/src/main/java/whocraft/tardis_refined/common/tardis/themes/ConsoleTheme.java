@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.console.*;
-import whocraft.tardis_refined.patterns.sound.ConsoleSoundProfile;
+import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplierHolder;
 
@@ -51,8 +51,8 @@ public class ConsoleTheme implements Theme {
         return CONSOLE_THEME_DEFERRED_REGISTRY.registerHolder(id, () -> new ConsoleTheme(new ResourceLocation(TardisRefined.MODID, id), themeDetails));
     }
 
-    public ControlSpecification[] getControlSpecificationList() {
-        return consoleThemeDetails.getControlSpecification();
+    public ControlSpecification[] getControlSpecificationList(ConsolePattern pattern) {
+        return consoleThemeDetails.getControlSpecification(pattern);
     }
 
     @Override

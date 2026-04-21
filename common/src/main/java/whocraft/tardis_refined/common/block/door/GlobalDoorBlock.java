@@ -17,13 +17,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class GlobalDoorBlock extends InternalDoorBlock {
 
@@ -101,6 +106,15 @@ public class GlobalDoorBlock extends InternalDoorBlock {
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        BlockEntity blockEntity = blockGetter.getBlockEntity(blockPos);
+        //noinspection ConstantValue IntelliJ got confused by this for some reason...
+        if (
+                TRConfig.COMMON_SPEC.isLoaded() && !TRConfig.COMMON.IP_VS_COLLISION.get() && blockEntity != null && blockEntity.getLevel() != null &&
+                ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(blockEntity.getLevel().dimension()) &&
+                ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(blockEntity.getLevel(), blockPos)
+        ) {
+            return Shapes.empty();
+        }
         return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 

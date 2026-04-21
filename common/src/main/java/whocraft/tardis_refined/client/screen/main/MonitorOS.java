@@ -35,7 +35,6 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -91,16 +90,16 @@ public class MonitorOS extends Screen {
         int vPos = (height - monitorHeight) / 2;
 
         guiGraphics.enableScissor(0, 0, width, vPos + shakeY);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(0, vPos + shakeY, hPos + shakeX, height - vPos + shakeY);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(width - hPos + shakeX, vPos + shakeY, width, height - vPos + shakeY);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(0, height - vPos + shakeY, width, height);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
     }
 

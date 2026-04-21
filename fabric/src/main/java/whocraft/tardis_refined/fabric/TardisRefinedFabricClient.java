@@ -8,6 +8,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import whocraft.tardis_refined.TardisRefined;
@@ -90,7 +91,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
         if (ModCompatChecker.immersivePortals()) {
-            ImmersivePortalsClient.doClientRenderers();
+            ImmersivePortalsClient.doClientRenderers(EntityRendererRegistry::register);
         }
 
     }

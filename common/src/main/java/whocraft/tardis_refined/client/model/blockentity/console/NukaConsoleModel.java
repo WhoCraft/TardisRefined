@@ -79,10 +79,13 @@ public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
         panels.getAllParts().forEach(ModelPart::resetPose);
         console.getAllParts().forEach(ModelPart::resetPose);
 
+        int playerTicks = Minecraft.getInstance().player.tickCount;
+        float tickCount = playerTicks + Minecraft.getInstance().getFrameTime();
+
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
         if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
-            this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+            this.animate(reactions.ROTOR_ANIMATION, FLIGHT, tickCount);
         }
 
         float rot = -1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));

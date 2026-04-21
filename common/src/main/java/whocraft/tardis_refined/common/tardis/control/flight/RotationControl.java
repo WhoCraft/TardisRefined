@@ -9,6 +9,8 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class RotationControl extends whocraft.tardis_refined.common.tardis.control.Control {
     public RotationControl(ResourceLocation id) {
@@ -32,6 +34,9 @@ public class RotationControl extends whocraft.tardis_refined.common.tardis.contr
     private boolean rotateDir(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean clockwise) {
         if (!operator.getLevel().isClientSide()) {
             TardisPilotingManager pilotManager = operator.getPilotingManager();
+            if (ModCompatChecker.valkyrienSkies()) {
+                pilotManager.setTargetLocation(VSHelper.toWorldLocation(pilotManager.getTargetLocation()));
+            }
 
             Direction dir = pilotManager.getTargetLocation().getDirection();
             pilotManager.getTargetLocation().setDirection(clockwise ? dir.getClockWise() : dir.getCounterClockWise());

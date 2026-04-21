@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.compat.portals;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,9 +26,11 @@ import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
 import qouteall.q_misc_util.api.DimensionAPI;
 import qouteall.q_misc_util.my_util.DQuaternion;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -36,6 +40,7 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -60,14 +65,42 @@ public class ImmersivePortals {
         EXISTING_PORTALS.clear();
     }
 
+    public static boolean doPortalsExistForTardis(ResourceKey<Level> dim) {
+        try {
+            return doPortalsExistForTardis(getUUIDForTARDIS(dim));
+        } catch (IllegalArgumentException ignored) { // Thrown when not a valid UUID.
+            return false;
+        }
+    }
+
     public static boolean doPortalsExistForTardis(UUID uuid) {
         return EXISTING_PORTALS.containsKey(uuid);
+    }
+
+    public static boolean isTeleportingPortalPresent(ResourceKey<Level> dim) {
+        try {
+            return isTeleportingPortalPresent(getUUIDForTARDIS(dim));
+        } catch (IllegalArgumentException ignored) { // Thrown when not a valid UUID.
+            return false;
+        }
+    }
+
+    public static boolean isTeleportingPortalPresent(UUID uuid) {
+        if (doPortalsExistForTardis(uuid)) {
+            PortalEntry portal = getPortalsForTardis(uuid);
+            return portal.getInternalPortal().teleportable && portal.getShellPortal().teleportable;
+        } else {
+            return false;
+        }
     }
 
     public static PortalEntry getPortalsForTardis(UUID uuid) {
         return EXISTING_PORTALS.get(uuid);
     }
 
+    public static UUID getUUIDForTARDIS(ResourceKey<Level> tardisID) {
+        return UUID.fromString(tardisID.location().getPath());
+    }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
         MinecraftServer server = MiscHelper.getServer();
@@ -93,7 +126,9 @@ public class ImmersivePortals {
         BOTI_PORTAL = ENTITY_TYPES.register("boti_portal", () -> registerStatic(BotiPortalEntity::new, MobCategory.MISC, 1, 1, 96, 20, "boti_portal"));
 
         setupEvents();
+    }
 
+    public static void postInit() {
         // Set up for Portals!
         setupPortalsForShellThemes();
     }
@@ -229,7 +264,7 @@ public class ImmersivePortals {
 
 
     private static void detectMissingSetup() {
-        for (ResourceLocation value : ShellTheme.SHELL_THEME_REGISTRY.keySet()) {
+        for (ResourceLocation value : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
             if (!isShellThemeSupported(value) && !value.equals(ShellTheme.getKey(ShellTheme.BRIEFCASE.get()))) {
                 LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
             }
@@ -259,6 +294,122 @@ public class ImmersivePortals {
         return true;
     }
 
+    public record PositionHolder(Vec3 pos, Vec3 axisW, Vec3 axisH, boolean airship) {
+        public DQuaternion getQuaternion() {
+            return DQuaternion.fromFacingVecs(axisW, axisH);
+        }
+    }
+
+    private static PositionHolder getPortalPosition(Level level, BlockPos blockPos, Direction direction, Vec3 doorPos) {
+        boolean airship = false;
+        Vec3 axisW = Vec3.atLowerCornerOf(direction.getCounterClockWise().getNormal());
+
+        Vec3 axisH = Vec3.atLowerCornerOf(Direction.UP.getNormal());
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            axisW = VSHelper.toWorldRotation(level, blockPos, axisW);
+            axisH = VSHelper.toWorldRotation(level, blockPos, axisH);
+            doorPos = VSHelper.toWorldPosition(level, blockPos, doorPos);
+            airship = VSHelper.isBlockOnShip(level, blockPos);
+        }
+        return new PositionHolder(doorPos, axisW, axisH, airship);
+    }
+
+    private static Vec3 getPortalPosForBlockPos(BlockPos pos, Direction direction, PortalOffets.OffsetData offset) {
+        Vec3 returnPos = new Vec3(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+
+        return switch (direction) {
+            case EAST -> returnPos.add(offset.east());
+            case SOUTH -> returnPos.add(offset.south());
+            case WEST -> returnPos.add(offset.west());
+            case NORTH -> returnPos.add(offset.north());
+            default -> throw new IllegalArgumentException("Why is the TARDIS facing up/down?");
+        };
+    }
+
+    private static boolean updatePortalPosition(PositionHolder position, BotiPortalEntity portal, BotiPortalEntity otherPortal) {
+        boolean updated = false;
+        if (!portal.axisH.equals(position.axisH) || !portal.axisW.equals(position.axisW)) {
+            portal.setOrientation(position.axisW, position.axisH);
+            PortalManipulation.adjustRotationToConnect(portal, otherPortal);
+            updated = true;
+        }
+        if (!portal.getOriginPos().equals(position.pos)) {
+            portal.setOriginPos(position.pos);
+            updated = true;
+        }
+        if (!otherPortal.getDestPos().equals(position.pos)) {
+            otherPortal.setDestination(position.pos);
+            updated = true;
+        }
+
+        return updated;
+    }
+
+    private static <T extends Entity> T reloadEntityIfLoaded(T entity) {
+        // Portal will get unloaded at some point.
+        // If we notice that, and the chunk where it's supposed to be is loaded, we try getting that one instead.
+        if (
+                entity.isRemoved() && entity.level() instanceof ServerLevel sl &&
+                sl.areEntitiesLoaded(ChunkPos.asLong(entity.blockPosition()))
+        ) {
+            Entity newEntity = sl.getEntity(entity.getUUID());
+            if (newEntity != null && newEntity.getClass() == entity.getClass()) {
+                //noinspection unchecked
+                return (T) newEntity;
+            }
+        }
+        return entity;
+    }
+
+    public static void updatePortalPositions(TardisLevelOperator operator) {
+        ResourceLocation theme = operator.getAestheticHandler().getShellTheme();
+
+        if (!isShellThemeSupported(theme)) {
+            destroyPortals(operator);
+            return;
+        }
+        PortalOffets themeData = THEME_OFFSETS.get(theme);
+
+        UUID dimId = getUUIDForTARDIS(operator.getLevelKey());
+        if (!doPortalsExistForTardis(dimId)) {
+            return;
+        }
+        PortalEntry portal = getPortalsForTardis(dimId);
+
+        BotiPortalEntity interiorPortal = reloadEntityIfLoaded(portal.getInternalPortal());
+        BotiPortalEntity exteriorPortal = reloadEntityIfLoaded(portal.getShellPortal());
+
+        if (interiorPortal != portal.getInternalPortal() || exteriorPortal != portal.getShellPortal()) {
+            EXISTING_PORTALS.put(dimId, new PortalEntry(interiorPortal, exteriorPortal, ShellTheme.getShellTheme(theme), dimId));
+        }
+
+        TardisInternalDoor door = operator.getInternalDoor();
+        PositionHolder interiorPos = getPortalPosition(
+                operator.getLevel(), door.getDoorPosition(), door.getTeleportRotation(),
+                getPortalPosForBlockPos(door.getTeleportPosition(), door.getTeleportRotation(), themeData.intDoor())
+        );
+        boolean result = updatePortalPosition(interiorPos, interiorPortal, exteriorPortal);
+
+        TardisNavLocation location = operator.getPilotingManager().getCurrentLocation();
+        PositionHolder exteriorPos = getPortalPosition(
+                location.getLevel(), location.getPosition(), location.getDirection(),
+                getPortalPosForBlockPos(location.getPosition(), location.getDirection(), themeData.shell())
+        );
+        result |= updatePortalPosition(exteriorPos, exteriorPortal, interiorPortal);
+
+        if (result) {
+            exteriorPortal.reloadAndSyncToClient();
+            interiorPortal.reloadAndSyncToClient();
+        }
+    }
+
+    private static void setAllowTeleportation(BotiPortalEntity portal, boolean isOnAirship) {
+        if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_VS.get() : TRConfig.SERVER.IP_TELEPORTATION.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
+            portal.setTeleportable(false);
+        }
+    }
+
     public static void createPortals(TardisLevelOperator operator) {
 
         if(operator.getPilotingManager().isInFlight()){
@@ -270,17 +421,9 @@ public class ImmersivePortals {
         if (!Platform.isProduction()) {
             setupPortalsForShellThemes();
         }
-        if(operator.getInternalDoor() == null){
-            return;
-        }
-
-        if(operator.getPilotingManager().isInFlight()){
-            destroyPortals(operator);
-            return;
-        }
 
         destroyPortals(operator);
-        UUID dimId = UUID.fromString(operator.getLevel().dimension().location().getPath());
+        UUID dimId = getUUIDForTARDIS(operator.getLevelKey());
 
         AestheticHandler aestheticsHandler = operator.getAestheticHandler();
         TardisInteriorManager interiorManager = operator.getInteriorManager();
@@ -294,40 +437,42 @@ public class ImmersivePortals {
             return;
         }
 
-        if (interiorManager.isCave() || door != null && !door.isOpen() || !operator.isTardisReady() || EXISTING_PORTALS.get(dimId) != null || door == null) {
-            return;
+        boolean open = door != null && door.isOpen();
+        TardisNavLocation location = pilotingManager.getCurrentLocation();
+
+        // If exterior is loaded we use it to check if door is open as well.
+        // The state we get for the interior door might be an outdated unloaded block entity.
+        if (location.getLevel().areEntitiesLoaded(ChunkPos.asLong(location.getPosition()))) {
+            BlockEntity entity = location.getLevel().getBlockEntity(location.getPosition());
+            if (entity instanceof ExteriorShell shell && shell.isOpen()) {
+                open = true;
+            }
         }
 
-
-        TardisNavLocation location = pilotingManager.getCurrentLocation();
-        BlockPos entryPositionBPos = door.getTeleportPosition();
-        Vec3 entryPosition = new Vec3(entryPositionBPos.getX() + 0.5, entryPositionBPos.getY() + 1, entryPositionBPos.getZ() + 0.5);
-        BlockPos exteriorEntryBPos = location.getPosition();
-        Vec3 exteriorEntryPosition = new Vec3(exteriorEntryBPos.getX() + 0.5, exteriorEntryBPos.getY() + 1, exteriorEntryBPos.getZ() + 0.5);
+        if (interiorManager.isCave() || !open || !operator.isTardisReady() || EXISTING_PORTALS.get(dimId) != null || door == null) {
+            return;
+        }
 
         theme = operator.getAestheticHandler().getShellTheme();
         PortalOffets themeData = THEME_OFFSETS.get(theme);
         PortalOffets.OffsetData interiorDoor = themeData.intDoor();
         PortalOffets.OffsetData exteriorDoor = themeData.shell();
 
+        BlockPos entryPositionBPos = door.getTeleportPosition();
+        Vec3 entryPosition = getPortalPosForBlockPos(entryPositionBPos, door.getTeleportRotation(), interiorDoor);
+        BlockPos exteriorEntryBPos = location.getPosition();
+        Vec3 exteriorEntryPosition = getPortalPosForBlockPos(exteriorEntryBPos, location.getDirection(), exteriorDoor);
+
         Level operatorLevel = operator.getLevel();
 
+        PositionHolder ext = getPortalPosition(location.getLevel(), location.getPosition(), location.getDirection(), exteriorEntryPosition);
+        PositionHolder interior = getPortalPosition(operatorLevel, door.getDoorPosition(), door.getTeleportRotation(), entryPosition);
+        exteriorEntryPosition = ext.pos;
+        entryPosition = interior.pos;
+        boolean airship = ext.airship || interior.airship;
 
-        switch (location.getDirection()) {
-            case EAST -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.east());
-            case SOUTH -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.south());
-            case WEST -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.west());
-            case NORTH -> exteriorEntryPosition = exteriorEntryPosition.add(exteriorDoor.north());
-        }
-
-        switch (door.getTeleportRotation()) {
-            case EAST -> entryPosition = entryPosition.add(interiorDoor.east());
-            case SOUTH -> entryPosition = entryPosition.add(interiorDoor.south());
-            case WEST -> entryPosition = entryPosition.add(interiorDoor.west());
-            case NORTH -> entryPosition = entryPosition.add(interiorDoor.north());
-        }
-        DQuaternion extQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), location.getDirection().toYRot());
-        DQuaternion interiorQuat = DQuaternion.rotationByDegrees(new Vec3(0, -1, 0), door.getTeleportRotation().toYRot());
+        DQuaternion extQuat = ext.getQuaternion();
+        DQuaternion interiorQuat = interior.getQuaternion();
 
         BotiPortalEntity exteriorPortal = createPortal(location.getLevel(), exteriorEntryPosition, entryPosition, operatorLevel.dimension(), extQuat);
         BotiPortalEntity interiorPortal = createDestPortal(exteriorPortal, entryPosition, ImmersivePortals.BOTI_PORTAL.get(), interiorQuat);
@@ -342,6 +487,8 @@ public class ImmersivePortals {
         interiorPortal.setInteractable(false);
         interiorPortal.setValid(true);
         exteriorPortal.setValid(true);
+        setAllowTeleportation(exteriorPortal, airship);
+        setAllowTeleportation(interiorPortal, airship);
 
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("adjustPositionAfterTeleport", false);
