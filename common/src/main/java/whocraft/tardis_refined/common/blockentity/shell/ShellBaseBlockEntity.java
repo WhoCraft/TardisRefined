@@ -268,7 +268,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
                 if(!tardisLevelOperator.getPilotingManager().isInFlight()) {
                     if (placedByOtherMod) { // If placed by another mod we don't want it to delete itself.
-                        var dir = level.getBlockState(blockPos).getOptionalValue(ShellBaseBlock.FACING).orElse(Direction.NORTH);
+                        var dir = level.getBlockState(blockPos).getOptionalValue(ShellBaseBlock.FACING).orElse(Direction.NORTH).getOpposite();
                         tardisLevelOperator.getPilotingManager().setCurrentLocation(
                                 new TardisNavLocation(blockPos, dir, level.dimension())
                         );
