@@ -300,8 +300,14 @@ public class ImmersivePortals {
         }
     }
 
+    private static boolean isAirship(Level level, BlockPos blockPos) {
+        if (ModCompatChecker.valkyrienSkies()) {
+            return VSHelper.isBlockOnShip(level, blockPos);
+        }
+        return false;
+    }
+
     private static PositionHolder getPortalPosition(Level level, BlockPos blockPos, Direction direction, Vec3 doorPos) {
-        boolean airship = false;
         Vec3 axisW = Vec3.atLowerCornerOf(direction.getCounterClockWise().getNormal());
 
         Vec3 axisH = Vec3.atLowerCornerOf(Direction.UP.getNormal());
@@ -310,9 +316,8 @@ public class ImmersivePortals {
             axisW = VSHelper.toWorldRotation(level, blockPos, axisW);
             axisH = VSHelper.toWorldRotation(level, blockPos, axisH);
             doorPos = VSHelper.toWorldPosition(level, blockPos, doorPos);
-            airship = VSHelper.isBlockOnShip(level, blockPos);
         }
-        return new PositionHolder(doorPos, axisW, axisH, airship);
+        return new PositionHolder(doorPos, axisW, axisH, isAirship(level, blockPos));
     }
 
     private static Vec3 getPortalPosForBlockPos(BlockPos pos, Direction direction, PortalOffets.OffsetData offset) {
@@ -362,6 +367,22 @@ public class ImmersivePortals {
         return entity;
     }
 
+    public static void onDoorMoved(TardisLevelOperator operator) {
+        UUID dimId = getUUIDForTARDIS(operator.getLevelKey());
+        if (!doPortalsExistForTardis(dimId)) {
+            return;
+        }
+
+        PortalEntry portal = getPortalsForTardis(dimId);
+        BotiPortalEntity interiorPortal = reloadEntityIfLoaded(portal.getInternalPortal());
+        BotiPortalEntity exteriorPortal = reloadEntityIfLoaded(portal.getShellPortal());
+        TardisNavLocation location = operator.getPilotingManager().getCurrentLocation();
+        boolean airship = isAirship(operator.getLevel(), operator.getInternalDoor().getDoorPosition()) || isAirship(location.getLevel(), location.getPosition());
+        setAllowTeleportation(interiorPortal, airship);
+        setAllowTeleportation(exteriorPortal, airship);
+        updatePortalPositions(operator);
+    }
+
     public static void updatePortalPositions(TardisLevelOperator operator) {
         ResourceLocation theme = operator.getAestheticHandler().getShellTheme();
 
@@ -405,9 +426,13 @@ public class ImmersivePortals {
     }
 
     private static void setAllowTeleportation(BotiPortalEntity portal, boolean isOnAirship) {
+        if (portal.level().isClientSide()) return;
         if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_VS.get() : TRConfig.SERVER.IP_TELEPORTATION.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
             portal.setTeleportable(false);
+        } else {
+            portal.setTeleportable(true);
         }
+        portal.reloadAndSyncClusterToClientNextTick();
     }
 
     public static void createPortals(TardisLevelOperator operator) {

@@ -272,6 +272,9 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                         tardisLevelOperator.getPilotingManager().setCurrentLocation(
                                 new TardisNavLocation(blockPos, dir, level.dimension())
                         );
+                        if (ModCompatChecker.immersivePortals()) {
+                            ImmersivePortals.onDoorMoved(tardisLevelOperator);
+                        }
                         placedByOtherMod = false;
                     }
                     if (isInvalidTardis(tardisLevelOperator)) {
