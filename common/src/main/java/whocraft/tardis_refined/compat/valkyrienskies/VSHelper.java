@@ -13,6 +13,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Math;
+import org.joml.Matrix4dc;
+import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import org.joml.primitives.AABBd;
 import org.valkyrienskies.core.api.ships.Ship;
@@ -144,6 +146,15 @@ public class VSHelper {
             return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
         } else {
             return aabb;
+        }
+    }
+
+    public static Quaternionf toWorldRotation(Level level, BlockPos position, Quaternionf rotation) {
+        Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
+        if (ship != null) {
+            return new Quaternionf().setFromNormalized(ship.getShipToWorld()).mul(rotation);
+        } else {
+            return rotation;
         }
     }
 
