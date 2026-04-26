@@ -40,3 +40,5 @@
 - Bug fix: Immersive Portals compatibility crashing the game on Forge.
 - Bug fix: Vortex not rendering in GUIs when Journeymap or Kilt is installed.
 - Bug fix: TARDIS cannot reach edges when moving in the vortex view on Forge.
+- Bug fix: Players can take damage or die while in shell view.
+- Bug fix: Players can receive new potion effects while in shell view.
