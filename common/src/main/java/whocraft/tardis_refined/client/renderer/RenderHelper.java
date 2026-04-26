@@ -22,6 +22,8 @@ public class RenderHelper {
 
     public static Tesselator tesselator;
 
+    public static float currentProjectionZOffset = 11000;
+
     public static void renderPlayerFace(GuiGraphics guiGraphics, int i, int j, int k, UUID uUID) {
         Minecraft minecraft = Minecraft.getInstance();
         ProfileResult profileResult = minecraft.getMinecraftSessionService().fetchProfile(uUID, false);
