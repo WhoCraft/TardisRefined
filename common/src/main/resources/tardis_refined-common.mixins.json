@@ -20,6 +20,7 @@
     "render.FogRendererMixin",
     "render.ModelPartInvoker",
     "render.PlayerRenderMixin",
+    "render.PoseStackMixin",
     "render.buffer.MixinMainTarget",
     "render.buffer.MixinRenderTarget",
     "render.ui.GuiMixin",

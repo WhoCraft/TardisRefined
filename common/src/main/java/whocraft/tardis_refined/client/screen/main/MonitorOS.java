@@ -25,6 +25,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.client.renderer.vortex.VortexRenderer;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
@@ -116,7 +117,7 @@ public class MonitorOS extends Screen {
         assert minecraft != null;
         Matrix4f perspective = new Matrix4f();
         perspective.perspective((float) Math.toRadians(minecraft.options.fov().get()), (float) width / (float) height, 0, 9999, false, perspective);
-        perspective.translate(0, 0, Platform.isForge() ? 10000f : 11000f);
+        perspective.translate(0, 0, RenderHelper.currentProjectionZOffset);
         RenderSystem.setProjectionMatrix(perspective, VertexSorting.DISTANCE_TO_ORIGIN);
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(20));
