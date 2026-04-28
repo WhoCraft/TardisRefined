@@ -16,6 +16,7 @@
   ],
   "client": [
     "render.SodiumFixMixin",
+    "render.GameRendererMixin",
     "LocalPlayerMixin",
     "MultiplayerGameModeMixin",
     "render.FogRendererMixin",

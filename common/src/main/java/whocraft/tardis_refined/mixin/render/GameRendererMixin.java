@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin.fabric;
+package whocraft.tardis_refined.mixin.render;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -16,10 +16,25 @@ public class GameRendererMixin {
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V"
-            )
-
+            ),
+            require = 0
     )
-    public void render(PoseStack instance, float x, float y, float z, Operation<Void> original) {
+    public void onTranslateFabric(PoseStack instance, float x, float y, float z, Operation<Void> original) {
+        // We can't take z from here because some mods like Journeymap set it manually with a redirect, so we catch it inside the PoseStack instead.
+        ((PoseStackExtension) instance).tardis_refined$setUpdateZOffset(true);
+        original.call(instance, x, y, z);
+        ((PoseStackExtension) instance).tardis_refined$setUpdateZOffset(false);
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(DDD)V"
+            ),
+            require = 0
+    )
+    public void onTranslateForge(PoseStack instance, double x, double y, double z, Operation<Void> original) {
         // We can't take z from here because some mods like Journeymap set it manually with a redirect, so we catch it inside the PoseStack instead.
         ((PoseStackExtension) instance).tardis_refined$setUpdateZOffset(true);
         original.call(instance, x, y, z);
