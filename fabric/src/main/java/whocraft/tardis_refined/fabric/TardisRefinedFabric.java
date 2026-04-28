@@ -24,7 +24,7 @@ import whocraft.tardis_refined.common.util.fabric.PlatformImpl;
 import whocraft.tardis_refined.common.world.fabric.TRFabricBiomeModifiers;
 import whocraft.tardis_refined.compat.CuriosTrinketsUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.create.CreateIntergrationsFabric;
+import whocraft.tardis_refined.compat.create.CreateIntergrationsInit;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.fabric.PortalsCompatFabric;
 import whocraft.tardis_refined.compat.trinkets.TrinketsUtil;
@@ -91,10 +91,6 @@ public class TardisRefinedFabric implements ModInitializer {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
         }
 
-        if(ModCompatChecker.create()){
-            CreateIntergrationsFabric.init();
-        }
-
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton")));
         BiomeModifications.addFeature(BiomeSelectors.foundInOverworld(), GenerationStep.Decoration.UNDERGROUND_ORES, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, "ore_zeiton_small")));
 
@@ -102,7 +98,9 @@ public class TardisRefinedFabric implements ModInitializer {
             CuriosTrinketsUtil.setInstance(new TrinketsUtil());
         }
 
-
+        if (ModCompatChecker.create()) {
+            CreateIntergrationsInit.initAssignments();
+        }
 
     }
 }

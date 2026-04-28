@@ -15,7 +15,7 @@ import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-public class CreateIntergrationsForge {
+public class CreateIntergrationsInit {
 
     public static final DeferredRegistry<DisplaySource> DISPLAY_SOURCE_DEFERRED_REGISTRY =
             DeferredRegistry.create(TardisRefined.MODID, CreateRegistries.DISPLAY_SOURCE);
