@@ -13,17 +13,17 @@ import whocraft.tardis_refined.client.renderer.RenderHelper;
 public class PoseStackMixin implements PoseStackExtension {
 
     @Unique
-    private boolean tardis_refine$updateProjectionZOffset = false;
+    private boolean tardis_refined$updateProjectionZOffset = false;
 
     @Inject(method = "translate(FFF)V", at = @At("HEAD"))
     public void translate(float x, float y, float z, CallbackInfo ci) {
-        if (tardis_refine$updateProjectionZOffset) {
+        if (tardis_refined$updateProjectionZOffset) {
             RenderHelper.currentProjectionZOffset = -z;
         }
     }
 
     @Override
     public void tardis_refined$setUpdateZOffset(boolean updateOffset) {
-        this.tardis_refine$updateProjectionZOffset = updateOffset;
+        this.tardis_refined$updateProjectionZOffset = updateOffset;
     }
 }
