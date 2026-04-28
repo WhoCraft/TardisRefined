@@ -278,6 +278,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.IN_FLIGHT, "Flight: %s");
         add(ModMessages.DIRECTION, "Direction: %s");
         add(ModMessages.DIMENSION, "Dimension: %s");
+        add(ModMessages.SHELL, "Shell: %s");
+        add(ModMessages.JOURNEY_PROGRESS, "Journey Progress: %s");
         add(ModMessages.createDisplaySource("fuel"), "Fuel");
         add(ModMessages.createDisplaySource("gps"), "GPS");
         add(ModMessages.createDisplaySource("destination"), "GPS Destination");
