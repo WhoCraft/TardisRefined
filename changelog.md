@@ -44,3 +44,4 @@
 - Bug fix: Players can receive new potion effects while in shell view.
 - Bug fix: Create TARDIS Summary does not display all lines correctly.
 - Bug fix: Crash when closing the game near a TARDIS Create display while Valkyrien Skies is installed.
+- Bug fix: Recently created TARDIS keeps printing "Preparing spawn area: 100%" every time a chunk loads until the server is restarted.
