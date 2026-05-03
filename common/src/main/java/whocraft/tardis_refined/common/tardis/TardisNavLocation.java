@@ -68,7 +68,6 @@ public class TardisNavLocation {
         if (tag.contains("name"))
             loc.setName(tag.getString("name"));
 
-        loc.level = DimensionUtil.getLevel(loc.dimensionKey);
         return loc;
     }
 
@@ -92,7 +91,7 @@ public class TardisNavLocation {
             return DimensionUtil.getLevel(dimensionKey);
         }
 
-        var level = Platform.getServer().getLevel(dimensionKey);
+        this.level = Platform.getServer().getLevel(dimensionKey);
         if (level != null) {
             return level;
         }
