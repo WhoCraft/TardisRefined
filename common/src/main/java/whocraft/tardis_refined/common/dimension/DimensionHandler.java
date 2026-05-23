@@ -125,6 +125,7 @@ public class DimensionHandler {
                         LOGGER.warn("Successfully created and loaded new level {}", dimension.getAsString());
                 } else {
                     LOGGER.info("Successfully loaded existing level {}", dimension.getAsString());
+                    LEVELS.add(levelKey);
                 }
             }
 
