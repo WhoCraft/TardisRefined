@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.client.renderer.vortex.VortexRenderer;
 import whocraft.tardis_refined.client.screen.screens.ShellSelectionScreen;
 import whocraft.tardis_refined.common.VortexRegistry;
@@ -161,7 +162,7 @@ public class VortexOverlay {
 
             Matrix4f perspective = new Matrix4f();
             perspective.perspective((float) Math.toRadians(mc.options.fov().get()), width / height, 1, 9999, false, perspective);
-            perspective.translate(0, 0, Platform.isForge() ? 9990f : 11000f - (float) camdist * mulinv - 5 * mul);
+            perspective.translate(0, 0, RenderHelper.currentProjectionZOffset - (float) camdist * mulinv - 5 * mul);
             RenderSystem.setProjectionMatrix(perspective, VertexSorting.DISTANCE_TO_ORIGIN);
 
             pose.pushPose();
@@ -179,6 +180,9 @@ public class VortexOverlay {
             pose.translate(4 * tardisX * mul, 4 * tardisY * mul, 0);
             pose.mulPose(Axis.ZP.rotationDegrees((float) (mul * -450 * velX)));
             pose.mulPose(Axis.ZP.rotationDegrees(mul * VORTEX.lightning_strike * 90 * Mth.sin(VORTEX.lightning_strike)));
+            if (Platform.isForge()) {
+                pose.scale(0.4f, 0.4f, 0.4f);
+            }
 
             pose.pushPose();
             pose.translate(0.5,0,0);

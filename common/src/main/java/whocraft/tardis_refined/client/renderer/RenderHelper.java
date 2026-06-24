@@ -15,6 +15,7 @@ public class RenderHelper {
 
     public static Tesselator tesselator;
 
+    public static float currentProjectionZOffset = 11000;
 
     public static void renderFilledBox(PoseStack stack, VertexConsumer vertexConsumer, AABB box, float red, float green, float blue, float alpha, int combinedLightIn) {
         Matrix4f matrix = stack.last().pose();

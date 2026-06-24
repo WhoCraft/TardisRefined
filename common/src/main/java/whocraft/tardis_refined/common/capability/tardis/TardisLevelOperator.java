@@ -586,6 +586,9 @@ public class TardisLevelOperator {
         this.internalDoor = door;
         if (door != null) //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onDoorMoved(this);
+        }
     }
 
     public TardisInteriorManager getInteriorManager() {

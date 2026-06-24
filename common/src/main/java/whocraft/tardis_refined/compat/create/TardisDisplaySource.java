@@ -9,9 +9,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.FlightDetectorBlockEntity;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -37,16 +38,16 @@ public class TardisDisplaySource extends DisplaySource {
                 if (isPresent) {
                     TardisLevelOperator levelOperator = TardisLevelOperator.get(serverLevel).get();
                     TardisNavLocation currentLoc = levelOperator.getPilotingManager().getCurrentLocation();
-                    if (ModCompatChecker.valkyrienSkies()) {
+                    if (ModCompatChecker.valkyrienSkies() && Platform.getServer() != null) {
                         currentLoc = VSHelper.toWorldLocation(currentLoc);
                     }
 
                     list.add(Component.translatable(ModMessages.IN_FLIGHT, levelOperator.getPilotingManager().isInFlight()));
                     list.add(Component.translatable(ModMessages.POSITION, currentLoc.getPosition().toShortString()));
                     list.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getCleanDimensionName(currentLoc.getDimensionKey())));
-                    list.add(Component.translatable(ModMessages.FUEL).append(String.valueOf(Math.round(levelOperator.getPilotingManager().getFuelPercentage() * 100))).append("%"));
+                    list.add(Component.translatable(ModMessages.FUEL, String.valueOf(Math.round(levelOperator.getPilotingManager().getFuelPercentage() * 100))).append("%"));
                     list.add(Component.translatable(ModMessages.SHELL, levelOperator.getAestheticHandler().getShellTheme().getPath()));
-                    list.add(Component.translatable(ModMessages.JOURNEY_PROGRESS).append(levelOperator.getPilotingManager().getFlightPercentageCovered() * 100 + "%"));
+                    list.add(Component.translatable(ModMessages.JOURNEY_PROGRESS, levelOperator.getPilotingManager().getFlightPercentageCovered() * 100 + "%"));
 
                 }
                 return list;

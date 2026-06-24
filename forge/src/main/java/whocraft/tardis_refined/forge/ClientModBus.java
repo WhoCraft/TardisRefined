@@ -3,13 +3,17 @@ package whocraft.tardis_refined.forge;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -28,11 +32,13 @@ import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsole
 import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorExtensionRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.ZeitonGlassRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
@@ -41,13 +47,11 @@ import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.mixin.forge.ReloadableResourceManagerMixin;
 import whocraft.tardis_refined.overlays.TardisRefinedOverlay;
-import whocraft.tardis_refined.registry.RegistrySupplier;
-import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
-import whocraft.tardis_refined.registry.TREntityRegistry;
-import whocraft.tardis_refined.registry.TRItemRegistry;
+import whocraft.tardis_refined.registry.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = TardisRefined.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ClientModBus {
@@ -115,9 +119,11 @@ public class ClientModBus {
         BlockEntityRenderers.register(TRBlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.BULK_HEAD_DOOR_EXT.get(), BulkHeadDoorExtensionRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ZEITON_GLASS.get(), ZeitonGlassRenderer::new);
 
         EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
@@ -126,6 +132,15 @@ public class ClientModBus {
         if (ModCompatChecker.immersivePortals()) {
             ImmersivePortalsClient.doClientRenderers(EntityRenderers::register);
         }
+        event.enqueueWork(() -> {
+            for (Map.Entry<ResourceKey<Block>, Block> block : TRBlockRegistry.BLOCKS.entrySet()) {
+                ResourceLocation key = block.getKey().location();
+                if (key != null && key.getNamespace().equals(TardisRefined.MODID)) {
+                    ItemBlockRenderTypes.setRenderLayer(block.getValue(), RenderType.cutout());
+                }
+            }
+        });
+
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

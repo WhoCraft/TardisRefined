@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -15,7 +16,7 @@ import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-public class CreateIntergrationsForge {
+public class CreateIntergrationsInit {
 
     public static final DeferredRegistry<DisplaySource> DISPLAY_SOURCE_DEFERRED_REGISTRY =
             DeferredRegistry.create(TardisRefined.MODID, CreateRegistries.DISPLAY_SOURCE);
@@ -68,7 +69,7 @@ public class CreateIntergrationsForge {
                         @Override
                         public TardisNavLocation provideInfo(TardisLevelOperator tardis) {
                             TardisNavLocation currentLoc = tardis.getPilotingManager().getCurrentLocation();
-                            if (ModCompatChecker.valkyrienSkies()) {
+                            if (ModCompatChecker.valkyrienSkies() && Platform.getServer() != null) {
                                 currentLoc = VSHelper.toWorldLocation(currentLoc);
                             }
                             return currentLoc;

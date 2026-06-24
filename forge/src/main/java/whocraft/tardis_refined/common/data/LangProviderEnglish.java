@@ -116,6 +116,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRBlockRegistry.ARTRON_PILLAR.get(), "Artron Pillar");
         add(TRBlockRegistry.ARTRON_PILLAR_PORT.get(), "Artron Pillar Port");
         add(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), "Corridor Teleporter");
+        add(TRBlockRegistry.ZEITON_GLASS.get(), "Zeiton Glass");
 
         /*Items*/
         add(TRItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -277,6 +278,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.IN_FLIGHT, "Flight: %s");
         add(ModMessages.DIRECTION, "Direction: %s");
         add(ModMessages.DIMENSION, "Dimension: %s");
+        add(ModMessages.SHELL, "Shell: %s");
+        add(ModMessages.JOURNEY_PROGRESS, "Journey Progress: %s");
         add(ModMessages.createDisplaySource("fuel"), "Fuel");
         add(ModMessages.createDisplaySource("gps"), "GPS");
         add(ModMessages.createDisplaySource("destination"), "GPS Destination");
@@ -330,6 +333,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
         add(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR, "Render Vortex within interior door");
         add(ModMessages.CONFIG_CUSTOM_SHADERS, "Use Custom Shaders");
+        add(ModMessages.SCREEN_SHAKE_MULTIPLIER, "Screen Shake Multiplier");
 
         /*Overlay Messages*/
         add(ModMessages.ASCEND_KEY, "Ascend: %s");
@@ -343,6 +347,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(TRUpgrades.NAVIGATION_SYSTEM.get(), "Navigation System", "Allows upgrades to the TARDIS Navigation System");
         addUpgrade(TRUpgrades.TARDIS_XP.get(), "System Upgrades", "Allows upgrades to the TARDIS");
         addUpgrade(TRUpgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
+        addUpgrade(TRUpgrades.RESPAWN_ALLOWED.get(), "Allow Bed Respawning", "Removes security restriction allowing users to set their spawn via beds.");
         addUpgrade(TRUpgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
         addUpgrade(TRUpgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
         addUpgrade(TRUpgrades.EXPLORER.get(), "Explorer I", "x1000 Increment");
@@ -394,7 +399,5 @@ public class LangProviderEnglish extends LanguageProvider {
         add("death.attack." + damageSource.location().getPath(), message);
         add("death.attack." + damageSource.location().getPath() + ".player", message);
     }
-
-
 
 }

@@ -77,6 +77,9 @@ public class NbtConstants {
     public static final String IS_PASSIVELY_REFUELING = "is_passively_refueling";
     public static final String MINECRAFT = "minecraft";
 
+
+    public static final String MASTER_DOOR = "master_door";
+
     public static TardisNavLocation getTardisNavLocation(CompoundTag targetTag, String entry) {
         if (targetTag.contains(entry)) {
             CompoundTag savedLocationTag = targetTag.getCompound(entry);

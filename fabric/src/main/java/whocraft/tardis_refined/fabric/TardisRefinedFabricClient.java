@@ -21,11 +21,13 @@ import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsole
 import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorExtensionRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.ZeitonGlassRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
@@ -70,6 +72,9 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.BULK_HEAD_DOOR_EXT.get(), BulkHeadDoorExtensionRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ZEITON_GLASS.get(), ZeitonGlassRenderer::new);
+
 
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);

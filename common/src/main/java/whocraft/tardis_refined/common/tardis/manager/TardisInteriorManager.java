@@ -459,7 +459,7 @@ public class TardisInteriorManager extends TickableHandler {
     }
 
     public boolean canBedSetSpawn() {
-        return false; //TODO Upgrade?
+        return operator.getUpgradeHandler().isUpgradeUnlocked(TRUpgrades.RESPAWN_ALLOWED.get());
     }
 
     /**

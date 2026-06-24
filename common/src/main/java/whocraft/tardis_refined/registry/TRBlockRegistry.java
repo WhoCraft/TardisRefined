@@ -10,15 +10,14 @@ import whocraft.tardis_refined.common.block.RootPlantBlock;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.device.*;
 import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
+import whocraft.tardis_refined.common.block.door.BulkHeadDoorExtensionBlock;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.RootShellDoorBlock;
-import whocraft.tardis_refined.common.block.life.ARSLeavesBlock;
-import whocraft.tardis_refined.common.block.life.ArsEggBlock;
-import whocraft.tardis_refined.common.block.life.EyeBlock;
-import whocraft.tardis_refined.common.block.life.GrowthStoneBlock;
+import whocraft.tardis_refined.common.block.life.*;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
+
 
 import java.util.function.Supplier;
 
@@ -38,6 +37,7 @@ public class TRBlockRegistry {
     // Roots
     public static final RegistrySupplier<RootPlantBlock> ROOT_PLANT_BLOCK = register("root_plant", () -> new RootPlantBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.CORAL_BLOCK)), true, true);
     public static final RegistrySupplier<BulkHeadDoorBlock> BULK_HEAD_DOOR = register("bulk_head_door", () -> new BulkHeadDoorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.CORAL_BLOCK)), true, true);
+    public static final RegistrySupplier<BulkHeadDoorExtensionBlock> BULK_HEAD_DOOR_EXT = register("bulk_head_door_ext", () -> new BulkHeadDoorExtensionBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.ANVIL)), false, false);
     // ARS Tree
     public static final RegistrySupplier<ArsEggBlock> ARS_EGG = register("ars_egg", () -> new ArsEggBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES).lightLevel((x) -> 12)), true, true);
     public static final RegistrySupplier<Block> ARS_LEAVES = register("ars_leaves", () -> new ARSLeavesBlock(BlockBehaviour.Properties.of().noOcclusion().strength(3, 3).sound(SoundType.AZALEA_LEAVES)), false, true);
@@ -74,6 +74,7 @@ public class TRBlockRegistry {
     public static final RegistrySupplier<Block> THE_EYE = register("the_eye", () -> new EyeBlock(BlockBehaviour.Properties.copy(Blocks.BEDROCK)), false, false);
     public static final RegistrySupplier<LanternBlock> ZEITON_LANTERN = register("zeiton_lantern", () -> new LanternBlock(BlockBehaviour.Properties.copy(Blocks.LANTERN).requiresCorrectToolForDrops()), true, true);
     public static final RegistrySupplier<Block> ARTRON_PILLAR_PORT = register("artron_pillar_port", () -> new Block(BlockBehaviour.Properties.copy(Blocks.BEDROCK)), false, false);
+    public static final RegistrySupplier<Block> ZEITON_GLASS = register("zeiton_glass", () -> new ZeitonGlassBlock(BlockBehaviour.Properties.copy(Blocks.GLASS)), true, true);
   //  public static final RegistrySupplier<Block> ASTRAL_MAP = register("astral_map", () -> new Block(BlockBehaviour.Properties.copy(Blocks.STONE)), true, true);
 
     private static <T extends Block> RegistrySupplier<T> register(String id, Supplier<T> blockSupplier, boolean addToTab, boolean registerItem) {
