@@ -142,7 +142,7 @@ public class ModEvents {
             if (world == null) return;
             TardisClientData tardisClientData = TardisClientData.getInstance(world.dimension());
             matrices.pushPose();
-            RenderTargetHelper.renderZeitonGlass(camera, ModelRegistry.zeitonGlassModel, matrices, context.consumers(), LightTexture.FULL_BLOCK, tardisClientData, true);
+            RenderTargetHelper.renderZeitonGlass(camera, ModelRegistry.getZeitonGlassModel(), matrices, context.consumers(), LightTexture.FULL_BLOCK, tardisClientData, true);
             matrices.popPose();
         });
 

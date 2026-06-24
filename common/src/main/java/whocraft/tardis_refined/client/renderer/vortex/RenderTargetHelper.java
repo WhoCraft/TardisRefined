@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +45,7 @@ import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.ZeitonGlassBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 import static net.minecraft.client.renderer.RenderStateShard.*;
@@ -166,6 +168,19 @@ public class RenderTargetHelper {
         stack.popPose();
     }
 
+    private static void moveStackToPose(PoseStack stack, Level level, BlockPos pos, Vec3 camPos) {
+        Vec3 actualPos = new Vec3(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+        var rotation = Axis.ZP.rotationDegrees(180);
+        if (ModCompatChecker.valkyrienSkies()) {
+            if (VSHelper.isBlockInShipyard(level, pos)) {
+                actualPos = VSHelper.toWorldPosition(level, pos, actualPos);
+                rotation = VSHelper.toWorldRotation(level, pos, rotation);
+            }
+        }
+        stack.translate(actualPos.x - camPos.x, actualPos.y - camPos.y, actualPos.z - camPos.z);
+        stack.mulPose(rotation);
+    }
+
     public static void renderZeitonGlass(Camera camera, PortalModel<?> mask, PoseStack stack, MultiBufferSource bufferSource, int packedLight, TardisClientData tardisClientData, boolean renderVortex) {
         if (mask == null) {
             TardisRefined.LOGGER.warn("Skipped glass rendering: portal mask is null.");
@@ -182,8 +197,7 @@ public class RenderTargetHelper {
 
                 BlockPos pos = entity.getBlockPos();
                 stack.pushPose();
-                stack.translate(pos.getX() + 0.5 - camPos.x, pos.getY() + 1.5 - camPos.y, pos.getZ() + 0.5 - camPos.z);
-                stack.mulPose(Axis.ZP.rotationDegrees(180));
+                moveStackToPose(stack, entity.getLevel(), pos, camPos);
                 mask.renderPortalMask(
                         stack,
                         bufferSource.getBuffer(RenderType.endPortal()),
@@ -221,8 +235,7 @@ public class RenderTargetHelper {
 
             BlockPos pos = entity.getBlockPos();
             stack.pushPose();
-            stack.translate(pos.getX() + 0.5 - camPos.x, pos.getY() + 1.5 - camPos.y, pos.getZ() + 0.5 - camPos.z);
-            stack.mulPose(Axis.ZP.rotationDegrees(180));
+            moveStackToPose(stack, entity.getLevel(), pos, camPos);
             mask.renderPortalMask(
                     stack,
                     imBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)),
@@ -253,6 +266,7 @@ public class RenderTargetHelper {
         stack.popPose();
 
         GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
         GL11.glColorMask(true, true, true, true);
         GL11.glDisable(GL11.GL_STENCIL_TEST);
         GL11.glStencilMask(0xFF);

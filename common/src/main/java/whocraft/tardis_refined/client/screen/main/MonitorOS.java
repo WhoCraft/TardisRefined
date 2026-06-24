@@ -25,6 +25,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.client.renderer.vortex.VortexRenderer;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
@@ -34,7 +35,6 @@ import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -91,16 +91,16 @@ public class MonitorOS extends Screen {
         int vPos = (height - monitorHeight) / 2;
 
         guiGraphics.enableScissor(0, 0, width, vPos + shakeY);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(0, vPos + shakeY, hPos + shakeX, height - vPos + shakeY);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(width - hPos + shakeX, vPos + shakeY, width, height - vPos + shakeY);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
         guiGraphics.enableScissor(0, height - vPos + shakeY, width, height);
-        super.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         guiGraphics.disableScissor();
     }
 
@@ -116,7 +116,7 @@ public class MonitorOS extends Screen {
         assert minecraft != null;
         Matrix4f perspective = new Matrix4f();
         perspective.perspective((float) Math.toRadians(minecraft.options.fov().get()), (float) width / (float) height, 0, 9999, false, perspective);
-        perspective.translate(0, 0, Platform.isForge() ? 10000f : 11000f);
+        perspective.translate(0, 0, RenderHelper.currentProjectionZOffset);
         RenderSystem.setProjectionMatrix(perspective, VertexSorting.DISTANCE_TO_ORIGIN);
         poseStack.pushPose();
         poseStack.mulPose(Axis.YP.rotationDegrees(20));

@@ -240,7 +240,7 @@ public class ShellPatterns {
         };
 
         for (String color : shulkerColors) {
-            addDefaultPattern(ShellTheme.SHULKER.getId(), "shulker_" + color, false, Optional.of(soundProfile));
+            addDefaultPattern(ShellTheme.SHULKER.getId(), color, false, Optional.of(soundProfile));
         }
         addDefaultPattern(ShellTheme.SHULKER.getId(), "shulker", false, Optional.of(soundProfile));
 

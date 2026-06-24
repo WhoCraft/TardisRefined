@@ -55,6 +55,7 @@ public class ItemModelProvider extends net.neoforged.neoforge.client.model.gener
         basicItem(TRItemRegistry.ZEITON_INGOT.getId());
         basicItem(TRItemRegistry.RAW_ZEITON.getId());
         basicItem(TRItemRegistry.ZEITON_NUGGET.getId());
+        basicItem(TRItemRegistry.TARDIS.getId());
 
         // basicItem(TRItemRegistry.MALLET.getId());
 

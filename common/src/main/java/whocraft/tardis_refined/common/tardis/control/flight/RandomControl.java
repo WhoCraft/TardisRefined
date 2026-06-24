@@ -9,6 +9,8 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class RandomControl extends whocraft.tardis_refined.common.tardis.control.Control {
     public RandomControl(ResourceLocation id) {
@@ -25,7 +27,10 @@ public class RandomControl extends whocraft.tardis_refined.common.tardis.control
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 
             int increment = pilotManager.getCordIncrement();
-            BlockPos currentExLoc = operator.getPilotingManager().getCurrentLocation().getPosition();
+            BlockPos currentExLoc = pilotManager.getCurrentLocation().getPosition();
+            if (ModCompatChecker.valkyrienSkies()) {
+                currentExLoc = VSHelper.toWorldPosition(pilotManager.getCurrentLocation().getLevel(), currentExLoc);
+            }
             pilotManager.getTargetLocation().setPosition(
                     new BlockPos((currentExLoc.getX() - (increment / 2)) + operator.getLevel().random.nextInt(increment * 2),
                             150,

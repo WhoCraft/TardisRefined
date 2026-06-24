@@ -3,13 +3,14 @@ package whocraft.tardis_refined.common.tardis.themes.console;
 
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
-import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.registry.TRControlRegistry;
 
 public class CopperConsoleTheme extends ConsoleThemeDetails {
 
     @Override
-    public ControlSpecification[] getControlSpecification() {
+    public ControlSpecification[] getControlSpecification(ConsolePattern consolePattern) {
         return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE, new Vector3f(0.11f, 0.69f, -1.26f), EntityDimensions.scalable(0.19f, 0.19f)),
                 new ControlSpecification(TRControlRegistry.X, new Vector3f(0.68f, 0.97f, 0.14f), EntityDimensions.scalable(0.13f, 0.13f)),

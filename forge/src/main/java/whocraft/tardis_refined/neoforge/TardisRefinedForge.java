@@ -5,6 +5,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -13,6 +14,10 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.common.data.*;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.create.CreateIntergrationsInit;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals.neoforge.PortalsCompatForge;
 import whocraft.tardis_refined.compat.trinkets.CuriosUtil;
 
 @Mod(TardisRefined.MODID)
@@ -21,6 +26,7 @@ public class TardisRefinedForge {
         TardisRefined.init();
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::onGatherData);
+        modEventBus.addListener(this::onPostInit);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
@@ -30,14 +36,23 @@ public class TardisRefinedForge {
             CuriosUtil.init();
         }
 
-   /*     if (ModCompatChecker.immersivePortals()) {
+        if (ModCompatChecker.immersivePortals()) {
             if(TRConfig.COMMON.COMPATIBILITY_IP.get()) {
                 ImmersivePortals.init();
                 PortalsCompatForge.init();
             }
         } else {
             TardisRefined.LOGGER.info("ImmersivePortals was not detected.");
-        }*/
+        }
+    }
+
+    public void onPostInit(InterModProcessEvent event) {
+        if (ModCompatChecker.immersivePortals() && TRConfig.COMMON.COMPATIBILITY_IP.get()) {
+            ImmersivePortals.postInit();
+        }
+        if (ModCompatChecker.create()) {
+            CreateIntergrationsInit.initAssignments();
+        }
     }
 
     public void onGatherData(GatherDataEvent e) {

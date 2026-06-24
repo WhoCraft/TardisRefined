@@ -64,8 +64,8 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
 
 
         // Store tick count for later use
-        int tickCount = Minecraft.getInstance().player.tickCount;
-
+        int playerTicks = Minecraft.getInstance().player.tickCount;
+        float tickCount = playerTicks + Minecraft.getInstance().getFrameTime();
         if (globalConsoleBlock != null) {
             // Booting logic
             if (powered) {
@@ -73,7 +73,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
                 if (globalConsoleBlock.getTicksBooting() > 0) {
                     if (!globalConsoleBlock.powerOn.isStarted()) {
                         globalConsoleBlock.powerOff.stop();
-                        globalConsoleBlock.powerOn.start(tickCount);
+                        globalConsoleBlock.powerOn.start((int) tickCount);
                     }
                     this.animate(globalConsoleBlock.powerOn, POWER_ON, tickCount);
                 }
@@ -93,7 +93,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
                 // Power off animation if not booting
                 if (!globalConsoleBlock.powerOff.isStarted()) {
                     globalConsoleBlock.powerOn.stop();
-                    globalConsoleBlock.powerOff.start(tickCount);
+                    globalConsoleBlock.powerOff.start((int) tickCount);
                 }
                 this.animate(globalConsoleBlock.powerOff, POWER_OFF, tickCount);
             }

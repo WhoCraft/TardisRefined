@@ -96,6 +96,68 @@ public class MiscHelper {
         return ResourceKey.create(Registries.DIMENSION, identifier);
     }
 
+    public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
+
+        TardisRefined.LOGGER.debug("Teleported {} to {} {} {}", pEntity.getDisplayName().getString(), pX, pY, pZ);
+        int xRound = (int) pX;
+        int yRound = (int) pY;
+        int zRound = (int) pZ;
+
+        BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
+
+        if (!Level.isInSpawnableBounds(blockpos)) {
+            return false;
+        } else {
+            float f = Mth.wrapDegrees(pYaw);
+            float f1 = Mth.wrapDegrees(pPitch);
+            if (pEntity instanceof ServerPlayer serverPlayer) {
+                ChunkPos chunkpos = new ChunkPos(blockpos);
+                pLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, pEntity.getId());
+                pEntity.stopRiding();
+                if (serverPlayer.isSleeping()) {
+                    serverPlayer.stopSleepInBed(true, true);
+                }
+
+                if (pLevel == pEntity.level()) {
+                    serverPlayer.connection.teleport(pX, pY, pZ, f, f1);
+                } else {
+                    serverPlayer.teleportTo(pLevel, pX, pY, pZ, f, f1);
+                }
+                pEntity.setYHeadRot(f);
+            } else {
+                float f2 = Mth.clamp(f1, -90.0F, 90.0F);
+                if (pLevel == pEntity.level()) {
+                    pEntity.moveTo(pX, pY, pZ, f, f2);
+                    pEntity.setYHeadRot(f);
+                } else {
+                    pEntity.unRide();
+                    Entity entity = pEntity;
+                    pEntity = pEntity.getType().create(pLevel);
+                    if (pEntity == null) {
+                        return false;
+                    }
+
+                    pEntity.restoreFrom(entity);
+                    pEntity.moveTo(pX, pY, pZ, f, f2);
+                    pEntity.setYHeadRot(f);
+                    entity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
+                    pLevel.addDuringTeleport(pEntity);
+                }
+            }
+
+            if (!(pEntity instanceof LivingEntity) || !((LivingEntity) pEntity).isFallFlying()) {
+                pEntity.setDeltaMovement(pEntity.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D));
+                pEntity.setOnGround(true);
+            }
+
+            if (pEntity instanceof PathfinderMob) {
+                ((PathfinderMob) pEntity).getNavigation().stop();
+            }
+
+            return true;
+        }
+    }
+
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
         if (level.dimensionTypeId() == TRDimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();

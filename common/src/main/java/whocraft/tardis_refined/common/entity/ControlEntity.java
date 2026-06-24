@@ -42,7 +42,10 @@ import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
-import whocraft.tardis_refined.registry.*;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
+import whocraft.tardis_refined.registry.TREntityRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
 public class ControlEntity extends Entity {
 
@@ -166,11 +169,12 @@ public class ControlEntity extends Entity {
      * Tell the Tardis that the control is currently continuing to be misaligned
      *
      * @param manager
+     * @return true if can continue to become more misaligned, false if already too misaligned.
      */
-    public void setTickingDown(FlightDanceManager manager) {
+    public boolean setTickingDown(FlightDanceManager manager) {
 
         if (this.getEntityData().get(IS_DEAD)) {
-            return;
+            return false;
         }
 
         this.entityData.set(TICKING_DOWN, true);
@@ -178,6 +182,7 @@ public class ControlEntity extends Entity {
         this.level().playSound(null, this.blockPosition(), SoundEvents.ARROW_HIT, SoundSource.BLOCKS, 0.5f, 2f);
 
         this.setCustomName(Component.translatable("!"));
+        return true;
     }
 
     @Override

@@ -15,6 +15,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.ArrayList;
@@ -94,6 +96,14 @@ public class TRTeleporter {
             pEntity.setYRot(updatedYRot); //Set the desired yRot and xRot before teleportation. For non-players, this means the facing is copied over to the copy of the entity which we recreate. For players, it should update the rotation with the correct facing at the destination
             pEntity.setXRot(updatedXRot);
             ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);
+            // The rotation won't be set properly unless we set it afterward.
+            if (pEntity instanceof ServerPlayer player) {
+                player.connection.teleport(
+                        player.getX(), player.getY(), player.getZ(),
+                        updatedYRot, updatedXRot,
+                        Set.of(RelativeMovement.X, RelativeMovement.Y, RelativeMovement.Z)
+                );
+            }
             return true;
         }
 
@@ -428,6 +438,11 @@ public class TRTeleporter {
      */
     public static boolean teleportIfCollided(ServerLevel serverLevel, BlockPos blockPos, Entity entity, AABB teleportAABB) {
         AABB entityBoundingBox = TRTeleporter.getBoundingBoxWithMovement(entity);
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            teleportAABB = VSHelper.toWorldAABB(serverLevel, blockPos, teleportAABB);
+        }
+
         double insideBlockExpansion = 1.0E-7D; //Hardcoded value replicates logic from Entity#checkInsideBlocks
         AABB inflatedEntityBoundingBox = entityBoundingBox.inflate(insideBlockExpansion);
         AABB inflatedTeleportBoundingBox = teleportAABB.inflate(insideBlockExpansion);

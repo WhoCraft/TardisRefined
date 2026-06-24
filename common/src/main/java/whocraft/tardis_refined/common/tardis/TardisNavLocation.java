@@ -67,6 +67,7 @@ public class TardisNavLocation {
 
         if (tag.contains("name"))
             loc.setName(tag.getString("name"));
+
         return loc;
     }
 
@@ -90,6 +91,10 @@ public class TardisNavLocation {
             return DimensionUtil.getLevel(dimensionKey);
         }
 
+        this.level = Platform.getServer().getLevel(dimensionKey);
+        if (level != null) {
+            return level;
+        }
         return Platform.getServer().getLevel(Level.OVERWORLD);
     }
 
@@ -131,7 +136,6 @@ public class TardisNavLocation {
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public BlockPos setX(int x) {

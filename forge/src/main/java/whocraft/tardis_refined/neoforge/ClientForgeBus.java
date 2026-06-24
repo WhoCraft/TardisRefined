@@ -22,36 +22,6 @@ import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 public class ClientForgeBus {
 
     @SubscribeEvent
-    public static void onRenderWorldLast(RenderLevelStageEvent event) {
-        RenderLevelStageEvent.Stage stage = event.getStage();
-
-        if (stage != RenderLevelStageEvent.Stage.AFTER_LEVEL) {
-            return;
-        }
-
-        Minecraft mc = Minecraft.getInstance();
-        ClientLevel world = mc.level;
-        if (world == null) return;
-
-        Camera camera = mc.gameRenderer.getMainCamera();
-        PoseStack matrices = event.getPoseStack();
-
-        TardisClientData tardisClientData = TardisClientData.getInstance(world.dimension());
-
-        matrices.pushPose();
-        RenderTargetHelper.renderZeitonGlass(
-                camera,
-                ModelRegistry.zeitonGlassModel,
-                matrices,
-                mc.renderBuffers().bufferSource(),
-                LightTexture.FULL_BLOCK,
-                tardisClientData,
-                true
-        );
-        matrices.popPose();
-    }
-
-    @SubscribeEvent
     public static void tickTARDIS(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.START) {
             return;

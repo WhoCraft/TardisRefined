@@ -3,6 +3,9 @@ package whocraft.tardis_refined.common.blockentity.door;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -90,7 +93,7 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
             if (blockState.hasProperty(TYPE)) {
                 BlockState nextType = blockState.cycle(TYPE);
                 level.setBlock(blockPos, nextType, 3);
-                level.playSound(player, blockPos, TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(null, blockPos, TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 return InteractionResult.SUCCESS;
             }
         }
@@ -107,6 +110,11 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
     public void sendUpdates() {
         level.sendBlockUpdated(this.getBlockPos(), level.getBlockState(this.getBlockPos()), level.getBlockState(this.getBlockPos()), Block.UPDATE_CLIENTS);
         setChanged();
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public CompoundTag getUpdateTag() {

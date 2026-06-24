@@ -38,6 +38,11 @@ public class WaypointManageScreen extends MonitorOS {
         this.coordInputType = coordInputType;
         this.tardisNavLocation = tardisNavLocation;
         tardisNavLocation.setName("Waypoint");
+        this.setEvents(() -> {
+
+        }, () -> {
+            new C2SRequestWaypoints().send();
+        });
     }
 
     public WaypointManageScreen(TardisWaypoint waypoint) {
