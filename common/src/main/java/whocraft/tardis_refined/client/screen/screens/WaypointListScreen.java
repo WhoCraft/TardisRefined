@@ -53,10 +53,7 @@ public class WaypointListScreen extends MonitorOS {
             if (waypoint != null)
                 new C2STravelToWaypoint(waypoint.getId()).send();
         }, () -> {
-            if (waypoint != null)
-                new C2SRemoveWaypointEntry(waypoint.getId()).send();
             this.switchScreenToLeft(PREVIOUS);
-
         });
 
 
@@ -84,7 +81,6 @@ public class WaypointListScreen extends MonitorOS {
         this.editButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Edit"), (arg) -> {
             if (waypoint != null) {
                 new C2SOpenEditCoordinatesDisplayMessage(waypoint.getId()).send();
-                Minecraft.getInstance().setScreen(null);
             }
         }, true, EDIT_TEXTURE));
         this.editButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_EDIT)));
