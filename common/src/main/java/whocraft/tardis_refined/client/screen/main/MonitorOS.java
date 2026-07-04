@@ -59,8 +59,10 @@ public class MonitorOS extends Screen {
     public MonitorOS RIGHT;
     public MonitorOS PREVIOUS;
 
-    public static final ResourceLocation BUTTON_LOCATION = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "save");
-    public static final ResourceLocation BCK_LOCATION = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "back");
+    private MonitorOS ANIMATED_FROM;
+
+    public static final ResourceLocation BUTTON_LOCATION =  ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "save");
+    public static final ResourceLocation BCK_LOCATION =  ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "back");
     public int shakeX, shakeY, age, transitionStartTime = -1;
     public float shakeAlpha;
     private MonitorOSRun onSubmit;
@@ -192,8 +194,8 @@ public class MonitorOS extends Screen {
         guiGraphics.blit(SYMBLS, 0, 0, 32 * (symb % 8), 32 * (symb / 8), 32, 32);
         poseStack.popPose();
 
-        boolean right = RIGHT != null && PREVIOUS != null && RIGHT == PREVIOUS && transitionStartTime >= 0;
-        boolean left = LEFT != null && PREVIOUS != null && LEFT == PREVIOUS && transitionStartTime >= 0;
+        boolean right = RIGHT != null && ANIMATED_FROM != null && RIGHT == ANIMATED_FROM && transitionStartTime >= 0;
+        boolean left = LEFT != null && ANIMATED_FROM != null && LEFT == ANIMATED_FROM && transitionStartTime >= 0;
         float t = (age - transitionStartTime + partialTick) / 10f;
         float o = -0.5f * Mth.cos(Mth.PI * t) + 0.5f;
 
@@ -267,17 +269,32 @@ public class MonitorOS extends Screen {
         }
     }
 
+    private void updatePrevious(MonitorOS next, MonitorOS backButtonReturnsTo) {
+        next.ANIMATED_FROM = this;
+        if (next.PREVIOUS == null) {
+            next.PREVIOUS = backButtonReturnsTo;
+        }
+    }
+
     public void switchScreenToLeft(MonitorOS next) {
+        switchScreenToLeft(next, this);
+    }
+
+    public void switchScreenToLeft(MonitorOS next, MonitorOS backButtonReturnsTo) {
         this.LEFT = next;
-        next.PREVIOUS = this;
+        updatePrevious(next, backButtonReturnsTo);
         next.RIGHT = this;
         next.transition();
         Minecraft.getInstance().setScreen(next);
     }
 
     public void switchScreenToRight(MonitorOS next) {
+        switchScreenToRight(next, this);
+    }
+
+    public void switchScreenToRight(MonitorOS next, MonitorOS backButtonReturnsTo) {
         this.RIGHT = next;
-        next.PREVIOUS = this;
+        updatePrevious(next, backButtonReturnsTo);
         next.LEFT = this;
         next.transition();
         Minecraft.getInstance().setScreen(next);
