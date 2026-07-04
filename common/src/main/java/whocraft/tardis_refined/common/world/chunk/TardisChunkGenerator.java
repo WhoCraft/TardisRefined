@@ -7,6 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
@@ -20,10 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.PositionalRandomFactory;
-import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -39,6 +37,7 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
@@ -180,9 +179,18 @@ public class TardisChunkGenerator extends ChunkGenerator {
         return new ChunkPos(x, z);
     }
 
+    public static Optional<UUID> getUUIDForTARDIS(ResourceKey<Level> tardisID) {
+        try {
+            return Optional.of(UUID.fromString(tardisID.location().getPath()));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
+
     @Override
     public void applyBiomeDecoration(WorldGenLevel pLevel, ChunkAccess pChunk, StructureManager pStructureManager) {
-        var random = RandomSource.create(pLevel.getSeed()).forkPositional().fromHashOf(pLevel.getLevel().dimension().location()).forkPositional();
+        var uuid = getUUIDForTARDIS(pLevel.getLevel().dimension()).orElseGet(UUID::randomUUID);
+        var random = new XoroshiroRandomSource.XoroshiroPositionalRandomFactory(uuid.getLeastSignificantBits(), uuid.getMostSignificantBits());
         StructurePlaceSettings settings = new StructurePlaceSettings();
         populateStructureMap(pLevel.getLevel().getStructureManager(), settings);
         settings.setBoundingBox(getWritableArea(pChunk));
