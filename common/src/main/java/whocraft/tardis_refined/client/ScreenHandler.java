@@ -31,6 +31,14 @@ public class ScreenHandler {
     @Environment(EnvType.CLIENT)
     public static void setWaypointScreen(Collection<TardisWaypoint> waypoints) {
         Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof WaypointManageScreen waypointEdit) {
+            waypointEdit.switchScreenToLeft(new WaypointListScreen(waypoints), waypointEdit.PREVIOUS.PREVIOUS);
+            return;
+        }
+        if (mc.screen instanceof WaypointListScreen waypointScreen) {
+            waypointScreen.switchScreenToLeft(new WaypointListScreen(waypoints), waypointScreen.PREVIOUS);
+            return;
+        }
         if (mc.screen instanceof MonitorOS) {
             ((MonitorOS) mc.screen).switchScreenToRight(new WaypointListScreen(waypoints));
             return;
@@ -50,6 +58,11 @@ public class ScreenHandler {
 
     @Environment(EnvType.CLIENT)
     public static void setEditCoordinatesScreen(TardisWaypoint waypoint) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.screen instanceof MonitorOS) {
+            ((MonitorOS) mc.screen).switchScreenToRight(new WaypointManageScreen(waypoint));
+            return;
+        }
         Minecraft.getInstance().setScreen(new WaypointManageScreen(waypoint));
     }
 
