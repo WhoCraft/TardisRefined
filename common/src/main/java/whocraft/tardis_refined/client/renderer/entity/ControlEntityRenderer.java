@@ -74,7 +74,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
         if (!CuriosTrinketsUtil.getInstance().getFirstFoundGlider(Minecraft.getInstance().player).isEmpty()) {
             if (entity.isTickingDown()) {
                 if (entityLevel.random.nextInt(20) == 0) {
-                    entityLevel.addParticle(TRParticles.GALLIFREY.get(), entity.getRandomX(0.1), entity.blockPosition().getY(), entity.getRandomZ(0.1), 0.0, 0.0, 0.0);
+                    entityLevel.addParticle(TRParticles.GALLIFREY.get(), entity.getRandomX(0.1), entity.getY(), entity.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         }
