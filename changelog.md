@@ -8,6 +8,7 @@
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
 - Updated create-fabric integration to create 6.
+- Tweaked corridor generation to generate one chunk at a time for any new TARDIS created after this update. Should hopefully fix errors where corridors sometimes don't generating in some chunks. Any existing TARDIS created before this update will be unaffected.
 
 #### Configs
 - New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
