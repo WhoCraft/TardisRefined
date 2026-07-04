@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.world.chunk.LegacyTardisChunkGeneratorV1_0;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
@@ -14,5 +15,6 @@ import whocraft.tardis_refined.registry.RegistrySupplier;
 public class ChunkGenerators {
     public static final DeferredRegistry<Codec<? extends ChunkGenerator>> CHUNK_GENERATORS = DeferredRegistry.create(TardisRefined.MODID, Registries.CHUNK_GENERATOR);
     public static final ResourceKey<Biome> TARDIS_BIOME = ResourceKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, "tardis"));
-    public static final RegistrySupplier<Codec<? extends ChunkGenerator>> TARDIS_CHUNK_GENERATOR = CHUNK_GENERATORS.register("tardis", () -> TardisChunkGenerator.CODEC);
+    public static final RegistrySupplier<Codec<? extends ChunkGenerator>> LEGACY_TARDIS_CHUNK_GENERATOR_V1_0 = CHUNK_GENERATORS.register("tardis", () -> LegacyTardisChunkGeneratorV1_0.CODEC);
+    public static final RegistrySupplier<Codec<? extends ChunkGenerator>> TARDIS_CHUNK_GENERATOR = CHUNK_GENERATORS.register("tardis_v1.1", () -> TardisChunkGenerator.CODEC);
 }
