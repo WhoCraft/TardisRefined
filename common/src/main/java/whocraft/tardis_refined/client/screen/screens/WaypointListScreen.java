@@ -51,10 +51,7 @@ public class WaypointListScreen extends MonitorOS {
             if (waypoint != null)
                 new C2STravelToWaypoint(waypoint.getId()).send();
         }, () -> {
-            if (waypoint != null)
-                new C2SRemoveWaypointEntry(waypoint.getId()).send();
             this.switchScreenToLeft(PREVIOUS);
-
         });
 
 
