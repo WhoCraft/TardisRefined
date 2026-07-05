@@ -24,8 +24,8 @@ public class CodecJsonReloadListenerImpl {
         }
 
         @Override
-        public CodecJsonReloadListener<T> setSyncPacket(NetworkManager networkManager, CustomPacketPayload packetFactory) {
-            NeoForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, resourceLocationTMap -> packetFactory));
+        public CodecJsonReloadListener<T> setSyncPacket(NetworkManager networkManager, final Function<Map<ResourceLocation, T>, CustomPacketPayload> packetFactory) {
+            NeoForge.EVENT_BUS.addListener(this.getDatapackSyncListener(networkManager, packetFactory));
             return this;
         }
 

@@ -173,7 +173,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         saveAdditional(tag, provider);
-        return super.getUpdateTag(provider);
+        return tag;
     }
 
     @Nullable

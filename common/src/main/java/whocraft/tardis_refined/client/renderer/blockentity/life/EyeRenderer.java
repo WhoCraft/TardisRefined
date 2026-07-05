@@ -51,7 +51,7 @@ public class EyeRenderer implements BlockEntityRenderer<EyeBlockEntity>, BlockEn
     public void render(EyeBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int packed) {
         Random random = new Random(432L);
 
-        float f5 = (150 + Minecraft.getInstance().getFrameTimeNs()) / 200.0F;
+        float f5 = (150 + f) / 200.0F;
 
 
         float f7 = Math.min(f5 > 0.8F ? (f5 - 0.8F) / 0.2F : 0.0F, 1.0F);

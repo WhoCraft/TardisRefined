@@ -133,7 +133,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      * @param packetFactory
      * @return
      */
-    public CodecJsonReloadListener<T> setSyncPacket(final NetworkManager networkManager, final CustomPacketPayload packetFactory) {
+    public CodecJsonReloadListener<T> setSyncPacket(final NetworkManager networkManager, final Function<Map<ResourceLocation, T>, CustomPacketPayload> packetFactory) {
         return this;
     }
 

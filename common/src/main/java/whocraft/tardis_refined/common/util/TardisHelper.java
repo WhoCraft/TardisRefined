@@ -156,7 +156,7 @@ public class TardisHelper {
             /**If for some reason we are trying to enter the Tardis, but the destination dimension is not a Tardis dimension type, don't teleport
              This can occur if the exterior shell we are entering has an invalid {@link whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity#TARDIS_ID} which will occur for older releases due to a bug that was present until 2.0.2
              */
-            if (enterTardis && destinationLevel.dimensionTypeRegistration() != TRDimensionTypes.TARDIS) {
+            if (enterTardis && !TRDimensionTypes.isTARDISDimension(destinationLevel)) {
                 return false;
             }
 

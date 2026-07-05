@@ -48,7 +48,7 @@ public class ModEvents {
         PlayerBlockBreakEvents.BEFORE.register((world, player, pos, state, blockEntity) -> !MiscHelper.shouldCancelBreaking(world, player, pos, state));
 
         START_WORLD_TICK.register(world -> {
-            if (world.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+            if (TRDimensionTypes.isTARDISDimension(world)) {
                 TardisLevelOperator.get(world).get().tick(world);
             }
         });

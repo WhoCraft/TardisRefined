@@ -12,6 +12,7 @@ import whocraft.tardis_refined.common.hum.TardisHums;
 import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncTardisClientData;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -258,6 +259,7 @@ public class TardisClientData {
      * server-side, as calling it client-side may cause the game to crash.
      */
     public void sync() {
+        if (Platform.getServer() == null) return;
         NetworkManager.get().sendToAllPlayers(new S2CSyncTardisClientData(getLevelKey(), serializeNBT()));
     }
 

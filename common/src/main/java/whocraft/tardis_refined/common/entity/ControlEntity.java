@@ -358,7 +358,7 @@ public class ControlEntity extends Entity {
             onClientTick(this.level());
         }
 
-        if (level().dimensionTypeRegistration() != TRDimensionTypes.TARDIS) {
+        if (!TRDimensionTypes.isTARDISDimension(level())) {
             discard();
         }
 

@@ -48,7 +48,7 @@ public class MiscHelper {
     }
 
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
-        if (level.dimensionTypeRegistration() == TRDimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
+        if (TRDimensionTypes.isTARDISDimension(level) && level instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
 
             // Consoles
@@ -69,7 +69,7 @@ public class MiscHelper {
 
     public static boolean shouldCancelBreaking(Level world, Entity entity, BlockPos pos, BlockState state) {
 
-        if (world.dimensionTypeRegistration() == TRDimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
+        if (TRDimensionTypes.isTARDISDimension(world) && world instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
             for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
                 boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
@@ -77,7 +77,7 @@ public class MiscHelper {
             }
         }
 
-        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
+        return (state.getBlock() instanceof GlobalConsoleBlock && TRDimensionTypes.isTARDISDimension(world)) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {

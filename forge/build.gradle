@@ -70,7 +70,7 @@ dependencies {
     //   modCompileOnly "curse.maven:jei-238222:${jei_version}"
 
     compileOnly "curse.maven:immersive-portals-355440:${immersive_portals_forge_version}"
-    modImplementation "curse.maven:curios-309927:4921744"
+    modImplementation "maven.modrinth:curios:9.5.1+1.21.1"
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
 
@@ -113,7 +113,7 @@ if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
     }
 }
 
-def resourceTargets = ["META-INF/mods.toml", "pack.mcmeta"]
+def resourceTargets = ["META-INF/neoforge.mods.toml", "pack.mcmeta"]
 def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
 def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
                          mod_authors: mod_authors, credits:credits, mod_description: mod_description,

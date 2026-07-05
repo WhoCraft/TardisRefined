@@ -249,7 +249,7 @@ public class ImmersivePortals {
                 if (!door.isMainDoor()) {
                     return true;
                 }
-                if (serverLevel.dimensionTypeRegistration().equals(TRDimensionTypes.TARDIS)) {
+                if (TRDimensionTypes.isTARDISDimension(level)) {
                     TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::destroyPortals);
                 }
             }

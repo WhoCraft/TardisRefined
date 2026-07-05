@@ -75,7 +75,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         saveAdditional(tag, provider);
-        return super.getUpdateTag(provider);
+        return tag;
     }
 
     @Override

@@ -14,6 +14,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.capability.player.neoforge.TardisPlayerInfoImpl;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.common.data.*;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.trinkets.CuriosUtil;
@@ -26,6 +28,7 @@ import java.util.function.Consumer;
 public class TardisRefinedForge {
     public TardisRefinedForge(ModContainer container) {
         TardisRefined.init();
+        TardisPlayerInfoImpl.init(container.getEventBus());
         IEventBus modEventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
         modEventBus.addListener(this::onGatherData);
 
@@ -60,7 +63,7 @@ public class TardisRefinedForge {
     public void onGatherData(GatherDataEvent e) {
         DataGenerator generator = e.getGenerator();
         ExistingFileHelper existingFileHelper = e.getExistingFileHelper();
-       ///TODO!! ManipulatorRecipes.registerRecipes();
+        ManipulatorRecipes.registerRecipes();
 
         /*Resource Pack*/
         generator.addProvider(e.includeClient(), new LangProviderEnglish(generator));

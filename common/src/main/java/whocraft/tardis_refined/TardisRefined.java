@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.items.TRItemData;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncConsolePatterns;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncDesktops;
@@ -41,12 +42,13 @@ public class TardisRefined {
         TRItemRegistry.TABS.register();
         TRBlockRegistry.BLOCKS.register();
         TRItemRegistry.ITEMS.register();
+        TRItemData.ITEMS.register();
         TREntityRegistry.ENTITY_TYPES.register();
         TRSoundRegistry.SOUNDS.register();
         TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
-       //TODO! TRManipulatorRecipeResultTypes.MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY.register();
+        TRManipulatorRecipeResultTypes.MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY.register();
         TRCraftingRecipeTypes.RECIPE_TYPE_DEFERRED_REGISTRY.register();
-       //TODO! TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
+        TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
         TRDimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();
@@ -63,12 +65,11 @@ public class TardisRefined {
         TRTagKeys.init();
         TardisNetwork.init();
 
-        //TODO!
-      /*  TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncDesktops::new);
+        TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncDesktops::new);
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncConsolePatterns::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncShellPatterns::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncHums::new);
-*/
+
         registerFallbackEntries();
     }
 

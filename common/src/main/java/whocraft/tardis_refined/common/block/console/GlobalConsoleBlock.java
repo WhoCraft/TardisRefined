@@ -179,7 +179,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
     protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (!player.level().isClientSide()) {
-            if (level instanceof ServerLevel serverLevel && level.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+            if (level instanceof ServerLevel serverLevel && TRDimensionTypes.isTARDISDimension(level)) {
                 TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
                     TardisPilotingManager pilotingManager = operator.getPilotingManager();
                     if (serverLevel.getBlockEntity(blockPos) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
