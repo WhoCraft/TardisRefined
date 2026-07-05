@@ -2,13 +2,14 @@ package whocraft.tardis_refined.common.tardis.themes.console;
 
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
+import whocraft.tardis_refined.patterns.ConsolePattern;
 import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 
 public class VictorianConsoleTheme extends ConsoleThemeDetails {
 
     @Override
-    public ControlSpecification[] getControlSpecification() {
+    public ControlSpecification[] getControlSpecification(ConsolePattern consolePattern) {
         return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE.get(), new Vector3f(-0.55f, 0.50f, 0.61f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.X.get(), new Vector3f(-0.58f, 0.78f, 0.11f), EntityDimensions.scalable(0.13f, 0.13f)),

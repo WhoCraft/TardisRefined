@@ -4,8 +4,10 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.items.*;
+import whocraft.tardis_refined.common.util.PlatformWarning;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,6 @@ public class TRItemRegistry {
 
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(TardisRefined.MODID, Registries.CREATIVE_MODE_TAB);
     public static final RegistryHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB = TABS.register("main_tab", TRItemRegistry::getCreativeTab);
-
 
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(TardisRefined.MODID, Registries.ITEM);
     public static List<RegistryHolder<Item, ?>> TAB_ITEMS = new ArrayList<>();
@@ -31,6 +32,7 @@ public class TRItemRegistry {
     public static final RegistryHolder<Item, ?> MALLET = register("mallet", () -> new MalletItem(new Item.Properties().stacksTo(1).durability(50)), true);
     public static final RegistryHolder<Item, ?> TEST_TUBE = register("test_tube", () -> new DimensionSamplerItem(new Item.Properties().stacksTo(1)), true);
 
+    public static final RegistryHolder<Item, ?> TARDIS = register("tardis", () -> new TardisItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)), true);
 
     private static <T extends Item> RegistryHolder<Item, ?> register(String id, Supplier<T> itemSupplier, boolean addToTab) {
         RegistryHolder<Item, ?> item = ITEMS.register(id, itemSupplier);
@@ -42,7 +44,7 @@ public class TRItemRegistry {
 
     @ExpectPlatform
     public static CreativeModeTab getCreativeTab() {
-        throw new RuntimeException(TardisRefined.PLATFORM_ERROR);
+        throw new RuntimeException(PlatformWarning.addWarning(TRItemRegistry.class));
     }
 
 

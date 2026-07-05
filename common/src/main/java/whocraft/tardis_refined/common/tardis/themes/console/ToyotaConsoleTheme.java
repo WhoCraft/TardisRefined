@@ -2,13 +2,14 @@ package whocraft.tardis_refined.common.tardis.themes.console;
 
 import net.minecraft.world.entity.EntityDimensions;
 import org.joml.Vector3f;
-import whocraft.tardis_refined.registry.TRControlRegistry;
 import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
+import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.registry.TRControlRegistry;
 
 public class ToyotaConsoleTheme extends ConsoleThemeDetails {
 
     @Override
-    public ControlSpecification[] getControlSpecification() {
+    public ControlSpecification[] getControlSpecification(ConsolePattern consolePattern) {
         return new ControlSpecification[]{
                 new ControlSpecification(TRControlRegistry.THROTTLE.get(), new Vector3f(0.27f, 0.50f, 0.94f), EntityDimensions.scalable(0.19f, 0.19f)),
                 new ControlSpecification(TRControlRegistry.X.get(), new Vector3f(-0.07f, 0.63f, 0.80f), EntityDimensions.scalable(0.06f, 0.06f)),

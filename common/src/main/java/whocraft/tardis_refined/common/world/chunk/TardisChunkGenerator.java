@@ -23,6 +23,8 @@ import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
 import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -135,6 +137,12 @@ public class TardisChunkGenerator extends ChunkGenerator {
             return;
         }
 
+        if (ModCompatChecker.valkyrienSkies()) {
+            if (VSHelper.isChunkInShipyard(pChunk.getPos())) {
+                return;
+            }
+        }
+
         if (pChunk.getPos().x % arsChunkSize == 0 && pChunk.getPos().z % arsChunkSize == 0) {
 
             if (isChunkAtGravityInterval(pChunk.getPos())) {
@@ -203,7 +211,11 @@ public class TardisChunkGenerator extends ChunkGenerator {
 
     @Override
     public CompletableFuture<ChunkAccess> fillFromNoise(Blender blender, RandomState randomState, StructureManager structureManager, ChunkAccess access) {
-
+        if (ModCompatChecker.valkyrienSkies()) {
+            if (VSHelper.isChunkInShipyard(access.getPos())) {
+                return CompletableFuture.completedFuture(access);
+            }
+        }
         // Flatworlds appear to use this function instead of the surface.
         BlockPos cornerPos = new BlockPos(access.getPos().getMinBlockX(), TardisDimensionConstants.TARDIS_ROOT_GENERATION_MIN_HEIGHT - 5, access.getPos().getMinBlockZ());
         BlockPos lastCornerPos = new BlockPos(access.getPos().getMaxBlockX(), TardisDimensionConstants.TARDIS_ROOT_GENERATION_MAX_HEIGHT + 5, access.getPos().getMaxBlockZ());
@@ -264,7 +276,6 @@ public class TardisChunkGenerator extends ChunkGenerator {
      * @return random corridor ARS piece from the registry.
      */
     private ARSStructurePiece getRandomCorridorPiece() {
-
         return TRARSStructurePieceRegistry.CORRIDORS.get(this.random.nextInt(TRARSStructurePieceRegistry.CORRIDORS.size()));
     }
 

@@ -20,8 +20,7 @@ public class TRVillagerProfession {
             TRPointOfInterestTypes.CONSOLE_UNIT,
             TRSoundRegistry.DESTINATION_DING
     ));
-
-    public static final RegistryHolder<VillagerProfession, VillagerProfession> ASTRONOMER = registerVillagerProfession("astronomer", () -> createVillagerProfession(
+   /* public static final RegistryHolder<VillagerProfession> ASTRONOMER = registerVillagerProfession("astronomer", () -> createVillagerProfession(
             "astronomer",
             TRPointOfInterestTypes.ASTRAL_MAP,
             new Supplier<SoundEvent>() {
@@ -30,7 +29,7 @@ public class TRVillagerProfession {
                     return SoundEvents.BOOK_PAGE_TURN;
                 }
             }
-    ));
+    ));*/
 
     public static RegistryHolder<VillagerProfession, VillagerProfession> registerVillagerProfession(String name, Supplier<VillagerProfession> villagerProfessionSupplier) {
         return PROFESSIONS.register(name, villagerProfessionSupplier);

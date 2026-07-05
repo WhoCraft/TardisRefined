@@ -18,10 +18,11 @@ import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
-import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -39,7 +40,6 @@ public class CommonBus {
         // Load Levels
         ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
         DimensionHandler.loadLevels(world);
-
     }
 
     @SubscribeEvent
@@ -48,7 +48,7 @@ public class CommonBus {
         Player player = playerLoggedOutEvent.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
             TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
-                tardisPlayerInfo.endPlayerForInspection(serverPlayer);
+                tardisPlayerInfo.endShellView(serverPlayer);
             });
         }
     }

@@ -7,11 +7,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +25,8 @@ import java.util.UUID;
 public class RenderHelper {
 
     public static Tesselator tesselator;
+
+    public static float currentProjectionZOffset = 11000;
 
     public static void renderPlayerFace(GuiGraphics guiGraphics, int i, int j, int k, UUID uUID) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -74,12 +78,12 @@ public class RenderHelper {
     }
 
 
-    public static void drawGlowingBox(PoseStack poseStack, VertexConsumer consumer, float length, float height, float width, float red, float green, float blue, float alpha, int combinedLightIn) {
+    public static void drawGlowingBox(PoseStack poseStack, VertexConsumer consumer, float length, float height, float width, int color, int combinedLightIn) {
         AABB box = new AABB(-length / 2F, -height / 2f, -width / 2F, length / 2F, height / 2f, width / 2F);
-        renderFilledBox(poseStack, consumer, box, RenderHelper.rgbaToInt(1F, 1F, 1F, alpha), combinedLightIn);
+        renderFilledBox(poseStack, consumer, box, RenderHelper.rgbaToInt(1F, 1F, 1F, FastColor.ARGB32.alpha(color)), combinedLightIn);
 
         for (int i = 0; i < 3; i++) {
-            renderFilledBox(poseStack, consumer, box.inflate(i * 0.5F * 0.0625F), RenderHelper.rgbaToInt(red, green, blue, (1F / i / 2) * alpha), combinedLightIn);
+            renderFilledBox(poseStack, consumer, box.inflate(i * 0.5F * 0.0625F), color, combinedLightIn);
         }
     }
 
@@ -102,7 +106,7 @@ public class RenderHelper {
     public static void vertexUVColor(@NotNull PoseStack pose, float x, float y, float z, float u, float v, float r, float g, float b, float a) {
         MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer vertexConsumer = buffers.getBuffer(RenderType.cutout());
-        vertexConsumer.addVertex(pose.last().pose(), x, y, z).setUv(u, v).setColor(r, g, b, a);
+        vertexConsumer.addVertex(pose.last().pose(), x, y, z).setUv(u, v).setColor(r, g, b, a).setLight(LightTexture.FULL_BRIGHT).setNormal(1, 0, 0);
     }
 
     public static class CustomProgressBar {

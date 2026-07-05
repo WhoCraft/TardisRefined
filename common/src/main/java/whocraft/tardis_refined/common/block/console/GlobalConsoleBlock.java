@@ -187,6 +187,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
                             if (pilotingManager.getCurrentConsole() != consoleBlockEntity) {
                                 if (!pilotingManager.isInFlight()) {
                                     pilotingManager.setCurrentConsole(consoleBlockEntity);
+                                    consoleBlockEntity.setTicksBooting(1);
                                 } else {
                                     PlayerUtil.sendMessage(player, ModMessages.CONSOLE_NOT_IN_FLIGHT, true);
                                 }
@@ -233,6 +234,7 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
 
         return ItemInteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
+
 
     @Override
     protected boolean isPathfindable(BlockState blockState, PathComputationType pathComputationType) {

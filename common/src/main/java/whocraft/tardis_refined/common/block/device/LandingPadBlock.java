@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +29,6 @@ import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 
@@ -70,7 +68,7 @@ public class LandingPadBlock extends Block {
                     var keyChain = KeyItemData.getKeychain(itemStack);
                     if (!keyChain.isEmpty()) {
                         ResourceKey<Level> dimension = KeyItemData.getKeychain(itemStack).get(0);
-                        var tardisLevel = Platform.getServer().getLevel(dimension);
+                        var tardisLevel = DimensionUtil.getLevel(dimension);
                         var operatorOptional = TardisLevelOperator.get(tardisLevel);
                         if (operatorOptional.isEmpty()) {
                             return ItemInteractionResult.CONSUME;
@@ -82,7 +80,7 @@ public class LandingPadBlock extends Block {
                             TardisPilotingManager pilotManager = operator.getPilotingManager();
                             UpgradeHandler upgradeHandler = operator.getUpgradeHandler();
 
-                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true, null) && !pilotManager.isInRecovery()) {
+                            if (TRUpgrades.LANDING_PAD.get().isUnlocked(upgradeHandler) && pilotManager.beginFlight(true) && !pilotManager.isInRecovery()) {
                                 pilotManager.setTargetLocation(new TardisNavLocation(blockPos.above(), player.getDirection().getOpposite(), serverLevel));
                                 serverLevel.playSound(null, blockPos, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1f, 1f);
                                 PlayerUtil.sendMessage(player, Component.translatable(ModMessages.TARDIS_IS_ON_THE_WAY), true);
@@ -100,7 +98,7 @@ public class LandingPadBlock extends Block {
                                 return ItemInteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
                             }
                         }
-
+                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_BANNED_DIM), true);
                         serverLevel.playSound(null, blockPos, SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.BLOCKS, 100, (float) (0.1 + (serverLevel.getRandom().nextFloat() * 0.25)));
                     }
                 }

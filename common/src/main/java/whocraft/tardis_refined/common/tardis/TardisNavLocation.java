@@ -1,14 +1,20 @@
 package whocraft.tardis_refined.common.tardis;
 
+import com.mojang.serialization.Codec;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.PlayerUtil;
 
 /**
  * TardisNavLocation
@@ -18,6 +24,10 @@ public class TardisNavLocation {
 
 
     public static final TardisNavLocation ORIGIN = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD);
+    public static final Codec<TardisNavLocation> CODEC = CompoundTag.CODEC.xmap(
+            TardisNavLocation::deserialize, TardisNavLocation::serialise
+    );
+    public static final StreamCodec<ByteBuf, TardisNavLocation> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
     private BlockPos position;
     private Direction direction;
@@ -65,6 +75,7 @@ public class TardisNavLocation {
 
         if (tag.contains("name"))
             loc.setName(tag.getString("name"));
+
         return loc;
     }
 
@@ -78,11 +89,20 @@ public class TardisNavLocation {
     }
 
     public ServerLevel getLevel() {
-        if (this.level != null) {
-            this.dimensionKey = this.level.dimension();
-            return Platform.getServer().getLevel(dimensionKey);
+
+        if(Platform.getServer() == null){
+            throw new RuntimeException("Called TardisNavLocation::getLevel before server was created! Please adjust your code!");
         }
 
+        if (this.level != null) {
+            this.dimensionKey = this.level.dimension();
+            return DimensionUtil.getLevel(dimensionKey);
+        }
+
+        this.level = Platform.getServer().getLevel(dimensionKey);
+        if (level != null) {
+            return level;
+        }
         return Platform.getServer().getLevel(Level.OVERWORLD);
     }
 
@@ -126,7 +146,6 @@ public class TardisNavLocation {
     }
 
 
-
     public BlockPos setX(int x) {
         BlockPos blockPos = new BlockPos(x, position.getY(), position.getZ());
         position = blockPos;
@@ -147,7 +166,15 @@ public class TardisNavLocation {
 
     public TardisNavLocation copy() {
         TardisNavLocation copy = new TardisNavLocation(this.position, this.direction, this.dimensionKey);
-        copy.setName(this.name);
+
+        if (this.getLevel() != null) {
+            copy.setLevel(this.getLevel());
+        }
+
+        if (this.name != null) {
+            copy.setName(this.name);
+        }
+
         return copy;
     }
 

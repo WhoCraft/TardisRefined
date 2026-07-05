@@ -5,21 +5,28 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "EndDragonFightAccessor",
+    "LivingEntityMixin",
     "MappedRegistryAccessor",
     "MinecraftServerStorageAccessor",
+    "PistonBaseBlockMixin",
     "PlayerEntityMixin",
+    "ServerPlayerMixin",
     "VillagerGoalPackagesMixin",
     "VillagerMixin"
   ],
   "client": [
-    "render.FogRendererMixin",
-    "render.ui.GuiMixin",
+    "render.SodiumFixMixin",
+    "render.GameRendererMixin",
     "LocalPlayerMixin",
     "MultiplayerGameModeMixin",
+    "render.FogRendererMixin",
+    "render.ModelPartInvoker",
     "render.PlayerRenderMixin",
-    "render.ui.SpectatorGuiMixin",
+	  "render.MatrixMixin",
     "render.buffer.MixinMainTarget",
-    "render.buffer.MixinRenderTarget"
+    "render.buffer.MixinRenderTarget",
+    "render.ui.GuiMixin",
+    "render.ui.SpectatorGuiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

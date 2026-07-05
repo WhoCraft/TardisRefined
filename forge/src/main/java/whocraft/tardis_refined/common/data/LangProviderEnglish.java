@@ -11,8 +11,8 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
-import whocraft.tardis_refined.common.hum.HumEntry;
-import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -51,7 +51,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(VortexRegistry.LESBIAN_FLAG.get().getTranslationKey(), "Lesbian Flag");
         add(VortexRegistry.NON_BINARY_FLAG.get().getTranslationKey(), "Non-Binary Flag");
         add(VortexRegistry.AGENDER_FLAG.get().getTranslationKey(), "Agender Flag");
-        add(VortexRegistry.GAY_FLAG.get().getTranslationKey(), "Agender Flag");
+        add(VortexRegistry.GAY_FLAG.get().getTranslationKey(), "Gay Flag");
 
 
         /*Sounds*/
@@ -116,6 +116,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRBlockRegistry.ARTRON_PILLAR.get(), "Artron Pillar");
         add(TRBlockRegistry.ARTRON_PILLAR_PORT.get(), "Artron Pillar Port");
         add(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), "Corridor Teleporter");
+        add(TRBlockRegistry.ZEITON_GLASS.get(), "Zeiton Glass");
 
         /*Items*/
         add(TRItemRegistry.PATTERN_MANIPULATOR.get(), "Pattern Manipulator");
@@ -124,13 +125,14 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.ITEM_KEYCHAIN, "Tardis Keyset");
         add(ModMessages.ITEM_GROUP, "Tardis Refined");
         add(TRItemRegistry.SCREWDRIVER.get(), "Amethyst Screwdriver");
-        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, "An amethyst frequency manipulator");
+        add(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION, ChatFormatting.GRAY + "An amethyst frequency manipulator");
         add(TRItemRegistry.ZEITON_INGOT.get(), "Zeiton Ingot");
         add(TRItemRegistry.RAW_ZEITON.get(), "Raw Zeiton");
         add(TRItemRegistry.GLASSES.get(), "AR Glasses");
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
         add(TRItemRegistry.MALLET.get(), "Mallet");
         add(TRItemRegistry.TEST_TUBE.get(), "Test Tube");
+        add(TRItemRegistry.TARDIS.get(), "Grown TARDIS");
 
         /*Damage Sources*/
         add(TRDamageSources.EYE_OF_HARMONY, "%s was fried by time winds.");
@@ -157,26 +159,32 @@ public class LangProviderEnglish extends LanguageProvider {
         addControl(TRControlRegistry.READOUT.get(), "GPS");
         addControl(TRControlRegistry.EXTERIOR_DISPLAY.get(), "Exterior Display");
 
+
+        String errorPrefix =  ChatFormatting.BOLD +  ChatFormatting.RED.toString() + "[ERROR] " + ChatFormatting.RESET;
+
         /*Messages*/
+        add(ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, ChatFormatting.RED + "You cannot spawn a TARDIS inside this dimension.");
+
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
-        add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, "Cannot update console block whilst in flight");
-        add(ModMessages.HARDWARE_OFFLINE, "Hardware offline");
+        add(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT, errorPrefix + "Cannot update console block whilst in flight");
+        add(ModMessages.HARDWARE_OFFLINE, errorPrefix + "Insufficient Power!");
         add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight");
         add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage");
         add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight");
         add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End");
         add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way");
-        add(ModMessages.LANDING_PAD_NOT_UNLOCKED, "Specified TARDIS rejected landing pad signal");
-        add(ModMessages.LANDING_PAD_TRANSIENT, "Cannot summon TARDIS at this time.");
+        add(ModMessages.LANDING_PAD_NOT_UNLOCKED, errorPrefix +"Specified TARDIS rejected landing pad signal");
+        add(ModMessages.LANDING_PAD_TRANSIENT, errorPrefix +"Cannot summon TARDIS at this time!");
+        add(ModMessages.LANDING_PAD_BANNED_DIM, errorPrefix +"You cannot summon the TARDIS to this Dimension!");
         add(ModMessages.REFUEL, "Enabled refuelling");
         add(ModMessages.STOP_REFUEL, "Stopped refuelling");
-        add(ModMessages.NO_DESKTOP_NO_FUEL, "Not enough fuel to start the reconfiguration process");
+        add(ModMessages.NO_DESKTOP_NO_FUEL, errorPrefix +"Not enough fuel to start the reconfiguration process");
         add(ModMessages.ASTRAL_MANIPULATOR_ENGAGED, "Please make your selection. Right click again to confirm");
         add(ModMessages.ROOT_PLANT_CUT_OPEN, "Roots cover the entrance");
         add(ModMessages.FUEL, "Fuel: %s");
-        add(ModMessages.FUEL_OFFLINE, "Fuel offline");
+        add(ModMessages.FUEL_OFFLINE, errorPrefix + "Fuel offline");
         add(ModMessages.WAYPOINT_LOADED, "Preloaded waypoint: %s");
         add(ModMessages.HANDBRAKE_ENGAGED, "Handbrake engaged");
         add(ModMessages.HANDBRAKE_DISENGAGED, "Handbrake disengaged");
@@ -185,6 +193,11 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DOOR_LOCKED, "Door locked");
         add(ModMessages.DOOR_UNLOCKED, "Door unlocked");
         add(ModMessages.RECOVERY_PROGRESS, "Recovery Progress: %s");
+        add(ModMessages.SUBMIT, "Submit");
+        add(ModMessages.VILLAGER_CAN_FLY, "Pilot?");
+        add(ModMessages.PILOT_TIME, "You've still got %s with your pilot. Make the most of it!");
+        add(ModMessages.DEMANDS_PAYMENT, "Demands payment");
+        add(ModMessages.TARDIS_SLEEP_END, "The hums of the ship make you toss and turn. Your spawnpoint could not be set here.");
 
 
         /*Command*/
@@ -198,6 +211,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CMD_LEVEL_POINT_GET, "%s has %s upgrade points");
         add(ModMessages.CMD_LEVEL_POINT_SET, "Set upgrade points for %s to %s");
         add(ModMessages.CMD_LEVEL_POINT_ADD, "Added %s points for %s, total points are now %s");
+
 
         add(ModMessages.CMD_LEVEL_XP_GET, "%s has %s XP");
         add(ModMessages.CMD_LEVEL_XP_SET, "Set XP for %s to %s");
@@ -223,18 +237,15 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_VORTEX, "VORTEX");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
         add(ModMessages.UI_LIST_SELECTION, "Currently selected: &s");
-        add(ModMessages.UI_EXTERNAL_SHELL, "EXTERNAL SHELL CONFIGURATION");
-        add(ModMessages.UI_SHELL_SELECTION, "EXTERNAL SHELL CONFIGURATION");
+        add(ModMessages.UI_EXTERNAL_SHELL, "SHELL CONFIGURATION");
         add(ModMessages.UI_MONITOR_SHELL_VIEW, "SHELL VIEW");
-        add(ModMessages.UI_DESKTOP_SELECTION, "DESKTOP CONFIGURATION");
-        add(ModMessages.UI_DESKTOP_CONFIGURATION, "DESKTOP CONFIGURATION");
+        add(ModMessages.UI_DESKTOP_CONFIGURATION, "DESKTOP");
         add(ModMessages.UI_DESKTOP_CANCEL_TITLE, "OPERATION IN PROGRESS");
         add(ModMessages.UI_DESKTOP_CANCEL_DESCRIPTION, "Systems disabled as a Desktop reconfiguration has been scheduled.");
         add(ModMessages.UI_DESKTOP_CANCEL_DESKTOP, "Would you like to cancel the upcoming reconfiguration?");
         add(ModMessages.UI_DESKTOP_CANCEL, "Cancel Desktop Reconfiguration");
         add(ModMessages.UI_MONITOR_NO_WAYPOINTS, "No Waypoints Saved!");
         add(ModMessages.UI_MONITOR_WAYPOINT_UPLOAD, "Upload");
-        add(ModMessages.UI_MONITOR_WAYPOINT_SUBMIT, "Submit");
         add(ModMessages.UI_MONITOR_ISSUES, "Issues:");
         add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_NAME, "Invalid waypoint name");
         add(ModMessages.UI_MONITOR_WAYPOINT_ISSUE_X, "Invalid X value");
@@ -252,6 +263,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_EDIT, "Edit waypoint");
         add(ModMessages.UI_MONITOR_WAYPOINT_DELETE, "Delete waypoint");
         add(ModMessages.CANNOT_START_NO_FUEL, "Not enough fuel to start");
+        add(ModMessages.CANNOT_LAND, "TARDIS unable to find a safe landing position");
         add(ModMessages.UI_MONITOR_EJECT, "EMERGENCY EJECT");
         add(ModMessages.UI_EJECT_CANNOT_IN_FLIGHT, "Cannot eject whilst in flight");
         add(ModMessages.DIM_NOT_ALLOWED, "This dimension cannot be sampled");
@@ -268,8 +280,11 @@ public class LangProviderEnglish extends LanguageProvider {
        /* add(ModMessages.DOOR_STATUS, "Door: %s");
         add(ModMessages.LOCK_STATUS, "Locked: %s");
         add(ModMessages.POSITION, "Position: %s");
+        add(ModMessages.IN_FLIGHT, "Flight: %s");
         add(ModMessages.DIRECTION, "Direction: %s");
         add(ModMessages.DIMENSION, "Dimension: %s");
+        add(ModMessages.SHELL, "Shell: %s");
+        add(ModMessages.JOURNEY_PROGRESS, "Journey Progress: %s");
         add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
         add(ModCompatMessages.createDisplaySource("gps"), "GPS");
         add(ModCompatMessages.createDisplaySource("destination"), "GPS Destination");
@@ -297,6 +312,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addShell(ShellTheme.CASTLE.getId(), "Castle");
         addShell(ShellTheme.PATHFINDER.getId(), "Pathfinder");
         addShell(ShellTheme.HALF_BAKED.getId(), "Half Baked");
+        addShell(ShellTheme.SHULKER.getId(), "Shulker Box");
 
         /*Tool Tips*/
         add(ModMessages.TOOLTIP_TARDIS_LIST_TITLE, ChatFormatting.YELLOW + "< "
@@ -311,9 +327,15 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
+        add(ModMessages.CONFIG_IP_VS_COLLISION, "Immersive Portals Valkyrien Skies Collision");
+        add(ModMessages.CONFIG_IP_TELEPORTATION, "Immersive Portals Teleportation Mode");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
+        add(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR, "Render Vortex within interior door");
+        add(ModMessages.CONFIG_CUSTOM_SHADERS, "Use Custom Shaders");
+        add(ModMessages.SCREEN_SHAKE_MULTIPLIER, "Screen Shake Multiplier");
 
         /*Overlay Messages*/
         add(ModMessages.ASCEND_KEY, "Ascend: %s");
@@ -327,6 +349,7 @@ public class LangProviderEnglish extends LanguageProvider {
         addUpgrade(TRUpgrades.NAVIGATION_SYSTEM.get(), "Navigation System", "Allows upgrades to the TARDIS Navigation System");
         addUpgrade(TRUpgrades.TARDIS_XP.get(), "System Upgrades", "Allows upgrades to the TARDIS");
         addUpgrade(TRUpgrades.MATERIALIZE_AROUND.get(), "Materialize Around", "Allows the TARDIS to have entities enter while materalizing");
+        addUpgrade(TRUpgrades.RESPAWN_ALLOWED.get(), "Allow Bed Respawning", "Removes security restriction allowing users to set their spawn via beds.");
         addUpgrade(TRUpgrades.ARCHITECTURE_SYSTEM.get(), "Architecture", "Enables TARDIS Architecture Upgrades");
         addUpgrade(TRUpgrades.INSIDE_ARCHITECTURE.get(), "Desktop Reconfiguration", "Allows the Pilot to change the appearance of the TARDIS Desktop");
         addUpgrade(TRUpgrades.EXPLORER.get(), "Explorer I", "x1000 Increment");

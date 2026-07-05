@@ -5,12 +5,11 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.multiplayer.PlayerInfo;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRKeybinds;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -18,10 +17,6 @@ import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.constants.ModMessages;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
 
 public class ExteriorViewOverlay {
 
@@ -35,22 +30,20 @@ public class ExteriorViewOverlay {
         Minecraft mc = Minecraft.getInstance();
         if (!shouldRender)
             return;
+
         TardisPlayerInfo.get(mc.player).ifPresent(tardisPlayerInfo -> {
             // Exit if the player is not viewing the TARDIS or the debug screen is active
             if (!tardisPlayerInfo.isViewingTardis())
                 return;
-            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
 
+            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
             PoseStack poseStack = guiGraphics.pose();
             int screenWidth = mc.getWindow().getGuiScaledWidth();
             int screenHeight = mc.getWindow().getGuiScaledHeight();
 
+            // Background for keybind text
             int x = 10; // X position for text
             int y = 10; // Initial Y position for text
-
-            // Background for text
-            int textBackdropWidth = 150; // Width of the backdrop box
-            int textBackdropHeight = 70; // Total height for the text backdrop box
 
             int remainingFuel = (int) tardisClientData.getFuel();
             int maxFuel = (int) tardisClientData.getMaximumFuel();
@@ -68,49 +61,57 @@ public class ExteriorViewOverlay {
             // Display fuel percentage
             MutableComponent fuelMessage = Component.translatable(ModMessages.FUEL, fuelPercentage).append("%").withStyle(ChatFormatting.WHITE);
 
-            int messageWidth = mc.font.width(message);
+            // Get player coordinates
+            BlockPos pos = mc.player.blockPosition();
+
+            MutableComponent coordsMessage = Component.literal(
+                    String.format("Coordinates: X: %d Y: %d Z: %d", pos.getX(), pos.getY(), pos.getZ())
+            ).withStyle(ChatFormatting.WHITE);
+
+            int coordsWidth = mc.font.width(coordsMessage);
 
             poseStack.pushPose();
 
+            // Render keybind message
             if (mc.screen == null) {
                 poseStack.pushPose();
+                int messageWidth = mc.font.width(message);
                 poseStack.translate(5 + messageWidth / 2f, -3 + screenHeight - mc.font.lineHeight / 2f, 0);
                 guiGraphics.fill(-messageWidth / 2, -3 - mc.font.lineHeight / 2, messageWidth / 2, 2 + mc.font.lineHeight / 2, 0x88000000);
-                guiGraphics.drawString(mc.font, message.getString(), 8 - messageWidth / 2, -mc.font.lineHeight / 2, 0xFFFFFF, false); // White text
+                guiGraphics.drawString(mc.font, message.getString(), 8 - messageWidth / 2, -mc.font.lineHeight / 2, 0xFFFFFF, false);
                 poseStack.popPose();
             }
 
+            // Render fuel bar
             {
                 poseStack.pushPose();
                 FUEL_BAR.animate = tardisClientData.isFlying();
                 poseStack.translate(20, 20, 0);
                 FUEL_BAR.blit(guiGraphics, 0, 0, (double) remainingFuel / maxFuel);
-                guiGraphics.drawString(mc.font, fuelMessage.getString(), 3, 2, 0x572200, false); // White text
+                guiGraphics.drawString(mc.font, fuelMessage.getString(), 3, 2, 0x572200, false);
                 poseStack.popPose();
             }
 
-            guiGraphics.drawString(mc.font, throttleMessage.getString(), 20, 35, 0xFFFFFF, false); // White text
+            guiGraphics.drawString(mc.font, throttleMessage.getString(), 20, 35, 0xFFFFFF, false);
 
             float journeyProgress = tardisClientData.getJourneyProgress() / 100.0f;
 
-            poseStack.popPose();
+            if (!tardisClientData.isFlying()) {
+                poseStack.pushPose();
+                poseStack.translate(screenWidth - coordsWidth - 10, 22, 0);
+                guiGraphics.fill(-2, -3, coordsWidth + 2, mc.font.lineHeight + 2, 0x88000000);
+                guiGraphics.drawString(mc.font, coordsMessage.getString(), 0, 0, 0xFFFFFF, false);
+                poseStack.popPose();
+            }
 
+            // Render journey progress bar
             if (tardisClientData.isFlying())
                 renderJourneyProgressBar(guiGraphics, journeyProgress);
 
+            poseStack.popPose();
         });
     }
 
-    private static void renderPlayerHeads(PlayerInfo player, GuiGraphics guiGraphics, Minecraft mc, int x, int y) {
-        // Render player's face and name
-        if (player == null) return;
-
-        // Render the player's face
-        int faceSize = 10;
-        RenderHelper.renderPlayerFace(guiGraphics, x, y, faceSize, player.getProfile().getId());
-        // Render the player's name
-        guiGraphics.drawString(mc.font, player.getProfile().getName(), x + faceSize + 5, y + 1, 0xFFFFFF, false); // White text
-    }
 
     public static void renderJourneyProgressBar(GuiGraphics guiGraphics, float journeyProgress) {
         Minecraft mc = Minecraft.getInstance();

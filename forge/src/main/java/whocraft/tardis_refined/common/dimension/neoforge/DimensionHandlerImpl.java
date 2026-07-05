@@ -101,6 +101,7 @@ public class DimensionHandlerImpl {
         ServerChunkCache serverchunkcache = newLevel.getChunkSource();
         serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
         serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
+        server.tell(server.wrapRunnable(chunkListener::stop));
 
         return newLevel;
     }

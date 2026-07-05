@@ -14,7 +14,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.FixedBiomeSource;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.LevelStorageSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.PlatformWarning;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -43,6 +46,9 @@ public class DimensionHandler {
 
     public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
 
+    public static Logger LOGGER = LogManager.getLogger("TardisRefined/DimensionHandler");
+
+
     public static void addDimension(ResourceKey<Level> resourceKey) {
         LEVELS.add(resourceKey);
         writeLevels();
@@ -67,7 +73,7 @@ public class DimensionHandler {
 
         jsonObject.add("tardis_dimensions", dimensions);
 
-        TardisRefined.LOGGER.info("Writing {} to: {}", dimensions, file.getAbsolutePath());
+        LOGGER.info("Writing {} to: {}", dimensions, file.getAbsolutePath());
 
         try (FileWriter writer = new FileWriter(file)) {
             TardisRefined.GSON.toJson(jsonObject, writer);
@@ -110,15 +116,16 @@ public class DimensionHandler {
 
             JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
             for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
-                TardisRefined.LOGGER.info("Attempting to load {}", dimension.getAsString());
+                LOGGER.info("Attempting to load {}", dimension.getAsString());
                 ResourceLocation id = ResourceLocation.parse(dimension.getAsString());
                 ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
                 if (getExistingLevel(serverLevel, levelKey) == null) {
-                    TardisRefined.LOGGER.warn("Level {} not found! Creating new level instance", dimension.getAsString());
+                    LOGGER.warn("Level {} not found! Creating new level instance", dimension.getAsString());
                     if (DimensionHandler.getOrCreateInterior(serverLevel, id) != null)
-                        TardisRefined.LOGGER.warn("Successfully created and loaded new level {}", dimension.getAsString());
+                        LOGGER.warn("Successfully created and loaded new level {}", dimension.getAsString());
                 } else {
-                    TardisRefined.LOGGER.info("Successfully loaded existing level {}", dimension.getAsString());
+                    LOGGER.info("Successfully loaded existing level {}", dimension.getAsString());
+                    LEVELS.add(levelKey);
                 }
             }
 
@@ -130,7 +137,7 @@ public class DimensionHandler {
 
     @ExpectPlatform
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
-        throw new AssertionError(TardisRefined.PLATFORM_ERROR);
+        throw new RuntimeException(PlatformWarning.addWarning(DimensionHandler.class));
     }
 
     public static LevelStem formLevelStem(MinecraftServer server, ResourceKey<LevelStem> stem) {

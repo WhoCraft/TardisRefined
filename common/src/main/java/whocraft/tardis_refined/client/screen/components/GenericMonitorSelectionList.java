@@ -3,8 +3,12 @@ package whocraft.tardis_refined.client.screen.components;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import org.jetbrains.annotations.NotNull;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
+
+    private boolean renderBackground;
+
     /**
      * Creates a scrollable list with entries defined by a separate class
      *
@@ -17,13 +21,25 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
      * @param itemHeight - height of each item in the list
      */
     public GenericMonitorSelectionList(Minecraft minecraft, int width, int height, int xLeftPos, int yStart, int yEnd, int itemHeight) {
-        super(minecraft, width, height, yStart, yEnd); //Don't add anything to the y1 variable otherwise the entry button will be slighter taller than expected
+        super(minecraft, width, height, yStart, itemHeight); //Don't add anything to the y1 variable otherwise the entry button will be slighter taller than expected
+        setX(xLeftPos);
         this.setRenderHeader(false, 0);
     }
 
     @Override
     protected int getScrollbarPosition() {
-        return this.getX() + this.width;
+        return this.getX() - 6;
+    }
+
+    @Override
+    protected void renderListBackground(@NotNull GuiGraphics guiGraphics) {
+        if (renderBackground) {
+            super.renderListBackground(guiGraphics);
+        }
+    }
+
+    public void setRenderBackground(boolean renderBackground) {
+        this.renderBackground = renderBackground;
     }
 
 

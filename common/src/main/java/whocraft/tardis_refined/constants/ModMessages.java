@@ -13,8 +13,6 @@ public class ModMessages {
     public static final String UI_EXTERNAL_SHELL = ui("monitor.external_shell");
     public static final String UI_LIST_SELECTION = ui("monitor.list.selection");
     public static final String UI_DESKTOP_CONFIGURATION = ui("monitor.desktop");
-    public static final String UI_SHELL_SELECTION = ui("shell_selection");
-    public static final String UI_DESKTOP_SELECTION = ui("desktop_selection");
     public static final String UI_MONITOR_GPS = ui("monitor.main.gps");
     public static final String UI_MONITOR_VORTEX = ui("monitor.main.vortex");
     public static final String UI_MONITOR_DESTINATION = ui("monitor.main.destination");
@@ -32,7 +30,6 @@ public class ModMessages {
     public static final String UI_MONITOR_WAYPOINT_LOAD = ui("monitor.waypoints.load");
     public static final String UI_MONITOR_WAYPOINT_EDIT = ui("monitor.waypoints.edit");
     public static final String UI_MONITOR_WAYPOINT_DELETE = ui("monitor.waypoints.delete");
-    public static final String UI_MONITOR_WAYPOINT_SUBMIT = ui("monitor.waypoints.submit");
     public static final String VANILLA_SELECT_WORLD = "selectWorld.search";
     public static final String UI_WAYPOINT_NAME_PLACEHOLDER = "monitor.waypoints.name.placeholder";
     public static final String UI_WAYPOINT_NEW_WAYPOINT = "monitor.waypoints.new_waypoint";
@@ -47,8 +44,14 @@ public class ModMessages {
     public static final String UI_UPGRADES_BUY = ui("upgrades.buy_ability");
     public static final String UI_NO_INSTALLED_SUBSYSTEMS = ui("no_installed_subsystems");
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
+    public static final String CONFIG_IP_VS_COLLISION = config("immersive_portals_vs_collision");
+    public static final String CONFIG_IP_TELEPORTATION = config("immersive_portals_teleportation_mode");
+    public static final String CONFIG_IP_TELEPORTATION_VS = config("immersive_portals_teleportation_mode_vs");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
     public static final String CONFIG_IDLE_CONSOLE_ANIMS = config("console_idle_animations");
+    public static final String CONFIG_RENDER_VORTEX_IN_DOOR = config("config_render_vortex_in_door");
+    public static final String CONFIG_CUSTOM_SHADERS = config("config_custom_shaders");
+    public static final String SCREEN_SHAKE_MULTIPLIER = config("screen_shake_multiplier");
     public static final String CONFIG_BANNED_DIMENSIONS = config("banned_dimensions");
     public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
     public static final String CMD_NO_INTERNAL_DOOR = cmdOutput("no_internal_door");
@@ -71,6 +74,10 @@ public class ModMessages {
     public static final String CMD_ARG_SHELL_INVALID = cmdArgInvalid("shell");
     public static final String KEYBIND_EXIT_VIEW = keybind("exit_exterior_view");
     public static final String KEYBIND_TOGGLE_INFO_EXTERIOR_VIEW = keybind("toggle_info_exterior_view");
+    public static final String VILLAGER_CAN_FLY = ui("villager_can_pilot");
+    public static final String DEMANDS_PAYMENT = message("demands_payment");
+    public static final String PILOT_TIME = message("pilot_time");
+    public static final String TARDIS_SLEEP_END = message("tardis_sleep_end");
     public static String GITHUB_RELEASE_PAGE = "https://github.com/WhoCraft/TardisRefined/releases";
 
     /*Item Special cases*/
@@ -78,6 +85,8 @@ public class ModMessages {
     public static String ITEM_GROUP = "itemGroup." + TardisRefined.MODID;
 
     /*Messages*/
+    public static String SPAWN_TARDIS_DIMENSION_FAIL = message("spawn_tardis_dimension_fail");
+
     public static String MSG_EXTERIOR_COOLDOWN = message("exterior_cooldown");
     public static String MSG_KEY_BOUND = message("key_bound");
     public static String MSG_KEY_CYCLED = message("key_cycled");
@@ -97,6 +106,7 @@ public class ModMessages {
     public static String TARDIS_IS_ON_THE_WAY = message("tardis_on_the_way");
     public static String LANDING_PAD_NOT_UNLOCKED = message("landing_pad_unlocked");
     public static String LANDING_PAD_TRANSIENT = message("landing_pad_transient");
+    public static String LANDING_PAD_BANNED_DIM = message("landing_pad_banned_dim");
     public static String RECOVERY_PROGRESS = message("recovery_progress");
     public static String FUEL = message("fuel");
     public static String REFUEL = message("refuel_engaged");
@@ -109,8 +119,10 @@ public class ModMessages {
     public static String ROOT_PLANT_CUT_OPEN = message("root_plant_cut_open");
     public static String WAYPOINT_LOADED = message("waypoint_loaded");
     public static String CANNOT_START_NO_FUEL = message("cannot_start_no_fuel");
+    public static String CANNOT_LAND = message("cannot_land");
     public static String CURRENT = message("current");
     public static String DESTINATION = message("destination");
+    public static String SUBMIT = message("submit");
 
     public static String DIM_NOT_ALLOWED = message("dim_not_allowed");
     public static String DIM_ALREADY_SAVED = message("dim_already_saved");
@@ -124,6 +136,20 @@ public class ModMessages {
     public static String TOOLTIP_DIM_PROGRESS = tooltip("tooltip_dim_progress");
     public static String TOOLTIP_DIM_SAVED = tooltip("tooltip_dim_saved");
     public static String TOOLTIP_NO_DIM_SAVED = tooltip("tooltip_no_dim_saved");
+
+    public static String DOOR_STATUS = message("door_status");
+    public static String LOCK_STATUS = message("lock_status");
+    public static String POSITION = message("position");
+    public static String DIRECTION = message("direction");
+    public static String DIMENSION = message("dimension");
+
+    public static String IN_FLIGHT = createDisplaySource("in_flight");
+    public static String SHELL = createDisplaySource("shell");
+    public static String JOURNEY_PROGRESS = createDisplaySource("journey_progress");
+
+    public static String createDisplaySource(String translationKey) {
+        return TardisRefined.MODID + ".display_source." + translationKey;
+    }
 
     public static String message(String translationKey) {
         return "message." + TardisRefined.MODID + "." + translationKey;

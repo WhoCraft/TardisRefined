@@ -19,13 +19,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class GlobalDoorBlock extends InternalDoorBlock {
 
@@ -36,7 +41,7 @@ public class GlobalDoorBlock extends InternalDoorBlock {
 
     public GlobalDoorBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true).setValue(LOCKED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OFFSET, false).setValue(OPEN, true).setValue(LOCKED, false));
     }
 
     @Nullable
@@ -93,16 +98,25 @@ public class GlobalDoorBlock extends InternalDoorBlock {
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         return switch (blockState.getValue(FACING)) {
-            case EAST -> EAST_AABB;
-            case SOUTH -> SOUTH_AABB;
-            case WEST -> WEST_AABB;
-            case NORTH -> NORTH_AABB;
+            case EAST -> blockState.getValue(OFFSET) ? EAST_AABB.move(0, 0, -0.5) : EAST_AABB;
+            case SOUTH -> blockState.getValue(OFFSET) ? SOUTH_AABB.move(0.5, 0, 0) : SOUTH_AABB;
+            case WEST -> blockState.getValue(OFFSET) ? WEST_AABB.move(0, 0, 0.5) : WEST_AABB;
+            case NORTH -> blockState.getValue(OFFSET) ? NORTH_AABB.move(-0.5, 0, 0) : NORTH_AABB;
             default -> SOUTH_AABB;
         };
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        BlockEntity blockEntity = blockGetter.getBlockEntity(blockPos);
+        //noinspection ConstantValue IntelliJ got confused by this for some reason...
+        if (
+                TRConfig.COMMON_SPEC.isLoaded() && !TRConfig.COMMON.IP_VS_COLLISION.get() && blockEntity != null && blockEntity.getLevel() != null &&
+                ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(blockEntity.getLevel().dimension()) &&
+                ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(blockEntity.getLevel(), blockPos)
+        ) {
+            return Shapes.empty();
+        }
         return this.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
 

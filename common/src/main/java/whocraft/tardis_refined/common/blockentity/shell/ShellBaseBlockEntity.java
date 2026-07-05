@@ -1,10 +1,13 @@
 package whocraft.tardis_refined.common.blockentity.shell;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
@@ -24,29 +27,41 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
+import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
-import java.util.UUID;
+import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
-    private final int DUPLICATION_CHECK_TIME = 1200; // A minute
+    private static final String SETUP_DATA = "setup_data";
+
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
+    private boolean hasPotentialToBeRemoved = false;
+    private boolean placedByOtherMod = false; // We don't serialize this by design, because other mods might still create duplicates.
+
+    private SetupState setupData = null;
+    private OptionalLong setupTick = OptionalLong.empty(); // This is just to prevent a ConcurrentModicationException, should not be serialized.
 
     public ShellBaseBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -57,11 +72,17 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         return this.TARDIS_ID;
     }
 
+    public ShellBaseBlockEntity setPlacedByOtherMod(boolean placedByOtherMod) {
+        this.placedByOtherMod = placedByOtherMod;
+        return this;
+    }
+
     @Override
     public void setTardisId(ResourceKey<Level> levelKey) {
         this.TARDIS_ID = levelKey;
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_ALL);
+        placedByOtherMod = false; // If any mod runs this function we can be sure they have probably set the current location property.
     }
 
     @Override
@@ -69,6 +90,28 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         super.loadAdditional(pTag, provider);
         if (pTag.contains(NbtConstants.TARDIS_ID))
             this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(pTag.getString(NbtConstants.TARDIS_ID)));
+        updateCurrentLocation();
+        if (pTag.contains(SETUP_DATA)) {
+            SetupState.CODEC.parse(NbtOps.INSTANCE, pTag.get(SETUP_DATA)).result().ifPresent(setupData -> {
+                this.setupData = setupData;
+            });
+        }
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        updateCurrentLocation();
+    }
+
+    private void updateCurrentLocation() {
+        if (this.getLevel() instanceof ServerLevel serverLevel) {
+            ServerLevel interior = serverLevel.getServer().getLevel(this.TARDIS_ID);
+            TardisLevelOperator.get(interior).ifPresent(cap -> {
+                cap.getPilotingManager().setCurrentLocationOnNextTick(this);
+                hasPotentialToBeRemoved = true;
+            });
+        }
     }
 
     @Override
@@ -80,14 +123,18 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     protected void saveAdditional(CompoundTag pTag, HolderLookup.Provider provider) {
+        if (setupData != null) {
+            pTag.put(SETUP_DATA, SetupState.CODEC.encodeStart(NbtOps.INSTANCE, setupData).result().orElseThrow());
+        }
+        super.saveAdditional(pTag, provider);
         if (this.TARDIS_ID == null) {
-            TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
+            if (setupData == null) {
+                TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
+            }
             return;
         }
 
-        super.saveAdditional(pTag, provider);
-        if (this.TARDIS_ID != null)
-            pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
+        pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
     }
 
     @Override
@@ -102,6 +149,65 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         return false;
     }
 
+    private void setUpTardis(
+            BlockState blockState, Level level, BlockPos blockPos,
+            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Runnable onSuccess, Runnable onFail
+    ) {
+        if (shouldSetup() && level instanceof ServerLevel serverLevel) {
+
+            AtomicBoolean generated = new AtomicBoolean(false);
+
+            //Set the shell with this level
+            setTardisId(generatedLevelKey);
+
+            //Create the Level on demand which will create our capability
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, getTardisId().location());
+
+            TardisLevelOperator.get(interior).ifPresent(tardisLevelOperator -> {
+                TardisInteriorManager intManager = tardisLevelOperator.getInteriorManager();
+                TardisExteriorManager extManager = tardisLevelOperator.getExteriorManager();
+                TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
+                if (!tardisLevelOperator.hasInitiallyGenerated()) {
+                    intManager.generateDesktop(desktopTheme);
+                    tardisLevelOperator.getProgressionManager().addDiscoveredLevel(serverLevel.dimension());
+                    Direction direction = blockState.getValue(ShellBaseBlock.FACING).getOpposite();
+                    TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
+                    pilotManager.setCurrentLocation(navLocation);
+                    pilotManager.setTargetLocation(navLocation);
+                    pilotManager.setFuel(pilotManager.getMaximumFuel());
+                    tardisLevelOperator.setInitiallyGenerated(true);
+                    tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
+                    intManager.openTheEye(openEye);
+                    serverLevel.setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
+                    generated.set(true);
+                    tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
+                    tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.of(blockState), false, ShellChangeSources.ROOT_TO_TARDIS);
+                }
+            });
+
+            if (generated.get()) {
+                onSuccess.run();
+            } else {
+                onFail.run();
+            }
+        }
+    }
+
+    public void setUpTardisOnNextTickIfNecessary(
+            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Runnable onSuccess, Runnable onFail
+    ) {
+        if (ModCompatChecker.valkyrienSkies()) {
+            setupData = new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
+        } else {
+            setUpTardis(
+                    getBlockState(), getLevel(), getBlockPos(), generatedLevelKey, shellTheme, desktopTheme, openEye,
+                    onSuccess, onFail
+            );
+        }
+    }
+
     @Override
     public void onAttemptEnter(BlockState blockState, Level level, BlockPos externalShellPos, Entity entity) {
         if (!entity.level().isClientSide() && level instanceof ServerLevel serverLevel) {
@@ -114,13 +220,14 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             TardisLevelOperator.get(interior).ifPresent(cap -> {
 
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
+                AestheticHandler aesthetics = cap.getAestheticHandler();
 
-                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().isLanding() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
-                    if (cap.getAestheticHandler().getShellTheme() != null) {
-                        ResourceLocation theme = cap.getAestheticHandler().getShellTheme();
+                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().isLanding() && cap.getPilotingManager().isInFlight() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
+                    if (aesthetics.getShellTheme() != null) {
+                        ResourceLocation theme = aesthetics.getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
-                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(TARDIS_ID.location().getPath()))) {
+                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.isTeleportingPortalPresent(TARDIS_ID)) {
                                 return;
                             }
                         }
@@ -138,36 +245,43 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     @Override
-    public DesktopTheme getAssociatedTheme() {
-        return TardisDesktops.FACTORY_THEME;
-    }
-
-    @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
-        if (level.getGameTime() % DUPLICATION_CHECK_TIME == 0 && !level.isClientSide) {
+        if (!level.isClientSide) {
+            if (setupData != null) {
+                if (setupTick.isEmpty() || setupTick.getAsLong() != level.getGameTime()) {
+                    RootedShellBlockEntity.setUpOnNextTick = true;
+                    setupTick = OptionalLong.of(level.getGameTime()+1);
+                    return;
+                }
+                setUpTardis(
+                        blockState, level, blockPos, setupData.generatedLevelKey, setupData.shellTheme, setupData.desktopTheme,
+                        setupData.openEye, setupData.onSuccess, setupData.onFail
+                );
+                setupData = null;
+                setupTick = OptionalLong.empty();
+            }
+
             ResourceKey<Level> tardisId = getTardisId();
             if (tardisId == null) return;
-            ServerLevel tardisLevel = Platform.getServer().getLevel(tardisId);
-            BlockPos myCurrentPosition = getBlockPos();
+            ServerLevel tardisLevel = DimensionUtil.getLevel(tardisId);
 
             TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
-
-                TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
-
-                BlockPos currentLocation = pilotingManager.getCurrentLocation().getPosition();
-                BlockPos wantedDestination = pilotingManager.getTargetLocation().getPosition();
-
-
-                if (currentLocation == null) {
-                    Direction direction = blockState.getValue(ShellBaseBlock.FACING);
-                    ServerLevel serverLevel = Platform.getServer().getLevel(level.dimension());
-                    pilotingManager.setCurrentLocation(new TardisNavLocation(getBlockPos(), direction != null ? direction : Direction.NORTH, serverLevel));
+                if(!tardisLevelOperator.getPilotingManager().isInFlight()) {
+                    if (placedByOtherMod) { // If placed by another mod we don't want it to delete itself.
+                        var dir = level.getBlockState(blockPos).getOptionalValue(ShellBaseBlock.FACING).orElse(Direction.NORTH).getOpposite();
+                        tardisLevelOperator.getPilotingManager().setCurrentLocation(
+                                new TardisNavLocation(blockPos, dir, level.dimension())
+                        );
+                        if (ModCompatChecker.immersivePortals()) {
+                            ImmersivePortals.onDoorMoved(tardisLevelOperator);
+                        }
+                        placedByOtherMod = false;
+                    }
+                    if (isInvalidTardis(tardisLevelOperator)) {
+                        BlockPos myCurrentPosition = getBlockPos();
+                        level.removeBlock(myCurrentPosition, false);
+                    }
                 }
-
-                if (!myCurrentPosition.equals(currentLocation) && !myCurrentPosition.equals(wantedDestination)) {
-                    level.removeBlock(myCurrentPosition, false);
-                }
-
             });
         }
     }
@@ -238,5 +352,38 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public void playDoorLockedSound(boolean lockDoor) {
         Level currentLevel = getLevel();
         currentLevel.playSound(null, this.getBlockPos(), lockDoor ? BlockSetType.IRON.doorClose() : BlockSetType.IRON.doorOpen(), SoundSource.BLOCKS, 1, lockDoor ? 1.4F : 1F);
+    }
+
+    @Override
+    public boolean isInvalidTardis(TardisLevelOperator tardisLevelOperator) {
+        BlockPos myPosition = getBlockPos();
+        TardisPilotingManager pilotingManager = tardisLevelOperator.getPilotingManager();
+
+        BlockPos currentLocation = pilotingManager.getCurrentLocation().getPosition();
+        BlockPos wantedDestination = pilotingManager.getTargetLocation().getPosition();
+
+        return hasPotentialToBeRemoved && !myPosition.equals(currentLocation) && !myPosition.equals(wantedDestination);
+    }
+
+    public record SetupState(
+            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Runnable onSuccess, Runnable onFail // We can't serialize onSuccess and onFail in a good way.
+    ) {
+
+        public SetupState(
+                ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
+                DesktopTheme desktopTheme, boolean openEye
+        ) {
+            this(generatedLevelKey, shellTheme, desktopTheme, openEye, () -> {}, () -> {});
+        }
+
+        public static final Codec<SetupState> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        Level.RESOURCE_KEY_CODEC.fieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
+                        ResourceLocation.CODEC.fieldOf("shell_theme").forGetter(SetupState::shellTheme),
+                        DesktopTheme.getCodec().fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
+                        Codec.BOOL.fieldOf("open_eye").forGetter(SetupState::openEye)
+                ).apply(instance, SetupState::new)
+        );
     }
 }

@@ -96,7 +96,7 @@ public class EyeRenderer implements BlockEntityRenderer<EyeBlockEntity>, BlockEn
 
 
         int sideWidth = 7;
-        RenderHelper.drawGlowingBox(poseStack, vertexBuilder, sideWidth, sideWidth, sideWidth, 1, 0.11f, 0, 1, 0);
+        RenderHelper.drawGlowingBox(poseStack, vertexBuilder, sideWidth, sideWidth, sideWidth, RenderHelper.rgbaToInt(1, 0.11f, 0, 1), 0);
         poseStack.popPose();
     }
 

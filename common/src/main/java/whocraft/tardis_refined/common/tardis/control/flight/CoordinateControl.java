@@ -7,13 +7,14 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 
-public class CoordinateControl extends Control {
+public class CoordinateControl extends whocraft.tardis_refined.common.tardis.control.Control {
 
     private CoordinateButton button;
 
@@ -53,6 +54,11 @@ public class CoordinateControl extends Control {
                 case X -> potentialPos = potentialPos.offset(incrementAmount, 0, 0);
                 case Y -> potentialPos = potentialPos.offset(0, incrementAmount, 0);
                 case Z -> potentialPos = potentialPos.offset(0, 0, incrementAmount);
+            }
+
+            if (ModCompatChecker.valkyrienSkies()) {
+                pilotManager.setTargetLocation(VSHelper.toWorldLocation(pilotManager.getTargetLocation()));
+                potentialPos = VSHelper.toWorldPosition(targetLocation.getLevel(), potentialPos);
             }
 
             //Use vanilla check which accounts for both world height and horizontal bounds

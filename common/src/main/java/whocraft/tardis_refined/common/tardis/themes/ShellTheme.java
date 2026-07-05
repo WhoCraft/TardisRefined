@@ -44,6 +44,7 @@ public class ShellTheme implements Theme {
     public static final RegistryHolder<ShellTheme, ShellTheme> HIEROGLYPH = registerShellTheme("hieroglyph");
     public static final RegistryHolder<ShellTheme, ShellTheme> CASTLE = registerShellTheme("castle");
     public static final RegistryHolder<ShellTheme, ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
+    public static final RegistryHolder<ShellTheme, ShellTheme> SHULKER = registerShellTheme("shulker");
 
     private ResourceLocation translationKey;
     private boolean producesLight;

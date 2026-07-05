@@ -8,35 +8,27 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
-import net.minecraft.client.renderer.entity.GuardianRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.util.RandomSource;
 import org.joml.Matrix4f;
 import org.joml.Random;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.device.ArtronPillarBlockModel;
-import whocraft.tardis_refined.client.model.blockentity.door.interior.BulkHeadDoorModel;
-import whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel;
+import whocraft.tardis_refined.client.model.GenericModel;
 import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.block.device.ArtronPillarBlock;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.device.ArtronPillarBlockEntity;
-import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 
 public class ArtronPillarRenderer implements BlockEntityRenderer<ArtronPillarBlockEntity>, BlockEntityRendererProvider<ArtronPillarBlockEntity> {
 
     private static final float HALF_SQRT_3 = (float) (Math.sqrt(3.0D) / 2.0D);
-    private final ArtronPillarBlockModel artronPillarBlockModel;
+    private final GenericModel artronPillarBlockModel;
     private final ResourceLocation POWER_ON = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/artron_pillar.png");
     private final ResourceLocation POWER_OFF = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/artron_pillar_off.png");
 
     public ArtronPillarRenderer(Context context) {
-        artronPillarBlockModel = new ArtronPillarBlockModel(context.bakeLayer((ModelRegistry.ARTRON_PILLAR)));
+        artronPillarBlockModel = new GenericModel(context.bakeLayer((ModelRegistry.ARTRON_PILLAR)));
     }
 
     private static void vertex01(VertexConsumer iVertexBuilder, Matrix4f matrix4f, int p_229061_2_) {
@@ -62,11 +54,13 @@ public class ArtronPillarRenderer implements BlockEntityRenderer<ArtronPillarBlo
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
+        BlockState blockState = blockEntity.getBlockState();
+
         ResourceLocation lampTexture = blockEntity.getBlockState().getValue(ArtronPillarBlock.ACTIVE) ? POWER_ON : POWER_OFF;
 
         artronPillarBlockModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(lampTexture)), i, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(1f, 1f, 1f, 1f));
 
-        if (blockEntity.getBlockState().getValue(ArtronPillarBlock.ACTIVE)) {
+        if (blockState.getValue(ArtronPillarBlock.ACTIVE)) {
 
             VertexConsumer vertexBuilder = multiBufferSource.getBuffer(RenderType.lightning());
 
