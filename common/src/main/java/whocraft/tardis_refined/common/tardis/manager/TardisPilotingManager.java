@@ -502,8 +502,8 @@ public class TardisPilotingManager extends TickableHandler {
         //Out of all the positions which are considered empty spaces (air), check if each position allows for the Tardis exterior to be placed and the area outside the door is safe
         for (BlockPos airPos : filteredForAir) {
 
-            // Ignore any higher scans above the nether roof.
-            if (level.dimension() == Level.NETHER && airPos.getY() > 125) {
+            // Ignore any higher scans above the logical height (e.g. nether roof).
+            if (airPos.getY() >= (level.getMinBuildHeight() + level.getLogicalHeight())) {
                 continue;
             }
 
@@ -638,8 +638,8 @@ public class TardisPilotingManager extends TickableHandler {
     private boolean canPlaceTardis(TardisNavLocation location) {
         ServerLevel targetLevel = location.getLevel();
         BlockPos pos = location.getPosition();
-        boolean isBelowNetherRoof = (targetLevel.dimension() == Level.NETHER && pos.getY() <= 125);
-        return isBelowNetherRoof && this.isLegalLandingBlock(targetLevel, pos, LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.below(), LandingBlockType.GROUND);
+        boolean isBelowLogicalHeight = pos.getY() < (targetLevel.getMinBuildHeight() + targetLevel.getLogicalHeight());
+        return isBelowLogicalHeight && this.isLegalLandingBlock(targetLevel, pos, LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.below(), LandingBlockType.GROUND);
     }
 
     /**
