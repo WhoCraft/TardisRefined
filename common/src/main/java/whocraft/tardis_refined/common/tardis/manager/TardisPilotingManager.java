@@ -44,6 +44,7 @@ import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
@@ -417,7 +418,7 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         //First manually check if the exact target position can allow us to place the Tardis
-        if (this.canPlaceTardis(location) && this.isExitPositionSafe(location) && !shouldLandOnShip) {
+        if (this.canPlaceTardis(location) && this.isExitPositionSafeOrLandingPad(location) && !shouldLandOnShip) {
             solutionsInRow.add(location);
         }
 
@@ -435,7 +436,7 @@ public class TardisPilotingManager extends TickableHandler {
                 List<BlockPos> surroundingPositionsSameYLevel = LevelHelper.getBlockPosInRadius(position, radius, true, false);
                 for (BlockPos directionOffset : surroundingPositionsSameYLevel) {
                     TardisNavLocation nextLocation = new TardisNavLocation(directionOffset, location.getDirection(), location.getLevel());
-                    if (this.canPlaceTardis(nextLocation) && this.isExitPositionSafe(nextLocation)) {
+                    if (this.canPlaceTardis(nextLocation) && this.isExitPositionSafeOrLandingPad(nextLocation)) {
                         solutionsInRow.add(nextLocation);
                     }
                 }
@@ -518,7 +519,7 @@ public class TardisPilotingManager extends TickableHandler {
             // Check if this position have the space for a TARDIS.
             if (filteredForNonAir.contains(below) && filteredForAir.contains(above)) {
                 // Check if the exit position allows an entity to be teleported without suffocating or falling.
-                if (this.canPlaceTardis(level, airPos) && this.isExitPositionSafe(level, airPos, direction)) {
+                if (this.canPlaceTardis(level, airPos) && this.isExitPositionSafeOrLandingPad(level, airPos, direction)) {
                     var targetDirection = directionOverrides.getOrDefault(airPos, direction);
                     solutionsInRow.add(new TardisNavLocation(airPos, targetDirection, level));
                 }
@@ -632,13 +633,25 @@ public class TardisPilotingManager extends TickableHandler {
         return false;
     }
 
+    private boolean onLandingPad(ServerLevel level, BlockPos pos) {
+        return level.getBlockState(pos.below()).is(TRBlockRegistry.LANDING_PAD.get());
+    }
+
+    private boolean isExitPositionSafeOrLandingPad(ServerLevel level, BlockPos pos, Direction offsetDirection) {
+        return isExitPositionSafe(level, pos, offsetDirection) || onLandingPad(level, pos);
+    }
+
+    private boolean isExitPositionSafeOrLandingPad(TardisNavLocation location) {
+        return this.isExitPositionSafeOrLandingPad(location.getLevel(), location.getPosition(), location.getDirection());
+    }
+
     /**
      * If there is a 2 block vertical space for the exterior to be placed at, and the block below the exterior is solid
      */
     private boolean canPlaceTardis(TardisNavLocation location) {
         ServerLevel targetLevel = location.getLevel();
         BlockPos pos = location.getPosition();
-        boolean isBelowLogicalHeight = pos.getY() < (targetLevel.getMinBuildHeight() + targetLevel.getLogicalHeight());
+        boolean isBelowLogicalHeight = pos.getY() < (targetLevel.getMinBuildHeight() + targetLevel.getLogicalHeight()) || onLandingPad(location.getLevel(), location.getPosition());
         return isBelowLogicalHeight && this.isLegalLandingBlock(targetLevel, pos, LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.below(), LandingBlockType.GROUND);
     }
 
