@@ -8,6 +8,7 @@
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
 - Updated create-fabric integration to create 6.
+- Landing pad is now always considered a safe landing location, even when entrance blocked or above the nether roof.
 
 #### Configs
 - New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
@@ -47,3 +48,4 @@
 - Bug fix: Recently created TARDIS keeps printing "Preparing spawn area: 100%" every time a chunk loads until the server is restarted.
 - Bug fix: The back button in the Waypoint screen traps users in an infinite loop and deletes waypoints.
 - Bug fix: AR particles sometimes render below the control.
+- Bug fix: TARDIS does not respect logical height.
