@@ -504,7 +504,7 @@ public class TardisPilotingManager extends TickableHandler {
         for (BlockPos airPos : filteredForAir) {
 
             // Ignore any higher scans above the logical height (e.g. nether roof).
-            if (airPos.getY() >= (level.getMinBuildHeight() + level.getLogicalHeight())) {
+            if (!isWithinLogicalHeight(level, airPos)) {
                 continue;
             }
 
@@ -645,13 +645,20 @@ public class TardisPilotingManager extends TickableHandler {
         return this.isExitPositionSafeOrLandingPad(location.getLevel(), location.getPosition(), location.getDirection());
     }
 
+    private boolean isWithinLogicalHeight(ServerLevel level, BlockPos pos) {
+        if (ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(level, pos)) {
+            return true;
+        }
+        return pos.getY() < (level.getMinBuildHeight() + level.getLogicalHeight());
+    }
+
     /**
      * If there is a 2 block vertical space for the exterior to be placed at, and the block below the exterior is solid
      */
     private boolean canPlaceTardis(TardisNavLocation location) {
         ServerLevel targetLevel = location.getLevel();
         BlockPos pos = location.getPosition();
-        boolean isBelowLogicalHeight = pos.getY() < (targetLevel.getMinBuildHeight() + targetLevel.getLogicalHeight()) || onLandingPad(location.getLevel(), location.getPosition());
+        boolean isBelowLogicalHeight = isWithinLogicalHeight(location.getLevel(), location.getPosition()) || onLandingPad(location.getLevel(), location.getPosition());
         return isBelowLogicalHeight && this.isLegalLandingBlock(targetLevel, pos, LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.below(), LandingBlockType.GROUND);
     }
 
