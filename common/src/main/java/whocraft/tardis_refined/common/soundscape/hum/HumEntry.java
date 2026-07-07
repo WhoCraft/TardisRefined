@@ -6,9 +6,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.RegistryHelper;
+import whocraft.tardis_refined.patterns.BasePattern;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class HumEntry {
      * @param ambientSounds
      */
     public HumEntry(ResourceLocation identifier, ResourceLocation soundEventId, List<ResourceLocation> ambientSounds) {
-        this(identifier, soundEventId, ambientSounds, TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
+        this(identifier, soundEventId, ambientSounds, BasePattern.serialize(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
     }
 
     /**
