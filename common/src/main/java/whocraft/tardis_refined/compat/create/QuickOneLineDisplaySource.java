@@ -1,5 +1,8 @@
 package whocraft.tardis_refined.compat.create;
 
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.displayLink.source.SingleLineDisplaySource;
+import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -7,7 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.constants.ModMessages;
 
-/*public class QuickOneLineDisplaySource extends SingleLineDisplaySource {
+public class QuickOneLineDisplaySource extends SingleLineDisplaySource {
 
     private final TardisInfo source;
 
@@ -43,4 +46,4 @@ import whocraft.tardis_refined.constants.ModMessages;
 
         ResourceLocation getId();
     }
-}*/
+}

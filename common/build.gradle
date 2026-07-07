@@ -21,6 +21,8 @@ dependencies {
 
     modCompileOnlyApi ("com.github.iPortalTeam:ImmersivePortalsMod:${rootProject.immersive_portals_version}")
 
+    modCompileOnly("com.simibubi.create:create-${minecraft_version}:${create_version_forge}:slim"){transitive = false}
+
 }
 
 publishing {

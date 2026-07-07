@@ -1,5 +1,8 @@
 package whocraft.tardis_refined.compat.create;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +20,7 @@ import whocraft.tardis_refined.constants.ModMessages;
 import java.util.ArrayList;
 import java.util.List;
 
-/*public class TardisDisplaySource extends DisplaySource {
+public class TardisDisplaySource extends DisplaySource {
 
 
     @Override
@@ -60,4 +63,4 @@ import java.util.List;
     }
 
 
-}*/
+}

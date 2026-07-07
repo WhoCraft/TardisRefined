@@ -83,6 +83,8 @@ allprojects {
 
     repositories {
 
+        maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+
         maven {
             name = "Fuzs Mod Resources"
             url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"

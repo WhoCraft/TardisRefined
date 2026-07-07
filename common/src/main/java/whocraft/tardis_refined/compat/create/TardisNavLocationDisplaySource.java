@@ -1,5 +1,8 @@
 package whocraft.tardis_refined.compat.create;
 
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
+import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -12,7 +15,7 @@ import whocraft.tardis_refined.constants.ModMessages;
 import java.util.ArrayList;
 import java.util.List;
 
-/*public class TardisNavLocationDisplaySource extends DisplaySource {
+public class TardisNavLocationDisplaySource extends DisplaySource {
 
     private final TardisNavInfo tardisNavInfo;
 
@@ -48,4 +51,4 @@ import java.util.List;
 
         ResourceLocation getId();
     }
-}*/
+}
