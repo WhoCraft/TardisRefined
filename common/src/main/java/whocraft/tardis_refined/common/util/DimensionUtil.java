@@ -17,7 +17,7 @@ public class DimensionUtil {
         String namespace = level.location().getNamespace();
         String location = level.location().toString();
         var bannedDimensions = TRConfig.SERVER.BANNED_DIMENSIONS.get();
-        return !namespace.contains("immersive_portals") && !namespace.contains(TardisRefined.MODID) && !bannedDimensions.contains(location);
+        return !namespace.contains(TardisRefined.MODID) && !bannedDimensions.contains(location);
     }
     public static Set<ResourceKey<Level>> getTardisLevels(MinecraftServer server) {
         Set<ResourceKey<Level>> set = Sets.newHashSet();
