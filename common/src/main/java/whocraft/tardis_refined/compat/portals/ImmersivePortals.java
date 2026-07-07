@@ -573,8 +573,8 @@ public class ImmersivePortals {
 
         newPortal.setWidth(portal.getWidth());
         newPortal.setHeight(portal.getHeight());
-        newPortal.setAxisH(new Vec3(1, 0, 0));
-        newPortal.setAxisW(new Vec3(0, 1, 0));
+        newPortal.setAxisW(new Vec3(1, 0, 0));
+        newPortal.setAxisH(new Vec3(0, 1, 0));
         PortalManipulation.rotatePortalBody(newPortal, DQuaternion.fromMcQuaternion(quat.toMcQuaternion()));
 
         return newPortal;
