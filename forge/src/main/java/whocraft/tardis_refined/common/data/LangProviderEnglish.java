@@ -277,7 +277,7 @@ public class LangProviderEnglish extends LanguageProvider {
 
         /*Create GUI Compatibility*/
 
-       /* add(ModMessages.DOOR_STATUS, "Door: %s");
+        add(ModMessages.DOOR_STATUS, "Door: %s");
         add(ModMessages.LOCK_STATUS, "Locked: %s");
         add(ModMessages.POSITION, "Position: %s");
         add(ModMessages.IN_FLIGHT, "Flight: %s");
@@ -285,12 +285,12 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.DIMENSION, "Dimension: %s");
         add(ModMessages.SHELL, "Shell: %s");
         add(ModMessages.JOURNEY_PROGRESS, "Journey Progress: %s");
-        add(ModCompatMessages.createDisplaySource("fuel"), "Fuel");
-        add(ModCompatMessages.createDisplaySource("gps"), "GPS");
-        add(ModCompatMessages.createDisplaySource("destination"), "GPS Destination");
-        add(ModCompatMessages.createDisplaySource("tardis_bigdata"), "Tardis Summary");
-        add(ModCompatMessages.createDisplaySource("door"), "Door Status");
-        add(ModCompatMessages.createDisplaySource("locked"), "Lock Status");*/
+        add(ModMessages.createDisplaySource("fuel"), "Fuel");
+        add(ModMessages.createDisplaySource("gps"), "GPS");
+        add(ModMessages.createDisplaySource("destination"), "GPS Destination");
+        add(ModMessages.createDisplaySource("tardis_bigdata"), "Tardis Summary");
+        add(ModMessages.createDisplaySource("door"), "Door Status");
+        add(ModMessages.createDisplaySource("locked"), "Lock Status");
 
         /*Shell Themes*/
         addShell(ShellTheme.FACTORY.getId(), "Factory");
