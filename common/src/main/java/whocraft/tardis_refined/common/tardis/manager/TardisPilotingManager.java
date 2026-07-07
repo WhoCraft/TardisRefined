@@ -227,6 +227,19 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private void onFlightTick(ServerLevel level) {
+        if (!this.autoLand) {
+            var flightDance = operator.getFlightDanceManager();
+            if (this.throttleStage == 0) {
+                if (flightDance.isDancing()) {
+                    flightDance.stopDancing();
+                }
+            } else {
+                if (!flightDance.isDancing() && isInFlight() && !isLanding() && distanceCovered < flightDistance) {
+                    flightDance.startFlightDance(currentConsole);
+                }
+            }
+        }
+
         if (this.throttleStage != 0 || this.autoLand) {
             ticksInFlight++;
 
@@ -966,7 +979,7 @@ public class TardisPilotingManager extends TickableHandler {
         this.operator.getExteriorManager().setIsTakingOff(false);
         TardisCommonEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.getPosition());
 
-        if (this.currentConsole != null) {
+        if (this.currentConsole != null && distanceCovered < flightDistance) {
             operator.getFlightDanceManager().startFlightDance(this.currentConsole);
         }
 
@@ -1050,7 +1063,7 @@ public class TardisPilotingManager extends TickableHandler {
         if (this.flightDistance == 0) {
             return 0;
         }
-        return (float) this.distanceCovered / this.flightDistance;
+        return Mth.clamp((float) this.distanceCovered / this.flightDistance, 0, 1);
     }
 
     public void offsetTargetPositionX(int x) {
