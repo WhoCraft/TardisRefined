@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
 
-    private boolean renderBackground;
+    private boolean renderBackground = true;
 
     /**
      * Creates a scrollable list with entries defined by a separate class
@@ -36,6 +36,16 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
         if (renderBackground) {
             super.renderListBackground(guiGraphics);
         }
+    }
+
+    @Override
+    protected void renderListSeparators(GuiGraphics guiGraphics) {
+
+    }
+
+    @Override
+    protected void renderSelection(GuiGraphics guiGraphics, int i, int j, int k, int l, int m) {
+
     }
 
     public void setRenderBackground(boolean renderBackground) {
