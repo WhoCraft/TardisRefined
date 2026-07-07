@@ -41,24 +41,24 @@ public class TardisNetwork {
         NETWORK.registerS2C(S2COpenCraftingScreen.TYPE, S2COpenCraftingScreen.STREAM_CODEC, (value, context) -> value.receive(value, context));
 
         // C2S Messages
-        NETWORK.registerS2C(C2SChangeShell.TYPE, C2SChangeShell.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SChangeVortex.TYPE, C2SChangeVortex.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SChangeDesktop.TYPE, C2SChangeDesktop.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SCancelDesktopChange.TYPE, C2SCancelDesktopChange.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SRequestWaypoints.TYPE, C2SRequestWaypoints.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2STravelToWaypoint.TYPE, C2STravelToWaypoint.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SUploadWaypoint.TYPE, C2SUploadWaypoint.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SEditWaypoint.TYPE, C2SEditWaypoint.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SOpenCoordinatesDisplayMessage.TYPE, C2SOpenCoordinatesDisplayMessage.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SOpenEditCoordinatesDisplayMessage.TYPE, C2SOpenEditCoordinatesDisplayMessage.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SRemoveWaypointEntry.TYPE, C2SRemoveWaypointEntry.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SUnlockUpgrade.TYPE, C2SUnlockUpgrade.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SRequestShellSelection.TYPE, C2SRequestShellSelection.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SChangeShell.TYPE, C2SChangeShell.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SChangeVortex.TYPE, C2SChangeVortex.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SChangeDesktop.TYPE, C2SChangeDesktop.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SCancelDesktopChange.TYPE, C2SCancelDesktopChange.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SRequestWaypoints.TYPE, C2SRequestWaypoints.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2STravelToWaypoint.TYPE, C2STravelToWaypoint.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SUploadWaypoint.TYPE, C2SUploadWaypoint.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SEditWaypoint.TYPE, C2SEditWaypoint.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SOpenCoordinatesDisplayMessage.TYPE, C2SOpenCoordinatesDisplayMessage.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SOpenEditCoordinatesDisplayMessage.TYPE, C2SOpenEditCoordinatesDisplayMessage.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SRemoveWaypointEntry.TYPE, C2SRemoveWaypointEntry.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SUnlockUpgrade.TYPE, C2SUnlockUpgrade.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SRequestShellSelection.TYPE, C2SRequestShellSelection.STREAM_CODEC, (value, context) -> value.receive(value, context));
 	    NETWORK.registerC2S(C2SMonitorClosed.TYPE, C2SMonitorClosed.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SChangeHum.TYPE, C2SChangeHum.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SEjectPlayer.TYPE, C2SEjectPlayer.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SExitTardisView.TYPE, C2SExitTardisView.STREAM_CODEC, (value, context) -> value.receive(value, context));
-        NETWORK.registerS2C(C2SBeginShellView.TYPE, C2SBeginShellView.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SChangeHum.TYPE, C2SChangeHum.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SEjectPlayer.TYPE, C2SEjectPlayer.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SExitTardisView.TYPE, C2SExitTardisView.STREAM_CODEC, (value, context) -> value.receive(value, context));
+        NETWORK.registerC2S(C2SBeginShellView.TYPE, C2SBeginShellView.STREAM_CODEC, (value, context) -> value.receive(value, context));
 
     }
 
