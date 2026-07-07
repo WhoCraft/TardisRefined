@@ -29,6 +29,10 @@ public record C2SChangeShell(ResourceKey<Level> resourceKey, ResourceLocation sh
     public static final CustomPacketPayload.Type<C2SChangeShell> TYPE = new CustomPacketPayload.Type<>(
             ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "change_shell"));
 
+    public C2SChangeShell(ResourceKey<Level> resourceKey, ResourceLocation shellTheme, ResourceLocation pattern) {
+        this(resourceKey, shellTheme, ShellPatterns.getPatternOrDefault(shellTheme, pattern));
+    }
+
     public static final StreamCodec<FriendlyByteBuf, C2SChangeShell> STREAM_CODEC = StreamCodec.of(
             (buf, ref) -> {
                 buf.writeResourceKey(ref.resourceKey());
@@ -38,7 +42,7 @@ public record C2SChangeShell(ResourceKey<Level> resourceKey, ResourceLocation sh
             buf -> new C2SChangeShell(
                     buf.readResourceKey(Registries.DIMENSION),
                     buf.readResourceLocation(),
-                    ShellPatterns.getPatternOrDefault(buf.readResourceLocation(), ShellPatterns.DEFAULT.id())
+                    buf.readResourceLocation()
             )
     );
 

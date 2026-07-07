@@ -38,6 +38,14 @@ public class ShellSelectionScreen extends MonitorOS.MonitorOSExtension {
         return PATTERN.id();
     }
 
+    private Component getName() {
+        return Optional.ofNullable(
+                Component.Serializer.fromJson(PATTERN.name(), minecraft.level.registryAccess())
+        ).orElse(
+                Component.literal("")
+        );
+    }
+
     @Override
     protected void init() {
         super.init();
@@ -56,20 +64,14 @@ public class ShellSelectionScreen extends MonitorOS.MonitorOSExtension {
         addCancelButton(width / 2 - 11, height - vPos - 25);
 
 
-
-        var name = Optional.ofNullable(
-                Component.Serializer.fromJson(PATTERN.name(), minecraft.level.registryAccess())
-        ).orElse(
-                Component.literal("")
-        );
         patternButton = addRenderableWidget(Button.builder(Component.literal(""), button -> {
             PATTERN = ShellPatterns.next(PATTERNCOLLECTION, PATTERN);
-            button.setMessage(name);
+            button.setMessage(getName());
         }).pos(width / 2 + 14, height - vPos - 25).size(70, 20).build());
         boolean themeHasPatterns = PATTERNCOLLECTION.size() > 1;
         patternButton.visible = themeHasPatterns;
         if (themeHasPatterns) //Update the button name now that we have confirmed that there is more than one pattern in the shell
-            this.patternButton.setMessage(name);
+            this.patternButton.setMessage(getName());
     }
 
     @Override
@@ -133,7 +135,7 @@ public class ShellSelectionScreen extends MonitorOS.MonitorOSExtension {
                 patternButton.visible = themeHasPatterns;
 
                 if (themeHasPatterns) {
-                    this.patternButton.setMessage(Component.Serializer.fromJson(PATTERN.name(), minecraft.level.registryAccess()));
+                    this.patternButton.setMessage(getName());
                 }
 
                 entry.setChecked(true);
