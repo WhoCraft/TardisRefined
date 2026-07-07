@@ -86,7 +86,7 @@ public class TardisLevelOperator {
         this.upgradeHandler = new UpgradeHandler(this);
         this.aestheticHandler = new AestheticHandler(this);
         this.flightDanceManager = new FlightDanceManager(this);
-        this.progressionManager = new ProgressionManager();
+        this.progressionManager = new ProgressionManager(level);
     }
 
     @ExpectPlatform
