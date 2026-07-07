@@ -8,8 +8,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.PlayerFaceRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
@@ -91,7 +89,7 @@ public class RenderHelper {
         poseStack.mulPose((new Quaternionf()).rotationZYX(Mth.DEG_TO_RAD * z, Mth.DEG_TO_RAD * y, Mth.DEG_TO_RAD * x));
     }
 
-    public static Tesselator beginTextureColor(ResourceLocation texture, VertexFormat.Mode mode, boolean cull) {
+    public static BufferBuilder beginTextureColor(ResourceLocation texture, VertexFormat.Mode mode, boolean cull) {
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
         RenderSystem.enableBlend();
@@ -99,14 +97,11 @@ public class RenderHelper {
         else RenderSystem.disableCull();
         RenderSystem.enableDepthTest();
         tesselator = Tesselator.getInstance();
-        tesselator.begin(mode, DefaultVertexFormat.POSITION_TEX_COLOR);
-        return tesselator;
+        return tesselator.begin(mode, DefaultVertexFormat.POSITION_TEX_COLOR);
     }
 
-    public static void vertexUVColor(@NotNull PoseStack pose, float x, float y, float z, float u, float v, float r, float g, float b, float a) {
-        MultiBufferSource.BufferSource buffers = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer vertexConsumer = buffers.getBuffer(RenderType.cutout());
-        vertexConsumer.addVertex(pose.last().pose(), x, y, z).setUv(u, v).setColor(r, g, b, a).setLight(LightTexture.FULL_BRIGHT).setNormal(1, 0, 0);
+    public static void vertexUVColor(BufferBuilder builder, @NotNull PoseStack pose, float x, float y, float z, float u, float v, float r, float g, float b, float a) {
+        builder.addVertex(pose.last().pose(), x, y, z).setUv(u, v).setColor(r, g, b, a).setLight(LightTexture.FULL_BRIGHT).setNormal(1, 0, 0);
     }
 
     public static class CustomProgressBar {
