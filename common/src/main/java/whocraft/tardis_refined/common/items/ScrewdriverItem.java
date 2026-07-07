@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -35,10 +36,10 @@ public class ScrewdriverItem extends Item {
     public int getColor(ItemStack itemStack) {
         DyedItemColor dyedItemColor = itemStack.get(DataComponents.DYED_COLOR);
         if (dyedItemColor != null) {
-            return dyedItemColor.rgb();
+            return FastColor.ARGB32.opaque(dyedItemColor.rgb());
         }
 
-        return DyeColor.PINK.getTextColor();
+        return FastColor.ARGB32.opaque(DyeColor.PINK.getTextColor());
     }
 
     public static ItemStack forceColor(ItemStack itemStack, int color) {
