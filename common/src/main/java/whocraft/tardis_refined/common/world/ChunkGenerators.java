@@ -16,5 +16,5 @@ public class ChunkGenerators {
     public static final DeferredRegistry<Codec<? extends ChunkGenerator>> CHUNK_GENERATORS = DeferredRegistry.create(TardisRefined.MODID, Registries.CHUNK_GENERATOR);
     public static final ResourceKey<Biome> TARDIS_BIOME = ResourceKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, "tardis"));
     public static final RegistrySupplier<Codec<? extends ChunkGenerator>> LEGACY_TARDIS_CHUNK_GENERATOR_V1_0 = CHUNK_GENERATORS.register("tardis", () -> LegacyTardisChunkGeneratorV1_0.CODEC);
-    public static final RegistrySupplier<Codec<? extends ChunkGenerator>> TARDIS_CHUNK_GENERATOR = CHUNK_GENERATORS.register("tardis_v1.1", () -> TardisChunkGenerator.CODEC);
+    public static final RegistrySupplier<Codec<? extends ChunkGenerator>> TARDIS_CHUNK_GENERATOR = CHUNK_GENERATORS.register("tardis_v1_1", () -> TardisChunkGenerator.CODEC);
 }
