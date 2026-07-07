@@ -94,11 +94,11 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
                 int verticalTextOffset = 10;
 
                 poseStack.pushPose();
-                poseStack.translate(vec3.x, vec3.y + 0.5, vec3.z);
+                poseStack.translate(vec3.x, vec3.y + 0.2, vec3.z);
 
                 poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
                 float scale = 0.007F;
-                poseStack.scale(-scale, -scale, scale);
+                poseStack.scale(scale, -scale, scale);
 
                 Matrix4f textMatrix = poseStack.last().pose();
 
