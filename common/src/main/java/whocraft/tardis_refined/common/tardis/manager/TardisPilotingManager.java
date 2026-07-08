@@ -40,7 +40,7 @@ import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ConsolePattern;
@@ -406,10 +406,9 @@ public class TardisPilotingManager extends TickableHandler {
         boolean shouldLandOnShip = false;
 
         // Make sure TARDIS lands as a part of the ship and not on top of it.
-        if (ModCompatChecker.valkyrienSkies()) {
-            if (!VSHelper.isBlockInShipyard(level, position) && VSHelper.collidesWithShip(level, position.below())) {
-                shouldLandOnShip = true;
-            }
+        var subLevel = SublevelAccessor.get();
+        if (!subLevel.isBlockInSublevelSpace(level, position) && subLevel.collidesWithSublevel(level, position.below())) {
+            shouldLandOnShip = true;
         }
 
         //First manually check if the exact target position can allow us to place the Tardis
@@ -480,16 +479,15 @@ public class TardisPilotingManager extends TickableHandler {
         // Fetch the row of blocks and filter them all out to air.
         List<BlockPos> blockColumn = this.getBlockPosColumn(position, minHeight, maxBuildHeight);
         Map<BlockPos, Direction> directionOverrides = new HashMap<>();
-        if (ModCompatChecker.valkyrienSkies()) {
-            var box = AABB.of(BoundingBox.fromCorners(position.atY(minHeight), position.atY(maxBuildHeight)));
-            for (var ship : VSHelper.getShipsIntersecting(level, box)) {
-                if (!ship.isHorizontalEnough()) continue;
-                ship.toShipPositions(box).forEach(pos -> {
-                    var p = pos.immutable();
-                    blockColumn.add(p);
-                    directionOverrides.put(p, ship.toShipDirection(direction));
-                });
-            }
+        var box = AABB.of(BoundingBox.fromCorners(position.atY(minHeight), position.atY(maxBuildHeight)));
+        var sub = SublevelAccessor.get();
+        for (var ship : sub.getSublevelsIntersecting(level, box)) {
+            if (!ship.isHorizontalEnough()) continue;
+            ship.toSublevelPositions(box).forEach(pos -> {
+                var p = pos.immutable();
+                blockColumn.add(p);
+                directionOverrides.put(p, ship.toSublevelDirection(direction));
+            });
         }
 
         List<BlockPos> filteredForAir = blockColumn.stream().filter(x -> isLegalLandingBlock(level, x, LandingBlockType.AIR)).toList();
@@ -507,8 +505,8 @@ public class TardisPilotingManager extends TickableHandler {
             BlockPos above = airPos.above();
 
             // Ignore positions on top of ships not in the shipyard. We want the TARDIS to land in the ship world.
-            if (ModCompatChecker.valkyrienSkies() && !VSHelper.isBlockInShipyard(level, below)) {
-                if (VSHelper.collidesWithShip(level, below)) continue;
+            if (!sub.isBlockInSublevelSpace(level, below)) {
+                if (sub.collidesWithSublevel(level, below)) continue;
             }
 
             // Check if this position have the space for a TARDIS.
@@ -526,10 +524,9 @@ public class TardisPilotingManager extends TickableHandler {
     private static int distManhattan(TardisNavLocation lhs, TardisNavLocation rhs) {
         var lhsPos = lhs.getPosition();
         var rhsPos = rhs.getPosition();
-        if (ModCompatChecker.valkyrienSkies()) {
-            lhsPos = VSHelper.toWorldPosition(lhs.getLevel(), lhsPos);
-            rhsPos = VSHelper.toWorldPosition(rhs.getLevel(), rhsPos);
-        }
+        var sub = SublevelAccessor.get();
+        lhsPos = sub.toMainLevelPosition(lhs.getLevel(), lhsPos);
+        rhsPos = sub.toMainLevelPosition(rhs.getLevel(), rhsPos);
         return lhsPos.distManhattan(rhsPos);
     }
 
@@ -583,14 +580,13 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private boolean isLegalLandingBlock(ServerLevel level, BlockPos pos, LandingBlockType type) {
-        if (ModCompatChecker.valkyrienSkies()) {
-            if (VSHelper.collidesWithShip(level, pos)) {
-                return type.ground;
-            }
-            if (VSHelper.isBlockInShipyard(level, pos)) {
-                if (type.checkWorldFromShipyard && !isLegalLandingBlockExcludeShips(level, VSHelper.toWorldPosition(level, pos), type)) {
-                    return false;
-                }
+        var sub = SublevelAccessor.get();
+        if (sub.collidesWithSublevel(level, pos)) {
+            return type.ground;
+        }
+        if (sub.isBlockInSublevelSpace(level, pos)) {
+            if (type.checkWorldFromShipyard && !isLegalLandingBlockExcludeShips(level, sub.toMainLevelPosition(level, pos), type)) {
+                return false;
             }
         }
 
@@ -760,10 +756,9 @@ public class TardisPilotingManager extends TickableHandler {
         BlockPos startingPointPos = startingPoint.getPosition();
         BlockPos endingPointPos = endingPoint.getPosition();
 
-        if (ModCompatChecker.valkyrienSkies()) {
-            startingPointPos = VSHelper.toWorldPosition(startingPoint.getLevel(), startingPointPos);
-            endingPointPos = VSHelper.toWorldPosition(endingPoint.getLevel(), endingPointPos);
-        }
+        var sub = SublevelAccessor.get();
+        startingPointPos = sub.toMainLevelPosition(startingPoint.getLevel(), startingPointPos);
+        endingPointPos = sub.toMainLevelPosition(endingPoint.getLevel(), endingPointPos);
 
         int distance = 1000;
 
@@ -817,16 +812,15 @@ public class TardisPilotingManager extends TickableHandler {
                 BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
                 pos.set(random.nextInt(maxX - minX) + minX, 0, random.nextInt(maxZ - minZ) + minZ);
 
-                if (ModCompatChecker.valkyrienSkies()) {
-                    int count = 0;
-                    // Wouldn't it be nice with a function to get the area not in the shipyard?
-                    while (VSHelper.isBlockInShipyard(level, pos) && count < 100) {
-                        pos.set(random.nextInt(maxX - minX) + minX, 0, random.nextInt(maxZ - minZ) + minZ);
-                        count++;
-                    }
-                    if (VSHelper.isBlockInShipyard(level, pos)) {
-                        continue;
-                    }
+                var sub = SublevelAccessor.get();
+                int count = 0;
+                // Wouldn't it be nice with a function to get the area not in the shipyard?
+                while (sub.isBlockInSublevelSpace(level, pos) && count < 100) {
+                    pos.set(random.nextInt(maxX - minX) + minX, 0, random.nextInt(maxZ - minZ) + minZ);
+                    count++;
+                }
+                if (sub.isBlockInSublevelSpace(level, pos)) {
+                    continue;
                 }
 
                 pos.setY(level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, pos.getX(), pos.getZ()));
@@ -927,10 +921,9 @@ public class TardisPilotingManager extends TickableHandler {
         BlockPos targetPosition = this.getTargetLocation().getPosition();
         BlockPos startingPosition = this.getCurrentLocation().getPosition();
 
-        if (ModCompatChecker.valkyrienSkies()) {
-            targetPosition = VSHelper.toWorldPosition(getTargetLocation().getLevel(), targetPosition);
-            startingPosition = VSHelper.toWorldPosition(getCurrentLocation().getLevel(), startingPosition);
-        }
+        var sub = SublevelAccessor.get();
+        targetPosition = sub.toMainLevelPosition(getTargetLocation().getLevel(), targetPosition);
+        startingPosition = sub.toMainLevelPosition(getCurrentLocation().getLevel(), startingPosition);
 
         float percentage = this.getFlightPercentageCovered();
         float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;

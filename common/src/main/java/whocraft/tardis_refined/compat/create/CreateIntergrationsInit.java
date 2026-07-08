@@ -10,7 +10,7 @@ import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.DeferredRegister;
 import whocraft.tardis_refined.registry.RegistryHolder;
@@ -69,8 +69,8 @@ public class CreateIntergrationsInit {
                         @Override
                         public TardisNavLocation provideInfo(TardisLevelOperator tardis) {
                             TardisNavLocation currentLoc = tardis.getPilotingManager().getCurrentLocation();
-                            if (ModCompatChecker.valkyrienSkies() && Platform.getServer() != null) {
-                                currentLoc = VSHelper.toWorldLocation(currentLoc);
+                            if (Platform.getServer() != null) {
+                                currentLoc = SublevelAccessor.get().toMainLevelLocation(currentLoc);
                             }
                             return currentLoc;
                         }

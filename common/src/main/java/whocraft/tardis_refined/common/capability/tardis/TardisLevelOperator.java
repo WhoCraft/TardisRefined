@@ -25,7 +25,6 @@ import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.network.NetworkManager;
@@ -38,8 +37,8 @@ import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -239,10 +238,9 @@ public class TardisLevelOperator {
                 continue;
             }
 
-            TardisNavLocation location = this.pilotingManager.getCurrentLocation().copy();
-            if (ModCompatChecker.valkyrienSkies()) {
-                location = VSHelper.toWorldLocation(location);
-            }
+            TardisNavLocation location = SublevelAccessor.get().toMainLevelLocation(
+                    this.pilotingManager.getCurrentLocation().copy()
+            );
             NetworkManager.get().sendToPlayer(player, new MonitorPositionDataMessage(location));
         }
     }

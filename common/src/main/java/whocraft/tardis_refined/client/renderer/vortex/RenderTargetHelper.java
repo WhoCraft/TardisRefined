@@ -44,8 +44,8 @@ import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.ZeitonGlassBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 import static net.minecraft.client.renderer.RenderStateShard.*;
@@ -171,11 +171,10 @@ public class RenderTargetHelper {
     private static void moveStackToPose(PoseStack stack, Level level, BlockPos pos, Vec3 camPos) {
         Vec3 actualPos = new Vec3(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
         var rotation = Axis.ZP.rotationDegrees(180);
-        if (ModCompatChecker.valkyrienSkies()) {
-            if (VSHelper.isBlockInShipyard(level, pos)) {
-                actualPos = VSHelper.toWorldPosition(level, pos, actualPos);
-                rotation = VSHelper.toWorldRotation(level, pos, rotation);
-            }
+        var sub = SublevelAccessor.get();
+        if (sub.isBlockInSublevelSpace(level, pos)) {
+            actualPos = sub.toMainLevelPosition(level, pos, actualPos);
+            rotation = sub.toMainLevelRotation(level, pos, rotation);
         }
         stack.translate(actualPos.x - camPos.x, actualPos.y - camPos.y, actualPos.z - camPos.z);
         stack.mulPose(rotation);

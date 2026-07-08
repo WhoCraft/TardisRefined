@@ -24,8 +24,8 @@ import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.ArrayList;
@@ -437,9 +437,7 @@ public class TRTeleporter {
     public static boolean teleportIfCollided(ServerLevel serverLevel, BlockPos blockPos, Entity entity, AABB teleportAABB) {
         AABB entityBoundingBox = TRTeleporter.getBoundingBoxWithMovement(entity);
 
-        if (ModCompatChecker.valkyrienSkies()) {
-            teleportAABB = VSHelper.toWorldAABB(serverLevel, blockPos, teleportAABB);
-        }
+        teleportAABB = SublevelAccessor.get().toMainLevelAABB(serverLevel, blockPos, teleportAABB);
 
         double insideBlockExpansion = 1.0E-7D; //Hardcoded value replicates logic from Entity#checkInsideBlocks
         AABB inflatedEntityBoundingBox = entityBoundingBox.inflate(insideBlockExpansion);

@@ -14,7 +14,7 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.ArrayList;
@@ -38,8 +38,8 @@ public class TardisDisplaySource extends DisplaySource {
                 if (isPresent) {
                     TardisLevelOperator levelOperator = TardisLevelOperator.get(serverLevel).get();
                     TardisNavLocation currentLoc = levelOperator.getPilotingManager().getCurrentLocation();
-                    if (ModCompatChecker.valkyrienSkies() && Platform.getServer() != null) {
-                        currentLoc = VSHelper.toWorldLocation(currentLoc);
+                    if (Platform.getServer() != null) {
+                        currentLoc = SublevelAccessor.get().toMainLevelLocation(currentLoc);
                     }
 
                     list.add(Component.translatable(ModMessages.IN_FLIGHT, levelOperator.getPilotingManager().isInFlight()));

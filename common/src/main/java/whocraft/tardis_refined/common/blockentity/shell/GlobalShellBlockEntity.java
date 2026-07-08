@@ -27,8 +27,8 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
@@ -84,7 +84,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 	    //noinspection ConstantValue IntelliJ got confused by this for some reason...
 	    if (
                 !level.isClientSide() &&
-                ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(level, blockPos) &&
+                SublevelAccessor.get().isBlockInSublevelSpace(level, blockPos) &&
                 ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(ImmersivePortals.getUUIDForTARDIS(TARDIS_ID))
         ) {
             TardisLevelOperator.get(DimensionUtil.getLevel(blockEntity.TARDIS_ID)).ifPresent(ImmersivePortals::updatePortalPositions);

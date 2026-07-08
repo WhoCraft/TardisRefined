@@ -40,9 +40,8 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.registry.RegistryHolder;
-import whocraft.tardis_refined.registry.RegistrySupplier;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.HashMap;
@@ -302,10 +301,7 @@ public class ImmersivePortals {
     }
 
     private static boolean isAirship(Level level, BlockPos blockPos) {
-        if (ModCompatChecker.valkyrienSkies()) {
-            return VSHelper.isBlockOnShip(level, blockPos);
-        }
-        return false;
+        return SublevelAccessor.get().isBlockInSublevel(level, blockPos);
     }
 
     private static PositionHolder getPortalPosition(Level level, BlockPos blockPos, Direction direction, Vec3 doorPos) {
@@ -313,11 +309,10 @@ public class ImmersivePortals {
 
         Vec3 axisH = Vec3.atLowerCornerOf(Direction.UP.getNormal());
 
-        if (ModCompatChecker.valkyrienSkies()) {
-            axisW = VSHelper.toWorldRotation(level, blockPos, axisW);
-            axisH = VSHelper.toWorldRotation(level, blockPos, axisH);
-            doorPos = VSHelper.toWorldPosition(level, blockPos, doorPos);
-        }
+        var sub = SublevelAccessor.get();
+        axisW = sub.toMainLevelRotation(level, blockPos, axisW);
+        axisH = sub.toMainLevelRotation(level, blockPos, axisH);
+        doorPos = sub.toMainLevelPosition(level, blockPos, doorPos);
         return new PositionHolder(doorPos, axisW, axisH, isAirship(level, blockPos));
     }
 

@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -25,12 +24,11 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class GlobalDoorBlock extends InternalDoorBlock {
 
@@ -113,7 +111,7 @@ public class GlobalDoorBlock extends InternalDoorBlock {
         if (
                 TRConfig.COMMON_SPEC.isLoaded() && !TRConfig.COMMON.IP_VS_COLLISION.get() && blockEntity != null && blockEntity.getLevel() != null &&
                 ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(blockEntity.getLevel().dimension()) &&
-                ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(blockEntity.getLevel(), blockPos)
+                SublevelAccessor.get().isBlockInSublevelSpace(blockEntity.getLevel(), blockPos)
         ) {
             return Shapes.empty();
         }

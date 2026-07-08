@@ -29,7 +29,7 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -137,12 +137,11 @@ public class TardisHelper {
             float destinationRotationYaw = destinationDirection.toYRot();
             float sourceRotationYaw = sourceDirection.toYRot();
 
-            if (ModCompatChecker.valkyrienSkies()) {
-                var sourceRot = VSHelper.toWorldRotation(entity.level(), sourceLocation.getPosition(), new Vec2(0, sourceRotationYaw));
-                sourceRotationYaw = sourceRot.y;
-                var destinationRot = VSHelper.toWorldRotation(destinationLevel, destinationLocation.getPosition(), new Vec2(0, destinationRotationYaw));
-                destinationRotationYaw = destinationRot.y;
-            }
+            var sub = SublevelAccessor.get();
+            var sourceRot = sub.toMainLevelRotation(entity.level(), sourceLocation.getPosition(), new Vec2(0, sourceRotationYaw));
+            sourceRotationYaw = sourceRot.y;
+            var destinationRot = sub.toMainLevelRotation(destinationLevel, destinationLocation.getPosition(), new Vec2(0, destinationRotationYaw));
+            destinationRotationYaw = destinationRot.y;
 
             //Calculate the difference between the entity's rotation and the source direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
             float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(sourceRotationYaw);

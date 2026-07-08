@@ -13,16 +13,12 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.*;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
-import whocraft.tardis_refined.common.util.*;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-
-import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
     public DimensionalControl(ResourceLocation id) {
@@ -85,9 +81,7 @@ public class DimensionalControl extends Control {
                 return false;
             }
 
-            if (ModCompatChecker.valkyrienSkies()) {
-                pilotManager.setTargetLocation(VSHelper.toWorldLocation(pilotManager.getTargetLocation()));
-            }
+            pilotManager.setTargetLocation(SublevelAccessor.get().toMainLevelLocation(pilotManager.getTargetLocation()));
             pilotManager.setTargetDimension(dimensions.get(nextIndex));
 
             PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);

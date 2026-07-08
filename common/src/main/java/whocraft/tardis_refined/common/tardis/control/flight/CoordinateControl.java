@@ -10,8 +10,7 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 
 
 public class CoordinateControl extends whocraft.tardis_refined.common.tardis.control.Control {
@@ -56,10 +55,9 @@ public class CoordinateControl extends whocraft.tardis_refined.common.tardis.con
                 case Z -> potentialPos = potentialPos.offset(0, 0, incrementAmount);
             }
 
-            if (ModCompatChecker.valkyrienSkies()) {
-                pilotManager.setTargetLocation(VSHelper.toWorldLocation(pilotManager.getTargetLocation()));
-                potentialPos = VSHelper.toWorldPosition(targetLocation.getLevel(), potentialPos);
-            }
+            var sub = SublevelAccessor.get();
+            pilotManager.setTargetLocation(sub.toMainLevelLocation(pilotManager.getTargetLocation()));
+            potentialPos = sub.toMainLevelPosition(targetLocation.getLevel(), potentialPos);
 
             //Use vanilla check which accounts for both world height and horizontal bounds
             if (pilotManager.getTargetLocation().getLevel().isInWorldBounds(potentialPos)) {

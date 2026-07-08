@@ -20,4 +20,8 @@ public class ModCompatChecker {
     public static boolean valkyrienSkies() {
         return Platform.isModLoaded("valkyrienskies");
     }
+
+    public static boolean sable() {
+        return Platform.isModLoaded("sable");
+    }
 }
