@@ -9,8 +9,8 @@ buildscript {
 }
 
 plugins {
-    id "architectury-plugin" version "3.4-SNAPSHOT"
-    id "dev.architectury.loom" version "1.11+" apply false
+    id "architectury-plugin" version "3.5-SNAPSHOT"
+    id "dev.architectury.loom" version "1.17-SNAPSHOT" apply false
     id "me.shedaniel.unified-publishing" version "0.1.+"
     id "com.github.breadmoirai.github-release" version "2.4.1"
 }
@@ -77,7 +77,9 @@ allprojects {
     apply plugin: "architectury-plugin"
     apply plugin: "maven-publish"
 
-    archivesBaseName = "${project.name}-${rootProject.jar_name}"
+    base {
+        archivesName = "${project.name}-${rootProject.jar_name}"
+    }
     version = "mc${rootProject.minecraft_version}-v${rootProject.mod_version}"
     group = rootProject.maven_group
 
