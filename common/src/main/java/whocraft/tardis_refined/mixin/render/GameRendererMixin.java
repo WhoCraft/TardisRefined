@@ -8,6 +8,7 @@ import org.joml.Matrix4fStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import whocraft.tardis_refined.client.MatrixExtension;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 
 @Mixin(GameRenderer.class)
 public class GameRendererMixin {
@@ -19,12 +20,17 @@ public class GameRendererMixin {
                     target = "Lorg/joml/Matrix4fStack;translation(FFF)Lorg/joml/Matrix4f;"
             )
     )
-    public Matrix4f onTranslateFabric(Matrix4fStack instance, float x, float y, float z, Operation<Matrix4f> original) {
-        // We can't take z from here because some mods like Journeymap set it manually with a redirect, so we catch it inside the PoseStack instead.
-        ((MatrixExtension) instance).tardis_refined$setUpdateZOffset(true);
-        var result = original.call(instance, x, y, z);
-        ((MatrixExtension) instance).tardis_refined$setUpdateZOffset(false);
-        return result;
+    public Matrix4f onTranslate(Matrix4fStack instance, float x, float y, float z, Operation<Matrix4f> original) {
+        // Try to catch inside in case mod wraps with redirect.
+        if (instance instanceof MatrixExtension) {
+            ((MatrixExtension) instance).tardis_refined$setUpdateZOffset(true);
+            var result = original.call(instance, x, y, z);
+            ((MatrixExtension) instance).tardis_refined$setUpdateZOffset(false);
+            return result;
+        } else { // Fallback for NeoForge.
+            RenderHelper.currentProjectionZOffset = -z;
+            return original.call(instance, x, y, z);
+        }
     }
 
 }

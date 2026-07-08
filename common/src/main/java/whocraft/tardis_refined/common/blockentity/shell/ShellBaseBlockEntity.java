@@ -107,6 +107,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     private void updateCurrentLocation() {
         if (this.getLevel() instanceof ServerLevel serverLevel) {
             ServerLevel interior = serverLevel.getServer().getLevel(this.TARDIS_ID);
+            if (interior == null) return;
             TardisLevelOperator.get(interior).ifPresent(cap -> {
                 cap.getPilotingManager().setCurrentLocationOnNextTick(this);
                 hasPotentialToBeRemoved = true;
