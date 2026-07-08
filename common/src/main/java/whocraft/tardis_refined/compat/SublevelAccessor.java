@@ -13,6 +13,7 @@ import org.joml.Math;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.compat.sable.SableSublevelAccessor;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -176,6 +177,9 @@ public interface SublevelAccessor {
     }
 
     static SublevelAccessor get() {
+        if (ModCompatChecker.sable()) {
+            return SableSublevelAccessor.INSTANCE;
+        }
         return DUMMY;
     }
     
