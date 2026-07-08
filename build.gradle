@@ -45,11 +45,11 @@ forgeDir.mkdirs()
 fabricDir.mkdirs()
 commonDir.mkdirs()
 
-def filter = { File file -> file.getName().contains(mod_version) } as FileFilter
+def fileFilter = { File file -> file.getName().contains(mod_version) } as FileFilter
 
-def forgeFiles = forgeDir.listFiles(filter)
-def fabricFiles = fabricDir.listFiles(filter)
-def commonFiles = commonDir.listFiles(filter)
+def forgeFiles = forgeDir.listFiles(fileFilter)
+def fabricFiles = fabricDir.listFiles(fileFilter)
+def commonFiles = commonDir.listFiles(fileFilter)
 
 githubRelease {
     token project.findProperty("github") ?: System.getenv("github") ?: ""
@@ -86,6 +86,16 @@ allprojects {
     repositories {
 
         maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
+
+        // Sable
+        exclusiveContent {
+            forRepository {
+                maven { url = "https://maven.ryanhcode.dev/releases" }
+            }
+            filter {
+                includeGroup("dev.ryanhcode.sable-companion")
+            }
+        }
 
         maven {
             name = "Fuzs Mod Resources"
