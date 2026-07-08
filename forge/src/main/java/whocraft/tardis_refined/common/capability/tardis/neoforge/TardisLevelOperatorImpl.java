@@ -45,9 +45,10 @@ public class TardisLevelOperatorImpl extends SavedData {
         return Optional.empty();
     }
 
-
-
-
+    @Override
+    public boolean isDirty() {
+        return true;
+    }
 
     public TardisLevelOperator getOperator() {
         return operator;
