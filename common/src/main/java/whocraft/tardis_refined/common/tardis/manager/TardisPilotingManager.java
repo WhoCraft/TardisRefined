@@ -39,7 +39,6 @@ import whocraft.tardis_refined.common.tardis.control.flight.DimensionalControl;
 import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
-import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -522,11 +521,8 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private static int distManhattan(TardisNavLocation lhs, TardisNavLocation rhs) {
-        var lhsPos = lhs.getPosition();
-        var rhsPos = rhs.getPosition();
-        var sub = SublevelAccessor.get();
-        lhsPos = sub.toMainLevelPosition(lhs.getLevel(), lhsPos);
-        rhsPos = sub.toMainLevelPosition(rhs.getLevel(), rhsPos);
+        var lhsPos = lhs.getRealPosition();
+        var rhsPos = rhs.getRealPosition();
         return lhsPos.distManhattan(rhsPos);
     }
 
@@ -692,7 +688,8 @@ public class TardisPilotingManager extends TickableHandler {
 
             TardisNavLocation currentLocationPreTakeoff = getCurrentLocation();
 
-            this.fastReturnLocation = currentLocationPreTakeoff.copy();
+            this.fastReturnLocation.removeSublevelData(operator.getLevel().getServer());
+            this.fastReturnLocation = currentLocationPreTakeoff.copy().generateSublevelData();
 
             TardisNavLocation targetPosition = this.getTargetLocation();
 
@@ -753,12 +750,8 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     public int calculateFlightDistance(TardisNavLocation startingPoint, TardisNavLocation endingPoint) {
-        BlockPos startingPointPos = startingPoint.getPosition();
-        BlockPos endingPointPos = endingPoint.getPosition();
-
-        var sub = SublevelAccessor.get();
-        startingPointPos = sub.toMainLevelPosition(startingPoint.getLevel(), startingPointPos);
-        endingPointPos = sub.toMainLevelPosition(endingPoint.getLevel(), endingPointPos);
+        BlockPos startingPointPos = startingPoint.getRealPosition();
+        BlockPos endingPointPos = endingPoint.getRealPosition();
 
         int distance = 1000;
 
@@ -918,12 +911,8 @@ public class TardisPilotingManager extends TickableHandler {
      */
     private void endFlightEarly(boolean dramatic) {
 
-        BlockPos targetPosition = this.getTargetLocation().getPosition();
-        BlockPos startingPosition = this.getCurrentLocation().getPosition();
-
-        var sub = SublevelAccessor.get();
-        targetPosition = sub.toMainLevelPosition(getTargetLocation().getLevel(), targetPosition);
-        startingPosition = sub.toMainLevelPosition(getCurrentLocation().getLevel(), startingPosition);
+        BlockPos targetPosition = this.getTargetLocation().getRealPosition();
+        BlockPos startingPosition = this.getCurrentLocation().getRealPosition();
 
         float percentage = this.getFlightPercentageCovered();
         float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
@@ -1061,7 +1050,8 @@ public class TardisPilotingManager extends TickableHandler {
 
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
-        this.targetLocation = targetLocation.copy();
+        this.targetLocation.removeSublevelData(operator.getLevel().getServer());
+        this.targetLocation = targetLocation.copy().generateSublevelData();
     }
 
     /**
@@ -1076,7 +1066,8 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     public void setCurrentLocation(TardisNavLocation currentLocation) {
-        this.currentLocation = currentLocation.copy();
+        this.currentLocation.removeSublevelData(operator.getLevel().getServer());
+        this.currentLocation = currentLocation.copy().generateSublevelData();
     }
 
     public void setTargetPosition(BlockPos pos) {

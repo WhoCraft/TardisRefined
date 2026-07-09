@@ -107,12 +107,10 @@ public class TardisPlayerInfo implements TardisPilot {
 
         if (spectateTarget != null) {
 
-            BlockPos spectatePos = spectateTarget.getPosition();
-            Vec3 accurateSpectatePos = Vec3.atBottomCenterOf(spectatePos);
+            Vec3 accurateSpectatePos = spectateTarget.getRealAccuratePosition(spectateTarget.getLevel().getServer());
+            BlockPos spectatePos = BlockPos.containing(accurateSpectatePos);
 
             var sub = SublevelAccessor.get();
-            accurateSpectatePos = sub.toMainLevelPosition(spectateTarget.getLevel(), spectatePos, accurateSpectatePos);
-            spectatePos = sub.toMainLevelPosition(spectateTarget.getLevel(), spectatePos);
 
             if (spectatePos.distManhattan(new Vec3i((int) player.position().x, (int) player.position().y, (int) player.position().z)) > 3 || !player.level().dimension().location().toString().equals(spectateTarget.getDimensionKey().location().toString())) {
                 TRTeleporter.simpleTeleport(player, spectateTarget.getLevel(), accurateSpectatePos.x, accurateSpectatePos.y, accurateSpectatePos.z, playerPreviousRot, playerPreviousYaw);

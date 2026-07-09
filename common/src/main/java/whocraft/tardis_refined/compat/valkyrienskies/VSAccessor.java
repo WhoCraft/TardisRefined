@@ -2,6 +2,7 @@ package whocraft.tardis_refined.compat.valkyrienskies;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -40,6 +41,21 @@ public class VSAccessor implements SublevelAccessor {
         }
 
         @Override
+        public BlockPos toMainLevelPos(BlockPos pos) {
+            return pos;
+        }
+
+        @Override
+        public Vec3 toMainLevelPos(Vec3 pos) {
+            return pos;
+        }
+
+        @Override
+        public Vector3d toMainLevelAccurateDirection(Direction direction) {
+            return SublevelAccessor.directionToVector(direction);
+        }
+
+        @Override
         public Stream<BlockPos> toSublevelPositions(AABB worldAABB) {
             var shypAABB = toSublevelAABB(worldAABB);
             return BlockPos.betweenClosedStream(shypAABB);
@@ -63,6 +79,11 @@ public class VSAccessor implements SublevelAccessor {
     @Override
     public boolean isBlockInSublevelSpace(Level level, BlockPos pos) {
         //return VSGameUtilsKt.isBlockInShipyard(level, pos);
+        return false;
+    }
+
+    @Override
+    public boolean isBlockInSublevelSpace(Level level, Position pos) {
         return false;
     }
 
@@ -98,18 +119,6 @@ public class VSAccessor implements SublevelAccessor {
             });
             if (!bbEmpty)
                 return true;
-        }*/
-        return false;
-    }
-
-    @Override
-    public boolean isBlockInSublevel(Level level, BlockPos pos) {
-        /*Ship ship = VSGameUtilsKt.getShipManagingPos(level, pos);
-        var ships = VSGameUtilsKt.getShipsIntersecting(level, new AABB(0, 0, 0, 0, 0, 0));
-        if (ship == null) {
-            return false;
-        } else {
-            return true;
         }*/
         return false;
     }
@@ -178,21 +187,6 @@ public class VSAccessor implements SublevelAccessor {
         Vector3d worldPos = VSGameUtilsKt.getWorldCoordinates(level, blockPos, pos);
         return VectorConversionsMCKt.toMinecraft(worldPos);*/
         return vector;
-    }
-
-    @Override
-    public TardisNavLocation toMainLevelLocation(TardisNavLocation input) {
-        /*Ship ship = VSGameUtilsKt.getShipManagingPos(input.getLevel(), input.getPosition());
-        if (ship != null) {
-            BlockPos pos = vectorToBlockPos(ship.getShipToWorld().transformPosition(blockPosToVector(input.getPosition())));
-            Direction dir = vectorToDirection(ship.getShipToWorld().transformDirection(directionToVector(input.getDirection())));
-            TardisNavLocation output = new TardisNavLocation(pos, dir, input.getLevel());
-            output.setName(input.getName());
-            return output;
-        } else {
-            return input;
-        }*/
-        return input;
     }
 
     @Override

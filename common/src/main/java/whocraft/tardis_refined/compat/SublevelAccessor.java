@@ -1,7 +1,16 @@
 package whocraft.tardis_refined.compat;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Position;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -16,6 +25,8 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.compat.sable.SableSublevelAccessor;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface SublevelAccessor {
@@ -32,17 +43,17 @@ public interface SublevelAccessor {
         }
 
         @Override
+        public boolean isBlockInSublevelSpace(Level level, Position pos) {
+            return false;
+        }
+
+        @Override
         public Iterable<Sublevel> getSublevelsIntersecting(Level level, AABB aabb) {
             return List.of();
         }
 
         @Override
         public boolean collidesWithSublevel(Level level, AABB boundingBox) {
-            return false;
-        }
-
-        @Override
-        public boolean isBlockInSublevel(Level level, BlockPos pos) {
             return false;
         }
 
@@ -77,11 +88,6 @@ public interface SublevelAccessor {
         }
 
         @Override
-        public TardisNavLocation toMainLevelLocation(TardisNavLocation input) {
-            return input;
-        }
-
-        @Override
         public Vec2 toMainLevelRotation(Level level, BlockPos blockPos, Vec2 rotation) {
             return rotation;
         }
@@ -92,6 +98,16 @@ public interface SublevelAccessor {
         AABB toSublevelAABB(AABB aabb);
 
         Direction toSublevelDirection(Direction direction);
+
+        BlockPos toMainLevelPos(BlockPos pos);
+
+        Vec3 toMainLevelPos(Vec3 pos);
+
+        default Direction toMainLevelDirection(Direction direction) {
+            return vectorToDirection(toMainLevelAccurateDirection(direction));
+        }
+
+        Vector3d toMainLevelAccurateDirection(Direction direction);
 
         default Stream<BlockPos> toSublevelPositions(AABB worldAABB) {
             var shypAABB = toSublevelAABB(worldAABB);
@@ -106,9 +122,45 @@ public interface SublevelAccessor {
 
     }
 
+    interface PositionReference {
+        Sublevel sublevel();
+        Vec3 pos();
+    }
+
+    interface LoadablePositionReference {
+
+        Codec<LoadablePositionReference> CODEC = SublevelPositionRegistry.REGISTRY.byNameCodec().dispatch(
+                LoadablePositionReference::codec, Function.identity()
+        );
+
+        default void destroy(MinecraftServer server) {}
+
+        Optional<PositionReference> tryLoad(MinecraftServer server);
+
+        Optional<Component> metadata();
+
+        default Optional<Tag> toNbt() {
+            return SublevelAccessor.LoadablePositionReference.CODEC.encodeStart(NbtOps.INSTANCE, this).resultOrPartial();
+        }
+
+        static Optional<LoadablePositionReference> fromNbt(Tag tag) {
+            if (tag == null) return Optional.empty();
+            return SublevelAccessor.LoadablePositionReference.CODEC.parse(NbtOps.INSTANCE, tag).resultOrPartial();
+        }
+
+        MapCodec<? extends LoadablePositionReference> codec();
+
+    }
+
+    default Optional<LoadablePositionReference> getPositionReference(Level level, BlockPos pos) {
+        return Optional.empty();
+    }
+
     boolean isChunkInSublevelSpace(Level level, ChunkPos pos);
 
     boolean isBlockInSublevelSpace(Level level, BlockPos pos);
+
+    boolean isBlockInSublevelSpace(Level level, Position pos);
 
     Iterable<Sublevel> getSublevelsIntersecting(Level level, AABB aabb);
 
@@ -117,8 +169,6 @@ public interface SublevelAccessor {
     }
 
     boolean collidesWithSublevel(Level level, AABB boundingBox);
-
-    boolean isBlockInSublevel(Level level, BlockPos pos);
 
     AABB toMainLevelAABB(Level level, BlockPos pos, AABB aabb);
 
@@ -131,8 +181,6 @@ public interface SublevelAccessor {
     BlockPos toMainLevelPosition(Level level, BlockPos blockPos);
 
     Vec3 toMainLevelPosition(Level level, BlockPos blockPos, Vec3 vector);
-
-    TardisNavLocation toMainLevelLocation(TardisNavLocation input);
 
     Vec2 toMainLevelRotation(Level level, BlockPos blockPos, Vec2 rotation);
 

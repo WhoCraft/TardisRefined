@@ -21,17 +21,23 @@ public class TardisWaypointManager extends BaseHandler {
     }
 
     public void addWaypoint(TardisNavLocation tardisNavLocation, String name) {
-        tardisNavLocation.setName(name);
-        waypoints.add(new TardisWaypoint(tardisNavLocation));
+        waypoints.add(new TardisWaypoint(tardisNavLocation.copy().generateSublevelData().setName(name)));
     }
 
     public void editWaypoint(TardisWaypoint waypoint) {
-        waypoints.removeIf(x -> x.getId().equals(waypoint.getId()));
+        deleteWaypoint(waypoint.getId());
         waypoints.add(waypoint);
+        waypoint.getLocation().generateSublevelData();
     }
 
     public void deleteWaypoint(UUID id) {
-        waypoints.removeIf(x -> x.getId().equals(id));
+        waypoints.removeIf(x -> {
+            if (x.getId().equals(id)) {
+                x.getLocation().removeSublevelData();
+                return true;
+            }
+            return false;
+        });
     }
 
     public List<TardisWaypoint> getWaypoints() {

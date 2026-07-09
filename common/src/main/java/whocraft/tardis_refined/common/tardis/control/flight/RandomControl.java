@@ -27,8 +27,7 @@ public class RandomControl extends whocraft.tardis_refined.common.tardis.control
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 
             int increment = pilotManager.getCordIncrement();
-            BlockPos currentExLoc = pilotManager.getCurrentLocation().getPosition();
-            currentExLoc = SublevelAccessor.get().toMainLevelPosition(pilotManager.getCurrentLocation().getLevel(), currentExLoc);
+            BlockPos currentExLoc = pilotManager.getCurrentLocation().getRealPosition();
             pilotManager.getTargetLocation().setPosition(
                     new BlockPos((currentExLoc.getX() - (increment / 2)) + operator.getLevel().random.nextInt(increment * 2),
                             150,

@@ -38,12 +38,9 @@ public class TardisDisplaySource extends DisplaySource {
                 if (isPresent) {
                     TardisLevelOperator levelOperator = TardisLevelOperator.get(serverLevel).get();
                     TardisNavLocation currentLoc = levelOperator.getPilotingManager().getCurrentLocation();
-                    if (Platform.getServer() != null) {
-                        currentLoc = SublevelAccessor.get().toMainLevelLocation(currentLoc);
-                    }
 
                     list.add(Component.translatable(ModMessages.IN_FLIGHT, levelOperator.getPilotingManager().isInFlight()));
-                    list.add(Component.translatable(ModMessages.POSITION, currentLoc.getPosition().toShortString()));
+                    list.add(Component.translatable(ModMessages.POSITION, currentLoc.getRealPosition().toShortString()));
                     list.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getCleanDimensionName(currentLoc.getDimensionKey())));
                     list.add(Component.translatable(ModMessages.FUEL, String.valueOf(Math.round(levelOperator.getPilotingManager().getFuelPercentage() * 100))).append("%"));
                     list.add(Component.translatable(ModMessages.SHELL, levelOperator.getAestheticHandler().getShellTheme().getPath()));

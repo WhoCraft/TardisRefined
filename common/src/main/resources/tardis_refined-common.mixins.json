@@ -12,6 +12,7 @@
     "PlayerEntityMixin",
     "ServerPlayerMixin",
     "StructureManagerAccessor",
+    "SubLevelHoldingChunkMapAccessor",
     "VillagerGoalPackagesMixin",
     "VillagerMixin"
   ],

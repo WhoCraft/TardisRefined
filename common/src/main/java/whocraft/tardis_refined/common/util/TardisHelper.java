@@ -20,6 +20,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
@@ -28,7 +29,6 @@ import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
-import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.mixin.EndDragonFightAccessor;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
@@ -116,14 +116,14 @@ public class TardisHelper {
 
         if (entity.level() instanceof ServerLevel teleportingEntityLevel) {
 
-            BlockPos destinationPos = destinationLocation.getPosition();
             ServerLevel destinationLevel = destinationLocation.getLevel();
-            Direction destinationDirection = destinationLocation.getDirection(); //Do not use the opposite facing of the destination, we will handle the correct facing outside of this method.
+            var destinationPos = destinationLocation.getRealAccuratePosition(destinationLevel.getServer());
+            Vector3d destinationDirection = destinationLocation.getRealAccurateDirection(teleportingEntityLevel.getServer()); //Do not use the opposite facing of the destination, we will handle the correct facing outside of this method.
 
-            Direction sourceDirection = sourceLocation.getDirection();
+            Vector3d sourceDirection = sourceLocation.getRealAccurateDirection(teleportingEntityLevel.getServer());
 
 
-            BlockPos targetTeleportPos = destinationPos;
+            var targetTeleportPos = destinationPos;
 
             /**If for some reason we are trying to enter the Tardis, but the destination dimension is not a Tardis dimension type, don't teleport
              This can occur if the exterior shell we are entering has an invalid {@link whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity#TARDIS_ID} which will occur for older releases due to a bug that was present until 2.0.2
@@ -134,14 +134,8 @@ public class TardisHelper {
 
             //Calculate entity motion and rotation, taking into account for the internal door's direction and rotation
             float entityYRot = entity.getYRot();
-            float destinationRotationYaw = destinationDirection.toYRot();
-            float sourceRotationYaw = sourceDirection.toYRot();
-
-            var sub = SublevelAccessor.get();
-            var sourceRot = sub.toMainLevelRotation(entity.level(), sourceLocation.getPosition(), new Vec2(0, sourceRotationYaw));
-            sourceRotationYaw = sourceRot.y;
-            var destinationRot = sub.toMainLevelRotation(destinationLevel, destinationLocation.getPosition(), new Vec2(0, destinationRotationYaw));
-            destinationRotationYaw = destinationRot.y;
+            float destinationRotationYaw = SublevelAccessor.vectorToRotation(destinationDirection).y;
+            float sourceRotationYaw = SublevelAccessor.vectorToRotation(sourceDirection).y;
 
             //Calculate the difference between the entity's rotation and the source direction's rotation. Get the difference and find the final rotation that preserves the entities' rotation but facing the direction at the destination
             float diff = LevelHelper.getAdjustedRotation(entityYRot) - LevelHelper.getAdjustedRotation(sourceRotationYaw);
@@ -149,14 +143,19 @@ public class TardisHelper {
             float adjustedRotationYaw = destinationRotationYaw + diff;
 
             if (entity.getType().getDimensions().width() > 1F) {
-                targetTeleportPos = destinationPos.offset(destinationDirection.getNormal());
+                targetTeleportPos = destinationPos.add(
+                        destinationDirection.x(),
+                        destinationDirection.y(),
+                        destinationDirection.z()
+                );
             }
 
-            BlockPos finalTeleportPos = targetTeleportPos;
+            // Prevent teleports into sublevel space because on Sable it crashes the game and can corrupt the world.
+            if (SublevelAccessor.get().isBlockInSublevelSpace(destinationLevel, destinationPos)) {
+                return false;
+            }
 
-            Vec3 centredTarget = LevelHelper.centerPos(finalTeleportPos, false);
-
-            TardisTeleportData.scheduleEntityTeleport(entity, destinationLevel.dimension(), centredTarget.x(), centredTarget.y(), centredTarget.z(), adjustedRotationYaw, entity.getXRot());
+            TardisTeleportData.scheduleEntityTeleport(entity, destinationLevel.dimension(), targetTeleportPos.x(), targetTeleportPos.y(), targetTeleportPos.z(), adjustedRotationYaw, entity.getXRot());
 
             //Fire exit or enter events
             if (entity instanceof LivingEntity livingEntity) {

@@ -68,11 +68,7 @@ public class CreateIntergrationsInit {
                     new TardisNavLocationDisplaySource.TardisNavInfo() {
                         @Override
                         public TardisNavLocation provideInfo(TardisLevelOperator tardis) {
-                            TardisNavLocation currentLoc = tardis.getPilotingManager().getCurrentLocation();
-                            if (Platform.getServer() != null) {
-                                currentLoc = SublevelAccessor.get().toMainLevelLocation(currentLoc);
-                            }
-                            return currentLoc;
+                            return tardis.getPilotingManager().getCurrentLocation();
                         }
                         @Override
                         public ResourceLocation getId() {

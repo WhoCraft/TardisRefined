@@ -87,6 +87,11 @@ public class TRTeleporter {
         Preconditions.checkNotNull(destination, "A target level must be provided for teleportation");
         Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
 
+        // Prevent teleports into sublevel space because on Sable it crashes the game and can corrupt the world.
+        if (SublevelAccessor.get().isBlockInSublevelSpace(destination, new Vec3(pX, pY, pZ))) {
+            return false;
+        }
+
         float updatedYRot = Mth.wrapDegrees(pYaw);
         float updatedXRot = Mth.wrapDegrees(pPitch);
 

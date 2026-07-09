@@ -1,20 +1,30 @@
 package whocraft.tardis_refined.common.tardis;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3d;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.SublevelAccessor;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * TardisNavLocation
@@ -23,7 +33,7 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 public class TardisNavLocation {
 
 
-    public static final TardisNavLocation ORIGIN = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD);
+    public static final TardisNavLocation ORIGIN = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, Level.OVERWORLD).setSublevelCache(null);
     public static final Codec<TardisNavLocation> CODEC = CompoundTag.CODEC.xmap(
             TardisNavLocation::deserialize, TardisNavLocation::serialise
     );
@@ -32,6 +42,10 @@ public class TardisNavLocation {
     private BlockPos position;
     private Direction direction;
     private ServerLevel level;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<SublevelAccessor.LoadablePositionReference> sublevelReference = Optional.empty();
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<SublevelData> sublevelCache = Optional.empty();
 
     private ResourceKey<Level> dimensionKey;
 
@@ -49,7 +63,6 @@ public class TardisNavLocation {
         if (level != null) {
             this.dimensionKey = level.dimension();
         }
-
     }
 
     /**
@@ -76,6 +89,15 @@ public class TardisNavLocation {
         if (tag.contains("name"))
             loc.setName(tag.getString("name"));
 
+        if (tag.contains("sublevel_cache")) {
+            loc.sublevelCache = SublevelData.CODEC.parse(
+                    NbtOps.INSTANCE, tag.get("sublevel_cache")
+            ).resultOrPartial();
+        }
+        if (tag.contains("sublevel_reference")) {
+            loc.sublevelReference = SublevelAccessor.LoadablePositionReference.fromNbt(tag.get("sublevel_reference"));
+        }
+
         return loc;
     }
 
@@ -85,6 +107,14 @@ public class TardisNavLocation {
         tag.putString("dimension", this.dimensionKey.location().toString());
         tag.putInt("direction", this.direction.ordinal());
         tag.putString("name", this.name);
+        sublevelCache.flatMap(
+                sl -> SublevelData.CODEC.encodeStart(NbtOps.INSTANCE, sl).resultOrPartial()
+        ).ifPresent(
+                value -> tag.put("sublevel_cache", value)
+        );
+        sublevelReference.flatMap(SublevelAccessor.LoadablePositionReference::toNbt).ifPresent(
+                value -> tag.put("sublevel_reference", value)
+        );
         return tag;
     }
 
@@ -109,6 +139,39 @@ public class TardisNavLocation {
     public void setLevel(ServerLevel level) {
         this.dimensionKey = level.dimension();
         this.level = level;
+        forMinecraftServer(this::removeSublevelData);
+    }
+
+    private void updateLevel() {
+        //noinspection ConstantValue
+        if (level == null && Platform.getServer() != null) {
+            getLevel();
+        }
+    }
+
+    private void updateCachedPosition() {
+	    updateLevel();
+        sublevelCache.ifPresent(data -> data.update(this));
+    }
+
+    public TardisNavLocation generateSublevelData() {
+        updateLevel();
+        if (level != null) {
+            sublevelReference.ifPresent(data -> data.destroy(level.getServer()));
+            sublevelReference = SublevelAccessor.get().getPositionReference(
+                    level, position
+            );
+            forMinecraftServer(server -> {
+                sublevelCache = sublevelReference.flatMap(ref -> ref.tryLoad(server).map(pos -> new SublevelData(this)));
+            });
+        } else {
+            if (Platform.getServer() != null) {
+                sublevelReference.ifPresent(data -> data.destroy(level.getServer()));
+            }
+            sublevelReference = Optional.empty();
+            sublevelCache = Optional.empty();
+        }
+        return this;
     }
 
     public ResourceKey<Level> getDimensionKey() {
@@ -117,14 +180,29 @@ public class TardisNavLocation {
 
     public void setDimensionKey(ResourceKey<Level> dimensionKey) {
         this.dimensionKey = dimensionKey;
+        updateLevel();
+        forMinecraftServer(this::removeSublevelData);
     }
 
     public BlockPos getPosition() {
+        updateCachedPosition();
         return position;
+    }
+
+    public BlockPos getRealPosition() {
+        updateCachedPosition();
+        return sublevelCache.flatMap(SublevelData::visualPos).orElse(position);
+    }
+
+    public Vec3 getRealAccuratePosition(MinecraftServer server) {
+        return sublevelReference.flatMap(data -> data.tryLoad(server)).map(
+                p -> p.sublevel().toMainLevelPos(p.pos())
+        ).orElseGet(() -> Vec3.atBottomCenterOf(position));
     }
 
     public TardisNavLocation setPosition(BlockPos pos) {
         this.position = pos;
+        forMinecraftServer(this::removeSublevelData);
         return this;
     }
 
@@ -132,36 +210,72 @@ public class TardisNavLocation {
         return direction;
     }
 
+    public Direction getRealDirection() {
+        updateCachedPosition();
+        return sublevelCache.flatMap(SublevelData::visualDirection).orElse(direction);
+    }
+
+    public Vector3d getRealAccurateDirection(MinecraftServer server) {
+        return sublevelReference.flatMap(
+                ref -> ref.tryLoad(server).map(pos -> pos.sublevel().toMainLevelAccurateDirection(direction))
+        ).orElseGet(
+                () -> SublevelAccessor.directionToVector(direction)
+        );
+    }
+
     public TardisNavLocation setDirection(Direction dir) {
         this.direction = dir;
         return this;
+    }
+
+    public TardisNavLocation setSublevelCache(SublevelData data) {
+        forMinecraftServer(this::removeSublevelData);
+        this.sublevelCache = Optional.ofNullable(data);
+        updateCachedPosition();
+        return this;
+    }
+
+    public Optional<Component> getSublevelMeta() {
+        return sublevelCache.flatMap(SublevelData::metadata);
     }
 
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public TardisNavLocation setName(String name) {
         this.name = name;
+        return this;
     }
 
 
     public BlockPos setX(int x) {
         BlockPos blockPos = new BlockPos(x, position.getY(), position.getZ());
         position = blockPos;
+        forMinecraftServer(this::removeSublevelData);
         return position;
     }
 
     public BlockPos setY(int y) {
         BlockPos blockPos = new BlockPos(position.getX(), y, position.getZ());
         position = blockPos;
+        forMinecraftServer(this::removeSublevelData);
         return position;
     }
 
     public BlockPos setZ(int z) {
         BlockPos blockPos = new BlockPos(position.getX(), position.getY(), z);
         position = blockPos;
+        forMinecraftServer(this::removeSublevelData);
         return position;
+    }
+
+    private void forMinecraftServer(Consumer<MinecraftServer> action) {
+        if (level != null) {
+            action.accept(level.getServer());
+        } else if (Platform.getServer() != null) {
+            action.accept(Platform.getServer());
+        }
     }
 
     public TardisNavLocation copy() {
@@ -175,8 +289,73 @@ public class TardisNavLocation {
             copy.setName(this.name);
         }
 
+        sublevelCache.ifPresent(copy::setSublevelCache);
+
         return copy;
     }
 
+    public void removeSublevelData() {
+        this.removeSublevelData(level != null ? level.getServer() : Platform.getServer());
+    }
+
+    public void removeSublevelData(MinecraftServer server) {
+        if (server != null) {
+            sublevelReference.ifPresent(data -> data.destroy(server));
+        }
+        sublevelReference = Optional.empty();
+        sublevelCache = Optional.empty();
+    }
+
+    public static class SublevelData {
+
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        private Optional<BlockPos> visualPos;
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        private Optional<Direction> visualDirection;
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+        private Optional<Component> metadata;
+
+        public static final Codec<SublevelData> CODEC = RecordCodecBuilder.create(
+                instance -> instance.group(
+                        BlockPos.CODEC.optionalFieldOf("visual_pos").forGetter(SublevelData::visualPos),
+                        Direction.CODEC.optionalFieldOf("visual_direction").forGetter(SublevelData::visualDirection),
+                        ComponentSerialization.CODEC.optionalFieldOf("metadata").forGetter(SublevelData::metadata)
+                ).apply(instance, SublevelData::new)
+        );
+
+        private SublevelData(TardisNavLocation location) {
+            this(Optional.empty(), Optional.empty(), Optional.empty());
+            update(location);
+        }
+
+        private SublevelData(Optional<BlockPos> pos, Optional<Direction> direction, Optional<Component> metadata) {
+            this.visualPos = pos;
+            this.visualDirection = direction;
+            this.metadata = metadata;
+        }
+
+        public void update(TardisNavLocation location) {
+            location.sublevelReference.ifPresent(ref -> {
+                location.forMinecraftServer(server -> {
+                    visualPos = ref.tryLoad(server).map(pos -> pos.sublevel().toMainLevelPos(BlockPos.containing(pos.pos())));
+                    visualDirection = ref.tryLoad(server).map(pos -> pos.sublevel().toMainLevelDirection(location.getDirection()));
+                    metadata = ref.metadata();
+                });
+            });
+        }
+
+        public Optional<BlockPos> visualPos() {
+            return visualPos;
+        }
+
+        public Optional<Direction> visualDirection() {
+            return visualDirection;
+        }
+
+        public Optional<Component> metadata() {
+            return metadata;
+        }
+
+    }
 
 }

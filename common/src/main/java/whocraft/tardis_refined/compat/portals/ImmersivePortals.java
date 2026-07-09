@@ -301,7 +301,7 @@ public class ImmersivePortals {
     }
 
     private static boolean isAirship(Level level, BlockPos blockPos) {
-        return SublevelAccessor.get().isBlockInSublevel(level, blockPos);
+        return SublevelAccessor.get().isBlockInSublevelSpace(level, blockPos);
     }
 
     private static PositionHolder getPortalPosition(Level level, BlockPos blockPos, Direction direction, Vec3 doorPos) {

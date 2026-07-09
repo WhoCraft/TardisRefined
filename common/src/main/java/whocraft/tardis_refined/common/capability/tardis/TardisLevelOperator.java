@@ -70,6 +70,8 @@ public class TardisLevelOperator {
 
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<SublevelAccessor.LoadablePositionReference> internalDoorReference = Optional.empty();
     // TARDIS state refers to different stages of TARDIS creation. This allows for different logic to operate in those moments.
     private int tardisState = 0;
 
@@ -118,6 +120,10 @@ public class TardisLevelOperator {
         if (this.internalDoor != null) {
             compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
             compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION, NbtUtils.writeBlockPos(this.internalDoor.getDoorPosition()));
+            var ref = internalDoorReference.flatMap(SublevelAccessor.LoadablePositionReference::toNbt);
+            if (ref.isPresent()) {
+                compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION_SUBLEVEL, ref.get());
+            }
         }
 
         compoundTag = this.exteriorManager.saveData(compoundTag);
@@ -142,7 +148,13 @@ public class TardisLevelOperator {
             // Schedules code to run at the end of this game tick.
             // Necessary for Arclight compatibility.
             level.getServer().tell(level.getServer().wrapRunnable(() -> {
-                if (level.getBlockEntity(doorPos.get()) instanceof TardisInternalDoor door) {
+                this.internalDoorReference = SublevelAccessor.LoadablePositionReference.fromNbt(
+                        tag.get(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION_SUBLEVEL)
+                );
+                var actualDoorPos = internalDoorReference.flatMap(
+                        door -> door.tryLoad(level.getServer()).map(d -> BlockPos.containing(d.pos()))
+                ).orElse(doorPos.get());
+                if (level.getBlockEntity(actualDoorPos) instanceof TardisInternalDoor door) {
                     this.internalDoor = door;
                     this.internalDoor.setID(tag.getString(NbtConstants.TARDIS_INTERNAL_DOOR_ID));
                 }
@@ -237,11 +249,7 @@ public class TardisLevelOperator {
                 updatingMonitorsIterator.remove();
                 continue;
             }
-
-            TardisNavLocation location = SublevelAccessor.get().toMainLevelLocation(
-                    this.pilotingManager.getCurrentLocation().copy()
-            );
-            NetworkManager.get().sendToPlayer(player, new MonitorPositionDataMessage(location));
+            NetworkManager.get().sendToPlayer(player, new MonitorPositionDataMessage(this.pilotingManager.getCurrentLocation().copy()));
         }
     }
 
@@ -265,13 +273,19 @@ public class TardisLevelOperator {
             return false;
         }
 
+        // Load the sublevel the door is in.
+        // We don't need to do this when exiting as the player will have loaded it already.
+        if (entity.getServer() != null) {
+            internalDoorReference.ifPresent(door -> door.tryLoad(entity.getServer()));
+        }
+
         // Determine target position and direction
         BlockPos targetPosition = internalDoor != null ? internalDoor.getTeleportPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
         Direction targetDirection = internalDoor != null ? internalDoor.getTeleportRotation() : entity.getDirection();
 
         // Define source and target locations
-        TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
-        TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, targetDirection, targetServerLevel);
+        TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel).generateSublevelData();
+        TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, targetDirection, targetServerLevel).generateSublevelData();
 
         // Update current location
         this.pilotingManager.setCurrentLocation(new TardisNavLocation(externalShellPos, shellDirection.getOpposite(), shellLevel));
@@ -286,6 +300,8 @@ public class TardisLevelOperator {
         } else {
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
         }
+        sourceLocation.removeSublevelData(entity.getServer());
+        targetLocation.removeSublevelData(entity.getServer());
         return true;
     }
 
@@ -326,10 +342,12 @@ public class TardisLevelOperator {
                 targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
             }
 
-            TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
+            TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel).generateSublevelData();
+            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel).generateSublevelData();
 
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
+            sourceLocation.removeSublevelData(entity.getServer());
+            destinationLocation.removeSublevelData(entity.getServer());
             return true;
         }
 
@@ -351,7 +369,7 @@ public class TardisLevelOperator {
     public boolean forceEjectPlayer(ServerPlayer player) {
         if (player != null) {
             TardisNavLocation location = this.getPilotingManager().getCurrentLocation();
-            return this.exitTardis(player, location.getLevel(), location.getPosition(), location.getDirection(), true);
+            return this.exitTardis(player, location.getLevel(), location.getRealPosition(), location.getDirection(), true);
         }
         return false;
     }
@@ -571,6 +589,9 @@ public class TardisLevelOperator {
     }
 
     public TardisInternalDoor getInternalDoor() {
+        if (level.getServer() != null) {
+            internalDoorReference.ifPresent(door -> door.tryLoad(level.getServer()));
+        }
         return this.internalDoor;
     }
 
@@ -583,9 +604,16 @@ public class TardisLevelOperator {
         if (this.internalDoor != null) {
             this.internalDoor.onSetMainDoor(false);
         }
+        if (level.getServer() != null) {
+            internalDoorReference.ifPresent(ref -> ref.destroy(level.getServer()));
+        }
         this.internalDoor = door;
-        if (door != null) //If the new door value is not null
+        if (door != null) { //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
+            internalDoorReference = SublevelAccessor.get().getPositionReference(level, door.getDoorPosition());
+        } else {
+            internalDoorReference = Optional.empty();
+        }
         if (ModCompatChecker.immersivePortals()) {
             ImmersivePortals.onDoorMoved(this);
         }

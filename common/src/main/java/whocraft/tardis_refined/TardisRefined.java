@@ -20,6 +20,7 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelPositionRegistry;
 import whocraft.tardis_refined.compat.create.CreateIntergrationsInit;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -71,6 +72,7 @@ public class TardisRefined {
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncHums::new);
 
         TRARSStructurePieceRegistry.register();
+        SublevelPositionRegistry.DEFERRED.register();
         //registerFallbackEntries();
 
         if (ModCompatChecker.create()) {

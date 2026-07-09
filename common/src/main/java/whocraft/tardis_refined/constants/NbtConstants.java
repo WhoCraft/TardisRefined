@@ -27,6 +27,7 @@ public class NbtConstants {
     public static final String TARDIS_IS_SETUP = "has_setup";
     public static final String TARDIS_INTERNAL_DOOR_ID = "internal_door_id";
     public static final String TARDIS_INTERNAL_DOOR_POSITION = "internal_door_pos";
+    public static final String TARDIS_INTERNAL_DOOR_POSITION_SUBLEVEL = "internal_door_pos_sublevel";
 
 
     // Interior Manager

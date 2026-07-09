@@ -94,7 +94,14 @@ allprojects {
             }
             filter {
                 includeGroup("dev.ryanhcode.sable-companion")
+                includeGroup("dev.ryanhcode.sable")
             }
+        }
+
+        // Veil
+        maven {
+            name = 'BlameJared Maven (CrT / Bookshelf)'
+            url = 'https://maven.blamejared.com'
         }
 
         maven {

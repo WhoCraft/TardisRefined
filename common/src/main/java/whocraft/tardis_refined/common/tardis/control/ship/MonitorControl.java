@@ -18,8 +18,6 @@ import whocraft.tardis_refined.common.tardis.control.ControlSpecification;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class MonitorControl extends Control {
@@ -62,9 +60,6 @@ public class MonitorControl extends Control {
             if (!isSyncingKey) {
                 var currentLocation = operator.getPilotingManager().getCurrentLocation();
                 var targetLocation = operator.getPilotingManager().getTargetLocation();
-                var sub = SublevelAccessor.get();
-                currentLocation = sub.toMainLevelLocation(currentLocation);
-                targetLocation = sub.toMainLevelLocation(targetLocation);
                 NetworkManager.get().sendToPlayer(
                         (ServerPlayer) player,
                         new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), currentLocation, targetLocation, operator.getUpgradeHandler(), operator.getAestheticHandler().getShellTheme())
