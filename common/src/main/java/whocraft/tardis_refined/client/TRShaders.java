@@ -59,7 +59,7 @@ public class TRShaders {
                 "nivis",
                 NEW_ENTITY,
                 VertexFormat.Mode.QUADS,
-                256,
+                1536,
                 true,
                 false,
                 state
