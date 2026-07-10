@@ -21,7 +21,7 @@ public class ReadoutControl extends whocraft.tardis_refined.common.tardis.contro
 
     private static Component getMessage(String key, TardisNavLocation location) {
         var message = Component.translatable(key).append(" - X: " + location.getRealPosition().getX() + " Y: " + location.getRealPosition().getY() + " Z: " + location.getRealPosition().getZ() + " F: " + location.getDirection().getName() + " D: " + location.getDimensionKey().location().getPath());
-        location.getSublevelMeta().ifPresent(meta -> message.append(", ").append(meta));
+        location.getSublevelDescription().ifPresent(meta -> message.append(", ").append(meta));
         return message;
     }
 

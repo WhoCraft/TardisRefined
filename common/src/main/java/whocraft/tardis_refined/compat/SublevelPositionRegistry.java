@@ -35,11 +35,6 @@ public class SublevelPositionRegistry {
         }
 
         @Override
-        public Optional<Component> metadata() {
-            return Optional.empty();
-        }
-
-        @Override
         public MapCodec<? extends SublevelAccessor.LoadablePositionReference> codec() {
             return CODEC;
         }

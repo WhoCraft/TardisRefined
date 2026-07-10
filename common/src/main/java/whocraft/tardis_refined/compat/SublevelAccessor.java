@@ -120,6 +120,46 @@ public interface SublevelAccessor {
             return Math.abs(angles.x) < Math.PI / 2 || Math.abs(angles.z) < Math.PI / 2;
         }
 
+        Optional<Component> description();
+
+
+        record Dummy(Optional<Component> description) implements Sublevel {
+
+            @Override
+            public AABB toSublevelAABB(AABB aabb) {
+                return aabb;
+            }
+
+            @Override
+            public Direction toSublevelDirection(Direction direction) {
+                return direction;
+            }
+
+            @Override
+            public BlockPos toMainLevelPos(BlockPos pos) {
+                return pos;
+            }
+
+            @Override
+            public Vec3 toMainLevelPos(Vec3 pos) {
+                return pos;
+            }
+
+            @Override
+            public Vector3d toMainLevelAccurateDirection(Direction direction) {
+                return directionToVector(direction);
+            }
+
+            @Override
+            public boolean isHorizontalEnough() {
+                return true;
+            }
+
+            @Override
+            public Optional<Component> description() {
+                return description;
+            }
+        }
     }
 
     interface PositionReference {
@@ -136,8 +176,6 @@ public interface SublevelAccessor {
         default void destroy(MinecraftServer server) {}
 
         Optional<PositionReference> tryLoad(MinecraftServer server);
-
-        Optional<Component> metadata();
 
         default Optional<Tag> toNbt() {
             return SublevelAccessor.LoadablePositionReference.CODEC.encodeStart(NbtOps.INSTANCE, this).resultOrPartial();

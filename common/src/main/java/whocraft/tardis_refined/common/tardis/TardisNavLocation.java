@@ -235,8 +235,8 @@ public class TardisNavLocation {
         return this;
     }
 
-    public Optional<Component> getSublevelMeta() {
-        return sublevelCache.flatMap(SublevelData::metadata);
+    public Optional<Component> getSublevelDescription() {
+        return sublevelCache.flatMap(SublevelData::description);
     }
 
     public String getName() {
@@ -313,13 +313,13 @@ public class TardisNavLocation {
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private Optional<Direction> visualDirection;
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-        private Optional<Component> metadata;
+        private Optional<Component> description;
 
         public static final Codec<SublevelData> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         BlockPos.CODEC.optionalFieldOf("visual_pos").forGetter(SublevelData::visualPos),
                         Direction.CODEC.optionalFieldOf("visual_direction").forGetter(SublevelData::visualDirection),
-                        ComponentSerialization.CODEC.optionalFieldOf("metadata").forGetter(SublevelData::metadata)
+                        ComponentSerialization.CODEC.optionalFieldOf("description").forGetter(SublevelData::description)
                 ).apply(instance, SublevelData::new)
         );
 
@@ -328,18 +328,19 @@ public class TardisNavLocation {
             update(location);
         }
 
-        private SublevelData(Optional<BlockPos> pos, Optional<Direction> direction, Optional<Component> metadata) {
+        private SublevelData(Optional<BlockPos> pos, Optional<Direction> direction, Optional<Component> description) {
             this.visualPos = pos;
             this.visualDirection = direction;
-            this.metadata = metadata;
+            this.description = description;
         }
 
         public void update(TardisNavLocation location) {
             location.sublevelReference.ifPresent(ref -> {
                 location.forMinecraftServer(server -> {
-                    visualPos = ref.tryLoad(server).map(pos -> pos.sublevel().toMainLevelPos(BlockPos.containing(pos.pos())));
-                    visualDirection = ref.tryLoad(server).map(pos -> pos.sublevel().toMainLevelDirection(location.getDirection()));
-                    metadata = ref.metadata();
+                    var loaded = ref.tryLoad(server);
+                    visualPos = loaded.map(pos -> pos.sublevel().toMainLevelPos(BlockPos.containing(pos.pos())));
+                    visualDirection = loaded.map(pos -> pos.sublevel().toMainLevelDirection(location.getDirection()));
+                    description = loaded.flatMap(pos -> pos.sublevel().description());
                 });
             });
         }
@@ -352,8 +353,8 @@ public class TardisNavLocation {
             return visualDirection;
         }
 
-        public Optional<Component> metadata() {
-            return metadata;
+        public Optional<Component> description() {
+            return description;
         }
 
     }

@@ -198,6 +198,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.PILOT_TIME, "You've still got %s with your pilot. Make the most of it!");
         add(ModMessages.DEMANDS_PAYMENT, "Demands payment");
         add(ModMessages.TARDIS_SLEEP_END, "The hums of the ship make you toss and turn. Your spawnpoint could not be set here.");
+        add(ModMessages.SUBLEVEL_DISASSEMBLED, "Sub-level Disassembled");
 
 
         /*Command*/

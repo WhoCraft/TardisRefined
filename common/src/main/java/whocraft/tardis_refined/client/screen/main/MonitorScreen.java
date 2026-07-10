@@ -128,7 +128,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
 
         int currentWidth = textScale - 3;
 
-        if (currentLocation.getSublevelMeta().isPresent()) {
+        if (currentLocation.getSublevelDescription().isPresent()) {
             currentWidth *= 2;
         }
 
@@ -141,7 +141,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
 
         int targetWidth = textScale - 3;
 
-        if (targetLocation.getSublevelMeta().isPresent()) {
+        if (targetLocation.getSublevelDescription().isPresent()) {
             targetWidth *= 2;
         }
 

@@ -3,6 +3,7 @@ package whocraft.tardis_refined.compat.valkyrienskies;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -15,6 +16,7 @@ import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.compat.SublevelAccessor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 //Dummy code which might become useful again in the future.
@@ -66,6 +68,11 @@ public class VSAccessor implements SublevelAccessor {
             /*var angles = ship.getTransform().getShipToWorldRotation().getEulerAnglesZYX(new Vector3d());
             return Math.abs(angles.x) < Math.PI / 2 || Math.abs(angles.z) < Math.PI / 2;*/
             return false;
+        }
+
+        @Override
+        public Optional<Component> description() {
+            return Optional.empty();
         }
 
     }

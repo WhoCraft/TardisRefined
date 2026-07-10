@@ -211,7 +211,7 @@ public class MiscHelper {
 
     public static Component getDimensionNameWithSublevel(TardisNavLocation location, Component divider) {
         var name = Component.literal(getCleanDimensionName(location.getDimensionKey()));
-        location.getSublevelMeta().ifPresent(data -> name.append(divider).append(data));
+        location.getSublevelDescription().ifPresent(data -> name.append(divider).append(data));
         return name;
     }
 

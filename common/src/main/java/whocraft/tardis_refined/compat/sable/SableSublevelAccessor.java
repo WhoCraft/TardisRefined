@@ -30,6 +30,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3d;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.compat.SublevelAccessor;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.mixin.SubLevelHoldingChunkMapAccessor;
 
 import java.util.*;
@@ -114,18 +115,28 @@ public class SableSublevelAccessor implements SublevelAccessor {
         public boolean isHorizontalEnough() {
             return Sublevel.isHorizontalEnough(access.logicalPose().orientation().getEulerAnglesXYZ(new Vector3d()));
         }
+
+        @Override
+        public Optional<Component> description() {
+            return Optional.of(
+                    Component.literal(
+                            "[Sable] " + Optional.ofNullable(access.getName()).orElse(
+                                    access.getUniqueId().toString().substring(0, 5)
+                            )
+                    )
+            );
+        }
     }
 
     public record SablePosition(Vec3 pos, Sublevel sublevel) implements PositionReference {
 
     }
 
-    public record LoadableSablePosition(UUID uuid, Component meta, ResourceKey<Level> dimension) implements LoadablePositionReference {
+    public record LoadableSablePosition(UUID uuid, ResourceKey<Level> dimension) implements LoadablePositionReference {
 
         public static final MapCodec<LoadableSablePosition> CODEC = RecordCodecBuilder.mapCodec(
                 instance -> instance.group(
                         UUIDUtil.CODEC.fieldOf("uuid").forGetter(LoadableSablePosition::uuid),
-                        ComponentSerialization.CODEC.fieldOf("meta").forGetter(LoadableSablePosition::meta),
                         Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(LoadableSablePosition::dimension)
                 ).apply(instance, LoadableSablePosition::new)
         );
@@ -163,14 +174,18 @@ public class SableSublevelAccessor implements SublevelAccessor {
             return loadPoint(server).map(point -> {
                 var p = point.point();
                 return new SablePosition(
-                        new Vec3(p.x, p.y, p.z), new SableSublevel(SableCompanion.INSTANCE.getContaining(server.getLevel(dimension), p))
+                        new Vec3(p.x, p.y, p.z),
+                        Optional.ofNullable(
+                                SableCompanion.INSTANCE.getContaining(server.getLevel(dimension), p)
+                        ).<Sublevel>map(SableSublevel::new).orElse(
+                                new Sublevel.Dummy(Optional.of(
+                                        Component.literal("[Sable] ").append(
+                                                Component.translatable(ModMessages.SUBLEVEL_DISASSEMBLED)
+                                        )
+                                ))
+                        )
                 );
             });
-        }
-
-        @Override
-        public Optional<Component> metadata() {
-            return Optional.of(meta);
         }
 
         @Override
@@ -184,11 +199,6 @@ public class SableSublevelAccessor implements SublevelAccessor {
             var trackedStorage = SubLevelTrackingPointSavedData.getOrLoad(level);
             return Optional.of(new LoadableSablePosition(
                     trackedStorage.generateTrackingPoint(pos, serverSub),
-                    Component.literal(
-                            "[Sable] " + Optional.ofNullable(serverSub.getName()).orElse(
-                                    serverSub.getUniqueId().toString().substring(0, 5)
-                            )
-                    ),
                     level.dimension()
             ));
         }

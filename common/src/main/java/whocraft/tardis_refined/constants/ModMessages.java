@@ -78,6 +78,7 @@ public class ModMessages {
     public static final String DEMANDS_PAYMENT = message("demands_payment");
     public static final String PILOT_TIME = message("pilot_time");
     public static final String TARDIS_SLEEP_END = message("tardis_sleep_end");
+    public static final String SUBLEVEL_DISASSEMBLED = message("sublevel_disassembled");
     public static String GITHUB_RELEASE_PAGE = "https://github.com/WhoCraft/TardisRefined/releases";
 
     /*Item Special cases*/
