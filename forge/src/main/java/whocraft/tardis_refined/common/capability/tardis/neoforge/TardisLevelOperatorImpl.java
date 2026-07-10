@@ -39,7 +39,7 @@ public class TardisLevelOperatorImpl extends SavedData {
 
 
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
-        if(getSaveData(level) instanceof TardisLevelOperatorImpl tardisLevelOperator){
+        if(TRDimensionTypes.isTARDISDimension(level) && getSaveData(level) instanceof TardisLevelOperatorImpl tardisLevelOperator){
             return Optional.of(tardisLevelOperator.operator);
         }
         return Optional.empty();
