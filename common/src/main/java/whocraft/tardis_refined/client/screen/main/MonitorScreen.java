@@ -126,18 +126,30 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
 
         int textScale = 40;
 
+        int currentWidth = textScale - 3;
+
+        if (currentLocation.getSublevelMeta().isPresent()) {
+            currentWidth *= 2;
+        }
+
         poseStack.pushPose();
         poseStack.translate(hPos + 10, vPos + 10, 0);
         guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", 0, 0, Color.WHITE.getRGB());
         ScreenHelper.renderWidthScaledText(Component.literal(currentLocation.getRealDirection().getName().toUpperCase() + " @ " + currentLocation.getRealPosition().toShortString()), guiGraphics, Minecraft.getInstance().font, 0, 10, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
-        ScreenHelper.renderWidthScaledText(Component.literal(MiscHelper.getCleanDimensionName(currentLocation.getDimensionKey())), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
+        ScreenHelper.renderWidthScaledText(MiscHelper.getDimensionNameWithSublevel(currentLocation, " @ "), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), currentWidth, 1.5F, false);
         poseStack.popPose();
+
+        int targetWidth = textScale - 3;
+
+        if (targetLocation.getSublevelMeta().isPresent()) {
+            targetWidth *= 2;
+        }
 
         poseStack.pushPose();
         poseStack.translate(hPos + 10, vPos + monitorHeight - 35, 0);
         guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable(ModMessages.UI_MONITOR_DESTINATION).getString() + ":", 0, 0, Color.WHITE.getRGB());
         ScreenHelper.renderWidthScaledText(Component.literal(targetLocation.getRealDirection().getName().toUpperCase() + " @ " + targetLocation.getRealPosition().toShortString()), guiGraphics, Minecraft.getInstance().font, 0, 10, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
-        ScreenHelper.renderWidthScaledText(Component.literal(MiscHelper.getCleanDimensionName(targetLocation.getDimensionKey())), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
+        ScreenHelper.renderWidthScaledText(MiscHelper.getDimensionNameWithSublevel(targetLocation, " @ "), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), targetWidth, 1.5F, false);
         poseStack.popPose();
     }
 

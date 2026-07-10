@@ -19,11 +19,17 @@ public class ReadoutControl extends whocraft.tardis_refined.common.tardis.contro
         super(id, langId);
     }
 
+    private static Component getMessage(String key, TardisNavLocation location) {
+        var message = Component.translatable(key).append(" - X: " + location.getRealPosition().getX() + " Y: " + location.getRealPosition().getY() + " Z: " + location.getRealPosition().getZ() + " F: " + location.getDirection().getName() + " D: " + location.getDimensionKey().location().getPath());
+        location.getSublevelMeta().ifPresent(meta -> message.append(", ").append(meta));
+        return message;
+    }
+
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation currentPosition = operator.getPilotingManager().getCurrentLocation();
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(" - X: " + currentPosition.getRealPosition().getX() + " Y: " + currentPosition.getRealPosition().getY() + " Z: " + currentPosition.getRealPosition().getZ() + " F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, getMessage(ModMessages.CURRENT, currentPosition), true);
 
 
         return true;
@@ -33,7 +39,7 @@ public class ReadoutControl extends whocraft.tardis_refined.common.tardis.contro
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getRealPosition().getX() + " Y: " + targetLocation.getRealPosition().getY() + " Z: " + targetLocation.getRealPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, getMessage(ModMessages.DESTINATION, targetLocation), true);
 
         return true;
     }

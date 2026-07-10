@@ -4,6 +4,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
@@ -31,6 +32,7 @@ import whocraft.tardis_refined.common.block.life.EyeBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -197,6 +199,20 @@ public class MiscHelper {
     public static String getCleanName(String name) {
         var noUnderscores = name.replace("_", " ");
         return WordUtils.capitalizeFully(noUnderscores);
+    }
+
+    public static Component getDimensionNameWithSublevel(TardisNavLocation location) {
+        return getDimensionNameWithSublevel(location, ", ");
+    }
+
+    public static Component getDimensionNameWithSublevel(TardisNavLocation location, String divider) {
+        return getDimensionNameWithSublevel(location, Component.literal(divider));
+    }
+
+    public static Component getDimensionNameWithSublevel(TardisNavLocation location, Component divider) {
+        var name = Component.literal(getCleanDimensionName(location.getDimensionKey()));
+        location.getSublevelMeta().ifPresent(data -> name.append(divider).append(data));
+        return name;
     }
 
     public static DamageSource getDamageSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey) {

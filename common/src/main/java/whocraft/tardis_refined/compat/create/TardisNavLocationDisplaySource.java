@@ -33,7 +33,7 @@ public class TardisNavLocationDisplaySource extends DisplaySource {
 
                 components.add(Component.translatable(ModMessages.POSITION, tardisNavLocation.getRealPosition().toShortString()));
                 components.add(Component.translatable(ModMessages.DIRECTION, tardisNavLocation.getDirection().getName()));
-                components.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getCleanDimensionName(tardisNavLocation.getDimensionKey())));
+                components.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getDimensionNameWithSublevel(tardisNavLocation)));
 
                 return components;
             }
