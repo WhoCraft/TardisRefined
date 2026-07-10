@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import whocraft.tardis_refined.client.MatrixExtension;
 import whocraft.tardis_refined.client.renderer.RenderHelper;
 
-@Mixin(GameRenderer.class)
+@Mixin(value = GameRenderer.class, priority = 950)
 public class GameRendererMixin {
 
     @WrapOperation(
