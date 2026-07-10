@@ -13,10 +13,10 @@ public class S2COpenCraftingScreen implements CustomPacketPayload, NetworkManage
 
     public static final CustomPacketPayload.Type<S2COpenCraftingScreen> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "open_crafting_screen"));
 
-    public static final StreamCodec<ByteBuf, S2COpenCraftingScreen> STREAM_CODEC = StreamCodec.unit(new S2COpenCraftingScreen());
+    public static final S2COpenCraftingScreen INSTANCE = new S2COpenCraftingScreen();
+    public static final StreamCodec<ByteBuf, S2COpenCraftingScreen> STREAM_CODEC = StreamCodec.unit(INSTANCE);
 
-    public S2COpenCraftingScreen() {
-    }
+    private S2COpenCraftingScreen() {}
 
     @Override
     public @NotNull Type<? extends CustomPacketPayload> type() {

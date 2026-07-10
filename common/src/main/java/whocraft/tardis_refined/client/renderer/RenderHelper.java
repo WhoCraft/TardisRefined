@@ -78,7 +78,7 @@ public class RenderHelper {
 
     public static void drawGlowingBox(PoseStack poseStack, VertexConsumer consumer, float length, float height, float width, int color, int combinedLightIn) {
         AABB box = new AABB(-length / 2F, -height / 2f, -width / 2F, length / 2F, height / 2f, width / 2F);
-        renderFilledBox(poseStack, consumer, box, RenderHelper.rgbaToInt(1F, 1F, 1F, FastColor.ARGB32.alpha(color)), combinedLightIn);
+        renderFilledBox(poseStack, consumer, box, RenderHelper.rgbaToInt(1F, 1F, 1F, FastColor.ARGB32.alpha(color) / 255f), combinedLightIn);
 
         for (int i = 0; i < 3; i++) {
             renderFilledBox(poseStack, consumer, box.inflate(i * 0.5F * 0.0625F), color, combinedLightIn);

@@ -58,23 +58,6 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
-        if (!(level instanceof ServerLevel serverLevel)) {
-            return super.useWithoutItem(blockState, level, blockPos, player, blockHitResult);
-        }
-
-        if (!(level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity)) {
-            return super.useWithoutItem(blockState, level, blockPos, player, blockHitResult);
-        }
-
-        if(player instanceof ServerPlayer serverPlayer) {
-            NetworkManager.get().sendToPlayer(serverPlayer, new S2COpenCraftingScreen());
-        }
-        astralManipulatorBlockEntity.clearDisplay();
-        return InteractionResult.sidedSuccess(false);
-    }
-
-    @Override
     public ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!(level instanceof ServerLevel serverLevel) || interactionHand != InteractionHand.MAIN_HAND) {
             return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
@@ -82,6 +65,14 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
 
         if (!(level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity)) {
             return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
+        }
+
+        if (itemStack.isEmpty()) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                NetworkManager.get().sendToPlayer(serverPlayer, S2COpenCraftingScreen.INSTANCE);
+            }
+            astralManipulatorBlockEntity.clearDisplay();
+            return ItemInteractionResult.sidedSuccess(false);
         }
 
         if (itemStack.getItem() instanceof ScrewdriverItem) {
