@@ -149,8 +149,16 @@ public class TardisNavLocation {
         }
     }
 
-    private void updateCachedPosition() {
+    public void updateCachedPosition() {
 	    updateLevel();
+        forMinecraftServer(server -> sublevelReference.flatMap(ref -> ref.tryLoad(server)).ifPresent(pos -> {
+            var newPos = BlockPos.containing(pos.pos());
+            // If the position no longer matches it means the position was assembled/disassembled and needs to be updated.
+            if (!position.equals(newPos)) {
+                position = newPos;
+                sublevelCache.flatMap(SublevelData::visualDirection).ifPresent(d -> direction = d);
+            }
+        }));
         sublevelCache.ifPresent(data -> data.update(this));
     }
 
@@ -279,6 +287,7 @@ public class TardisNavLocation {
     }
 
     public TardisNavLocation copy() {
+        updateCachedPosition();
         TardisNavLocation copy = new TardisNavLocation(this.position, this.direction, this.dimensionKey);
 
         if (this.getLevel() != null) {
