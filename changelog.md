@@ -52,3 +52,4 @@
 - Bug fix: The back button in the Waypoint screen traps users in an infinite loop and deletes waypoints.
 - Bug fix: AR particles sometimes render below the control.
 - Bug fix: TARDIS does not respect logical height.
+- Bug fix: Broken TARDIS console smoke damages armor.
