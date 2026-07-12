@@ -192,6 +192,10 @@ public class TardisNavLocation {
         forMinecraftServer(this::removeSublevelData);
     }
 
+    public BlockPos getPositionNoUpdates() {
+        return position;
+    }
+
     public BlockPos getPosition() {
         updateCachedPosition();
         return position;
