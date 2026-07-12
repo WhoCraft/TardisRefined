@@ -4,6 +4,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.RandomSource;
@@ -16,14 +18,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
-import net.minecraft.world.level.levelgen.GenerationStep;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.TardisDimensionConstants;
 import whocraft.tardis_refined.mixin.StructureManagerAccessor;
@@ -31,7 +31,11 @@ import whocraft.tardis_refined.registry.TRARSStructurePieceRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static whocraft.tardis_refined.common.tardis.TardisArchitectureHandler.EYE_OF_HARMONY_PLACEMENT;
 
@@ -43,132 +47,187 @@ public class TardisChunkGenerator extends ChunkGenerator {
             ).apply(instance, instance.stable(TardisChunkGenerator::new))
     );
 
-    public final RandomSource random;
-
     // Some parameter values.
     public final int distanceBetweenGravityWell = 18;
     public final int arsChunkSize = ARSStructurePiece.LOCKED_PIECE_CHUNK_SIZE;
-    private final int chunkSize = 16;
 
-    public TardisChunkGenerator(BiomeSource biomeSource) {
-        super(biomeSource);
-        this.random = RandomSource.create();
+    public record GenerationPlacement(
+            ChunkPos min, ChunkPos max, BlockPos placePos, StructureTemplate structure, int flags,
+            boolean isFirstFloorRoom
+    ) {
+
+        public boolean isCorrectChunk(ChunkPos pos) {
+            return pos.x >= min.x && pos.z >= min.z && pos.x <= max.x && pos.z <= max.z;
+        }
+
+    }
+    private final Map<ResourceLocation, GenerationPlacement> structureBounds = new ConcurrentHashMap<>();
+
+	public TardisChunkGenerator(BiomeSource biomeSource) {
+		super(biomeSource);
+	}
+
+    private static final ResourceLocation EOH_PART_A = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "rooms/eye_of_harmony_part_a");
+    private static final ResourceLocation EOH_PART_B = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "rooms/eye_of_harmony_part_b");
+    private static final ResourceLocation HUB_CENTER = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_center");
+    private static final ResourceLocation HUB_SOUTH = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south");
+    private static final ResourceLocation HUB_SOUTH_EAST = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south_east");
+    private static final ResourceLocation HUB_EAST = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_east");
+    private static final ResourceLocation HUB_NORTH_EAST = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north_east");
+    private static final ResourceLocation HUB_NORTH = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north");
+    private static final ResourceLocation HUB_WEST = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_west");
+
+    private static final List<ResourceLocation> STATIC_ROOM_ORDER = List.of(
+            EOH_PART_A, EOH_PART_B, HUB_CENTER, HUB_SOUTH, HUB_SOUTH_EAST,
+            HUB_EAST, HUB_NORTH_EAST, HUB_NORTH, HUB_WEST
+    );
+
+    private static Optional<GenerationPlacement> getPlacement(
+            StructureTemplateManager manager, StructurePlaceSettings settings, ResourceLocation id, BlockPos pos, boolean hasSecondFloorRoom, int flags
+    ) {
+        return manager.get(id).map(structure -> {
+            var box = structure.getBoundingBox(settings, pos);
+            return new GenerationPlacement(
+                    new ChunkPos(SectionPos.blockToSectionCoord(box.minX()), SectionPos.blockToSectionCoord(box.minZ())),
+                    new ChunkPos(SectionPos.blockToSectionCoord(box.maxX()), SectionPos.blockToSectionCoord(box.maxZ())),
+                    pos, structure, flags, hasSecondFloorRoom
+            );
+        });
     }
 
+    private void addPlacement(StructureTemplateManager manager, StructurePlaceSettings settings, ResourceLocation id, BlockPos pos, boolean hasSecondFloorRoom) {
+        addPlacement(manager, settings, id, pos, hasSecondFloorRoom, 0);
+    }
 
+    private void addPlacement(StructureTemplateManager manager, StructurePlaceSettings settings, ResourceLocation id, BlockPos pos, boolean hasSecondFloorRoom, int flags) {
+        getPlacement(manager, settings, id, pos, hasSecondFloorRoom, flags).ifPresent(
+                placement -> structureBounds.put(id, placement)
+        );
+    }
 
-    /*public TardisChunkGenerator(Holder<Biome> holder) {
-        super(new FixedBiomeSource(holder));
-        this.random = RandomSource.create();
-    }*/
+    private static BlockPos get3x3StartPos(int chunkX, int chunkZ, int height) {
+        return new BlockPos(SectionPos.sectionToBlockCoord(chunkX, 0), height, SectionPos.sectionToBlockCoord(chunkZ, 0)).north(16).west(16);
+    }
+
+    private static BlockPos get3x3StartPos(int chunkX, int chunkZ, boolean isSecondFloor) {
+        return get3x3StartPos(chunkX, chunkZ, getHeight(isSecondFloor));
+    }
+
+    private static int getHeight(boolean isSecondFloor) {
+        return isSecondFloor ? 125 : 97;
+    }
+
+    private void populateStructureMap(StructureTemplateManager manager, StructurePlaceSettings settings) {
+        if (structureBounds.isEmpty()) {
+            addPlacement(manager, settings, EOH_PART_A, EYE_OF_HARMONY_PLACEMENT, false, Block.UPDATE_NONE);
+            addPlacement(manager, settings, EOH_PART_B, EYE_OF_HARMONY_PLACEMENT.offset(0, 0, 24), false, Block.UPDATE_NONE);
+            addPlacement(manager, settings, HUB_CENTER, get3x3StartPos(63, 0, 76), true, Block.UPDATE_NEIGHBORS);
+            addPlacement(manager, settings, HUB_SOUTH, get3x3StartPos(63, 3, false), true);
+            addPlacement(manager, settings, HUB_SOUTH_EAST, get3x3StartPos(66, 3, false), true);
+            addPlacement(manager, settings, HUB_EAST, get3x3StartPos(66, 0, false), true);
+            addPlacement(manager, settings, HUB_NORTH_EAST, get3x3StartPos(66, -3, false), true);
+            addPlacement(manager, settings, HUB_NORTH, get3x3StartPos(63, -3, false), true);
+            addPlacement(manager, settings, HUB_WEST, get3x3StartPos(60, 0, false), true);
+        }
+    }
+
+    private Optional<GenerationPlacement> getIfCorrectChunk(ResourceLocation id, ChunkPos pos) {
+        var settings = structureBounds.get(id);
+        if (settings != null && settings.isCorrectChunk(pos)) {
+            return Optional.of(settings);
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    private boolean placeIfCorrectChunk(PositionalRandomFactory random, WorldGenLevel level, StructurePlaceSettings settings, ChunkPos pos, ResourceLocation id) {
+        var placement = getIfCorrectChunk(id, pos);
+        if (placement.isPresent()) {
+            placement.get().structure.placeInWorld(
+                    level, placement.get().placePos, placement.get().placePos, settings, level.getRandom(), placement.get().flags
+            );
+            if (placement.get().isFirstFloorRoom) {
+                ResourceLocation pieceToPlace = getRandomCorridorPiece(random.at(placement.get().placePos)).getResourceLocation();
+                placePieceInWorld(level, pieceToPlace, placement.get().placePos.atY(getHeight(true)), settings);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private ChunkPos get3x3ARSReferencePos(ChunkPos pos) {
+        int xOffset = pos.x % arsChunkSize;
+        int zOffset = pos.z % arsChunkSize;
+        int x = pos.x - xOffset;
+        int z = pos.z - zOffset;
+
+        if (xOffset > arsChunkSize / 2) {
+            x += arsChunkSize;
+        }
+        if (zOffset > arsChunkSize / 2) {
+            z += arsChunkSize;
+        }
+
+        if (xOffset < -arsChunkSize / 2) {
+            x -= arsChunkSize;
+        }
+        if (zOffset < -arsChunkSize / 2) {
+            z -= arsChunkSize;
+        }
+
+        return new ChunkPos(x, z);
+    }
+
+    public static Optional<UUID> getUUIDForTARDIS(ResourceKey<Level> tardisID) {
+        try {
+            return Optional.of(UUID.fromString(tardisID.location().getPath()));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
 
     @Override
     public void applyBiomeDecoration(WorldGenLevel pLevel, ChunkAccess pChunk, StructureManager pStructureManager) {
+        var uuid = getUUIDForTARDIS(pLevel.getLevel().dimension()).orElseGet(UUID::randomUUID);
+        var random = new XoroshiroRandomSource.XoroshiroPositionalRandomFactory(uuid.getLeastSignificantBits(), uuid.getMostSignificantBits());
+        StructurePlaceSettings settings = new StructurePlaceSettings();
+        populateStructureMap(pLevel.getLevel().getStructureManager(), settings);
+        settings.setBoundingBox(getWritableArea(pChunk));
 
-        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 2) {
-            pLevel.getLevel().getStructureManager().get(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "rooms/eye_of_harmony_part_a")).ifPresent(structure -> {
-                BlockPos offsetPosition = new BlockPos(EYE_OF_HARMONY_PLACEMENT);
-                structure.placeInWorld(pLevel, offsetPosition, offsetPosition, new StructurePlaceSettings(), pLevel.getRandom(), Block.UPDATE_NONE);
-            });
+        boolean placedMainFloors = false;
 
-        }
-
-        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 4) {
-            pLevel.getLevel().getStructureManager().get(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "rooms/eye_of_harmony_part_b")).ifPresent(structure -> {
-                BlockPos offsetPosition = new BlockPos(EYE_OF_HARMONY_PLACEMENT).offset(0, 0, 24);
-                structure.placeInWorld(pLevel, offsetPosition, offsetPosition, new StructurePlaceSettings(), pLevel.getRandom(), Block.UPDATE_NONE);
-            });
-
-        }
-
-        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 0) {
-            pLevel.getLevel().getStructureManager().get(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_center")).ifPresent(structure -> {
-                int height = 76;
-                BlockPos pos = pChunk.getPos().getBlockAt(0, height, 0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
-                StructurePlaceSettings settings = new StructurePlaceSettings();
-                structure.placeInWorld(pLevel, pos, pos, settings, pLevel.getRandom(), 1);
-            });
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-
-        if (pChunk.getPos().x == 63 && pChunk.getPos().z == 3) {
-            placePieceInWorld(pLevel, ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south"), pChunk, false);
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-        if (pChunk.getPos().x == 66 && pChunk.getPos().z == 3) {
-            placePieceInWorld(pLevel, ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_south_east"), pChunk, false);
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-
-        if (pChunk.getPos().x == 66 && pChunk.getPos().z == 0) {
-            placePieceInWorld(pLevel, ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_east"), pChunk, false);
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-        if (pChunk.getPos().x == 66 && pChunk.getPos().z == -3) {
-            placePieceInWorld(pLevel, ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north_east"), pChunk, false);
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-
-        if (pChunk.getPos().x == 63 && pChunk.getPos().z == -3) {
-            placePieceInWorld(pLevel, ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_north"), pChunk, false);
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-
-        if (pChunk.getPos().x == 60 && pChunk.getPos().z == 0) {
-            placePieceInWorld(pLevel, ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_hub/corridor_hub_west"), pChunk, false);
-            ResourceLocation pieceToPlace = getRandomCorridorPiece().getResourceLocation();
-            placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-            return;
-        }
-
-
-        if (pChunk.getPos().x > -25 && pChunk.getPos().x < 25 && pChunk.getPos().z > -25 && pChunk.getPos().z < 25) {
-            return;
+        for (var room : STATIC_ROOM_ORDER) {
+            placedMainFloors |= placeIfCorrectChunk(random, pLevel, settings, pChunk.getPos(), room);
         }
 
         if (SublevelAccessor.get().isChunkInSublevelSpace(pLevel.getLevel(), pChunk.getPos())) {
             return;
         }
 
-        if (pChunk.getPos().x % arsChunkSize == 0 && pChunk.getPos().z % arsChunkSize == 0) {
+        var arsReferencePos = get3x3ARSReferencePos(pChunk.getPos());
 
-            if (isChunkAtGravityInterval(pChunk.getPos())) {
+        if (arsReferencePos.x > -25 && arsReferencePos.x < 25 && arsReferencePos.z > -25 && arsReferencePos.z < 25) {
+            return;
+        }
+
+
+        if (!placedMainFloors) {
+            BlockPos arsPosBottom = get3x3StartPos(arsReferencePos.x, arsReferencePos.z, false);
+            BlockPos arsPosTop = get3x3StartPos(arsReferencePos.x, arsReferencePos.z, true);
+
+            if (isChunkAtGravityInterval(arsReferencePos)) {
                 ResourceLocation pieceToPlace = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_connection_bottom");
-                placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
+                placePieceInWorld(pLevel, pieceToPlace, arsPosBottom, settings);
 
                 pieceToPlace = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "corridors/corridor_connection_top");
-                placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
+                placePieceInWorld(pLevel, pieceToPlace, arsPosTop, settings);
 
             } else {
-                if (random.nextInt(3) == 0) {
-                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
-                    placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
-                } else {
+                ResourceLocation bottomFloorPiece = getRandomRoomPiece(random.at(arsPosBottom)).getResourceLocation();
+                placePieceInWorld(pLevel, bottomFloorPiece, arsPosBottom, settings);
 
-                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
-                    placePieceInWorld(pLevel, pieceToPlace, pChunk, false);
-                }
-
-                if (random.nextInt(3) == 0) {
-                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
-                    placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-                } else {
-
-                    ResourceLocation pieceToPlace = getRandomRoomPiece().getResourceLocation();
-                    placePieceInWorld(pLevel, pieceToPlace, pChunk, true);
-                }
+                ResourceLocation topFloorPiece = getRandomRoomPiece(random.at(arsPosTop)).getResourceLocation();
+                placePieceInWorld(pLevel, topFloorPiece, arsPosTop, settings);
             }
         }
     }
@@ -272,8 +331,8 @@ public class TardisChunkGenerator extends ChunkGenerator {
      *
      * @return random corridor ARS piece from the registry.
      */
-    private ARSStructurePiece getRandomCorridorPiece() {
-        return TRARSStructurePieceRegistry.CORRIDORS.get(this.random.nextInt(TRARSStructurePieceRegistry.CORRIDORS.size()));
+    private ARSStructurePiece getRandomCorridorPiece(RandomSource random) {
+        return TRARSStructurePieceRegistry.CORRIDORS.get(random.nextInt(TRARSStructurePieceRegistry.CORRIDORS.size()));
     }
 
 
@@ -282,20 +341,15 @@ public class TardisChunkGenerator extends ChunkGenerator {
      *
      * @return random room ARS piece from the registry.
      */
-    private ARSStructurePiece getRandomRoomPiece() {
-        return TRARSStructurePieceRegistry.ROOMS.get(this.random.nextInt(TRARSStructurePieceRegistry.ROOMS.size()));
+    private ARSStructurePiece getRandomRoomPiece(RandomSource random) {
+        return TRARSStructurePieceRegistry.ROOMS.get(random.nextInt(TRARSStructurePieceRegistry.ROOMS.size()));
     }
 
 
-    private void placePieceInWorld(WorldGenLevel level, ResourceLocation pieceToPlace, ChunkAccess pChunk, boolean isSecondFloor) {
+    private static void placePieceInWorld(WorldGenLevel level, ResourceLocation pieceToPlace, BlockPos pos, StructurePlaceSettings settings) {
         // Place the desired piece.
 
         level.getLevel().getStructureManager().get(pieceToPlace).ifPresent(structure -> {
-
-            int height = isSecondFloor ? 125 : 97;
-
-            BlockPos pos = pChunk.getPos().getBlockAt(0, height, 0).north(chunkSize).west(chunkSize); // Must be offset to utilize all 3x3 chunks.
-            StructurePlaceSettings settings = new StructurePlaceSettings();
             structure.placeInWorld(level, pos, pos, settings, level.getRandom(), 0);
         });
 
