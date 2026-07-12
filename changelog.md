@@ -8,7 +8,8 @@
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
 - Updated create-fabric integration to create 6.
-- Tweaked corridor generation to generate one chunk at a time for any new TARDIS created after this update. Should hopefully fix errors where corridors sometimes don't generating in some chunks. Any existing TARDIS created before this update will be unaffected.
+- Tweaked corridor generation to generate one chunk at a time for any new TARDIS created after this update. Should hopefully fix errors where corridors sometimes don't generate in some chunks. Any existing TARDIS created before this update will be unaffected.
+- Landing pad is now always considered a safe landing location, even when entrance blocked or above the nether roof.
 
 #### Configs
 - New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
@@ -46,3 +47,10 @@
 - Bug fix: Create TARDIS Summary does not display all lines correctly.
 - Bug fix: Crash when closing the game near a TARDIS Create display while Valkyrien Skies is installed.
 - Bug fix: Recently created TARDIS keeps printing "Preparing spawn area: 100%" every time a chunk loads until the server is restarted.
+- Bug fix: TARDIS gets stuck in flight when destination is reached and throttle is set to 0 before dematerialization is complete.
+- Bug fix: Flight events don't stop when throttle at 0%.
+- Bug fix: Flight events sometimes turn back on despite destination reached.
+- Bug fix: The back button in the Waypoint screen traps users in an infinite loop and deletes waypoints.
+- Bug fix: AR particles sometimes render below the control.
+- Bug fix: TARDIS does not respect logical height.
+- Bug fix: Broken TARDIS console smoke damages armor.
