@@ -309,10 +309,11 @@ public class ImmersivePortals {
 
         Vec3 axisH = Vec3.atLowerCornerOf(Direction.UP.getNormal());
 
-        var sub = SublevelAccessor.get();
-        axisW = sub.toMainLevelRotation(level, blockPos, axisW);
-        axisH = sub.toMainLevelRotation(level, blockPos, axisH);
-        doorPos = sub.toMainLevelPosition(level, blockPos, doorPos);
+        var sub = SublevelAccessor.get().getContainingSublevelIfLoaded(level, blockPos);
+        if (sub.isEmpty()) return new PositionHolder(doorPos, axisW, axisH, isAirship(level, blockPos));
+        axisW = sub.get().toMainLevelRotation(axisW);
+        axisH = sub.get().toMainLevelRotation(axisH);
+        doorPos = sub.get().toMainLevelRotation(doorPos);
         return new PositionHolder(doorPos, axisW, axisH, isAirship(level, blockPos));
     }
 

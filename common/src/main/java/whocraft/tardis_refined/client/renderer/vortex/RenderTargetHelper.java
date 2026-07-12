@@ -171,10 +171,10 @@ public class RenderTargetHelper {
     private static void moveStackToPose(PoseStack stack, Level level, BlockPos pos, Vec3 camPos) {
         Vec3 actualPos = new Vec3(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
         var rotation = Axis.ZP.rotationDegrees(180);
-        var sub = SublevelAccessor.get();
-        if (sub.isBlockInSublevelSpace(level, pos)) {
-            actualPos = sub.toMainLevelPosition(level, pos, actualPos);
-            rotation = sub.toMainLevelRotation(level, pos, rotation);
+        var sub = SublevelAccessor.get().getContainingSublevelIfLoaded(level, pos);
+        if (sub.isPresent()) {
+            actualPos = sub.get().toMainLevelPos(actualPos);
+            rotation = sub.get().toMainLevelRotation(rotation);
         }
         stack.translate(actualPos.x - camPos.x, actualPos.y - camPos.y, actualPos.z - camPos.z);
         stack.mulPose(rotation);

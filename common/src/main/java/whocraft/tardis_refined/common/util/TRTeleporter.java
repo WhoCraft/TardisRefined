@@ -442,7 +442,10 @@ public class TRTeleporter {
     public static boolean teleportIfCollided(ServerLevel serverLevel, BlockPos blockPos, Entity entity, AABB teleportAABB) {
         AABB entityBoundingBox = TRTeleporter.getBoundingBoxWithMovement(entity);
 
-        teleportAABB = SublevelAccessor.get().toMainLevelAABB(serverLevel, blockPos, teleportAABB);
+        var sub = SublevelAccessor.get().getContainingSublevelIfLoaded(serverLevel, blockPos);
+        if (sub.isPresent()) {
+            teleportAABB = sub.get().toMainLevelAABB(teleportAABB);
+        }
 
         double insideBlockExpansion = 1.0E-7D; //Hardcoded value replicates logic from Entity#checkInsideBlocks
         AABB inflatedEntityBoundingBox = entityBoundingBox.inflate(insideBlockExpansion);

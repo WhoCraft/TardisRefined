@@ -44,16 +44,23 @@ public class VSAccessor implements SublevelAccessor {
 
         @Override
         public BlockPos toMainLevelPos(BlockPos pos) {
+            /*Vector3d pos = blockPosToVector(blockPos);
+            Vector3d worldPos = VSGameUtilsKt.getWorldCoordinates(level, blockPos, pos);
+            return vectorToBlockPos(worldPos);*/
             return pos;
         }
 
         @Override
         public Vec3 toMainLevelPos(Vec3 pos) {
+            /*Vector3d pos = VectorConversionsMCKt.toJOML(vector);
+            Vector3d worldPos = VSGameUtilsKt.getWorldCoordinates(level, blockPos, pos);
+            return VectorConversionsMCKt.toMinecraft(worldPos);*/
             return pos;
         }
 
         @Override
         public Vector3d toMainLevelAccurateDirection(Direction direction) {
+            //ship.getShipToWorld().transformDirection(directionToVector(direction))
             return SublevelAccessor.directionToVector(direction);
         }
 
@@ -61,6 +68,30 @@ public class VSAccessor implements SublevelAccessor {
         public Stream<BlockPos> toSublevelPositions(AABB worldAABB) {
             var shypAABB = toSublevelAABB(worldAABB);
             return BlockPos.betweenClosedStream(shypAABB);
+        }
+
+        @Override
+        public AABB toMainLevelAABB(AABB aabb) {
+            /*Vector3d min = new Vector3d();
+            Vector3d max = new Vector3d();
+            ship.getShipToWorld().transformAab(
+                    aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ,
+                    min, max
+            );
+            return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);*/
+            return aabb;
+        }
+
+        @Override
+        public Quaternionf toMainLevelRotation(Quaternionf rotation) {
+            //new Quaternionf().setFromNormalized(ship.getShipToWorld()).mul(rotation);
+            return rotation;
+        }
+
+        @Override
+        public Vec3 toMainLevelRotation(Vec3 direction) {
+            //vectorToVector(ship.getShipToWorld().transformDirection(vectorToVector(direction)))
+            return direction;
         }
 
         @Override
@@ -131,77 +162,7 @@ public class VSAccessor implements SublevelAccessor {
     }
 
     @Override
-    public AABB toMainLevelAABB(Level level, BlockPos pos, AABB aabb) {
-        /*Ship ship = VSGameUtilsKt.getShipManagingPos(level, pos);
-        if (ship != null) {
-            Vector3d min = new Vector3d();
-            Vector3d max = new Vector3d();
-            ship.getShipToWorld().transformAab(
-                    aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ,
-                    min, max
-            );
-            return new AABB(min.x, min.y, min.z, max.x, max.y, max.z);
-        } else {
-            return aabb;
-        }*/
-        return aabb;
-    }
-
-    @Override
-    public Quaternionf toMainLevelRotation(Level level, BlockPos position, Quaternionf rotation) {
-        /*Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
-        if (ship != null) {
-            return new Quaternionf().setFromNormalized(ship.getShipToWorld()).mul(rotation);
-        } else {
-            return rotation;
-        }*/
-        return rotation;
-    }
-
-    @Override
-    public Vector3d toMainLevelRotation(Level level, BlockPos position, Direction direction) {
-        /*Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
-        if (ship != null) {
-            return ship.getShipToWorld().transformDirection(directionToVector(direction));
-        } else {
-            return directionToVector(direction);
-        }*/
-        return SublevelAccessor.directionToVector(direction);
-    }
-
-    @Override
-    public Vec3 toMainLevelRotation(Level level, BlockPos position, Vec3 direction) {
-        /*Ship ship = VSGameUtilsKt.getShipManagingPos(level, position);
-        if (ship != null) {
-            return vectorToVector(ship.getShipToWorld().transformDirection(vectorToVector(direction)));
-        } else {
-            return direction;
-        }*/
-        return direction;
-    }
-
-    @Override
-    public BlockPos toMainLevelPosition(Level level, BlockPos blockPos) {
-        /*Vector3d pos = blockPosToVector(blockPos);
-        Vector3d worldPos = VSGameUtilsKt.getWorldCoordinates(level, blockPos, pos);
-        return vectorToBlockPos(worldPos);*/
-        return blockPos;
-    }
-
-    @Override
-    public Vec3 toMainLevelPosition(Level level, BlockPos blockPos, Vec3 vector) {
-        /*Vector3d pos = VectorConversionsMCKt.toJOML(vector);
-        Vector3d worldPos = VSGameUtilsKt.getWorldCoordinates(level, blockPos, pos);
-        return VectorConversionsMCKt.toMinecraft(worldPos);*/
-        return vector;
-    }
-
-    @Override
-    public Vec2 toMainLevelRotation(Level level, BlockPos blockPos, Vec2 rotation) {
-        /*var ship = VSGameUtilsKt.getShipManagingPos(level, blockPos);
-        if (ship != null) {
-            return vectorToRotation(ship.getShipToWorld().transformDirection(rotationToVector(rotation)));
-        }*/
-        return rotation;
+    public Optional<Sublevel> getContainingSublevelIfLoaded(Level level, Position position) {
+        return Optional.empty();
     }
 }

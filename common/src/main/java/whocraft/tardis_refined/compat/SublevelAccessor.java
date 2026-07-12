@@ -5,12 +5,10 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Position;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -21,7 +19,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Math;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.compat.sable.SableSublevelAccessor;
 
 import java.util.List;
@@ -58,38 +55,8 @@ public interface SublevelAccessor {
         }
 
         @Override
-        public AABB toMainLevelAABB(Level level, BlockPos pos, AABB aabb) {
-            return aabb;
-        }
-
-        @Override
-        public Quaternionf toMainLevelRotation(Level level, BlockPos position, Quaternionf rotation) {
-            return rotation;
-        }
-
-        @Override
-        public Vector3d toMainLevelRotation(Level level, BlockPos position, Direction direction) {
-            return directionToVector(direction);
-        }
-
-        @Override
-        public Vec3 toMainLevelRotation(Level level, BlockPos position, Vec3 direction) {
-            return direction;
-        }
-
-        @Override
-        public BlockPos toMainLevelPosition(Level level, BlockPos blockPos) {
-            return blockPos;
-        }
-
-        @Override
-        public Vec3 toMainLevelPosition(Level level, BlockPos blockPos, Vec3 vector) {
-            return vector;
-        }
-
-        @Override
-        public Vec2 toMainLevelRotation(Level level, BlockPos blockPos, Vec2 rotation) {
-            return rotation;
+        public Optional<Sublevel> getContainingSublevelIfLoaded(Level level, Position position) {
+            return Optional.empty();
         }
     };
 
@@ -113,6 +80,12 @@ public interface SublevelAccessor {
             var shypAABB = toSublevelAABB(worldAABB);
             return BlockPos.betweenClosedStream(shypAABB);
         }
+
+        AABB toMainLevelAABB(AABB aabb);
+
+        Quaternionf toMainLevelRotation(Quaternionf rotation);
+
+        Vec3 toMainLevelRotation(Vec3 direction);
 
         boolean isHorizontalEnough();
 
@@ -148,6 +121,21 @@ public interface SublevelAccessor {
             @Override
             public Vector3d toMainLevelAccurateDirection(Direction direction) {
                 return directionToVector(direction);
+            }
+
+            @Override
+            public AABB toMainLevelAABB(AABB aabb) {
+                return aabb;
+            }
+
+            @Override
+            public Quaternionf toMainLevelRotation(Quaternionf rotation) {
+                return rotation;
+            }
+
+            @Override
+            public Vec3 toMainLevelRotation(Vec3 direction) {
+                return direction;
             }
 
             @Override
@@ -208,19 +196,11 @@ public interface SublevelAccessor {
 
     boolean collidesWithSublevel(Level level, AABB boundingBox);
 
-    AABB toMainLevelAABB(Level level, BlockPos pos, AABB aabb);
+    Optional<Sublevel> getContainingSublevelIfLoaded(Level level, Position position);
 
-    Quaternionf toMainLevelRotation(Level level, BlockPos position, Quaternionf rotation);
-
-    Vector3d toMainLevelRotation(Level level, BlockPos position, Direction direction);
-
-    Vec3 toMainLevelRotation(Level level, BlockPos position, Vec3 direction);
-
-    BlockPos toMainLevelPosition(Level level, BlockPos blockPos);
-
-    Vec3 toMainLevelPosition(Level level, BlockPos blockPos, Vec3 vector);
-
-    Vec2 toMainLevelRotation(Level level, BlockPos blockPos, Vec2 rotation);
+    default Optional<Sublevel> getContainingSublevelIfLoaded(Level level, BlockPos position) {
+        return getContainingSublevelIfLoaded(level, position.getCenter());
+    }
 
     static Vector3d blockPosToVector(BlockPos blockPos) {
         return new Vector3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());

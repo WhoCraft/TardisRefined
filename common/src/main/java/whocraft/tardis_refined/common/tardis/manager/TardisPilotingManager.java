@@ -580,8 +580,9 @@ public class TardisPilotingManager extends TickableHandler {
         if (sub.collidesWithSublevel(level, pos)) {
             return type.ground;
         }
-        if (sub.isBlockInSublevelSpace(level, pos)) {
-            if (type.checkWorldFromShipyard && !isLegalLandingBlockExcludeShips(level, sub.toMainLevelPosition(level, pos), type)) {
+        var subLevel = sub.getContainingSublevelIfLoaded(level, pos);
+        if (subLevel.isPresent()) {
+            if (type.checkWorldFromShipyard && !isLegalLandingBlockExcludeShips(level, subLevel.get().toMainLevelPos(pos), type)) {
                 return false;
             }
         }

@@ -21,7 +21,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
@@ -65,14 +64,6 @@ public class SableSublevelAccessor implements SublevelAccessor {
         return encapsulating(getCorners(aabb).map(pose::transformPositionInverse));
     }
 
-    private static BlockPos toMainLevelPosition(SubLevelAccess sub, BlockPos pos) {
-        return SublevelAccessor.vectorToBlockPos(sub.logicalPose().transformPosition(SublevelAccessor.blockPosToVector(pos)));
-    }
-
-    private static Vec3 toMainLevelPosition(SubLevelAccess sub, Vec3 pos) {
-        return SublevelAccessor.vectorToVector(sub.logicalPose().transformPosition(SublevelAccessor.vectorToVector(pos)));
-    }
-
     public static class SableSublevel implements Sublevel {
 
         private final SubLevelAccess access;
@@ -95,17 +86,32 @@ public class SableSublevelAccessor implements SublevelAccessor {
 
         @Override
         public BlockPos toMainLevelPos(BlockPos pos) {
-            return toMainLevelPosition(access, pos);
+            return SublevelAccessor.vectorToBlockPos(access.logicalPose().transformPosition(SublevelAccessor.blockPosToVector(pos)));
         }
 
         @Override
         public Vec3 toMainLevelPos(Vec3 pos) {
-            return toMainLevelPosition(access, pos);
+            return SublevelAccessor.vectorToVector(access.logicalPose().transformPosition(SublevelAccessor.vectorToVector(pos)));
         }
 
         @Override
         public Vector3d toMainLevelAccurateDirection(Direction direction) {
             return access.logicalPose().transformNormal(SublevelAccessor.directionToVector(direction));
+        }
+
+        @Override
+        public AABB toMainLevelAABB(AABB aabb) {
+            return transformAABB(access.logicalPose(), aabb);
+        }
+
+        @Override
+        public Quaternionf toMainLevelRotation(Quaternionf rotation) {
+            return new Quaternionf(access.logicalPose().orientation().mul(new Quaterniond(rotation), new Quaterniond()));
+        }
+
+        @Override
+        public Vec3 toMainLevelRotation(Vec3 direction) {
+            return access.logicalPose().transformNormal(direction);
         }
 
         @Override
@@ -293,72 +299,7 @@ public class SableSublevelAccessor implements SublevelAccessor {
     }
 
     @Override
-    public AABB toMainLevelAABB(Level level, BlockPos pos, AABB aabb) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, pos);
-        if (sub != null) {
-            return transformAABB(sub.logicalPose(), aabb);
-        } else {
-            return aabb;
-        }
-    }
-
-    @Override
-    public Quaternionf toMainLevelRotation(Level level, BlockPos position, Quaternionf rotation) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, position);
-        if (sub != null) {
-            return new Quaternionf(sub.logicalPose().orientation().mul(new Quaterniond(rotation), new Quaterniond()));
-        } else {
-            return rotation;
-        }
-    }
-
-    @Override
-    public Vector3d toMainLevelRotation(Level level, BlockPos position, Direction direction) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, position);
-        if (sub != null) {
-            return sub.logicalPose().transformNormal(SublevelAccessor.directionToVector(direction));
-        } else {
-            return SublevelAccessor.directionToVector(direction);
-        }
-    }
-
-    @Override
-    public Vec3 toMainLevelRotation(Level level, BlockPos position, Vec3 direction) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, position);
-        if (sub != null) {
-            return sub.logicalPose().transformNormal(direction);
-        } else {
-            return direction;
-        }
-    }
-
-    @Override
-    public BlockPos toMainLevelPosition(Level level, BlockPos blockPos) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, blockPos);
-        if (sub != null) {
-            return toMainLevelPosition(sub, blockPos);
-        } else {
-            return blockPos;
-        }
-    }
-
-    @Override
-    public Vec3 toMainLevelPosition(Level level, BlockPos blockPos, Vec3 vector) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, blockPos);
-        if (sub != null) {
-            return toMainLevelPosition(sub, vector);
-        } else {
-            return vector;
-        }
-    }
-
-    @Override
-    public Vec2 toMainLevelRotation(Level level, BlockPos blockPos, Vec2 rotation) {
-        var sub = SableCompanion.INSTANCE.getContaining(level, blockPos);
-        if (sub != null) {
-            return SublevelAccessor.vectorToRotation(sub.logicalPose().transformNormal(SublevelAccessor.rotationToVector(rotation)));
-        } else {
-            return rotation;
-        }
+    public Optional<Sublevel> getContainingSublevelIfLoaded(Level level, Position position) {
+        return Optional.ofNullable(SableCompanion.INSTANCE.getContaining(level, position)).map(SableSublevel::new);
     }
 }
