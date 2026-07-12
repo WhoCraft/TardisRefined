@@ -15,6 +15,7 @@
 - New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
 - New config option to toggle the above setting separately when the door is on a Valkyrien Skies ship.
 - New config option to disable the collision box of the door while open with Immersive Portals integration enabled on Valkyrien Skies ships.
+- Banned Dimensions and Adventure Mode Defaults can now accept namespace, substring and regex entries.
 
 #### Bug Fix
 - Bug fix: TARDIS exterior disappears when moved by other mods.
