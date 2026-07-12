@@ -17,9 +17,13 @@ import java.util.stream.Collectors;
 
 public class ProgressionManager extends BaseHandler {
 
+    private final Level level;
     private ArrayList<ResourceKey<Level>> DISCOVERED_LEVELS = new ArrayList<>();
 
-    public ProgressionManager() {
+    private boolean initialized = false;
+
+    public ProgressionManager(Level level) {
+        this.level = level;
         this.DISCOVERED_LEVELS = new ArrayList<>();
     }
 
@@ -29,9 +33,14 @@ public class ProgressionManager extends BaseHandler {
             return new ArrayList<>(DimensionUtil.getAllowedDimensions(Platform.getServer()));
         }
 
-        for (String defaults : TRConfig.SERVER.ADVENTURE_MODE_DEFAULTS.get()) {
-            ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(defaults));
-            addDiscoveredLevel(level);
+        if (!initialized && level.getServer() != null) {
+            var predicate = DimensionUtil.getDimensionPredicate(TRConfig.SERVER.ADVENTURE_MODE_DEFAULTS.get());
+            for (var dim : level.getServer().getAllLevels()) {
+                if (predicate.test(dim.dimension())) {
+                    addDiscoveredLevel(dim.dimension());
+                }
+            }
+            initialized = true;
         }
 
         return DISCOVERED_LEVELS.stream()
