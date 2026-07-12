@@ -32,6 +32,7 @@ import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
@@ -176,10 +177,16 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                     TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
                     pilotManager.setCurrentLocation(navLocation);
                     pilotManager.setTargetLocation(navLocation);
-                    pilotManager.setFuel(pilotManager.getMaximumFuel());
+                    if (openEye) {
+                        pilotManager.setFuel(pilotManager.getMaximumFuel());
+                    }
                     tardisLevelOperator.setInitiallyGenerated(true);
-                    tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
-                    intManager.openTheEye(openEye);
+                    tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE); // Will be updated in `openTheEye` if `openEye` is true.
+                    if (openEye) {
+                        intManager.openTheEye(true, false);
+                    } else {
+                        intManager.setHumEntry(TardisHums.CAVE);
+                    }
                     serverLevel.setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                     generated.set(true);
                     tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
