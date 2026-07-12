@@ -211,15 +211,25 @@ public class TardisNavLocation {
         return position;
     }
 
+    private Optional<SublevelAccessor.Sublevel> getNonReferencedSublevel() {
+	    return level != null ? SublevelAccessor.get().getContainingSublevelIfLoaded(level, position) : Optional.empty();
+    }
+
     public BlockPos getRealPosition() {
         updateCachedPosition();
-        return sublevelCache.flatMap(SublevelData::visualPos).orElse(position);
+        return sublevelCache.flatMap(SublevelData::visualPos).orElseGet(
+                () -> getNonReferencedSublevel().map(p -> p.toMainLevelPos(position)).orElse(position)
+        );
     }
 
     public Vec3 getRealAccuratePosition(MinecraftServer server) {
         return sublevelReference.flatMap(data -> data.tryLoad(server)).map(
                 p -> p.sublevel().toMainLevelPos(p.pos())
-        ).orElseGet(() -> Vec3.atBottomCenterOf(position));
+        ).orElseGet(
+                () -> getNonReferencedSublevel().map(
+                        p -> p.toMainLevelPos(Vec3.atBottomCenterOf(position))
+                ).orElse(Vec3.atBottomCenterOf(position))
+        );
     }
 
     public TardisNavLocation setPosition(BlockPos pos) {
@@ -234,14 +244,18 @@ public class TardisNavLocation {
 
     public Direction getRealDirection() {
         updateCachedPosition();
-        return sublevelCache.flatMap(SublevelData::visualDirection).orElse(direction);
+        return sublevelCache.flatMap(SublevelData::visualDirection).orElse(
+                getNonReferencedSublevel().map(level -> level.toMainLevelDirection(direction)).orElse(direction)
+        );
     }
 
     public Vector3d getRealAccurateDirection(MinecraftServer server) {
         return sublevelReference.flatMap(
                 ref -> ref.tryLoad(server).map(pos -> pos.sublevel().toMainLevelAccurateDirection(direction))
         ).orElseGet(
-                () -> SublevelAccessor.directionToVector(direction)
+                () -> getNonReferencedSublevel().map(level -> level.toMainLevelAccurateDirection(direction)).orElse(
+                        SublevelAccessor.directionToVector(direction)
+                )
         );
     }
 

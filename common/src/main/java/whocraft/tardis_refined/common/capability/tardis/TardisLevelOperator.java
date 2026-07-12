@@ -284,8 +284,8 @@ public class TardisLevelOperator {
         Direction targetDirection = internalDoor != null ? internalDoor.getTeleportRotation() : entity.getDirection();
 
         // Define source and target locations
-        TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel).generateSublevelData();
-        TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, targetDirection, targetServerLevel).generateSublevelData();
+        TardisNavLocation sourceLocation = new TardisNavLocation(externalShellPos, shellDirection, shellLevel);
+        TardisNavLocation targetLocation = new TardisNavLocation(targetPosition, targetDirection, targetServerLevel);
 
         // Update current location
         this.pilotingManager.setCurrentLocation(new TardisNavLocation(externalShellPos, shellDirection.getOpposite(), shellLevel));
@@ -300,8 +300,6 @@ public class TardisLevelOperator {
         } else {
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, targetLocation, true);
         }
-        sourceLocation.removeSublevelData(entity.getServer());
-        targetLocation.removeSublevelData(entity.getServer());
         return true;
     }
 
@@ -342,12 +340,10 @@ public class TardisLevelOperator {
                 targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
             }
 
-            TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel).generateSublevelData();
-            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel).generateSublevelData();
+            TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
+            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
 
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
-            sourceLocation.removeSublevelData(entity.getServer());
-            destinationLocation.removeSublevelData(entity.getServer());
             return true;
         }
 
