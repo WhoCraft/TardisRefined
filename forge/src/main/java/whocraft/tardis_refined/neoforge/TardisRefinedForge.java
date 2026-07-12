@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.neoforge;
 
+import net.minecraft.Util;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
@@ -24,6 +25,8 @@ import whocraft.tardis_refined.compat.create.CreateIntergrationsInit;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.portals.neoforge.PortalsCompatForge;
 import whocraft.tardis_refined.compat.trinkets.CuriosUtil;
+
+import java.util.concurrent.CompletableFuture;
 
 import java.util.List;
 import java.util.Optional;
@@ -102,10 +105,12 @@ public class TardisRefinedForge {
 
 
         //Tags
+        var moddedLookup = CompletableFuture.supplyAsync(WorldGenProvider::createLookup, Util.backgroundExecutor());
         generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
         generator.addProvider(e.includeServer(), new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
         generator.addProvider(e.includeServer(), new TRPoiTypeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
+        generator.addProvider(e.includeServer(), new TRDamageTypeTagProvider(generator.getPackOutput(), moddedLookup, e.getExistingFileHelper()));
 
     }
 }
