@@ -292,7 +292,11 @@ public class TardisInteriorManager extends TickableHandler {
         level.setBlock(pillarBottomRight, TRBlockRegistry.ARTRON_PILLAR.get().defaultBlockState(), Block.UPDATE_ALL);
     }
 
-    public void openTheEye(boolean forced) {
+    public void openTheEye(boolean placePillars) {
+        openTheEye(placePillars, true);
+    }
+
+    public void openTheEye(boolean placePillars, boolean spawnLightning) {
 
         Level level = this.operator.getLevel();
         this.operator.setTardisState(TardisLevelOperator.STATE_EYE_OF_HARMONY);
@@ -301,7 +305,7 @@ public class TardisInteriorManager extends TickableHandler {
         AABB portalDoorLength = new AABB(1011, 72, 54, 1015, 71, 56);
         AABB portalDoorWidth = new AABB(1014, 71, 57, 1012, 72, 53);
 
-        if (forced) {
+        if (placePillars) {
             this.setEyePillars(level);
         }
 
@@ -309,9 +313,11 @@ public class TardisInteriorManager extends TickableHandler {
         BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> level.setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
         BlockPos.betweenClosedStream(portalDoorWidth).forEach(x -> level.setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
 
-        LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
-        lightningBolt.setPos(eyeCenter);
-        this.operator.getLevel().addFreshEntity(lightningBolt);
+        if (spawnLightning) {
+            LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
+            lightningBolt.setPos(eyeCenter);
+            this.operator.getLevel().addFreshEntity(lightningBolt);
+        }
 
         setHumEntry(TardisHums.getDefaultHum());
 
