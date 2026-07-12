@@ -8,6 +8,7 @@
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
 - Updated create-fabric integration to create 6.
+- Tweaked corridor generation to generate one chunk at a time for any new TARDIS created after this update. Should hopefully fix errors where corridors sometimes don't generate in some chunks. Any existing TARDIS created before this update will be unaffected.
 - Landing pad is now always considered a safe landing location, even when entrance blocked or above the nether roof.
 
 #### Configs
