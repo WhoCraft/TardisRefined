@@ -5,6 +5,7 @@ import net.minecraft.nbt.ListTag;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.TardisWaypoint;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,8 @@ public class TardisWaypointManager extends BaseHandler {
     public void deleteWaypoint(UUID id) {
         waypoints.removeIf(x -> {
             if (x.getId().equals(id)) {
-                x.getLocation().removeSublevelData();
+                var level = x.getLocation().getLevel();
+                x.getLocation().removeSublevelData(level != null ? level.getServer() : Platform.getServer());
                 return true;
             }
             return false;

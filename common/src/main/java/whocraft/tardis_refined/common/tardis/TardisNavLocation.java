@@ -149,6 +149,10 @@ public class TardisNavLocation {
         }
     }
 
+    /**
+     * Loads the referenced sublevel and updates the position accordingly.
+     * Usually you don't need to run this manually.
+     */
     public void updateCachedPosition() {
 	    updateLevel();
         forMinecraftServer(server -> sublevelReference.flatMap(ref -> ref.tryLoad(server)).ifPresent(pos -> {
@@ -162,6 +166,12 @@ public class TardisNavLocation {
         sublevelCache.ifPresent(data -> data.update(this));
     }
 
+    /**
+     * If this location is within a loaded sublevel, it will add a sublevel reference to that sublevel.
+     * If it was previously referencing a different sublevel that reference will be destroyed correctly.
+     * Important, if you run this, you need to run {@link #removeSublevelData(MinecraftServer)} whenever the value will be reassigned or removed.
+     * @return this
+     */
     public TardisNavLocation generateSublevelData() {
         updateLevel();
         if (level != null) {
@@ -307,10 +317,11 @@ public class TardisNavLocation {
         return copy;
     }
 
-    public void removeSublevelData() {
-        this.removeSublevelData(level != null ? level.getServer() : Platform.getServer());
-    }
-
+    /**
+     * Removes any sublevel reference and destroys it correctly.
+     * Should always be called when you remove this value if you have used {@link #generateSublevelData()}.
+     * @param server Reference to the current Minecraft Server. Accepts null values, but you should always pass a valid server if possible as otherwise the reference will not be destroyed.
+     */
     public void removeSublevelData(MinecraftServer server) {
         if (server != null) {
             sublevelReference.ifPresent(data -> data.destroy(server));
