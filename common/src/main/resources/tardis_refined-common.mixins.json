@@ -12,10 +12,10 @@
     "PlayerEntityMixin",
     "ServerPlayerMixin",
     "StructureManagerAccessor",
-    "SubLevelAssemblyHelperMixin",
-    "SubLevelHoldingChunkMapAccessor",
     "VillagerGoalPackagesMixin",
-    "VillagerMixin"
+    "VillagerMixin",
+    "compat.sable.SubLevelAssemblyHelperMixin",
+    "compat.sable.SubLevelHoldingChunkMapAccessor"
   ],
   "client": [
     "LocalPlayerMixin",

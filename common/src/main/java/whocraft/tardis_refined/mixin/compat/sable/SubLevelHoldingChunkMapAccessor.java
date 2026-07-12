@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin;
+package whocraft.tardis_refined.mixin.compat.sable;
 
 import dev.ryanhcode.sable.sublevel.storage.holding.SubLevelHoldingChunk;
 import dev.ryanhcode.sable.sublevel.storage.holding.SubLevelHoldingChunkMap;

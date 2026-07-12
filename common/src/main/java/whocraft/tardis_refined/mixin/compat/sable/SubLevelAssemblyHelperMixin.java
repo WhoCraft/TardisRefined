@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin;
+package whocraft.tardis_refined.mixin.compat.sable;
 
 import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
 import dev.ryanhcode.sable.companion.math.BoundingBox3ic;
@@ -24,6 +24,8 @@ public class SubLevelAssemblyHelperMixin {
             var tLevel = server.getLevel(tardis);
             if (tLevel != null) {
                 TardisLevelOperator.get(tLevel).ifPresent(op -> {
+                    // Tracking points currently do not store the orientation of the sublevel.
+                    // This makes sure the visual direction is updated one last time while the ship is being disassembled.
                     op.getPilotingManager().getFastReturnLocation().updateCachedPosition();
                     op.getPilotingManager().getCurrentLocation().updateCachedPosition();
                     op.getPilotingManager().getTargetLocation().updateCachedPosition();
