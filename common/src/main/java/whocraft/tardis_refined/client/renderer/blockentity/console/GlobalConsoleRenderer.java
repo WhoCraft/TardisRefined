@@ -2,6 +2,7 @@ package whocraft.tardis_refined.client.renderer.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -125,33 +126,36 @@ public class GlobalConsoleRenderer implements BlockEntityRenderer<GlobalConsoleB
                 ShellSelectionScreen.generateDummyGlobalShell();
             }
 
-            ShellSelectionScreen.GLOBALSHELL_BLOCKENTITY.setTardisId(reactions.getLevelKey());
+	        //noinspection ConstantValue The game once crashed because levelRenderer was null.
+	        if (ShellSelectionScreen.GLOBALSHELL_BLOCKENTITY.getLevel() instanceof ClientLevel l && l.levelRenderer != null) {
+                ShellSelectionScreen.GLOBALSHELL_BLOCKENTITY.setTardisId(reactions.getLevelKey());
 
-            // Dynamic flickering alpha for a hologram effect
-            float flickerAlpha = 0.2f + level.random.nextFloat() * 0.1f;
+                // Dynamic flickering alpha for a hologram effect
+                float flickerAlpha = 0.2f + level.random.nextFloat() * 0.1f;
 
-            boolean recoveryOrCrashing = reactions.isCrashing() || reactions.isInRecovery();
+                boolean recoveryOrCrashing = reactions.isCrashing() || reactions.isInRecovery();
 
-            float time = level.getGameTime() / 100.0f;
-            float red = recoveryOrCrashing ? 0.5f + (float) Math.sin(time) * 0.5f : (float) color.x;
-            float green = recoveryOrCrashing ? 0.5f + (float) Math.sin(time + Math.PI / 2) * 0.5f : (float) color.y;
-            float blue = recoveryOrCrashing ? 0.5f + (float) Math.sin(time + Math.PI) * 0.5f : (float) color.z;
+                float time = level.getGameTime() / 100.0f;
+                float red = recoveryOrCrashing ? 0.5f + (float) Math.sin(time) * 0.5f : (float) color.x;
+                float green = recoveryOrCrashing ? 0.5f + (float) Math.sin(time + Math.PI / 2) * 0.5f : (float) color.y;
+                float blue = recoveryOrCrashing ? 0.5f + (float) Math.sin(time + Math.PI) * 0.5f : (float) color.z;
 
-            model.setIgnoreAnmationAlpha(!reactions.isTakingOff() && !reactions.isLanding());
-            model.renderShell(
-                    ShellSelectionScreen.GLOBALSHELL_BLOCKENTITY,
-                    false,
-                    true,
-                    poseStack,
-                    bufferSource.getBuffer(RenderType.entityTranslucent(pattern.shellTexture().texture())),
-                    packedLight,
-                    OverlayTexture.NO_OVERLAY,
-                    red,
-                    green,
-                    blue,
-                    flickerAlpha
-            );
-            model.setIgnoreAnmationAlpha(false);
+                model.setIgnoreAnmationAlpha(!reactions.isTakingOff() && !reactions.isLanding());
+                model.renderShell(
+                        ShellSelectionScreen.GLOBALSHELL_BLOCKENTITY,
+                        false,
+                        true,
+                        poseStack,
+                        bufferSource.getBuffer(RenderType.entityTranslucent(pattern.shellTexture().texture())),
+                        packedLight,
+                        OverlayTexture.NO_OVERLAY,
+                        red,
+                        green,
+                        blue,
+                        flickerAlpha
+                );
+                model.setIgnoreAnmationAlpha(false);
+            }
 
             poseStack.popPose();
         }
