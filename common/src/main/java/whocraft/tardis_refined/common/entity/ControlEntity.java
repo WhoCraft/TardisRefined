@@ -214,7 +214,7 @@ public class ControlEntity extends Entity {
 
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
-        this.consoleBlockPos = NbtUtils.readBlockPos(compound, NbtConstants.CONSOLE_POS).get();
+        this.consoleBlockPos = NbtUtils.readBlockPos(compound, NbtConstants.CONSOLE_POS).orElse(BlockPos.ZERO);
 
         float width = compound.getFloat(NbtConstants.CONTROL_SIZE_WIDTH);
         float height = compound.getFloat(NbtConstants.CONTROL_SIZE_HEIGHT);
