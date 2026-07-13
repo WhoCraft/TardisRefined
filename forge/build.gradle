@@ -58,6 +58,10 @@ if (false) {
 
 }
 
+tasks.remapJar {
+    atAccessWideners.add("tardis_refined.accesswidener")
+}
+
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
 
