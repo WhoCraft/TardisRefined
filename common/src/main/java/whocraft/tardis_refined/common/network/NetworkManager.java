@@ -30,7 +30,6 @@ public abstract class NetworkManager {
         throw new RuntimeException(PlatformWarning.addWarning(NetworkManager.class));
     }
 
-    @Environment(EnvType.CLIENT)
     public abstract <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver);
 
     public abstract <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver);
