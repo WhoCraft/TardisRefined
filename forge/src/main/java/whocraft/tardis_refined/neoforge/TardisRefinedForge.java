@@ -71,9 +71,10 @@ public class TardisRefinedForge {
         generator.addProvider(e.includeClient(), new ParticleProvider(generator));
 
         /*Data Pack*/
+        var worldgen = new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider());
         ProviderBlockTags blocks = generator.addProvider(e.includeServer(), new ProviderBlockTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
         generator.addProvider(e.includeServer(), new ItemTagProvider(generator.getPackOutput(), e.getLookupProvider(), blocks.contentsGetter(), existingFileHelper));
-        generator.addProvider(e.includeServer(), new WorldGenProvider(generator.getPackOutput(), e.getLookupProvider()));
+        generator.addProvider(e.includeServer(), worldgen);
 
         generator.addProvider(e.includeServer(), new ProviderLootTable(generator.getPackOutput()));
         generator.addProvider(e.includeServer(), new RecipeProvider(generator, e.getLookupProvider()));
@@ -85,12 +86,11 @@ public class TardisRefinedForge {
 
 
         //Tags
-        var moddedLookup = CompletableFuture.supplyAsync(WorldGenProvider::createLookup, Util.backgroundExecutor());
         generator.addProvider(e.includeServer(), new TRBiomeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
 
         generator.addProvider(e.includeServer(), new ProviderEntityTags(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
         generator.addProvider(e.includeServer(), new TRPoiTypeTagsProvider(generator.getPackOutput(), e.getLookupProvider(), e.getExistingFileHelper()));
-        generator.addProvider(e.includeServer(), new TRDamageTypeTagProvider(generator.getPackOutput(), moddedLookup, e.getExistingFileHelper()));
+        generator.addProvider(e.includeServer(), new TRDamageTypeTagProvider(generator.getPackOutput(), worldgen.getRegistryProvider(), e.getExistingFileHelper()));
 
     }
 }
