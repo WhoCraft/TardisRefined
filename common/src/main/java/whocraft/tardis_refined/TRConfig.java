@@ -55,13 +55,13 @@ public class TRConfig {
     public static class Common {
         public final ModConfigSpec.BooleanValue COMPATIBILITY_IP;
 
-        public final ModConfigSpec.BooleanValue IP_VS_COLLISION;
+        public final ModConfigSpec.BooleanValue IP_SUBLEVEL_COLLISION;
 
         public Common(ModConfigSpec.Builder builder) {
             builder.push("compatibility");
             COMPATIBILITY_IP = builder.comment("Toggle Immersive Portals compatibility (TR 2.0+). 2.0 has limited support").translation(ModMessages.CONFIG_IP_COMPAT).define("immersive_portals_support", true);
-            builder.push("immersive_portals_valkyrien_skies");
-            IP_VS_COLLISION = builder.comment("If false, the TARDIS door's collision box will be disabled when opened on a Valkyrien Skies ship if teleportation_mode_vs is set to PORTAL.").translation(ModMessages.CONFIG_IP_VS_COLLISION).define("open_door_ship_collision", true);
+            builder.push("immersive_portals_sublevels");
+            IP_SUBLEVEL_COLLISION = builder.comment("If false, the TARDIS door's collision box will be disabled when opened on a sublevel if teleportation_mode_sublevels is set to PORTAL.").translation(ModMessages.CONFIG_IP_SUBLEVEL_COLLISION).define("open_door_sublevel_collision", true);
             builder.pop();
             builder.pop();
         }
@@ -74,7 +74,7 @@ public class TRConfig {
         public final ModConfigSpec.BooleanValue ADVENTURE_MODE;
 
         public final ModConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION;
-        public final ModConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_VS;
+        public final ModConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_SUBLEVELS;
 
         public enum IPTeleportationMode {
             PORTAL,
@@ -93,8 +93,8 @@ public class TRConfig {
             builder.push("immersive_portals");
             IP_TELEPORTATION = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
             builder.pop();
-            builder.push("immersive_portals_valkyrien_skies");
-            IP_TELEPORTATION_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_VS).defineEnum("teleportation_mode_vs", IPTeleportationMode.ITP);
+            builder.push("immersive_portals_sublevels");
+            IP_TELEPORTATION_SUBLEVELS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a sublevel. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_SUBLEVELS).defineEnum("teleportation_mode_sublevels", IPTeleportationMode.ITP);
             builder.pop();
             builder.pop();
         }

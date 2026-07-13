@@ -109,7 +109,7 @@ public class GlobalDoorBlock extends InternalDoorBlock {
         BlockEntity blockEntity = blockGetter.getBlockEntity(blockPos);
         //noinspection ConstantValue IntelliJ got confused by this for some reason...
         if (
-                TRConfig.COMMON_SPEC.isLoaded() && !TRConfig.COMMON.IP_VS_COLLISION.get() && blockEntity != null && blockEntity.getLevel() != null &&
+                TRConfig.COMMON_SPEC.isLoaded() && !TRConfig.COMMON.IP_SUBLEVEL_COLLISION.get() && blockEntity != null && blockEntity.getLevel() != null &&
                 ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(blockEntity.getLevel().dimension()) &&
                 SublevelAccessor.get().isBlockInSublevelSpace(blockEntity.getLevel(), blockPos)
         ) {

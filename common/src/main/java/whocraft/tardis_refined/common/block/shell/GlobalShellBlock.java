@@ -66,7 +66,7 @@ public class GlobalShellBlock extends ShellBaseBlock {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
             //noinspection ConstantValue IntelliJ got confused by this for some reason...
             if (
-                    !TRConfig.COMMON.IP_VS_COLLISION.get() &&
+                    !TRConfig.COMMON.IP_SUBLEVEL_COLLISION.get() &&
                     ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(shellBlockEntity.getTardisId()) &&
                     SublevelAccessor.get().isBlockInSublevelSpace(shellBlockEntity.getLevel(), blockPos)
             ) {

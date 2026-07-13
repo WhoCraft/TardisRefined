@@ -424,7 +424,7 @@ public class ImmersivePortals {
 
     private static void setAllowTeleportation(BotiPortalEntity portal, boolean isOnAirship) {
         if (portal.level().isClientSide()) return;
-        if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_VS.get() : TRConfig.SERVER.IP_TELEPORTATION.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
+        if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_SUBLEVELS.get() : TRConfig.SERVER.IP_TELEPORTATION.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
             portal.setTeleportable(false);
         } else {
             portal.setTeleportable(true);
