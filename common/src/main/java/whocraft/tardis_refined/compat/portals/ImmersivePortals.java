@@ -21,7 +21,6 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import qouteall.dimlib.api.DimensionAPI;
 import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
@@ -100,21 +99,6 @@ public class ImmersivePortals {
 
     public static UUID getUUIDForTARDIS(ResourceKey<Level> tardisID) {
         return UUID.fromString(tardisID.location().getPath());
-    }
-
-    public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
-        MinecraftServer server = MiscHelper.getServer();
-        if (server == null) return null;
-        ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
-        if (world != null) return world;
-        BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
-        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
-        DimensionAPI.addDimensionDynamically(server, id.location(), dimensionFactory.apply(server, dimensionKey));
-        // TODO, Is this important? DimensionAPI.saveDimensionConfiguration(id);
-
-        world = server.getLevel(id);
-        DimensionHandler.addDimension(world.dimension());
-        return world;
     }
 
     public static void init() {

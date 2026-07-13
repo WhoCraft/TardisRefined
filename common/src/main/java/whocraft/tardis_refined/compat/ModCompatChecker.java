@@ -4,6 +4,10 @@ import whocraft.tardis_refined.common.util.Platform;
 
 public class ModCompatChecker {
 
+    public static boolean dimLib() {
+        return Platform.isModLoaded("dimlib");
+    }
+
     public static boolean immersivePortals() {
         try {
             Class.forName("qouteall.q_misc_util.MiscHelper");

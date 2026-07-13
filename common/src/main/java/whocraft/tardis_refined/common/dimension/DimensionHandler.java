@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.util.PlatformWarning;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals.DimLibCompat;
 import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -88,8 +88,8 @@ public class DimensionHandler {
         ResourceKey<Level> levelResourceKey = ResourceKey.create(Registries.DIMENSION, resourceLocation);
 
 
-        if (ModCompatChecker.immersivePortals()) {
-            return ImmersivePortals.createDimension(interactionLevel, levelResourceKey);
+        if (ModCompatChecker.dimLib()) {
+            return DimLibCompat.createDimension(interactionLevel, levelResourceKey);
         }
 
         if (interactionLevel instanceof ServerLevel serverLevel) {
