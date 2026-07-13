@@ -41,7 +41,7 @@ public class TardisRefinedForge {
         modEventBus.addListener(this::onGatherData);
         modEventBus.addListener(this::onPostInit);
 
-        container.registerConfig(ModConfig.Type.COMMON, TRConfig.COMMON_SPEC);
+        container.registerConfig(ModConfig.Type.STARTUP, TRConfig.COMMON_SPEC, container.getModId() + "-common.toml");
         container.registerConfig(ModConfig.Type.CLIENT, TRConfig.CLIENT_SPEC);
         container.registerConfig(ModConfig.Type.SERVER, TRConfig.SERVER_SPEC);
 
