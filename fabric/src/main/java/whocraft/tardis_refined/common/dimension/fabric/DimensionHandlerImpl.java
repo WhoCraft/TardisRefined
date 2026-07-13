@@ -28,6 +28,7 @@ import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.DimLibCompat;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.mixin.MappedRegistryAccessor;
 
 import java.util.concurrent.Executor;
@@ -107,6 +108,10 @@ public class DimensionHandlerImpl {
         serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
         serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
         server.tell(server.wrapRunnable(chunkListener::stop));
+
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onDimensionAdded(server);
+        }
 
         return newLevel;
     }

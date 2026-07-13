@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
+import qouteall.q_misc_util.dimension.DimensionIntId;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.EventResult;
@@ -590,5 +591,9 @@ public class ImmersivePortals {
         });
 
         EXISTING_PORTALS.clear();
+    }
+
+    public static void onDimensionAdded(MinecraftServer server) {
+        DimensionIntId.onServerDimensionChanged(server);
     }
 }

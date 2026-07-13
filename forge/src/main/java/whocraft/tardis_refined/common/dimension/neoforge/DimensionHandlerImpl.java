@@ -28,6 +28,8 @@ import net.neoforged.neoforge.event.level.LevelEvent;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
@@ -102,6 +104,10 @@ public class DimensionHandlerImpl {
         serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
         serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
         server.tell(server.wrapRunnable(chunkListener::stop));
+
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onDimensionAdded(server);
+        }
 
         return newLevel;
     }
