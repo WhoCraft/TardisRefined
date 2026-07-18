@@ -8,6 +8,10 @@
 #### Changes
 - Amethyst Screwdriver tooltip now is colored gray.
 - Updated create-fabric integration to create 6.
+- Added Zeiton Glass
+- Added Co-ordinate lock control
+- Naming airlock doors with a name tag!
+- Allowed bed respawning via a Tardis Upgrade
 
 #### Configs
 - New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
@@ -15,6 +19,8 @@
 - New config option to disable the collision box of the door while open with Immersive Portals integration enabled on Valkyrien Skies ships.
 
 #### Bug Fix
+- Bug fix: Cooldown on TARDIS item
+- Bug fix: Matched game FPS to animation FPS
 - Bug fix: TARDIS exterior disappears when moved by other mods.
 - Bug fix: Taking off or landing a TARDIS on a Valkyrien Skies ship breaks the ship.
 - Bug fix: Impossible to enter TARDIS when on a Valkyrien Skies ship.
@@ -25,7 +31,7 @@
 - Bug fix: Flickering when spectating TARDIS exterior on a Valkyrien Skies ship.
 - Bug fix: Grown Tardis Item crashes the game if Valkyrien Skies is installed.
 - Bug fix: Immersive Portals portal is not rotated correctly when door is on a Valkyrien Skies ship.
-
+- Bug fix: Minecraft Villagers with Pilot profession having no texture
 - Bug fix: Fixes Console Textures having left over prefabs
 - Bug fix: Fixes Forge not having the same access level as Fabric (https://github.com/WhoCraft/TardisRefined/issues/477)
 - Bug fix: Fixed Shulker shells not having correct texture paths

@@ -98,9 +98,9 @@ public class TardisRefinedFabric implements ModInitializer {
             CuriosTrinketsUtil.setInstance(new TrinketsUtil());
         }
 
-        if (ModCompatChecker.create()) {
+       /* if (ModCompatChecker.create()) {
             CreateIntergrationsInit.initAssignments();
         }
-
+*/
     }
 }

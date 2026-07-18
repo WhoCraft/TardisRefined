@@ -336,8 +336,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.SCREEN_SHAKE_MULTIPLIER, "Screen Shake Multiplier");
 
         /*Overlay Messages*/
-        add(ModMessages.ASCEND_KEY, "Ascend: %s");
-        add(ModMessages.DESCEND_KEY, "Descend: %s");
+        add(ModMessages.ASCEND_KEY, "Ascend:");
+        add(ModMessages.DESCEND_KEY, "Descend:");
         add(ModMessages.EXIT_EXTERNAL_VIEW, "Exit Shell View: ");
 
         /*Upgrades*/

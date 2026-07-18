@@ -75,9 +75,9 @@ public class TardisRefined {
         TRARSStructurePieceRegistry.register();
         //registerFallbackEntries();
 
-        if (ModCompatChecker.create()) {
+     /*   if (ModCompatChecker.create()) {
             CreateIntergrationsInit.init();
-        }
+        }*/
     }
 
     /**

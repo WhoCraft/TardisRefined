@@ -23,6 +23,7 @@ public class TardisRefinedCommand {
             dispatcher.register(Commands.literal(TardisRefined.MODID + "_dev").requires(commandSource -> commandSource.hasPermission(Platform.getServer().getOperatorUserPermissionLevel()))
                     .then(CreateCommand.register(dispatcher)
                     ));
+
         }
     }
 
