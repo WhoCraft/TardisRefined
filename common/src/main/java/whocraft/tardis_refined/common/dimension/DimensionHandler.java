@@ -199,6 +199,9 @@ public class DimensionHandler {
     }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
+        if (ModCompatChecker.immersivePortals()) {
+            return ImmersivePortals.createDimension(level, id);
+        }
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
 
