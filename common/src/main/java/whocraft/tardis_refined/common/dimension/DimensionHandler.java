@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.FileUtil;
+import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -24,7 +24,6 @@ import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
-import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import javax.annotation.Nullable;
@@ -35,7 +34,9 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static whocraft.tardis_refined.common.util.Platform.getServer;
 
@@ -48,13 +49,13 @@ public class DimensionHandler {
 
     public static ArrayList<ResourceKey<Level>> LEVELS = new ArrayList<>();
 
-    // Create a record of the removed level so that we don't re-add it accidentally.
-    public static ArrayList<ResourceKey<Level>> REMOVED_LEVELS = new ArrayList<>();
+    // Keep track of dimensions that are currently being deleted to prevent things from loading them again.
+    public static Set<ResourceKey<Level>> IS_BEING_DELETED = new HashSet<>();
 
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/DimensionHandler");
 
-    public static boolean isDimensionDeleted(ResourceKey<Level> resourceKey) {
-        return REMOVED_LEVELS.stream().anyMatch(x -> x == resourceKey);
+    public static boolean isDimensionBeingDeleted(ResourceKey<Level> resourceKey) {
+        return IS_BEING_DELETED.contains(resourceKey);
     }
 
     public static void addDimension(ResourceKey<Level> resourceKey) {
@@ -64,9 +65,8 @@ public class DimensionHandler {
 
     public static void removeDimension(ResourceKey<Level> resourceKey) {
         LEVELS.removeIf(x -> x.registry() == resourceKey.registry());
-        REMOVED_LEVELS.add(resourceKey);
+        IS_BEING_DELETED.add(resourceKey);
 
-        removeDimensionFromData(resourceKey);
         writeLevels();
     }
 
@@ -87,13 +87,7 @@ public class DimensionHandler {
             activeDimensions.add(level.location().toString());
         }
 
-        JsonArray removedDimensions = new JsonArray();
-        for (ResourceKey<Level> level : REMOVED_LEVELS) {
-            removedDimensions.add(level.location().toString());
-        }
-
         jsonObject.add("tardis_dimensions", activeDimensions);
-        jsonObject.add("removed_dimensions", removedDimensions);
 
         LOGGER.info("Writing dimension data to: {}", file.getAbsolutePath());
 
@@ -109,7 +103,7 @@ public class DimensionHandler {
 
         ResourceKey<Level> levelResourceKey = ResourceKey.create(Registries.DIMENSION, resourceLocation);
 
-        if (isDimensionDeleted(levelResourceKey)) {
+        if (isDimensionBeingDeleted(levelResourceKey)) {
             return null;
         }
 
@@ -131,35 +125,17 @@ public class DimensionHandler {
 
     }
 
-    public static void deleteMarkedLevels() {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
-        if (!file.exists()) return;
-
-        Reader reader = null;
-        try {
-            reader = Files.newBufferedReader(file.toPath());
-
-            JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
-
+    public static void finishDeletion(MinecraftServer server, ResourceKey<Level> id) {
+        Util.ioPool().execute(() -> {
             try {
-                var removedDimensions = jsonObject.getAsJsonArray("removed_dimensions");
-
-                if (removedDimensions != null) {
-                    for (JsonElement removedDimension : jsonObject.get("removed_dimensions").getAsJsonArray()) {
-                        ResourceLocation id = new ResourceLocation(removedDimension.getAsString());
-                        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
-
-                        removeDimensionFromData(levelKey);
-                        FileUtils.deleteDirectory(getStorage().getDimensionPath(levelKey).toFile());
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.warn("Loading without the removed dimensions property.");
+                FileUtils.deleteDirectory(getStorage().getDimensionPath(id).toFile());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+            server.executeIfPossible(() -> {
+                IS_BEING_DELETED.remove(id);
+            });
+        });
     }
 
     public static void loadLevels(ServerLevel serverLevel) {
@@ -185,24 +161,6 @@ public class DimensionHandler {
                 }
             }
 
-            try {
-                var removedDimensions = jsonObject.getAsJsonArray("removed_dimensions");
-
-                if (removedDimensions != null) {
-                    for (JsonElement removedDimension : jsonObject.get("removed_dimensions").getAsJsonArray()) {
-                        ResourceLocation id = new ResourceLocation(removedDimension.getAsString());
-                        ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
-                        LOGGER.info("Found removed dimension recorded. Marking it as so. {}", removedDimension.getAsString());
-                        REMOVED_LEVELS.add(levelKey);
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.warn("Loading without the removed dimensions property.");
-            }
-
-
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -215,7 +173,7 @@ public class DimensionHandler {
     }
 
     @ExpectPlatform
-    public static void removeDimensionFromData(ResourceKey<Level> id) {
+    public static void deleteDimension(ResourceKey<Level> id) {
         throw new RuntimeException(PlatformWarning.addWarning(DimensionHandler.class));
     }
 

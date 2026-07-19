@@ -3,6 +3,7 @@ package whocraft.tardis_refined.common.network.handler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
+import whocraft.tardis_refined.client.TardisClientData;
 
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class HandleSyncDimensions {
             levels.add(level);
         } else if (!add) {
             levels.remove(level);
+            TardisClientData.remove(level);
         }
     }
 

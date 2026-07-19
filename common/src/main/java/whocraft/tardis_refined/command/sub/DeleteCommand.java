@@ -42,7 +42,6 @@ public class DeleteCommand implements Command<CommandSourceStack> {
         if (tardisData.isPresent()) {
 
             if (tardisData.get().deleteTARDIS()) {
-                DimensionHandler.removeDimension(tardis.dimension());
                 PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.DELETED_TARDIS), false);
             }
 

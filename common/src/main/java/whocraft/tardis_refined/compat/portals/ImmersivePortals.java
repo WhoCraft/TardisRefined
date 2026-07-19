@@ -117,6 +117,16 @@ public class ImmersivePortals {
         return world;
     }
 
+    public static void deleteDimension(ResourceKey<Level> id) {
+        MinecraftServer server = MiscHelper.getServer();
+        if (server == null) return;
+        ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
+        if (world == null) return;
+        DimensionHandler.removeDimension(id);
+        DimensionAPI.removeDimensionDynamically(world);
+        DimensionHandler.finishDeletion(server, id);
+    }
+
     public static void init() {
         if (!ModCompatChecker.immersivePortals()) return; // If the mod isn't detected, we shouldn't do anything
 

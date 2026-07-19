@@ -28,6 +28,7 @@ import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.screens.MonitorPositionDataMessage;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -75,8 +76,6 @@ public class TardisLevelOperator {
 
     public HashSet<ServerPlayer> updatingMonitors = new HashSet<>();
 
-    private boolean isDeleted = false;
-
 
     public TardisLevelOperator(Level level) {
         this.level = level;
@@ -116,7 +115,6 @@ public class TardisLevelOperator {
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.putBoolean(NbtConstants.TARDIS_IS_SETUP, this.hasInitiallyGenerated);
-        compoundTag.putBoolean(NbtConstants.TARDIS_DELETED, this.isDeleted);
 
         if (this.internalDoor != null) {
             compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
@@ -139,7 +137,6 @@ public class TardisLevelOperator {
 
     public void deserializeNBT(CompoundTag tag) {
         this.hasInitiallyGenerated = tag.getBoolean(NbtConstants.TARDIS_IS_SETUP);
-        this.isDeleted = tag.getBoolean(NbtConstants.TARDIS_DELETED);
 
         CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
         if (!doorPos.isEmpty() && level.getServer() != null) {
@@ -177,8 +174,6 @@ public class TardisLevelOperator {
     }
 
     public void tick(ServerLevel level) {
-
-        if (isDeleted) {return;}
 
         if (interiorManager != null) {
             interiorManager.tick(level);
@@ -272,8 +267,6 @@ public class TardisLevelOperator {
             return false;
         }
 
-        if (isDeleted) {return false;}
-
         // Determine target position and direction
         BlockPos targetPosition = internalDoor != null ? internalDoor.getTeleportPosition() : TardisArchitectureHandler.DESKTOP_CENTER_POS.above();
         Direction targetDirection = internalDoor != null ? internalDoor.getTeleportRotation() : entity.getDirection();
@@ -303,10 +296,6 @@ public class TardisLevelOperator {
     }
 
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection, boolean ignoreDoor) {
-
-        if (isDeleted) {
-            return false;
-        }
 
         if (!ignoreDoor && !this.internalDoor.isOpen()) {
             return false;
@@ -629,12 +618,14 @@ public class TardisLevelOperator {
         this.getExteriorManager().removeExteriorBlock();
 
         if (this.getPilotingManager().getCurrentConsole() != null) {
-            this.level.setBlockAndUpdate(this.getPilotingManager().getCurrentConsole().getBlockPos(), Blocks.AIR.defaultBlockState());
+            this.level.setBlockAndUpdate(
+                    this.getPilotingManager().getCurrentConsole().getBlockPos(),
+                    Blocks.AIR.defaultBlockState()
+            );
         }
 
-        this.isDeleted = true;
-        tardisClientData.setIsDeleted(true);
-        tardisClientData.sync();
+        DimensionHandler.deleteDimension(levelKey);
+
         return true;
     }
 }

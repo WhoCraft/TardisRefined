@@ -67,7 +67,6 @@ public class ModEvents {
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
 
-            DimensionHandler.deleteMarkedLevels();
             DimensionHandler.loadLevels(world);
 
             // We call this here to make sure blocks are registered
