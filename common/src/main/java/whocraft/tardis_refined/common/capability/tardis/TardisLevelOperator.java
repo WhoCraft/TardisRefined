@@ -16,6 +16,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.ShellChangeSource;
 import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
@@ -36,6 +38,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.DisconnectedPlayerHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -295,6 +298,22 @@ public class TardisLevelOperator {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
 
+    public TardisNavLocation getOutsideLocation() {
+        TardisNavLocation currentLocation = this.pilotingManager.getCurrentLocation();
+        BlockPos exteriorPos = currentLocation.getPosition();
+        ServerLevel targetLevel = currentLocation.getLevel();
+        Direction targetDirection = currentLocation.getDirection().getOpposite();
+
+        BlockPos teleportPos = exteriorPos;
+
+        if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
+            teleportPos = exteriorShell.getTeleportPosition();
+            targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
+        }
+
+        return new TardisNavLocation(teleportPos, targetDirection, targetLevel);
+    }
+
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection, boolean ignoreDoor) {
 
         if (!ignoreDoor && !this.internalDoor.isOpen()) {
@@ -316,20 +335,8 @@ public class TardisLevelOperator {
 
         if (this.pilotingManager.getCurrentLocation() != null) {
 
-            TardisNavLocation currentLocation = this.pilotingManager.getCurrentLocation();
-            BlockPos exteriorPos = currentLocation.getPosition();
-            ServerLevel targetLevel = currentLocation.getLevel();
-            Direction targetDirection = currentLocation.getDirection().getOpposite();
-
-            BlockPos teleportPos = exteriorPos;
-
-            if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
-                teleportPos = exteriorShell.getTeleportPosition();
-                targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
-            }
-
             TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
+            TardisNavLocation destinationLocation = getOutsideLocation();
 
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
             return true;
@@ -343,6 +350,24 @@ public class TardisLevelOperator {
             if (player instanceof ServerPlayer serverPlayer) {
                 this.forceEjectPlayer(serverPlayer);
             }
+        }
+        if (getLevel() instanceof ServerLevel sl) {
+            DisconnectedPlayerHelper.forAllDisconnectedPlayers(sl, data -> {
+                var outside = getOutsideLocation();
+                Vec3 targetPos = Vec3.atBottomCenterOf(outside.getPosition());
+                float targetYaw = outside.getDirection().toYRot();
+                float targetPitch = 0;
+                if (ModCompatChecker.valkyrienSkies()) {
+                    targetPos = VSHelper.toWorldPosition(outside.getLevel(), outside.getPosition(), targetPos);
+                    var rot = VSHelper.toWorldRotation(outside.getLevel(), outside.getPosition(), new Vec2(targetPitch, targetYaw));
+                    targetYaw = rot.y;
+                    targetPitch = rot.x;
+                }
+                DisconnectedPlayerHelper.setPlayerDimension(data, outside.getDimensionKey());
+                DisconnectedPlayerHelper.setPosition(data, targetPos);
+                DisconnectedPlayerHelper.setRotation(data, targetYaw, targetPitch);
+                return true;
+            });
         }
     }
 

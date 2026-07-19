@@ -33,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
+import whocraft.tardis_refined.common.util.DisconnectedPlayerHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
@@ -149,6 +150,11 @@ public class DimensionHandler {
                 throw new RuntimeException(e);
             }
             server.executeIfPossible(() -> {
+                // Fallback just in case.
+                DisconnectedPlayerHelper.forAllDisconnectedPlayers(server, id, data -> {
+                    DisconnectedPlayerHelper.moveToSpawn(data, server);
+                    return true;
+                });
                 IS_BEING_DELETED.remove(id);
             });
         });
@@ -313,6 +319,7 @@ public class DimensionHandler {
             }
             server.levels.remove(id);
             onDimensionUnloaded(world);
+
             Util.backgroundExecutor().execute(() -> {
                 try {
                     world.close();

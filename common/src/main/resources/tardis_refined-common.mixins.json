@@ -10,6 +10,7 @@
     "MinecraftServerStorageAccessor",
     "PistonBaseBlockMixin",
     "PlayerEntityMixin",
+    "PlayerListMixin",
     "ServerChunkCacheMixin",
     "ServerPlayerMixin",
     "VillagerGoalPackagesMixin",
