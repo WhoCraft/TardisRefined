@@ -43,7 +43,7 @@ public class S2CSyncTardisClientData extends MessageS2C {
     @Override
     public void handle(MessageContext context) {
         // Retrieve the TardisIntReactions instance for the current level
-        TardisClientData data = TardisClientData.getInstance(level);
+        TardisClientData data = TardisClientData.getOrCreateInstance(level);
 
         // Deserialize the Tardis instance from the given CompoundTag
         data.deserializeNBT(compoundTag);

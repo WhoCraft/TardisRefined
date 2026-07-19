@@ -7,6 +7,7 @@ import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.VortexRegistry;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncTardisClientData;
@@ -15,10 +16,13 @@ import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TardisClientData {
-    private static final List<TardisClientData> DATA = new ArrayList<>();
+    private static final TardisClientData DUMMY = new TardisClientData(Level.OVERWORLD);
+    private static final Map<ResourceKey<Level>, TardisClientData> DATA = new HashMap<>();
     public static int FOG_TICK_DELTA = 0; // This is for the fading in and out of the fog.
     static int MAX_FOG_TICK_DELTA = 2 * 20; // This is for adjusting how fast the fog will fade in and out.
     private final ResourceKey<Level> levelKey;
@@ -55,11 +59,11 @@ public class TardisClientData {
     }
 
     public static void add(TardisClientData tardisClientData) {
-        DATA.add(tardisClientData);
+        DATA.put(tardisClientData.levelKey, tardisClientData);
     }
 
 	public static void remove(ResourceKey<Level> level) {
-		DATA.removeIf(data -> data.getLevelKey() == level);
+		DATA.remove(level);
 	}
 
     public ResourceLocation getVortex() {
@@ -70,6 +74,10 @@ public class TardisClientData {
         this.vortex = vortex;
     }
 
+    public static TardisClientData getOrCreateInstance(ResourceKey<Level> levelResourceKey) {
+        return DATA.computeIfAbsent(levelResourceKey, TardisClientData::new);
+    }
+
     /**
      * Retrieves information about a Tardis instance.
      *
@@ -77,18 +85,11 @@ public class TardisClientData {
      * @return The TardisIntReactions instance containing information about the Tardis.
      */
     public static TardisClientData getInstance(ResourceKey<Level> levelResourceKey) {
-        for (TardisClientData data : DATA) {
-            if (data.getLevelKey().equals(levelResourceKey)) {
-                return data;
-            }
-        }
-        TardisClientData newData = new TardisClientData(levelResourceKey);
-        DATA.add(newData);
-        return newData;
+        return DATA.getOrDefault(levelResourceKey, DUMMY);
     }
 
     public static List<TardisClientData> getAllEntries() {
-        return new ArrayList<>(DATA);
+        return new ArrayList<>(DATA.values());
     }
 
     public static void clearAll() {
@@ -261,6 +262,7 @@ public class TardisClientData {
      * server-side, as calling it client-side may cause the game to crash.
      */
     public void sync() {
+        if (DimensionHandler.isDimensionBeingDeleted(getLevelKey())) return;
         new S2CSyncTardisClientData(getLevelKey(), serializeNBT()).sendToAll();
     }
 
