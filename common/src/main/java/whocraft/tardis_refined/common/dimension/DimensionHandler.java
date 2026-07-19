@@ -39,6 +39,7 @@ import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -305,7 +306,7 @@ public class DimensionHandler {
 
         world.getServer().tell(world.getServer().wrapRunnable(() -> {
             for (var player : new ArrayList<>(world.players())) {
-                player.connection.disconnect(Component.literal("This dimension is being reset"));
+                player.connection.disconnect(Component.translatable(ModMessages.DELETED_TARDIS));
             }
             server.levels.remove(id);
             onDimensionUnloaded(world);
