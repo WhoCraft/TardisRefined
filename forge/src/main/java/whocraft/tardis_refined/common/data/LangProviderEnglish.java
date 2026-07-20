@@ -165,7 +165,7 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Messages*/
         add(ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, ChatFormatting.RED + "You cannot spawn a TARDIS inside this dimension.");
 
-        add(ModMessages.DELETED_TARDIS, "TARDIS has been marked for deletion and will not load in on next restart.");
+        add(ModMessages.DELETED_TARDIS, "TARDIS has been deleted");
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
