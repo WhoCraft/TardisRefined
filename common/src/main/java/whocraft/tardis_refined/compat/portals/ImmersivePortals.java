@@ -33,6 +33,7 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
@@ -124,6 +125,7 @@ public class ImmersivePortals {
         if (world == null) return;
         DimensionHandler.removeDimension(id);
         DimensionAPI.removeDimensionDynamically(world);
+        new S2CSyncLevelList(world.dimension(), false).sendToAll();
         DimensionHandler.finishDeletion(server, id);
     }
 
