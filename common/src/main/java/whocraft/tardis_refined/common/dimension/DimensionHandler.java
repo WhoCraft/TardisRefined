@@ -69,6 +69,8 @@ public class DimensionHandler {
     // Keep track of dimensions that are currently being deleted to prevent things from loading them again.
     public static Set<ResourceKey<Level>> IS_BEING_DELETED = new HashSet<>();
 
+    private static final Set<ResourceKey<Level>> SCHEDULED_DELETIONS = new HashSet<>();
+
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/DimensionHandler");
 
     public static boolean isDimensionBeingDeleted(ResourceKey<Level> resourceKey) {
@@ -275,6 +277,16 @@ public class DimensionHandler {
     }
 
     public static void deleteDimension(ResourceKey<Level> id) {
+        if (DimensionHandler.isDimensionBeingDeleted(id)) return;
+        SCHEDULED_DELETIONS.add(id);
+    }
+
+    public static void tick() {
+        SCHEDULED_DELETIONS.forEach(DimensionHandler::performDelete);
+        SCHEDULED_DELETIONS.clear();
+    }
+
+    private static void performDelete(ResourceKey<Level> id) {
         if (ModCompatChecker.immersivePortals()) {
             ImmersivePortals.deleteDimension(id);
             return;

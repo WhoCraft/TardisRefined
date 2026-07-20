@@ -35,6 +35,7 @@ public class CommonBus {
 
         if (event.phase == TickEvent.Phase.END) {
             TardisTeleportData.tick();
+            DimensionHandler.tick();
         }
 
     }
