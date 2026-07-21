@@ -94,7 +94,7 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
         if (isMouseOver && this.tooltip != null) {
             renderTooltip(guiGraphics, mouseX, mouseY);
         } else if (isFocused() && this.tooltip != null) {
-            renderTooltip(guiGraphics, left + width/4, top);
+            renderTooltip(guiGraphics, left + width/4, top + height*3);
         }
     }
 
