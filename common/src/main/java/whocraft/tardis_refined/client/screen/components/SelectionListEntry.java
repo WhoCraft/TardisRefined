@@ -70,17 +70,20 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
      */
     @Override
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-        int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() :
+        boolean isSelected = isMouseOver || isFocused();
+        int colour = isSelected ? ChatFormatting.YELLOW.getColor() :
                 (this.checked ? ChatFormatting.YELLOW.getColor() :
                         this.itemDisplayName.getStyle().getColor() != null ?
                                 this.itemDisplayName.getStyle().getColor().getValue() :
                                 ChatFormatting.GOLD.getColor());
         Component text = Component.literal((this.checked ? "> " : "") + this.itemDisplayName.getString());
-        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
+        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isSelected, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
 
         // Render tooltip if mouse is over
         if (isMouseOver && this.tooltip != null) {
             renderTooltip(guiGraphics, mouseX, mouseY);
+        } else if (isFocused() && this.tooltip != null) {
+            renderTooltip(guiGraphics, left + width/4, top);
         }
     }
 
@@ -91,7 +94,7 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
         }
     }
 
-    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour) {
+    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isSelected, float partialTick, Component text, int textColour) {
         int heightCentre = top + height / 2;
         int xPos = this.listLeft + 2;
         int yPos = heightCentre - 9 / 2;
