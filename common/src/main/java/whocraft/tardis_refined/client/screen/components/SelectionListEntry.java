@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
 public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> {
 
@@ -46,6 +47,16 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     @Override
     public Component getNarration() {
         return itemDisplayName;
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scan, int mod) {
+        if (enabled) {
+            if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_SPACE) {
+                press.onClick(this);
+            }
+        }
+        return super.keyPressed(key, scan, mod);
     }
 
     @Override
