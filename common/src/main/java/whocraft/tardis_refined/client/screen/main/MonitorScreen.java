@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.BackgroundlessButton;
@@ -51,6 +52,8 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
     private int ejectbtntime;
     private boolean ejectbtnshow;
 
+    private boolean isHoldingDown = false;
+
     @Override
     protected void init() {
         super.init();
@@ -81,6 +84,22 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
     }
 
     @Override
+    public boolean keyPressed(int key, int scan, int mod) {
+        if (key == GLFW.GLFW_KEY_DOWN) {
+            isHoldingDown = true;
+        }
+        return super.keyPressed(key, scan, mod);
+    }
+
+    @Override
+    public boolean keyReleased(int key, int scan, int mod) {
+        if (key == GLFW.GLFW_KEY_DOWN) {
+            isHoldingDown = false;
+        }
+        return super.keyReleased(key, scan, mod);
+    }
+
+    @Override
     public void renderBackdrop(@NotNull GuiGraphics guiGraphics) {
         super.renderBackdrop(guiGraphics);
 
@@ -100,6 +119,19 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         poseStack.popPose();
     }
 
+    private boolean showEject(int mouseX, int mouseY, int hPos, int vPos) {
+        if (getFocused() == ejectbtn) return true;
+        if (
+                isHoldingDown &&
+                getFocused() instanceof GenericMonitorSelectionList<?> list &&
+                !list.children().isEmpty() &&
+                list.children().indexOf(list.getFocused()) == list.children().size()-1
+        ) {
+            return true;
+        }
+        return (mouseY >= vPos + monitorHeight - 20 && mouseY <= vPos + monitorHeight) && (mouseX >= -35 + hPos + monitorWidth / 2 && mouseX <= 70 - 35 + hPos + monitorWidth / 2);
+    }
+
     @Override
     public void inMonitorRender(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         PoseStack poseStack = guiGraphics.pose();
@@ -108,7 +140,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         int vPos = (height - monitorHeight) / 2;
 
 
-        this.ejectbtnshow = (mouseY >= vPos + monitorHeight - 20 && mouseY <= vPos + monitorHeight) && (mouseX >= -35 + hPos + monitorWidth / 2 && mouseX <= 70 - 35 + hPos + monitorWidth / 2);
+        this.ejectbtnshow = showEject(mouseX, mouseY, hPos, vPos);
 
         ejectbtn.setPosition(-35 + hPos + monitorWidth / 2, vPos + monitorHeight - ejectbtntime);
         ejectbtn.active = ejectbtntime == 20;
