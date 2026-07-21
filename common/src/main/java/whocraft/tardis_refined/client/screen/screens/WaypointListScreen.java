@@ -50,9 +50,7 @@ public class WaypointListScreen extends MonitorOS {
         setEvents(() -> {
             if (waypoint != null)
                 new C2STravelToWaypoint(waypoint.getId()).send();
-        }, () -> {
-            this.switchScreenToLeft(PREVIOUS);
-        });
+        }, this::back);
 
 
         Button newWaypointButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), true, BUTTON_LOCATION));

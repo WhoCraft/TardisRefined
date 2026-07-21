@@ -140,6 +140,14 @@ public class UpgradesScreen extends Screen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+            if (overlayScreen != null) {
+                closeOverlayScreen();
+            } else {
+                onClose();
+            }
+            return true;
+        }
         return this.overlayScreen == null ? super.keyPressed(keyCode, scanCode, modifiers) : this.overlayScreen.keyPressed(keyCode, scanCode, modifiers);
     }
 

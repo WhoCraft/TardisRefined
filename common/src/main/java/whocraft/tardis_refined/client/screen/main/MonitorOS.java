@@ -9,6 +9,8 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -82,6 +84,27 @@ public class MonitorOS extends Screen {
     @Override
     public void renderBackground(GuiGraphics guiGraphics) {
 
+    }
+
+    protected boolean inventoryButtonGoesBack() {
+        return !(getFocused() instanceof MultiLineEditBox) && !(getFocused() instanceof EditBox);
+    }
+
+    protected void back() {
+        if (PREVIOUS != null) {
+            switchScreenToLeft(PREVIOUS, null);
+        } else {
+            onClose();
+        }
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scan, int mod) {
+        if (minecraft.options.keyInventory.matches(key, scan) && inventoryButtonGoesBack()) {
+            back();
+            return true;
+        }
+        return super.keyPressed(key, scan, mod);
     }
 
     public ResourceLocation getPatternForRender(){

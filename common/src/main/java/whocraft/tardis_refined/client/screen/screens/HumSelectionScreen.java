@@ -42,10 +42,7 @@ public class HumSelectionScreen extends MonitorOS {
     @Override
     protected void init() {
         super.init();
-        this.setEvents(() -> HumSelectionScreen.selectHum(currentHumEntry), () -> {
-            if (PREVIOUS != null)
-                this.switchScreenToLeft(PREVIOUS);
-        });
+        this.setEvents(() -> HumSelectionScreen.selectHum(currentHumEntry), this::back);
         this.currentHumEntry = grabHum();
         int vPos = (height - monitorHeight) / 2;
         addSubmitButton(width / 2 + 85, height - vPos - 25);
