@@ -227,6 +227,8 @@ public class TardisPlayerInfo implements TardisPilot {
         if (player != null && player.level().isClientSide)
             throw new IllegalStateException("Don't sync client -> server");
 
+        if (Platform.getServer() == null) return; // Avoid crash on logout.
+
         CompoundTag nbt = saveData();
 
         S2CSyncTardisPlayerView message = new S2CSyncTardisPlayerView(this.player.getId(), nbt);
