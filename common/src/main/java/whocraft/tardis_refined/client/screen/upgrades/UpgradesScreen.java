@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
@@ -109,6 +110,10 @@ public class UpgradesScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
+            if (selectedTab != null) {
+                selectedTab.setHighlight(null);
+            }
+
             int i = (this.width - WINDOW_WIDTH) / 2;
             int j = (this.height - WINDOW_HEIGHT) / 2;
 
@@ -125,17 +130,22 @@ public class UpgradesScreen extends Screen {
                 if (selectedTab != null) {
                     UpgradeWidget entry = this.selectedTab.getUpgradeHoveredOver((int) (mouseX - i - 9), (int) (mouseY - j - 18), i, j);
 
-                    if (entry != null) {
-                        Upgrade upgrade = entry.upgradeEntry;
-                        boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
-                        if (upgrade.isUnlocked(upgradeHandler)) return false;
-                        this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired(), this));
-                    }
+                    if (!buyUpgradePopup(entry)) return false;
                 }
             }
         }
 
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private boolean buyUpgradePopup(UpgradeWidget entry) {
+        if (entry != null) {
+            Upgrade upgrade = entry.upgradeEntry;
+            boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
+            if (upgrade.isUnlocked(upgradeHandler)) return false;
+            this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired(), this));
+        }
+        return true;
     }
 
     @Override
@@ -148,7 +158,35 @@ public class UpgradesScreen extends Screen {
             }
             return true;
         }
-        return this.overlayScreen == null ? super.keyPressed(keyCode, scanCode, modifiers) : this.overlayScreen.keyPressed(keyCode, scanCode, modifiers);
+        if (this.overlayScreen != null) {
+            return this.overlayScreen.keyPressed(keyCode, scanCode, modifiers);
+        }
+        if (keyCode == GLFW.GLFW_KEY_TAB) {
+            int currentTab = tabs.indexOf(selectedTab);
+	        int nextTab;
+	        if ((GLFW.GLFW_MOD_SHIFT & modifiers) == 0) {
+		        nextTab = currentTab + 1;
+                if (nextTab >= tabs.size()) {
+                    nextTab = 0;
+                }
+	        } else {
+		        nextTab = currentTab - 1;
+                if (nextTab < 0) {
+                    nextTab = tabs.size()-1;
+                }
+	        }
+	        selectedTab = tabs.get(nextTab);
+            return true;
+        }
+        if (selectedTab != null) {
+            if (selectedTab.keyPressed(keyCode, scanCode, modifiers)) return true;
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_SPACE) {
+                UpgradeWidget entry = this.selectedTab.getHighlight();
+
+                if (!buyUpgradePopup(entry)) return false;
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
