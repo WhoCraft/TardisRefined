@@ -82,9 +82,7 @@ dependencies {
     modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_version}"
 
     // Includes Cardinal Components API as a Jar-in-Jar dependency (optional)
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
-    include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_version}"
+    include "maven.modrinth:cardinal-components-api:${rootProject.cardinal_version}"
 
     modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
     modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
