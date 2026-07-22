@@ -5,10 +5,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.network.messages.player.C2SExitTardisView;
@@ -31,7 +34,8 @@ public class TardisPlayerInfo implements TardisPilot {
 
     private Player player;
     private UUID viewedTardis;
-    private TardisNavLocation playerPreviousPos = TardisNavLocation.ORIGIN;
+    private ResourceKey<Level> playerPreviousDim = Level.OVERWORLD;
+    private Vec3 playerPreviousPos = Vec3.ZERO;
     private float playerPreviousRot = 0;
     private float playerPreviousYaw = 0;
     private boolean renderVortex = false;
@@ -97,9 +101,10 @@ public class TardisPlayerInfo implements TardisPilot {
         UUID uuid = UUID.fromString(tardisLevelOperator.getLevelKey().location().getPath());
 
         if (!isViewingTardis()) {
-            setPlayerPreviousPos(new TardisNavLocation(player.blockPosition(), Direction.NORTH, tardisLevelOperator.getLevelKey()));
-            setPlayerPreviousRot(player.getYHeadRot());
-            setPlayerPreviousYaw(player.getXRot());
+            setPlayerPreviousPos(player.position());
+            setPlayerPreviousDim(player.level().dimension());
+            setPlayerPreviousRot(player.getXRot());
+            setPlayerPreviousYaw(player.getYRot());
         }
 
         setViewedTardis(uuid);
@@ -126,12 +131,38 @@ public class TardisPlayerInfo implements TardisPilot {
 
     }
 
-    public TardisNavLocation getPlayerPreviousPos() {
+    public ResourceKey<Level> getPlayerPreviousDim() {
+        return playerPreviousDim;
+    }
+
+    public void setPlayerPreviousDim(ResourceKey<Level> playerPreviousDim) {
+        this.playerPreviousDim = playerPreviousDim;
+    }
+
+    public Vec3 getPlayerPreviousPosAccurate() {
         return playerPreviousPos;
     }
 
+    @Deprecated
+    public TardisNavLocation getPlayerPreviousPos() {
+        return new TardisNavLocation(BlockPos.containing(playerPreviousPos), Direction.NORTH, playerPreviousDim);
+    }
+
+    @Deprecated
     public void setPlayerPreviousPos(TardisNavLocation playerPreviousPos) {
+        this.playerPreviousPos = Vec3.atBottomCenterOf(playerPreviousPos.getPosition());
+        this.playerPreviousDim = playerPreviousPos.getDimensionKey();
+    }
+
+    public void setPlayerPreviousPos(Vec3 playerPreviousPos) {
         this.playerPreviousPos = playerPreviousPos;
+    }
+
+    public void resetPlayerPreviousPos() {
+        this.playerPreviousDim = Level.OVERWORLD;
+        this.playerPreviousPos = Vec3.ZERO;
+        this.playerPreviousRot = 0;
+        this.playerPreviousYaw = 0;
     }
 
     public static void onExitKeybindPressed() {
@@ -161,12 +192,17 @@ public class TardisPlayerInfo implements TardisPilot {
             tag.putUUID("ViewedTardis", viewedTardis);
         }
 
-        CompoundTag playerPos = playerPreviousPos.serialise();
-        tag.put("TardisPlayerPos", playerPos);
-
         tag.putBoolean("RenderVortex", renderVortex);
         tag.putFloat("PlayerPreviousRot", playerPreviousRot);
         tag.putFloat("PlayerPreviousYaw", playerPreviousYaw);
+        tag.put(
+                "PlayerPreviousDim",
+                Level.RESOURCE_KEY_CODEC.encodeStart(NbtOps.INSTANCE, playerPreviousDim).getOrThrow(false, err -> {})
+        );
+        tag.put(
+                "PlayerPreviousPos",
+                Vec3.CODEC.encodeStart(NbtOps.INSTANCE, playerPreviousPos).getOrThrow(false, err -> {})
+        );
 
         return tag;
     }
@@ -186,8 +222,22 @@ public class TardisPlayerInfo implements TardisPilot {
         playerPreviousRot = tag.getFloat("PlayerPreviousRot");
         playerPreviousYaw = tag.getFloat("PlayerPreviousYaw");
 
+        // For backwards-compatibility.
         if (tag.contains("TardisPlayerPos")) {
-            playerPreviousPos = TardisNavLocation.deserialize(tag.getCompound("TardisPlayerPos"));
+            var oldPos = TardisNavLocation.deserialize(tag.getCompound("TardisPlayerPos"));
+            playerPreviousDim = oldPos.getDimensionKey();
+            playerPreviousPos = Vec3.atBottomCenterOf(oldPos.getPosition());
+        }
+
+        if (tag.contains("PlayerPreviousDim")) {
+            playerPreviousDim = Level.RESOURCE_KEY_CODEC.parse(
+                    NbtOps.INSTANCE, tag.get("PlayerPreviousDim")
+            ).resultOrPartial(err -> {}).orElse(playerPreviousDim);
+        }
+        if (tag.contains("PlayerPreviousPos")) {
+            playerPreviousPos = Vec3.CODEC.parse(
+                    NbtOps.INSTANCE, tag.get("PlayerPreviousPos")
+            ).resultOrPartial(err -> {}).orElse(playerPreviousPos);
         }
 
         if (tag.hasUUID("ViewedTardis")) {
@@ -208,14 +258,13 @@ public class TardisPlayerInfo implements TardisPilot {
     @Override
     public void endShellView(ServerPlayer serverPlayer) {
         if (!isViewingTardis()) return;
-        BlockPos targetPosition = getPlayerPreviousPos().getPosition();
 
-        TRTeleporter.simpleTeleport(serverPlayer, DimensionUtil.getLevel(getPlayerPreviousPos().getDimensionKey()), targetPosition.getX() + 0.5, targetPosition.getY(), targetPosition.getZ() + 0.5, playerPreviousYaw, playerPreviousRot);
+        TRTeleporter.simpleTeleport(serverPlayer, DimensionUtil.getLevel(getPlayerPreviousDim()), playerPreviousPos.x, playerPreviousPos.y, playerPreviousPos.z, playerPreviousYaw, playerPreviousRot);
         updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), false);
         serverPlayer.onUpdateAbilities();
         new S2CResetPostShellView().send(serverPlayer);
 
-        setPlayerPreviousPos(TardisNavLocation.ORIGIN);
+        resetPlayerPreviousPos();
         setRenderVortex(false);
         // Clear the viewed TARDIS UUID
         setViewedTardis(null);
@@ -242,7 +291,7 @@ public class TardisPlayerInfo implements TardisPilot {
     @Override
     public void tick(TardisLevelOperator tardisLevelOperator, ServerPlayer serverPlayerEntity) {
         TardisPilotingManager pilotManger = tardisLevelOperator.getPilotingManager();
-        if (tardisLevelOperator.getLevelKey() == getPlayerPreviousPos().getDimensionKey()) {
+        if (tardisLevelOperator.getLevelKey() == getPlayerPreviousDim()) {
             boolean showVortex = pilotManger.isLanding() || pilotManger.isTakingOff() || pilotManger.isInFlight();
 
             TardisNavLocation movePlayerToLocation = pilotManger.getCurrentLocation();
