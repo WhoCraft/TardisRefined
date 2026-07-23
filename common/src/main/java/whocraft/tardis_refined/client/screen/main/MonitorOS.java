@@ -344,7 +344,7 @@ public class MonitorOS extends Screen {
 
     public void addCancelButton(int x, int y) {
         if (onCancel != null) {
-            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> this.onCancel.onPress(), true, BCK_LOCATION));
+            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("gui.cancel"), (arg) -> this.onCancel.onPress(), true, BCK_LOCATION));
             spriteiconbutton.setPosition(x, y);
         }
     }
