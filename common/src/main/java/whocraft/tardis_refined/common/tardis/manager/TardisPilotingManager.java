@@ -255,7 +255,13 @@ public class TardisPilotingManager extends TickableHandler {
 
             if (this.operator.getLevel().getGameTime() % (20) == 0) {
                 if (distanceCovered <= flightDistance) {
-                    distanceCovered += (int) (throttleStage + (0.5 * throttleStage * speedModifier));
+                    double speed = (throttleStage + (0.5 * throttleStage * speedModifier));
+                    double logDist = flightDistance > 0 ? Math.log(flightDistance) : 0;
+                    double logSpeed = Math.log(speed);
+                    double logTime = logDist / logSpeed;
+                    speed = Math.max(speed, flightDistance / (Math.exp(logTime) * 10));
+
+                    distanceCovered += speed;
 
                     // If this tick was enough to push us over.
                     if (distanceCovered >= flightDistance) {
