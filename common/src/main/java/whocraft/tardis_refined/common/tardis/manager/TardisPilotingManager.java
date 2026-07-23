@@ -260,8 +260,8 @@ public class TardisPilotingManager extends TickableHandler {
                     double logSpeed = Math.log(speed);
                     double logTime = logDist / logSpeed;
                     speed = Math.max(speed, flightDistance / (Math.exp(logTime) * 10));
-
-                    distanceCovered += speed;
+                    speed = speed + ((operator.getLevel().random.nextDouble() - 0.5) * (speed / 2));
+                    distanceCovered += (int) speed;
 
                     // If this tick was enough to push us over.
                     if (distanceCovered >= flightDistance) {
