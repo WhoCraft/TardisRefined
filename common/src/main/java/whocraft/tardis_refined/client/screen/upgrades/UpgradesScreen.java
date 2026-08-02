@@ -14,6 +14,7 @@ import org.lwjgl.glfw.GLFW;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
@@ -226,10 +227,12 @@ public class UpgradesScreen extends Screen {
         this.renderTooltips(guiGraphics, mouseX, mouseY, i, j);
 
         if (upgradeHandler.getUpgradePoints() > 0) {
-            guiGraphics.drawString(this.minecraft.font, "Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width("Points: " + upgradeHandler.getUpgradePoints()) / 2, j + WINDOW_HEIGHT - 15, ChatFormatting.BLACK.getColor(), false);
+            var pointsMsg = Component.translatable(ModMessages.UI_UPGRADES_POINTS, upgradeHandler.getUpgradePoints());
+            guiGraphics.drawString(this.minecraft.font, pointsMsg, width / 2 - font.width(pointsMsg) / 2, j + WINDOW_HEIGHT - 15, ChatFormatting.BLACK.getColor(), false);
         }
 
-        guiGraphics.drawString(this.minecraft.font, "XP: " + upgradeHandler.getUpgradeXP() + " / 100", width / 2 - font.width("XP: " + upgradeHandler.getUpgradeXP() + " / 100") / 2, j + 6, ChatFormatting.BLACK.getColor(), false);
+        var xpMsg = Component.translatable(ModMessages.UI_UPGRADES_XP, upgradeHandler.getUpgradeXP() + " / 100");
+        guiGraphics.drawString(this.minecraft.font, xpMsg, width / 2 - font.width(xpMsg) / 2, j + 6, ChatFormatting.BLACK.getColor(), false);
 
 
     }
