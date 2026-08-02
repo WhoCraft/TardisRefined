@@ -29,6 +29,7 @@ public class UpgradeTab {
     private final UpgradesScreen screen;
     private final UpgradeTabType type;
     private final int index;
+    private final int page;
     private final Component title;
     private final List<UpgradeWidget> entries = new ArrayList<>();
     private final List<Connection> connections = new ArrayList<>();
@@ -41,14 +42,17 @@ public class UpgradeTab {
     private int maxY = -2147483648;
     private boolean centered;
     private UpgradeWidget highlight;
+    private Upgrade root;
 
-    public UpgradeTab(Minecraft minecraft, UpgradesScreen UpgradesScreen, UpgradeTabType tabType, int i, UpgradeHandler powerHolder) {
+    public UpgradeTab(Minecraft minecraft, UpgradesScreen UpgradesScreen, UpgradeTabType tabType, int i, int tabPage, UpgradeHandler powerHolder, Upgrade root) {
         this.minecraft = minecraft;
         this.screen = UpgradesScreen;
         this.type = tabType;
         this.index = i;
+        this.page = tabPage;
         this.upgradeHandler = powerHolder;
-        this.title = Component.literal("");
+        this.title = root.getDisplayName();
+        this.root = root;
         this.populate(powerHolder);
     }
 
@@ -133,19 +137,31 @@ public class UpgradeTab {
         };
     }
 
-    @Nullable
-    public static UpgradeTab create(Minecraft minecraft, UpgradesScreen screen, int tabIndex, UpgradeHandler upgradeHandler) {
+    public static UpgradeTab create(Minecraft minecraft, UpgradesScreen screen, int tabIndex, UpgradeHandler upgradeHandler, Upgrade root) {
         UpgradeTabType[] var4 = UpgradeTabType.values();
 
-        for (UpgradeTabType tabType : var4) {
-            if (tabIndex < tabType.getMax()) {
-                return new UpgradeTab(minecraft, screen, tabType, tabIndex, upgradeHandler);
+        int tabPage = 0;
+        while (true) {
+            for (UpgradeTabType tabType : var4) {
+                if (tabIndex < tabType.getMax()) {
+                    return new UpgradeTab(minecraft, screen, tabType, tabIndex, tabPage, upgradeHandler, root);
+                }
+
+                tabIndex -= tabType.getMax();
+                if (tabIndex < 0) {
+                    throw new IllegalStateException("Tab logic is broken, got negative tab index!");
+                }
             }
-
-            tabIndex -= tabType.getMax();
+            tabPage++;
         }
+    }
 
-        return null;
+    private boolean isChildOfRoot(Upgrade child) {
+        if (child.getParent() != null) {
+            return isChildOfRoot(child.getParent());
+        } else {
+            return child == root;
+        }
     }
 
     public void populate(UpgradeHandler upgradeHandlerClient) {
@@ -158,6 +174,7 @@ public class UpgradeTab {
         // Create entry for each ability
         for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
             Upgrade upgrade = entry.getValue();
+            if (!isChildOfRoot(upgrade)) continue;
             var widget = new UpgradeWidget(this, this.minecraft, upgradeHandlerClient, upgrade).setPosition(0, 0);
             this.entries.add(widget);
             var pos = upgrade.getScreenPosition();
@@ -302,7 +319,7 @@ public class UpgradeTab {
     }
 
     public void drawIcon(GuiGraphics guiGraphics, int offsetX, int offsetY) {
-        //TODO Render iTem this.type.drawIcon(guiGraphics, DataContext.forPower(this.minecraft.player, this.powerHolder), offsetX, offsetY, this.index, this.icon);
+        this.type.drawIcon(guiGraphics, offsetX, offsetY, this.index, root.getIcon());
     }
 
     public void drawContents(GuiGraphics guiGraphics, int x, int y) {
@@ -382,6 +399,10 @@ public class UpgradeTab {
             }
         }
         return null;
+    }
+
+    public boolean isSamePage(int page) {
+        return page == this.page;
     }
 
     public boolean isMouseOver(int offsetX, int offsetY, double mouseX, double mouseY) {
