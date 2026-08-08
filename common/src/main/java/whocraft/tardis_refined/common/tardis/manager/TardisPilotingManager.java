@@ -74,6 +74,7 @@ public class TardisPilotingManager extends TickableHandler {
     private int ticksInFlight = 0;
     private int flightDistance = 100;
     private int distanceCovered = 0;
+    private double pointsToEarn = 0;
     private int ticksLanding = 0;
     private int ticksTakingOff = 0;
     private boolean sentLandingError = false;
@@ -139,6 +140,10 @@ public class TardisPilotingManager extends TickableHandler {
         this.isInCrashRecovery = tag.getBoolean(NbtConstants.IS_IN_RECOVERY);
         this.flightDistance = tag.getInt(NbtConstants.FLIGHT_DISTANCE);
         this.distanceCovered = tag.getInt(NbtConstants.DISTANCE_COVERED);
+        this.pointsToEarn = tag.getDouble(NbtConstants.POINTS_TO_EARN);
+        if (!tag.contains(NbtConstants.POINTS_TO_EARN)) {
+            this.pointsToEarn = this.distanceCovered * 0.05;
+        }
         this.canUseControls = tag.getBoolean(CAN_USE_CONTROLS);
 
         this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
@@ -165,6 +170,7 @@ public class TardisPilotingManager extends TickableHandler {
         tag.putBoolean(NbtConstants.IS_IN_RECOVERY, this.isInCrashRecovery);
         tag.putInt(NbtConstants.FLIGHT_DISTANCE, this.flightDistance);
         tag.putInt(NbtConstants.DISTANCE_COVERED, this.distanceCovered);
+        tag.putDouble(NbtConstants.POINTS_TO_EARN, this.pointsToEarn);
         tag.putBoolean(CAN_USE_CONTROLS, this.canUseControls);
         tag.putBoolean(NbtConstants.IS_PASSIVELY_REFUELING, this.isPassivelyRefuelling);
 
@@ -257,6 +263,7 @@ public class TardisPilotingManager extends TickableHandler {
             if (this.operator.getLevel().getGameTime() % (20) == 0) {
                 if (distanceCovered <= flightDistance) {
                     double speed = (throttleStage + (0.5 * throttleStage * speedModifier));
+                    pointsToEarn += speed * 0.05;
                     if (TRConfig.SERVER.DISTANCE_CALCULATION.get() == TRConfig.Server.DistanceCalculation.LOGARITHMIC) {
                         double logDist = flightDistance > 0 ? Math.log(flightDistance) : 0;
                         double logSpeed = Math.log(speed);
@@ -949,7 +956,7 @@ public class TardisPilotingManager extends TickableHandler {
                 level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, isCrashing ? TRSoundRegistry.TARDIS_CRASH_LAND.get() : TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
             }
 
-            int totalPoints = (int) (distanceCovered * 0.05f);
+            int totalPoints = (int) pointsToEarn;
             this.operator.getUpgradeHandler().addUpgradeXP(totalPoints);
 
             var players = level.players();
@@ -957,6 +964,7 @@ public class TardisPilotingManager extends TickableHandler {
                 PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + " XP"), true);
             }
             distanceCovered = 0;
+            pointsToEarn = 0;
             this.operator.tardisClientData().sync();
 
             return true;
