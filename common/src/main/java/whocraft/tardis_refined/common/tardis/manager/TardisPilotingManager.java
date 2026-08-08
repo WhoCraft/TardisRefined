@@ -24,6 +24,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
@@ -256,11 +257,15 @@ public class TardisPilotingManager extends TickableHandler {
             if (this.operator.getLevel().getGameTime() % (20) == 0) {
                 if (distanceCovered <= flightDistance) {
                     double speed = (throttleStage + (0.5 * throttleStage * speedModifier));
-                    double logDist = flightDistance > 0 ? Math.log(flightDistance) : 0;
-                    double logSpeed = Math.log(speed);
-                    double logTime = logDist / logSpeed;
-                    speed = Math.max(speed, flightDistance / (Math.exp(logTime) * 10));
-                    speed = speed + ((operator.getLevel().random.nextDouble() - 0.5) * (speed / 2));
+                    if (TRConfig.SERVER.DISTANCE_CALCULATION.get() == TRConfig.Server.DistanceCalculation.LOGARITHMIC) {
+                        double logDist = flightDistance > 0 ? Math.log(flightDistance) : 0;
+                        double logSpeed = Math.log(speed);
+                        double logTime = logDist / logSpeed;
+                        speed = Math.max(speed, flightDistance / (Math.exp(logTime) * 10));
+                    }
+                    if (TRConfig.SERVER.DISTANCE_RANDOMNESS.get() > 0) {
+                        speed = speed + ((operator.getLevel().random.nextDouble() - 0.5) * (speed * TRConfig.SERVER.DISTANCE_RANDOMNESS.get() / 100));
+                    }
                     distanceCovered += (int) speed;
 
                     // If this tick was enough to push us over.
