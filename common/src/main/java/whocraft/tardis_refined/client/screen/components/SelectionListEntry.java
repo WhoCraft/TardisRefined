@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
-public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> {
+public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> implements GenericMonitorSelectionList.MightBeDisabled {
 
     private final Component itemDisplayName;
     private final GenericListSelection press;
@@ -114,5 +114,10 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 }

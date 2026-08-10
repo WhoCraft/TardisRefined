@@ -3,6 +3,9 @@ package whocraft.tardis_refined.client.screen.components;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.navigation.ScreenDirection;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
     /**
@@ -37,6 +40,15 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
         super.render(guiGraphics, mouseX, mouseY, partialTick);
     }
 
+    @Override
+    @Nullable
+    protected T nextEntry(@NotNull ScreenDirection direction) {
+        return this.nextEntry(direction, entry -> !(entry instanceof MightBeDisabled mightBeDisabled) || mightBeDisabled.isEnabled());
+    }
+
+    public interface MightBeDisabled {
+        boolean isEnabled();
+    }
 
 }
 
