@@ -48,6 +48,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         this.upgradeHandler = upgradeHandler;
     }
 
+    private BackgroundlessButton extView;
     private Button ejectbtn;
     private int ejectbtntime;
     private boolean ejectbtnshow;
@@ -69,7 +70,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
                         .size(70, 20).build());
         vortxSelectButton.active = true;
 */
-        BackgroundlessButton extView = addRenderableWidget(BackgroundlessButton.backgroundlessBuilder(Component.literal(""), button -> {
+        extView = addRenderableWidget(BackgroundlessButton.backgroundlessBuilder(Component.literal(""), button -> {
             new C2SBeginShellView().send();
             Minecraft.getInstance().setScreen(null);
         }).pos(hPos + 20, -30 + height / 2).size(40, 60).build());
@@ -123,10 +124,25 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         if (getFocused() == ejectbtn) return true;
         if (
                 isHoldingDown &&
-                getFocused() instanceof GenericMonitorSelectionList<?> list &&
-                !list.children().isEmpty() &&
-                list.children().indexOf(list.getFocused()) == list.children().size()-1
+                getFocused() instanceof GenericMonitorSelectionList<?> list
         ) {
+            if (list.children().isEmpty()) {
+                return true;
+            }
+            int lastIndex = list.children().size()-1;
+            for (; lastIndex > 0; lastIndex--) {
+                if (GenericMonitorSelectionList.MightBeDisabled.isEnabled(list.children().get(lastIndex))) {
+                    break;
+                }
+            }
+            if (lastIndex == 0 && !GenericMonitorSelectionList.MightBeDisabled.isEnabled(list.children().get(lastIndex))) {
+                return true;
+            }
+            if (list.children().indexOf(list.getFocused()) == lastIndex) {
+                return true;
+            }
+        }
+        if (isHoldingDown && getFocused() == extView) {
             return true;
         }
         return (mouseY >= vPos + monitorHeight - 20 && mouseY <= vPos + monitorHeight) && (mouseX >= -35 + hPos + monitorWidth / 2 && mouseX <= 70 - 35 + hPos + monitorWidth / 2);

@@ -43,11 +43,15 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
     @Override
     @Nullable
     protected T nextEntry(@NotNull ScreenDirection direction) {
-        return this.nextEntry(direction, entry -> !(entry instanceof MightBeDisabled mightBeDisabled) || mightBeDisabled.isEnabled());
+        return this.nextEntry(direction, MightBeDisabled::isEnabled);
     }
 
     public interface MightBeDisabled {
         boolean isEnabled();
+
+        static boolean isEnabled(Object entry) {
+            return !(entry instanceof MightBeDisabled mightBeDisabled) || mightBeDisabled.isEnabled();
+        }
     }
 
 }
