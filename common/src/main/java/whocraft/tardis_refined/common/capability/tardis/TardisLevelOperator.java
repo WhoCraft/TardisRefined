@@ -59,6 +59,7 @@ public class TardisLevelOperator {
     public static final int STATE_CAVE = 0;
     public static final int STATE_TERRAFORMED_NO_EYE = 1;
     public static final int STATE_EYE_OF_HARMONY = 2;
+    public static final int STATE_DELETED = Integer.MAX_VALUE;
     private final Level level;
     private final ResourceKey<Level> levelKey;
     // Managers
@@ -451,6 +452,7 @@ public class TardisLevelOperator {
      * @implNote If we have updated the ShellTheme but haven't updated the Exterior data yet, you must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, ShellChangeSource)}
      */
     public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> overridingBlockState, boolean startingRegen, ShellChangeSource shellChangeSource) {
+        if (tardisState == STATE_DELETED) return;
         AestheticHandler aestheticHandler = this.getAestheticHandler();
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
@@ -649,6 +651,11 @@ public class TardisLevelOperator {
             );
         }
 
+        getPilotingManager().setFuel(0);
+        getPilotingManager().setCurrentLocation(new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, levelKey));
+        getInteriorManager().cancelDesktopChange();
+
+        setTardisState(STATE_DELETED);
         DimensionHandler.deleteDimension(levelKey);
 
         return true;

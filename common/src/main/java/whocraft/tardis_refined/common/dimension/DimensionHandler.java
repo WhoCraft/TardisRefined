@@ -31,6 +31,7 @@ import net.minecraft.world.level.storage.WorldData;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.common.util.DisconnectedPlayerHelper;
@@ -55,8 +56,6 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.function.BiFunction;
 
-import static whocraft.tardis_refined.common.util.Platform.getServer;
-
 /*
  * Majority of this code is sourced from Commoble's Hyberbox with permission.
  * You can view their project here: https://github.com/Commoble/hyperbox
@@ -77,28 +76,28 @@ public class DimensionHandler {
         return IS_BEING_DELETED.contains(resourceKey);
     }
 
-    public static void addDimension(ResourceKey<Level> resourceKey) {
+    public static void addDimension(MinecraftServer server, ResourceKey<Level> resourceKey) {
         LEVELS.add(resourceKey);
-        writeLevels();
+        writeLevels(server);
     }
 
-    public static void removeDimension(ResourceKey<Level> resourceKey) {
+    public static void removeDimension(MinecraftServer server, ResourceKey<Level> resourceKey) {
         LEVELS.removeIf(x -> x.registry() == resourceKey.registry());
         IS_BEING_DELETED.add(resourceKey);
 
-        writeLevels();
+        writeLevels(server);
     }
 
-    public static Path getWorldSavingDirectory() {
-        return getStorage().getDimensionPath(Level.OVERWORLD);
+    public static Path getWorldSavingDirectory(MinecraftServer server) {
+        return getStorage(server).getDimensionPath(Level.OVERWORLD);
     }
 
-    public static LevelStorageSource.LevelStorageAccess getStorage() {
-        return ((MinecraftServerStorageAccessor) getServer()).getStorageSource();
+    public static LevelStorageSource.LevelStorageAccess getStorage(MinecraftServer server) {
+        return ((MinecraftServerStorageAccessor) server).getStorageSource();
     }
 
-    private static void writeLevels() {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
+    private static void writeLevels(MinecraftServer server) {
+        File file = new File(getWorldSavingDirectory(server).toFile(), TardisRefined.MODID + "_tardis_info.json");
         JsonObject jsonObject = new JsonObject();
 
         JsonArray activeDimensions = new JsonArray();
@@ -144,26 +143,26 @@ public class DimensionHandler {
 
     }
 
-    public static void finishDeletion(MinecraftServer server, ResourceKey<Level> id) {
+    public static void finishDeletion(MinecraftServer server, ResourceKey<Level> id, boolean isShutdown) {
         Util.ioPool().execute(() -> {
             try {
-                FileUtils.deleteDirectory(getStorage().getDimensionPath(id).toFile());
+                FileUtils.deleteDirectory(getStorage(server).getDimensionPath(id).toFile());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            server.executeIfPossible(() -> {
+            server.execute(() -> {
+                IS_BEING_DELETED.remove(id);
                 // Fallback just in case.
                 DisconnectedPlayerHelper.forAllDisconnectedPlayers(server, id, data -> {
-                    DisconnectedPlayerHelper.moveToSpawn(data, server);
+                    DisconnectedPlayerHelper.moveToSpawn(data, server, isShutdown);
                     return true;
                 });
-                IS_BEING_DELETED.remove(id);
             });
         });
     }
 
     public static void loadLevels(ServerLevel serverLevel) {
-        File file = new File(getWorldSavingDirectory().toFile(), TardisRefined.MODID + "_tardis_info.json");
+        File file = new File(getWorldSavingDirectory(serverLevel.getServer()).toFile(), TardisRefined.MODID + "_tardis_info.json");
         if (!file.exists()) return;
 
         Reader reader = null;
@@ -213,7 +212,7 @@ public class DimensionHandler {
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
 
-        MinecraftServer server = getServer();
+        MinecraftServer server = level.getServer();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
         final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
@@ -255,7 +254,7 @@ public class DimensionHandler {
                 false, // "tick time", true for overworld, always false for everything else
                 new RandomSequences(BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed())));
 
-        DimensionHandler.addDimension(newLevel.dimension());
+        DimensionHandler.addDimension(newLevel.getServer(), newLevel.dimension());
 
         overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
 
@@ -281,25 +280,37 @@ public class DimensionHandler {
         SCHEDULED_DELETIONS.add(id);
     }
 
-    public static void tick() {
-        SCHEDULED_DELETIONS.forEach(DimensionHandler::performDelete);
+    private static void performDelete(MinecraftServer server, boolean isShutdown) {
+        SCHEDULED_DELETIONS.forEach(dim -> performDelete(server, dim, isShutdown));
         SCHEDULED_DELETIONS.clear();
     }
 
-    private static void performDelete(ResourceKey<Level> id) {
+    public static void tick(MinecraftServer server) {
+        if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.IMMEDIATE) {
+            performDelete(server, false);
+        }
+    }
+
+    public static void onServerStopping(MinecraftServer server) {
+        if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.NEXT_REBOOT) {
+            performDelete(server, true);
+        }
+        LEVELS.clear();
+    }
+
+    private static void performDelete(MinecraftServer server, ResourceKey<Level> id, boolean isShutdown) {
         if (ModCompatChecker.immersivePortals()) {
             ImmersivePortals.deleteDimension(id);
             return;
         }
 
         if (id == ServerLevel.OVERWORLD) return;
-        var server = Platform.getServer();
         var world = server.getLevel(id);
         if (world == null) return;
         if (DimensionHandler.isDimensionBeingDeleted(id)) return;
 
         world.noSave = true;
-        DimensionHandler.removeDimension(id);
+        DimensionHandler.removeDimension(server, id);
 
         //Actually register our dimension
         LayeredRegistryAccess<RegistryLayer> registries = server.registries();
@@ -325,6 +336,15 @@ public class DimensionHandler {
 
         new S2CSyncLevelList(world.dimension(), false).sendToAll();
 
+        if (isShutdown) {
+            // When shutdown we can't access the level, so try once before the actual shutdown begins.
+            // Must happen early to prevent issues.
+            DisconnectedPlayerHelper.forAllDisconnectedPlayers(server, id, data -> {
+                DisconnectedPlayerHelper.moveToSpawn(data, server, false);
+                return true;
+            });
+        }
+
         world.getServer().tell(world.getServer().wrapRunnable(() -> {
             for (var player : new ArrayList<>(world.players())) {
                 player.connection.disconnect(Component.translatable(ModMessages.DELETED_TARDIS));
@@ -336,7 +356,7 @@ public class DimensionHandler {
                 try {
                     world.close();
                 } catch (IOException ignored) {}
-                DimensionHandler.finishDeletion(server, id);
+                DimensionHandler.finishDeletion(server, id, isShutdown);
             });
         }));
     }

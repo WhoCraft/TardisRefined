@@ -114,7 +114,7 @@ public class ImmersivePortals {
         // TODO, Is this important? DimensionAPI.saveDimensionConfiguration(id);
 
         world = server.getLevel(id);
-        DimensionHandler.addDimension(world.dimension());
+        DimensionHandler.addDimension(server, world.dimension());
         return world;
     }
 
@@ -123,10 +123,10 @@ public class ImmersivePortals {
         if (server == null) return;
         ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
         if (world == null) return;
-        DimensionHandler.removeDimension(id);
+        DimensionHandler.removeDimension(server, id);
         DimensionAPI.removeDimensionDynamically(world);
         new S2CSyncLevelList(world.dimension(), false).sendToAll();
-        DimensionHandler.finishDeletion(server, id);
+        DimensionHandler.finishDeletion(server, id, false);
     }
 
     public static void init() {

@@ -2,6 +2,8 @@ package whocraft.tardis_refined.common.util;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Dynamic;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.*;
@@ -102,6 +104,20 @@ public class DisconnectedPlayerHelper {
                 forDisconnectedPlayer(server, uuid, playerAction);
             } catch (IllegalArgumentException e) {
                 TardisRefined.LOGGER.error("Found invalid player data file {} in player data folder.", playerId);
+            }
+        }
+
+        // Also update the singleplayer data if present.
+        var loadedSingleplayer = server.getWorldData().getLoadedPlayerTag();
+        if (loadedSingleplayer != null) {
+            playerAction.test(loadedSingleplayer);
+        }
+        // This is just an extra safeguard if this runs after shutdown.
+        var singleplayerProfile = server.getSingleplayerProfile();
+        if (singleplayerProfile != null && !isPlayerOnline.test(singleplayerProfile.getId())) {
+            loadedSingleplayer = server.getPlayerList().getSingleplayerData();
+            if (loadedSingleplayer != null) {
+                playerAction.test(loadedSingleplayer);
             }
         }
     }
@@ -265,14 +281,18 @@ public class DisconnectedPlayerHelper {
         nbt.put("Rotation", toNbtList(yaw, pitch));
     }
 
-    public static void moveToSpawn(CompoundTag playerData, MinecraftServer server) {
+    public static void moveToSpawn(CompoundTag playerData, MinecraftServer server, boolean isShutdown) {
         BlockPos pos = getRespawnPosition(playerData);
         ResourceKey<Level> dim = getRespawnDimension(playerData);
         float angle = getRespawnAngle(playerData);
         var respawnLevel = server.getLevel(dim);
         Vec3 actualTargetPos = null;
         if (respawnLevel != null) {
-            actualTargetPos = Player.findRespawnPositionAndUseSpawnBlock(respawnLevel, pos, angle, isRespawnForced(playerData), false).orElse(null);
+            if (!isShutdown) {
+                actualTargetPos = Player.findRespawnPositionAndUseSpawnBlock(respawnLevel, pos, angle, isRespawnForced(playerData), false).orElse(null);
+            } else {
+                actualTargetPos = Vec3.atBottomCenterOf(pos); // Will hopefully never be needed.
+            }
         }
         if (actualTargetPos == null) {
             respawnLevel = server.overworld();
