@@ -1,13 +1,18 @@
 package whocraft.tardis_refined.common.util.forge;
 
+import com.mojang.serialization.DataResult;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.LoadingModList;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.util.Platform;
 
 import java.util.Collection;
 
@@ -17,8 +22,21 @@ public class PlatformImpl {
         return FMLLoader.isProduction();
     }
 
-    public static boolean isModLoaded(String id) {
-        return LoadingModList.get().getModFileById(id) != null;
+    public static DataResult<Platform.CommonVersion> parseVersion(String version) {
+        return DataResult.success(new ForgeVersion(new DefaultArtifactVersion(version)));
+    }
+
+    public static boolean isModLoaded(String id, @Nullable Platform.CommonVersionRange range) {
+        if (ModList.get().isLoaded(id)) {
+            if (range != null) {
+                var modFile = ModList.get().getModContainerById(id);
+                if (modFile.isEmpty()) return false;
+                var version = modFile.get().getModInfo().getVersion();
+                return range.contains(new ForgeVersion(version));
+            }
+            return true;
+        }
+        return false;
     }
 
     public static Collection<String> getModIds() {
@@ -47,4 +65,20 @@ public class PlatformImpl {
                 .orElse(namespace);
     }
 
+    public record ForgeVersion(ArtifactVersion version) implements Platform.CommonVersion {
+
+        @Override
+        public int compareTo(@NotNull Platform.CommonVersion version) {
+            if (version instanceof ForgeVersion otherVersion) {
+                return this.version.compareTo(otherVersion.version);
+            } else {
+                throw new IllegalArgumentException("Tried to compare mismatching version formats");
+            }
+        }
+
+        @Override
+        public String versionString() {
+            return version.toString();
+        }
+    }
 }
