@@ -37,5 +37,10 @@ public class TardisLevelOperatorDummy extends TardisLevelOperatorImpl {
 
     }
 
+    @Override
+    public boolean deleteTARDIS() {
+        return false;
+    }
+
 
 }

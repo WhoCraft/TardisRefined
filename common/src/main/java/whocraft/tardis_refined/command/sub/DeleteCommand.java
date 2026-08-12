@@ -7,23 +7,15 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.util.CommandHelper;
 import whocraft.tardis_refined.common.util.PlayerUtil;
-import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 public class DeleteCommand implements Command<CommandSourceStack> {
@@ -39,7 +31,7 @@ public class DeleteCommand implements Command<CommandSourceStack> {
 
         ServerPlayer sender = context.getSource().getPlayer();
 
-        if (tardisData.isPresent()) {
+        if (tardisData.isPresent() && tardis.dimensionTypeId() == TRDimensionTypes.TARDIS) {
 
             if (tardisData.get().deleteTARDIS()) {
                 PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.DELETED_TARDIS), false);
