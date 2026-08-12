@@ -380,17 +380,17 @@ public class DimensionHandler {
                 }
             }));
         } catch (Throwable e) {
-            String message = "Failed to delete TARDIS dimension " + id;
+            String message = "Failed to delete TARDIS dimension " + id.location() + ".";
             boolean config = false;
             if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.IMMEDIATE) {
-                message += ". Try changing dimension_delete_mode to " + TRConfig.Server.DeleteMode.NEXT_SHUTDOWN.name() + " in " + TardisRefined.MODID + "-server.toml";
+                message += " Try changing dimension_delete_mode to " + TRConfig.Server.DeleteMode.NEXT_SHUTDOWN.name() + " in " + TardisRefined.MODID + "-server.toml.";
                 config = true;
             }
             if (config) {
-                message += ". You can find this file in the config directory in .minecraft or in the serverconfig directory inside the world you're playing";
+                message += " You can find this file in the config directory in .minecraft or in the serverconfig directory inside the world you're playing.";
             }
             if (Platform.isForge() && Platform.isClient()) {
-                message += ". Put the config in the defaultconfigs folder to apply to all worlds";
+                message += " Put the config in the defaultconfigs folder to apply to all worlds.";
             }
             throw new RuntimeException(message, e);
         }
