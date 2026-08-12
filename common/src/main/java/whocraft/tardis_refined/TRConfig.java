@@ -87,7 +87,7 @@ public class TRConfig {
 
         public enum DeleteMode {
             IMMEDIATE,
-            NEXT_REBOOT;
+            NEXT_SHUTDOWN;
 
             private static final Platform.CommonVersionRange VS_BROKEN_DELETE_VERSIONS = Platform.CommonVersionRange.Builder.builder().atMost(
                     "2.4.11"
@@ -95,7 +95,7 @@ public class TRConfig {
 
             static DeleteMode getDefault() {
                 if (Platform.isModLoaded("valkyrienskies", VS_BROKEN_DELETE_VERSIONS)) {
-                    return NEXT_REBOOT;
+                    return NEXT_SHUTDOWN;
                 }
                 return IMMEDIATE;
             }
@@ -106,7 +106,7 @@ public class TRConfig {
             BANNED_DIMENSIONS = builder.translation("config.tardis_refined.banned_dimensions").comment("A list of Dimensions the TARDIS cannot land in.").defineList("banned_dimensions", Lists.newArrayList("example:dimension", "[substring]will_match_any_dimension_containing_this_substring", "[namespace]immersive_portals", "[regex]insert_regex_here"), String.class::isInstance);
             ADVENTURE_MODE_DEFAULTS = builder.translation("config.tardis_refined.adventure_mode_defaults").comment("A list of Dimensions that are automatically sampled").defineList("adventure_mode_defaults", Lists.newArrayList("minecraft:overworld"), String.class::isInstance);
             ADVENTURE_MODE = builder.translation("config.tardis_refined.adventure_mode").comment("Toggles whether players must discover and sample dimensions before they can travel there").define("adventure_mode", false);
-            DIMENSION_DELETE_MODE = builder.translation(ModMessages.CONFIG_DIMENSION_DELETE_MODE).comment("The method used to delete dimensions. IMMEDIATE deletes the dimension immediately while NEXT_REBOOT schedules the dimension for deletion on server shutdown. NEXT_REBOOT is primarily intended for use with Valkyrien Skies 2.4.11 and lower as it may crash otherwise due to a bug. IMMEDIATE should work fine with most unless they do something weird. Note that NEXT_REBOOT does not allow you to recover a TARDIS deleted accidentally.").defineEnum("dimension_delete_mode", DeleteMode.getDefault());
+            DIMENSION_DELETE_MODE = builder.translation(ModMessages.CONFIG_DIMENSION_DELETE_MODE).comment("The method used to delete dimensions. IMMEDIATE deletes the dimension immediately while NEXT_SHUTDOWN schedules the dimension for deletion on server shutdown. NEXT_SHUTDOWN is primarily intended for use with Valkyrien Skies 2.4.11 and lower as it may crash otherwise due to a bug. IMMEDIATE should work fine with most unless they do something weird. Note that NEXT_SHUTDOWN does NOT allow you to recover a TARDIS deleted accidentally.").defineEnum("dimension_delete_mode", DeleteMode.getDefault());
             builder.pop();
             builder.push("compatibility");
             builder.push("immersive_portals");

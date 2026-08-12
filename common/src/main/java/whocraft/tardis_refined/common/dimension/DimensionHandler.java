@@ -35,7 +35,6 @@ import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.common.util.DisconnectedPlayerHelper;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
@@ -292,7 +291,7 @@ public class DimensionHandler {
     }
 
     public static void onServerStopping(MinecraftServer server) {
-        if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.NEXT_REBOOT) {
+        if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.NEXT_SHUTDOWN) {
             performDelete(server, true);
         }
         LEVELS.clear();
