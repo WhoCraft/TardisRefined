@@ -6,10 +6,10 @@
 Added `/tardis_refined delete <tardis>` which deletes the given TARDIS and its dimension.
 
 #### Configs
-Config to use normal dimension adder with Immersive Portals installed.
-Config to use normal dimension remover with Immersive Portals installed.
-Config to turn off smooth Immersive Portals teleportation.
+Config to not use the Immersive Portals dimension adder.
+Config to not use the Immersive Portals dimension remover.
+Config to not use smooth Immersive Portals teleportation.
 Config to choose which deletion mode to use. Either immediately or scheduled for the next shutdown.
 
 #### Bug Fix
-Offline players are not ejected from the TARDIS.
+Fix offline players not being ejected from the TARDIS when changing the desktop or deleting the TARDIS.
