@@ -215,9 +215,8 @@ public class TardisHelper {
     }
 
     public static void handleStartupRemoval(MinecraftServer server) {
-        DimensionUtil.getTardisLevels(server).forEach(dimension -> {
-            var level = server.getLevel(dimension);
-            if (level != null) {
+        for (ServerLevel level : server.getAllLevels()) {
+            if (level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
                 TardisLevelOperator.get(level).ifPresent(operator -> {
                     if (operator.getTardisState() == TardisLevelOperator.STATE_DELETED) {
                         // Looks like the game crashed so this TARDIS wasn't deleted, let's try again.
@@ -225,7 +224,7 @@ public class TardisHelper {
                     }
                 });
             }
-        });
+        }
     }
 
 }
