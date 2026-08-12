@@ -115,9 +115,9 @@ public class TRConfig {
             builder.pop();
             builder.push("compatibility");
             builder.push("immersive_portals");
-            IP_DIMENSION_ADDER = builder.comment("Whether or not to let Immersive Portals handle dimension additions.").translation(ModMessages.CONFIG_IP_DIMENSION_ADDER).define("dimension_adder", true);
-            IP_DIMENSION_REMOVER = builder.comment("Whether or not to let Immersive Portals handle dimension removal.").translation(ModMessages.CONFIG_IP_DIMENSION_REMOVER).define("dimension_remover", true);
-            IP_SMOOTH_TELEPORTATION = builder.comment("Whether or not to let Immersive Portals handle regular non-boti teleportation.").translation(ModMessages.CONFIG_IP_SMOOTH_TELEPORTATION).define("smooth_teleportation", true);
+            IP_DIMENSION_ADDER = builder.comment("Whether to use Immersive Portals to add new dimensions.").translation(ModMessages.CONFIG_IP_DIMENSION_ADDER).define("dimension_adder", false);
+            IP_DIMENSION_REMOVER = builder.comment("Whether to use Immersive Portals to remove dimensions.").translation(ModMessages.CONFIG_IP_DIMENSION_REMOVER).define("dimension_remover", false);
+            IP_SMOOTH_TELEPORTATION = builder.comment("Whether to let Immersive Portals handle regular non-boti teleportation.").translation(ModMessages.CONFIG_IP_SMOOTH_TELEPORTATION).define("smooth_teleportation", !Platform.isModLoaded("distanthorizons"));
             IP_TELEPORTATION_MODE = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION_MODE).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
             builder.pop();
             builder.push("immersive_portals_valkyrien_skies");
