@@ -35,6 +35,7 @@ import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.common.util.DisconnectedPlayerHelper;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
@@ -68,6 +69,7 @@ public class DimensionHandler {
     public static Set<ResourceKey<Level>> IS_BEING_DELETED = new HashSet<>();
 
     private static final Set<ResourceKey<Level>> SCHEDULED_DELETIONS = new HashSet<>();
+    private static final Set<ResourceKey<Level>> PENDING_FINISHES = new HashSet<>();
 
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/DimensionHandler");
 
@@ -297,67 +299,94 @@ public class DimensionHandler {
         LEVELS.clear();
     }
 
+    public static void onServerStopped(MinecraftServer server) {
+        if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.NEXT_SHUTDOWN) {
+            PENDING_FINISHES.forEach(dim -> finishDeletion(server, dim, true));
+            PENDING_FINISHES.clear();
+        }
+    }
+
     private static void performDelete(MinecraftServer server, ResourceKey<Level> id, boolean isShutdown) {
-        if (ModCompatChecker.immersivePortals()) {
-            ImmersivePortals.deleteDimension(id);
-            return;
-        }
-
-        if (id == ServerLevel.OVERWORLD) return;
-        var world = server.getLevel(id);
-        if (world == null) return;
-        if (DimensionHandler.isDimensionBeingDeleted(id)) return;
-
-        world.noSave = true;
-        DimensionHandler.removeDimension(server, id);
-
-        //Actually register our dimension
-        LayeredRegistryAccess<RegistryLayer> registries = server.registries();
-        Registry<LevelStem> oldDimensions = registries.compositeAccess().registryOrThrow(Registries.LEVEL_STEM);
-        Registry<LevelStem> newDimensions = new MappedRegistry<>(oldDimensions.key(), oldDimensions.registryLifecycle());
-        var stemKey = Registries.levelToLevelStem(id);
-        for (var dim : oldDimensions.entrySet()) {
-            if (dim.getKey() != stemKey) {
-                Registry.register(newDimensions, dim.getKey(), dim.getValue());
+        try {
+            if (ModCompatChecker.immersivePortals()) {
+                ImmersivePortals.deleteDimension(id);
+                return;
             }
-        }
-        newDimensions.freeze();
-        List<Registry<?>> list = new ArrayList<>();
-        list.add(newDimensions);
-        registries.getLayer(RegistryLayer.DIMENSIONS).registries().forEach(reg -> {
-            if (reg.key() != newDimensions.key()) {
-                list.add(reg.value());
+
+            if (id == ServerLevel.OVERWORLD) return;
+            var world = server.getLevel(id);
+            if (world == null) return;
+            if (DimensionHandler.isDimensionBeingDeleted(id)) return;
+
+            world.noSave = true;
+            DimensionHandler.removeDimension(server, id);
+
+            //Actually unregister our dimension
+            LayeredRegistryAccess<RegistryLayer> registries = server.registries();
+            Registry<LevelStem> oldDimensions = registries.compositeAccess().registryOrThrow(Registries.LEVEL_STEM);
+            Registry<LevelStem> newDimensions = new MappedRegistry<>(oldDimensions.key(), oldDimensions.registryLifecycle());
+            var stemKey = Registries.levelToLevelStem(id);
+            for (var dim : oldDimensions.entrySet()) {
+                if (dim.getKey() != stemKey) {
+                    Registry.register(newDimensions, dim.getKey(), dim.getValue());
+                }
             }
-        });
-        server.registries = registries.replaceFrom(
-                RegistryLayer.DIMENSIONS, new RegistryAccess.ImmutableRegistryAccess(list).freeze()
-        );
-
-        new S2CSyncLevelList(world.dimension(), false).sendToAll();
-
-        if (isShutdown) {
-            // When shutdown we can't access the level, so try once before the actual shutdown begins.
-            // Must happen early to prevent issues.
-            DisconnectedPlayerHelper.forAllDisconnectedPlayers(server, id, data -> {
-                DisconnectedPlayerHelper.moveToSpawn(data, server, false);
-                return true;
+            newDimensions.freeze();
+            List<Registry<?>> list = new ArrayList<>();
+            list.add(newDimensions);
+            registries.getLayer(RegistryLayer.DIMENSIONS).registries().forEach(reg -> {
+                if (reg.key() != newDimensions.key()) {
+                    list.add(reg.value());
+                }
             });
-        }
+            server.registries = registries.replaceFrom(
+                    RegistryLayer.DIMENSIONS, new RegistryAccess.ImmutableRegistryAccess(list).freeze()
+            );
 
-        world.getServer().tell(world.getServer().wrapRunnable(() -> {
-            for (var player : new ArrayList<>(world.players())) {
-                player.connection.disconnect(Component.translatable(ModMessages.DELETED_TARDIS));
+            new S2CSyncLevelList(world.dimension(), false).sendToAll();
+
+            if (isShutdown) {
+                // When shutdown we can't access the level, so try once before the actual shutdown begins.
+                // Must happen early to prevent issues.
+                DisconnectedPlayerHelper.forAllDisconnectedPlayers(server, id, data -> {
+                    DisconnectedPlayerHelper.moveToSpawn(data, server, false);
+                    return true;
+                });
+
+                PENDING_FINISHES.add(id);
             }
-            server.levels.remove(id);
-            onDimensionUnloaded(world);
 
-            Util.backgroundExecutor().execute(() -> {
-                try {
-                    world.close();
-                } catch (IOException ignored) {}
-                DimensionHandler.finishDeletion(server, id, isShutdown);
-            });
-        }));
+            world.getServer().tell(world.getServer().wrapRunnable(() -> {
+                for (var player : new ArrayList<>(world.players())) {
+                    player.connection.disconnect(Component.translatable(ModMessages.DELETED_TARDIS));
+                }
+                if (!isShutdown) {
+                    server.levels.remove(id);
+                    onDimensionUnloaded(world);
+
+                    Util.backgroundExecutor().execute(() -> {
+                        try {
+                            world.close();
+                        } catch (IOException ignored) {}
+                        DimensionHandler.finishDeletion(server, id, isShutdown);
+                    });
+                }
+            }));
+        } catch (Throwable e) {
+            String message = "Failed to delete TARDIS dimension " + id;
+            boolean config = false;
+            if (TRConfig.SERVER.DIMENSION_DELETE_MODE.get() == TRConfig.Server.DeleteMode.IMMEDIATE) {
+                message += ". Try changing dimension_delete_mode to " + TRConfig.Server.DeleteMode.NEXT_SHUTDOWN.name() + " in " + TardisRefined.MODID + "-server.toml";
+                config = true;
+            }
+            if (config) {
+                message += ". You can find this file in the config directory in .minecraft or in the serverconfig directory inside the world you're playing";
+            }
+            if (Platform.isForge() && Platform.isClient()) {
+                message += ". Put the config in the defaultconfigs folder to apply to all worlds";
+            }
+            throw new RuntimeException(message, e);
+        }
     }
 
     public static LevelStem formLevelStem(MinecraftServer server, ResourceKey<LevelStem> stem) {

@@ -71,6 +71,8 @@ public class ModEvents {
             // We call this here to make sure blocks are registered
             TRPointOfInterestTypes.registerBlockStates();
 
+            TardisHelper.handleStartupRemoval(server);
+
         });
 
         // Force End a Vortex Session
@@ -96,6 +98,10 @@ public class ModEvents {
             }
 
 
+        });
+
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            DimensionHandler.onServerStopped(server);
         });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));

@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -47,6 +48,7 @@ public class CommonBus {
         // Load Levels
         ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
         DimensionHandler.loadLevels(world);
+        TardisHelper.handleStartupRemoval(event.getServer());
     }
 
     @SubscribeEvent
@@ -56,6 +58,11 @@ public class CommonBus {
         if (ModCompatChecker.immersivePortals()) {
             ImmersivePortals.onServerStopping(event.getServer());
         }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        DimensionHandler.onServerStopped(event.getServer());
     }
 
     @SubscribeEvent
