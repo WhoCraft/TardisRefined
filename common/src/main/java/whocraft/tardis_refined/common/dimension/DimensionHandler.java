@@ -266,8 +266,6 @@ public class DimensionHandler {
 
         onDimensionLoaded(newLevel);
 
-        new S2CSyncLevelList(newLevel.dimension(), true).sendToAll();
-
         BlockPos blockPos = new BlockPos(0, 0, 0);
         ChunkPos chunkPos = new ChunkPos(blockPos);
         chunkListener.updateSpawnPos(chunkPos);
@@ -279,6 +277,8 @@ public class DimensionHandler {
         if (ModCompatChecker.immersivePortals()) {
             ImmersivePortals.onDimensionsModified(server);
         }
+
+        new S2CSyncLevelList(newLevel.dimension(), true).sendToAll();
 
         return newLevel;
     }
