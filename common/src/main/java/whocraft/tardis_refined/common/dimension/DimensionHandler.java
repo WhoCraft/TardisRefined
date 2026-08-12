@@ -126,7 +126,7 @@ public class DimensionHandler {
             return null;
         }
 
-        if (ModCompatChecker.immersivePortals()) {
+        if (ModCompatChecker.immersivePortals() && TRConfig.SERVER.IP_DIMENSION_ADDER.get()) {
             return ImmersivePortals.createDimension(interactionLevel, levelResourceKey);
         }
 
@@ -207,7 +207,7 @@ public class DimensionHandler {
     }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
-        if (ModCompatChecker.immersivePortals()) {
+        if (ModCompatChecker.immersivePortals() && TRConfig.SERVER.IP_DIMENSION_ADDER.get()) {
             return ImmersivePortals.createDimension(level, id);
         }
 
@@ -308,7 +308,7 @@ public class DimensionHandler {
 
     private static void performDelete(MinecraftServer server, ResourceKey<Level> id, boolean isShutdown) {
         try {
-            if (ModCompatChecker.immersivePortals()) {
+            if (ModCompatChecker.immersivePortals() && TRConfig.SERVER.IP_DIMENSION_REMOVER.get()) {
                 ImmersivePortals.deleteDimension(id);
                 return;
             }

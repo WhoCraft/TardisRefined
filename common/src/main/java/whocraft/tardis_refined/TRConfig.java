@@ -75,8 +75,13 @@ public class TRConfig {
         public final ForgeConfigSpec.BooleanValue ADVENTURE_MODE;
         public final ForgeConfigSpec.EnumValue<DeleteMode> DIMENSION_DELETE_MODE;
 
-        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION;
-        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_VS;
+        public final ForgeConfigSpec.BooleanValue IP_DIMENSION_ADDER;
+        public final ForgeConfigSpec.BooleanValue IP_DIMENSION_REMOVER;
+
+        public final ForgeConfigSpec.BooleanValue IP_SMOOTH_TELEPORTATION;
+
+        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_MODE;
+        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_MODE_VS;
 
         public enum IPTeleportationMode {
             PORTAL,
@@ -110,10 +115,13 @@ public class TRConfig {
             builder.pop();
             builder.push("compatibility");
             builder.push("immersive_portals");
-            IP_TELEPORTATION = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
+            IP_DIMENSION_ADDER = builder.comment("Whether or not to let Immersive Portals handle dimension additions.").translation(ModMessages.CONFIG_IP_DIMENSION_ADDER).define("dimension_adder", true);
+            IP_DIMENSION_REMOVER = builder.comment("Whether or not to let Immersive Portals handle dimension removal.").translation(ModMessages.CONFIG_IP_DIMENSION_REMOVER).define("dimension_remover", true);
+            IP_SMOOTH_TELEPORTATION = builder.comment("Whether or not to let Immersive Portals handle regular non-boti teleportation.").translation(ModMessages.CONFIG_IP_SMOOTH_TELEPORTATION).define("smooth_teleportation", true);
+            IP_TELEPORTATION_MODE = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION_MODE).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
             builder.pop();
             builder.push("immersive_portals_valkyrien_skies");
-            IP_TELEPORTATION_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_VS).defineEnum("teleportation_mode_vs", IPTeleportationMode.ITP);
+            IP_TELEPORTATION_MODE_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_MODE_VS).defineEnum("teleportation_mode_vs", IPTeleportationMode.ITP);
             builder.pop();
             builder.pop();
         }

@@ -22,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
@@ -89,7 +90,7 @@ public class TRTeleporter {
         float updatedYRot = Mth.wrapDegrees(pYaw);
         float updatedXRot = Mth.wrapDegrees(pPitch);
 
-        if (ModCompatChecker.immersivePortals()) {
+        if (ModCompatChecker.immersivePortals() && TRConfig.SERVER.IP_SMOOTH_TELEPORTATION.get()) {
             pEntity.setYRot(updatedYRot); //Set the desired yRot and xRot before teleportation. For non-players, this means the facing is copied over to the copy of the entity which we recreate. For players, it should update the rotation with the correct facing at the destination
             pEntity.setXRot(updatedXRot);
             ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);

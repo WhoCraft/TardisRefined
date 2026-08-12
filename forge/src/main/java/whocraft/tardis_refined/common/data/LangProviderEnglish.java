@@ -327,8 +327,11 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
         add(ModMessages.CONFIG_IP_VS_COLLISION, "Immersive Portals Valkyrien Skies Collision");
-        add(ModMessages.CONFIG_IP_TELEPORTATION, "Immersive Portals Teleportation Mode");
-        add(ModMessages.CONFIG_IP_TELEPORTATION_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
+        add(ModMessages.CONFIG_IP_DIMENSION_ADDER, "Immersive Portals Dimension Adder");
+        add(ModMessages.CONFIG_IP_DIMENSION_REMOVER, "Immersive Portals Dimension Remover");
+        add(ModMessages.CONFIG_IP_SMOOTH_TELEPORTATION, "Immersive Portals Smooth Teleportation");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_MODE, "Immersive Portals Teleportation Mode");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_MODE_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
