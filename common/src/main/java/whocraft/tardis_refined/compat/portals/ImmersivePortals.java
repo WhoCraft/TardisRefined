@@ -107,6 +107,17 @@ public class ImmersivePortals {
         return UUID.fromString(tardisID.location().getPath());
     }
 
+    private static boolean HAS_UPDATE_EVENT = false;
+
+    static {
+	    try {
+            DimensionAPI.class.getField("serverDimensionDynamicUpdateEvent");
+		    HAS_UPDATE_EVENT = true;
+	    } catch (NoSuchFieldException e) {
+            HAS_UPDATE_EVENT = false;
+	    }
+    }
+
     public static void onDimensionsModified(MinecraftServer server) {
         DimensionIdManagement.updateAndSaveServerDimIdRecord();
 
@@ -115,7 +126,9 @@ public class ImmersivePortals {
             player.connection.send(dimSyncPacket);
         }
 
-        DimensionAPI.serverDimensionDynamicUpdateEvent.invoker().run(server.levelKeys());
+        if (HAS_UPDATE_EVENT) {
+            DimensionAPI.serverDimensionDynamicUpdateEvent.invoker().run(server.levelKeys());
+        }
     }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
