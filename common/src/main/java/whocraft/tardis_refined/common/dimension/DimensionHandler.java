@@ -158,6 +158,9 @@ public class DimensionHandler {
                     DisconnectedPlayerHelper.moveToSpawn(data, server, isShutdown);
                     return true;
                 });
+                if (ModCompatChecker.immersivePortals()) {
+                    ImmersivePortals.onDimensionsModified(server);
+                }
             });
         });
     }
@@ -273,6 +276,10 @@ public class DimensionHandler {
         serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
         server.tell(server.wrapRunnable(chunkListener::stop));
 
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onDimensionsModified(server);
+        }
+
         return newLevel;
     }
 
@@ -308,7 +315,7 @@ public class DimensionHandler {
 
     private static void performDelete(MinecraftServer server, ResourceKey<Level> id, boolean isShutdown) {
         try {
-            if (ModCompatChecker.immersivePortals() && TRConfig.SERVER.IP_DIMENSION_REMOVER.get()) {
+            if (ModCompatChecker.immersivePortals() && TRConfig.SERVER.IP_DIMENSION_REMOVER.get() && !isShutdown) {
                 ImmersivePortals.deleteDimension(id);
                 return;
             }

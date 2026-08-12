@@ -4,10 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -24,7 +26,9 @@ import org.apache.logging.log4j.Logger;
 import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
+import qouteall.q_misc_util.MiscNetworking;
 import qouteall.q_misc_util.api.DimensionAPI;
+import qouteall.q_misc_util.dimension.DimensionIdManagement;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.EventResult;
@@ -101,6 +105,17 @@ public class ImmersivePortals {
 
     public static UUID getUUIDForTARDIS(ResourceKey<Level> tardisID) {
         return UUID.fromString(tardisID.location().getPath());
+    }
+
+    public static void onDimensionsModified(MinecraftServer server) {
+        DimensionIdManagement.updateAndSaveServerDimIdRecord();
+
+        Packet<?> dimSyncPacket = MiscNetworking.createDimSyncPacket();
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            player.connection.send(dimSyncPacket);
+        }
+
+        DimensionAPI.serverDimensionDynamicUpdateEvent.invoker().run(server.levelKeys());
     }
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
