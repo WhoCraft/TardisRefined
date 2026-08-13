@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "EndDragonFightAccessor",
+    "ItemEntityExperienceOrbMixin",
     "LivingEntityMixin",
     "MappedRegistryAccessor",
     "MinecraftServerStorageAccessor",
@@ -15,14 +16,14 @@
     "VillagerMixin"
   ],
   "client": [
-    "render.SodiumFixMixin",
-    "render.GameRendererMixin",
     "LocalPlayerMixin",
     "MultiplayerGameModeMixin",
     "render.FogRendererMixin",
+    "render.GameRendererMixin",
     "render.ModelPartInvoker",
     "render.PlayerRenderMixin",
     "render.PoseStackMixin",
+    "render.SodiumFixMixin",
     "render.buffer.MixinMainTarget",
     "render.buffer.MixinRenderTarget",
     "render.ui.GuiMixin",

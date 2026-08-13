@@ -7,3 +7,4 @@ Fix players glitching out when relogging while in shell view on Fabric.
 Fix shell-view return position being rounded to the nearest block position.
 Fix player exiting shell-view not facing the correct direction.
 Fix items dropped in shell view ending up outside the TARDIS.
+Fix players able to pick up items and xp while in shell view.
