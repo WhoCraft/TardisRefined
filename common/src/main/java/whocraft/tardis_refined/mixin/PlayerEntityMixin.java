@@ -2,22 +2,24 @@ package whocraft.tardis_refined.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.Share;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import whocraft.tardis_refined.common.GravityClient;
 import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
@@ -44,27 +46,29 @@ public abstract class PlayerEntityMixin extends LivingEntity {
         GravityClient.moveGravity(player, info);
     }
 
-    @ModifyArgs(
+    @WrapOperation(
             method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;",
             at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/item/ItemEntity;<init>(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;)V"
+                    value = "NEW",
+                    target = "(Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/item/ItemStack;)Lnet/minecraft/world/entity/item/ItemEntity;"
             )
     )
-    public void dropCheckShellView(Args args, @Share("rotation") LocalRef<Vec2> rotation) {
-        TardisPlayerInfo.get((Player) (Object) this).ifPresent(data -> {
+    public ItemEntity dropCheckShellView(
+            Level level, double posX, double posY, double posZ, ItemStack itemStack,
+            Operation<ItemEntity> original, @Share("rotation") LocalRef<Vec2> rotation
+    ) {
+        return TardisPlayerInfo.get((Player) (Object) this).map(data -> {
             if (data.isViewingTardis() && getServer() != null) {
                 var prevDim = getServer().getLevel(data.getPlayerPreviousDim());
                 if (prevDim != null) {
-                    args.set(0, prevDim);
+
                     var prevPos = data.getPlayerPreviousPosAccurate();
-                    args.set(1, prevPos.x);
-                    args.set(2, prevPos.y + ((double) args.get(2)) - getY());
-                    args.set(3, prevPos.z);
                     rotation.set(new Vec2(data.getPlayerPreviousRot(), data.getPlayerPreviousYaw()));
+                    return original.call(prevDim, prevPos.x, prevPos.y + posY - getY(), prevPos.z, itemStack);
                 }
             }
-        });
+            return null;
+        }).orElseGet(() -> original.call(level, posX, posY, posZ, itemStack));
     }
 
     @ModifyExpressionValue(
