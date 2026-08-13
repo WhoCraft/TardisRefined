@@ -259,7 +259,7 @@ public class TardisPlayerInfo implements TardisPilot {
     public void endShellView(ServerPlayer serverPlayer) {
         if (!isViewingTardis()) return;
 
-        TRTeleporter.simpleTeleport(serverPlayer, DimensionUtil.getLevel(getPlayerPreviousDim()), playerPreviousPos.x, playerPreviousPos.y, playerPreviousPos.z, playerPreviousYaw, playerPreviousRot);
+        TRTeleporter.simpleTeleport(serverPlayer, serverPlayer.getServer().getLevel(getPlayerPreviousDim()), playerPreviousPos.x, playerPreviousPos.y, playerPreviousPos.z, playerPreviousYaw, playerPreviousRot);
         updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), false);
         serverPlayer.onUpdateAbilities();
         new S2CResetPostShellView().send(serverPlayer);
