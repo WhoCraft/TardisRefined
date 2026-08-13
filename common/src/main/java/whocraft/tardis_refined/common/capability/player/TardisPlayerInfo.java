@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
@@ -29,8 +30,23 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public class TardisPlayerInfo implements TardisPilot {
+
+    public static final Predicate<Entity> EXCLUDE_SHELL_VIEW = entity -> {
+        if (entity instanceof LivingEntity living) {
+            var info = TardisPlayerInfo.get(living);
+            if (info.isPresent()) {
+                return !info.get().isViewingTardis();
+            }
+        }
+        return true;
+    };
+
+    public static Predicate<Entity> wrapNullablePredicateWithExcludeShellView(@Nullable Predicate<Entity> predicate) {
+        return predicate == null ? EXCLUDE_SHELL_VIEW : predicate.and(EXCLUDE_SHELL_VIEW);
+    }
 
     private Player player;
     private UUID viewedTardis;
