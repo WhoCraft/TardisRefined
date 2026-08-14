@@ -191,12 +191,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
-    public void setRemoved() {
-        super.setRemoved();
-
-    }
-
-    @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         saveAdditional(tag);

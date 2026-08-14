@@ -3,4 +3,4 @@
 ![TARDIS Refined](https://wiki.tardisrefined.net/TARDIS-Refined-Wiki/tardis_refined_v2_1.png)
 
 #### Bug Fix
-
+Fix current console powering back on during the next interaction whenever it is unloaded and loaded again.

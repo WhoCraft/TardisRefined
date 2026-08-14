@@ -48,6 +48,7 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static whocraft.tardis_refined.constants.NbtConstants.CAN_USE_CONTROLS;
@@ -99,8 +100,7 @@ public class TardisPilotingManager extends TickableHandler {
     private boolean isHandbrakeOn = false;
     private int throttleStage = 0;
 
-    private GlobalConsoleBlockEntity currentConsole;
-    private BlockPos currentConsoleBlockPos = BlockPos.ZERO;
+    private Optional<BlockPos> currentConsoleBlockPos = Optional.empty();
 
     private boolean isPassivelyRefuelling = false;
     private ShellBaseBlockEntity newCurrentBlockEntity;
@@ -130,7 +130,11 @@ public class TardisPilotingManager extends TickableHandler {
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.TARGET_LOCATION);
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.RETURN_LOCATION);
 
-        this.currentConsoleBlockPos = NbtUtils.readBlockPos(tag.getCompound(CURRENT_CONSOLE_POS));
+        if (tag.contains(CURRENT_CONSOLE_POS)) {
+            this.currentConsoleBlockPos = Optional.of(NbtUtils.readBlockPos(tag.getCompound(CURRENT_CONSOLE_POS)));
+        } else {
+            this.currentConsoleBlockPos = Optional.empty();
+        }
 
 
         this.ticksCrashing = tag.getInt(NbtConstants.TICKS_CRASHING);
@@ -167,8 +171,8 @@ public class TardisPilotingManager extends TickableHandler {
         tag.putBoolean(CAN_USE_CONTROLS, this.canUseControls);
         tag.putBoolean(NbtConstants.IS_PASSIVELY_REFUELING, this.isPassivelyRefuelling);
 
-        if (currentConsoleBlockPos != null) {
-            tag.put(CURRENT_CONSOLE_POS, NbtUtils.writeBlockPos(this.currentConsoleBlockPos));
+        if (currentConsoleBlockPos.isPresent()) {
+            tag.put(CURRENT_CONSOLE_POS, NbtUtils.writeBlockPos(this.currentConsoleBlockPos.get()));
         }
 
 
@@ -223,9 +227,7 @@ public class TardisPilotingManager extends TickableHandler {
                 this.isPassivelyRefuelling = false;
             }
         } else if (!operator.getInteriorManager().isCave() && level.getGameTime() % 20 == 0 && !isPassivelyRefuelling && this.getFuel() < (this.getMaximumFuel() * 0.05) && this.operator.getTardisState() == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
-            if (currentConsole != null) {
-                level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.ALARM.get(), SoundSource.AMBIENT, 10f, 1f);
-            }
+            level.playSound(null, getSoundCenterPos(), TRSoundRegistry.ALARM.get(), SoundSource.AMBIENT, 10f, 1f);
         }
 
 
@@ -240,7 +242,7 @@ public class TardisPilotingManager extends TickableHandler {
                 }
             } else {
                 if (!flightDance.isDancing() && isInFlight() && !isLanding() && distanceCovered < flightDistance) {
-                    flightDance.startFlightDance(currentConsole);
+                    flightDance.startFlightDance(getCurrentConsole());
                 }
             }
         }
@@ -259,10 +261,8 @@ public class TardisPilotingManager extends TickableHandler {
 
                     // If this tick was enough to push us over.
                     if (distanceCovered >= flightDistance) {
-                        if (this.currentConsole != null) {
-                            level.playSound(null, currentConsole.getBlockPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
-                            this.operator.getFlightDanceManager().stopDancing();
-                        }
+                        level.playSound(null, getSoundCenterPos(), TRSoundRegistry.DESTINATION_DING.get(), SoundSource.AMBIENT, 10f, 1f);
+                        this.operator.getFlightDanceManager().stopDancing();
                     }
                 }
             }
@@ -691,6 +691,10 @@ public class TardisPilotingManager extends TickableHandler {
         return !operator.getInteriorManager().isGeneratingDesktop() && !operator.getInteriorManager().isWaitingToGenerate() && !isInFlight && ticksTakingOff <= 0 && !this.isHandbrakeOn && !this.isCrashing && (!this.isOutOfFuel() || this.fuel > 5);
     }
 
+    public BlockPos getSoundCenterPos() {
+        return currentConsoleBlockPos.orElse(TardisArchitectureHandler.DESKTOP_CENTER_POS);
+    }
+
     /**
      * Logic to handle starting flight. Must be synced to client
      *
@@ -740,14 +744,12 @@ public class TardisPilotingManager extends TickableHandler {
             this.flightDistance = calculateFlightDistance(currentLocationPreTakeoff, targetPosition);
 
             if (!autoLand) {
-                this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
+                this.operator.getFlightDanceManager().startFlightDance(getCurrentConsole());
             }
 
 
             operator.setDoorClosed(true);
-            if (currentConsoleBlockPos != null) {
-                operator.getLevel().playSound(null, currentConsoleBlockPos, TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
-            }
+            operator.getLevel().playSound(null, getSoundCenterPos(), TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
             operator.getExteriorManager().playSoundAtShell(TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
 
 
@@ -766,10 +768,8 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     public void failTakeoff() {
-        if (this.currentConsole != null) {
-            this.operator.getLevel().playSound(null, this.currentConsole.getBlockPos(), TRSoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
+        this.operator.getLevel().playSound(null, getSoundCenterPos(), TRSoundRegistry.FLIGHT_FAIL_START.get(), SoundSource.BLOCKS, 1, 1);
 
-        }
 
         this.throttleStage = 0;
 
@@ -789,7 +789,7 @@ public class TardisPilotingManager extends TickableHandler {
         TardisNavLocation lastKnownLocation = getCurrentLocation().copy();
 
         this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
-        this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
+        this.operator.getFlightDanceManager().startFlightDance(getCurrentConsole());
 
     }
 
@@ -932,11 +932,7 @@ public class TardisPilotingManager extends TickableHandler {
 
             exteriorManager.playSoundAtShell(isCrashing ? TRSoundRegistry.TARDIS_CRASH_LAND.get() : TRSoundRegistry.TARDIS_LAND.get(), SoundSource.BLOCKS, 1, 1);
 
-            if (currentConsole != null) {
-                level.playSound(null, currentConsole.getBlockPos(), isCrashing ? TRSoundRegistry.TARDIS_CRASH_LAND.get() : TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
-            } else {
-                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, isCrashing ? TRSoundRegistry.TARDIS_CRASH_LAND.get() : TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
-            }
+            level.playSound(null, getSoundCenterPos(), isCrashing ? TRSoundRegistry.TARDIS_CRASH_LAND.get() : TRSoundRegistry.TARDIS_LAND.get(), SoundSource.AMBIENT, 10f, 1f);
 
             int totalPoints = (int) (distanceCovered * 0.05f);
             this.operator.getUpgradeHandler().addUpgradeXP(totalPoints);
@@ -982,9 +978,7 @@ public class TardisPilotingManager extends TickableHandler {
                 MobEffectInstance mobEffectInstance = new MobEffectInstance(MobEffects.DARKNESS, 180, 180, false, false);
                 player.addEffect(mobEffectInstance);
             }
-            if (this.currentConsole != null) {
-                this.operator.getLevel().explode(null, this.currentConsole.getBlockPos().getX(), this.currentConsole.getBlockPos().getY(), this.currentConsole.getBlockPos().getZ(), 2f, Level.ExplosionInteraction.NONE);
-            }
+            this.operator.getLevel().explode(null, getSoundCenterPos().getX(), getSoundCenterPos().getY(), getSoundCenterPos().getZ(), 2f, Level.ExplosionInteraction.NONE);
         }
 
         this.endFlight(true, false);
@@ -1000,8 +994,9 @@ public class TardisPilotingManager extends TickableHandler {
         this.operator.getExteriorManager().setIsTakingOff(false);
         TardisCommonEvents.TAKE_OFF.invoker().onTakeOff(operator, lastKnown.getLevel(), lastKnown.getPosition());
 
-        if (this.currentConsole != null && distanceCovered < flightDistance) {
-            operator.getFlightDanceManager().startFlightDance(this.currentConsole);
+        var console = getCurrentConsole();
+        if (console != null && distanceCovered < flightDistance) {
+            operator.getFlightDanceManager().startFlightDance(console);
         }
 
 
@@ -1019,7 +1014,7 @@ public class TardisPilotingManager extends TickableHandler {
         this.autoLand = false;
 
         if (this.getFuel() < getMaximumFuel() * 0.1) {
-            this.operator.getLevel().playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.LOW_FUEL.get(), SoundSource.AMBIENT, 1000, 1);
+            this.operator.getLevel().playSound(null, getSoundCenterPos(), TRSoundRegistry.LOW_FUEL.get(), SoundSource.AMBIENT, 1000, 1);
         }
 
         TardisCommonEvents.LAND.invoker().onLand(operator, getTargetLocation().getLevel(), getTargetLocation().getPosition());
@@ -1204,31 +1199,35 @@ public class TardisPilotingManager extends TickableHandler {
         return (ticksinCrashRecovery > 0);
     }
 
+    public Optional<BlockPos> getCurrentConsoleBlockPos() {
+        return currentConsoleBlockPos;
+    }
+
     public GlobalConsoleBlockEntity getCurrentConsole() {
 
-        if (this.currentConsole == null && this.currentConsoleBlockPos != null) {
-            if (operator.getLevel().getBlockEntity(this.currentConsoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
-                this.currentConsole = globalConsoleBlockEntity;
+        if (this.currentConsoleBlockPos.isPresent()) {
+            if (operator.getLevel().getBlockEntity(this.currentConsoleBlockPos.get()) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+                return globalConsoleBlockEntity;
             }
         }
 
-        return this.currentConsole;
+        return null;
     }
 
 
-    public void setCurrentConsole(GlobalConsoleBlockEntity newConsole) {
+    public void setCurrentConsole(@Nullable GlobalConsoleBlockEntity newConsole) {
 
-        if (this.currentConsole != null) {
+        if (currentConsoleBlockPos.isPresent()) {
 
-            Level level = this.currentConsole.getLevel();
+            Level level = operator.getLevel();
 
-            if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+            if (level != null && level.getBlockState(currentConsoleBlockPos.get()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(currentConsoleBlockPos.get()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
 
                 ResourceLocation oldTheme = consoleBlockEntity.theme();
                 ConsolePattern oldPattern = consoleBlockEntity.pattern();
 
-                level.setBlock(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false), Block.UPDATE_ALL);
-                GlobalConsoleBlockEntity updated = (GlobalConsoleBlockEntity) level.getBlockEntity(this.currentConsole.getBlockPos());
+                level.setBlock(currentConsoleBlockPos.get(), level.getBlockState(currentConsoleBlockPos.get()).setValue(GlobalConsoleBlock.POWERED, false), Block.UPDATE_ALL);
+                GlobalConsoleBlockEntity updated = (GlobalConsoleBlockEntity) level.getBlockEntity(currentConsoleBlockPos.get());
                 updated.setConsoleTheme(oldTheme);
                 updated.setPattern(oldPattern);
                 updated.sendUpdates();
@@ -1237,24 +1236,25 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
 
-        this.currentConsole = newConsole;
-        this.currentConsoleBlockPos = newConsole.getBlockPos();
+        this.currentConsoleBlockPos = Optional.ofNullable(newConsole != null ? newConsole.getBlockPos() : null);
 
-        Level level = this.currentConsole.getLevel();
+        if (newConsole != null && newConsole.hasLevel()) {
+            Level level = newConsole.getLevel();
 
-        if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
+            if (level.getBlockState(newConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(newConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
 
-            ResourceLocation oldTheme = consoleBlockEntity.theme();
-            ConsolePattern oldPattern = consoleBlockEntity.pattern();
+                ResourceLocation oldTheme = consoleBlockEntity.theme();
+                ConsolePattern oldPattern = consoleBlockEntity.pattern();
 
-            level.setBlock(this.currentConsoleBlockPos, this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true), Block.UPDATE_ALL);
-            GlobalConsoleBlockEntity updated = (GlobalConsoleBlockEntity) level.getBlockEntity(this.currentConsoleBlockPos);
-            updated.setConsoleTheme(oldTheme);
-            updated.setPattern(oldPattern);
-            updated.sendUpdates();
+                level.setBlock(this.currentConsoleBlockPos.get(), newConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true), Block.UPDATE_ALL);
+                GlobalConsoleBlockEntity updated = (GlobalConsoleBlockEntity) level.getBlockEntity(this.currentConsoleBlockPos.get());
+                updated.setConsoleTheme(oldTheme);
+                updated.setPattern(oldPattern);
+                updated.sendUpdates();
 
-            level.playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
+                level.playSound(null, this.currentConsoleBlockPos.get(), TRSoundRegistry.CONSOLE_POWER_ON.get(), SoundSource.BLOCKS, 2f, 1f);
 
+            }
         }
     }
 
