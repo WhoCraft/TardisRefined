@@ -234,19 +234,6 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private void onFlightTick(ServerLevel level) {
-        if (!this.autoLand) {
-            var flightDance = operator.getFlightDanceManager();
-            if (this.throttleStage == 0) {
-                if (flightDance.isDancing()) {
-                    flightDance.stopDancing();
-                }
-            } else {
-                if (!flightDance.isDancing() && isInFlight() && !isLanding() && distanceCovered < flightDistance) {
-                    flightDance.startFlightDance(getCurrentConsole());
-                }
-            }
-        }
-
         if (this.throttleStage != 0 || this.autoLand) {
             ticksInFlight++;
 

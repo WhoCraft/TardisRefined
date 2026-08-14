@@ -88,6 +88,9 @@ public class FlightDanceManager extends TickableHandler {
         }
 
         int chance = 20 - this.operator.getPilotingManager().getThrottleStage() * 2;
+        if (this.operator.getPilotingManager().getThrottleStage() == 0) {
+            return;
+        }
         if (operatorLevel.random.nextInt(chance) == 0) {
             this.triggerNextEvent();
         }
