@@ -49,11 +49,12 @@ import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.Optional;
 import java.util.OptionalLong;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
-    private static final String SETUP_DATA = "setup_data";
+    public static final String SETUP_DATA = "setup_data";
 
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
@@ -206,7 +207,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             Runnable onSuccess, Runnable onFail
     ) {
         if (ModCompatChecker.valkyrienSkies()) {
-            setupData = new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
+            setupData = new SetupState(Optional.of(generatedLevelKey), shellTheme, desktopTheme, openEye, onSuccess, onFail);
         } else {
             setUpTardis(
                     getBlockState(), getLevel(), getBlockPos(), generatedLevelKey, shellTheme, desktopTheme, openEye,
@@ -261,7 +262,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                     return;
                 }
                 setUpTardis(
-                        blockState, level, blockPos, setupData.generatedLevelKey, setupData.shellTheme, setupData.desktopTheme,
+                        blockState, level, blockPos, setupData.getOrGenerateLevelKey(), setupData.shellTheme, setupData.desktopTheme,
                         setupData.openEye, setupData.onSuccess, setupData.onFail
                 );
                 setupData = null;
@@ -373,20 +374,29 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     public record SetupState(
-            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Optional<ResourceKey<Level>> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
             Runnable onSuccess, Runnable onFail // We can't serialize onSuccess and onFail in a good way.
     ) {
 
         public SetupState(
-                ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
+                Optional<ResourceKey<Level>> generatedLevelKey, ResourceLocation shellTheme,
                 DesktopTheme desktopTheme, boolean openEye
         ) {
             this(generatedLevelKey, shellTheme, desktopTheme, openEye, () -> {}, () -> {});
         }
 
+        public ResourceKey<Level> getOrGenerateLevelKey() {
+            return generatedLevelKey.orElseGet(
+                    () -> ResourceKey.create(
+                            Registries.DIMENSION,
+                            new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString())
+                    )
+            );
+        }
+
         public static final Codec<SetupState> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        Level.RESOURCE_KEY_CODEC.fieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
+                        Level.RESOURCE_KEY_CODEC.optionalFieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
                         ResourceLocation.CODEC.fieldOf("shell_theme").forGetter(SetupState::shellTheme),
                         DesktopTheme.getCodec().fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
                         Codec.BOOL.fieldOf("open_eye").forGetter(SetupState::openEye)
