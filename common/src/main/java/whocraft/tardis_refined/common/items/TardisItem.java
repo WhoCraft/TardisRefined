@@ -82,7 +82,11 @@ public class TardisItem extends Item {
                     () -> server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId)), () -> {}
             );
 
-            return super.useOn(context);
+            if (context.getPlayer() != null && !context.getPlayer().isCreative()) {
+                context.getItemInHand().shrink(1);
+            }
+
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;
