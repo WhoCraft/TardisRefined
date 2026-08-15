@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -7,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 
@@ -16,9 +18,27 @@ public class DesktopTheme {
         return instance.group(
                 ResourceLocation.CODEC.fieldOf("id").forGetter(DesktopTheme::getIdentifier),
                 ResourceLocation.CODEC.fieldOf("structure").forGetter(DesktopTheme::getStructureLocation),
-                Codec.STRING.orElse("Placeholder").fieldOf("name_component").forGetter(DesktopTheme::getName)
+                Codec.STRING.fieldOf("name_component").orElse("Placeholder").forGetter(DesktopTheme::getName)
         ).apply(instance, DesktopTheme::new);
     });
+
+    /**
+     * Same as {@link DesktopTheme#CODEC} but will try to use the desktop theme id if the desktop registered.
+     */
+    public static final Codec<DesktopTheme> REFERENCE_CODEC = Codec.either(
+            ResourceLocation.CODEC, DesktopTheme.CODEC
+    ).xmap(
+            either -> either.map(TardisDesktops::getDesktopById, d -> d),
+            desktop -> {
+                var registered = TardisDesktops.getDesktopById(desktop.identifier);
+                if (registered == desktop) {
+                    return Either.left(desktop.identifier);
+                } else {
+                    return Either.right(desktop);
+                }
+            }
+    );
+
     private final ResourceLocation uiTexture;
     private ResourceLocation identifier;
     private String name = "";

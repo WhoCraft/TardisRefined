@@ -391,7 +391,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 instance -> instance.group(
                         Level.RESOURCE_KEY_CODEC.optionalFieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
                         ResourceLocation.CODEC.fieldOf("shell_theme").forGetter(SetupState::shellTheme),
-                        DesktopTheme.getCodec().fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
+                        DesktopTheme.REFERENCE_CODEC.fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
                         Codec.BOOL.fieldOf("open_eye").forGetter(SetupState::openEye)
                 ).apply(instance, SetupState::new)
         );
