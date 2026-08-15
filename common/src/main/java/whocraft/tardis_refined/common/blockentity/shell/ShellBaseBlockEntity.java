@@ -202,18 +202,11 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         }
     }
 
-    public void setUpTardisOnNextTickIfNecessary(
+    public void setUpTardisOnNextTick(
             ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
             Runnable onSuccess, Runnable onFail
     ) {
-        if (ModCompatChecker.valkyrienSkies()) {
-            setupData = new SetupState(Optional.of(generatedLevelKey), shellTheme, desktopTheme, openEye, onSuccess, onFail);
-        } else {
-            setUpTardis(
-                    getBlockState(), getLevel(), getBlockPos(), generatedLevelKey, shellTheme, desktopTheme, openEye,
-                    onSuccess, onFail
-            );
-        }
+        setupData = new SetupState(Optional.of(generatedLevelKey), shellTheme, desktopTheme, openEye, onSuccess, onFail);
     }
 
     @Override

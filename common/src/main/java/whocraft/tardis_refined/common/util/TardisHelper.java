@@ -100,7 +100,7 @@ public class TardisHelper {
         serverLevel.setBlock(blockPos, targetBlockState, Block.UPDATE_ALL);
 
         if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBaseBlockEntity) {
-            shellBaseBlockEntity.setUpTardisOnNextTickIfNecessary(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
+            shellBaseBlockEntity.setUpTardisOnNextTick(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
         }
 
     }
