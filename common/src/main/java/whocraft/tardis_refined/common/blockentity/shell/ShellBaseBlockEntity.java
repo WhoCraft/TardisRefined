@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.blockentity.shell;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -451,11 +453,29 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         public static final Codec<SetupState> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         Level.RESOURCE_KEY_CODEC.optionalFieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
-                        ResourceLocation.CODEC.fieldOf("shell_theme").orElse(DEFAULT_SHELL_THEME).forGetter(SetupState::shellTheme),
+                        ExtraCodecs.validate(
+                                ResourceLocation.CODEC,
+                                data -> {
+                                    if (ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.containsKey(data)) {
+                                        return DataResult.success(data);
+                                    } else {
+                                        return DataResult.error(() -> "Not a registered shell theme: " + data);
+                                    }
+                                }
+                        ).fieldOf("shell_theme").orElse(DEFAULT_SHELL_THEME).forGetter(SetupState::shellTheme),
                         DesktopTheme.REFERENCE_CODEC.fieldOf("desktop_theme").orElse(DEFAULT_DESKTOP).forGetter(SetupState::desktopTheme),
                         Codec.BOOL.fieldOf("open_eye").orElse(false).forGetter(SetupState::openEye),
                         HumEntry.REFERENCE_CODEC.optionalFieldOf("soundscape").forGetter(SetupState::hum),
-                        ResourceLocation.CODEC.fieldOf("vortex").orElse(DEFAULT_VORTEX).forGetter(SetupState::vortex)
+                        ExtraCodecs.validate(
+                                ResourceLocation.CODEC,
+                                data -> {
+                                    if (VortexRegistry.VORTEX_DEFERRED_REGISTRY.containsKey(data)) {
+                                        return DataResult.success(data);
+                                    } else {
+                                        return DataResult.error(() -> "Not a registered vortex: " + data);
+                                    }
+                                }
+                        ).fieldOf("vortex").orElse(DEFAULT_VORTEX).forGetter(SetupState::vortex)
                 ).apply(instance, SetupState::new)
         );
     }
