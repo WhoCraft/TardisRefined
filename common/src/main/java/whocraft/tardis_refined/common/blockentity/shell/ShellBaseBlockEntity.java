@@ -32,12 +32,14 @@ import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -390,9 +392,9 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
         public static final Codec<SetupState> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
                         Level.RESOURCE_KEY_CODEC.optionalFieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
-                        ResourceLocation.CODEC.fieldOf("shell_theme").forGetter(SetupState::shellTheme),
-                        DesktopTheme.REFERENCE_CODEC.fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
-                        Codec.BOOL.fieldOf("open_eye").forGetter(SetupState::openEye)
+                        ResourceLocation.CODEC.fieldOf("shell_theme").orElse(ShellTheme.HALF_BAKED.getId()).forGetter(SetupState::shellTheme),
+                        DesktopTheme.REFERENCE_CODEC.fieldOf("desktop_theme").orElse(TardisDesktops.TERRAFORMED).forGetter(SetupState::desktopTheme),
+                        Codec.BOOL.fieldOf("open_eye").orElse(false).forGetter(SetupState::openEye)
                 ).apply(instance, SetupState::new)
         );
     }
