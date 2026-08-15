@@ -19,10 +19,12 @@ import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.command.arguments.DesktopArgumentType;
 import whocraft.tardis_refined.command.arguments.ShellArgumentType;
+import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public class CreateCommand {
@@ -53,8 +55,11 @@ public class CreateCommand {
         context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
         TardisHelper.createTardis(
-                pos, level, generatedLevelKey, shellTheme, desktopTheme, Direction.NORTH, true,
-                () -> context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId)), () -> {}
+                pos, level, Direction.NORTH, ShellBaseBlockEntity.SetupState.DEFAULT.withLevelKey(
+                        Optional.of(generatedLevelKey)
+                ).withShellTheme(shellTheme).withDesktopTheme(desktopTheme).withOpenEye(true).withOnSuccess(
+                        () -> context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId))
+                )
         );
 
         return Command.SINGLE_SUCCESS;

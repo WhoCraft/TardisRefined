@@ -23,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -35,6 +36,7 @@ import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.List;
+import java.util.Optional;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.LOCKED;
 import static whocraft.tardis_refined.constants.TardisDimensionConstants.ARS_TREE_CORNER_A;
@@ -80,6 +82,7 @@ public class TardisHelper {
         return blockPos.getX() >= minX && blockPos.getX() <= maxX && blockPos.getY() >= minY && blockPos.getY() <= maxY && blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ;
     }
 
+    @Deprecated
     public static boolean createTardis(
             BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
             DesktopTheme desktopTheme, Direction facing, Boolean openEye
@@ -89,20 +92,32 @@ public class TardisHelper {
     }
 
     // Warning, onSuccess and onFail are not always guaranteed to run. Don't use them for anything important.
+    @Deprecated
     public static void createTardis(
             BlockPos blockPos, ServerLevel serverLevel, ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
             DesktopTheme desktopTheme, Direction facing, boolean openEye, Runnable onSuccess, Runnable onFail
     ) {
+        createTardis(
+                blockPos, serverLevel, facing,
+                ShellBaseBlockEntity.SetupState.DEFAULT
+                        .withLevelKey(Optional.of(generatedLevelKey))
+                        .withShellTheme(shellTheme)
+                        .withDesktopTheme(desktopTheme)
+                        .withOpenEye(openEye)
+                        .withOnSuccess(onSuccess)
+                        .withOnFail(onFail)
+        );
+    }
 
+    public static void createTardis(BlockPos blockPos, ServerLevel serverLevel, Direction facing, ShellBaseBlockEntity.SetupState setupState) {
         //Set global shell block
         BlockState targetBlockState = TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState().setValue(GlobalShellBlock.FACING, facing).setValue(GlobalShellBlock.REGEN, false).setValue(LOCKED, false).setValue(GlobalShellBlock.WATERLOGGED, serverLevel.getBlockState(blockPos).getFluidState().getType() == Fluids.WATER);
 
         serverLevel.setBlock(blockPos, targetBlockState, Block.UPDATE_ALL);
 
         if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBaseBlockEntity) {
-            shellBaseBlockEntity.setUpTardisOnNextTick(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
+            shellBaseBlockEntity.setUpTardisOnNextTick(setupState);
         }
-
     }
 
     public static MutableComponent createTardisIdComponent(ResourceLocation levelId) {

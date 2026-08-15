@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
-import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
@@ -9,6 +8,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 
@@ -25,18 +25,8 @@ public class DesktopTheme {
     /**
      * Same as {@link DesktopTheme#CODEC} but will try to use the desktop theme id if the desktop registered.
      */
-    public static final Codec<DesktopTheme> REFERENCE_CODEC = Codec.either(
-            ResourceLocation.CODEC, DesktopTheme.CODEC
-    ).xmap(
-            either -> either.map(TardisDesktops::getDesktopById, d -> d),
-            desktop -> {
-                var registered = TardisDesktops.getDesktopById(desktop.identifier);
-                if (registered == desktop) {
-                    return Either.left(desktop.identifier);
-                } else {
-                    return Either.right(desktop);
-                }
-            }
+    public static final Codec<DesktopTheme> REFERENCE_CODEC = CodecJsonReloadListener.createReferenceCodec(
+            CODEC, DesktopTheme::getIdentifier, TardisDesktops::getDesktopById
     );
 
     private final ResourceLocation uiTexture;

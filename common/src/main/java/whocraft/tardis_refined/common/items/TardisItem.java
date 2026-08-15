@@ -68,13 +68,8 @@ public class TardisItem extends Item {
                     context.getItemInHand().getTagElement(ShellBaseBlockEntity.SETUP_DATA)
             ).flatMap(
                     data -> ShellBaseBlockEntity.SetupState.CODEC.parse(NbtOps.INSTANCE, data).resultOrPartial(TardisRefined.LOGGER::error)
-            ).orElseGet(
-                    () -> new ShellBaseBlockEntity.SetupState(
-                            Optional.empty(),
-                            ShellTheme.HALF_BAKED.getId(),
-                            TardisDesktops.TERRAFORMED,
-                            false
-                    )
+            ).orElse(
+		            ShellBaseBlockEntity.SetupState.DEFAULT
             );
 
             var levelKey = setupState.getOrGenerateLevelKey();
@@ -83,8 +78,10 @@ public class TardisItem extends Item {
             server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 
             TardisHelper.createTardis(
-                    pos, serverLevel, levelKey, setupState.shellTheme(), setupState.desktopTheme(), playerFacing, setupState.openEye(),
-                    () -> server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId)), () -> {}
+                    pos, serverLevel, playerFacing,
+                    setupState.withLevelKey(Optional.of(levelKey)).withOnSuccess(
+                            () -> server.sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_SUCCESS, tardisId))
+                    )
             );
 
             if (context.getPlayer() != null && !context.getPlayer().isCreative()) {
