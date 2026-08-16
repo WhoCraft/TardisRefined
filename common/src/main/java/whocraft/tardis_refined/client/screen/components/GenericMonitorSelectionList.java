@@ -43,14 +43,35 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
     @Override
     @Nullable
     protected T nextEntry(@NotNull ScreenDirection direction) {
-        return this.nextEntry(direction, MightBeDisabled::isEnabled);
+        return this.nextEntry(direction, KeyboardSelectionAware::isSelectable);
     }
 
-    public interface MightBeDisabled {
-        boolean isEnabled();
+    /**
+     * Optional interface for controlling if selection list elements can be selected by keyboard navigation.
+     * If this interface is applied to type parameter T of {@link GenericMonitorSelectionList},
+     * then the keyboard navigation cursor will skip any element in the list where {@link KeyboardSelectionAware#isSelectable()} returns
+     * false and try to select the one after it in the direction of movement.
+     * If this interface is not applied, all elements are assumed to be selectable.
+     * You should apply this interface if "disabled" or otherwise unselectable elements will not be rendered any
+     * differently when selected or not selected by the game.
+     * If you want elements to still have a custom hover effect or some form of feedback when selecting them (e.g. a toast),
+     * then you won't need this interface (same if all elements that will be present in the list are always "enabled").
+     */
+    public interface KeyboardSelectionAware {
 
-        static boolean isEnabled(Object entry) {
-            return !(entry instanceof MightBeDisabled mightBeDisabled) || mightBeDisabled.isEnabled();
+        /**
+         * Whether this entry can be selected by keyboard navigation.
+         * @return true if it can be selected, false if the cursor should skip this one and move to the next one.
+         */
+        boolean isSelectable();
+
+        /**
+         * Queries whether the given object is selectable. Basically just {@link KeyboardSelectionAware#isSelectable()} but does not require a manual instanceof check.
+         * @param entry The entry to check
+         * @return true if it can be selected, false if the cursor should skip this one and move to the next one.
+         */
+        static boolean isSelectable(Object entry) {
+            return !(entry instanceof GenericMonitorSelectionList.KeyboardSelectionAware keyboardSelectionAware) || keyboardSelectionAware.isSelectable();
         }
     }
 

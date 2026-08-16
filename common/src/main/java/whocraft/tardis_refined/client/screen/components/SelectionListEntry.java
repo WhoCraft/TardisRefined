@@ -7,7 +7,7 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import org.lwjgl.glfw.GLFW;
 
-public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> implements GenericMonitorSelectionList.MightBeDisabled {
+public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> implements GenericMonitorSelectionList.KeyboardSelectionAware {
 
     private final Component itemDisplayName;
     private final GenericListSelection press;
@@ -117,7 +117,7 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     }
 
     @Override
-    public boolean isEnabled() {
+    public boolean isSelectable() {
         return enabled;
     }
 }

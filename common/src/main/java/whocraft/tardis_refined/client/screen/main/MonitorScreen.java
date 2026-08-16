@@ -131,11 +131,11 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
             }
             int lastIndex = list.children().size()-1;
             for (; lastIndex > 0; lastIndex--) {
-                if (GenericMonitorSelectionList.MightBeDisabled.isEnabled(list.children().get(lastIndex))) {
+                if (GenericMonitorSelectionList.KeyboardSelectionAware.isSelectable(list.children().get(lastIndex))) {
                     break;
                 }
             }
-            if (lastIndex == 0 && !GenericMonitorSelectionList.MightBeDisabled.isEnabled(list.children().get(lastIndex))) {
+            if (lastIndex == 0 && !GenericMonitorSelectionList.KeyboardSelectionAware.isSelectable(list.children().get(lastIndex))) {
                 return true;
             }
             if (list.children().indexOf(list.getFocused()) == lastIndex) {
