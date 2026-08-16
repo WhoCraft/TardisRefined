@@ -26,9 +26,8 @@ import whocraft.tardis_refined.common.blockentity.door.InternalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.util.TRTeleporter;
-import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-public class InternalDoorBlock extends BaseEntityBlock {
+public class InternalDoorBlock extends BaseEntityBlock implements RedirectBlock.RedirectTarget {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
@@ -54,7 +53,6 @@ public class InternalDoorBlock extends BaseEntityBlock {
             door.onBlockPlaced();
         }
         super.onPlace(blockState, level, blockPos, blockState2, bl);
-        RedirectBlock.tryPlace(level, blockPos.above(), TRBlockRegistry.REDIRECT_BLOCK.get().defaultBlockState());
     }
 
     @Override
@@ -135,4 +133,8 @@ public class InternalDoorBlock extends BaseEntityBlock {
     }
 
 
+    @Override
+    public boolean shouldHaveRedirectBlock(BlockGetter level, BlockPos redirectBlockPos, BlockState redirectBlockState, BlockPos targetPos) {
+        return false;
+    }
 }

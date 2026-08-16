@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,19 +24,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
-import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class GlobalDoorBlock extends InternalDoorBlock {
-
-    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 32.0D, 0.25D);
-    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 15.75D, 16.0D, 32.0D, 16.0D);
-    protected static final VoxelShape EAST_AABB = Block.box(15.75D, 0.0D, 0.0D, 16.0D, 32.0D, 16.0D);
-    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 0.25D, 32.0D, 16.0D);
 
     public GlobalDoorBlock(Properties properties) {
         super(properties);
@@ -51,7 +47,6 @@ public class GlobalDoorBlock extends InternalDoorBlock {
 
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        super.onPlace(blockState, level, blockPos, blockState2, bl);
         if (level instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                 BlockEntity block = level.getBlockEntity(blockPos);
@@ -63,6 +58,7 @@ public class GlobalDoorBlock extends InternalDoorBlock {
                 }
             });
         }
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
     }
 
     @Override
@@ -93,15 +89,35 @@ public class GlobalDoorBlock extends InternalDoorBlock {
         return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 
+    public static VoxelShape getShapeFromTheme(ResourceLocation theme, BlockState blockState) {
+        return offsetShape(
+                ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.get(theme).getShape(
+                        blockState.getValue(OPEN) ? ShellTheme.ShapeType.OPEN_INTERIOR : ShellTheme.ShapeType.CLOSED_INTERIOR, blockState.getValue(FACING)
+                ),
+                blockState
+        );
+    }
+
+    public static VoxelShape offsetShape(VoxelShape shape, BlockState blockState) {
+        if (blockState.getValue(OFFSET)) {
+            return switch (blockState.getValue(FACING)) {
+                case EAST -> shape.move(0, 0, -0.5);
+                case SOUTH -> shape.move(0.5, 0, 0);
+                case WEST -> shape.move(0, 0, 0.5);
+                case NORTH -> shape.move(-0.5, 0, 0);
+                default -> shape;
+            };
+        }
+        return shape;
+    }
+
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        return switch (blockState.getValue(FACING)) {
-            case EAST -> blockState.getValue(OFFSET) ? EAST_AABB.move(0, 0, -0.5) : EAST_AABB;
-            case SOUTH -> blockState.getValue(OFFSET) ? SOUTH_AABB.move(0.5, 0, 0) : SOUTH_AABB;
-            case WEST -> blockState.getValue(OFFSET) ? WEST_AABB.move(0, 0, 0.5) : WEST_AABB;
-            case NORTH -> blockState.getValue(OFFSET) ? NORTH_AABB.move(-0.5, 0, 0) : NORTH_AABB;
-            default -> SOUTH_AABB;
-        };
+        if (blockGetter.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity shell) {
+            return getShapeFromTheme(shell.theme(), blockState);
+        } else {
+            return offsetShape(ShellTheme.getShape(ShellTheme.DEFAULT_INTERIOR_SHAPES, blockState.getValue(FACING)), blockState);
+        }
     }
 
     @Override
@@ -125,5 +141,13 @@ public class GlobalDoorBlock extends InternalDoorBlock {
                 globalDoorBlockEntity.tick(level1, blockPos, stage, globalDoorBlockEntity);
             }
         };
+    }
+
+    @Override
+    public boolean shouldHaveRedirectBlock(BlockGetter level, BlockPos redirectBlockPos, BlockState redirectBlockState, BlockPos targetPos) {
+        if (level.getBlockEntity(targetPos) instanceof GlobalDoorBlockEntity door) {
+            return door.isValidRedirectBlock(redirectBlockPos, redirectBlockState);
+        }
+        return true;
     }
 }

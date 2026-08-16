@@ -14,7 +14,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -26,13 +29,49 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
+import java.util.Set;
+
 public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements BlockEntityTicker<InternalDoorBlockEntity> {
 
     private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
     private ShellPattern basePattern;
+    private Set<RedirectBlock.Entry> redirectBlocks = Set.of();
+    private boolean refreshRedirectsOnLevel = false;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.GLOBAL_DOOR_BLOCK.get(), blockPos, blockState);
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if (refreshRedirectsOnLevel) {
+            redirectBlocks = RedirectBlock.Entry.getRedirectsForShape(GlobalDoorBlock.getShapeFromTheme(shellTheme, getBlockState()));
+            refreshRedirectsOnLevel = false;
+        } else {
+            refreshRedirectsOnLevel = true;
+        }
+    }
+
+    private void onThemeUpdated() {
+        if (hasLevel()) {
+            // Usually these blocks will remove themselves by the block update, but shell-theme changes don't trigger a block update.
+            RedirectBlock.Entry.remove(level, worldPosition, redirectBlocks);
+            redirectBlocks = RedirectBlock.Entry.getRedirectsForShape(GlobalDoorBlock.getShapeFromTheme(shellTheme, getBlockState()));
+            RedirectBlock.Entry.place(level, worldPosition, redirectBlocks);
+        } else {
+            refreshRedirectsOnLevel = true;
+        }
+    }
+
+    @Override
+    public void setBlockState(@NotNull BlockState blockState) {
+        super.setBlockState(blockState);
+        onThemeUpdated();
+    }
+
+    public boolean isValidRedirectBlock(BlockPos pos, BlockState state) {
+        return RedirectBlock.Entry.isValidRedirect(pos, state, worldPosition, redirectBlocks);
     }
 
     public ShellPattern pattern() {
@@ -62,6 +101,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements Bl
     public void setShellTheme(ResourceLocation shellTheme) {
         this.shellTheme = shellTheme;
         this.setChanged();
+        onThemeUpdated();
     }
 
     @Override
@@ -84,6 +124,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements Bl
         if (pTag.contains(NbtConstants.THEME)) {
             ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.THEME));
             this.shellTheme = themeId;
+            onThemeUpdated();
         }
 
         if (pTag.contains(NbtConstants.PATTERN)) {

@@ -14,7 +14,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
+import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
@@ -37,16 +39,49 @@ import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.Optional;
+import java.util.Set;
 
 public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     private ResourceLocation shellTheme;
     private ShellPattern basePattern;
+    private Set<RedirectBlock.Entry> redirectBlocks = Set.of();
+    private boolean refreshRedirectsOnLevel = false;
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), blockPos, blockState);
         this.shellTheme = ShellTheme.HALF_BAKED.getId();
         this.basePattern = this.pattern();
+    }
+
+    @Override
+    public void setLevel(Level level) {
+        super.setLevel(level);
+        if (refreshRedirectsOnLevel) {
+            redirectBlocks = RedirectBlock.Entry.getRedirectsForShape(GlobalShellBlock.getShapeFromTheme(shellTheme, getBlockState()));
+            refreshRedirectsOnLevel = false;
+        }
+    }
+
+    private void onThemeUpdated() {
+        if (hasLevel()) {
+            // Usually these blocks will remove themselves by the block update, but shell-theme changes don't trigger a block update.
+            RedirectBlock.Entry.remove(level, worldPosition, redirectBlocks);
+            redirectBlocks = RedirectBlock.Entry.getRedirectsForShape(GlobalShellBlock.getShapeFromTheme(shellTheme, getBlockState()));
+            RedirectBlock.Entry.place(level, worldPosition, redirectBlocks);
+        } else {
+            refreshRedirectsOnLevel = true;
+        }
+    }
+
+    @Override
+    public void setBlockState(@NotNull BlockState blockState) {
+        super.setBlockState(blockState);
+        onThemeUpdated();
+    }
+
+    public boolean isValidRedirectBlock(BlockPos pos, BlockState state) {
+        return RedirectBlock.Entry.isValidRedirect(pos, state, worldPosition, redirectBlocks);
     }
 
     public ResourceLocation theme() {
@@ -63,7 +98,10 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     public void setShellTheme(ResourceLocation theme) {
         this.shellTheme = theme;
         this.setChanged();
-        this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
+        if (hasLevel()) {
+            this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
+        }
+        onThemeUpdated();
     }
 
     public ShellPattern pattern() {
@@ -97,6 +135,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         if (pTag.contains(NbtConstants.THEME)) {
             ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.THEME));
             this.shellTheme = themeId;
+            onThemeUpdated();
         }
 
         if (pTag.contains(NbtConstants.PATTERN)) {

@@ -24,34 +24,22 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
-public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
+public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable, RedirectBlock.RedirectTarget {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty REGEN = BooleanProperty.create("regen");
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-    protected static final VoxelShape NORTH_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 30.0D, 11.0D);
-    protected static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 2.0D, 16.0D, 30.0D, 16.0D);
-    protected static final VoxelShape WEST_AABB = Block.box(0.0D, 0.0D, 0.0D, 11.0D, 30.0D, 16.0D);
-    protected static final VoxelShape EAST_AABB = Block.box(2.0D, 0.0D, 0.0D, 16.0D, 30.0D, 16.0D);
 
     public ShellBaseBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false).setValue(REGEN, false).setValue(WATERLOGGED, false));
-    }
-
-
-    @Override
-    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        super.onPlace(blockState, level, blockPos, blockState2, bl);
-
-        if (addTopBlock(level, blockPos, blockState)) {
-            RedirectBlock.tryPlace(level, blockPos.above(), TRBlockRegistry.REDIRECT_BLOCK.get().defaultBlockState());
-        }
     }
 
     @Override
@@ -95,21 +83,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        switch (blockState.getValue(FACING)) {
-            case SOUTH -> {
-                return SOUTH_AABB;
-            }
-            case NORTH -> {
-                return NORTH_AABB;
-            }
-            case WEST -> {
-                return WEST_AABB;
-            }
-            case EAST -> {
-                return EAST_AABB;
-            }
-        }
-        return SOUTH_AABB;
+        return ShellTheme.getShape(ShellTheme.DEFAULT_EXTERIOR_SHAPES, blockState.getValue(FACING));
     }
 
     @Override
@@ -139,7 +113,11 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
         return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
     }
 
-    public boolean addTopBlock(Level level, BlockPos pos, BlockState state) {
+    @Override
+    public boolean shouldHaveRedirectBlock(BlockGetter level, BlockPos redirectBlockPos, BlockState redirectBlockState, BlockPos targetPos) {
+        if (level.getBlockEntity(targetPos) instanceof GlobalShellBlockEntity shell) {
+            return shell.isValidRedirectBlock(redirectBlockPos, redirectBlockState);
+        }
         return true;
     }
 
