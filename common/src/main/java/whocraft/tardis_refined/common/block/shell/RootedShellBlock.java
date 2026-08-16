@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.block.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -12,8 +11,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,22 +21,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.tardis.TardisDesktops;
-import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
-
-import java.util.Date;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class RootedShellBlock extends ShellBaseBlock {
 
@@ -55,6 +44,15 @@ public class RootedShellBlock extends ShellBaseBlock {
             return;
         }
         super.onPlace(blockState, level, blockPos, blockState2, bl);
+    }
+
+    @Override
+    public float getDestroyProgress(@NotNull BlockState state, @NotNull Player player, @NotNull BlockGetter level, @NotNull BlockPos pos) {
+        var progress = super.getDestroyProgress(state, player, level, pos);
+        if (level.getBlockEntity(pos) instanceof RootedShellBlockEntity shell && shell.getTardisId() == null) {
+            return progress * 100;
+        }
+        return progress;
     }
 
     @Override
