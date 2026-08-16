@@ -53,7 +53,7 @@ public class WaypointListScreen extends MonitorOS {
         }, this::back);
 
 
-        Button newWaypointButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), true, BUTTON_LOCATION));
+        Button newWaypointButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_CREATE), (arg) -> new C2SOpenCoordinatesDisplayMessage(CoordInputType.WAYPOINT).send(), true, BUTTON_LOCATION));
 
         newWaypointButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_CREATE)));
         newWaypointButton.setPosition(width / 2 + 85, (height) / 2 - 60);
@@ -61,7 +61,7 @@ public class WaypointListScreen extends MonitorOS {
         int vPos = (height - monitorHeight) / 2;
         addCancelButton(width / 2 - 105, height - vPos - 25);
 
-        this.loadButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> {
+        this.loadButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_LOAD), (arg) -> {
             if (waypoint != null) {
 
                 new C2STravelToWaypoint(waypoint.getId()).send();
@@ -74,7 +74,7 @@ public class WaypointListScreen extends MonitorOS {
         this.loadButton.active = false;
 
 
-        this.editButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Edit"), (arg) -> {
+        this.editButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_EDIT), (arg) -> {
             if (waypoint != null) {
                 new C2SOpenEditCoordinatesDisplayMessage(waypoint.getId()).send();
             }
@@ -84,7 +84,7 @@ public class WaypointListScreen extends MonitorOS {
 
         this.editButton.active = false;
 
-        this.trashButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Submit"), (arg) -> new C2SRemoveWaypointEntry(waypoint.getId()).send(), true, TRASH_LOCATION));
+        this.trashButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_DELETE), (arg) -> new C2SRemoveWaypointEntry(waypoint.getId()).send(), true, TRASH_LOCATION));
 
         this.trashButton.setPosition(width / 2 + 85, (height) / 2 - 20);
         this.trashButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_DELETE)));
