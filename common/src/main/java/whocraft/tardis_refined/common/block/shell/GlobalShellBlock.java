@@ -114,4 +114,12 @@ public class GlobalShellBlock extends ShellBaseBlock {
 
         return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
+
+    @Override
+    public boolean addTopBlock(Level level, BlockPos pos, BlockState state) {
+        if (level.getBlockEntity(pos) instanceof GlobalShellBlockEntity shellBlockEntity) {
+            return shellBlockEntity.theme() != ShellTheme.BRIEFCASE.getId();
+        }
+        return true;
+    }
 }

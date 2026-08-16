@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import org.jetbrains.annotations.NotNull;
@@ -38,6 +39,9 @@ public class ProviderLootTable extends LootTableProvider {
         @Override
         protected void generate() {
             for (Block block : getKnownBlocks()) {
+                if (block.getLootTable() == BuiltInLootTables.EMPTY) {
+                    continue;
+                }
                 dropSelf(block);
             }
 

@@ -19,15 +19,13 @@ import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.util.TRTeleporter;
-import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
@@ -50,6 +48,10 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
         super.onPlace(blockState, level, blockPos, blockState2, bl);
+
+        if (addTopBlock(level, blockPos, blockState)) {
+            RedirectBlock.tryPlace(level, blockPos.above(), TRBlockRegistry.REDIRECT_BLOCK.get().defaultBlockState());
+        }
     }
 
     @Override
@@ -135,6 +137,10 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     @Override
     public FluidState getFluidState(BlockState blockState) {
         return blockState.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(blockState);
+    }
+
+    public boolean addTopBlock(Level level, BlockPos pos, BlockState state) {
+        return true;
     }
 
 }

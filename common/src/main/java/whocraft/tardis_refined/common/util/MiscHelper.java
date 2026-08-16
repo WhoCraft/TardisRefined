@@ -29,10 +29,10 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.block.life.EyeBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
+import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
-import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -186,6 +186,16 @@ public class MiscHelper {
             for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
                 boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
                 if (shouldCancel) return true;
+            }
+        }
+
+        if (state.getBlock() instanceof RedirectBlock redirect) {
+            var foundPos = redirect.findSource(world, pos, state);
+            if (foundPos.isPresent()) {
+                var foundState = world.getBlockState(foundPos.get());
+                if (!(foundState.getBlock() instanceof RedirectBlock)) {
+                    return shouldCancelBreaking(world, entity, foundPos.get(), foundState);
+                }
             }
         }
 

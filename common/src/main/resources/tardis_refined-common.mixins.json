@@ -4,25 +4,27 @@
   "package": "whocraft.tardis_refined.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "BlockGetterMixin",
     "EndDragonFightAccessor",
     "LivingEntityMixin",
     "MappedRegistryAccessor",
     "MinecraftServerStorageAccessor",
     "PistonBaseBlockMixin",
     "PlayerEntityMixin",
+    "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin",
     "VillagerGoalPackagesMixin",
     "VillagerMixin"
   ],
   "client": [
-    "render.SodiumFixMixin",
-    "render.GameRendererMixin",
     "LocalPlayerMixin",
     "MultiplayerGameModeMixin",
     "render.FogRendererMixin",
+    "render.GameRendererMixin",
     "render.ModelPartInvoker",
     "render.PlayerRenderMixin",
     "render.PoseStackMixin",
+    "render.SodiumFixMixin",
     "render.buffer.MixinMainTarget",
     "render.buffer.MixinRenderTarget",
     "render.ui.GuiMixin",
@@ -30,5 +32,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "mixinextras": {
+    "minVersion": "0.5.0"
   }
 }
