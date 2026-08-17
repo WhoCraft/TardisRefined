@@ -4,7 +4,6 @@
   "package": "whocraft.tardis_refined.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
-    "BlockGetterMixin",
     "EndDragonFightAccessor",
     "LivingEntityMixin",
     "MappedRegistryAccessor",

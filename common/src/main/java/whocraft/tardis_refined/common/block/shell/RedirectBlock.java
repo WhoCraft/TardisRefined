@@ -1,5 +1,6 @@
 package whocraft.tardis_refined.common.block.shell;
 
+import com.llamalad7.mixinextras.sugar.ref.LocalRef;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -215,6 +216,15 @@ public class RedirectBlock extends Block implements SimpleWaterloggedBlock {
         public static boolean isValidRedirect(BlockPos pos, BlockState state, BlockPos sourcePos, Set<Entry> redirectBlocks) {
             var offset = pos.subtract(sourcePos);
             return redirectBlocks.contains(new Entry(offset, state));
+        }
+    }
+
+    public static void handleClip(BlockGetter level, BlockPos orgPos, LocalRef<BlockPos> blockPos, LocalRef<BlockState> blockState) {
+        if (blockState.get().getBlock() instanceof RedirectBlock redirect) {
+            redirect.findSource(level, orgPos, blockState.get()).ifPresent(source -> {
+                blockPos.set(source);
+                blockState.set(level.getBlockState(source));
+            });
         }
     }
 }

@@ -1,4 +1,4 @@
-package whocraft.tardis_refined.mixin;
+package whocraft.tardis_refined.mixin.fabric;
 
 import com.llamalad7.mixinextras.sugar.Local;
 import com.llamalad7.mixinextras.sugar.ref.LocalRef;
@@ -8,7 +8,6 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -17,9 +16,7 @@ import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 @Mixin(BlockGetter.class)
 public interface BlockGetterMixin {
 
-    @Shadow
-    BlockState getBlockState(BlockPos pos);
-
+    // TODO Move this back to common module in future versions.
     @Inject(
             method = "method_17743",
             at = @At(
@@ -31,12 +28,7 @@ public interface BlockGetterMixin {
             ClipContext clipContext, BlockPos orgPos, CallbackInfoReturnable<BlockHitResult> cir,
             @Local(argsOnly = true) LocalRef<BlockPos> blockPos, @SuppressWarnings("LocalMayUseName") @Local LocalRef<BlockState> blockState
     ) {
-        if (blockState.get().getBlock() instanceof RedirectBlock redirect) {
-            redirect.findSource((BlockGetter) this, orgPos, blockState.get()).ifPresent(source -> {
-                blockPos.set(source);
-                blockState.set(getBlockState(source));
-            });
-        }
+        RedirectBlock.handleClip((BlockGetter) this, orgPos, blockPos, blockState);
     }
 
 }
