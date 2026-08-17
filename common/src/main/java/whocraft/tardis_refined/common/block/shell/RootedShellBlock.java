@@ -26,6 +26,7 @@ import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class RootedShellBlock extends ShellBaseBlock {
@@ -44,6 +45,7 @@ public class RootedShellBlock extends ShellBaseBlock {
             return;
         }
         super.onPlace(blockState, level, blockPos, blockState2, bl);
+        RedirectBlock.tryPlace(level, blockPos.above(), TRBlockRegistry.REDIRECT_BLOCK.get().defaultBlockState());
     }
 
     @Override
