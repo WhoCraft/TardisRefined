@@ -115,6 +115,7 @@ function initializeCoreMod() {
                 toAdd.add(initLocalRef());
 
                 toAdd.add(new VarInsnNode(Opcodes.ALOAD, 0)); // this
+                toAdd.add(new VarInsnNode(Opcodes.ALOAD, 1)); // ClipContext
                 toAdd.add(new VarInsnNode(Opcodes.ALOAD, 2)); // BlockPos
                 toAdd.add(new VarInsnNode(Opcodes.ALOAD, localBlockPos));
                 toAdd.add(new VarInsnNode(Opcodes.ALOAD, localBlockState));
@@ -122,7 +123,7 @@ function initializeCoreMod() {
                     ASMAPI.buildMethodCall(
                         "whocraft/tardis_refined/common/block/shell/RedirectBlock",
                         "handleClip",
-                        "(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lcom/llamalad7/mixinextras/sugar/ref/LocalRef;Lcom/llamalad7/mixinextras/sugar/ref/LocalRef;)V",
+                        "(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/world/level/ClipContext;Lnet/minecraft/core/BlockPos;Lcom/llamalad7/mixinextras/sugar/ref/LocalRef;Lcom/llamalad7/mixinextras/sugar/ref/LocalRef;)V",
                         ASMAPI.MethodType.STATIC
                     )
                 );

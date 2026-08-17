@@ -28,7 +28,7 @@ public interface BlockGetterMixin {
             ClipContext clipContext, BlockPos orgPos, CallbackInfoReturnable<BlockHitResult> cir,
             @Local(argsOnly = true) LocalRef<BlockPos> blockPos, @SuppressWarnings("LocalMayUseName") @Local LocalRef<BlockState> blockState
     ) {
-        RedirectBlock.handleClip((BlockGetter) this, orgPos, blockPos, blockState);
+        RedirectBlock.handleClip((BlockGetter) this, clipContext, orgPos, blockPos, blockState);
     }
 
 }

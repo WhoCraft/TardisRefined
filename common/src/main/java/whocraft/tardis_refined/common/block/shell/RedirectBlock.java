@@ -6,7 +6,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.*;
@@ -22,7 +24,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
-import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 import java.util.Comparator;
@@ -215,11 +216,16 @@ public class RedirectBlock extends Block implements SimpleWaterloggedBlock {
          */
         public static boolean isValidRedirect(BlockPos pos, BlockState state, BlockPos sourcePos, Set<Entry> redirectBlocks) {
             var offset = pos.subtract(sourcePos);
+            if (state.hasProperty(WATERLOGGED)) {
+                state = state.setValue(WATERLOGGED, false);
+            }
             return redirectBlocks.contains(new Entry(offset, state));
         }
     }
 
-    public static void handleClip(BlockGetter level, BlockPos orgPos, LocalRef<BlockPos> blockPos, LocalRef<BlockState> blockState) {
+    public static void handleClip(BlockGetter level, ClipContext context, BlockPos orgPos, LocalRef<BlockPos> blockPos, LocalRef<BlockState> blockState) {
+        if (!context.getFluidShape(level.getFluidState(orgPos), level, orgPos).isEmpty()) return;
+        if (context.collisionContext.isDescending()) return;
         if (blockState.get().getBlock() instanceof RedirectBlock redirect) {
             redirect.findSource(level, orgPos, blockState.get()).ifPresent(source -> {
                 blockPos.set(source);
