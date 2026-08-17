@@ -13,7 +13,8 @@
     "ServerGamePacketListenerImplMixin",
     "ServerPlayerMixin",
     "VillagerGoalPackagesMixin",
-    "VillagerMixin"
+    "VillagerMixin",
+    "compat.valkyrien_skies.RaycastUtilsKtMixin"
   ],
   "client": [
     "LocalPlayerMixin",

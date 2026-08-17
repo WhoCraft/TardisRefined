@@ -24,7 +24,7 @@ public interface BlockGetterMixin {
                     target = "Lnet/minecraft/world/level/BlockGetter;getFluidState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/material/FluidState;"
             )
     )
-    private void clip(
+    private void clipRedirect(
             ClipContext clipContext, BlockPos orgPos, CallbackInfoReturnable<BlockHitResult> cir,
             @Local(argsOnly = true) LocalRef<BlockPos> blockPos, @SuppressWarnings("LocalMayUseName") @Local LocalRef<BlockState> blockState
     ) {
