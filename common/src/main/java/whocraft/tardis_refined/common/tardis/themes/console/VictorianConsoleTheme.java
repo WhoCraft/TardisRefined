@@ -27,7 +27,7 @@ public class VictorianConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.READOUT, new Vector3f(-0.01f, 0.75f, 0.65f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.12f, 0.54f, 0.86f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.82f, 0.54f, 0.45f), EntityDimensions.scalable(0.13f, 0.13f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.90f, 0.51f, 0.24f), EntityDimensions.scalable(0.13f, 0.13f)),
+                new ControlSpecification(TRControlRegistry.TARGET_LOCK, new Vector3f(-0.90f, 0.51f, 0.24f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.64f, 0.51f, -0.73f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.44f, 0.81f, -0.45f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.59f, 0.81f, -0.17f), EntityDimensions.scalable(0.13f, 0.13f)),
