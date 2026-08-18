@@ -486,6 +486,7 @@ public class TardisLevelOperator {
      * <br> Fires the CloseDoor/OpenDoor events
      */
     public void setDoorClosed(boolean closeDoor) {
+        if (!closeDoor && pilotingManager.isInFlight() && (pilotingManager.isTakingOff() || pilotingManager.isLanding())) return;
         TardisInternalDoor intDoor = getInternalDoor();
         //Closed the internal door
         if (intDoor != null) {
