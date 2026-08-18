@@ -926,6 +926,7 @@ public class TardisPilotingManager extends TickableHandler {
             // TODO: Does this cause https://github.com/WhoCraft/TardisRefined/issues/427 ?
             setTargetLocation(location);
             setCurrentLocation(location);
+            operator.setDoorClosed(true);
 
             exteriorManager.startLanding(operator, location);
 
