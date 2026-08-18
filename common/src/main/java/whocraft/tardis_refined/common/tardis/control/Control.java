@@ -164,7 +164,7 @@ public abstract class Control {
         return this;
     }
 
-    public boolean failIfLocked(TardisLevelOperator operator, Player player) {
+    public static boolean failIfLocked(TardisLevelOperator operator, Player player) {
         if (operator.getPilotingManager().isTargetLocked()) {
             player.displayClientMessage(Component.translatable(ModMessages.LOCKED_CANNOT_USE), true);
             return true;
