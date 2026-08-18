@@ -58,7 +58,9 @@ public class ToggleDoorControl extends Control {
             boolean isLocked = !exteriorManager.locked();
             exteriorManager.setLocked(isLocked);
             operator.setDoorLocked(isLocked);
-            operator.setDoorClosed(isLocked);
+            if (isLocked) {
+                operator.setDoorClosed(true);
+            }
 
             String messageKey = isLocked ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED;
             PlayerUtil.sendMessage(player, Component.translatable(messageKey), true);
