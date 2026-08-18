@@ -128,15 +128,15 @@ public class WaypointManageScreen extends MonitorOS {
         String baseDirection = tardisNavLocation.getDirection().getName();
         String direction = baseDirection.substring(0, 1).toUpperCase() + baseDirection.substring(1);
 
-        String dimensionName = MiscHelper.getCleanDimensionName(tardisNavLocation.getDimensionKey());
+        Component dimensionName = MiscHelper.getCleanDimensionName(tardisNavLocation.getDimensionKey());
 
-        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_NEW_WAYPOINT).getString(), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
+        ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_NEW_WAYPOINT), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
 
         if (preExistingWaypoint == null)
-            ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_TAKEN).getString(), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight + 10, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
+            ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_TAKEN), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight + 10, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
 
-        ScreenHelper.renderWidthScaledText(tardisNavLocation.getPosition().toShortString(), guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 15, Color.white.getRGB(), 80, 1F, true);
-        ScreenHelper.renderWidthScaledText(direction + ", " + dimensionName, guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 25, Color.white.getRGB(), 100, 1F, true);
+        ScreenHelper.renderWidthScaledText(Component.literal(tardisNavLocation.getPosition().toShortString()), guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 15, Color.white.getRGB(), 80, 1F, true);
+        ScreenHelper.renderWidthScaledText(Component.literal(direction + ", ").append(dimensionName), guiGraphics, Minecraft.getInstance().font, centerX, starterCordHeight + 25, Color.white.getRGB(), 100, 1F, true);
 
     }
 

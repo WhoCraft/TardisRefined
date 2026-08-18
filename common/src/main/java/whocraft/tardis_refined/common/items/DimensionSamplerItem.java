@@ -117,6 +117,10 @@ public class DimensionSamplerItem extends Item {
         return tag.contains(POTENTIAL_DIM_TAG) || tag.contains(SAVED_DIM_TAG);
     }
 
+    public String getDimensionDescriptionId() {
+        return this.getDescriptionId() + ".with_dimension";
+    }
+
     @Override
     public Component getName(ItemStack itemStack) {
         CompoundTag tag = itemStack.getOrCreateTag();
@@ -125,8 +129,8 @@ public class DimensionSamplerItem extends Item {
         String dimensionTag = tag.contains(POTENTIAL_DIM_TAG) ? POTENTIAL_DIM_TAG : (tag.contains(SAVED_DIM_TAG) ? SAVED_DIM_TAG : null);
 
         if (dimensionTag != null) {
-            String dimension = MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(dimensionTag))));
-            return Component.literal(dimension + " Sample");
+            Component dimension = MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(dimensionTag))));
+            return Component.translatable(getDimensionDescriptionId(), dimension);
         }
 
         return super.getName(itemStack);
