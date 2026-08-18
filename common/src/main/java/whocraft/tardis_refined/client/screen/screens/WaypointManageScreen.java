@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
-import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.client.screen.main.MonitorOS;
 import whocraft.tardis_refined.client.screen.waypoints.CoordInputType;
 import whocraft.tardis_refined.common.network.messages.waypoints.C2SEditWaypoint;
@@ -128,7 +127,7 @@ public class WaypointManageScreen extends MonitorOS {
         String baseDirection = tardisNavLocation.getDirection().getName();
         String direction = baseDirection.substring(0, 1).toUpperCase() + baseDirection.substring(1);
 
-        Component dimensionName = MiscHelper.getCleanDimensionName(tardisNavLocation.getDimensionKey());
+        Component dimensionName = MiscHelper.getTranslatableDimensionName(tardisNavLocation.getDimensionKey());
 
         ScreenHelper.renderWidthScaledText(Component.translatable(ModMessages.UI_WAYPOINT_NEW_WAYPOINT), guiGraphics, Minecraft.getInstance().font, centerX, headerHeight, Color.LIGHT_GRAY.getRGB(), 80, 1F, true);
 

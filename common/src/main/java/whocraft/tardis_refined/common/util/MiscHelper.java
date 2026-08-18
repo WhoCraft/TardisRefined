@@ -32,7 +32,6 @@ import whocraft.tardis_refined.common.block.life.EyeBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
-import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -192,8 +191,16 @@ public class MiscHelper {
         return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
     }
 
-    public static Component getCleanDimensionName(ResourceKey<Level> dimensionKey) {
-        return Component.translatableWithFallback(dimensionKey.location().toLanguageKey("dimension"), getCleanName(dimensionKey.location().getPath()));
+    public static Component getTranslatableDimensionName(ResourceKey<Level> dimensionKey) {
+        return Component.translatableWithFallback(dimensionKey.location().toLanguageKey("dimension"), getCleanDimensionName(dimensionKey));
+    }
+
+    /**
+     * Please use {@link MiscHelper#getTranslatableDimensionName(ResourceKey)} instead.
+     */
+    @Deprecated
+    public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
+        return getCleanName(dimensionKey.location().getPath());
     }
 
     public static String getCleanName(String name) {

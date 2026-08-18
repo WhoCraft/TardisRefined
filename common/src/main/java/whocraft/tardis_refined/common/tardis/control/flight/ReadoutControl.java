@@ -36,7 +36,7 @@ public class ReadoutControl extends whocraft.tardis_refined.common.tardis.contro
         if (ModCompatChecker.valkyrienSkies()) {
             currentPosition = VSHelper.toWorldLocation(currentPosition);
         }
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(" - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY() + " Z: " + currentPosition.getPosition().getZ() + " F: " + directionName(currentPosition.getDirection()) + " D: ").append(MiscHelper.getCleanDimensionName(currentPosition.getDimensionKey())), true);
+        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(" - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY() + " Z: " + currentPosition.getPosition().getZ() + " F: " + directionName(currentPosition.getDirection()) + " D: ").append(MiscHelper.getTranslatableDimensionName(currentPosition.getDimensionKey())), true);
 
 
         return true;
@@ -49,7 +49,7 @@ public class ReadoutControl extends whocraft.tardis_refined.common.tardis.contro
         if (ModCompatChecker.valkyrienSkies()) {
             targetLocation = VSHelper.toWorldLocation(targetLocation);
         }
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + directionName(targetLocation.getDirection()) + " D: ").append(MiscHelper.getCleanDimensionName(targetLocation.getDimensionKey())), true);
+        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + directionName(targetLocation.getDirection()) + " D: ").append(MiscHelper.getTranslatableDimensionName(targetLocation.getDimensionKey())), true);
 
         return true;
     }

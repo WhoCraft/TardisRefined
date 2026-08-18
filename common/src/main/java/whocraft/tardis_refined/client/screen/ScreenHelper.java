@@ -35,4 +35,20 @@ public class ScreenHelper {
         renderWidthScaledText(text, guiGraphics, font, x, y, color, width, 1.0F, centered);
     }
 
+    /**
+     * Please use {@link ScreenHelper#renderWidthScaledText(Component, GuiGraphics, Font, float, float, int, int, float, boolean)} instead.
+     */
+    @Deprecated
+    public static void renderWidthScaledText(String text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, float scale, boolean centered) {
+        renderWidthScaledText(Component.literal(text), guiGraphics, font, x, y, color, width, scale, centered);
+    }
+
+    /**
+     * Please use {@link ScreenHelper#renderWidthScaledText(Component, GuiGraphics, Font, float, float, int, int, boolean)} instead.
+     */
+    @Deprecated
+    public static void renderWidthScaledText(String text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, boolean centered) {
+        renderWidthScaledText(Component.literal(text), guiGraphics, font, x, y, color, width, centered);
+    }
+
 }
