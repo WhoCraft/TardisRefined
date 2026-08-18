@@ -32,6 +32,8 @@ public class ToggleDoorControl extends Control {
                 if (operator.getExteriorManager().locked()) {
                     return false;
                 }
+                var pilotingManager = operator.getPilotingManager();
+                if (pilotingManager.isInFlight() && (pilotingManager.isTakingOff() || pilotingManager.isLanding())) return false;
                 BlockEntity blockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
                 if (blockEntity != null) {
                     if (blockEntity instanceof TardisInternalDoor internalDoor) {
