@@ -4,6 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -198,17 +199,6 @@ public class ControlEntity extends Entity {
         this.setSizeAndUpdate(this.getEntityData().get(SIZE_WIDTH), this.getEntityData().get(SIZE_HEIGHT));
     }
 
-
-    @Override
-    public boolean save(CompoundTag compound) {
-        if (consoleBlockPos != null) {
-            compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
-        }
-        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
-        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
-        return super.save(compound);
-    }
-
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         var consolePos = compound.getCompound(NbtConstants.CONSOLE_POS);
@@ -219,9 +209,30 @@ public class ControlEntity extends Entity {
 
         this.setSizeData(width, height);
 
+        if (compound.contains(NbtConstants.CONTROL_SPECIFICATION)) {
+            controlSpecification = ControlSpecification.CODEC.parse(
+                    NbtOps.INSTANCE, compound.get(NbtConstants.CONTROL_SPECIFICATION)
+            ).resultOrPartial(err -> {}).orElse(null);
+        }
+
+        if (compound.contains(NbtConstants.CONTROL_DURABILITY) && level() != null && !level().isClientSide()) {
+            int health = compound.getInt(NbtConstants.CONTROL_DURABILITY);
+            if (health <= 0) {
+                health = 0;
+            }
+            if (health >= totalControlHealth) {
+                health = totalControlHealth;
+            }
+            this.getEntityData().set(CONTROL_HEALTH, health);
+        }
+
         if (level() instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {
                 this.flightDanceManager = operator.getFlightDanceManager();
+                int health = getControlHealth();
+                if (health != 0 && health != totalControlHealth) {
+                    this.entityData.set(TICKING_DOWN, true);
+                }
             });
         }
 
@@ -236,6 +247,13 @@ public class ControlEntity extends Entity {
 
         compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
         compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
+        if (controlSpecification != null) {
+            compound.put(
+                    NbtConstants.CONTROL_SPECIFICATION,
+                    ControlSpecification.CODEC.encodeStart(NbtOps.INSTANCE, controlSpecification).getOrThrow(false, err -> {})
+            );
+        }
+        compound.putInt(NbtConstants.CONTROL_DURABILITY, getControlHealth());
 
     }
 
@@ -341,6 +359,12 @@ public class ControlEntity extends Entity {
         }
     }
 
+    public void copyFrom(ControlEntity previous) {
+        getEntityData().set(CONTROL_HEALTH, previous.getControlHealth());
+        getEntityData().set(TICKING_DOWN, previous.isTickingDown());
+        setCustomName(previous.getCustomName());
+    }
+
     @Override
     public void tick() {
         if (level() instanceof ServerLevel serverLevel) {
@@ -352,17 +376,23 @@ public class ControlEntity extends Entity {
                 });
             }
 
-            if (this.controlSpecification == null) {
-                if (this.consoleBlockPos != null) {
-                    if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
-
-                        globalConsoleBlockEntity.markDirty();
-                    }
+            if (this.consoleBlockPos != null) {
+                if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+                    globalConsoleBlockEntity.updateControl(this);
+                } else {
                     discard();
+                    return;
                 }
-
             } else {
+                discard();
+                return;
+            }
+
+            if (this.controlSpecification != null) {
                 onServerTick(serverLevel);
+            } else {
+                discard();
+                return;
             }
         } else {
             onClientTick(this.level());

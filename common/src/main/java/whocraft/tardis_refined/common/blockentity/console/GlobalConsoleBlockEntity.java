@@ -215,6 +215,16 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         controlEntityList.clear();
     }
 
+    public void updateControl(ControlEntity control) {
+        for (var existingControl : controlEntityList) {
+            if (existingControl == control) return;
+            if (existingControl.controlSpecification().equals(control.controlSpecification())) {
+                existingControl.copyFrom(control);
+                control.discard();
+            }
+        }
+    }
+
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
 
