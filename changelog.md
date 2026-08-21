@@ -7,6 +7,8 @@ TARDIS travel time is now logarithmic to the travel distance instead of linear. 
 TARDIS travel time now varies slightly from trip to trip.
 Added config option to choose between logarithmic travel time and linear travel time.
 Added config option to choose how much the travel time can vary in percentage.
+Added config option to change the default TARDIS travel speed.
+Added config option to change the default TARDIS xp gain.
 
 #### Bug Fix
 Fix distance not recalculated when loading a waypoint or using fast return.

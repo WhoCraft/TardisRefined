@@ -264,7 +264,8 @@ public class TardisPilotingManager extends TickableHandler {
             if (this.operator.getLevel().getGameTime() % (20) == 0) {
                 if (distanceCovered <= flightDistance) {
                     double speed = (throttleStage + (0.5 * throttleStage * speedModifier));
-                    pointsToEarn += speed * 0.05;
+                    pointsToEarn += speed * TRConfig.SERVER.XP_FACTOR.get();
+                    speed *= TRConfig.SERVER.SPEED_FACTOR.get();
                     if (TRConfig.SERVER.DISTANCE_CALCULATION.get() == TRConfig.Server.DistanceCalculation.LOGARITHMIC) {
                         double logDist = flightDistance > 0 ? Math.log(flightDistance) : 0;
                         double logSpeed = Math.log(speed);
@@ -959,9 +960,11 @@ public class TardisPilotingManager extends TickableHandler {
             int totalPoints = (int) pointsToEarn;
             this.operator.getUpgradeHandler().addUpgradeXP(totalPoints);
 
-            var players = level.players();
-            for (var player : players) {
-                PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + " XP"), true);
+            if (totalPoints != 0) {
+                var players = level.players();
+                for (var player : players) {
+                    PlayerUtil.sendMessage(player, Component.translatable("+" + totalPoints + " XP"), true);
+                }
             }
             distanceCovered = 0;
             pointsToEarn = 0;

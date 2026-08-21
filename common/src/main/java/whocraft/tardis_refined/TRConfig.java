@@ -78,6 +78,8 @@ public class TRConfig {
         public final ForgeConfigSpec.BooleanValue ADVENTURE_MODE;
         public final ForgeConfigSpec.EnumValue<DistanceCalculation> DISTANCE_CALCULATION;
         public final ForgeConfigSpec.DoubleValue DISTANCE_RANDOMNESS;
+        public final ForgeConfigSpec.DoubleValue SPEED_FACTOR;
+        public final ForgeConfigSpec.DoubleValue XP_FACTOR;
 
         public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION;
         public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_VS;
@@ -102,6 +104,8 @@ public class TRConfig {
             builder.push("distance");
             DISTANCE_CALCULATION = builder.translation(ModMessages.CONFIG_DISTANCE_CALCULATION).comment("The distance calculation methods to use.").defineEnum("calculation", DistanceCalculation.LOGARITHMIC);
             DISTANCE_RANDOMNESS = builder.translation(ModMessages.CONFIG_DISTANCE_RANDOMNESS).comment("How much randomness to apply, i.e. how much the total distance can vary in percentage.").defineInRange("randomness", 50.0, 0, 100);
+            SPEED_FACTOR = builder.translation(ModMessages.CONFIG_DISTANCE_SPEED_FACTOR).comment("Factor that the speed is multiplied by. Useful if you think the default TARDIS travel speed is too fast or slow.").defineInRange("speed_factor", 1, Double.MIN_VALUE, Double.MAX_VALUE);
+            XP_FACTOR = builder.translation(ModMessages.CONFIG_DISTANCE_XP_FACTOR).comment("Factor that the speed is multiplied by every second to calculate the XP gained.").defineInRange("xp_factor", 0.05, 0, Double.MAX_VALUE);
             builder.pop();
             builder.pop();
             builder.push("compatibility");
