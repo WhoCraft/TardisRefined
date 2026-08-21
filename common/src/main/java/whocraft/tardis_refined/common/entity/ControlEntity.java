@@ -56,11 +56,6 @@ public class ControlEntity extends Entity {
      */
     private static final EntityDataAccessor<Boolean> TICKING_DOWN = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     /**
-     * Flag to determine if this Control is far too mis-aligned and is considered "dead".
-     * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used.
-     */
-    private static final EntityDataAccessor<Boolean> IS_DEAD = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
-    /**
      * Attribute to determine how far this Control is mis-aligned.
      * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used.
      */
@@ -164,6 +159,9 @@ public class ControlEntity extends Entity {
         return Component.translatable(this.controlSpecification.control().getTranslationKey());
     }
 
+    public boolean isDead() {
+        return getEntityData().get(CONTROL_HEALTH) <= 0;
+    }
 
     /**
      * Tell the Tardis that the control is currently continuing to be misaligned
@@ -173,7 +171,7 @@ public class ControlEntity extends Entity {
      */
     public boolean setTickingDown(FlightDanceManager manager) {
 
-        if (this.getEntityData().get(IS_DEAD)) {
+        if (isDead()) {
             return false;
         }
 
@@ -189,7 +187,6 @@ public class ControlEntity extends Entity {
     protected void defineSynchedData() {
         getEntityData().define(SHOW_PARTICLE, false);
         getEntityData().define(TICKING_DOWN, false);
-        getEntityData().define(IS_DEAD, false);
         getEntityData().define(SIZE_WIDTH, 1F);
         getEntityData().define(SIZE_HEIGHT, 1F);
         getEntityData().define(CONTROL_HEALTH, 10);
@@ -252,7 +249,7 @@ public class ControlEntity extends Entity {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
             if (this.level() instanceof ServerLevel serverLevel) {
                 if (!player.level().isClientSide()) {
-                    if (entityData.get(IS_DEAD)) {
+                    if (isDead()) {
                         return false;
                     }
                     if (this.entityData.get(TICKING_DOWN)) {
@@ -297,7 +294,7 @@ public class ControlEntity extends Entity {
                     return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
                 }
 
-                if (entityData.get(IS_DEAD)) {
+                if (isDead()) {
                     return InteractionResult.FAIL;
                 }
 
@@ -380,7 +377,6 @@ public class ControlEntity extends Entity {
     private void onServerTick(ServerLevel serverLevel) {
 
         boolean isTickingDown = getEntityData().get(TICKING_DOWN);
-        boolean isDead = getEntityData().get(IS_DEAD);
 
         if (this.flightDanceManager != null) {
             TardisLevelOperator operator = this.flightDanceManager.getOperator();
@@ -391,7 +387,7 @@ public class ControlEntity extends Entity {
         }
 
 
-        if (!isDead && isTickingDown && serverLevel.getGameTime() % (5 * 20) == 0) {
+        if (!isDead() && isTickingDown && serverLevel.getGameTime() % (5 * 20) == 0) {
             int controlHealth = getEntityData().get(CONTROL_HEALTH) - 1;
 
             getEntityData().set(CONTROL_HEALTH, controlHealth);
@@ -406,7 +402,6 @@ public class ControlEntity extends Entity {
     public void onControlDead() {
 
         this.entityData.set(TICKING_DOWN, false);
-        this.entityData.set(IS_DEAD, true);
 
         if (this.flightDanceManager != null) {
             this.flightDanceManager.updateDamageList();
