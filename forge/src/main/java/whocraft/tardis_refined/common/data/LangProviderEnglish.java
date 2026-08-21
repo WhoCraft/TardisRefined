@@ -173,6 +173,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.NO_FLIGHT_TRANSITIVE, "Cannot change handbrake state whilst in transitive flight");
         add(ModMessages.HANDBRAKE_WARNING, "Ship is in flight. Left click the handbrake to engage");
         add(ModMessages.CONSOLE_NOT_IN_FLIGHT, "Cannot change consoles whilst in flight");
+        add(ModMessages.CONSOLE_USE_CONFIGURATOR_TO_BREAK, "Use the console configurator to break the console");
         add(ModMessages.NO_END_DRAGON_PREVENTS, "A dragon prevents you from progressing to The End");
         add(ModMessages.TARDIS_IS_ON_THE_WAY, "TARDIS has been summoned and is on the way");
         add(ModMessages.LANDING_PAD_NOT_UNLOCKED, errorPrefix +"Specified TARDIS rejected landing pad signal");

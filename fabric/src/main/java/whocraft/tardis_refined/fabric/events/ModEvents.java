@@ -92,6 +92,11 @@ public class ModEvents {
             }
         });
 
+        AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
+            MiscHelper.onBlockPunched(world, player, pos, hand, direction);
+            return InteractionResult.PASS;
+        });
+
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
