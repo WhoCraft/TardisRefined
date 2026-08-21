@@ -11,3 +11,4 @@ Fix all controls automatically repairing themselves when setting throttle to 0 m
 Fix controls not displaying the "dead" icon when dead.
 Fix controls repairing themselves when restarting the server.
 Invalid and duplicate control entities are now automatically removed.
+Removed duplicate control on crystal console.
