@@ -12,6 +12,8 @@ import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
+import java.util.function.Consumer;
+
 /**
  * TardisNavLocation
  * Co-ordinates that represent position, rotation, level and name.
@@ -164,8 +166,13 @@ public class TardisNavLocation {
         return position;
     }
 
-    public void setEditCallback(Runnable onEdit) {
-        this.onEdit = onEdit;
+    /**
+     * Sets a callback that will be called whenever this nav location has the position changed.
+     * @param onEdit A function taking the old pre-modified position as an argument.
+     */
+    public void setEditCallback(Consumer<TardisNavLocation> onEdit) {
+        var copy = this.copy();
+        this.onEdit = () -> onEdit.accept(copy);
     }
 
     public TardisNavLocation copy() {

@@ -803,12 +803,11 @@ public class TardisPilotingManager extends TickableHandler {
         return isInFlight && ticksTakingOff <= 0 && (distanceCovered >= flightDistance || this.autoLand) && !this.isCrashing;
     }
 
+    /**
+     * No longer used, changing the target location while in flight will automatically recalculate flight.
+     */
+    @Deprecated(forRemoval = true)
     public void recalculateFlightDistance() {
-        TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
-        TardisNavLocation lastKnownLocation = getCurrentLocation().copy();
-
-        this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
-        this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
 
     }
 
@@ -981,21 +980,7 @@ public class TardisPilotingManager extends TickableHandler {
      */
     private void endFlightEarly(boolean dramatic) {
 
-        BlockPos targetPosition = this.getTargetLocation().getPosition();
-        BlockPos startingPosition = this.getCurrentLocation().getPosition();
-
-        if (ModCompatChecker.valkyrienSkies()) {
-            targetPosition = VSHelper.toWorldPosition(getTargetLocation().getLevel(), targetPosition);
-            startingPosition = VSHelper.toWorldPosition(getCurrentLocation().getLevel(), startingPosition);
-        }
-
-        float percentage = this.getFlightPercentageCovered();
-        float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
-        float percentageY = startingPosition.getY() + (targetPosition.getY() - startingPosition.getY()) * percentage;
-        float percentageZ = startingPosition.getZ() + (targetPosition.getZ() - startingPosition.getZ()) * percentage;
-
-        TardisNavLocation newLocation = new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.getTargetLocation().getDirection(), percentage > 0.49f ? this.getTargetLocation().getLevel() : this.getCurrentLocation().getLevel());
-        setTargetLocation(newLocation);
+        setTargetLocation(getCurrentInFlightPos());
 
         if (dramatic) {
             for (Player player : this.operator.getLevel().players()) {
@@ -1046,6 +1031,24 @@ public class TardisPilotingManager extends TickableHandler {
         this.operator.tardisClientData().sync();
     }
 
+    public TardisNavLocation getCurrentInFlightPos() {
+        if (!isInFlight()) return getCurrentLocation();
+        BlockPos targetPosition = this.getTargetLocation().getPosition();
+        BlockPos startingPosition = this.getCurrentLocation().getPosition();
+
+        if (ModCompatChecker.valkyrienSkies()) {
+            targetPosition = VSHelper.toWorldPosition(getTargetLocation().getLevel(), targetPosition);
+            startingPosition = VSHelper.toWorldPosition(getCurrentLocation().getLevel(), startingPosition);
+        }
+
+        float percentage = this.getFlightPercentageCovered();
+        float percentageX = startingPosition.getX() + (targetPosition.getX() - startingPosition.getX()) * percentage;
+        float percentageY = startingPosition.getY() + (targetPosition.getY() - startingPosition.getY()) * percentage;
+        float percentageZ = startingPosition.getZ() + (targetPosition.getZ() - startingPosition.getZ()) * percentage;
+
+        return new TardisNavLocation(new BlockPos((int) percentageX, (int) percentageY, (int) percentageZ), this.getTargetLocation().getDirection(), percentage > 0.49f ? this.getTargetLocation().getLevel() : this.getCurrentLocation().getLevel());
+    }
+
     // Triggers the crash event.
     public void crash() {
         this.canUseControls = false;
@@ -1068,18 +1071,7 @@ public class TardisPilotingManager extends TickableHandler {
             this.getTargetLocation().setLevel(this.operator.getLevel().getServer().overworld());
         }
 
-        float progress = getFlightPercentageCovered();
-
-        Vec3 targetPos = this.getTargetLocation().getPosition().getCenter();
-        BlockPos currentLoc = this.getCurrentLocation().getPosition();
-        Vec3 currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
-
-        int x = (int) (currentPos.x + ((targetPos.x - currentPos.x) * progress));
-        int y = (int) (currentPos.y + ((targetPos.y - currentPos.y) * progress));
-        int z = (int) (currentPos.z + ((targetPos.z - currentPos.z) * progress));
-
-        BlockPos landingLocation = new BlockPos(x, y, z);
-        this.setTargetPosition(landingLocation);
+        this.setTargetLocation(getCurrentInFlightPos());
         TardisNavLocation weWantToGoHere = this.getTargetLocation().copy();
         setTargetLocation(weWantToGoHere);
         setCurrentLocation(weWantToGoHere);
@@ -1123,15 +1115,26 @@ public class TardisPilotingManager extends TickableHandler {
         return this.targetLocation;
     }
 
-    private void recalculateFlightDistanceIfNecessary() {
+    private void recalculateFlightDistanceIfNecessary(TardisNavLocation lastKnownLocation) {
         if (isInFlight() && !isLanding()) {
-            recalculateFlightDistance();
+            TardisNavLocation targetPosition = this.operator.getPilotingManager().getTargetLocation();
+
+            float oldProgress = getFlightPercentageCovered();
+            this.flightDistance = calculateFlightDistance(lastKnownLocation, targetPosition);
+            if (oldProgress < 1) {
+                this.flightDistance += Math.round(this.flightDistance * oldProgress * 2);
+                this.distanceCovered = Math.round(this.flightDistance * oldProgress);
+            } else {
+                this.distanceCovered = 0;
+            }
+            this.operator.getFlightDanceManager().startFlightDance(this.currentConsole);
         }
     }
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
+        var prev = this.targetLocation;
         this.targetLocation = targetLocation.copy();
-        recalculateFlightDistanceIfNecessary();
+        recalculateFlightDistanceIfNecessary(prev);
         this.targetLocation.setEditCallback(this::recalculateFlightDistanceIfNecessary);
     }
 

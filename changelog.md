@@ -10,3 +10,4 @@ Added config option to choose how much the travel time can vary in percentage.
 
 #### Bug Fix
 Fix distance not recalculated when loading a waypoint or using fast return.
+Fix mid-flight flight distance recalculation always using the takeoff position instead of the actual location in the journey.
