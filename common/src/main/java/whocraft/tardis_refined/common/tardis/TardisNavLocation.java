@@ -24,6 +24,7 @@ public class TardisNavLocation {
     private BlockPos position;
     private Direction direction;
     private ServerLevel level;
+    private Runnable onEdit = () -> {};
 
     private ResourceKey<Level> dimensionKey;
 
@@ -101,6 +102,7 @@ public class TardisNavLocation {
     public void setLevel(ServerLevel level) {
         this.dimensionKey = level.dimension();
         this.level = level;
+        onEdit.run();
     }
 
     public ResourceKey<Level> getDimensionKey() {
@@ -109,6 +111,7 @@ public class TardisNavLocation {
 
     public void setDimensionKey(ResourceKey<Level> dimensionKey) {
         this.dimensionKey = dimensionKey;
+        onEdit.run();
     }
 
     public BlockPos getPosition() {
@@ -117,6 +120,7 @@ public class TardisNavLocation {
 
     public TardisNavLocation setPosition(BlockPos pos) {
         this.position = pos;
+        onEdit.run();
         return this;
     }
 
@@ -126,6 +130,7 @@ public class TardisNavLocation {
 
     public TardisNavLocation setDirection(Direction dir) {
         this.direction = dir;
+        onEdit.run();
         return this;
     }
 
@@ -141,19 +146,26 @@ public class TardisNavLocation {
     public BlockPos setX(int x) {
         BlockPos blockPos = new BlockPos(x, position.getY(), position.getZ());
         position = blockPos;
+        onEdit.run();
         return position;
     }
 
     public BlockPos setY(int y) {
         BlockPos blockPos = new BlockPos(position.getX(), y, position.getZ());
         position = blockPos;
+        onEdit.run();
         return position;
     }
 
     public BlockPos setZ(int z) {
         BlockPos blockPos = new BlockPos(position.getX(), position.getY(), z);
         position = blockPos;
+        onEdit.run();
         return position;
+    }
+
+    public void setEditCallback(Runnable onEdit) {
+        this.onEdit = onEdit;
     }
 
     public TardisNavLocation copy() {

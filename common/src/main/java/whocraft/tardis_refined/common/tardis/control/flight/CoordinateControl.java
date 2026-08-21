@@ -66,10 +66,6 @@ public class CoordinateControl extends whocraft.tardis_refined.common.tardis.con
 
                 pilotManager.setTargetPosition(potentialPos); //Only update target position if it is within both vertical and horizontal bounds.
 
-                if (pilotManager.isInFlight()) {
-                    operator.getPilotingManager().recalculateFlightDistance();
-                }
-
                 PlayerUtil.sendMessage(player, Component.translatable(pilotManager.getTargetLocation().getPosition().toShortString()), true);
                 return true;
             } else {

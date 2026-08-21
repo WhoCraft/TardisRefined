@@ -9,4 +9,4 @@ Added config option to choose between logarithmic travel time and linear travel 
 Added config option to choose how much the travel time can vary in percentage.
 
 #### Bug Fix
-
+Fix distance not recalculated when loading a waypoint or using fast return.

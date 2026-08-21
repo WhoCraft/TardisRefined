@@ -130,6 +130,7 @@ public class TardisPilotingManager extends TickableHandler {
 
         this.currentLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.CURRENT_LOCATION);
         this.targetLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.TARGET_LOCATION);
+        this.targetLocation.setEditCallback(this::recalculateFlightDistanceIfNecessary);
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.RETURN_LOCATION);
 
         this.currentConsoleBlockPos = NbtUtils.readBlockPos(tag.getCompound(CURRENT_CONSOLE_POS));
@@ -1122,9 +1123,16 @@ public class TardisPilotingManager extends TickableHandler {
         return this.targetLocation;
     }
 
+    private void recalculateFlightDistanceIfNecessary() {
+        if (isInFlight() && !isLanding()) {
+            recalculateFlightDistance();
+        }
+    }
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
         this.targetLocation = targetLocation.copy();
+        recalculateFlightDistanceIfNecessary();
+        this.targetLocation.setEditCallback(this::recalculateFlightDistanceIfNecessary);
     }
 
     /**
