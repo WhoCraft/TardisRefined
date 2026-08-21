@@ -5,3 +5,4 @@
 #### Bug Fix
 Fix current console powering back on during the next interaction whenever it is unloaded and loaded again.
 Fix all controls automatically repairing themselves when setting throttle to 0 midflight.
+Fix controls not displaying the "dead" icon when dead.
