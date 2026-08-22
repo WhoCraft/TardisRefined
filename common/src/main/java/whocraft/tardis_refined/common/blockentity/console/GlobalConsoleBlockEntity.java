@@ -221,6 +221,13 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             if (existingControl.controlSpecification().equals(control.controlSpecification())) {
                 existingControl.copyFrom(control);
                 control.discard();
+                if (controlEntityList.contains(control)) {
+                    TardisRefined.LOGGER.warn(
+                            "Duplicate control detected for {} at {}! Please remove one of the controls with offset {} and size {}.",
+                            consoleTheme, control.position(), control.controlSpecification().offsetPosition(),
+                            control.controlSpecification().size()
+                    );
+                }
             }
         }
     }
@@ -231,6 +238,8 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (this.shouldSpawnControls && blockState.getValue(GlobalConsoleBlock.POWERED)) {
             spawnControlEntities();
         }
+
+        controlEntityList.removeIf(Entity::isRemoved);
 
         if (!liveliness.isStarted()) {
             liveliness.start(12);
