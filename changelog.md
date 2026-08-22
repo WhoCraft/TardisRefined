@@ -12,3 +12,4 @@ Fix root shell not breaking when placed inside a TARDIS.
 Fix top half of door and shell bounding box not being selectable. A hidden redirect block will now be placed there which you can see in F3 when sneaking. Don't worry, the block is only placed if there's space, so the diamond block you glitched into the top half of your TARDIS shell is still safe.
 Fix briefcase shell and door using the default bounding box.
 Fix Immersive Portals portal not positioned correctly for offset interior doors.
+Fix half-baked shell no longer being shearable after taking off and landing (or reloading the world). It will now continue to be shearable until you unlock the chameleon circuit.

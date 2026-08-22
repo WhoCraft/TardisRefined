@@ -37,6 +37,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.Optional;
 import java.util.Set;
@@ -189,7 +190,10 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 if (tardisPilotingManager.isInFlight()) return false;
 
                 // Shearing the TARDIS
-                if (stack.is(Items.SHEARS) && aestheticHandler.getShellTheme() == ShellTheme.HALF_BAKED.getId()) {
+                if (
+                        stack.is(Items.SHEARS) && aestheticHandler.getShellTheme().equals(ShellTheme.HALF_BAKED.getId()) &&
+                        !tardisLevelOperator.getUpgradeHandler().isUpgradeUnlocked(TRUpgrades.CHAMELEON_CIRCUIT_SYSTEM.get())
+                ) {
                     aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(), tardisPilotingManager.getCurrentLocation());
                     level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1, 1);
                     spawnCoralItems();
