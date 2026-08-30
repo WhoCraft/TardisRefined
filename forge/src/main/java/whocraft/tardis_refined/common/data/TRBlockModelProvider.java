@@ -93,6 +93,8 @@ public class TRBlockModelProvider extends BlockStateProvider {
         emptyBlockState(TRBlockRegistry.ARTRON_PILLAR.get());
         emptyBlockState(TRBlockRegistry.THE_EYE.get());
 
+        simpleBlock(TRBlockRegistry.ZEITON_GLASS.get());
+
 
         threeDeeRotating(TRBlockRegistry.LANDING_PAD.get(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "block/landing_pad"));
         threeDeeRotating(TRBlockRegistry.FLIGHT_DETECTOR.get(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "block/flight_detector"));
@@ -106,7 +108,7 @@ public class TRBlockModelProvider extends BlockStateProvider {
         customLocation(TRBlockRegistry.AIR_LOCK_GENERATION_BLOCK.get());
         customLocation(TRBlockRegistry.FOOLS_STONE.get());
         simpleBlock(TRBlockRegistry.ARTRON_PILLAR_PORT.get());
-        simpleBlock(TRBlockRegistry.ASTRAL_MAP.get());
+       // simpleBlock(TRBlockRegistry.ASTRAL_MAP.get());
 
         customLocation(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "block/astral_manipulator"));
         customLocation(TRBlockRegistry.CORRIDOR_TELEPORTER.get(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "block/corridor_teleporter"));

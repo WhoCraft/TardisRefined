@@ -33,14 +33,9 @@ public record C2SBeginShellView() implements CustomPacketPayload, NetworkManager
         ServerPlayer player = (ServerPlayer) context.getPlayer();
         Level level = player.level();
         if (level instanceof ServerLevel serverLevel) {
-            TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator ->
-                    TardisPlayerInfo.get(player).ifPresent(tardisInfo ->
-                            tardisInfo.setupPlayerForInspection(player, tardisLevelOperator,
-                                    tardisLevelOperator.getPilotingManager().isTakingOff()
-                                            ? tardisLevelOperator.getPilotingManager().getCurrentLocation()
-                                            : tardisLevelOperator.getPilotingManager().getTargetLocation(),
-                                    !tardisLevelOperator.getPilotingManager().isTakingOff()))
-            );
+            TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> TardisPlayerInfo.get(context.getPlayer()).ifPresent(tardisInfo ->
+                    tardisInfo.startShellView(player, tardisLevelOperator, tardisLevelOperator.getPilotingManager().isTakingOff() ? tardisLevelOperator.getPilotingManager().getCurrentLocation() : tardisLevelOperator.getPilotingManager().getTargetLocation(), tardisLevelOperator.getPilotingManager().isInFlight())
+            ));
         }
     }
 }

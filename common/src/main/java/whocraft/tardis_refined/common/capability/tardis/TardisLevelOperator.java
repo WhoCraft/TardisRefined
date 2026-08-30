@@ -23,27 +23,31 @@ import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
+import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
-import whocraft.tardis_refined.common.hum.TardisHums;
-import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
+import whocraft.tardis_refined.common.network.NetworkManager;
+import whocraft.tardis_refined.common.network.messages.screens.MonitorPositionDataMessage;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Optional;
-import java.util.UUID;
 
 import static whocraft.tardis_refined.common.block.shell.ShellBaseBlock.REGEN;
 
@@ -66,8 +70,12 @@ public class TardisLevelOperator {
 
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<SublevelAccessor.LoadablePositionReference> internalDoorReference = Optional.empty();
     // TARDIS state refers to different stages of TARDIS creation. This allows for different logic to operate in those moments.
     private int tardisState = 0;
+
+    public HashSet<ServerPlayer> updatingMonitors = new HashSet<>();
 
 
     public TardisLevelOperator(Level level) {
@@ -81,7 +89,7 @@ public class TardisLevelOperator {
         this.upgradeHandler = new UpgradeHandler(this);
         this.aestheticHandler = new AestheticHandler(this);
         this.flightDanceManager = new FlightDanceManager(this);
-        this.progressionManager = new ProgressionManager();
+        this.progressionManager = new ProgressionManager(level);
     }
 
     @ExpectPlatform
@@ -112,6 +120,10 @@ public class TardisLevelOperator {
         if (this.internalDoor != null) {
             compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
             compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION, NbtUtils.writeBlockPos(this.internalDoor.getDoorPosition()));
+            var ref = internalDoorReference.flatMap(SublevelAccessor.LoadablePositionReference::toNbt);
+            if (ref.isPresent()) {
+                compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION_SUBLEVEL, ref.get());
+            }
         }
 
         compoundTag = this.exteriorManager.saveData(compoundTag);
@@ -131,12 +143,22 @@ public class TardisLevelOperator {
     public void deserializeNBT(CompoundTag tag) {
         this.hasInitiallyGenerated = tag.getBoolean(NbtConstants.TARDIS_IS_SETUP);
 
-        CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
-        if (doorPos != null) {
-            if (level.getBlockEntity(NbtUtils.readBlockPos(tag, NbtConstants.TARDIS_INTERNAL_DOOR_POSITION).get()) instanceof TardisInternalDoor door) {
-                this.internalDoor = door;
-                this.internalDoor.setID(tag.getString(NbtConstants.TARDIS_INTERNAL_DOOR_ID));
-            }
+        var doorPos = NbtUtils.readBlockPos(tag, NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
+        if (doorPos.isPresent() && level.getServer() != null) {
+            // Schedules code to run at the end of this game tick.
+            // Necessary for Arclight compatibility.
+            level.getServer().tell(level.getServer().wrapRunnable(() -> {
+                this.internalDoorReference = SublevelAccessor.LoadablePositionReference.fromNbt(
+                        tag.get(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION_SUBLEVEL)
+                );
+                var actualDoorPos = internalDoorReference.flatMap(
+                        door -> door.tryLoad(level.getServer()).map(d -> BlockPos.containing(d.pos()))
+                ).orElse(doorPos.get());
+                if (level.getBlockEntity(actualDoorPos) instanceof TardisInternalDoor door) {
+                    this.internalDoor = door;
+                    this.internalDoor.setID(tag.getString(NbtConstants.TARDIS_INTERNAL_DOOR_ID));
+                }
+            }));
         }
 
         // Managers
@@ -219,6 +241,16 @@ public class TardisLevelOperator {
 
             tardisClientData.sync();
         }
+
+        Iterator<ServerPlayer> updatingMonitorsIterator = updatingMonitors.iterator();
+        while(updatingMonitorsIterator.hasNext()) {
+            ServerPlayer player = updatingMonitorsIterator.next();
+            if (player.isRemoved()) {
+                updatingMonitorsIterator.remove();
+                continue;
+            }
+            NetworkManager.get().sendToPlayer(player, new MonitorPositionDataMessage(this.pilotingManager.getCurrentLocation().copy()));
+        }
     }
 
     public boolean hasInitiallyGenerated() {
@@ -239,6 +271,12 @@ public class TardisLevelOperator {
     public boolean enterTardis(Entity entity, BlockPos externalShellPos, ServerLevel shellLevel, Direction shellDirection) {
         if (!(this.level instanceof ServerLevel targetServerLevel)) {
             return false;
+        }
+
+        // Load the sublevel the door is in.
+        // We don't need to do this when exiting as the player will have loaded it already.
+        if (entity.getServer() != null) {
+            internalDoorReference.ifPresent(door -> door.tryLoad(entity.getServer()));
         }
 
         // Determine target position and direction
@@ -282,7 +320,7 @@ public class TardisLevelOperator {
         if (aestheticHandler.getShellTheme() != null) {
             ResourceLocation theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                if (!ignoreDoor && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(doorLevel.dimension().location().getPath()))) {
+                if (!ignoreDoor && TRDimensionTypes.isTARDISDimension(level) && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.isTeleportingPortalPresent(doorLevel.dimension())) {
                     return false;
                 }
             }
@@ -327,7 +365,7 @@ public class TardisLevelOperator {
     public boolean forceEjectPlayer(ServerPlayer player) {
         if (player != null) {
             TardisNavLocation location = this.getPilotingManager().getCurrentLocation();
-            return this.exitTardis(player, location.getLevel(), location.getPosition(), location.getDirection(), true);
+            return this.exitTardis(player, location.getLevel(), location.getRealPosition(), location.getDirection(), true);
         }
         return false;
     }
@@ -547,6 +585,9 @@ public class TardisLevelOperator {
     }
 
     public TardisInternalDoor getInternalDoor() {
+        if (level.getServer() != null) {
+            internalDoorReference.ifPresent(door -> door.tryLoad(level.getServer()));
+        }
         return this.internalDoor;
     }
 
@@ -559,9 +600,19 @@ public class TardisLevelOperator {
         if (this.internalDoor != null) {
             this.internalDoor.onSetMainDoor(false);
         }
+        if (level.getServer() != null) {
+            internalDoorReference.ifPresent(ref -> ref.destroy(level.getServer()));
+        }
         this.internalDoor = door;
-        if (door != null) //If the new door value is not null
+        if (door != null) { //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
+            internalDoorReference = SublevelAccessor.get().getPositionReference(level, door.getDoorPosition());
+        } else {
+            internalDoorReference = Optional.empty();
+        }
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onDoorMoved(this);
+        }
     }
 
     public TardisInteriorManager getInteriorManager() {
@@ -571,6 +622,7 @@ public class TardisLevelOperator {
     public TardisPilotingManager getPilotingManager() {
         return this.pilotingManager;
     }
+
 
     public TardisWaypointManager getTardisWaypointManager() {
         return tardisWaypointManager;

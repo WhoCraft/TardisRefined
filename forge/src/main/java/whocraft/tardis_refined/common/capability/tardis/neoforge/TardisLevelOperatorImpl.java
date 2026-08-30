@@ -39,15 +39,16 @@ public class TardisLevelOperatorImpl extends SavedData {
 
 
     public static Optional<TardisLevelOperator> get(ServerLevel level) {
-        if(getSaveData(level) instanceof TardisLevelOperatorImpl tardisLevelOperator){
+        if(level != null && TRDimensionTypes.isTARDISDimension(level) && getSaveData(level) instanceof TardisLevelOperatorImpl tardisLevelOperator){
             return Optional.of(tardisLevelOperator.operator);
         }
         return Optional.empty();
     }
 
-
-
-
+    @Override
+    public boolean isDirty() {
+        return true;
+    }
 
     public TardisLevelOperator getOperator() {
         return operator;
@@ -59,9 +60,9 @@ public class TardisLevelOperatorImpl extends SavedData {
     }
 
     @SubscribeEvent
-    public static void onLevelTick(LevelTickEvent event) {
+    public static void onLevelTick(LevelTickEvent.Pre event) {
         if (event.getLevel() instanceof ServerLevel level) {
-            if (level.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+            if (TRDimensionTypes.isTARDISDimension(level)) {
                 TardisLevelOperatorImpl data = (TardisLevelOperatorImpl) getSaveData(level);
                 data.getOperator().tick(level);
             }

@@ -5,14 +5,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
+import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
+import whocraft.tardis_refined.common.util.LevelHelper;
 import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.NbtConstants;
 
@@ -96,9 +97,7 @@ public class TardisExteriorManager extends BaseHandler {
     }
 
     public void playSoundAtShell(SoundEvent event, SoundSource source, float volume, float pitch) {
-
         TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
-
         if (pilotingManager != null) {
             if (pilotingManager.getCurrentLocation() != null) {
                 TardisNavLocation currentLocation = pilotingManager.getCurrentLocation();
@@ -107,8 +106,6 @@ public class TardisExteriorManager extends BaseHandler {
                 lastKnownLocationLevel.playSound(null, currentLocation.getPosition(), event, source, volume, pitch);
             }
         }
-
-
     }
 
     /**
@@ -140,16 +137,10 @@ public class TardisExteriorManager extends BaseHandler {
         if (currentPosition != null) {
             BlockPos lastKnownLocationPosition = currentPosition.getPosition();
             ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
-            ChunkPos chunkPos = lastKnownLocationLevel.getChunk(lastKnownLocationPosition).getPos();
-            //Force load chunk
-            lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly remove block
             //Remove block
-            if (lastKnownLocationLevel.getBlockState(lastKnownLocationPosition).getBlock() instanceof GlobalShellBlock shellBlock) {
-                lastKnownLocationLevel.removeBlock(lastKnownLocationPosition, false);
-//Set block to air with drop items flag to false
+            if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof GlobalShellBlockEntity globalShellBlockEntity) {
+                lastKnownLocationLevel.removeBlock(lastKnownLocationPosition, false); //Set block to air with drop items flag to false
             }
-            //Un-force load chunk
-            lastKnownLocationLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to not be force loaded after we remove the block
         }
     }
 
@@ -157,21 +148,11 @@ public class TardisExteriorManager extends BaseHandler {
      * Setup the landing data updates and physical placement of the shell block
      */
     public void startLanding(TardisLevelOperator operator, TardisNavLocation location) {
-        ServerLevel targetLevel = location.getLevel();
-        BlockPos lastKnownLocationPosition = location.getPosition();
-        ChunkPos chunkPos = location.getLevel().getChunk(lastKnownLocationPosition).getPos();
-
-        //Force load target chunk
-        targetLevel.setChunkForced(chunkPos.x, chunkPos.z, true); //Set chunk to be force loaded to properly place block
         this.isLanding = true;
         operator.tardisClientData().setIsLanding(true);
         operator.tardisClientData().sync();
 
         this.placeExteriorBlockForLanding(location);
-
-        //Un-force load target chunk
-        targetLevel.setChunkForced(chunkPos.x, chunkPos.z, false); //Set chunk to be not be force loaded after we place the block
-
     }
 
     /**
@@ -180,30 +161,6 @@ public class TardisExteriorManager extends BaseHandler {
     public void placeExteriorBlockForLanding(TardisNavLocation location) {
         this.operator.setOrUpdateExteriorBlock(location, Optional.empty());
     }
-
-
-    public boolean isExitLocationSafe() {
-
-        TardisPilotingManager pilotingManager = this.operator.getPilotingManager();
-        if (pilotingManager == null) {
-            return false;
-        }
-
-        TardisNavLocation currentPosition = this.operator.getPilotingManager().getCurrentLocation();
-        if (currentPosition == null) return false;
-
-        BlockPos lastKnownLocationPosition = currentPosition.getPosition();
-        ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
-        if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof ExteriorShell shellBaseBlockEntity) {
-            BlockPos landingArea = shellBaseBlockEntity.getTeleportPosition();
-            if (lastKnownLocationLevel.getBlockState(landingArea).isAir()) {
-                return lastKnownLocationLevel.getBlockState(landingArea.above()).isAir();
-            }
-        }
-
-        return false;
-    }
-
 
     /**
      * Returns whether a Tardis has enough fuel to perform an interior change

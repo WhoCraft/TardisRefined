@@ -1,6 +1,3 @@
-// TODO!!!!!
-
-/*
 package whocraft.tardis_refined.common.data;
 
 import com.google.common.base.Preconditions;
@@ -11,6 +8,9 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingRecipe;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingRecipeSerializer;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class ManipulatorRecipeProvider implements DataProvider {
             data.entrySet().forEach(entry -> {
                 try {
                     ManipulatorCraftingRecipe recipe = entry.getValue();
-                    JsonObject currentRecipe = ManipulatorCraftingRecipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe)
+                    JsonObject currentRecipe = ManipulatorCraftingRecipe.CODEC.codec().encodeStart(JsonOps.INSTANCE, recipe)
                             .ifSuccess(element -> { //Must add type field so that vanilla recognises this as a recipe type
                                 JsonObject json = element.getAsJsonObject();
                                 json.addProperty("type", ManipulatorCraftingRecipeSerializer.SERIALIZER_ID.toString());
@@ -64,7 +64,7 @@ public class ManipulatorRecipeProvider implements DataProvider {
                             .ifError(error -> {
                                 TardisRefined.LOGGER.error(error.message());
                             }).getOrThrow().getAsJsonObject();
-                    String outputPath = "data/" + recipe.getId().getNamespace() + "/" + "recipes/astral_manipulator" + "/" + recipe.getId().getPath().replace("/", "_") + ".json";
+                    String outputPath = "data/" + recipe.getId().getNamespace() + "/" + "recipe/astral_manipulator" + "/" + recipe.getId().getPath().replace("/", "_") + ".json";
                     futures.add(DataProvider.saveStable(arg, currentRecipe, generator.getPackOutput().getOutputFolder().resolve(outputPath)));
                 } catch (Exception exception) {
                     TardisRefined.LOGGER.error("Issue writing ManipulatorRecipe {}! Error: {}", entry.getValue().getId(), exception.getMessage());
@@ -85,4 +85,3 @@ public class ManipulatorRecipeProvider implements DataProvider {
     }
 
 }
-*/

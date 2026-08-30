@@ -156,7 +156,7 @@ public class TerraformerBlock extends Block {
 
     private boolean checkIfStructure(Level level, BlockPos blockPos) {
 
-        if (level.dimensionTypeRegistration() != TRDimensionTypes.TARDIS) {
+        if (!TRDimensionTypes.isTARDISDimension(level)) {
             return false;
         }
 

@@ -2,11 +2,9 @@ package whocraft.tardis_refined.client.renderer.vortex;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
-import com.mojang.blaze3d.platform.GlConst;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -14,24 +12,40 @@ import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.Util;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
+import whocraft.tardis_refined.TRConfig;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.ZeitonGlassTracker;
 import whocraft.tardis_refined.client.model.blockentity.door.interior.ShellDoorModel;
+import whocraft.tardis_refined.client.model.blockentity.life.PortalModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
 import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.VortexRegistry;
+import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
-
-import java.util.SortedMap;
+import whocraft.tardis_refined.common.blockentity.life.ZeitonGlassBlockEntity;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
+import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 
 import static com.mojang.blaze3d.vertex.VertexFormat.Mode.QUADS;
 import static net.minecraft.client.renderer.RenderStateShard.*;
@@ -43,33 +57,59 @@ public class RenderTargetHelper {
     private static final RenderTargetHelper RENDER_TARGET_HELPER = new RenderTargetHelper();
     public static StencilBufferStorage stencilBufferStorage = new StencilBufferStorage(512);
 
-    public static void renderVortex(GlobalDoorBlockEntity blockEntity, float partialTick, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
 
+    public static Logger LOGGER = LogManager.getLogger("TardisRefinbed/StencilRendering");
+
+    public static void renderVortex(GlobalDoorBlockEntity blockEntity, float partialTick, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         BlockState blockstate = blockEntity.getBlockState();
         ResourceLocation theme = blockEntity.theme();
-
         float rotation = blockstate.getValue(InternalDoorBlock.FACING).toYRot();
         boolean isOpen = blockstate.getValue(InternalDoorBlock.OPEN);
         ShellDoorModel currentModel = ShellModelCollection.getInstance().getShellEntry(theme).getShellDoorModel(blockEntity.pattern());
-        TardisClientData tardisClientData = TardisClientData.getInstance(blockEntity.getLevel().dimension());
 
+        if(currentModel == null) return;
+
+        TardisClientData tardisClientData = TardisClientData.getInstance(blockEntity.getLevel().dimension());
 
         VORTEX.vortexType = VortexRegistry.VORTEX_REGISTRY.get(tardisClientData.getVortex());
 
-        if (tardisClientData.isFlying() && isOpen) {
-            renderDoorOpen(blockEntity, stack, packedLight, rotation, currentModel, isOpen, tardisClientData);
+        if (blockstate.hasProperty(GlobalDoorBlock.OFFSET) && blockstate.getValue(GlobalDoorBlock.OFFSET)) {
+            Direction facing = blockstate.getValue(InternalDoorBlock.FACING);
+            double xOffset = 0.0;
+            double zOffset = 0.0;
+
+            switch (facing) {
+                case NORTH -> xOffset = -0.5;
+                case SOUTH -> xOffset = 0.5;
+                case EAST -> zOffset = -0.5;
+                case WEST -> zOffset = 0.5;
+            }
+
+            stack.translate(xOffset, 0, zOffset);
+        }
+
+        if (tardisClientData.isFlying() && TRConfig.CLIENT.RENDER_VORTEX_IN_DOOR.get()) {
+            renderDoorOpen(blockEntity, stack, bufferSource, packedLight, rotation, currentModel, isOpen, tardisClientData);
         } else {
             renderNoVortex(blockEntity, stack, bufferSource, packedLight, rotation, currentModel, isOpen);
         }
     }
 
-    public static void copyRenderTarget(RenderTarget src, RenderTarget dest) {
-        GlStateManager._glBindFramebuffer(GlConst.GL_READ_FRAMEBUFFER, src.frameBufferId);
-        GlStateManager._glBindFramebuffer(GlConst.GL_DRAW_FRAMEBUFFER, dest.frameBufferId);
-        GlStateManager._glBlitFrameBuffer(0, 0, src.width, src.height, 0, 0, dest.width, dest.height, GlConst.GL_DEPTH_BUFFER_BIT | GlConst.GL_COLOR_BUFFER_BIT, GlConst.GL_NEAREST);
-    }
 
-    private static void renderDoorOpen(GlobalDoorBlockEntity blockEntity, PoseStack stack, int packedLight, float rotation, ShellDoorModel currentModel, boolean isOpen, TardisClientData tardisClientData) {
+    private static ResourceLocation BLACK = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/black_portal.png");
+
+    private static void renderDoorOpen(GlobalDoorBlockEntity blockEntity, PoseStack stack, MultiBufferSource bufferSource, int packedLight, float rotation, ShellDoorModel currentModel, boolean isOpen, TardisClientData tardisClientData) {
+        if (ModCompatChecker.immersivePortals()) {
+            if (ImmersivePortalsClient.shouldStopRenderingInPortal()) {
+                return;
+            }
+        }
+
+
+        if(!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())){
+            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
+        }
+
         stack.pushPose();
 
         // Fix transform
@@ -78,54 +118,233 @@ public class RenderTargetHelper {
         stack.mulPose(Axis.YP.rotationDegrees(rotation));
         stack.translate(0, 0, -0.01);
 
-        // Unbind RenderTarget
-        Minecraft.getInstance().getMainRenderTarget().unbindWrite();
-        RENDER_TARGET_HELPER.start();
-        copyRenderTarget(Minecraft.getInstance().getMainRenderTarget(), RENDER_TARGET_HELPER.renderTarget);
+        RenderSystem.depthMask(true);
 
         // Render Door Frame
         MultiBufferSource.BufferSource imBuffer = stencilBufferStorage.getVertexConsumer();
         currentModel.setDoorPosition(isOpen);
-        currentModel.renderFrame(blockEntity, isOpen, true, stack, imBuffer.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt( 1f, 1f, 1f, 1f));
+        currentModel.renderFrame(blockEntity, isOpen, true, stack, imBuffer.getBuffer(RenderType.entityCutout(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(1f, 1f, 1f, 1f));
+
+        // Finalize the current batch before changing rendering state
         imBuffer.endBatch();
 
         // Enable and configure stencil buffer
         GL11.glEnable(GL11.GL_STENCIL_TEST);
-        GL11.glStencilMask(0xFF); // Ensure stencil mask is set before clearing
-        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT); // Clear stencil buffer
+        GL11.glStencilMask(0xFF);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
         GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
         GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
 
         // Render portal mask with depth writing enabled
         RenderSystem.depthMask(true);
         stack.pushPose();
-        currentModel.renderPortalMask(blockEntity, isOpen, true, stack, imBuffer.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(0f, 0f, 0f, 1f));
+        currentModel.renderPortalMask(blockEntity, isOpen, true, stack, imBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(0f, 0f, 0f, 1f));
         imBuffer.endBatch();
         stack.popPose();
-        RenderSystem.depthMask(false); // Disable depth writing for subsequent rendering
+        RenderSystem.depthMask(false);
 
-        // Render vortex based on stencil buffer
+        // Render vortex using stencil buffer
         GL11.glStencilMask(0x00);
         GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
-        GlStateManager._depthFunc(GL11.GL_ALWAYS); // Ignore depth buffer
+        GlStateManager._depthFunc(GL11.GL_ALWAYS);
 
         GL11.glColorMask(true, true, true, false);
         stack.pushPose();
         stack.scale(10, 10, 10);
+
         VORTEX.time.speed = (0.3f + tardisClientData.getThrottleStage() * 0.1f);
         VORTEX.renderVortex(stack, 1, false);
         stack.popPose();
-        GlStateManager._depthFunc(GL11.GL_LEQUAL); // Restore depth function
-        GL11.glColorMask(false, false, false, true);
 
-        // Copy render target back to main buffer
-
-        Minecraft.getInstance().getMainRenderTarget().bindWrite(true);
-        copyRenderTarget(RENDER_TARGET_HELPER.renderTarget, Minecraft.getInstance().getMainRenderTarget());
-        GL11.glDisable(GL11.GL_STENCIL_TEST); // Disable stencil test
+        GlStateManager._depthFunc(GL11.GL_LEQUAL);
         GL11.glColorMask(true, true, true, true);
 
+        // Disable stencil test and restore state
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        RenderSystem.depthMask(true);
+
+
         stack.popPose();
+    }
+
+    private static void moveStackToPose(PoseStack stack, Level level, BlockPos pos, Vec3 camPos) {
+        Vec3 actualPos = new Vec3(pos.getX() + 0.5, pos.getY() + 1.5, pos.getZ() + 0.5);
+        var rotation = Axis.ZP.rotationDegrees(180);
+        var sub = SublevelAccessor.get().getContainingSublevelIfLoaded(level, pos);
+        if (sub.isPresent()) {
+            actualPos = sub.get().toMainLevelPos(actualPos);
+            rotation = sub.get().toMainLevelRotation(rotation);
+        }
+        stack.translate(actualPos.x - camPos.x, actualPos.y - camPos.y, actualPos.z - camPos.z);
+        stack.mulPose(rotation);
+    }
+
+    public static void renderZeitonGlass(Camera camera, PortalModel<?> mask, PoseStack stack, MultiBufferSource bufferSource, int packedLight, TardisClientData tardisClientData, boolean renderVortex) {
+        if (mask == null) {
+            TardisRefined.LOGGER.warn("Skipped glass rendering: portal mask is null.");
+            return;
+        }
+
+        Vec3 camPos = camera.getPosition();
+
+        boolean DEBUG_SHOW_MASKS = !tardisClientData.isFlying();
+        if (DEBUG_SHOW_MASKS) {
+            for (ZeitonGlassBlockEntity entity : ZeitonGlassTracker.loadedGlass) {
+
+                if (Minecraft.getInstance().level != entity.getLevel()) continue;
+
+                BlockPos pos = entity.getBlockPos();
+                stack.pushPose();
+                moveStackToPose(stack, entity.getLevel(), pos, camPos);
+                mask.renderPortalMask(
+                        stack,
+                        bufferSource.getBuffer(RenderType.endPortal()),
+                        LightTexture.FULL_BRIGHT,
+                        OverlayTexture.NO_OVERLAY,
+                        RenderHelper.rgbaToInt(0f, 1f, 0f, 1f)
+                );
+                stack.popPose();
+            }
+            return;
+        }
+
+        if (ModCompatChecker.immersivePortals() && ImmersivePortalsClient.shouldStopRenderingInPortal()) {
+            return;
+        }
+
+        MultiBufferSource.BufferSource imBuffer = stencilBufferStorage.getVertexConsumer();
+
+        if (!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())) {
+            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
+        }
+
+        stack.pushPose();
+        RenderSystem.depthMask(true);
+
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+
+        stack.pushPose();
+        for (ZeitonGlassBlockEntity entity : ZeitonGlassTracker.loadedGlass) {
+            if (Minecraft.getInstance().level != entity.getLevel()) continue;
+
+            BlockPos pos = entity.getBlockPos();
+            stack.pushPose();
+            moveStackToPose(stack, entity.getLevel(), pos, camPos);
+            mask.renderPortalMask(
+                    stack,
+                    imBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)),
+                    packedLight,
+                    OverlayTexture.NO_OVERLAY,
+                    RenderHelper.rgbaToInt(0f, 0f, 0f, 1f)
+            );
+            stack.popPose();
+        }
+        imBuffer.endBatch();
+        stack.popPose();
+        RenderSystem.depthMask(false);
+
+        GL11.glStencilMask(0x00);
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+        GlStateManager._depthFunc(GL11.GL_ALWAYS);
+        GL11.glColorMask(true, true, true, false);
+
+        stack.pushPose();
+        stack.scale(80, 80, 80);
+
+        if (renderVortex) {
+            VORTEX.vortexType = VortexRegistry.VORTEX_REGISTRY.get(tardisClientData.getVortex());
+            VORTEX.time.speed = 0.2f + tardisClientData.getThrottleStage() * 0.1f;
+            VORTEX.renderVortex(stack, 1, false);
+        }
+
+        stack.popPose();
+
+        GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glColorMask(true, true, true, true);
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        RenderSystem.depthMask(true);
+
+        stack.popPose();
+    }
+
+
+    public static void renderGeneric(PortalModel<?> mask, PoseStack stack, int packedLight, TardisClientData tardisClientData) {
+        if (ModCompatChecker.immersivePortals()) {
+            if (ImmersivePortalsClient.shouldStopRenderingInPortal()) {
+                return;
+            }
+        }
+
+        if(!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())){
+            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
+        }
+
+        stack.pushPose();
+
+        // Fix transform
+        stack.translate(0.5F, 1.5F, 0.5F);
+        stack.mulPose(Axis.ZP.rotationDegrees(180F));
+        stack.translate(0, 0, -0.01);
+
+        RenderSystem.depthMask(true);
+
+        MultiBufferSource.BufferSource imBuffer = stencilBufferStorage.getVertexConsumer();
+
+        // Enable and configure stencil buffer
+        GL11.glEnable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        GL11.glClear(GL11.GL_STENCIL_BUFFER_BIT);
+        GL11.glStencilFunc(GL11.GL_ALWAYS, 1, 0xFF);
+        GL11.glStencilOp(GL11.GL_KEEP, GL11.GL_KEEP, GL11.GL_REPLACE);
+
+        // Render portal mask with depth writing enabled
+        RenderSystem.depthMask(true);
+        stack.pushPose();
+        mask.renderPortalMask(stack, imBuffer.getBuffer(RenderType.entityTranslucentCull(BLACK)), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(0f, 0f, 0f, 1f));
+        imBuffer.endBatch();
+        stack.popPose();
+        RenderSystem.depthMask(false);
+
+        // Render vortex using stencil buffer
+        GL11.glStencilMask(0x00);
+        GL11.glStencilFunc(GL11.GL_EQUAL, 1, 0xFF);
+        GlStateManager._depthFunc(GL11.GL_ALWAYS);
+
+        GL11.glColorMask(true, true, true, false);
+        stack.pushPose();
+        stack.scale(60, 60, 60);
+        VORTEX.vortexType = VortexRegistry.VORTEX_REGISTRY.get(tardisClientData.getVortex());
+        VORTEX.time.speed = (0.3f + tardisClientData.getThrottleStage() * 0.1f);
+        VORTEX.renderVortex(stack, 1, false);
+        stack.popPose();
+
+        GlStateManager._depthFunc(GL11.GL_LEQUAL);
+        GL11.glColorMask(true, true, true, true);
+
+        // Disable stencil test and restore state
+        GL11.glDisable(GL11.GL_STENCIL_TEST);
+        GL11.glStencilMask(0xFF);
+        RenderSystem.depthMask(true);
+
+
+        stack.popPose();
+    }
+
+
+
+    public static void checkGLError(String msg) {
+        int error;
+        while ((error = GL11.glGetError()) != GL11.GL_NO_ERROR) {
+            LOGGER.debug("{}: {}", msg, error);
+        }
+
     }
 
     private static void renderNoVortex(GlobalDoorBlockEntity blockEntity, PoseStack stack, MultiBufferSource bufferSource, int packedLight, float rotation, ShellDoorModel currentModel, boolean isOpen) {
@@ -137,33 +356,11 @@ public class RenderTargetHelper {
             stack.mulPose(Axis.YP.rotationDegrees(rotation));
             stack.translate(0, 0, -0.01);
         }
-
-        currentModel.renderFrame(blockEntity, isOpen, true, stack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(1f, 1f, 1f, 1f));
-        currentModel.renderPortalMask(blockEntity, isOpen, true, stack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, RenderHelper.rgbaToInt(1f, 1f, 1f, 1f));
+        currentModel.setDoorPosition(isOpen);
+        currentModel.renderFrame(blockEntity, isOpen, true, stack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 0xffffffff);
+        currentModel.renderPortalMask(blockEntity, isOpen, true, stack, bufferSource.getBuffer(RenderType.entityTranslucent(currentModel.getInteriorDoorTexture(blockEntity))), packedLight, OverlayTexture.NO_OVERLAY, 0xffffffff);
         stack.popPose();
     }
-
-
-    public void start() {
-        Window window = Minecraft.getInstance().getWindow();
-        int width = window.getWidth();
-        int height = window.getHeight();
-
-        if (renderTarget == null || renderTarget.width != width || renderTarget.height != height)
-            renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
-
-        renderTarget.bindWrite(false);
-        renderTarget.checkStatus();
-        if (!getIsStencilEnabled(renderTarget))
-            setIsStencilEnabled(renderTarget, true);
-    }
-
-
-    public void end() {
-        renderTarget.clear(Minecraft.ON_OSX);
-        renderTarget.unbindWrite();
-    }
-
 
     @Environment(EnvType.CLIENT)
     public static boolean getIsStencilEnabled(RenderTarget renderTarget) {
@@ -175,13 +372,39 @@ public class RenderTargetHelper {
         ((RenderTargetStencil) renderTarget).tr$setisStencilEnabledAndReload(cond);
     }
 
+    public void start() {
+
+        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_DEBUG, GLFW.GLFW_TRUE);
+
+
+        Window window = Minecraft.getInstance().getWindow();
+        int width = window.getWidth();
+        int height = window.getHeight();
+
+        // Check if renderTarget needs to be reinitialized
+        if (renderTarget == null || renderTarget.width != width || renderTarget.height != height) {
+            renderTarget = new TextureTarget(width, height, true, Minecraft.ON_OSX);
+        }
+
+        renderTarget.bindWrite(false);
+        renderTarget.checkStatus();
+
+        if (!getIsStencilEnabled(renderTarget)) {
+            setIsStencilEnabled(renderTarget, true);
+        }
+    }
+
+
+    public void end(boolean clear) {
+        renderTarget.clear(clear);
+        renderTarget.unbindWrite();
+    }
+
 
     @Environment(value = EnvType.CLIENT)
     public static class StencilBufferStorage extends RenderBuffers {
 
-        private final Object2ObjectLinkedOpenHashMap typeBufferBuilder = Util.make(new Object2ObjectLinkedOpenHashMap(), map -> {
-            put(map, getConsumer());
-        });
+        private static final TextureStateShard BLOCK_SHEET_MIPPED_BUTMINE = new TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, true);
 
         public StencilBufferStorage(int i) {
             super(i);
@@ -189,17 +412,17 @@ public class RenderTargetHelper {
 
         public static RenderType getConsumer() {
             RenderType.CompositeState parameters = RenderType.CompositeState.builder()
-                    .setTextureState(BLOCK_SHEET_MIPPED)
+                    .setTextureState(BLOCK_SHEET_MIPPED_BUTMINE)
                     .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                     .setLayeringState(NO_LAYERING).createCompositeState(false);
             return RenderType.create("vortex", DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
                     QUADS, 256, false, true, parameters);
         }
-
+		
         private final MultiBufferSource.BufferSource consumer = MultiBufferSource.immediate(new ByteBufferBuilder(256));
 
-        private static void put(Object2ObjectLinkedOpenHashMap<RenderType, ByteBufferBuilder> object2ObjectLinkedOpenHashMap, RenderType renderType) {
-            object2ObjectLinkedOpenHashMap.put(renderType, new ByteBufferBuilder(renderType.bufferSize()));
+        private static void put(Object2ObjectLinkedOpenHashMap<RenderType, ByteBufferBuilder> builderStorage, RenderType renderType) {
+            builderStorage.put(renderType, new ByteBufferBuilder(renderType.bufferSize()));
         }
 
 
@@ -207,4 +430,5 @@ public class RenderTargetHelper {
             return this.consumer;
         }
     }
+
 }

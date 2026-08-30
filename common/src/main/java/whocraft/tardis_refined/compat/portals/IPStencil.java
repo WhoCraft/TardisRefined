@@ -27,11 +27,11 @@ public class IPStencil {
     public static final RenderTargetHelper RENDER_TARGET_HELPER = new RenderTargetHelper();
 
     private static final WeakHashMap<ServerPlayer, ChunkLoader> LOADED_CHUNKS = new WeakHashMap<>();
-
-    private static Vec3 viewingPosition = new Vec3(3,3,3);
+    public static ArrayList<TardisNavLocation> arrayList = new ArrayList<>();
+    private static Vec3 viewingPosition = new Vec3(3, 3, 3);
 
     // SERVER ONLY
-    public static void loadServerChunks(ServerPlayer serverPlayer, TardisNavLocation tardisNavLocation){
+    public static void loadServerChunks(ServerPlayer serverPlayer, TardisNavLocation tardisNavLocation) {
         ChunkLoader chunkLoader = new ChunkLoader(
                 new DimensionalChunkPos(
                         tardisNavLocation.getDimensionKey(), new ChunkPos(tardisNavLocation.getPosition())
@@ -43,25 +43,22 @@ public class IPStencil {
     }
 
     // SERVER ONLY
-    public static void unloadServerChunks(ServerPlayer serverPlayer){
+    public static void unloadServerChunks(ServerPlayer serverPlayer) {
         ChunkLoader chunkLoader = LOADED_CHUNKS.remove(serverPlayer);
         if (chunkLoader != null) {
             PortalAPI.removeChunkLoaderForPlayer(serverPlayer, chunkLoader);
         }
     }
 
+    public static void render(TardisNavLocation tardisNavLocation) {
 
-    public static ArrayList<TardisNavLocation> arrayList = new ArrayList<>();
-
-    public static void render(TardisNavLocation tardisNavLocation){
-
-        if(arrayList.contains(tardisNavLocation)) {
+        if (arrayList.contains(tardisNavLocation)) {
             return;
         } else {
             arrayList.add(tardisNavLocation);
         }
 
-       RENDER_TARGET_HELPER.start();
+        RENDER_TARGET_HELPER.start();
         double t1 = CHelper.getSmoothCycles(503);
         double t2 = CHelper.getSmoothCycles(197);
 

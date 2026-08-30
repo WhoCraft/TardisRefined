@@ -20,7 +20,8 @@ public record S2COpenMonitor(
         boolean desktopGenerating,
         TardisNavLocation currentLocation,
         TardisNavLocation targetLocation,
-        CompoundTag upgradeHandlerNbt
+        CompoundTag upgradeHandlerNbt,
+        ResourceLocation currentShellTheme
 ) implements CustomPacketPayload, NetworkManager.Handler<S2COpenMonitor> {
 
     public static final CustomPacketPayload.Type<S2COpenMonitor> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "open_monitor"));
@@ -31,14 +32,20 @@ public record S2COpenMonitor(
                 buf.writeNbt(ref.currentLocation.serialise());
                 buf.writeNbt(ref.targetLocation.serialise());
                 buf.writeNbt(ref.upgradeHandlerNbt);
+                buf.writeResourceLocation(ref.currentShellTheme);
             },
             buf -> new S2COpenMonitor(
                     buf.readBoolean(),
                     TardisNavLocation.deserialize(buf.readNbt()),
                     TardisNavLocation.deserialize(buf.readNbt()),
-                    buf.readNbt()
+                    buf.readNbt(),
+                    buf.readResourceLocation()
             )
     );
+
+    public S2COpenMonitor(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler, ResourceLocation currentShellTheme) {
+        this(desktopGenerating, currentLocation, targetLocation, upgradeHandler.saveData(new CompoundTag()), currentShellTheme);
+    }
 
     @Override
     public CustomPacketPayload.Type<? extends CustomPacketPayload> type() {
@@ -55,6 +62,6 @@ public record S2COpenMonitor(
     @Environment(EnvType.CLIENT)
     private void handleScreens() {
         // Open the monitor.
-        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation);
+        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation, currentShellTheme);
     }
 }

@@ -16,9 +16,15 @@ dependencies {
         because "Ensure the dependency is resolved from the specified repository."
     }
 
+    // Sodium
+    modImplementation "maven.modrinth:sodium:${rootProject.sodium_version}"
 
     modCompileOnlyApi ("com.github.iPortalTeam:ImmersivePortalsMod:${rootProject.immersive_portals_version}")
 
+    modCompileOnly("com.simibubi.create:create-${minecraft_version}:${create_version_forge}:slim"){transitive = false}
+
+    api("dev.ryanhcode.sable-companion:sable-companion-common-${project.minecraft_version}:${project.sable_companion_version}")
+    api "dev.ryanhcode.sable:sable-common-${project.minecraft_version}:${project.sable_version}"
 }
 
 publishing {

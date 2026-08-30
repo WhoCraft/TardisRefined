@@ -1,7 +1,11 @@
 package whocraft.tardis_refined.neoforge;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -12,7 +16,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
@@ -20,32 +23,44 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.*;
 import whocraft.tardis_refined.client.model.pallidium.ModelLayerManager;
 import whocraft.tardis_refined.client.neoforge.ModelRegistryImpl;
+import whocraft.tardis_refined.client.particle.ParticleGallifrey;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorExtensionRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.ZeitonGlassRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
 import whocraft.tardis_refined.common.items.DimensionSamplerItem;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.mixin.forge.ReloadableResourceManagerMixin;
 import whocraft.tardis_refined.registry.*;
 
+import java.io.IOException;
 import java.util.List;
 
-@EventBusSubscriber(modid = TardisRefined.MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@EventBusSubscriber(modid = TardisRefined.MODID, value = Dist.CLIENT)
 public class ClientModBus {
 
     @SubscribeEvent
     public static void onItemColors(RegisterColorHandlersEvent.Item item) {
         item.register(TRItemColouring.SCREWDRIVER_COLORS, TRItemRegistry.SCREWDRIVER.get());
         item.register(TRItemColouring.SAMPLE_COLORS, TRItemRegistry.TEST_TUBE.get());
+    }
+
+    @SubscribeEvent
+    public static void onItemColors(RegisterShadersEvent registerShadersEvent) throws IOException {
+        registerShadersEvent.registerShader(new ShaderInstance(registerShadersEvent.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "nivis"), DefaultVertexFormat.NEW_ENTITY), (e) -> TRShaders.SNOW_SHADER = e);
+        registerShadersEvent.registerShader(new ShaderInstance(registerShadersEvent.getResourceProvider(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "glow_shader"), DefaultVertexFormat.NEW_ENTITY), (e) -> TRShaders.GLOW_SHADER = e);
     }
 
 
@@ -99,15 +114,28 @@ public class ClientModBus {
         BlockEntityRenderers.register(TRBlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.BULK_HEAD_DOOR_EXT.get(), BulkHeadDoorExtensionRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
         BlockEntityRenderers.register(TRBlockEntityRegistry.ARTRON_PILLAR.get(), ArtronPillarRenderer::new);
+        BlockEntityRenderers.register(TRBlockEntityRegistry.ZEITON_GLASS.get(), ZeitonGlassRenderer::new);
 
         EntityRenderers.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
         ItemProperties.register(TRItemRegistry.TEST_TUBE.get(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "is_sampled"), (itemStack, clientLevel, livingEntity, i) -> DimensionSamplerItem.hasDimAtAll(itemStack) ? 1 : 0);
 
-    }
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortalsClient.doClientRenderers(EntityRenderers::register);
+        }
 
+        event.enqueueWork(() -> {
+            for (var block : TRBlockRegistry.BLOCKS.getEntries()) {
+                if (block.getId() != null && block.getId().getNamespace().equals(TardisRefined.MODID)) {
+                    ItemBlockRenderTypes.setRenderLayer(block.get(), RenderType.cutout());
+                }
+            }
+        });
+
+    }
 
 }

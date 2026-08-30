@@ -5,11 +5,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.*;
+import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorExtensionBlockEntity;
+import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.BulkHeadDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import whocraft.tardis_refined.common.blockentity.life.EyeBlockEntity;
+import whocraft.tardis_refined.common.blockentity.life.ZeitonGlassBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootPlantBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.RootedShellBlockEntity;
@@ -30,12 +33,14 @@ public class TRBlockEntityRegistry {
 
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<ArsEggBlockEntity>> ARS_EGG = BLOCK_ENTITY_TYPES.register("ars_egg", () -> BlockEntityType.Builder.of(ArsEggBlockEntity::new, TRBlockRegistry.ARS_EGG.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<BulkHeadDoorBlockEntity>> BULK_HEAD_DOOR = BLOCK_ENTITY_TYPES.register("bulk_head_door", () -> BlockEntityType.Builder.of(BulkHeadDoorBlockEntity::new, TRBlockRegistry.BULK_HEAD_DOOR.get()).build(null));
+    public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<BulkHeadDoorExtensionBlockEntity>> BULK_HEAD_DOOR_EXT = BLOCK_ENTITY_TYPES.register("bulk_head_door_ext", () -> BlockEntityType.Builder.of(BulkHeadDoorExtensionBlockEntity::new, TRBlockRegistry.BULK_HEAD_DOOR_EXT.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<ConsoleConfigurationBlockEntity>> CONSOLE_CONFIGURATION = BLOCK_ENTITY_TYPES.register("console_configuration", () -> BlockEntityType.Builder.of(ConsoleConfigurationBlockEntity::new, TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<FlightDetectorBlockEntity>> FLIGHT_DETECTOR = BLOCK_ENTITY_TYPES.register("flight_detector", () -> BlockEntityType.Builder.of(FlightDetectorBlockEntity::new, TRBlockRegistry.FLIGHT_DETECTOR.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<ArtronPillarBlockEntity>> ARTRON_PILLAR = BLOCK_ENTITY_TYPES.register("artron_pillar", () -> BlockEntityType.Builder.of(ArtronPillarBlockEntity::new, TRBlockRegistry.ARTRON_PILLAR.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<AstralManipulatorBlockEntity>> ASTRAL_MANIPULATOR = BLOCK_ENTITY_TYPES.register("astral_manipulator", () -> BlockEntityType.Builder.of(AstralManipulatorBlockEntity::new, TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<EyeBlockEntity>> THE_EYE = BLOCK_ENTITY_TYPES.register("the_eye", () -> BlockEntityType.Builder.of(EyeBlockEntity::new, TRBlockRegistry.THE_EYE.get()).build(null));
     public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<CorridorTeleporterBlockEntity>> CORRIDOR_TELEPORTER = BLOCK_ENTITY_TYPES.register("corridor_teleporter", () -> BlockEntityType.Builder.of(CorridorTeleporterBlockEntity::new, TRBlockRegistry.CORRIDOR_TELEPORTER.get()).build(null));
+    public static final RegistryHolder<BlockEntityType<?>,BlockEntityType<ZeitonGlassBlockEntity>> ZEITON_GLASS = BLOCK_ENTITY_TYPES.register("zeiton_glass", () -> BlockEntityType.Builder.of(ZeitonGlassBlockEntity::new, TRBlockRegistry.ZEITON_GLASS.get()).build(null));
 
 
 }

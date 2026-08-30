@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDestroyBlockEvent;
@@ -19,19 +18,20 @@ import whocraft.tardis_refined.command.TardisRefinedCommand;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
-import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
-@EventBusSubscriber(modid = TardisRefined.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = TardisRefined.MODID)
 public class CommonBus {
 
 
     @SubscribeEvent
-    public static void onServerTick(ServerTickEvent event) {
+    public static void onServerTick(ServerTickEvent.Post event) {
          TardisTeleportData.tick();
     }
 
@@ -40,7 +40,6 @@ public class CommonBus {
         // Load Levels
         ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
         DimensionHandler.loadLevels(world);
-
     }
 
     @SubscribeEvent
@@ -49,7 +48,7 @@ public class CommonBus {
         Player player = playerLoggedOutEvent.getEntity();
         if (player instanceof ServerPlayer serverPlayer) {
             TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
-                tardisPlayerInfo.endPlayerForInspection(serverPlayer);
+                tardisPlayerInfo.endShellView(serverPlayer);
             });
         }
     }

@@ -27,11 +27,11 @@ import whocraft.tardis_refined.compat.CuriosTrinketsUtil;
 
 public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
 
-    private static ResourceLocation ICON_GOOD = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_good.png");
-    private static ResourceLocation ICON_SLIPPING = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_slipping.png");
-    private static ResourceLocation ICON_WARNING = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_warning.png");
-    private static ResourceLocation ICON_ALERT = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_alert.png");
-    private static ResourceLocation ICON_DANGER = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_danger.png");
+    private static final ResourceLocation ICON_GOOD = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_good.png");
+    private static final ResourceLocation ICON_SLIPPING = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_slipping.png");
+    private static final ResourceLocation ICON_WARNING = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_warning.png");
+    private static final ResourceLocation ICON_ALERT = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_alert.png");
+    private static final ResourceLocation ICON_DANGER = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/sprites/control/control_danger.png");
 
     public ControlEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -74,7 +74,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
         if (!CuriosTrinketsUtil.getInstance().getFirstFoundGlider(Minecraft.getInstance().player).isEmpty()) {
             if (entity.isTickingDown()) {
                 if (entityLevel.random.nextInt(20) == 0) {
-                    entityLevel.addParticle(TRParticles.GALLIFREY.get(), entity.getRandomX(0.1), entity.blockPosition().getY(), entity.getRandomZ(0.1), 0.0, 0.0, 0.0);
+                    entityLevel.addParticle(TRParticles.GALLIFREY.get(), entity.getRandomX(0.1), entity.getY(), entity.getRandomZ(0.1), 0.0, 0.0, 0.0);
                 }
             }
         }
@@ -94,11 +94,11 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
                 int verticalTextOffset = 10;
 
                 poseStack.pushPose();
-                poseStack.translate(vec3.x, vec3.y + 0.5, vec3.z);
+                poseStack.translate(vec3.x, vec3.y + 0.2, vec3.z);
 
                 poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
                 float scale = 0.007F;
-                poseStack.scale(-scale, -scale, scale);
+                poseStack.scale(scale, -scale, scale);
 
                 Matrix4f textMatrix = poseStack.last().pose();
 

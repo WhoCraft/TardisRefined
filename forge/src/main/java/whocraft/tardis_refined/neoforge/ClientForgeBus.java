@@ -5,19 +5,20 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
+import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.client.overlays.ExteriorViewOverlay;
 import whocraft.tardis_refined.client.overlays.GravityOverlay;
+import whocraft.tardis_refined.client.overlays.VortexOverlay;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 
-@EventBusSubscriber(modid = TardisRefined.MODID, bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
+@EventBusSubscriber(modid = TardisRefined.MODID, value = Dist.CLIENT)
 public class ClientForgeBus {
 
     @SubscribeEvent
-    public static void tickTARDIS(ClientTickEvent event) {
+    public static void tickTARDIS(ClientTickEvent.Pre event) {
         TardisClientLogic.tickClientData(Minecraft.getInstance());
     }
 
@@ -32,7 +33,8 @@ public class ClientForgeBus {
     }
 
     @SubscribeEvent
-    public static void onRenderOverlay(CustomizeGuiOverlayEvent guiOverlayEvent) {
+    public static void onRenderOverlay(RenderGuiEvent.Post guiOverlayEvent) {
+        VortexOverlay.renderOverlay(guiOverlayEvent.getGuiGraphics());
         GravityOverlay.renderOverlay(guiOverlayEvent.getGuiGraphics());
         ExteriorViewOverlay.renderOverlay(guiOverlayEvent.getGuiGraphics());
     }

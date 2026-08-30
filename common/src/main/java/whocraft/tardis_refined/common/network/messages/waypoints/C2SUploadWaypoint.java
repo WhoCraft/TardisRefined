@@ -46,7 +46,7 @@ public record C2SUploadWaypoint(TardisNavLocation tardisNavLocation, CoordInputT
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             if (value.coordInputType() == CoordInputType.WAYPOINT) {
                 TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
-                tardisWaypointManager.addWaypoint(value.tardisNavLocation().copy(), value.tardisNavLocation().getName());
+                tardisWaypointManager.addWaypoint(value.tardisNavLocation(), value.tardisNavLocation().getName());
             } else {
                 TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
                 pilotManager.setTargetLocation(value.tardisNavLocation().copy());

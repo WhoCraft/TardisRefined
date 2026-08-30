@@ -1,4 +1,4 @@
-package net.threetag.palladiumcore.network.neoforge;
+package whocraft.tardis_refined.common.network.neoforge;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;

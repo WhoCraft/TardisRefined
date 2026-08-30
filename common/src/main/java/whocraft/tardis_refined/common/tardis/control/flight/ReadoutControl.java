@@ -6,12 +6,11 @@ import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 
-public class ReadoutControl extends Control {
+public class ReadoutControl extends whocraft.tardis_refined.common.tardis.control.Control {
     public ReadoutControl(ResourceLocation id) {
         super(id);
     }
@@ -20,11 +19,17 @@ public class ReadoutControl extends Control {
         super(id, langId);
     }
 
+    private static Component getMessage(String key, TardisNavLocation location) {
+        var message = Component.translatable(key).append(" - X: " + location.getRealPosition().getX() + " Y: " + location.getRealPosition().getY() + " Z: " + location.getRealPosition().getZ() + " F: " + location.getDirection().getName() + " D: " + location.getDimensionKey().location().getPath());
+        location.getSublevelDescription().ifPresent(meta -> message.append(", ").append(meta));
+        return message;
+    }
+
     @Override
     public boolean onLeftClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation currentPosition = operator.getPilotingManager().getCurrentLocation();
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CURRENT).append(" - X: " + currentPosition.getPosition().getX() + " Y: " + currentPosition.getPosition().getY() + " Z: " + currentPosition.getPosition().getZ() + " F: " + currentPosition.getDirection().getName() + " D: " + currentPosition.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, getMessage(ModMessages.CURRENT, currentPosition), true);
 
 
         return true;
@@ -34,7 +39,7 @@ public class ReadoutControl extends Control {
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
 
         TardisNavLocation targetLocation = operator.getPilotingManager().getTargetLocation();
-        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DESTINATION).append(" - X: " + targetLocation.getPosition().getX() + " Y: " + targetLocation.getPosition().getY() + " Z: " + targetLocation.getPosition().getZ() + " F: " + targetLocation.getDirection().getName() + " D: " + targetLocation.getDimensionKey().location().getPath()), true);
+        PlayerUtil.sendMessage(player, getMessage(ModMessages.DESTINATION, targetLocation), true);
 
         return true;
     }
