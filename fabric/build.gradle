@@ -76,13 +76,15 @@ dependencies {
 
     // Adds a dependency on the base cardinal components module (required by every other module)
     // Replace modImplementation with modApi if you expose components in your own API
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
     // Adds a dependency on a specific module
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
-    modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_version}"
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
+    modImplementation "org.ladysnake.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_version}"
 
     // Includes Cardinal Components API as a Jar-in-Jar dependency (optional)
-    include "maven.modrinth:cardinal-components-api:${rootProject.cardinal_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-base:${rootProject.cardinal_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-world:${rootProject.cardinal_version}"
+    include "org.ladysnake.cardinal-components-api:cardinal-components-entity:${rootProject.cardinal_version}"
 
     modCompileOnly "com.terraformersmc:modmenu:${rootProject.mod_menu_version}"
     modCompileOnly "curse.maven:jei-238222:${rootProject.jei_fabric_version}"
@@ -90,7 +92,7 @@ dependencies {
 
     // Trinkets
     modCompileOnly ("dev.emi:trinkets:${rootProject.trinkets_version}") {
-        exclude(group: "dev.onyxstudios.cardinal-components-api")
+        exclude(group: "org.ladysnake.cardinal-components-api")
     }
 
     // Forge Config API Port
