@@ -15,6 +15,7 @@ import whocraft.tardis_refined.common.network.MessageType;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.TardisWaypoint;
+import whocraft.tardis_refined.common.tardis.control.Control;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisWaypointManager;
 import whocraft.tardis_refined.common.util.PlayerUtil;
@@ -53,6 +54,7 @@ public class C2STravelToWaypoint extends MessageC2S {
         ServerLevel serverLevel = player.serverLevel();
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
+            if (Control.failIfLocked(tardisLevelOperator, player)) return;
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();
 
             TardisWaypoint waypoint = tardisWaypointManager.getWaypointById(waypointId);

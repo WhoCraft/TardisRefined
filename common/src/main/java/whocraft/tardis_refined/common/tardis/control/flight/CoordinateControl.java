@@ -43,6 +43,7 @@ public class CoordinateControl extends whocraft.tardis_refined.common.tardis.con
 
     private boolean changeCoord(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player, boolean addValue) {
         if (!operator.getLevel().isClientSide()) {
+            if (failIfLocked(operator, player)) { return false;}
             TardisPilotingManager pilotManager = operator.getPilotingManager();
 
             int increment = pilotManager.getCordIncrement();

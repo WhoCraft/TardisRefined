@@ -23,7 +23,7 @@ public class InitiativeConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.DIMENSION, new Vector3f(-0.54f, 0.81f, -0.37f), EntityDimensions.scalable(0.25f, 0.25f)),
                 new ControlSpecification(TRControlRegistry.FAST_RETURN, new Vector3f(-0.87f, 0.75f, 0.44f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.04f, 0.92f, -0.67f), EntityDimensions.scalable(0.06f, 0.06f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.01f, 0.62f, -0.99f), EntityDimensions.scalable(0.12f, 0.13f)),
+                new ControlSpecification(TRControlRegistry.TARGET_LOCK, new Vector3f(-0.01f, 0.62f, -0.99f), EntityDimensions.scalable(0.12f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.99f, 0.62f, 0.34f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.82f, 0.62f, 0.68f), EntityDimensions.scalable(0.12f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.HANDBRAKE, new Vector3f(0.79f, 0.75f, 0.44f), EntityDimensions.scalable(0.12f, 0.12f)),

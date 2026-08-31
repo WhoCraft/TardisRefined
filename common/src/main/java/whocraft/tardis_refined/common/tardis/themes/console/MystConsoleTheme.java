@@ -25,7 +25,7 @@ public class MystConsoleTheme extends ConsoleThemeDetails {
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.63f, 0.79f, 0.35f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.88f, 0.69f, 0.81f), EntityDimensions.scalable(0.13f, 0.13f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.69f, 0.88f, -0.44f), EntityDimensions.scalable(0.25f, 0.25f)),
-                new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.94f, 0.69f, -0.29f), EntityDimensions.scalable(0.13f, 0.12f)),
+                new ControlSpecification(TRControlRegistry.TARGET_LOCK, new Vector3f(-0.94f, 0.69f, -0.29f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-1.14f, 0.59f, -0.37f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(-0.71f, 0.66f, -0.81f), EntityDimensions.scalable(0.13f, 0.12f)),
                 new ControlSpecification(TRControlRegistry.GENERIC_NO_SHOW, new Vector3f(0.93f, 0.60f, -0.56f), EntityDimensions.scalable(0.13f, 0.12f)),

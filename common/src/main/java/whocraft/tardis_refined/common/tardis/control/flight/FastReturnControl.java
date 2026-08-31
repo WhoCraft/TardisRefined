@@ -26,6 +26,7 @@ public class FastReturnControl extends whocraft.tardis_refined.common.tardis.con
     @Override
     public boolean onRightClick(TardisLevelOperator operator, ConsoleTheme theme, ControlEntity controlEntity, Player player) {
         if (!operator.getLevel().isClientSide()) {
+            if (failIfLocked(operator, player)) { return false;}
             TardisPilotingManager pilotManager = operator.getPilotingManager();
             if (pilotManager.preloadFastReturn()) {
                 return true;
