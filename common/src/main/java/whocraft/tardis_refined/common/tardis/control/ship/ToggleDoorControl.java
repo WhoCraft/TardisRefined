@@ -32,6 +32,8 @@ public class ToggleDoorControl extends Control {
                 if (operator.getExteriorManager().locked()) {
                     return false;
                 }
+                var pilotingManager = operator.getPilotingManager();
+                if (pilotingManager.isInFlight() && (pilotingManager.isTakingOff() || pilotingManager.isLanding())) return false;
                 BlockEntity blockEntity = operator.getLevel().getBlockEntity(operator.getInternalDoor().getDoorPosition());
                 if (blockEntity != null) {
                     if (blockEntity instanceof TardisInternalDoor internalDoor) {
@@ -56,7 +58,9 @@ public class ToggleDoorControl extends Control {
             boolean isLocked = !exteriorManager.locked();
             exteriorManager.setLocked(isLocked);
             operator.setDoorLocked(isLocked);
-            operator.setDoorClosed(isLocked);
+            if (isLocked) {
+                operator.setDoorClosed(true);
+            }
 
             String messageKey = isLocked ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED;
             PlayerUtil.sendMessage(player, Component.translatable(messageKey), true);
