@@ -84,7 +84,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 	    if (
                 !level.isClientSide() &&
                 ModCompatChecker.valkyrienSkies() && VSHelper.isBlockInShipyard(level, blockPos) &&
-                ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(ImmersivePortals.getUUIDForTARDIS(TARDIS_ID))
+                ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(TARDIS_ID)
         ) {
             TardisLevelOperator.get(DimensionUtil.getLevel(blockEntity.TARDIS_ID)).ifPresent(ImmersivePortals::updatePortalPositions);
         }
