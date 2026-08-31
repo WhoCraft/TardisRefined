@@ -7,7 +7,11 @@ import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 import whocraft.tardis_refined.constants.ModMessages;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TRConfig {
 
@@ -72,6 +76,10 @@ public class TRConfig {
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> BANNED_DIMENSIONS;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> ADVENTURE_MODE_DEFAULTS;
         public final ForgeConfigSpec.BooleanValue ADVENTURE_MODE;
+        public final ForgeConfigSpec.EnumValue<DistanceCalculation> DISTANCE_CALCULATION;
+        public final ForgeConfigSpec.DoubleValue DISTANCE_RANDOMNESS;
+        public final ForgeConfigSpec.DoubleValue SPEED_FACTOR;
+        public final ForgeConfigSpec.DoubleValue XP_FACTOR;
 
         public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION;
         public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_VS;
@@ -83,11 +91,22 @@ public class TRConfig {
             private static final String COMMENT = "PORTAL is the normal immersive portals with maximum smoothness. ITP instead teleports the player directly similar to when Immersive Portals integration is disabled, making the boti effect purely visual.";
         }
 
+        public enum DistanceCalculation {
+            LINEAR,
+            LOGARITHMIC
+        }
+
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("travel");
             BANNED_DIMENSIONS = builder.translation("config.tardis_refined.banned_dimensions").comment("A list of Dimensions the TARDIS cannot land in.").defineList("banned_dimensions", Lists.newArrayList("example:dimension", "[substring]will_match_any_dimension_containing_this_substring", "[namespace]immersive_portals", "[regex]insert_regex_here"), String.class::isInstance);
             ADVENTURE_MODE_DEFAULTS = builder.translation("config.tardis_refined.adventure_mode_defaults").comment("A list of Dimensions that are automatically sampled").defineList("adventure_mode_defaults", Lists.newArrayList("minecraft:overworld"), String.class::isInstance);
             ADVENTURE_MODE = builder.translation("config.tardis_refined.adventure_mode").comment("Toggles whether players must discover and sample dimensions before they can travel there").define("adventure_mode", false);
+            builder.push("distance");
+            DISTANCE_CALCULATION = builder.translation(ModMessages.CONFIG_DISTANCE_CALCULATION).comment("The distance calculation methods to use.").defineEnum("calculation", DistanceCalculation.LOGARITHMIC);
+            DISTANCE_RANDOMNESS = builder.translation(ModMessages.CONFIG_DISTANCE_RANDOMNESS).comment("How much randomness to apply, i.e. how much the total distance can vary in percentage.").defineInRange("randomness", 50.0, 0, 100);
+            SPEED_FACTOR = builder.translation(ModMessages.CONFIG_DISTANCE_SPEED_FACTOR).comment("Factor that the speed is multiplied by. Useful if you think the default TARDIS travel speed is too fast or slow.").defineInRange("speed_factor", 1, Double.MIN_VALUE, Double.MAX_VALUE);
+            XP_FACTOR = builder.translation(ModMessages.CONFIG_DISTANCE_XP_FACTOR).comment("Factor that the speed is multiplied by every second to calculate the XP gained.").defineInRange("xp_factor", 0.05, 0, Double.MAX_VALUE);
+            builder.pop();
             builder.pop();
             builder.push("compatibility");
             builder.push("immersive_portals");

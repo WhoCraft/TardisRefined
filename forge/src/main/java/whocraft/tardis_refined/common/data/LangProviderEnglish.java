@@ -330,6 +330,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_IP_TELEPORTATION_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
+        add(ModMessages.CONFIG_DISTANCE_CALCULATION, "Distance Calculation");
+        add(ModMessages.CONFIG_DISTANCE_RANDOMNESS, "Distance Randomness");
+        add(ModMessages.CONFIG_DISTANCE_SPEED_FACTOR, "Speed Factor");
+        add(ModMessages.CONFIG_DISTANCE_XP_FACTOR, "XP Factor");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
         add(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR, "Render Vortex within interior door");
         add(ModMessages.CONFIG_CUSTOM_SHADERS, "Use Custom Shaders");
