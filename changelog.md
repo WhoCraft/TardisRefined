@@ -4,3 +4,4 @@
 
 #### Bug Fix
 Fix a rare crash when rendering the shell holo.
+Fix the Forge Zeiton Glass load function removing the default `requestModelDataUpdate()` function call from every single Forge block entity.
