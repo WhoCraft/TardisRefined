@@ -17,3 +17,4 @@ Fix shell-view return position being rounded to the nearest block position.
 Fix player exiting shell-view not facing the correct direction.
 Fix items dropped in shell view ending up outside the TARDIS.
 Fix players able to pick up items and xp while in shell view.
+Fix TARDIS sometimes playing default hum when set to a different hum.
