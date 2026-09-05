@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,14 +21,20 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
+import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TRTeleporter;
-import whocraft.tardis_refined.registry.TRBlockRegistry;
+import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
+
+import java.util.Objects;
 
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable, RedirectBlock.RedirectTarget {
 
@@ -119,6 +126,25 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
             return shell.isValidRedirectBlock(redirectBlockPos, redirectBlockState);
         }
         return true;
+    }
+
+    @Override
+    public @NotNull VoxelShape getVisualShape(
+            @NotNull BlockState state, @NotNull BlockGetter level,
+            @NotNull BlockPos pos, @NotNull CollisionContext context
+    ) {
+        if (context instanceof EntityCollisionContext entity && entity.getEntity() instanceof Player player) {
+            return TardisPlayerInfo.get(player).map(data -> {
+                var blockEntity = level.getBlockEntity(pos);
+                if (blockEntity instanceof ShellBaseBlockEntity shell) {
+                    if (Objects.equals(data.getViewedTardis(), TardisChunkGenerator.getUUIDForTARDIS(shell.getTardisId()).orElse(null))) {
+                        return Shapes.empty(); // Make sure player in shell view does not have their view blocked.
+                    }
+                }
+                return super.getVisualShape(state, level, pos, context);
+            }).orElseGet(() -> super.getVisualShape(state, level, pos, context));
+        }
+        return super.getVisualShape(state, level, pos, context);
     }
 
 }
