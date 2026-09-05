@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 public class ScreenHelper {
@@ -12,7 +13,7 @@ public class ScreenHelper {
      * @param text  - The text you'd like to draw
      * @param width - The max width of the text, scales to maintain this width if larger than it
      */
-    public static void renderWidthScaledText(String text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, float scale, boolean centered) {
+    public static void renderWidthScaledText(Component text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, float scale, boolean centered) {
 
         PoseStack matrix = guiGraphics.pose();
         matrix.pushPose();
@@ -30,8 +31,24 @@ public class ScreenHelper {
         matrix.popPose();
     }
 
-    public static void renderWidthScaledText(String text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, boolean centered) {
+    public static void renderWidthScaledText(Component text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, boolean centered) {
         renderWidthScaledText(text, guiGraphics, font, x, y, color, width, 1.0F, centered);
+    }
+
+    /**
+     * Please use {@link ScreenHelper#renderWidthScaledText(Component, GuiGraphics, Font, float, float, int, int, float, boolean)} instead.
+     */
+    @Deprecated
+    public static void renderWidthScaledText(String text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, float scale, boolean centered) {
+        renderWidthScaledText(Component.literal(text), guiGraphics, font, x, y, color, width, scale, centered);
+    }
+
+    /**
+     * Please use {@link ScreenHelper#renderWidthScaledText(Component, GuiGraphics, Font, float, float, int, int, boolean)} instead.
+     */
+    @Deprecated
+    public static void renderWidthScaledText(String text, GuiGraphics guiGraphics, Font font, float x, float y, int color, int width, boolean centered) {
+        renderWidthScaledText(Component.literal(text), guiGraphics, font, x, y, color, width, centered);
     }
 
 }
