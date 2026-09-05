@@ -8,3 +8,5 @@ TARDIS Refined will now use the `dimension.namespace.path` translation key for d
 #### Bug Fix
 Fix GPS not using the same direction and dimension name formatting as the rest of the mod.
 Fix item name of sampled dimension not being translatable.
+Fix a rare crash when rendering the shell holo.
+Fix the Forge Zeiton Glass load function removing the default `requestModelDataUpdate()` function call from every single Forge block entity.
