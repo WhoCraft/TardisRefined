@@ -6,6 +6,7 @@
 
 - Added tab support to the ARS GUI. Each root node gets its own tab.
 - Added keyboard navigation support to the ARS GUI. Use Tab to cycle through tabs.
+- Added a System Settings screen to the Monitor. Currently, it only contains a setting to toggle materialize around on and off.
 
 #### Changes
 

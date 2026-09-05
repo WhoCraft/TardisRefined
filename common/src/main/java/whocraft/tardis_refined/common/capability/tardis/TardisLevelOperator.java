@@ -66,6 +66,7 @@ public class TardisLevelOperator {
     private final UpgradeHandler upgradeHandler;
     private final AestheticHandler aestheticHandler;
     private final ProgressionManager progressionManager;
+    private final SettingsHandler settingsManager;
 
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
@@ -87,6 +88,8 @@ public class TardisLevelOperator {
         this.aestheticHandler = new AestheticHandler(this);
         this.flightDanceManager = new FlightDanceManager(this);
         this.progressionManager = new ProgressionManager(level);
+        this.settingsManager = new SettingsHandler(Optional.of(this));
+        this.tardisClientData.setSettingsHandler(settingsManager);
     }
 
     @ExpectPlatform
@@ -110,6 +113,10 @@ public class TardisLevelOperator {
         return this.flightDanceManager;
     }
 
+    public SettingsHandler getSettingsManager() {
+        return settingsManager;
+    }
+
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.putBoolean(NbtConstants.TARDIS_IS_SETUP, this.hasInitiallyGenerated);
@@ -127,6 +134,7 @@ public class TardisLevelOperator {
         compoundTag = this.aestheticHandler.saveData(compoundTag);
         compoundTag = this.flightDanceManager.saveData(compoundTag);
         compoundTag = this.progressionManager.saveData(compoundTag);
+        compoundTag = this.settingsManager.saveData(compoundTag);
 
         compoundTag.putInt("tardis_state", this.tardisState);
 
@@ -157,6 +165,7 @@ public class TardisLevelOperator {
         this.aestheticHandler.loadData(tag);
         this.flightDanceManager.loadData(tag);
         this.progressionManager.loadData(tag);
+        this.settingsManager.loadData(tag);
 
         this.tardisState = tag.getInt("tardis_state");
 
