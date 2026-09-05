@@ -255,6 +255,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase upgrade?");
+        add(ModMessages.UI_UPGRADES_POINTS, "Points: %s");
+        add(ModMessages.UI_UPGRADES_XP, "XP: %s");
         add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No available sub-systems");
         add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER, "Waypoint name");
         add(ModMessages.UI_WAYPOINT_NEW_WAYPOINT, "New Waypoint");

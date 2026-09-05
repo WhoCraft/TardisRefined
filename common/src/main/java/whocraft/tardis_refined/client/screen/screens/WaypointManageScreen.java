@@ -45,7 +45,7 @@ public class WaypointManageScreen extends MonitorOS {
     }
 
     public WaypointManageScreen(TardisWaypoint waypoint) {
-        super(Component.translatable("Edit waypoint"), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_EDIT), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.preExistingWaypoint = waypoint;
         this.tardisNavLocation = waypoint.getLocation();
         this.coordInputType = CoordInputType.WAYPOINT;
