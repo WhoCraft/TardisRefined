@@ -1,9 +1,12 @@
 package whocraft.tardis_refined.mixin;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,6 +21,20 @@ import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 @Mixin(ServerPlayer.class)
 public class ServerPlayerMixin {
+
+    @WrapOperation(
+            method = "drop(Lnet/minecraft/world/item/ItemStack;ZZ)Lnet/minecraft/world/entity/item/ItemEntity;",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/level/Level;addFreshEntity(Lnet/minecraft/world/entity/Entity;)Z"
+            )
+    )
+    public boolean dropItemShellView(Level level, Entity entity, Operation<Boolean> original) {
+        if (entity.level() != level) {
+            return original.call(entity.level(), entity);
+        }
+        return original.call(level, entity);
+    }
 
     @Unique
     private boolean tardis_refined$canBedSetSpawn() {

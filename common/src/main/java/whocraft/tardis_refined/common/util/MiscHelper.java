@@ -4,6 +4,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
@@ -206,6 +207,14 @@ public class MiscHelper {
         return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof EyeBlock;
     }
 
+    public static Component getTranslatableDimensionName(ResourceKey<Level> dimensionKey) {
+        return Component.translatableWithFallback(dimensionKey.location().toLanguageKey("dimension"), getCleanDimensionName(dimensionKey));
+    }
+
+    /**
+     * Please use {@link MiscHelper#getTranslatableDimensionName(ResourceKey)} instead.
+     */
+    @Deprecated
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
         return getCleanName(dimensionKey.location().getPath());
     }

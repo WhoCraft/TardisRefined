@@ -6,6 +6,7 @@
   "mixins": [
     "BlockGetterMixin",
     "BlockItemMixin",
+    "EntityGetterMixin",
     "MinecraftServerMixin",
     "ReloadableResourceManagerMixin"
   ],

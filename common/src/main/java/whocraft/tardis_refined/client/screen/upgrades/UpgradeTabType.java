@@ -43,7 +43,7 @@ enum UpgradeTabType {
         }
 
         int j = isSelected ? this.textureY + this.height : this.textureY;
-        guiGraphics.blit(UpgradesScreen.WINDOW, offsetX + this.getX(index), offsetY + this.getY(index), i, j, this.width, this.height);
+        guiGraphics.blit(UpgradesScreen.TABS, offsetX + this.getX(index), offsetY + this.getY(index), i, j, this.width, this.height);
     }
 
     public void drawIcon(GuiGraphics guiGraphics, int offsetX, int offsetY, int index, ItemStack stack) {
@@ -68,15 +68,15 @@ enum UpgradeTabType {
             }
         }
 
-        //TODO death
+        guiGraphics.renderItem(stack, i, j);
 
     }
 
     public int getX(int index) {
         return switch (this) {
-            case ABOVE, BELOW -> (this.width + 4) * index;
+            case ABOVE, BELOW -> (this.width + 3) * index + 6;
             case LEFT -> -this.width + 4;
-            case RIGHT -> 248;
+            case RIGHT -> 252;
             default -> throw new UnsupportedOperationException("Don't know what this tab type is!" + this);
         };
     }
@@ -84,8 +84,8 @@ enum UpgradeTabType {
     public int getY(int index) {
         return switch (this) {
             case ABOVE -> -this.height + 4;
-            case BELOW -> 192;
-            case LEFT, RIGHT -> this.height * index;
+            case BELOW -> 170;
+            case LEFT, RIGHT -> (this.height + 6) * index + 5;
             default -> throw new UnsupportedOperationException("Don't know what this tab type is!" + this);
         };
     }
