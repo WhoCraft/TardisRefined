@@ -11,7 +11,7 @@ import whocraft.tardis_refined.common.util.Platform;
 public class TardisRefinedCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal(TardisRefined.MODID).requires(commandSource -> commandSource.hasPermission(Platform.getServer().getOperatorUserPermissionLevel()))
+        dispatcher.register(Commands.literal(TardisRefined.MODID).requires(commandSource -> commandSource.hasPermission(commandSource.getServer().getOperatorUserPermissionLevel()))
                 .then(InteriorCommand.register(dispatcher))
                 .then(UpgradesCommand.register(dispatcher))
                 .then(SummonCommand.register(dispatcher))
@@ -21,7 +21,7 @@ public class TardisRefinedCommand {
         );
 
         if (!Platform.isProduction()) {
-            dispatcher.register(Commands.literal(TardisRefined.MODID + "_dev").requires(commandSource -> commandSource.hasPermission(Platform.getServer().getOperatorUserPermissionLevel()))
+            dispatcher.register(Commands.literal(TardisRefined.MODID + "_dev").requires(commandSource -> commandSource.hasPermission(commandSource.getServer().getOperatorUserPermissionLevel()))
                     .then(CreateCommand.register(dispatcher)
                     ));
         }
