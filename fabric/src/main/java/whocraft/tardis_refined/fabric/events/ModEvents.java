@@ -74,10 +74,12 @@ public class ModEvents {
         });
 
         // Force End a Vortex Session
-        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
-            ServerPlayer player = handler.getPlayer();
-            TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
-                tardisPlayerInfo.endShellView(player);
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
+            server.execute(() -> {
+                ServerPlayer player = handler.getPlayer();
+                TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
+                    tardisPlayerInfo.endShellView(player);
+                });
             });
         });
 

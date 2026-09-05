@@ -132,6 +132,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
         add(TRItemRegistry.MALLET.get(), "Mallet");
         add(TRItemRegistry.TEST_TUBE.get(), "Test Tube");
+        add(TRItemRegistry.TEST_TUBE.get().getDimensionDescriptionId(), "%s Sample");
         add(TRItemRegistry.TARDIS.get(), "Grown TARDIS");
 
         /*Damage Sources*/

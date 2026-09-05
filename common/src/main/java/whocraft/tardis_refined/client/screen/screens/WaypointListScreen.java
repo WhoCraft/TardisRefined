@@ -127,7 +127,7 @@ public class WaypointListScreen extends MonitorOS {
         int textScale = 40;
 
         if (WAYPOINTS.isEmpty())
-            ScreenHelper.renderWidthScaledText(noWaypointsLabel.getString(), guiGraphics, Minecraft.getInstance().font, width / 2f - 96, textOffset + 15, Color.LIGHT_GRAY.getRGB(), textScale * 2, 1F, false);
+            ScreenHelper.renderWidthScaledText(noWaypointsLabel, guiGraphics, Minecraft.getInstance().font, width / 2f - 96, textOffset + 15, Color.LIGHT_GRAY.getRGB(), textScale * 2, 1F, false);
 
     }
 }
