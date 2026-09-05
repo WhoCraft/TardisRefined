@@ -14,14 +14,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.*;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
-import whocraft.tardis_refined.common.util.*;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
     public DimensionalControl(ResourceLocation id) {
@@ -89,7 +86,7 @@ public class DimensionalControl extends Control {
             }
             pilotManager.setTargetDimension(dimensions.get(nextIndex));
 
-            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getCleanDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);
+            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getTranslatableDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);
 
             if (pilotManager.isInFlight()) {
                 operator.getPilotingManager().recalculateFlightDistance();
