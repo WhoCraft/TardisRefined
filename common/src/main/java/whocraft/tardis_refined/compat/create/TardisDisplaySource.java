@@ -44,7 +44,7 @@ public class TardisDisplaySource extends DisplaySource {
 
                     list.add(Component.translatable(ModMessages.IN_FLIGHT, levelOperator.getPilotingManager().isInFlight()));
                     list.add(Component.translatable(ModMessages.POSITION, currentLoc.getPosition().toShortString()));
-                    list.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getCleanDimensionName(currentLoc.getDimensionKey())));
+                    list.add(Component.translatable(ModMessages.DIMENSION, MiscHelper.getTranslatableDimensionName(currentLoc.getDimensionKey())));
                     list.add(Component.translatable(ModMessages.FUEL, String.valueOf(Math.round(levelOperator.getPilotingManager().getFuelPercentage() * 100))).append("%"));
                     list.add(Component.translatable(ModMessages.SHELL, levelOperator.getAestheticHandler().getShellTheme().getPath()));
                     list.add(Component.translatable(ModMessages.JOURNEY_PROGRESS, levelOperator.getPilotingManager().getFlightPercentageCovered() * 100 + "%"));

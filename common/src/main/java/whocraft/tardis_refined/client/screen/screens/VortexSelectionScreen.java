@@ -38,11 +38,7 @@ public class VortexSelectionScreen extends MonitorOS {
     @Override
     protected void init() {
         super.init();
-        this.setEvents(() -> selectVortex(currentVortex), () -> {
-            //selectVortex(currentVortex);
-            if (PREVIOUS != null)
-                this.switchScreenToLeft(PREVIOUS);
-        });
+        this.setEvents(() -> selectVortex(currentVortex), this::back);
         if (currentVortex == null)
             currentVortex = this.vortexList.get(0);
         int vPos = (height - monitorHeight) / 2;

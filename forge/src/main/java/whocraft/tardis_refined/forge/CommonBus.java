@@ -7,11 +7,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import whocraft.tardis_refined.TardisRefined;
@@ -119,6 +121,14 @@ public class CommonBus {
     @SubscribeEvent
     public static void onPunchBlock(PlayerInteractEvent.LeftClickBlock event) {
         MiscHelper.onBlockPunched(event.getLevel(), event.getEntity(), event.getPos(), event.getHand(), event.getFace());
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void fixItemEntitySpawnFromShellView(ItemTossEvent event) {
+        if (event.getEntity().level() != event.getPlayer().level()) {
+            event.getEntity().level().addFreshEntity(event.getEntity());
+            event.setCanceled(true);
+        }
     }
 
 }
