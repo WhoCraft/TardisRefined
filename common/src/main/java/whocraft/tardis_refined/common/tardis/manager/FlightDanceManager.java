@@ -8,6 +8,7 @@ import whocraft.tardis_refined.common.entity.ControlEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class FlightDanceManager extends TickableHandler {
 
@@ -88,10 +89,22 @@ public class FlightDanceManager extends TickableHandler {
         }
 
         int chance = 20 - this.operator.getPilotingManager().getThrottleStage() * 2;
+        if (this.operator.getPilotingManager().getThrottleStage() == 0) {
+            return;
+        }
         if (operatorLevel.random.nextInt(chance) == 0) {
             this.triggerNextEvent();
         }
 
+    }
+
+    private Optional<ControlEntity> getRandomUndamagedControl() {
+        var workingControlsList = controlEntityList.stream().filter(
+                control -> !control.isRemoved() && !control.isDead() && !control.isTickingDown()
+        ).toList();
+        if (workingControlsList.isEmpty()) return Optional.empty();
+        var control = workingControlsList.get(this.operator.getLevel().random.nextInt(workingControlsList.size()));
+        return Optional.of(control);
     }
 
     private void triggerNextEvent() {
@@ -109,8 +122,9 @@ public class FlightDanceManager extends TickableHandler {
 
             }
         }
-        ControlEntity randomControlEntity = controlEntityList.get(this.operator.getLevel().random.nextInt(controlEntityList.size() - 1));
-        randomControlEntity.setTickingDown(this);
+        getRandomUndamagedControl().ifPresent(control -> {
+            control.setTickingDown(this);
+        });
     }
 
     public void updateDamageList() {

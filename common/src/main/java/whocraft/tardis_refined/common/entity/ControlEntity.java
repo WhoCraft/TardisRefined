@@ -4,6 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -55,11 +56,6 @@ public class ControlEntity extends Entity {
      * <br> True - if able to keep being mis-aligned, False if cannot be further mis-aligned
      */
     private static final EntityDataAccessor<Boolean> TICKING_DOWN = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
-    /**
-     * Flag to determine if this Control is far too mis-aligned and is considered "dead".
-     * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used.
-     */
-    private static final EntityDataAccessor<Boolean> IS_DEAD = SynchedEntityData.defineId(ControlEntity.class, EntityDataSerializers.BOOLEAN);
     /**
      * Attribute to determine how far this Control is mis-aligned.
      * <br> This name comes from a time when the terminology wasn't finalised, and a more traditional "health" system was being used.
@@ -164,6 +160,9 @@ public class ControlEntity extends Entity {
         return Component.translatable(this.controlSpecification.control().getTranslationKey());
     }
 
+    public boolean isDead() {
+        return getEntityData().get(CONTROL_HEALTH) <= 0;
+    }
 
     /**
      * Tell the Tardis that the control is currently continuing to be misaligned
@@ -173,7 +172,7 @@ public class ControlEntity extends Entity {
      */
     public boolean setTickingDown(FlightDanceManager manager) {
 
-        if (this.getEntityData().get(IS_DEAD)) {
+        if (isDead()) {
             return false;
         }
 
@@ -189,7 +188,6 @@ public class ControlEntity extends Entity {
     protected void defineSynchedData() {
         getEntityData().define(SHOW_PARTICLE, false);
         getEntityData().define(TICKING_DOWN, false);
-        getEntityData().define(IS_DEAD, false);
         getEntityData().define(SIZE_WIDTH, 1F);
         getEntityData().define(SIZE_HEIGHT, 1F);
         getEntityData().define(CONTROL_HEALTH, 10);
@@ -199,17 +197,6 @@ public class ControlEntity extends Entity {
     @Override
     public void onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor) {
         this.setSizeAndUpdate(this.getEntityData().get(SIZE_WIDTH), this.getEntityData().get(SIZE_HEIGHT));
-    }
-
-
-    @Override
-    public boolean save(CompoundTag compound) {
-        if (consoleBlockPos != null) {
-            compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
-        }
-        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
-        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
-        return super.save(compound);
     }
 
     @Override
@@ -222,9 +209,30 @@ public class ControlEntity extends Entity {
 
         this.setSizeData(width, height);
 
+        if (compound.contains(NbtConstants.CONTROL_SPECIFICATION)) {
+            controlSpecification = ControlSpecification.CODEC.parse(
+                    NbtOps.INSTANCE, compound.get(NbtConstants.CONTROL_SPECIFICATION)
+            ).resultOrPartial(err -> {}).orElse(null);
+        }
+
+        if (compound.contains(NbtConstants.CONTROL_DURABILITY) && level() != null && !level().isClientSide()) {
+            int health = compound.getInt(NbtConstants.CONTROL_DURABILITY);
+            if (health <= 0) {
+                health = 0;
+            }
+            if (health >= totalControlHealth) {
+                health = totalControlHealth;
+            }
+            this.getEntityData().set(CONTROL_HEALTH, health);
+        }
+
         if (level() instanceof ServerLevel serverLevel) {
             TardisLevelOperator.get(serverLevel).ifPresent((operator) -> {
                 this.flightDanceManager = operator.getFlightDanceManager();
+                int health = getControlHealth();
+                if (health != 0 && health != totalControlHealth) {
+                    this.entityData.set(TICKING_DOWN, true);
+                }
             });
         }
 
@@ -239,6 +247,13 @@ public class ControlEntity extends Entity {
 
         compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
         compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
+        if (controlSpecification != null) {
+            compound.put(
+                    NbtConstants.CONTROL_SPECIFICATION,
+                    ControlSpecification.CODEC.encodeStart(NbtOps.INSTANCE, controlSpecification).getOrThrow(false, err -> {})
+            );
+        }
+        compound.putInt(NbtConstants.CONTROL_DURABILITY, getControlHealth());
 
     }
 
@@ -252,7 +267,7 @@ public class ControlEntity extends Entity {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
             if (this.level() instanceof ServerLevel serverLevel) {
                 if (!player.level().isClientSide()) {
-                    if (entityData.get(IS_DEAD)) {
+                    if (isDead()) {
                         return false;
                     }
                     if (this.entityData.get(TICKING_DOWN)) {
@@ -297,7 +312,7 @@ public class ControlEntity extends Entity {
                     return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
                 }
 
-                if (entityData.get(IS_DEAD)) {
+                if (isDead()) {
                     return InteractionResult.FAIL;
                 }
 
@@ -344,6 +359,12 @@ public class ControlEntity extends Entity {
         }
     }
 
+    public void copyFrom(ControlEntity previous) {
+        getEntityData().set(CONTROL_HEALTH, previous.getControlHealth());
+        getEntityData().set(TICKING_DOWN, previous.isTickingDown());
+        setCustomName(previous.getCustomName());
+    }
+
     @Override
     public void tick() {
         if (level() instanceof ServerLevel serverLevel) {
@@ -355,17 +376,23 @@ public class ControlEntity extends Entity {
                 });
             }
 
-            if (this.controlSpecification == null) {
-                if (this.consoleBlockPos != null) {
-                    if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
-
-                        globalConsoleBlockEntity.markDirty();
-                    }
+            if (this.consoleBlockPos != null) {
+                if (serverLevel.getBlockEntity(this.consoleBlockPos) instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) {
+                    globalConsoleBlockEntity.updateControl(this);
+                } else {
                     discard();
+                    return;
                 }
-
             } else {
+                discard();
+                return;
+            }
+
+            if (this.controlSpecification != null) {
                 onServerTick(serverLevel);
+            } else {
+                discard();
+                return;
             }
         } else {
             onClientTick(this.level());
@@ -380,7 +407,6 @@ public class ControlEntity extends Entity {
     private void onServerTick(ServerLevel serverLevel) {
 
         boolean isTickingDown = getEntityData().get(TICKING_DOWN);
-        boolean isDead = getEntityData().get(IS_DEAD);
 
         if (this.flightDanceManager != null) {
             TardisLevelOperator operator = this.flightDanceManager.getOperator();
@@ -391,7 +417,7 @@ public class ControlEntity extends Entity {
         }
 
 
-        if (!isDead && isTickingDown && serverLevel.getGameTime() % (5 * 20) == 0) {
+        if (!isDead() && isTickingDown && serverLevel.getGameTime() % (5 * 20) == 0) {
             int controlHealth = getEntityData().get(CONTROL_HEALTH) - 1;
 
             getEntityData().set(CONTROL_HEALTH, controlHealth);
@@ -406,7 +432,6 @@ public class ControlEntity extends Entity {
     public void onControlDead() {
 
         this.entityData.set(TICKING_DOWN, false);
-        this.entityData.set(IS_DEAD, true);
 
         if (this.flightDanceManager != null) {
             this.flightDanceManager.updateDamageList();

@@ -10,6 +10,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -115,6 +116,11 @@ public class CommonBus {
             if (serverPlayer != null)
                 TardisHelper.handlePlayerJoinWorldEvents(serverPlayer);
         }
+    }
+
+    @SubscribeEvent
+    public static void onPunchBlock(PlayerInteractEvent.LeftClickBlock event) {
+        MiscHelper.onBlockPunched(event.getLevel(), event.getEntity(), event.getPos(), event.getHand(), event.getFace());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
