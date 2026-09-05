@@ -265,11 +265,6 @@ public class TardisClientLogic {
     @Environment(EnvType.CLIENT)
     public static void handleClient() {
         Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            LocalPlayer player = Minecraft.getInstance().player;
-            player.setXRot(tardisPlayerInfo.getPlayerPreviousYaw());
-            player.setYHeadRot(tardisPlayerInfo.getPlayerPreviousRot());
-        });
     }
 
 
