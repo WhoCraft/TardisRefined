@@ -14,7 +14,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 import whocraft.tardis_refined.common.blockentity.door.RootShellDoorBlockEntity;
+import whocraft.tardis_refined.registry.TRBlockRegistry;
 
 public class RootShellDoorBlock extends GlobalDoorBlock {
 
@@ -30,6 +32,12 @@ public class RootShellDoorBlock extends GlobalDoorBlock {
     public RootShellDoorBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, true).setValue(LOCKED, false));
+    }
+
+    @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
+        RedirectBlock.tryPlace(level, blockPos.above(), TRBlockRegistry.REDIRECT_BLOCK.get().defaultBlockState());
     }
 
     @Nullable

@@ -17,6 +17,7 @@ import whocraft.tardis_refined.common.block.life.*;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
+import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 
 
 import java.util.function.Supplier;
@@ -29,6 +30,7 @@ public class TRBlockRegistry {
     public static final RegistrySupplier<ShellBaseBlock> GLOBAL_SHELL_BLOCK = register("tardis_shell", () -> new GlobalShellBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000).sound(SoundType.STONE).lightLevel((blocksState) -> {
         return blocksState.getValue(GlobalShellBlock.LIT) ? 13 : 0;
     })), false, false);
+    public static final RegistrySupplier<RedirectBlock> REDIRECT_BLOCK = register("redirect", () -> new RedirectBlock(BlockBehaviour.Properties.of().noCollission().noOcclusion().noLootTable().noParticlesOnBreak().strength(1000, 1000).sound(SoundType.EMPTY)), false, false);
     // Interior
     public static final RegistrySupplier<GlobalDoorBlock> GLOBAL_DOOR_BLOCK = register("tardis_door", () -> new GlobalDoorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(10, 10).sound(SoundType.STONE)), true, true);
     public static final RegistrySupplier<RootShellDoorBlock> ROOT_SHELL_DOOR = register("root_shell_door", () -> new RootShellDoorBlock(BlockBehaviour.Properties.of().noOcclusion().strength(1000, 1000)), false, true);

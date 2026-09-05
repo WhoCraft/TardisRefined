@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.block.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -34,9 +35,6 @@ import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 public class GlobalShellBlock extends ShellBaseBlock {
 
     public static final BooleanProperty LIT = BooleanProperty.create("lit");
-    //The collision box for the briefcase shell
-    //overrides the default collision shape from ShellBaseBlock.java
-    protected static final VoxelShape BRIEFCASE_COLLISION_SHAPE = Block.box(0.0, 0.0, 0.0, 16.0, 8.0, 16.0);
 
     public GlobalShellBlock(Properties properties) {
         super(properties);
@@ -65,17 +63,20 @@ public class GlobalShellBlock extends ShellBaseBlock {
             ) {
                 return Shapes.empty();
             }
-            if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
-                return BRIEFCASE_COLLISION_SHAPE;
         }
         return super.getCollisionShape(blockState, blockGetter, blockPos, collisionContext);
     }
 
+    public static VoxelShape getShapeFromTheme(ResourceLocation theme, BlockState blockState) {
+        return ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.get(theme).getShape(
+                blockState.getValue(OPEN) ? ShellTheme.ShapeType.OPEN_EXTERIOR : ShellTheme.ShapeType.CLOSED_EXTERIOR, blockState.getValue(FACING)
+        );
+    }
+
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
-        if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
-            if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
-                return BRIEFCASE_COLLISION_SHAPE;
+        if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shell) {
+            return getShapeFromTheme(shell.theme(), blockState);
         }
         return super.getShape(blockState, blockGetter, blockPos, collisionContext);
     }
@@ -96,12 +97,18 @@ public class GlobalShellBlock extends ShellBaseBlock {
         };
     }
 
+    protected boolean canOpenFromSide(Level level, BlockPos blockPos, BlockState blockState, Direction side) {
+        if (side == Direction.UP) {
+            return blockState.getShape(level, blockPos).max(Direction.Axis.Y) < 1.5;
+        }
+        return side.getOpposite() == blockState.getValue(FACING);
+    }
+
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!player.level().isClientSide()) {
             if (level instanceof ServerLevel serverLevel) {
-
-                if (blockHitResult.getDirection().getOpposite() == blockState.getValue(FACING)) {
+                if (canOpenFromSide(level, blockPos, blockState, blockHitResult.getDirection())) {
                     if (serverLevel.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity entity) {
                         ItemStack itemStack = player.getItemInHand(interactionHand);
                         entity.onRightClick(blockState, itemStack, level, blockPos, player);

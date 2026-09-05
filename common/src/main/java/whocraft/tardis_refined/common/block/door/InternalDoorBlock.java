@@ -21,12 +21,13 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.block.shell.RedirectBlock;
 import whocraft.tardis_refined.common.blockentity.door.InternalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.util.TRTeleporter;
 
-public class InternalDoorBlock extends BaseEntityBlock {
+public class InternalDoorBlock extends BaseEntityBlock implements RedirectBlock.RedirectTarget {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
@@ -52,7 +53,6 @@ public class InternalDoorBlock extends BaseEntityBlock {
             door.onBlockPlaced();
         }
         super.onPlace(blockState, level, blockPos, blockState2, bl);
-
     }
 
     @Override
@@ -133,4 +133,8 @@ public class InternalDoorBlock extends BaseEntityBlock {
     }
 
 
+    @Override
+    public boolean shouldHaveRedirectBlock(BlockGetter level, BlockPos redirectBlockPos, BlockState redirectBlockState, BlockPos targetPos) {
+        return false;
+    }
 }

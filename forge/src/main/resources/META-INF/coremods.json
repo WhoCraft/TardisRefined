@@ -1,3 +1,4 @@
 {
+	"tardis_refined_block_getter_inject": "coremods/block_getter_inject.js",
 	"tardis_refined_entity_getter_inject": "coremods/entity_getter_inject.js"
 }

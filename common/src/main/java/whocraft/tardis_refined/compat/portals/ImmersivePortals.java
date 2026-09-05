@@ -29,6 +29,7 @@ import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.EventResult;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
+import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
@@ -320,8 +321,22 @@ public class ImmersivePortals {
         return new PositionHolder(doorPos, axisW, axisH, isAirship(level, blockPos));
     }
 
-    private static Vec3 getPortalPosForBlockPos(BlockPos pos, Direction direction, PortalOffets.OffsetData offset) {
-        Vec3 returnPos = new Vec3(pos.getX() + 0.5, pos.getY() + 1, pos.getZ() + 0.5);
+    private static Vec3 getInteriorExtraOffset(BlockState state) {
+        if (state.hasProperty(InternalDoorBlock.OFFSET) && state.getValue(InternalDoorBlock.OFFSET)) {
+            var facing = state.getValue(InternalDoorBlock.FACING);
+            return switch (facing) {
+                case EAST -> new Vec3(0, 0, -0.5);
+                case SOUTH -> new Vec3(0.5, 0, 0);
+                case WEST -> new Vec3(0, 0, 0.5);
+                case NORTH -> new Vec3(-0.5, 0, 0);
+                default -> Vec3.ZERO;
+            };
+        }
+        return Vec3.ZERO;
+    }
+
+    private static Vec3 getPortalPosForBlockPos(BlockPos pos, Direction direction, PortalOffets.OffsetData offset, Vec3 extraOffset) {
+        Vec3 returnPos = new Vec3(pos.getX() + 0.5 + extraOffset.x, pos.getY() + 1 + extraOffset.y, pos.getZ() + 0.5 + extraOffset.z);
 
         return switch (direction) {
             case EAST -> returnPos.add(offset.east());
@@ -408,14 +423,17 @@ public class ImmersivePortals {
         TardisInternalDoor door = operator.getInternalDoor();
         PositionHolder interiorPos = getPortalPosition(
                 operator.getLevel(), door.getDoorPosition(), door.getTeleportRotation(),
-                getPortalPosForBlockPos(door.getTeleportPosition(), door.getTeleportRotation(), themeData.intDoor())
+                getPortalPosForBlockPos(
+                        door.getTeleportPosition(), door.getTeleportRotation(), themeData.intDoor(),
+                        getInteriorExtraOffset(operator.getLevel().getBlockState(door.getDoorPosition()))
+                )
         );
         boolean result = updatePortalPosition(interiorPos, interiorPortal, exteriorPortal);
 
         TardisNavLocation location = operator.getPilotingManager().getCurrentLocation();
         PositionHolder exteriorPos = getPortalPosition(
                 location.getLevel(), location.getPosition(), location.getDirection(),
-                getPortalPosForBlockPos(location.getPosition(), location.getDirection(), themeData.shell())
+                getPortalPosForBlockPos(location.getPosition(), location.getDirection(), themeData.shell(), Vec3.ZERO)
         );
         result |= updatePortalPosition(exteriorPos, exteriorPortal, interiorPortal);
 
@@ -484,9 +502,12 @@ public class ImmersivePortals {
         PortalOffets.OffsetData exteriorDoor = themeData.shell();
 
         BlockPos entryPositionBPos = door.getTeleportPosition();
-        Vec3 entryPosition = getPortalPosForBlockPos(entryPositionBPos, door.getTeleportRotation(), interiorDoor);
+        Vec3 entryPosition = getPortalPosForBlockPos(
+                entryPositionBPos, door.getTeleportRotation(), interiorDoor,
+                getInteriorExtraOffset(operator.getLevel().getBlockState(door.getDoorPosition()))
+        );
         BlockPos exteriorEntryBPos = location.getPosition();
-        Vec3 exteriorEntryPosition = getPortalPosForBlockPos(exteriorEntryBPos, location.getDirection(), exteriorDoor);
+        Vec3 exteriorEntryPosition = getPortalPosForBlockPos(exteriorEntryBPos, location.getDirection(), exteriorDoor, Vec3.ZERO);
 
         Level operatorLevel = operator.getLevel();
 
