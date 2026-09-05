@@ -160,19 +160,21 @@ public class MiscHelper {
 
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
         if (level.dimensionTypeId() == TRDimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
-            TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
+            if (TardisLevelOperator.get(serverLevel).isPresent()) {
+                TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
 
-            // Consoles
-            Item consoleItem = TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get().asItem();
-            Item consoleConfigItem = TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem();
-            if (data.getInteriorManager().isCave() && (itemInHand.getItem() == consoleConfigItem || itemInHand.getItem() == consoleItem)) {
-                return true;
-            }
+                // Consoles
+                Item consoleItem = TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get().asItem();
+                Item consoleConfigItem = TRBlockRegistry.CONSOLE_CONFIGURATION_BLOCK.get().asItem();
+                if (data.getInteriorManager().isCave() && (itemInHand.getItem() == consoleConfigItem || itemInHand.getItem() == consoleItem)) {
+                    return true;
+                }
 
-            // Protected Zones
-            for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
-                boolean shouldCancel = !protectedZone.isAllowPlacement() && isBlockPosInBox(blockPos, protectedZone.getArea());
-                if (shouldCancel) return true;
+                // Protected Zones
+                for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
+                    boolean shouldCancel = !protectedZone.isAllowPlacement() && isBlockPosInBox(blockPos, protectedZone.getArea());
+                    if (shouldCancel) return true;
+                }
             }
         }
         return false;
@@ -181,11 +183,15 @@ public class MiscHelper {
     public static boolean shouldCancelBreaking(Level world, Entity entity, BlockPos pos, BlockState state) {
 
         if (world.dimensionTypeId() == TRDimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
-            TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
-            for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
-                boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
-                if (shouldCancel) return true;
+            if (TardisLevelOperator.get(serverLevel).isPresent()) {
+                TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
+                for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
+                    boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
+                    if (shouldCancel) return true;
+                }
             }
+
+
         }
 
         return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;

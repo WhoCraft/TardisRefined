@@ -36,7 +36,6 @@ import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.dimension.TardisTeleportData;
-import whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
@@ -59,17 +58,20 @@ public class ModEvents {
 
         START_WORLD_TICK.register(world -> {
             if (world.dimensionTypeId().location() == TRDimensionTypes.TARDIS.location()) {
-                TardisLevelOperator.get(world).get().tick(world);
+                TardisLevelOperator.get(world).ifPresent(x -> x.tick(world));
             }
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
+
             DimensionHandler.loadLevels(world);
 
             // We call this here to make sure blocks are registered
             TRPointOfInterestTypes.registerBlockStates();
+
+            TardisHelper.handleStartupRemoval(server);
 
         });
 
@@ -84,14 +86,24 @@ public class ModEvents {
         });
 
 
-        ServerTickEvents.END_SERVER_TICK.register(server -> TardisTeleportData.tick());
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            TardisTeleportData.tick();
+            DimensionHandler.tick(server);
+        });
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            DimensionHandlerImpl.clear();
+
+            DimensionHandler.onServerStopping(server);
 
             if (ModCompatChecker.immersivePortals()) {
                 ImmersivePortals.onServerStopping(server);
             }
+
+
+        });
+
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+            DimensionHandler.onServerStopped(server);
         });
 
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> TardisRefinedCommand.register(dispatcher));

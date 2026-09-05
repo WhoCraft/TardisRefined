@@ -4,10 +4,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -24,7 +26,9 @@ import org.apache.logging.log4j.Logger;
 import qouteall.imm_ptl.core.api.PortalAPI;
 import qouteall.imm_ptl.core.portal.PortalManipulation;
 import qouteall.q_misc_util.MiscHelper;
+import qouteall.q_misc_util.MiscNetworking;
 import qouteall.q_misc_util.api.DimensionAPI;
+import qouteall.q_misc_util.dimension.DimensionIdManagement;
 import qouteall.q_misc_util.my_util.DQuaternion;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.api.event.EventResult;
@@ -33,6 +37,7 @@ import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
@@ -102,6 +107,30 @@ public class ImmersivePortals {
         return UUID.fromString(tardisID.location().getPath());
     }
 
+    private static boolean HAS_UPDATE_EVENT = false;
+
+    static {
+	    try {
+            DimensionAPI.class.getField("serverDimensionDynamicUpdateEvent");
+		    HAS_UPDATE_EVENT = true;
+	    } catch (NoSuchFieldException e) {
+            HAS_UPDATE_EVENT = false;
+	    }
+    }
+
+    public static void onDimensionsModified(MinecraftServer server) {
+        DimensionIdManagement.updateAndSaveServerDimIdRecord();
+
+        Packet<?> dimSyncPacket = MiscNetworking.createDimSyncPacket();
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            player.connection.send(dimSyncPacket);
+        }
+
+        if (HAS_UPDATE_EVENT) {
+            DimensionAPI.serverDimensionDynamicUpdateEvent.invoker().run(server.levelKeys());
+        }
+    }
+
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
         MinecraftServer server = MiscHelper.getServer();
         if (server == null) return null;
@@ -113,8 +142,19 @@ public class ImmersivePortals {
         // TODO, Is this important? DimensionAPI.saveDimensionConfiguration(id);
 
         world = server.getLevel(id);
-        DimensionHandler.addDimension(world.dimension());
+        DimensionHandler.addDimension(server, world.dimension());
         return world;
+    }
+
+    public static void deleteDimension(ResourceKey<Level> id) {
+        MinecraftServer server = MiscHelper.getServer();
+        if (server == null) return;
+        ServerLevel world = server.levelKeys().contains(id) ? server.getLevel(id) : null;
+        if (world == null) return;
+        DimensionHandler.removeDimension(server, id);
+        DimensionAPI.removeDimensionDynamically(world);
+        new S2CSyncLevelList(world.dimension(), false).sendToAll();
+        DimensionHandler.finishDeletion(server, id, false);
     }
 
     public static void init() {
@@ -427,7 +467,7 @@ public class ImmersivePortals {
 
     private static void setAllowTeleportation(BotiPortalEntity portal, boolean isOnAirship) {
         if (portal.level().isClientSide()) return;
-        if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_VS.get() : TRConfig.SERVER.IP_TELEPORTATION.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
+        if ((isOnAirship ? TRConfig.SERVER.IP_TELEPORTATION_MODE_VS.get() : TRConfig.SERVER.IP_TELEPORTATION_MODE.get()) != TRConfig.Server.IPTeleportationMode.PORTAL) {
             portal.setTeleportable(false);
         } else {
             portal.setTeleportable(true);

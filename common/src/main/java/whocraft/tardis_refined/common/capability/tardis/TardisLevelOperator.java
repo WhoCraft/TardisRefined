@@ -13,8 +13,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.api.event.ShellChangeSource;
 import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
@@ -27,6 +30,7 @@ import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
+import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.screens.MonitorPositionDataMessage;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
@@ -34,6 +38,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.DisconnectedPlayerHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -54,6 +59,7 @@ public class TardisLevelOperator {
     public static final int STATE_CAVE = 0;
     public static final int STATE_TERRAFORMED_NO_EYE = 1;
     public static final int STATE_EYE_OF_HARMONY = 2;
+    public static final int STATE_DELETED = Integer.MAX_VALUE;
     private final Level level;
     private final ResourceKey<Level> levelKey;
     // Managers
@@ -293,6 +299,22 @@ public class TardisLevelOperator {
         return !this.getInteriorManager().isGeneratingDesktop();
     }
 
+    public TardisNavLocation getOutsideLocation() {
+        TardisNavLocation currentLocation = this.pilotingManager.getCurrentLocation();
+        BlockPos exteriorPos = currentLocation.getPosition();
+        ServerLevel targetLevel = currentLocation.getLevel();
+        Direction targetDirection = currentLocation.getDirection().getOpposite();
+
+        BlockPos teleportPos = exteriorPos;
+
+        if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
+            teleportPos = exteriorShell.getTeleportPosition();
+            targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
+        }
+
+        return new TardisNavLocation(teleportPos, targetDirection, targetLevel);
+    }
+
     public boolean exitTardis(Entity entity, ServerLevel doorLevel, BlockPos doorPos, Direction doorDirection, boolean ignoreDoor) {
 
         if (!ignoreDoor && !this.internalDoor.isOpen()) {
@@ -314,20 +336,8 @@ public class TardisLevelOperator {
 
         if (this.pilotingManager.getCurrentLocation() != null) {
 
-            TardisNavLocation currentLocation = this.pilotingManager.getCurrentLocation();
-            BlockPos exteriorPos = currentLocation.getPosition();
-            ServerLevel targetLevel = currentLocation.getLevel();
-            Direction targetDirection = currentLocation.getDirection().getOpposite();
-
-            BlockPos teleportPos = exteriorPos;
-
-            if (targetLevel.getBlockEntity(exteriorPos) instanceof ExteriorShell exteriorShell) {
-                teleportPos = exteriorShell.getTeleportPosition();
-                targetDirection = exteriorShell.getTeleportRotation(); //Use the exterior shell's facing instead of the target direction to cover a case where the direction is changed as the player exits
-            }
-
             TardisNavLocation sourceLocation = new TardisNavLocation(doorPos, doorDirection, doorLevel);
-            TardisNavLocation destinationLocation = new TardisNavLocation(teleportPos, targetDirection, targetLevel);
+            TardisNavLocation destinationLocation = getOutsideLocation();
 
             TardisHelper.teleportEntityTardis(this, entity, sourceLocation, destinationLocation, false);
             return true;
@@ -341,6 +351,24 @@ public class TardisLevelOperator {
             if (player instanceof ServerPlayer serverPlayer) {
                 this.forceEjectPlayer(serverPlayer);
             }
+        }
+        if (getLevel() instanceof ServerLevel sl) {
+            DisconnectedPlayerHelper.forAllDisconnectedPlayers(sl, data -> {
+                var outside = getOutsideLocation();
+                Vec3 targetPos = Vec3.atBottomCenterOf(outside.getPosition());
+                float targetYaw = outside.getDirection().toYRot();
+                float targetPitch = 0;
+                if (ModCompatChecker.valkyrienSkies()) {
+                    targetPos = VSHelper.toWorldPosition(outside.getLevel(), outside.getPosition(), targetPos);
+                    var rot = VSHelper.toWorldRotation(outside.getLevel(), outside.getPosition(), new Vec2(targetPitch, targetYaw));
+                    targetYaw = rot.y;
+                    targetPitch = rot.x;
+                }
+                DisconnectedPlayerHelper.setPlayerDimension(data, outside.getDimensionKey());
+                DisconnectedPlayerHelper.setPosition(data, targetPos);
+                DisconnectedPlayerHelper.setRotation(data, targetYaw, targetPitch);
+                return true;
+            });
         }
     }
 
@@ -424,6 +452,7 @@ public class TardisLevelOperator {
      * @implNote If we have updated the ShellTheme but haven't updated the Exterior data yet, you must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, ShellChangeSource)}
      */
     public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> overridingBlockState, boolean startingRegen, ShellChangeSource shellChangeSource) {
+        if (tardisState == STATE_DELETED) return;
         AestheticHandler aestheticHandler = this.getAestheticHandler();
         ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
@@ -609,5 +638,26 @@ public class TardisLevelOperator {
 
     public void setTardisState(int state) {
         this.tardisState = state;
+    }
+
+    public boolean deleteTARDIS() {
+        this.forceEjectAllPlayers();
+        this.getExteriorManager().removeExteriorBlock();
+
+        if (this.getPilotingManager().getCurrentConsole() != null) {
+            this.level.setBlockAndUpdate(
+                    this.getPilotingManager().getCurrentConsole().getBlockPos(),
+                    Blocks.AIR.defaultBlockState()
+            );
+        }
+
+        getPilotingManager().setFuel(0);
+        getPilotingManager().setCurrentLocation(new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, levelKey));
+        getInteriorManager().cancelDesktopChange();
+
+        setTardisState(STATE_DELETED);
+        DimensionHandler.deleteDimension(levelKey);
+
+        return true;
     }
 }

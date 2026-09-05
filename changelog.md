@@ -7,11 +7,22 @@
 - Added tab support to the ARS GUI. Each root node gets its own tab.
 - Added keyboard navigation support to the ARS GUI. Use Tab to cycle through tabs.
 
+#### Commands
+
+- Added `/tardis_refined delete <tardis>` which deletes the given TARDIS and its dimension.
+
 #### Changes
 
 - Pressing E will now close Monitor, ARS, and Astral Manipulator GUIs.
 - Improved keyboard navigation support for the Monitor and Astral Manipulator GUIs.
 - The TARDIS item will now read the `setup_data` tag on the item, if it exists, and pass it on to the created TARDIS.
+
+#### Configs
+
+- Config to not use the Immersive Portals dimension adder.
+- Config to not use the Immersive Portals dimension remover.
+- Config to not use smooth Immersive Portals teleportation.
+- Config to choose which deletion mode to use. Either immediately or scheduled for the next shutdown.
 
 #### Bug Fixes
 
@@ -30,3 +41,4 @@
 - Fixed items dropped in shell view ending up outside the TARDIS.
 - Fixed players being able to pick up items and XP while in shell view.
 - Fixed the TARDIS sometimes playing the default hum when set to a different hum.
+- Fixed offline players not being ejected from the TARDIS when changing the desktop or deleting the TARDIS.

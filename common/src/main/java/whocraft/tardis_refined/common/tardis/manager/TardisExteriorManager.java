@@ -8,7 +8,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
-import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
@@ -138,7 +138,7 @@ public class TardisExteriorManager extends BaseHandler {
             BlockPos lastKnownLocationPosition = currentPosition.getPosition();
             ServerLevel lastKnownLocationLevel = currentPosition.getLevel();
             //Remove block
-            if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof GlobalShellBlockEntity globalShellBlockEntity) {
+            if (lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition) instanceof ShellBaseBlockEntity globalShellBlockEntity) {
                 lastKnownLocationLevel.removeBlock(lastKnownLocationPosition, false); //Set block to air with drop items flag to false
             }
         }

@@ -166,6 +166,7 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Messages*/
         add(ModMessages.SPAWN_TARDIS_DIMENSION_FAIL, ChatFormatting.RED + "You cannot spawn a TARDIS inside this dimension.");
 
+        add(ModMessages.DELETED_TARDIS, "TARDIS has been deleted");
         add(ModMessages.MSG_EXTERIOR_COOLDOWN, "You must wait %s seconds");
         add(ModMessages.MSG_KEY_BOUND, "Key Bound to %s");
         add(ModMessages.MSG_KEY_CYCLED, "Main: %s");
@@ -329,13 +330,17 @@ public class LangProviderEnglish extends LanguageProvider {
         /*Config*/
         add(ModMessages.CONFIG_IP_COMPAT, "Immersive Portals Compatibility?");
         add(ModMessages.CONFIG_IP_VS_COLLISION, "Immersive Portals Valkyrien Skies Collision");
-        add(ModMessages.CONFIG_IP_TELEPORTATION, "Immersive Portals Teleportation Mode");
-        add(ModMessages.CONFIG_IP_TELEPORTATION_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
+        add(ModMessages.CONFIG_IP_DIMENSION_ADDER, "Immersive Portals Dimension Adder");
+        add(ModMessages.CONFIG_IP_DIMENSION_REMOVER, "Immersive Portals Dimension Remover");
+        add(ModMessages.CONFIG_IP_SMOOTH_TELEPORTATION, "Immersive Portals Smooth Teleportation");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_MODE, "Immersive Portals Teleportation Mode");
+        add(ModMessages.CONFIG_IP_TELEPORTATION_MODE_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
         add(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR, "Render Vortex within interior door");
         add(ModMessages.CONFIG_CUSTOM_SHADERS, "Use Custom Shaders");
+        add(ModMessages.CONFIG_DIMENSION_DELETE_MODE, "Dimension Delete Mode");
         add(ModMessages.SCREEN_SHAKE_MULTIPLIER, "Screen Shake Multiplier");
 
         /*Overlay Messages*/

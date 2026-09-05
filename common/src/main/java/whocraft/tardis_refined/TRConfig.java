@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.ModMessages;
 
 import java.util.List;
@@ -72,9 +73,15 @@ public class TRConfig {
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> BANNED_DIMENSIONS;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> ADVENTURE_MODE_DEFAULTS;
         public final ForgeConfigSpec.BooleanValue ADVENTURE_MODE;
+        public final ForgeConfigSpec.EnumValue<DeleteMode> DIMENSION_DELETE_MODE;
 
-        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION;
-        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_VS;
+        public final ForgeConfigSpec.BooleanValue IP_DIMENSION_ADDER;
+        public final ForgeConfigSpec.BooleanValue IP_DIMENSION_REMOVER;
+
+        public final ForgeConfigSpec.BooleanValue IP_SMOOTH_TELEPORTATION;
+
+        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_MODE;
+        public final ForgeConfigSpec.EnumValue<IPTeleportationMode> IP_TELEPORTATION_MODE_VS;
 
         public enum IPTeleportationMode {
             PORTAL,
@@ -83,18 +90,38 @@ public class TRConfig {
             private static final String COMMENT = "PORTAL is the normal immersive portals with maximum smoothness. ITP instead teleports the player directly similar to when Immersive Portals integration is disabled, making the boti effect purely visual.";
         }
 
+        public enum DeleteMode {
+            IMMEDIATE,
+            NEXT_SHUTDOWN;
+
+            private static final Platform.CommonVersionRange VS_BROKEN_DELETE_VERSIONS = Platform.CommonVersionRange.Builder.builder().atMost(
+                    "2.4.11"
+            ).build();
+
+            static DeleteMode getDefault() {
+                if (Platform.isModLoaded("valkyrienskies", VS_BROKEN_DELETE_VERSIONS)) {
+                    return NEXT_SHUTDOWN;
+                }
+                return IMMEDIATE;
+            }
+        }
+
         public Server(ForgeConfigSpec.Builder builder) {
             builder.push("travel");
             BANNED_DIMENSIONS = builder.translation("config.tardis_refined.banned_dimensions").comment("A list of Dimensions the TARDIS cannot land in.").defineList("banned_dimensions", Lists.newArrayList("example:dimension", "[substring]will_match_any_dimension_containing_this_substring", "[namespace]immersive_portals", "[regex]insert_regex_here"), String.class::isInstance);
             ADVENTURE_MODE_DEFAULTS = builder.translation("config.tardis_refined.adventure_mode_defaults").comment("A list of Dimensions that are automatically sampled").defineList("adventure_mode_defaults", Lists.newArrayList("minecraft:overworld"), String.class::isInstance);
             ADVENTURE_MODE = builder.translation("config.tardis_refined.adventure_mode").comment("Toggles whether players must discover and sample dimensions before they can travel there").define("adventure_mode", false);
+            DIMENSION_DELETE_MODE = builder.translation(ModMessages.CONFIG_DIMENSION_DELETE_MODE).comment("The method used to delete dimensions. IMMEDIATE deletes the dimension immediately while NEXT_SHUTDOWN schedules the dimension for deletion on server shutdown. NEXT_SHUTDOWN is primarily intended for use with Valkyrien Skies 2.4.11 and lower as it may crash otherwise due to a bug. IMMEDIATE should work fine with most unless they do something weird. Note that NEXT_SHUTDOWN does NOT allow you to recover a TARDIS deleted accidentally.").defineEnum("dimension_delete_mode", DeleteMode.getDefault());
             builder.pop();
             builder.push("compatibility");
             builder.push("immersive_portals");
-            IP_TELEPORTATION = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
+            IP_DIMENSION_ADDER = builder.comment("Whether to use Immersive Portals to add new dimensions.").translation(ModMessages.CONFIG_IP_DIMENSION_ADDER).define("dimension_adder", false);
+            IP_DIMENSION_REMOVER = builder.comment("Whether to use Immersive Portals to remove dimensions.").translation(ModMessages.CONFIG_IP_DIMENSION_REMOVER).define("dimension_remover", false);
+            IP_SMOOTH_TELEPORTATION = builder.comment("Whether to let Immersive Portals handle regular non-boti teleportation.").translation(ModMessages.CONFIG_IP_SMOOTH_TELEPORTATION).define("smooth_teleportation", !Platform.isModLoaded("distanthorizons"));
+            IP_TELEPORTATION_MODE = builder.comment("Choose what teleportation method to use when walking through the TARDIS door. " + IPTeleportationMode.COMMENT).translation(ModMessages.CONFIG_IP_TELEPORTATION_MODE).defineEnum("teleportation_mode", IPTeleportationMode.PORTAL);
             builder.pop();
             builder.push("immersive_portals_valkyrien_skies");
-            IP_TELEPORTATION_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_VS).defineEnum("teleportation_mode_vs", IPTeleportationMode.ITP);
+            IP_TELEPORTATION_MODE_VS = builder.comment("Choose what teleportation method to use when walking through the TARDIS door on a Valkyrien Skies ship. " + IPTeleportationMode.COMMENT + " ITP is recommended to avoid getting stuck in walls/the void when the ship is moving.").translation(ModMessages.CONFIG_IP_TELEPORTATION_MODE_VS).defineEnum("teleportation_mode_vs", IPTeleportationMode.ITP);
             builder.pop();
             builder.pop();
         }
