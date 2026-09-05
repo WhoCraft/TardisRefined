@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 
@@ -21,6 +22,10 @@ public class HumEntry {
             Codec.list(ResourceLocation.CODEC).fieldOf("ambient_sounds").forGetter(HumEntry::getAmbientSounds),
             Codec.STRING.orElse("Placeholder").fieldOf("name_component").forGetter(HumEntry::getNameComponent)
     ).apply(instance, HumEntry::new));
+
+    public static final Codec<HumEntry> REFERENCE_CODEC = CodecJsonReloadListener.createReferenceCodec(
+            CODEC, HumEntry::getIdentifier, TardisHums::getHumById
+    );
 
     private final ResourceLocation identifier;
     private ResourceLocation soundEventId;
