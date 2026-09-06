@@ -38,10 +38,7 @@ import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
-import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
-import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.tardis.manager.*;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
@@ -223,10 +220,19 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
             ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.location());
             TardisLevelOperator.get(interior).ifPresent(cap -> {
 
-                UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
                 AestheticHandler aesthetics = cap.getAestheticHandler();
 
-                if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().isLanding() && cap.getPilotingManager().isInFlight() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
+                if (
+                        cap.isTardisReady() &&
+                        (
+                                blockState.getValue(ShellBaseBlock.OPEN) ||
+                                (
+                                        cap.getPilotingManager().isLanding() &&
+                                        cap.getPilotingManager().isInFlight() &&
+                                        cap.getSettingsManager().getSetting(SettingsHandler.MATERIALIZE_AROUND.get()).orElse(false)
+                                )
+                        )
+                ) {
                     if (aesthetics.getShellTheme() != null) {
                         ResourceLocation theme = aesthetics.getShellTheme();
 

@@ -6,6 +6,7 @@
 
 - Added tab support to the ARS GUI. Each root node gets its own tab.
 - Added keyboard navigation support to the ARS GUI. Use Tab to cycle through tabs.
+- Added a System Settings screen to the Monitor. Currently, it only contains a setting to toggle materialize around on and off.
 
 #### Changes
 
@@ -30,3 +31,5 @@
 - Fixed items dropped in shell view ending up outside the TARDIS.
 - Fixed players being able to pick up items and XP while in shell view.
 - Fixed the TARDIS sometimes playing the default hum when set to a different hum.
+- Fixed materialize around not working in unloaded chunks.
+- Fixed materialize around bringing mobs along when taking off.

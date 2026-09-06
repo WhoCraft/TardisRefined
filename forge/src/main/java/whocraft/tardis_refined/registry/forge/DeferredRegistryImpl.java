@@ -26,11 +26,13 @@ public class DeferredRegistryImpl {
     public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
         //Create a deferredRegister instance to be passed on to Tardis Refined's {@link DeferredRegister} object later
         DeferredRegister<T> deferredRegister = DeferredRegister.create(resourceKey, modid);
-        var supplier = syncToClient ? deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1)) : deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1).disableSync()); //Tell Forge to register our registry when NewRegistryEvent fires. DO NOT call this anywhere else.
+        var supplier = syncToClient ? deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1).hasTags()) : deferredRegister.makeRegistry(() -> new RegistryBuilder<T>().setMaxID(Integer.MAX_VALUE - 1).hasTags().disableSync()); //Tell Forge to register our registry when NewRegistryEvent fires. DO NOT call this anywhere else. If it has tags, then it has a fallback vanilla Registry which we can reference.
         return new Impl<T>(resourceKey, deferredRegister, supplier, syncToClient);
     }
 
     public static class Impl<T> extends DeferredRegistry<T> {
+
+        public static final ResourceLocation VANILLA_REGISTRY_ID = new ResourceLocation("forge", "registry_defaulted_wrapper");
 
         private final DeferredRegister<T> deferredRegister;
         private final ResourceKey<? extends Registry<T>> resourceKey;
@@ -129,6 +131,11 @@ public class DeferredRegistryImpl {
         @Override
         public Supplier<Codec<T>> getCodec() {
             return () -> this.getForgeRegistry().getCodec();
+        }
+
+        @Override
+        public Registry<T> getRegistry() { // This will return a registry if hasTags is set.
+            return this.getForgeRegistry().getSlaveMap(VANILLA_REGISTRY_ID, Registry.class);
         }
     }
 

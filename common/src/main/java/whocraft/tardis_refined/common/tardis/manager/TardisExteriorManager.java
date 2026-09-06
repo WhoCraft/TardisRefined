@@ -3,28 +3,33 @@ package whocraft.tardis_refined.common.tardis.manager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
-import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.blockentity.shell.ExteriorShell;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
-import whocraft.tardis_refined.common.util.LevelHelper;
-import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.constants.NbtConstants;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
-import java.util.Objects;
+import java.util.Comparator;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * External Shell data.
  **/
 public class TardisExteriorManager extends BaseHandler {
+
+    private static final TicketType<BlockPos> SHELL_LANDING_LOADER = TicketType.create(
+            TardisRefined.MODID + ":" + "shell", Comparator.comparingLong(BlockPos::asLong),
+            TardisPilotingManager.TICKS_LANDING_MAX
+    );
+
     private final TardisLevelOperator operator;
     private double fuelForShellChange = 15; // Amount of fuel required to change the shell
     private boolean locked;
@@ -152,6 +157,15 @@ public class TardisExteriorManager extends BaseHandler {
         operator.tardisClientData().setIsLanding(true);
         operator.tardisClientData().sync();
 
+        // Make sure the chunk is loaded so materialize around works on non-player entities in unloaded chunks.
+        // The ticket will expire on its own when landing is complete.
+        // We check for the upgrade rather than the setting to allow toggling it on while already landing.
+        if (TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(operator.getUpgradeHandler())) {
+            location.getLevel().getChunkSource().addRegionTicket(
+                    SHELL_LANDING_LOADER, new ChunkPos(location.getPosition()),
+                    1, location.getPosition()
+            );
+        }
         this.placeExteriorBlockForLanding(location);
     }
 

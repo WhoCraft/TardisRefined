@@ -10,6 +10,7 @@ import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncTardisClientData;
+import whocraft.tardis_refined.common.tardis.manager.SettingsHandler;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
@@ -52,6 +53,7 @@ public class TardisClientData {
     private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<HumEntry> humEntry = Optional.empty();
+    private SettingsHandler settingsHandler = new SettingsHandler(Optional.empty());
     public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
     }
@@ -196,6 +198,14 @@ public class TardisClientData {
         this.maximumFuel = fuel;
     }
 
+    public SettingsHandler getSettingsHandler() {
+        return settingsHandler;
+    }
+
+    public void setSettingsHandler(SettingsHandler settingsHandler) {
+        this.settingsHandler = settingsHandler;
+    }
+
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -224,7 +234,7 @@ public class TardisClientData {
         compoundTag.putDouble(NbtConstants.FUEL, fuel);
         compoundTag.putDouble(NbtConstants.MAXIMUM_FUEL, maximumFuel);
 
-        return compoundTag;
+        return settingsHandler.saveData(compoundTag);
     }
 
     /**
@@ -258,6 +268,7 @@ public class TardisClientData {
 
         fuel = compoundTag.getDouble(NbtConstants.FUEL);
         maximumFuel = compoundTag.getDouble(NbtConstants.MAXIMUM_FUEL);
+        settingsHandler.loadData(compoundTag);
     }
 
     /**
