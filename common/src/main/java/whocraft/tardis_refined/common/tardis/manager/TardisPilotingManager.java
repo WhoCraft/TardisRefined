@@ -1016,6 +1016,7 @@ public class TardisPilotingManager extends TickableHandler {
 
         this.isInFlight = false;
         this.ticksTakingOff = 0;
+        this.ticksLanding = 0;
         this.autoLand = false;
 
         if (this.getFuel() < getMaximumFuel() * 0.1) {
