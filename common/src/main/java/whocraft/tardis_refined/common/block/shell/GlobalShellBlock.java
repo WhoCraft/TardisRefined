@@ -2,7 +2,6 @@ package whocraft.tardis_refined.common.block.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -12,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -31,6 +29,7 @@ import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.manager.SettingsHandler;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
@@ -82,14 +81,13 @@ public class GlobalShellBlock extends ShellBaseBlock {
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         var tardis = getTARDIS(level, pos);
         if (tardis.isEmpty()) return;
-        // We only check for the presence of the upgrade to allow players to enable it in the settings menu while they're landing.
+        // We check for the presence of the upgrade when deciding whether to schedule the next tick to allow players to enable it in the settings menu while they're landing.
         if (tardis.get().getPilotingManager().isLanding() && tardis.get().getPilotingManager().isInFlight() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(tardis.get().getUpgradeHandler())) {
-            // TODO This fallback can probably be removed in 26.1+
-            if (!level.getChunkSource().chunkMap.anyPlayerCloseEnoughForSpawning(new ChunkPos(pos))) {
+            if (tardis.get().getSettingsManager().getSetting(SettingsHandler.MATERIALIZE_AROUND.get()).orElse(false)) {
                 level.getEntitiesOfClass(
                         Entity.class,
                         state.getCollisionShape(level, pos).bounds().move(pos)
-                ).forEach(entity -> entityInside(state, level, pos, entity));
+                ).forEach(entity -> tardis.get().enterTardis(entity, pos, level, state.getValue(ShellBaseBlock.FACING)));
             }
             // Scheduled ticks are a useful and simple way to check for entities in unloaded chunks.
             // This also won't enable mob spawning (unlike a forced ticket), which makes accidental landings around hostile mobs less likely.

@@ -32,7 +32,6 @@ import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
@@ -48,7 +47,6 @@ import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
-import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -222,17 +220,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
                 AestheticHandler aesthetics = cap.getAestheticHandler();
 
-                if (
-                        cap.isTardisReady() &&
-                        (
-                                blockState.getValue(ShellBaseBlock.OPEN) ||
-                                (
-                                        cap.getPilotingManager().isLanding() &&
-                                        cap.getPilotingManager().isInFlight() &&
-                                        cap.getSettingsManager().getSetting(SettingsHandler.MATERIALIZE_AROUND.get()).orElse(false)
-                                )
-                        )
-                ) {
+                if (cap.isTardisReady() && blockState.getValue(ShellBaseBlock.OPEN)) {
                     if (aesthetics.getShellTheme() != null) {
                         ResourceLocation theme = aesthetics.getShellTheme();
 
