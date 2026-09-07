@@ -195,7 +195,7 @@ public class TardisLevelOperator {
             tardisClientData.setIsOnCooldown(pilotingManager.isInRecovery());
             tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
             tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
-            tardisClientData.setHumEntry(interiorManager.getHumEntry());
+            tardisClientData.setHumEntry(Optional.of(interiorManager.getHumEntry()));
             tardisClientData.setFuel(pilotingManager.getFuel());
             tardisClientData.setMaximumFuel(pilotingManager.getMaximumFuel());
             tardisClientData.setTardisState(tardisState);

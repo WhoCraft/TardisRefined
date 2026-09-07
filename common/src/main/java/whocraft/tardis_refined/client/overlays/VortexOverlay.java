@@ -98,7 +98,7 @@ public class VortexOverlay {
     public static void renderOverlay(GuiGraphics gg) {
         TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
             /*Activation Logic*/
-            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
+            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousDim());
 
             Minecraft mc = Minecraft.getInstance();
             PoseStack pose = gg.pose();

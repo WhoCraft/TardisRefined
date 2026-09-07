@@ -60,7 +60,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
     @Override
     public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!(level instanceof ServerLevel serverLevel) || interactionHand != InteractionHand.MAIN_HAND) {
-            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+            return InteractionResult.sidedSuccess(true);
         }
 
         if (!(level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity)) {
@@ -69,20 +69,20 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
 
         ItemStack itemStack = player.getItemInHand(interactionHand);
 
-        if (itemStack.isEmpty()) {
-            if(player instanceof ServerPlayer serverPlayer) {
-                new S2COpenCraftingScreen().send(serverPlayer);
-            }
-            astralManipulatorBlockEntity.clearDisplay();
+        if (itemStack.getItem() instanceof ScrewdriverItem) {
+            astralManipulatorBlockEntity.onRightClick(itemStack, player);
             return InteractionResult.sidedSuccess(false);
         }
 
-        if (itemStack.getItem() instanceof ScrewdriverItem) {
-            astralManipulatorBlockEntity.onRightClick(itemStack, player);
+        if (CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player)) {
+            return InteractionResult.sidedSuccess(false);
         }
 
-        CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player);
-        return InteractionResult.sidedSuccess(true);
+        if(player instanceof ServerPlayer serverPlayer) {
+            new S2COpenCraftingScreen().send(serverPlayer);
+        }
+        astralManipulatorBlockEntity.clearDisplay();
+        return InteractionResult.sidedSuccess(false);
     }
 
 

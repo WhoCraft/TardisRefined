@@ -6,16 +6,20 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.constants.ModMessages;
+import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UpgradesScreen extends Screen {
 
@@ -40,8 +44,8 @@ public class UpgradesScreen extends Screen {
     public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
     private static final int WINDOW_INSIDE_X = 10;
     private static final int WINDOW_INSIDE_Y = 18;
-    private static int tabPage;
-    private static int maxPages;
+    private int tabPage;
+    private int maxPages;
     private final List<UpgradeTab> tabs = new ArrayList<>();
     private final UpgradeHandler upgradeHandler;
     @Nullable
@@ -77,17 +81,28 @@ public class UpgradesScreen extends Screen {
         this.tabs.clear();
         this.selectedTab = null;
 
-        UpgradeTab upgradeTab = UpgradeTab.create(this.minecraft, this, 0, upgradeHandler);
-        this.tabs.add(upgradeTab);
+        int index = 0;
+        for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
+            if (entry.getValue().getParent() == null) {
+                UpgradeTab upgradeTab = UpgradeTab.create(this.minecraft, this, index++, upgradeHandler, entry.getValue());
+                this.tabs.add(upgradeTab);
+            }
+        }
 
         if (this.tabs.size() > UpgradeTabType.MAX_TABS) {
             int guiLeft = (this.width - WINDOW_WIDTH) / 2;
             int guiTop = (this.height - WINDOW_HEIGHT) / 2;
             this.addRenderableWidget(Button.builder(Component.literal("<"), (b) -> {
-                tabPage = Math.max(tabPage - 1, 0);
+                tabPage = tabPage - 1;
+                if (tabPage < 0) {
+                    tabPage = maxPages;
+                }
             }).bounds(guiLeft, guiTop - 50, 20, 20).build());
             this.addRenderableWidget(Button.builder(Component.literal(">"), (b) -> {
-                tabPage = Math.min(tabPage + 1, maxPages);
+                tabPage = tabPage + 1;
+                if (tabPage > maxPages) {
+                    tabPage = 0;
+                }
             }).bounds(guiLeft + WINDOW_WIDTH - 20, guiTop - 50, 20, 20).build());
             maxPages = this.tabs.size() / UpgradeTabType.MAX_TABS;
         }
@@ -109,6 +124,10 @@ public class UpgradesScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (button == 0) {
+            if (selectedTab != null) {
+                selectedTab.setHighlight(null);
+            }
+
             int i = (this.width - WINDOW_WIDTH) / 2;
             int j = (this.height - WINDOW_HEIGHT) / 2;
 
@@ -116,7 +135,7 @@ public class UpgradesScreen extends Screen {
                 return this.overlayScreen.mouseClicked(mouseX, mouseY, button);
             } else {
                 for (UpgradeTab powerTab : this.tabs) {
-                    if (powerTab.isMouseOver(i, j, mouseX, mouseY)) {
+                    if (powerTab.isSamePage(tabPage) && powerTab.isMouseOver(i, j, mouseX, mouseY)) {
                         this.selectedTab = powerTab;
                         break;
                     }
@@ -125,12 +144,7 @@ public class UpgradesScreen extends Screen {
                 if (selectedTab != null) {
                     UpgradeWidget entry = this.selectedTab.getUpgradeHoveredOver((int) (mouseX - i - 9), (int) (mouseY - j - 18), i, j);
 
-                    if (entry != null) {
-                        Upgrade upgrade = entry.upgradeEntry;
-                        boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
-                        if (upgrade.isUnlocked(upgradeHandler)) return false;
-                        this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired(), this));
-                    }
+                    if (!buyUpgradePopup(entry)) return false;
                 }
             }
         }
@@ -138,9 +152,56 @@ public class UpgradesScreen extends Screen {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    private boolean buyUpgradePopup(UpgradeWidget entry) {
+        if (entry != null) {
+            Upgrade upgrade = entry.upgradeEntry;
+            boolean hasUnlockedParent = isPotentialParentUnlocked(upgrade, upgradeHandler);
+            if (upgrade.isUnlocked(upgradeHandler)) return false;
+            this.openOverlayScreen(new BuyUpgradeScreen(upgrade, hasUnlockedParent && !upgrade.isUnlocked(upgradeHandler) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired(), this));
+        }
+        return true;
+    }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return this.overlayScreen == null ? super.keyPressed(keyCode, scanCode, modifiers) : this.overlayScreen.keyPressed(keyCode, scanCode, modifiers);
+        if (minecraft.options.keyInventory.matches(keyCode, scanCode)) {
+            if (overlayScreen != null) {
+                closeOverlayScreen();
+            } else {
+                onClose();
+            }
+            return true;
+        }
+        if (this.overlayScreen != null) {
+            return this.overlayScreen.keyPressed(keyCode, scanCode, modifiers);
+        }
+        if (keyCode == GLFW.GLFW_KEY_TAB) {
+            int currentTab = tabs.indexOf(selectedTab);
+	        int nextTab;
+	        if ((GLFW.GLFW_MOD_SHIFT & modifiers) == 0) {
+		        nextTab = currentTab + 1;
+                if (nextTab >= tabs.size()) {
+                    nextTab = 0;
+                }
+	        } else {
+		        nextTab = currentTab - 1;
+                if (nextTab < 0) {
+                    nextTab = tabs.size()-1;
+                }
+	        }
+	        selectedTab = tabs.get(nextTab);
+            tabPage = nextTab / UpgradeTabType.MAX_TABS;
+            return true;
+        }
+        if (selectedTab != null) {
+            if (selectedTab.keyPressed(keyCode, scanCode, modifiers)) return true;
+            if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_SPACE) {
+                UpgradeWidget entry = this.selectedTab.getHighlight();
+
+                if (!buyUpgradePopup(entry)) return false;
+            }
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override
@@ -166,10 +227,12 @@ public class UpgradesScreen extends Screen {
         this.renderTooltips(guiGraphics, mouseX, mouseY, i, j);
 
         if (upgradeHandler.getUpgradePoints() > 0) {
-            guiGraphics.drawString(this.minecraft.font, "Points: " + upgradeHandler.getUpgradePoints(), width / 2 - font.width("Points: " + upgradeHandler.getUpgradePoints()) / 2, j + WINDOW_HEIGHT - 15, ChatFormatting.BLACK.getColor(), false);
+            var pointsMsg = Component.translatable(ModMessages.UI_UPGRADES_POINTS, upgradeHandler.getUpgradePoints());
+            guiGraphics.drawString(this.minecraft.font, pointsMsg, width / 2 - font.width(pointsMsg) / 2, j + WINDOW_HEIGHT - 15, ChatFormatting.BLACK.getColor(), false);
         }
 
-        guiGraphics.drawString(this.minecraft.font, "XP: " + upgradeHandler.getUpgradeXP() + " / 100", width / 2 - font.width("XP: " + upgradeHandler.getUpgradeXP() + " / 100") / 2, j + 6, ChatFormatting.BLACK.getColor(), false);
+        var xpMsg = Component.translatable(ModMessages.UI_UPGRADES_XP, upgradeHandler.getUpgradeXP() + " / 100");
+        guiGraphics.drawString(this.minecraft.font, xpMsg, width / 2 - font.width(xpMsg) / 2, j + 6, ChatFormatting.BLACK.getColor(), false);
 
 
     }
@@ -207,13 +270,17 @@ public class UpgradesScreen extends Screen {
             RenderSystem.setShaderTexture(0, TABS);
 
             for (UpgradeTab tab : this.tabs) {
-                tab.drawTab(guiGraphics, offsetX, offsetY, tab == this.selectedTab);
+                if (tab.isSamePage(tabPage)) {
+                    tab.drawTab(guiGraphics, offsetX, offsetY, tab == this.selectedTab);
+                }
             }
 
             RenderSystem.defaultBlendFunc();
 
             for (UpgradeTab tab : this.tabs) {
-                tab.drawIcon(guiGraphics, offsetX, offsetY);
+                if (tab.isSamePage(tabPage)) {
+                    tab.drawIcon(guiGraphics, offsetX, offsetY);
+                }
             }
 
             RenderSystem.disableBlend();
@@ -238,7 +305,7 @@ public class UpgradesScreen extends Screen {
 
         if (this.tabs.size() > 1) {
             for (UpgradeTab tab : this.tabs) {
-                if (tab.isMouseOver(offsetX, offsetY, mouseX, mouseY)) {
+                if (tab.isSamePage(tabPage) && tab.isMouseOver(offsetX, offsetY, mouseX, mouseY)) {
                     guiGraphics.renderTooltip(this.font, tab.getTitle(), mouseX, mouseY);
                 }
             }

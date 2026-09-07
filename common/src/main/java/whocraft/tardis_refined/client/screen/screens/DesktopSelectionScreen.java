@@ -48,10 +48,7 @@ public class DesktopSelectionScreen extends MonitorOS {
     @Override
     protected void init() {
         super.init();
-        this.setEvents(() -> DesktopSelectionScreen.selectDesktop(currentDesktopTheme), () -> {
-            if (PREVIOUS != null)
-                this.switchScreenToLeft(PREVIOUS);
-        });
+        this.setEvents(() -> DesktopSelectionScreen.selectDesktop(currentDesktopTheme), this::back);
         this.currentDesktopTheme = grabDesktop();
         int vPos = (height - monitorHeight) / 2;
         addSubmitButton(width / 2 + 25, height - vPos - 25);

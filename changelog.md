@@ -1,57 +1,32 @@
-# Version 2.1.7
+# Version 2.1.8
 
 ![TARDIS Refined](https://wiki.tardisrefined.net/TARDIS-Refined-Wiki/tardis_refined_v2_1.png)
 
-#### Items
-- Added Grown Tardis Item.
+#### Additions
+
+- Added tab support to the ARS GUI. Each root node gets its own tab.
+- Added keyboard navigation support to the ARS GUI. Use Tab to cycle through tabs.
 
 #### Changes
-- Amethyst Screwdriver tooltip now is colored gray.
-- Updated create-fabric integration to create 6.
-- Tweaked corridor generation to generate one chunk at a time for any new TARDIS created after this update. Should hopefully fix errors where corridors sometimes don't generate in some chunks. Any existing TARDIS created before this update will be unaffected.
-- Landing pad is now always considered a safe landing location, even when entrance blocked or above the nether roof.
 
-#### Configs
-- New config option to disable teleportation for the Immersive Portals portal, instead teleporting the player directly as if Immersive Portals integration was disabled.
-- New config option to toggle the above setting separately when the door is on a Valkyrien Skies ship.
-- New config option to disable the collision box of the door while open with Immersive Portals integration enabled on Valkyrien Skies ships.
-- Banned Dimensions and Adventure Mode Defaults can now accept namespace, substring and regex entries.
+- Pressing E will now close Monitor, ARS, and Astral Manipulator GUIs.
+- Improved keyboard navigation support for the Monitor and Astral Manipulator GUIs.
+- The TARDIS item will now read the `setup_data` tag on the item, if it exists, and pass it on to the created TARDIS.
 
-#### Bug Fix
-- Bug fix: TARDIS exterior disappears when moved by other mods.
-- Bug fix: Taking off or landing a TARDIS on a Valkyrien Skies ship breaks the ship.
-- Bug fix: Impossible to enter TARDIS when on a Valkyrien Skies ship.
-- Bug fix: TARDIS shows shipyard coordinates when on a Valkyrien Skies ship.
-- Bug fix: Player does not face the right horizontal direction when entering/exiting a TARDIS on a Valkyrien Skies ship.
-- Bug fix: TARDIS does not take Valkyrien Skies ships into account when computing travel distance.
-- Bug fix: TARDIS does not automatically try to land on ships.
-- Bug fix: Flickering when spectating TARDIS exterior on a Valkyrien Skies ship.
-- Bug fix: Grown Tardis Item crashes the game if Valkyrien Skies is installed.
-- Bug fix: Immersive Portals portal is not rotated correctly when door is on a Valkyrien Skies ship.
+#### Bug Fixes
 
-- Bug fix: Fixes Console Textures having left over prefabs
-- Bug fix: Fixes Forge not having the same access level as Fabric (https://github.com/WhoCraft/TardisRefined/issues/477)
-- Bug fix: Fixed Shulker shells not having correct texture paths
-- Bug fix: Fixed the TARDIS forgetting its current dimension on world reload
-- Bug fix: Fix materialize around upgrade not working.
-- Bug fix: Fixed TARDIS being broken when created in a non-overworld dimension.
-- Bug fix: Immersive Portals portal sometimes not spawning when opened from exterior.
-- Bug fix: Respawn Anchor and /spawnpoint command not working inside the TARDIS
-- Bug fix: Capability deserialization fails on Arclight
-- Bug fix: TARDIS removes forceloading when taking off and landing.
-- Bug fix: TARDIS takeoff sound plays from the interior door instead of the console.
-- Bug fix: Immersive Portals compatibility crashing the game on Forge.
-- Bug fix: Vortex not rendering in GUIs when Journeymap or Kilt is installed.
-- Bug fix: TARDIS cannot reach edges when moving in the vortex view on Forge.
-- Bug fix: Players can take damage or die while in shell view.
-- Bug fix: Players can receive new potion effects while in shell view.
-- Bug fix: Create TARDIS Summary does not display all lines correctly.
-- Bug fix: Crash when closing the game near a TARDIS Create display while Valkyrien Skies is installed.
-- Bug fix: Recently created TARDIS keeps printing "Preparing spawn area: 100%" every time a chunk loads until the server is restarted.
-- Bug fix: TARDIS gets stuck in flight when destination is reached and throttle is set to 0 before dematerialization is complete.
-- Bug fix: Flight events don't stop when throttle at 0%.
-- Bug fix: Flight events sometimes turn back on despite destination reached.
-- Bug fix: The back button in the Waypoint screen traps users in an infinite loop and deletes waypoints.
-- Bug fix: AR particles sometimes render below the control.
-- Bug fix: TARDIS does not respect logical height.
-- Bug fix: Broken TARDIS console smoke damages armor.
+- Fixed the Astral Manipulator GUI not opening when the player is holding an item.
+- Fixed points and XP text in the ARS GUI not being translatable.
+- Fixed the mod name being drawn in the wrong position in the ARS GUI.
+- Fixed the TARDIS item having infinite uses in Survival Mode.
+- Fixed the arm not swinging when using the TARDIS item.
+- Fixed the GPS not using the same direction and dimension name formatting as the rest of the mod.
+- Fixed the item name of sampled dimensions not being translatable.
+- Fixed a rare crash when rendering the shell holo.
+- Fixed the Forge Zeiton Glass load function removing the default `requestModelDataUpdate()` function call from every Forge block entity.
+- Fixed players glitching out when relogging while in shell view on Fabric.
+- Fixed the shell-view return position being rounded to the nearest block position.
+- Fixed players not facing the correct direction after exiting shell view.
+- Fixed items dropped in shell view ending up outside the TARDIS.
+- Fixed players being able to pick up items and XP while in shell view.
+- Fixed the TARDIS sometimes playing the default hum when set to a different hum.

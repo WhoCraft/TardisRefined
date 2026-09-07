@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.blockentity.shell;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +16,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -27,17 +29,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.api.event.ShellChangeSources;
+import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
+import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
+import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -49,11 +55,12 @@ import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.util.Optional;
 import java.util.OptionalLong;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class ShellBaseBlockEntity extends BlockEntity implements ExteriorShell, BlockEntityTicker<ShellBaseBlockEntity> {
 
-    private static final String SETUP_DATA = "setup_data";
+    public static final String SETUP_DATA = "setup_data";
 
     public AnimationState liveliness = new AnimationState();
     protected ResourceKey<Level> TARDIS_ID;
@@ -151,16 +158,14 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     private void setUpTardis(
-            BlockState blockState, Level level, BlockPos blockPos,
-            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
-            Runnable onSuccess, Runnable onFail
+            BlockState blockState, Level level, BlockPos blockPos, SetupState setupState
     ) {
         if (shouldSetup() && level instanceof ServerLevel serverLevel) {
 
             AtomicBoolean generated = new AtomicBoolean(false);
 
             //Set the shell with this level
-            setTardisId(generatedLevelKey);
+            setTardisId(setupState.getOrGenerateLevelKey());
 
             //Create the Level on demand which will create our capability
             ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, getTardisId().location());
@@ -170,49 +175,41 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 TardisExteriorManager extManager = tardisLevelOperator.getExteriorManager();
                 TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();
                 if (!tardisLevelOperator.hasInitiallyGenerated()) {
-                    intManager.generateDesktop(desktopTheme);
+                    intManager.generateDesktop(setupState.desktopTheme());
                     tardisLevelOperator.getProgressionManager().addDiscoveredLevel(serverLevel.dimension());
                     Direction direction = blockState.getValue(ShellBaseBlock.FACING).getOpposite();
                     TardisNavLocation navLocation = new TardisNavLocation(blockPos, direction, serverLevel);
                     pilotManager.setCurrentLocation(navLocation);
                     pilotManager.setTargetLocation(navLocation);
-                    if (openEye) {
+                    if (setupState.openEye()) {
                         pilotManager.setFuel(pilotManager.getMaximumFuel());
                     }
                     tardisLevelOperator.setInitiallyGenerated(true);
                     tardisLevelOperator.setTardisState(TardisLevelOperator.STATE_TERRAFORMED_NO_EYE); // Will be updated in `openTheEye` if `openEye` is true.
-                    if (openEye) {
+                    if (setupState.openEye()) {
                         intManager.openTheEye(true, false);
                     } else {
                         intManager.setHumEntry(TardisHums.CAVE);
                     }
+                    setupState.hum().ifPresent(intManager::setHumEntry);
+                    tardisLevelOperator.getAestheticHandler().setVortex(setupState.vortex());
                     serverLevel.setBlock(blockPos, blockState.setValue(ShellBaseBlock.OPEN, true), Block.UPDATE_ALL);
                     generated.set(true);
-                    tardisLevelOperator.setShellTheme(shellTheme, ShellPatterns.getPatternsForTheme(shellTheme).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
+                    tardisLevelOperator.setShellTheme(setupState.shellTheme(), ShellPatterns.getPatternsForTheme(setupState.shellTheme()).get(0).id(), ShellChangeSources.ROOT_TO_TARDIS);
                     tardisLevelOperator.setOrUpdateExteriorBlock(navLocation, Optional.of(blockState), false, ShellChangeSources.ROOT_TO_TARDIS);
                 }
             });
 
             if (generated.get()) {
-                onSuccess.run();
+                setupState.onSuccess().run();
             } else {
-                onFail.run();
+                setupState.onFail().run();
             }
         }
     }
 
-    public void setUpTardisOnNextTickIfNecessary(
-            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
-            Runnable onSuccess, Runnable onFail
-    ) {
-        if (ModCompatChecker.valkyrienSkies()) {
-            setupData = new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, onSuccess, onFail);
-        } else {
-            setUpTardis(
-                    getBlockState(), getLevel(), getBlockPos(), generatedLevelKey, shellTheme, desktopTheme, openEye,
-                    onSuccess, onFail
-            );
-        }
+    public void setUpTardisOnNextTick(SetupState setupData) {
+        this.setupData = setupData;
     }
 
     @Override
@@ -260,10 +257,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                     setupTick = OptionalLong.of(level.getGameTime()+1);
                     return;
                 }
-                setUpTardis(
-                        blockState, level, blockPos, setupData.generatedLevelKey, setupData.shellTheme, setupData.desktopTheme,
-                        setupData.openEye, setupData.onSuccess, setupData.onFail
-                );
+                setUpTardis(blockState, level, blockPos, setupData);
                 setupData = null;
                 setupTick = OptionalLong.empty();
             }
@@ -373,23 +367,115 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     public record SetupState(
-            ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Optional<ResourceKey<Level>> generatedLevelKey, ResourceLocation shellTheme, DesktopTheme desktopTheme, boolean openEye,
+            Optional<HumEntry> hum, ResourceLocation vortex,
             Runnable onSuccess, Runnable onFail // We can't serialize onSuccess and onFail in a good way.
     ) {
 
+        public static final ResourceLocation DEFAULT_VORTEX = VortexRegistry.FLOW.getId();
+        public static final ResourceLocation DEFAULT_SHELL_THEME = ShellTheme.HALF_BAKED.getId();
+        public static final DesktopTheme DEFAULT_DESKTOP = TardisDesktops.TERRAFORMED;
+
+        public static final SetupState DEFAULT = new SetupState(
+                Optional.empty(), DEFAULT_SHELL_THEME, DEFAULT_DESKTOP, false,
+                Optional.empty(), DEFAULT_VORTEX
+        );
+
+        @Deprecated
+        public SetupState {}
+
+        private SetupState(
+                Optional<ResourceKey<Level>> generatedLevelKey, ResourceLocation shellTheme,
+                DesktopTheme desktopTheme, boolean openEye, Optional<HumEntry> hum, ResourceLocation vortex
+        ) {
+            this(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, () -> {}, () -> {});
+        }
+
+        @Deprecated
         public SetupState(
-                ResourceKey<Level> generatedLevelKey, ResourceLocation shellTheme,
+                Optional<ResourceKey<Level>> generatedLevelKey, ResourceLocation shellTheme,
                 DesktopTheme desktopTheme, boolean openEye
         ) {
-            this(generatedLevelKey, shellTheme, desktopTheme, openEye, () -> {}, () -> {});
+            this(generatedLevelKey, shellTheme, desktopTheme, openEye, Optional.empty(), DEFAULT_VORTEX, () -> {}, () -> {});
+        }
+
+        @Deprecated
+        public SetupState(
+                Optional<ResourceKey<Level>> generatedLevelKey, ResourceLocation shellTheme,
+                DesktopTheme desktopTheme, boolean openEye, Runnable onSuccess, Runnable onFail
+        ) {
+            this(generatedLevelKey, shellTheme, desktopTheme, openEye, Optional.empty(), DEFAULT_VORTEX, onSuccess, onFail);
+        }
+
+        public SetupState withLevelKey(Optional<ResourceKey<Level>> generatedLevelKey) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        public SetupState withShellTheme(ResourceLocation shellTheme) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        public SetupState withDesktopTheme(DesktopTheme desktopTheme) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        public SetupState withOpenEye(boolean openEye) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        public SetupState withHum(Optional<HumEntry> hum) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        public SetupState withVortex(ResourceLocation vortex) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        // Might not run, don't use this for anything important!
+        public SetupState withOnSuccess(Runnable onSuccess) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        // Might not run, don't use this for anything important!
+        public SetupState withOnFail(Runnable onFail) {
+            return new SetupState(generatedLevelKey, shellTheme, desktopTheme, openEye, hum, vortex, onSuccess, onFail);
+        }
+
+        public ResourceKey<Level> getOrGenerateLevelKey() {
+            return generatedLevelKey.orElseGet(
+                    () -> ResourceKey.create(
+                            Registries.DIMENSION,
+                            new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString())
+                    )
+            );
         }
 
         public static final Codec<SetupState> CODEC = RecordCodecBuilder.create(
                 instance -> instance.group(
-                        Level.RESOURCE_KEY_CODEC.fieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
-                        ResourceLocation.CODEC.fieldOf("shell_theme").forGetter(SetupState::shellTheme),
-                        DesktopTheme.getCodec().fieldOf("desktop_theme").forGetter(SetupState::desktopTheme),
-                        Codec.BOOL.fieldOf("open_eye").forGetter(SetupState::openEye)
+                        Level.RESOURCE_KEY_CODEC.optionalFieldOf("interior_dimension").forGetter(SetupState::generatedLevelKey),
+                        ExtraCodecs.validate(
+                                ResourceLocation.CODEC,
+                                data -> {
+                                    if (ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.containsKey(data)) {
+                                        return DataResult.success(data);
+                                    } else {
+                                        return DataResult.error(() -> "Not a registered shell theme: " + data);
+                                    }
+                                }
+                        ).fieldOf("shell_theme").orElse(DEFAULT_SHELL_THEME).forGetter(SetupState::shellTheme),
+                        DesktopTheme.REFERENCE_CODEC.fieldOf("desktop_theme").orElse(DEFAULT_DESKTOP).forGetter(SetupState::desktopTheme),
+                        Codec.BOOL.fieldOf("open_eye").orElse(false).forGetter(SetupState::openEye),
+                        HumEntry.REFERENCE_CODEC.optionalFieldOf("soundscape").forGetter(SetupState::hum),
+                        ExtraCodecs.validate(
+                                ResourceLocation.CODEC,
+                                data -> {
+                                    if (VortexRegistry.VORTEX_DEFERRED_REGISTRY.containsKey(data)) {
+                                        return DataResult.success(data);
+                                    } else {
+                                        return DataResult.error(() -> "Not a registered vortex: " + data);
+                                    }
+                                }
+                        ).fieldOf("vortex").orElse(DEFAULT_VORTEX).forGetter(SetupState::vortex)
                 ).apply(instance, SetupState::new)
         );
     }

@@ -53,7 +53,7 @@ public class C2SChangeHum extends MessageC2S {
                 TardisInteriorManager tardisInteriorManager = operator.getInteriorManager();
                 TardisClientData tardisClientData = operator.tardisClientData();
                 tardisInteriorManager.setHumEntry(humEntry);
-                tardisClientData.setHumEntry(humEntry);
+                tardisClientData.setHumEntry(Optional.of(humEntry));
                 tardisClientData.sync();
             });
         });

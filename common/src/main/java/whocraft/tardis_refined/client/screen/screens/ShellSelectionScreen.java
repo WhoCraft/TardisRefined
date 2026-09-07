@@ -45,11 +45,7 @@ public class ShellSelectionScreen extends MonitorOS.MonitorOSExtension {
         super.init();
         this.setEvents(
                 () -> selectShell(CURRENTSHELLTHEME),
-                () -> {
-                    //selectShell(CURRENTSHELLTHEME);
-                    if (PREVIOUS != null)
-                        this.switchScreenToLeft(PREVIOUS);
-                }
+                this::back
         );
 
         int vPos = (height - monitorHeight) / 2;
