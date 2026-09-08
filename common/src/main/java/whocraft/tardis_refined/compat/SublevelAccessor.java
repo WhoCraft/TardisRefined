@@ -248,5 +248,10 @@ public interface SublevelAccessor {
         }
         return DUMMY;
     }
-    
+
+    static void tick(MinecraftServer server) {
+        if (ModCompatChecker.sable()) {
+            SableSublevelAccessor.INSTANCE.tick(server);
+        }
+    }
 }

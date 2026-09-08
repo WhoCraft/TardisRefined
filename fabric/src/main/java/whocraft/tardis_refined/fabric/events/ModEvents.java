@@ -41,6 +41,7 @@ import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
@@ -82,7 +83,10 @@ public class ModEvents {
         });
 
 
-        ServerTickEvents.END_SERVER_TICK.register(server -> TardisTeleportData.tick());
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            TardisTeleportData.tick();
+            SublevelAccessor.tick(server);
+        });
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             DimensionHandlerImpl.clear();

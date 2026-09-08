@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
 import dev.ryanhcode.sable.companion.math.BoundingBox3d;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaterniond;
 import org.joml.Quaternionf;
 import org.joml.Vector3d;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.mixin.compat.sable.SubLevelHoldingChunkMapAccessor;
@@ -35,6 +37,8 @@ import java.util.stream.Stream;
 public class SableSublevelAccessor implements SublevelAccessor {
 
     public static final SableSublevelAccessor INSTANCE = new SableSublevelAccessor();
+
+    private final Set<ServerLevel> pendingSaves = new HashSet<>();
     
     private SableSublevelAccessor() {}
 
@@ -62,6 +66,21 @@ public class SableSublevelAccessor implements SublevelAccessor {
 
     private static AABB transformAABBInverse(Pose3dc pose, AABB aabb) {
         return encapsulating(getCorners(aabb).map(pose::transformPositionInverse));
+    }
+
+    public void tick(MinecraftServer server) {
+        if (server.getTickCount() % 20 == 0) {
+            if (!pendingSaves.isEmpty()) {
+                TardisRefined.LOGGER.warn("Forcing Sable to save all sublevels.");
+            }
+            for (var level : pendingSaves) {
+                ServerSubLevelContainer container = SubLevelContainer.getContainer(level);
+                if (container != null) {
+                    container.getHoldingChunkMap().saveAll();
+                }
+            }
+            pendingSaves.clear();
+        }
     }
 
     public static class SableSublevel implements Sublevel {
@@ -162,7 +181,16 @@ public class SableSublevelAccessor implements SublevelAccessor {
             if (subLevels != null && trackedStorage != null) {
                 var point = trackedStorage.getTrackingPoint(uuid);
                 if (point == null) return Optional.empty();
-                if (subLevels.getSubLevel(point.subLevelID()) != null) return Optional.of(point);
+                var subLevel = subLevels.getSubLevel(point.subLevelID());
+                if (subLevel != null) {
+                    var newPos = subLevel.logicalPose().position();
+                    var newCPos = new ChunkPos(SectionPos.blockToSectionCoord(newPos.x), SectionPos.blockToSectionCoord(newPos.z));
+                    var lastPointer = point.lastSavedSubLevelPointer();
+                    if (lastPointer != null && !newCPos.equals(lastPointer.chunkPos())) {
+                        SableSublevelAccessor.INSTANCE.pendingSaves.add(level);
+                    }
+                    return Optional.of(point);
+                }
                 var chunkMap = subLevels.getHoldingChunkMap();
                 if (point.subLevelID() != null && point.lastSavedSubLevelPointer() != null) {
                     chunkMap.snatchAndLoad(point.lastSavedSubLevelPointer(), point.subLevelID());

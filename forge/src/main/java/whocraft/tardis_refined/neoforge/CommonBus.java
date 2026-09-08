@@ -23,6 +23,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -32,7 +33,8 @@ public class CommonBus {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
-         TardisTeleportData.tick();
+        TardisTeleportData.tick();
+        SublevelAccessor.tick(event.getServer());
     }
 
     @SubscribeEvent
