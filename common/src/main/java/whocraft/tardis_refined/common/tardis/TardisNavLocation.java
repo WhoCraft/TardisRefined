@@ -307,9 +307,9 @@ public class TardisNavLocation {
     }
 
     private void forMinecraftServer(Consumer<MinecraftServer> action) {
-        if (level != null) {
+        if (level != null && level.getServer().isSameThread()) {
             action.accept(level.getServer());
-        } else if (Platform.getServer() != null) {
+        } else if (Platform.getServer() != null && Platform.getServer().isSameThread()) {
             action.accept(Platform.getServer());
         }
     }
