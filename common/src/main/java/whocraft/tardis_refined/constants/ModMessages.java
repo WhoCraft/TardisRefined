@@ -50,9 +50,12 @@ public class ModMessages {
     public static final String UI_UPGRADES_XP = ui("upgrades.xp");
     public static final String UI_NO_INSTALLED_SUBSYSTEMS = ui("no_installed_subsystems");
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
-    public static final String CONFIG_IP_VS_COLLISION = config("immersive_portals_vs_collision");
-    public static final String CONFIG_IP_TELEPORTATION = config("immersive_portals_teleportation_mode");
-    public static final String CONFIG_IP_TELEPORTATION_VS = config("immersive_portals_teleportation_mode_vs");
+    public static final String CONFIG_IP_VS_COLLISION = config("immersive_portals.vs_collision");
+    public static final String CONFIG_IP_DIMENSION_ADDER = config("immersive_portals.dimension_adder");
+    public static final String CONFIG_IP_DIMENSION_REMOVER = config("immersive_portals.dimension_remover");
+    public static final String CONFIG_IP_SMOOTH_TELEPORTATION = config("immersive_portals.smooth_teleportation");
+    public static final String CONFIG_IP_TELEPORTATION_MODE = config("immersive_portals.teleportation_mode");
+    public static final String CONFIG_IP_TELEPORTATION_MODE_VS = config("immersive_portals.teleportation_mode_vs");
     public static final String CONFIG_CONTROL_NAMES = config("control_names");
     public static final String CONFIG_IDLE_CONSOLE_ANIMS = config("console_idle_animations");
     public static final String CONFIG_RENDER_VORTEX_IN_DOOR = config("config_render_vortex_in_door");
@@ -63,6 +66,7 @@ public class ModMessages {
     public static final String CONFIG_DISTANCE_RANDOMNESS = config("distance.randomness");
     public static final String CONFIG_DISTANCE_SPEED_FACTOR = config("distance.speed_factor");
     public static final String CONFIG_DISTANCE_XP_FACTOR = config("distance.xp_factor");
+    public static final String CONFIG_DIMENSION_DELETE_MODE = config("dimension_delete_mode");
     public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
     public static final String CMD_NO_INTERNAL_DOOR = cmdOutput("no_internal_door");
     public static final String CMD_EXPORT_DESKTOP_IN_PROGRESS = cmdOutput("export_desktop.in_progress");
@@ -97,6 +101,7 @@ public class ModMessages {
     /*Messages*/
     public static String SPAWN_TARDIS_DIMENSION_FAIL = message("spawn_tardis_dimension_fail");
 
+    public static String DELETED_TARDIS = message("deleted_tardis");
     public static String MSG_EXTERIOR_COOLDOWN = message("exterior_cooldown");
     public static String MSG_KEY_BOUND = message("key_bound");
     public static String MSG_KEY_CYCLED = message("key_cycled");

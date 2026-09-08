@@ -15,6 +15,7 @@ public class TardisRefinedCommand {
                 .then(InteriorCommand.register(dispatcher))
                 .then(UpgradesCommand.register(dispatcher))
                 .then(SummonCommand.register(dispatcher))
+                .then(DeleteCommand.register(dispatcher))
                 .then(Commands.literal("data").then(Commands.literal("export").then(ExportDesktopCommand.register(dispatcher))))
                 .then(LevelCommand.register(dispatcher))
         );

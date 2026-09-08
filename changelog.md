@@ -12,6 +12,10 @@
 - Added config option to change the default TARDIS travel speed.
 - Added config option to change the default TARDIS XP gain.
 
+#### Commands
+
+- Added `/tardis_refined delete <tardis>` which deletes the given TARDIS and its dimension.
+
 #### Changes
 
 - TARDIS travel time is now logarithmic to the travel distance instead of linear. This means that the TARDIS will travel faster to locations that are further away (mostly noticeable with extreme distances such as above 100,000 blocks). For shorter trips, the travel time will be roughly the same as before.
@@ -19,6 +23,13 @@
 - Pressing E will now close Monitor, ARS, and Astral Manipulator GUIs.
 - Improved keyboard navigation support for the Monitor and Astral Manipulator GUIs.
 - The TARDIS item will now read the `setup_data` tag on the item, if it exists, and pass it on to the created TARDIS.
+
+#### Configs
+
+- Config to not use the Immersive Portals dimension adder.
+- Config to not use the Immersive Portals dimension remover.
+- Config to not use smooth Immersive Portals teleportation.
+- Config to choose which deletion mode to use. Either immediately or scheduled for the next shutdown.
 
 #### Bug Fixes
 
@@ -42,3 +53,4 @@
 - Fixed the TARDIS sometimes playing the default hum when set to a different hum.
 - Fixed materialize around not working in unloaded chunks.
 - Fixed materialize around bringing mobs along when taking off.
+- Fixed offline players not being ejected from the TARDIS when changing the desktop or deleting the TARDIS.

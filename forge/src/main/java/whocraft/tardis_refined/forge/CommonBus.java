@@ -12,6 +12,8 @@ import net.minecraftforge.event.entity.living.LivingDestroyBlockEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.event.server.ServerStoppedEvent;
+import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +27,7 @@ import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
@@ -37,6 +40,7 @@ public class CommonBus {
 
         if (event.phase == TickEvent.Phase.END) {
             TardisTeleportData.tick();
+            DimensionHandler.tick(event.getServer());
         }
 
     }
@@ -46,6 +50,21 @@ public class CommonBus {
         // Load Levels
         ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
         DimensionHandler.loadLevels(world);
+        TardisHelper.handleStartupRemoval(event.getServer());
+    }
+
+    @SubscribeEvent
+    public static void onServerStopping(ServerStoppingEvent event) {
+        DimensionHandler.onServerStopping(event.getServer());
+
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onServerStopping(event.getServer());
+        }
+    }
+
+    @SubscribeEvent
+    public static void onServerStopped(ServerStoppedEvent event) {
+        DimensionHandler.onServerStopped(event.getServer());
     }
 
     @SubscribeEvent

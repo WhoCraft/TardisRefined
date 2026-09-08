@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -224,6 +225,19 @@ public class TardisHelper {
                     }
 
                 }
+            }
+        }
+    }
+
+    public static void handleStartupRemoval(MinecraftServer server) {
+        for (ServerLevel level : server.getAllLevels()) {
+            if (level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
+                TardisLevelOperator.get(level).ifPresent(operator -> {
+                    if (operator.getTardisState() == TardisLevelOperator.STATE_DELETED) {
+                        // Looks like the game crashed so this TARDIS wasn't deleted, let's try again.
+                        operator.deleteTARDIS();
+                    }
+                });
             }
         }
     }

@@ -57,3 +57,8 @@ accessible field net/minecraft/client/renderer/RenderStateShard OVERLAY Lnet/min
 accessible field net/minecraft/client/renderer/RenderStateShard COLOR_DEPTH_WRITE Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
 accessible method net/minecraft/world/level/chunk/ChunkGenerator getWritableArea (Lnet/minecraft/world/level/chunk/ChunkAccess;)Lnet/minecraft/world/level/levelgen/structure/BoundingBox;
 accessible field net/minecraft/client/multiplayer/ClientLevel levelRenderer Lnet/minecraft/client/renderer/LevelRenderer;
+accessible field net/minecraft/server/MinecraftServer registries Lnet/minecraft/core/LayeredRegistryAccess;
+mutable field net/minecraft/server/MinecraftServer registries Lnet/minecraft/core/LayeredRegistryAccess;
+accessible field net/minecraft/world/level/storage/PlayerDataStorage fixerUpper Lcom/mojang/datafixers/DataFixer;
+accessible field net/minecraft/world/level/storage/PlayerDataStorage playerDir Ljava/io/File;
+accessible field net/minecraft/server/MinecraftServer playerDataStorage Lnet/minecraft/world/level/storage/PlayerDataStorage;

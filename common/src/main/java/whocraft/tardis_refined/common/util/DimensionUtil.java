@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.List;
@@ -48,7 +49,11 @@ public class DimensionUtil {
         Set<ResourceKey<Level>> set = Sets.newHashSet();
         for (ServerLevel level : server.getAllLevels()) {
             if (level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
-                set.add(level.dimension());
+                TardisLevelOperator.get(level).ifPresent(op -> {
+                    if (op.getTardisState() != TardisLevelOperator.STATE_DELETED) {
+                        set.add(level.dimension());
+                    }
+                });
             }
         }
         return set;
