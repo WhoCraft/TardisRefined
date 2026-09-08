@@ -77,6 +77,8 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         return this;
     }
 
+
+
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
         super.tick(level, blockPos, blockState, blockEntity);

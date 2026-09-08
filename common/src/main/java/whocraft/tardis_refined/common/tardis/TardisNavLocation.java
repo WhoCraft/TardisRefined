@@ -159,8 +159,8 @@ public class TardisNavLocation {
     public TardisNavLocation copy() {
         TardisNavLocation copy = new TardisNavLocation(this.position, this.direction, this.dimensionKey);
 
-        if (this.getLevel() != null) {
-            copy.setLevel(this.getLevel());
+        if (this.level != null) {
+            copy.setLevel(this.level);
         }
 
         if (this.name != null) {

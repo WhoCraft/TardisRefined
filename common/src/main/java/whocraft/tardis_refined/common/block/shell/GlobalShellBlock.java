@@ -57,6 +57,11 @@ public class GlobalShellBlock extends ShellBaseBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
+
+            if(ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(shellBlockEntity.getTardisId())){
+                return Shapes.empty();
+            }
+
             //noinspection ConstantValue IntelliJ got confused by this for some reason...
             if (
                     !TRConfig.COMMON.IP_VS_COLLISION.get() &&

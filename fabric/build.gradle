@@ -112,9 +112,9 @@ dependencies {
 
     // Immersive Portals Start
 
-    modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}")
-    modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}")
-    modCompileOnly ("com.github.iPortalTeam.ImmersivePortalsMod:build:${rootProject.immersive_portals_version}")
+    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:imm_ptl_core:${rootProject.immersive_portals_version}")
+    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:q_misc_util:${rootProject.immersive_portals_version}")
+    modImplementation ("com.github.iPortalTeam.ImmersivePortalsMod:build:${rootProject.immersive_portals_version}")
 
     modCompileOnly("com.simibubi.create:create-fabric-${minecraft_version}:${create_version_fabric}")
     modCompileOnly("maven.modrinth:valkyrien-skies:${minecraft_version}-fabric-${valkyrienskies_version}")

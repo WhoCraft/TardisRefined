@@ -1,17 +1,19 @@
 package whocraft.tardis_refined.compat.portals;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 public class PortalOffets {
 
     private final OffsetData shell, intDoor;
-    private final Vec2 size;
+    private final Vec2 shellSize, doorSize;
 
-    public PortalOffets(OffsetData shell, OffsetData intDoor, Vec2 size) {
+    public PortalOffets(OffsetData shell, OffsetData intDoor, Vec2 shellSize, Vec2 doorSize) {
         this.shell = shell;
         this.intDoor = intDoor;
-        this.size = size;
+        this.shellSize = shellSize;
+        this.doorSize = doorSize;
     }
 
     public OffsetData shell() {
@@ -22,8 +24,12 @@ public class PortalOffets {
         return intDoor;
     }
 
-    public Vec2 size() {
-        return size;
+    public Vec2 shellSize() {
+        return shellSize;
+    }
+
+    public Vec2 doorSize() {
+        return doorSize;
     }
 
     // East, South, West, North
@@ -36,6 +42,27 @@ public class PortalOffets {
             this.south = south;
             this.west = west;
             this.north = north;
+        }
+
+       public static OffsetData fromNorth(Vec3 northOffset) {
+            Vec3 east = rotateClockwise(northOffset);
+            Vec3 south = rotateClockwise(east);
+            Vec3 west = rotateClockwise(south);
+            return new OffsetData(east, south, west, northOffset);
+        }
+
+          public static Vec3 rotateClockwise(Vec3 vec) {
+            return new Vec3(-vec.z, vec.y, vec.x);
+        }
+
+        public static Vec3 rotateForDirection(Vec3 northOffset, Direction direction) {
+            return switch (direction) {
+                case NORTH -> northOffset;
+                case EAST -> rotateClockwise(northOffset);
+                case SOUTH -> rotateClockwise(rotateClockwise(northOffset));
+                case WEST -> rotateClockwise(rotateClockwise(rotateClockwise(northOffset)));
+                default -> throw new IllegalArgumentException("Unsupported (non-horizontal) direction for a portal offset: " + direction);
+            };
         }
 
         public Vec3 east() {

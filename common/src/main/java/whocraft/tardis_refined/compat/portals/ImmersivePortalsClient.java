@@ -3,11 +3,19 @@ package whocraft.tardis_refined.compat.portals;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import org.lwjgl.glfw.GLFW;
 import qouteall.imm_ptl.core.compat.IPPortingLibCompat;
 import qouteall.imm_ptl.core.render.context_management.PortalRendering;
+import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.util.Platform;
+import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 public class ImmersivePortalsClient {
 
