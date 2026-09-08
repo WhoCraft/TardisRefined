@@ -118,7 +118,7 @@ public class FlightDanceManager extends TickableHandler {
             } else {
                 console.killControls(); // Just incase
                 console.spawnControlEntities();
-                controlEntityList.addAll(console.getControlEntityList());
+                controlEntityList.addAll(getNonCriticalControls(console));
 
             }
         }

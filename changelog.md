@@ -49,3 +49,4 @@
 - Fixed controls repairing themselves when restarting the server.
 - Invalid and duplicate control entities are now automatically removed.
 - Removed duplicate control on crystal console.
+- Fix critical controls able to break after relogging mid-flight.
