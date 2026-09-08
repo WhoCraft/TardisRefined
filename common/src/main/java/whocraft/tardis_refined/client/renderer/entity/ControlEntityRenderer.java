@@ -30,6 +30,7 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
     private static final ResourceLocation ICON_WARNING = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_warning.png");
     private static final ResourceLocation ICON_ALERT = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_alert.png");
     private static final ResourceLocation ICON_DANGER = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_danger.png");
+    private static final ResourceLocation ICON_DEAD = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/control/control_dead.png");
 
     public ControlEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -135,8 +136,10 @@ public class ControlEntityRenderer extends NoopRenderer<ControlEntity> {
             return ICON_WARNING;
         } else if (entityHealth > 3) {
             return ICON_ALERT;
-        } else {
+        } else if (entityHealth > 0) {
             return ICON_DANGER;
+        } else {
+            return ICON_DEAD;
         }
     }
 

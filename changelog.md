@@ -19,6 +19,7 @@
 - Pressing E will now close Monitor, ARS, and Astral Manipulator GUIs.
 - Improved keyboard navigation support for the Monitor and Astral Manipulator GUIs.
 - The TARDIS item will now read the `setup_data` tag on the item, if it exists, and pass it on to the created TARDIS.
+- Now displays a message when the player tries to break the console manually inside the TARDIS telling them to use the console configurator.
 
 #### Bug Fixes
 
@@ -42,3 +43,11 @@
 - Fixed the TARDIS sometimes playing the default hum when set to a different hum.
 - Fixed materialize around not working in unloaded chunks.
 - Fixed materialize around bringing mobs along when taking off.
+- Fixed current console powering back on during the next interaction whenever it is unloaded and loaded again.
+- Fixed all controls automatically repairing themselves when setting throttle to 0 midflight.
+- Fixed controls not displaying the "dead" icon when dead.
+- Fixed controls repairing themselves when restarting the server.
+- Invalid and duplicate control entities are now automatically removed.
+- Removed duplicate control on crystal console.
+- Fix critical controls able to break after relogging mid-flight.
+- Fix controls repairing themselves when the next flight event happens after relogging.

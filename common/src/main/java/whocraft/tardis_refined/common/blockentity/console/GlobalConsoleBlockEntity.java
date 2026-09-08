@@ -191,12 +191,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
-    public void setRemoved() {
-        super.setRemoved();
-
-    }
-
-    @Override
     public CompoundTag getUpdateTag() {
         CompoundTag tag = super.getUpdateTag();
         saveAdditional(tag);
@@ -221,12 +215,31 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         controlEntityList.clear();
     }
 
+    public void updateControl(ControlEntity control) {
+        for (var existingControl : controlEntityList) {
+            if (existingControl == control) return;
+            if (existingControl.controlSpecification().equals(control.controlSpecification())) {
+                existingControl.copyFrom(control);
+                control.discard();
+                if (controlEntityList.contains(control)) {
+                    TardisRefined.LOGGER.warn(
+                            "Duplicate control detected for {} at {}! Please remove one of the controls with offset {} and size {}.",
+                            consoleTheme, control.position(), control.controlSpecification().offsetPosition(),
+                            control.controlSpecification().size()
+                    );
+                }
+            }
+        }
+    }
+
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, GlobalConsoleBlockEntity blockEntity) {
 
         if (this.shouldSpawnControls && blockState.getValue(GlobalConsoleBlock.POWERED)) {
             spawnControlEntities();
         }
+
+        controlEntityList.removeIf(Entity::isRemoved);
 
         if (!liveliness.isStarted()) {
             liveliness.start(12);

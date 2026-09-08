@@ -45,6 +45,8 @@ public class NbtConstants {
     public static final String CONSOLE_POS = "console_pos";
     public static final String CONTROL_SIZE_WIDTH = "console_size_width";
     public static final String CONTROL_SIZE_HEIGHT = "console_size_height";
+    public static final String CONTROL_SPECIFICATION = "control_specification";
+    public static final String CONTROL_DURABILITY = "control_durability";
 
     public static final String CONTROL_IS_IN_FLIGHT = "ctrl_is_in_flight";
     public static final String IS_HANDBRAKE_ON = "is_handbrake_on";

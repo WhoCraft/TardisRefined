@@ -112,6 +112,14 @@ public class GlobalConsoleBlock extends BaseEntityBlock {
             globalConsoleBlock.killControls();
         }
 
+        if (level instanceof ServerLevel sl && !blockState.is(blockState2.getBlock())) {
+            TardisLevelOperator.get(sl).ifPresent(tardis -> {
+                if (blockPos.equals(tardis.getPilotingManager().getCurrentConsoleBlockPos().orElse(null))) {
+                    tardis.getPilotingManager().setCurrentConsole(null);
+                }
+            });
+        }
+
         super.onRemove(blockState, level, blockPos, blockState2, bl);
     }
 
