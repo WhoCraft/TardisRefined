@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -29,6 +30,7 @@ import java.util.stream.Stream;
 public interface SublevelAccessor {
 
     SublevelAccessor DUMMY = new SublevelAccessor() {
+
         @Override
         public boolean isChunkInSublevelSpace(Level level, ChunkPos pos) {
             return false;
@@ -178,6 +180,10 @@ public interface SublevelAccessor {
 
     }
 
+    default void tick(MinecraftServer server) {}
+
+    default void onTeleportPositionUnloaded(ServerLevel level, BlockPos pos) {}
+
     default Optional<LoadablePositionReference> getPositionReference(Level level, BlockPos pos) {
         return Optional.empty();
     }
@@ -247,11 +253,5 @@ public interface SublevelAccessor {
             return SableSublevelAccessor.INSTANCE;
         }
         return DUMMY;
-    }
-
-    static void tick(MinecraftServer server) {
-        if (ModCompatChecker.sable()) {
-            SableSublevelAccessor.INSTANCE.tick(server);
-        }
     }
 }

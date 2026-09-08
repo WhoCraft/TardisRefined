@@ -68,6 +68,7 @@ public class SableSublevelAccessor implements SublevelAccessor {
         return encapsulating(getCorners(aabb).map(pose::transformPositionInverse));
     }
 
+    @Override
     public void tick(MinecraftServer server) {
         if (server.getTickCount() % 20 == 0) {
             if (!pendingSaves.isEmpty()) {
@@ -81,6 +82,11 @@ public class SableSublevelAccessor implements SublevelAccessor {
             }
             pendingSaves.clear();
         }
+    }
+
+    @Override
+    public void onTeleportPositionUnloaded(ServerLevel level, BlockPos pos) {
+        pendingSaves.add(level);
     }
 
     public static class SableSublevel implements Sublevel {
@@ -193,7 +199,8 @@ public class SableSublevelAccessor implements SublevelAccessor {
                 }
                 var chunkMap = subLevels.getHoldingChunkMap();
                 if (point.subLevelID() != null && point.lastSavedSubLevelPointer() != null) {
-                    chunkMap.snatchAndLoad(point.lastSavedSubLevelPointer(), point.subLevelID());
+                    var pointer = point.lastSavedSubLevelPointer();
+                    chunkMap.snatchAndLoad(pointer, point.subLevelID());
                 }
                 return Optional.of(point);
             }

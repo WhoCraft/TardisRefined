@@ -42,6 +42,7 @@ import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
@@ -76,6 +77,14 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     public ShellBaseBlockEntity setPlacedByOtherMod(boolean placedByOtherMod) {
         this.placedByOtherMod = placedByOtherMod;
         return this;
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (level instanceof ServerLevel sl) {
+            SublevelAccessor.get().onTeleportPositionUnloaded(sl, getBlockPos());
+        }
     }
 
     @Override

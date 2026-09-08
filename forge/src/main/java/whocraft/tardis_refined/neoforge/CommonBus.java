@@ -34,7 +34,7 @@ public class CommonBus {
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
         TardisTeleportData.tick();
-        SublevelAccessor.tick(event.getServer());
+        SublevelAccessor.get().tick(event.getServer());
     }
 
     @SubscribeEvent

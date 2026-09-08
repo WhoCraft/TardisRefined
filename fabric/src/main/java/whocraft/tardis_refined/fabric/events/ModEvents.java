@@ -85,7 +85,7 @@ public class ModEvents {
 
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             TardisTeleportData.tick();
-            SublevelAccessor.tick(server);
+            SublevelAccessor.get().tick(server);
         });
 
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
