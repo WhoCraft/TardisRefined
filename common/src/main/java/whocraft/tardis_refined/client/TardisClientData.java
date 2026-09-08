@@ -10,12 +10,14 @@ import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncTardisClientData;
+import whocraft.tardis_refined.common.tardis.manager.SettingsHandler;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TardisClientData {
     private static final List<TardisClientData> DATA = new ArrayList<>();
@@ -49,7 +51,9 @@ public class TardisClientData {
     private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
     private ResourceLocation vortex = VortexRegistry.FLOW.getId();
     private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
-    private HumEntry humEntry = TardisHums.getDefaultHum();
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<HumEntry> humEntry = Optional.empty();
+    private SettingsHandler settingsHandler = new SettingsHandler(Optional.empty());
     public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
     }
@@ -114,11 +118,11 @@ public class TardisClientData {
         this.shellTheme = shellTheme;
     }
 
-    public HumEntry getHumEntry() {
+    public Optional<HumEntry> getHumEntry() {
         return humEntry;
     }
 
-    public void setHumEntry(HumEntry humEntry) {
+    public void setHumEntry(@SuppressWarnings("OptionalUsedAsFieldOrParameterType") Optional<HumEntry> humEntry) {
         this.humEntry = humEntry;
     }
 
@@ -194,6 +198,14 @@ public class TardisClientData {
         this.maximumFuel = fuel;
     }
 
+    public SettingsHandler getSettingsHandler() {
+        return settingsHandler;
+    }
+
+    public void setSettingsHandler(SettingsHandler settingsHandler) {
+        this.settingsHandler = settingsHandler;
+    }
+
     /**
      * Serializes the Tardis instance to a CompoundTag.
      *
@@ -217,12 +229,12 @@ public class TardisClientData {
         compoundTag.putString("vortex", vortex.toString());
         compoundTag.putString("shellPattern", shellPattern.toString());
 
-        compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
+        humEntry.ifPresent(hum -> compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, hum.getIdentifier().toString()));
 
         compoundTag.putDouble(NbtConstants.FUEL, fuel);
         compoundTag.putDouble(NbtConstants.MAXIMUM_FUEL, maximumFuel);
 
-        return compoundTag;
+        return settingsHandler.saveData(compoundTag);
     }
 
     /**
@@ -246,10 +258,17 @@ public class TardisClientData {
         shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
         vortex = new ResourceLocation(compoundTag.getString("vortex"));
 
-        setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
+        if (compoundTag.contains(NbtConstants.TARDIS_CURRENT_HUM)) {
+            setHumEntry(
+                    Optional.of(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))))
+            );
+        } else {
+            setHumEntry(Optional.empty());
+        }
 
         fuel = compoundTag.getDouble(NbtConstants.FUEL);
         maximumFuel = compoundTag.getDouble(NbtConstants.MAXIMUM_FUEL);
+        settingsHandler.loadData(compoundTag);
     }
 
     /**

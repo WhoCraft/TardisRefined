@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.util;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -155,6 +156,26 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
         if (player == null)
             networkManager.sendToAllPlayers(packet);
         else networkManager.sendToPlayer(player, packet);
+    }
+
+    public static <T> Codec<T> createReferenceCodec(
+            Codec<T> codec,
+            Function<T, ResourceLocation> toId,
+            Function<ResourceLocation, T> fromId
+    ) {
+        return Codec.either(
+                ResourceLocation.CODEC, codec
+        ).xmap(
+                either -> either.map(fromId, d -> d),
+                value -> {
+                    var registered = fromId.apply(toId.apply(value));
+                    if (registered == value) {
+                        return Either.left(toId.apply(value));
+                    } else {
+                        return Either.right(value);
+                    }
+                }
+        );
     }
 
 }

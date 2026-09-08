@@ -22,6 +22,10 @@ public class ModMessages {
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
     public static final String UI_MONITOR_SELECT_HUM = ui("monitor.select.hum");
+    public static final String UI_MONITOR_SETTINGS = ui("monitor.select.settings");
+    public static final String UI_MONITOR_SETTINGS_ON = ui("monitor.select.settings.on");
+    public static final String UI_MONITOR_SETTINGS_OFF = ui("monitor.select.settings.off");
+    public static final String UI_MONITOR_SETTINGS_UNAVAILABLE_ARS = ui("monitor.select.settings.unavailable.ars");
     public static final String UI_MONITOR_EJECT = ui("monitor.select.eject");
     public static final String UI_EJECT_CANNOT_IN_FLIGHT = ui("monitor.select.eject_fail");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
@@ -42,6 +46,8 @@ public class ModMessages {
     public static final String UI_MONITOR_WAYPOINT_NAME = ui("monitor.waypoint_name");
     public static final String UI_UPGRADES = ui("upgrades");
     public static final String UI_UPGRADES_BUY = ui("upgrades.buy_ability");
+    public static final String UI_UPGRADES_POINTS = ui("upgrades.points");
+    public static final String UI_UPGRADES_XP = ui("upgrades.xp");
     public static final String UI_NO_INSTALLED_SUBSYSTEMS = ui("no_installed_subsystems");
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
     public static final String CONFIG_IP_VS_COLLISION = config("immersive_portals_vs_collision");

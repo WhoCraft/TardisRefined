@@ -132,6 +132,7 @@ public class LangProviderEnglish extends LanguageProvider {
         add(TRItemRegistry.ZEITON_NUGGET.get(), "Zeiton Nugget");
         add(TRItemRegistry.MALLET.get(), "Mallet");
         add(TRItemRegistry.TEST_TUBE.get(), "Test Tube");
+        add(TRItemRegistry.TEST_TUBE.get().getDimensionDescriptionId(), "%s Sample");
         add(TRItemRegistry.TARDIS.get(), "Grown TARDIS");
 
         /*Damage Sources*/
@@ -233,6 +234,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "WAYPOINT NAVIGATION");
         add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "COORD NAVIGATION");
         add(ModMessages.UI_MONITOR_SELECT_HUM, "SOUNDSCAPE");
+        add(ModMessages.UI_MONITOR_SETTINGS, "SYSTEM SETTINGS");
+        add(ModMessages.UI_MONITOR_SETTINGS_ON, "Currently enabled, click to disable");
+        add(ModMessages.UI_MONITOR_SETTINGS_OFF, "Currently disabled, click to enable");
+        add(ModMessages.UI_MONITOR_SETTINGS_UNAVAILABLE_ARS, "Currently unavailable, check the ARS tree for details");
         add(ModMessages.UI_MONITOR_GPS, "GPS");
         add(ModMessages.UI_MONITOR_VORTEX, "VORTEX");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
@@ -254,6 +259,8 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_WAYPOINT_NAME, "Waypoint Name:");
         add(ModMessages.UI_UPGRADES, "Tardis Upgrades");
         add(ModMessages.UI_UPGRADES_BUY, "Purchase upgrade?");
+        add(ModMessages.UI_UPGRADES_POINTS, "Points: %s");
+        add(ModMessages.UI_UPGRADES_XP, "XP: %s");
         add(ModMessages.UI_NO_INSTALLED_SUBSYSTEMS, "No available sub-systems");
         add(ModMessages.UI_WAYPOINT_NAME_PLACEHOLDER, "Waypoint name");
         add(ModMessages.UI_WAYPOINT_NEW_WAYPOINT, "New Waypoint");

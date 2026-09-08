@@ -9,6 +9,8 @@ import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -82,6 +84,27 @@ public class MonitorOS extends Screen {
     @Override
     public void renderBackground(GuiGraphics guiGraphics) {
 
+    }
+
+    protected boolean inventoryButtonGoesBack() {
+        return !(getFocused() instanceof MultiLineEditBox) && !(getFocused() instanceof EditBox);
+    }
+
+    protected void back() {
+        if (PREVIOUS != null) {
+            switchScreenToLeft(PREVIOUS, null);
+        } else {
+            onClose();
+        }
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scan, int mod) {
+        if (minecraft.options.keyInventory.matches(key, scan) && inventoryButtonGoesBack()) {
+            back();
+            return true;
+        }
+        return super.keyPressed(key, scan, mod);
     }
 
     public ResourceLocation getPatternForRender(){
@@ -237,7 +260,7 @@ public class MonitorOS extends Screen {
         inMonitorRender(guiGraphics, mouseX, mouseY, partialTick);
         RenderSystem.setShaderColor(1, 1, 1, 1);
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        ScreenHelper.renderWidthScaledText(title.getString(), guiGraphics, Minecraft.getInstance().font, width / 2f, 5 + (height - monitorHeight) / 2f, Color.LIGHT_GRAY.getRGB(), 300, true);
+        ScreenHelper.renderWidthScaledText(title, guiGraphics, Minecraft.getInstance().font, width / 2f, 5 + (height - monitorHeight) / 2f, Color.LIGHT_GRAY.getRGB(), 300, true);
     }
 
     public void inMonitorRender(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
@@ -321,7 +344,7 @@ public class MonitorOS extends Screen {
 
     public void addCancelButton(int x, int y) {
         if (onCancel != null) {
-            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Cancel"), (arg) -> this.onCancel.onPress(), true, BCK_LOCATION));
+            Button spriteiconbutton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("gui.cancel"), (arg) -> this.onCancel.onPress(), true, BCK_LOCATION));
             spriteiconbutton.setPosition(x, y);
         }
     }

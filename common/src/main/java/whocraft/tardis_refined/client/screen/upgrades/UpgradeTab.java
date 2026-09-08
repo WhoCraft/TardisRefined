@@ -5,20 +5,20 @@ import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenDirection;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.registry.TRUpgrades;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 
 @Environment(EnvType.CLIENT)
 public class UpgradeTab {
@@ -29,6 +29,7 @@ public class UpgradeTab {
     private final UpgradesScreen screen;
     private final UpgradeTabType type;
     private final int index;
+    private final int page;
     private final Component title;
     private final List<UpgradeWidget> entries = new ArrayList<>();
     private final List<Connection> connections = new ArrayList<>();
@@ -40,30 +41,127 @@ public class UpgradeTab {
     private int maxX = -2147483648;
     private int maxY = -2147483648;
     private boolean centered;
+    private UpgradeWidget highlight;
+    private Upgrade root;
 
-    public UpgradeTab(Minecraft minecraft, UpgradesScreen UpgradesScreen, UpgradeTabType tabType, int i, UpgradeHandler powerHolder) {
+    public UpgradeTab(Minecraft minecraft, UpgradesScreen UpgradesScreen, UpgradeTabType tabType, int i, int tabPage, UpgradeHandler powerHolder, Upgrade root) {
         this.minecraft = minecraft;
         this.screen = UpgradesScreen;
         this.type = tabType;
         this.index = i;
+        this.page = tabPage;
         this.upgradeHandler = powerHolder;
-        this.title = Component.literal("");
+        this.title = root.getDisplayName();
+        this.root = root;
         this.populate(powerHolder);
     }
 
-    @Nullable
-    public static UpgradeTab create(Minecraft minecraft, UpgradesScreen screen, int tabIndex, UpgradeHandler upgradeHandler) {
+    public void setHighlight(UpgradeWidget highlight) {
+        this.highlight = highlight;
+        if (highlight != null) {
+
+            double x = highlight.gridX * GRID_SIZE;
+            double y = highlight.gridY * GRID_SIZE;
+
+            this.scrollX = Mth.clamp(this.scrollX, -x + 26, -x + UpgradesScreen.WINDOW_INSIDE_WIDTH - 13);
+            this.scrollY = Mth.clamp(this.scrollY, -y + 26, -y + UpgradesScreen.WINDOW_INSIDE_HEIGHT - 13);
+        }
+    }
+
+    public UpgradeWidget getHighlight() {
+        return highlight;
+    }
+
+    private double currentHighlightX(ScreenDirection direction) {
+        if (highlight != null) {
+            return highlight.gridX;
+        } else {
+            return switch (direction) {
+                case LEFT -> Double.POSITIVE_INFINITY;
+                case RIGHT -> Double.NEGATIVE_INFINITY;
+                default -> 0;
+            };
+        }
+    }
+
+    private double currentHighlightY(ScreenDirection direction) {
+        if (highlight != null) {
+            return highlight.gridY;
+        } else {
+            return switch (direction) {
+                case UP -> Double.POSITIVE_INFINITY;
+                case DOWN -> Double.NEGATIVE_INFINITY;
+                default -> 0;
+            };
+        }
+    }
+
+    private boolean moveDirectionally(ScreenDirection direction) {
+        double currentX = currentHighlightX(direction);
+        double currentY = currentHighlightY(direction);
+        var targets = entries.stream();
+        switch (direction) {
+            case DOWN -> targets = targets.filter(target -> target.gridY > currentY).sorted(
+                    Comparator.<UpgradeWidget>comparingDouble(target -> target.gridY).thenComparingDouble(
+                            target -> Math.abs(target.gridX - currentX)
+                    )
+            );
+            case UP -> targets = targets.filter(target -> target.gridY < currentY).sorted(
+                    Comparator.<UpgradeWidget>comparingDouble(target -> target.gridY).reversed().thenComparingDouble(
+                            target -> Math.abs(target.gridX - currentX)
+                    )
+            );
+            case LEFT -> targets = targets.filter(target -> target.gridX < currentX).sorted(
+                    Comparator.<UpgradeWidget>comparingDouble(target -> target.gridX).reversed().thenComparingDouble(
+                            target -> Math.abs(target.gridY - currentY)
+                    )
+            );
+            case RIGHT -> targets = targets.filter(target -> target.gridX > currentX).sorted(
+                    Comparator.<UpgradeWidget>comparingDouble(target -> target.gridX).thenComparingDouble(
+                            target -> Math.abs(target.gridY - currentY)
+                    )
+            );
+        }
+        setHighlight(targets.findFirst().orElse(null));
+        return true;
+    }
+
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (entries.isEmpty()) return false;
+        return switch (keyCode) {
+            case GLFW.GLFW_KEY_DOWN -> moveDirectionally(ScreenDirection.DOWN);
+            case GLFW.GLFW_KEY_UP -> moveDirectionally(ScreenDirection.UP);
+            case GLFW.GLFW_KEY_LEFT -> moveDirectionally(ScreenDirection.LEFT);
+            case GLFW.GLFW_KEY_RIGHT -> moveDirectionally(ScreenDirection.RIGHT);
+            default -> false;
+        };
+    }
+
+    public static UpgradeTab create(Minecraft minecraft, UpgradesScreen screen, int tabIndex, UpgradeHandler upgradeHandler, Upgrade root) {
         UpgradeTabType[] var4 = UpgradeTabType.values();
 
-        for (UpgradeTabType tabType : var4) {
-            if (tabIndex < tabType.getMax()) {
-                return new UpgradeTab(minecraft, screen, tabType, tabIndex, upgradeHandler);
+        int tabPage = 0;
+        while (true) {
+            for (UpgradeTabType tabType : var4) {
+                if (tabIndex < tabType.getMax()) {
+                    return new UpgradeTab(minecraft, screen, tabType, tabIndex, tabPage, upgradeHandler, root);
+                }
+
+                tabIndex -= tabType.getMax();
+                if (tabIndex < 0) {
+                    throw new IllegalStateException("Tab logic is broken, got negative tab index!");
+                }
             }
-
-            tabIndex -= tabType.getMax();
+            tabPage++;
         }
+    }
 
-        return null;
+    private boolean isChildOfRoot(Upgrade child) {
+        if (child.getParent() != null) {
+            return isChildOfRoot(child.getParent());
+        } else {
+            return child == root;
+        }
     }
 
     public void populate(UpgradeHandler upgradeHandlerClient) {
@@ -76,6 +174,7 @@ public class UpgradeTab {
         // Create entry for each ability
         for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
             Upgrade upgrade = entry.getValue();
+            if (!isChildOfRoot(upgrade)) continue;
             var widget = new UpgradeWidget(this, this.minecraft, upgradeHandlerClient, upgrade).setPosition(0, 0);
             this.entries.add(widget);
             var pos = upgrade.getScreenPosition();
@@ -220,7 +319,7 @@ public class UpgradeTab {
     }
 
     public void drawIcon(GuiGraphics guiGraphics, int offsetX, int offsetY) {
-        //TODO Render iTem this.type.drawIcon(guiGraphics, DataContext.forPower(this.minecraft.player, this.powerHolder), offsetX, offsetY, this.index, this.icon);
+        this.type.drawIcon(guiGraphics, offsetX, offsetY, this.index, root.getIcon());
     }
 
     public void drawContents(GuiGraphics guiGraphics, int x, int y) {
@@ -266,10 +365,10 @@ public class UpgradeTab {
         if (!overlayActive) {
             int i = Mth.floor(this.scrollX);
             int j = Mth.floor(this.scrollY);
-            if (mouseX > 0 && mouseX < UpgradesScreen.WINDOW_INSIDE_WIDTH && mouseY > 0 && mouseY < UpgradesScreen.WINDOW_INSIDE_HEIGHT) {
+            if ((mouseX > 0 && mouseX < UpgradesScreen.WINDOW_INSIDE_WIDTH && mouseY > 0 && mouseY < UpgradesScreen.WINDOW_INSIDE_HEIGHT)  || highlight != null) {
 
                 for (UpgradeWidget widget : this.entries) {
-                    if (widget.isMouseOver(i, j, mouseX, mouseY)) {
+                    if (widget.isMouseOver(i, j, mouseX, mouseY) || widget == highlight) {
                         flag = true;
                         widget.drawHover(guiGraphics, i, j, this.fade, width, height);
                         break;
@@ -300,6 +399,10 @@ public class UpgradeTab {
             }
         }
         return null;
+    }
+
+    public boolean isSamePage(int page) {
+        return page == this.page;
     }
 
     public boolean isMouseOver(int offsetX, int offsetY, double mouseX, double mouseY) {

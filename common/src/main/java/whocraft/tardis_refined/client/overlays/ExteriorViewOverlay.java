@@ -36,7 +36,7 @@ public class ExteriorViewOverlay {
             if (!tardisPlayerInfo.isViewingTardis())
                 return;
 
-            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
+            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousDim());
             PoseStack poseStack = guiGraphics.pose();
             int screenWidth = mc.getWindow().getGuiScaledWidth();
             int screenHeight = mc.getWindow().getGuiScaledHeight();

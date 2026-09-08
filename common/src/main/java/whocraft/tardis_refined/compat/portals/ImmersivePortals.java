@@ -67,6 +67,7 @@ public class ImmersivePortals {
 
     public static boolean doPortalsExistForTardis(ResourceKey<Level> dim) {
         try {
+            if (dim == null) return false;
             return doPortalsExistForTardis(getUUIDForTARDIS(dim));
         } catch (IllegalArgumentException ignored) { // Thrown when not a valid UUID.
             return false;

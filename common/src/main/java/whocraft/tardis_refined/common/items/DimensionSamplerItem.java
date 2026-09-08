@@ -1,9 +1,7 @@
 package whocraft.tardis_refined.common.items;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -13,9 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ColorResolver;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.MiscHelper;
@@ -61,7 +57,7 @@ public class DimensionSamplerItem extends Item {
             if (!tag.contains(POTENTIAL_DIM_TAG) && DimensionUtil.isAllowedDimension(level.dimension())) {
                 forceColor(stack, serverLevel.getBlockTint(useOnContext.getClickedPos(), (biome, d, e) -> biome.getFogColor()));
                 savePotentialDim(tag, serverLevel.dimension());
-                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DIM_POTENTIAL, MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(SAVED_DIM_TAG))))), true);
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DIM_POTENTIAL, MiscHelper.getTranslatableDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(SAVED_DIM_TAG))))), true);
             } else {
                 PlayerUtil.sendMessage(player, !DimensionUtil.isAllowedDimension(level.dimension()) ? ModMessages.DIM_NOT_ALLOWED : ModMessages.DIM_ALREADY_SAVED, true);
             }
@@ -106,7 +102,7 @@ public class DimensionSamplerItem extends Item {
             double progress = (double) timer / TIMER_MAX * 100;
             tooltip.add(Component.translatable(ModMessages.TOOLTIP_DIM_PROGRESS, Math.round(progress) + "%"));
         } else if (tag != null && tag.contains(SAVED_DIM_TAG)) {
-            tooltip.add(Component.translatable(ModMessages.TOOLTIP_DIM_SAVED, MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(SAVED_DIM_TAG))))));
+            tooltip.add(Component.translatable(ModMessages.TOOLTIP_DIM_SAVED, MiscHelper.getTranslatableDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(SAVED_DIM_TAG))))));
         } else {
             tooltip.add(Component.translatable(ModMessages.TOOLTIP_NO_DIM_SAVED));
         }
@@ -117,6 +113,10 @@ public class DimensionSamplerItem extends Item {
         return tag.contains(POTENTIAL_DIM_TAG) || tag.contains(SAVED_DIM_TAG);
     }
 
+    public String getDimensionDescriptionId() {
+        return this.getDescriptionId() + ".with_dimension";
+    }
+
     @Override
     public Component getName(ItemStack itemStack) {
         CompoundTag tag = itemStack.getOrCreateTag();
@@ -125,8 +125,8 @@ public class DimensionSamplerItem extends Item {
         String dimensionTag = tag.contains(POTENTIAL_DIM_TAG) ? POTENTIAL_DIM_TAG : (tag.contains(SAVED_DIM_TAG) ? SAVED_DIM_TAG : null);
 
         if (dimensionTag != null) {
-            String dimension = MiscHelper.getCleanDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(dimensionTag))));
-            return Component.literal(dimension + " Sample");
+            Component dimension = MiscHelper.getTranslatableDimensionName(ResourceKey.create(DIMENSION, new ResourceLocation(tag.getString(dimensionTag))));
+            return Component.translatable(getDimensionDescriptionId(), dimension);
         }
 
         return super.getName(itemStack);

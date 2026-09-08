@@ -46,7 +46,7 @@ public class MonitorControl extends Control {
                 ResourceKey<Level> levelResourceKey = DimensionSamplerItem.getSavedDim(hand);
                 if(levelResourceKey != null) {
                     operator.getProgressionManager().addDiscoveredLevel(levelResourceKey);
-                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DIM_ADDED_TO_TARDIS, MiscHelper.getCleanDimensionName(levelResourceKey)), true);
+                    PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DIM_ADDED_TO_TARDIS, MiscHelper.getTranslatableDimensionName(levelResourceKey)), true);
                     hand.setCount(0);
                 }
                 return false;

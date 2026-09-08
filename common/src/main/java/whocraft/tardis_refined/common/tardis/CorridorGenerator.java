@@ -26,9 +26,10 @@ public class CorridorGenerator {
     private static int PLACEMENT_OFFSET = 6;
 
 
-    public static void onAttemptToUse(ServerLevel level, ItemStack itemStack, BlockPos blockPos, Player player) {
+    public static boolean onAttemptToUse(ServerLevel level, ItemStack itemStack, BlockPos blockPos, Player player) {
 
         if (!Platform.isProduction()) {
+            boolean success = false;
             if (itemStack.getItem() == Items.COMMAND_BLOCK_MINECART) {
 
                 String name = "gs_r" + level.getRandom().nextInt(1000);
@@ -39,14 +40,17 @@ public class CorridorGenerator {
                 manager.save(new ResourceLocation(name));
 
                 PlayerUtil.sendMessage(player, Component.translatable("Generated structure at: " + name), false);
+                success = true;
             }
 
             if (itemStack.getItem() instanceof InkSacItem) {
                 PlayerUtil.sendMessage(player, (Component.translatable("Attempting to generate structure.")), false);
                 CorridorGenerator.generateFromPosition(level, blockPos, blockPos);
-
+                success = true;
             }
+            return success;
         }
+        return false;
     }
 
     // Generate from a position in world space and create the structure to be saved.

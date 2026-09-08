@@ -29,6 +29,7 @@ import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
 import java.util.List;
+import java.util.Optional;
 
 import static whocraft.tardis_refined.client.TardisClientData.FOG_TICK_DELTA;
 import static whocraft.tardis_refined.client.TardisClientData.MAX_FOG_TICK_DELTA;
@@ -220,15 +221,17 @@ public class TardisClientLogic {
             }
 
             //Play hums, and use the dedicated HumSoundManager to stop and start sounds
-            HumEntry humEntry = clientData.getHumEntry();
-            if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
-                HumSoundManager.playHum(SoundEvent.createFixedRangeEvent(humEntry.getSoundEventId(), 1F), player, targetLevel);
+            Optional<HumEntry> humEntry = clientData.getHumEntry();
+            if (isThisTardis && humEntry.isPresent()) {
+                if (!humEntry.get().getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
+                    HumSoundManager.playHum(SoundEvent.createFixedRangeEvent(humEntry.get().getSoundEventId(), 1F), player, targetLevel);
+                }
             }
 
             //Hum ambient sounds
-            if (isThisTardis && targetLevel.getGameTime() % clientData.nextAmbientNoiseCall == 0) {
+            if (isThisTardis && targetLevel.getGameTime() % clientData.nextAmbientNoiseCall == 0 && humEntry.isPresent()) {
                 clientData.nextAmbientNoiseCall = targetLevel.random.nextInt(400, 2400);
-                List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
+                List<ResourceLocation> ambientSounds = humEntry.get().getAmbientSounds();
                 if (ambientSounds != null && !ambientSounds.isEmpty()) {
                     RandomSource randomSource = targetLevel.random;
 
@@ -262,11 +265,6 @@ public class TardisClientLogic {
     @Environment(EnvType.CLIENT)
     public static void handleClient() {
         Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            LocalPlayer player = Minecraft.getInstance().player;
-            player.setXRot(tardisPlayerInfo.getPlayerPreviousYaw());
-            player.setYHeadRot(tardisPlayerInfo.getPlayerPreviousRot());
-        });
     }
 
 
