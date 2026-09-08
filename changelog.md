@@ -50,3 +50,4 @@
 - Invalid and duplicate control entities are now automatically removed.
 - Removed duplicate control on crystal console.
 - Fix critical controls able to break after relogging mid-flight.
+- Fix controls repairing themselves when the next flight event happens after relogging.

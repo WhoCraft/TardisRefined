@@ -116,10 +116,7 @@ public class FlightDanceManager extends TickableHandler {
                 operator.getPilotingManager().endFlight(true, false);
                 return;
             } else {
-                console.killControls(); // Just incase
-                console.spawnControlEntities();
                 controlEntityList.addAll(getNonCriticalControls(console));
-
             }
         }
         getRandomUndamagedControl().ifPresent(control -> {
