@@ -42,3 +42,4 @@
 - Fixed the TARDIS sometimes playing the default hum when set to a different hum.
 - Fixed materialize around not working in unloaded chunks.
 - Fixed materialize around bringing mobs along when taking off.
+- Fixed crash when relogging while TARDIS is unable to land.
