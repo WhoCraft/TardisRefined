@@ -135,6 +135,11 @@ public class ModEvents {
             context.register(RegistryHelper.makeKey("nivis"), DefaultVertexFormat.NEW_ENTITY, shaderInstance -> TRShaders.SNOW_SHADER = shaderInstance);
         });
 
+        WorldRenderEvents.START.register(context -> {
+            // We initialize stencil during START instead of LAST due to a weird compatibility bug with Veil where the hand stops rendering until the game is restarted.
+            RenderTargetHelper.tryEnableMainTargetStencil();
+        });
+
         WorldRenderEvents.LAST.register(context -> {
             Camera camera = context.camera();
             PoseStack matrices = context.matrixStack();

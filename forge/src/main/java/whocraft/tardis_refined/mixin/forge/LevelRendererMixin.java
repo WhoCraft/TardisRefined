@@ -29,6 +29,21 @@ public class LevelRendererMixin {
             ),
             remap = false
     )
+    public void onRenderStart(
+            DeltaTracker arg, boolean bl, Camera camera, GameRenderer arg3, LightTexture arg4, Matrix4f matrix4f,
+            Matrix4f matrix4f2, CallbackInfo ci, @Local PoseStack poseStack
+    ) {
+        RenderTargetHelper.tryEnableMainTargetStencil(); // For consistency with Fabric.
+    }
+
+    @Inject(
+            method = "renderLevel",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/LevelRenderer;renderDebug(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;Lnet/minecraft/client/Camera;)V"
+            ),
+            remap = false
+    )
     public void onRenderLast(
             DeltaTracker arg, boolean bl, Camera camera, GameRenderer arg3, LightTexture arg4, Matrix4f matrix4f,
             Matrix4f matrix4f2, CallbackInfo ci, @Local PoseStack poseStack

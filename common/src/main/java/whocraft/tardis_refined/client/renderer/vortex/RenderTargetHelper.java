@@ -106,10 +106,6 @@ public class RenderTargetHelper {
         }
 
 
-        if(!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())){
-            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
-        }
-
         stack.pushPose();
 
         // Fix transform
@@ -215,10 +211,6 @@ public class RenderTargetHelper {
 
         MultiBufferSource.BufferSource imBuffer = stencilBufferStorage.getVertexConsumer();
 
-        if (!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())) {
-            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
-        }
-
         stack.pushPose();
         RenderSystem.depthMask(true);
 
@@ -280,10 +272,6 @@ public class RenderTargetHelper {
             if (ImmersivePortalsClient.shouldStopRenderingInPortal()) {
                 return;
             }
-        }
-
-        if(!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())){
-            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
         }
 
         stack.pushPose();
@@ -370,6 +358,13 @@ public class RenderTargetHelper {
     @Environment(EnvType.CLIENT)
     public static void setIsStencilEnabled(RenderTarget renderTarget, boolean cond) {
         ((RenderTargetStencil) renderTarget).tr$setisStencilEnabledAndReload(cond);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void tryEnableMainTargetStencil() {
+        if(!getIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget())){
+            setIsStencilEnabled(Minecraft.getInstance().getMainRenderTarget(), true);
+        }
     }
 
     public void start() {
