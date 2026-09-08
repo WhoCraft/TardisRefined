@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.glfw.GLFW;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.BackgroundlessButton;
@@ -47,9 +48,12 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         this.upgradeHandler = upgradeHandler;
     }
 
+    private BackgroundlessButton extView;
     private Button ejectbtn;
     private int ejectbtntime;
     private boolean ejectbtnshow;
+
+    private boolean isHoldingDown = false;
 
     @Override
     protected void init() {
@@ -66,7 +70,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
                         .size(70, 20).build());
         vortxSelectButton.active = true;
 */
-        BackgroundlessButton extView = addRenderableWidget(BackgroundlessButton.backgroundlessBuilder(Component.literal(""), button -> {
+        extView = addRenderableWidget(BackgroundlessButton.backgroundlessBuilder(Component.literal(""), button -> {
             new C2SBeginShellView().send();
             Minecraft.getInstance().setScreen(null);
         }).pos(hPos + 20, -30 + height / 2).size(40, 60).build());
@@ -78,6 +82,22 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
             Minecraft.getInstance().setScreen(null);
         }).pos(-35 + hPos + monitorWidth / 2, vPos + monitorHeight - 20).size(70, 20).build());
 
+    }
+
+    @Override
+    public boolean keyPressed(int key, int scan, int mod) {
+        if (key == GLFW.GLFW_KEY_DOWN) {
+            isHoldingDown = true;
+        }
+        return super.keyPressed(key, scan, mod);
+    }
+
+    @Override
+    public boolean keyReleased(int key, int scan, int mod) {
+        if (key == GLFW.GLFW_KEY_DOWN) {
+            isHoldingDown = false;
+        }
+        return super.keyReleased(key, scan, mod);
     }
 
     @Override
@@ -100,6 +120,34 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         poseStack.popPose();
     }
 
+    private boolean showEject(int mouseX, int mouseY, int hPos, int vPos) {
+        if (getFocused() == ejectbtn) return true;
+        if (
+                isHoldingDown &&
+                getFocused() instanceof GenericMonitorSelectionList<?> list
+        ) {
+            if (list.children().isEmpty()) {
+                return true;
+            }
+            int lastIndex = list.children().size()-1;
+            for (; lastIndex > 0; lastIndex--) {
+                if (GenericMonitorSelectionList.KeyboardSelectionAware.isSelectable(list.children().get(lastIndex))) {
+                    break;
+                }
+            }
+            if (lastIndex == 0 && !GenericMonitorSelectionList.KeyboardSelectionAware.isSelectable(list.children().get(lastIndex))) {
+                return true;
+            }
+            if (list.children().indexOf(list.getFocused()) == lastIndex) {
+                return true;
+            }
+        }
+        if (isHoldingDown && getFocused() == extView) {
+            return true;
+        }
+        return (mouseY >= vPos + monitorHeight - 20 && mouseY <= vPos + monitorHeight) && (mouseX >= -35 + hPos + monitorWidth / 2 && mouseX <= 70 - 35 + hPos + monitorWidth / 2);
+    }
+
     @Override
     public void inMonitorRender(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         PoseStack poseStack = guiGraphics.pose();
@@ -108,7 +156,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         int vPos = (height - monitorHeight) / 2;
 
 
-        this.ejectbtnshow = (mouseY >= vPos + monitorHeight - 20 && mouseY <= vPos + monitorHeight) && (mouseX >= -35 + hPos + monitorWidth / 2 && mouseX <= 70 - 35 + hPos + monitorWidth / 2);
+        this.ejectbtnshow = showEject(mouseX, mouseY, hPos, vPos);
 
         ejectbtn.setPosition(-35 + hPos + monitorWidth / 2, vPos + monitorHeight - ejectbtntime);
         ejectbtn.active = ejectbtntime == 20;
@@ -128,15 +176,15 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         poseStack.pushPose();
         poseStack.translate(hPos + 10, vPos + 10, 0);
         guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable(ModMessages.UI_MONITOR_GPS).getString() + ":", 0, 0, Color.WHITE.getRGB());
-        ScreenHelper.renderWidthScaledText(currentLocation.getDirection().getName().toUpperCase() + " @ " + currentLocation.getPosition().toShortString(), guiGraphics, Minecraft.getInstance().font, 0, 10, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
-        ScreenHelper.renderWidthScaledText(MiscHelper.getCleanDimensionName(currentLocation.getDimensionKey()), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
+        ScreenHelper.renderWidthScaledText(Component.literal(currentLocation.getDirection().getName().toUpperCase() + " @ " + currentLocation.getPosition().toShortString()), guiGraphics, Minecraft.getInstance().font, 0, 10, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
+        ScreenHelper.renderWidthScaledText(MiscHelper.getTranslatableDimensionName(currentLocation.getDimensionKey()), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
         poseStack.popPose();
 
         poseStack.pushPose();
         poseStack.translate(hPos + 10, vPos + monitorHeight - 35, 0);
         guiGraphics.drawString(Minecraft.getInstance().font, Component.translatable(ModMessages.UI_MONITOR_DESTINATION).getString() + ":", 0, 0, Color.WHITE.getRGB());
-        ScreenHelper.renderWidthScaledText(targetLocation.getDirection().getName().toUpperCase() + " @ " + targetLocation.getPosition().toShortString(), guiGraphics, Minecraft.getInstance().font, 0, 10, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
-        ScreenHelper.renderWidthScaledText(MiscHelper.getCleanDimensionName(targetLocation.getDimensionKey()), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
+        ScreenHelper.renderWidthScaledText(Component.literal(targetLocation.getDirection().getName().toUpperCase() + " @ " + targetLocation.getPosition().toShortString()), guiGraphics, Minecraft.getInstance().font, 0, 10, Color.LIGHT_GRAY.getRGB(), textScale * 2, 0.75F, false);
+        ScreenHelper.renderWidthScaledText(MiscHelper.getTranslatableDimensionName(targetLocation.getDimensionKey()), guiGraphics, Minecraft.getInstance().font, 0, 20, Color.LIGHT_GRAY.getRGB(), textScale - 3, 1.5F, false);
         poseStack.popPose();
     }
 

@@ -42,6 +42,8 @@ public class ModMessages {
     public static final String UI_MONITOR_WAYPOINT_NAME = ui("monitor.waypoint_name");
     public static final String UI_UPGRADES = ui("upgrades");
     public static final String UI_UPGRADES_BUY = ui("upgrades.buy_ability");
+    public static final String UI_UPGRADES_POINTS = ui("upgrades.points");
+    public static final String UI_UPGRADES_XP = ui("upgrades.xp");
     public static final String UI_NO_INSTALLED_SUBSYSTEMS = ui("no_installed_subsystems");
     public static final String CONFIG_IP_COMPAT = config("immersive_portals");
     public static final String CONFIG_IP_VS_COLLISION = config("immersive_portals_vs_collision");

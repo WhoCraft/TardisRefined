@@ -27,7 +27,7 @@ public class ShellRenderer {
     public static void renderShell(GuiGraphics guiGraphics, float control, float alpha, int throttle) {
         TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
 
-            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
+            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousDim());
             ResourceLocation shellPattern = tardisClientData.getShellPattern();
             ResourceLocation shellTheme = tardisClientData.getShellTheme();
             ShellPattern fullPattern = ShellPatterns.getPatternOrDefault(shellTheme, shellPattern);

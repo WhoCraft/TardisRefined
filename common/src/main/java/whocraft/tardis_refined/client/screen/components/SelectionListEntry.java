@@ -5,8 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
+import org.lwjgl.glfw.GLFW;
 
-public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> {
+public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> implements GenericMonitorSelectionList.KeyboardSelectionAware {
 
     private final Component itemDisplayName;
     private final GenericListSelection press;
@@ -49,6 +50,16 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     }
 
     @Override
+    public boolean keyPressed(int key, int scan, int mod) {
+        if (enabled) {
+            if (key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_SPACE) {
+                press.onClick(this);
+            }
+        }
+        return super.keyPressed(key, scan, mod);
+    }
+
+    @Override
     public boolean mouseClicked(double d, double e, int i) {
         if (enabled) {
             press.onClick(this);
@@ -70,17 +81,20 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
      */
     @Override
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-        int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() :
+        boolean isSelected = isMouseOver || isFocused();
+        int colour = isSelected ? ChatFormatting.YELLOW.getColor() :
                 (this.checked ? ChatFormatting.YELLOW.getColor() :
                         this.itemDisplayName.getStyle().getColor() != null ?
                                 this.itemDisplayName.getStyle().getColor().getValue() :
                                 ChatFormatting.GOLD.getColor());
         Component text = Component.literal((this.checked ? "> " : "") + this.itemDisplayName.getString());
-        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
+        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isSelected, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
 
         // Render tooltip if mouse is over
         if (isMouseOver && this.tooltip != null) {
             renderTooltip(guiGraphics, mouseX, mouseY);
+        } else if (isFocused() && this.tooltip != null) {
+            renderTooltip(guiGraphics, left + width/4, top + height*3);
         }
     }
 
@@ -91,7 +105,7 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
         }
     }
 
-    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour) {
+    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isSelected, float partialTick, Component text, int textColour) {
         int heightCentre = top + height / 2;
         int xPos = this.listLeft + 2;
         int yPos = heightCentre - 9 / 2;
@@ -100,5 +114,10 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+    }
+
+    @Override
+    public boolean isSelectable() {
+        return enabled;
     }
 }

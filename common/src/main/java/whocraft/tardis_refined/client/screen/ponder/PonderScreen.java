@@ -43,7 +43,7 @@ public class PonderScreen extends MonitorOS {
 
         this.setEvents(() -> {
 
-        }, ScreenHandler::openCraftingScreen);
+        }, this::back);
 
         this.recipe = recipe;
         int minX = 100, maxX = -100, minY = 100, maxY = -100, minZ = 100, maxZ = -100;
@@ -59,6 +59,11 @@ public class PonderScreen extends MonitorOS {
         xSize = maxX - minX;
         ySize = maxY - minY;
         zSize = maxZ - minZ;
+    }
+
+    @Override
+    protected void back() {
+        ScreenHandler.openCraftingScreen();
     }
 
     public static Component getResultName(ManipulatorCraftingRecipe recipe) {

@@ -204,7 +204,7 @@ public class UpgradeWidget {
             m = x + this.x;
         }
 
-        int n = 32 + this.description.size() * 17;
+        int n = 32 + this.description.size() * (minecraft.font.lineHeight + 1) + (minecraft.font.lineHeight + 5);
         if (!this.description.isEmpty()) {
             if (bl2) {
                 guiGraphics.blitNineSliced(UpgradesScreen.WIDGETS, m + 2, l + 26 - n, this.width, n, 10, 200, 26, 0, 52);
@@ -236,7 +236,7 @@ public class UpgradeWidget {
             }
             ResourceLocation key = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(upgradeEntry);
             String owner = Platform.getModName(key.getNamespace());
-            guiGraphics.drawString(this.minecraft.font, ChatFormatting.BLUE + owner, m + 5, l + 26 + 9, -1);
+            guiGraphics.drawString(this.minecraft.font, ChatFormatting.BLUE + owner, m + 5, l + 26 - n + 7 + this.description.size() * 9 + 5, -1);
         } else {
             for (int o = 0; o < this.description.size(); ++o) {
                 guiGraphics.drawString(this.minecraft.font, this.description.get(o), m + 5, y + this.y + 9 + 17 + o * 9, -5592406);

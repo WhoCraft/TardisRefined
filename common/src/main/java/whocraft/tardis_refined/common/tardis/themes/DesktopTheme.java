@@ -7,6 +7,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.tardis.TardisDesktops;
+import whocraft.tardis_refined.common.util.CodecJsonReloadListener;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
 
@@ -16,9 +18,17 @@ public class DesktopTheme {
         return instance.group(
                 ResourceLocation.CODEC.fieldOf("id").forGetter(DesktopTheme::getIdentifier),
                 ResourceLocation.CODEC.fieldOf("structure").forGetter(DesktopTheme::getStructureLocation),
-                Codec.STRING.orElse("Placeholder").fieldOf("name_component").forGetter(DesktopTheme::getName)
+                Codec.STRING.fieldOf("name_component").orElse("Placeholder").forGetter(DesktopTheme::getName)
         ).apply(instance, DesktopTheme::new);
     });
+
+    /**
+     * Same as {@link DesktopTheme#CODEC} but will try to use the desktop theme id if the desktop registered.
+     */
+    public static final Codec<DesktopTheme> REFERENCE_CODEC = CodecJsonReloadListener.createReferenceCodec(
+            CODEC, DesktopTheme::getIdentifier, TardisDesktops::getDesktopById
+    );
+
     private final ResourceLocation uiTexture;
     private ResourceLocation identifier;
     private String name = "";
