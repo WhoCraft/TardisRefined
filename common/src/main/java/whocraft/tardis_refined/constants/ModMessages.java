@@ -22,6 +22,10 @@ public class ModMessages {
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
     public static final String UI_MONITOR_SELECT_HUM = ui("monitor.select.hum");
+    public static final String UI_MONITOR_SETTINGS = ui("monitor.select.settings");
+    public static final String UI_MONITOR_SETTINGS_ON = ui("monitor.select.settings.on");
+    public static final String UI_MONITOR_SETTINGS_OFF = ui("monitor.select.settings.off");
+    public static final String UI_MONITOR_SETTINGS_UNAVAILABLE_ARS = ui("monitor.select.settings.unavailable.ars");
     public static final String UI_MONITOR_EJECT = ui("monitor.select.eject");
     public static final String UI_EJECT_CANNOT_IN_FLIGHT = ui("monitor.select.eject_fail");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");

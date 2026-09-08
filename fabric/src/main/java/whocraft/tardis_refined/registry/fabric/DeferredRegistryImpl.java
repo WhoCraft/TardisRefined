@@ -118,5 +118,10 @@ public class DeferredRegistryImpl {
         public Supplier<Codec<T>> getCodec() {
             return () -> this.registry.get().byNameCodec();
         }
+
+        @Override
+        public Registry<T> getRegistry() {
+            return this.registry.get();
+        }
     }
 }

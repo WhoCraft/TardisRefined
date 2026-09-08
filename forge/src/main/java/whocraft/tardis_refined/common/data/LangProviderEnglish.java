@@ -234,6 +234,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "WAYPOINT NAVIGATION");
         add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "COORD NAVIGATION");
         add(ModMessages.UI_MONITOR_SELECT_HUM, "SOUNDSCAPE");
+        add(ModMessages.UI_MONITOR_SETTINGS, "SYSTEM SETTINGS");
+        add(ModMessages.UI_MONITOR_SETTINGS_ON, "Currently enabled, click to disable");
+        add(ModMessages.UI_MONITOR_SETTINGS_OFF, "Currently disabled, click to enable");
+        add(ModMessages.UI_MONITOR_SETTINGS_UNAVAILABLE_ARS, "Currently unavailable, check the ARS tree for details");
         add(ModMessages.UI_MONITOR_GPS, "GPS");
         add(ModMessages.UI_MONITOR_VORTEX, "VORTEX");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
