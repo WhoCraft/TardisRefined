@@ -489,11 +489,16 @@ public class TardisPilotingManager extends TickableHandler {
 
         List<TardisNavLocation> solutionsInRow = new ArrayList<>();
 
+        var sub = SublevelAccessor.get();
+
+        if (sub.isBlockInSublevelSpace(level, position) && sub.getContainingSublevelIfLoaded(level, position).isEmpty()) {
+            return List.of();
+        }
+
         // Fetch the row of blocks and filter them all out to air.
         List<BlockPos> blockColumn = this.getBlockPosColumn(position, minHeight, maxBuildHeight);
         Map<BlockPos, Direction> directionOverrides = new HashMap<>();
         var box = AABB.of(BoundingBox.fromCorners(position.atY(minHeight), position.atY(maxBuildHeight)));
-        var sub = SublevelAccessor.get();
         for (var ship : sub.getSublevelsIntersecting(level, box)) {
             if (!ship.isHorizontalEnough()) continue;
             ship.toSublevelPositions(box).forEach(pos -> {
@@ -660,6 +665,10 @@ public class TardisPilotingManager extends TickableHandler {
     private boolean canPlaceTardis(TardisNavLocation location) {
         ServerLevel targetLevel = location.getLevel();
         BlockPos pos = location.getPosition();
+        var sub = SublevelAccessor.get();
+        if (sub.isBlockInSublevelSpace(targetLevel, pos) && sub.getContainingSublevelIfLoaded(targetLevel, pos).isEmpty()) {
+            return false;
+        }
         boolean isBelowLogicalHeight = isWithinLogicalHeight(location.getLevel(), location.getPosition()) || onLandingPad(location.getLevel(), location.getPosition());
         return isBelowLogicalHeight && this.isLegalLandingBlock(targetLevel, pos, LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.above(), LandingBlockType.AIR) && isLegalLandingBlock(targetLevel, pos.below(), LandingBlockType.GROUND);
     }
@@ -1084,6 +1093,7 @@ public class TardisPilotingManager extends TickableHandler {
 
 
     public void setTargetLocation(TardisNavLocation targetLocation) {
+        if (targetLocation == this.targetLocation) return;
         this.targetLocation.removeSublevelData(operator.getLevel().getServer());
         this.targetLocation = targetLocation.copy().generateSublevelData();
     }
@@ -1100,6 +1110,7 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     public void setCurrentLocation(TardisNavLocation currentLocation) {
+        if (currentLocation == this.currentLocation) return;
         this.currentLocation.removeSublevelData(operator.getLevel().getServer());
         this.currentLocation = currentLocation.copy().generateSublevelData();
     }

@@ -338,7 +338,14 @@ public class TardisNavLocation {
      */
     public void removeSublevelData(MinecraftServer server) {
         if (server != null) {
-            sublevelReference.ifPresent(data -> data.destroy(server));
+            sublevelReference.ifPresent(data -> {
+                data.tryLoad(server).ifPresent(target -> {
+                    // setPosition would cause a stack overflow here.
+                    this.position = BlockPos.containing(target.sublevel().toMainLevelPos(target.pos()));
+                    setDirection(target.sublevel().toMainLevelDirection(direction));
+                });
+                data.destroy(server);
+            });
         }
         sublevelReference = Optional.empty();
         sublevelCache = Optional.empty();
