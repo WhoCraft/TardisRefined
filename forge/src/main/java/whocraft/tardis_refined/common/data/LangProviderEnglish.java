@@ -235,6 +235,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS, "WAYPOINT NAVIGATION");
         add(ModMessages.UI_MONITOR_UPLOAD_COORDS, "COORD NAVIGATION");
         add(ModMessages.UI_MONITOR_SELECT_HUM, "SOUNDSCAPE");
+        add(ModMessages.UI_MONITOR_SETTINGS, "SYSTEM SETTINGS");
+        add(ModMessages.UI_MONITOR_SETTINGS_ON, "Currently enabled, click to disable");
+        add(ModMessages.UI_MONITOR_SETTINGS_OFF, "Currently disabled, click to enable");
+        add(ModMessages.UI_MONITOR_SETTINGS_UNAVAILABLE_ARS, "Currently unavailable, check the ARS tree for details");
         add(ModMessages.UI_MONITOR_GPS, "GPS");
         add(ModMessages.UI_MONITOR_VORTEX, "VORTEX");
         add(ModMessages.UI_MONITOR_DESTINATION, "Destination");
@@ -337,6 +341,10 @@ public class LangProviderEnglish extends LanguageProvider {
         add(ModMessages.CONFIG_IP_TELEPORTATION_MODE_VS, "Immersive Portals Teleportation Mode on Valkyrien Skies ships");
         add(ModMessages.CONFIG_CONTROL_NAMES, "Render control names?");
         add(ModMessages.CONFIG_BANNED_DIMENSIONS, "Banned Dimensions");
+        add(ModMessages.CONFIG_DISTANCE_CALCULATION, "Distance Calculation");
+        add(ModMessages.CONFIG_DISTANCE_RANDOMNESS, "Distance Randomness");
+        add(ModMessages.CONFIG_DISTANCE_SPEED_FACTOR, "Speed Factor");
+        add(ModMessages.CONFIG_DISTANCE_XP_FACTOR, "XP Factor");
         add(ModMessages.CONFIG_IDLE_CONSOLE_ANIMS, "Play idle console animations");
         add(ModMessages.CONFIG_RENDER_VORTEX_IN_DOOR, "Render Vortex within interior door");
         add(ModMessages.CONFIG_CUSTOM_SHADERS, "Use Custom Shaders");

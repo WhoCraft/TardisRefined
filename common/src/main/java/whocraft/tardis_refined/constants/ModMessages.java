@@ -22,6 +22,10 @@ public class ModMessages {
     public static final String UI_MONITOR_UPLOAD_WAYPOINTS = ui("monitor.upload.waypoints");
     public static final String UI_MONITOR_UPLOAD_COORDS = ui("monitor.upload.coords");
     public static final String UI_MONITOR_SELECT_HUM = ui("monitor.select.hum");
+    public static final String UI_MONITOR_SETTINGS = ui("monitor.select.settings");
+    public static final String UI_MONITOR_SETTINGS_ON = ui("monitor.select.settings.on");
+    public static final String UI_MONITOR_SETTINGS_OFF = ui("monitor.select.settings.off");
+    public static final String UI_MONITOR_SETTINGS_UNAVAILABLE_ARS = ui("monitor.select.settings.unavailable.ars");
     public static final String UI_MONITOR_EJECT = ui("monitor.select.eject");
     public static final String UI_EJECT_CANNOT_IN_FLIGHT = ui("monitor.select.eject_fail");
     public static final String UI_MONITOR_NO_WAYPOINTS = ui("monitor.no.waypoints");
@@ -58,6 +62,10 @@ public class ModMessages {
     public static final String CONFIG_CUSTOM_SHADERS = config("config_custom_shaders");
     public static final String SCREEN_SHAKE_MULTIPLIER = config("screen_shake_multiplier");
     public static final String CONFIG_BANNED_DIMENSIONS = config("banned_dimensions");
+    public static final String CONFIG_DISTANCE_CALCULATION = config("distance.calculation");
+    public static final String CONFIG_DISTANCE_RANDOMNESS = config("distance.randomness");
+    public static final String CONFIG_DISTANCE_SPEED_FACTOR = config("distance.speed_factor");
+    public static final String CONFIG_DISTANCE_XP_FACTOR = config("distance.xp_factor");
     public static final String CONFIG_DIMENSION_DELETE_MODE = config("dimension_delete_mode");
     public static final String CMD_DIM_NOT_A_TARDIS = cmdOutput("dim_not_a_tardis");
     public static final String CMD_NO_INTERNAL_DOOR = cmdOutput("no_internal_door");
