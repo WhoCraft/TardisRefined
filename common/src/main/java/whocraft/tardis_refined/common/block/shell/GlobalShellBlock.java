@@ -3,8 +3,10 @@ package whocraft.tardis_refined.common.block.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -26,10 +28,15 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
+import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.common.tardis.manager.SettingsHandler;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
+import whocraft.tardis_refined.registry.TRUpgrades;
+
+import java.util.Optional;
 
 public class GlobalShellBlock extends ShellBaseBlock {
 
@@ -47,6 +54,45 @@ public class GlobalShellBlock extends ShellBaseBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(LIT);
+    }
+
+    private Optional<TardisLevelOperator> getTARDIS(Level level, BlockPos blockPos) {
+        if (!level.isClientSide() && level.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shell) {
+            var interior = level.getServer().getLevel(shell.getTardisId());
+            if (interior != null) {
+                return TardisLevelOperator.get(interior);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
+        super.onPlace(blockState, level, blockPos, blockState2, bl);
+        level.scheduleTick(blockPos, blockState.getBlock(), 1); // The shell won't know which TARDIS it's linked to yet, so we check landing on the next tick.
+    }
+
+    @Override
+    public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        var tardis = getTARDIS(level, pos);
+        if (tardis.isEmpty()) return;
+        // We check for the presence of the upgrade when deciding whether to schedule the next tick to allow players to enable it in the settings menu while they're landing.
+        if (tardis.get().getPilotingManager().isLanding() && tardis.get().getPilotingManager().isInFlight() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(tardis.get().getUpgradeHandler())) {
+            if (tardis.get().getSettingsManager().getSetting(SettingsHandler.MATERIALIZE_AROUND.get()).orElse(false)) {
+                level.getEntitiesOfClass(
+                        Entity.class,
+                        state.getCollisionShape(level, pos).bounds().move(pos)
+                ).forEach(entity -> tardis.get().enterTardis(entity, pos, level, state.getValue(ShellBaseBlock.FACING)));
+            }
+            // Scheduled ticks are a useful and simple way to check for entities in unloaded chunks.
+            // This also won't enable mob spawning (unlike a forced ticket), which makes accidental landings around hostile mobs less likely.
+            level.scheduleTick(pos, state.getBlock(), 1);
+        }
     }
 
     @Override

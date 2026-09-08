@@ -153,4 +153,6 @@ public abstract class DeferredRegistry<T> {
      */
     public abstract Supplier<Codec<T>> getCodec();
 
+    public abstract Registry<T> getRegistry();
+
 }

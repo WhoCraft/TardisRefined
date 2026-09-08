@@ -18,6 +18,7 @@ import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionL
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
 import whocraft.tardis_refined.client.screen.screens.DesktopSelectionScreen;
 import whocraft.tardis_refined.client.screen.screens.HumSelectionScreen;
+import whocraft.tardis_refined.client.screen.screens.SystemSettingsScreen;
 import whocraft.tardis_refined.client.screen.screens.VortexSelectionScreen;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
 import whocraft.tardis_refined.common.network.messages.C2SEjectPlayer;
@@ -218,6 +219,7 @@ public class MonitorScreen extends MonitorOS.MonitorOSExtension {
         //selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_SHELL_VIEW), entry -> new C2SBeginShellView().send(), hPos, TRUpgrades.WAYPOINTS.get().isUnlocked(upgradeHandler)));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_VORTEX), entry -> switchScreenToRight(new VortexSelectionScreen(currentVortex)), hPos));
         selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_SELECT_HUM), entry -> switchScreenToRight(new HumSelectionScreen()), hPos));
+        selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_SETTINGS), entry -> switchScreenToRight(new SystemSettingsScreen(upgradeHandler)), hPos));
         //selectionList.children().add(new SelectionListEntry(Component.translatable(ModMessages.UI_MONITOR_EJECT), entry -> {
         //    new C2SEjectPlayer().send();
         //    Minecraft.getInstance().setScreen(null);
