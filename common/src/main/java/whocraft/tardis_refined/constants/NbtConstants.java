@@ -62,6 +62,7 @@ public class NbtConstants {
     // Flight
     public static final String FLIGHT_DISTANCE = "flight_distance";
     public static final String DISTANCE_COVERED = "distance_covered";
+    public static final String POINTS_TO_EARN = "points_to_earn";
     public static final String SPEED_MODIFIER = "speed_modifier";
     public static final String TICKS_CRASHING = "ticksCrashing";
     public static final String IS_IN_RECOVERY = "isInCrashRecovery";

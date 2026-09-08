@@ -88,9 +88,6 @@ public class DimensionalControl extends Control {
 
             PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONTROL_DIMENSION_SELECTED, MiscHelper.getTranslatableDimensionName(pilotManager.getTargetLocation().getDimensionKey())), true);
 
-            if (pilotManager.isInFlight()) {
-                operator.getPilotingManager().recalculateFlightDistance();
-            }
             return true;
         }
         return false;

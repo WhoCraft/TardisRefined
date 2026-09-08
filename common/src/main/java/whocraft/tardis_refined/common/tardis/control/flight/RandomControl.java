@@ -38,10 +38,6 @@ public class RandomControl extends whocraft.tardis_refined.common.tardis.control
                     )
             );
 
-            if (pilotManager.isInFlight()) {
-                pilotManager.recalculateFlightDistance();
-            }
-
             PlayerUtil.sendMessage(player, Component.translatable(pilotManager.getTargetLocation().getPosition().toShortString()), true);
             return true;
         }
