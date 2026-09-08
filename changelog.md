@@ -2,6 +2,7 @@
 
 ![TARDIS Refined](https://wiki.tardisrefined.net/TARDIS-Refined-Wiki/tardis_refined_v2_1.png)
 
+=======
 #### Additions
 
 - Added tab support to the ARS GUI. Each root node gets its own tab.
@@ -14,7 +15,7 @@
 - The TARDIS item will now read the `setup_data` tag on the item, if it exists, and pass it on to the created TARDIS.
 
 #### Bug Fixes
-
+- Fix crash when creating a TARDIS on a ship.
 - Fixed the Astral Manipulator GUI not opening when the player is holding an item.
 - Fixed points and XP text in the ARS GUI not being translatable.
 - Fixed the mod name being drawn in the wrong position in the ARS GUI.
