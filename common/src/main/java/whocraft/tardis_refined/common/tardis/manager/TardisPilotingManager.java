@@ -38,6 +38,7 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.control.flight.DimensionalControl;
 import whocraft.tardis_refined.common.util.LevelHelper;
+import whocraft.tardis_refined.common.util.Platform;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -430,6 +431,7 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     public Optional<TardisNavLocation> findClosestValidPosition(TardisNavLocation location, int radius) {
+        if (Platform.getServer() == null) return Optional.empty();
         ServerLevel level = location.getLevel();
         BlockPos position = location.getPosition();
         Direction direction = location.getDirection();

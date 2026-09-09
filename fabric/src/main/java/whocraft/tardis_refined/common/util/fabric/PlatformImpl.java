@@ -38,10 +38,11 @@ public class PlatformImpl {
     }
 
     public static MinecraftServer getServer() {
-        MinecraftServer server;
+        MinecraftServer server = null;
         if (Platform.isClient()) {
             server = getServerFromClient();
-        } else {
+        }
+        if (server == null) {
             server = MINECRAFT_SERVER;
         }
         return server;
