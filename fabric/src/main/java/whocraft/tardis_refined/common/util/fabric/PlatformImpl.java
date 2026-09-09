@@ -48,6 +48,7 @@ public class PlatformImpl {
     }
 
     public static void init() {
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> MINECRAFT_SERVER = server);
         ServerLifecycleEvents.SERVER_STARTED.register(server -> MINECRAFT_SERVER = server);
     }
 
@@ -59,4 +60,11 @@ public class PlatformImpl {
     public static boolean isForge() {
         return false;
     }
+
+    public static String getModName(String namespace) {
+        return FabricLoader.getInstance().getModContainer(namespace)
+                .map(modContainer -> modContainer.getMetadata().getName())
+                .orElse(namespace);
+    }
+
 }

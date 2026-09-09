@@ -21,7 +21,7 @@ public abstract class LoopingDimensionTypeSpecificSound extends LoopingSoundGene
     @Override
     public boolean canPlaySound() {
         if (this.player != null) {
-            return player.level().dimensionTypeRegistration() == this.dimensionTypeKey;
+            return player.level().dimensionTypeRegistration().unwrapKey().orElse(null) == this.dimensionTypeKey;
         }
         return false;
     }

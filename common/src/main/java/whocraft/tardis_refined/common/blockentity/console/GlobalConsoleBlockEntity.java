@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -45,8 +46,17 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public AnimationState powerOn = new AnimationState();
     private boolean shouldSpawnControls = true;
     private ResourceLocation consoleTheme;
+    private int ticksBooting = 0;
 
     private ConsolePattern basePattern;
+
+    public int getTicksBooting() {
+        return ticksBooting;
+    }
+
+    public void setTicksBooting(int ticksBooting) {
+        this.ticksBooting = ticksBooting;
+    }
 
     public GlobalConsoleBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.GLOBAL_CONSOLE_BLOCK.get(), blockPos, blockState);
@@ -94,17 +104,35 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (this.basePattern != null) {
             compoundTag.putString(NbtConstants.PATTERN, basePattern.id().toString());
         }
+
+        compoundTag.putInt("ticks_booting", ticksBooting);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider provider) {
 
-        if (tag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = ResourceLocation.parse(tag.getString(NbtConstants.THEME));
-            this.consoleTheme = themeId;
+        boolean needsDataFixed = false;
+
+        if (tag.contains("ticks_booting")) {
+            this.ticksBooting = tag.getInt("ticks_booting");
         }
 
-        if (tag.contains(NbtConstants.PATTERN)) {
+        if (tag.contains(NbtConstants.THEME)) {
+            ResourceLocation themeId = ResourceLocation.parse(tag.getString(NbtConstants.THEME));
+
+            ConsoleTheme theme = ConsoleTheme.CONSOLE_THEME_REGISTRY.get(themeId);
+
+            if (theme == null) {
+                TardisRefined.LOGGER.info("The console theme: {} does not exist! Resetting Console Theme & Pattern at {}", themeId, getBlockPos());
+                needsDataFixed = true;
+                consoleTheme = theme();
+            } else {
+                this.consoleTheme = themeId;
+            }
+        }
+
+
+        if (tag.contains(NbtConstants.PATTERN) && !needsDataFixed) {
             ResourceLocation currentPattern = ResourceLocation.parse(tag.getString(NbtConstants.PATTERN));
             ResourceLocation theme = this.theme();
             if (ConsolePatterns.doesPatternExist(theme, currentPattern)) {
@@ -112,11 +140,13 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             }
         }
 
+
+
         if (this.consoleTheme == null) {
             this.consoleTheme = this.theme();
         }
 
-        if (this.basePattern == null) {
+        if (this.basePattern == null || needsDataFixed) {
             this.basePattern = this.pattern();
         }
 
@@ -136,7 +166,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
             killControls();
             ResourceLocation themeId = this.theme();
             ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEME_REGISTRY.get(themeId);
-            ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
+            ControlSpecification[] controls = consoleTheme.getControlSpecificationList(pattern());
             for (ControlSpecification control : Arrays.stream(controls).toList()) {
                 // Spawn a control!
                 ControlEntity controlEntity = new ControlEntity(getLevel());
@@ -173,7 +203,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public CompoundTag getUpdateTag(HolderLookup.Provider provider) {
         CompoundTag tag = super.getUpdateTag(provider);
         saveAdditional(tag, provider);
-        return super.getUpdateTag(provider);
+        return tag;
     }
 
     @Nullable
@@ -203,6 +233,14 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
 
         if (!liveliness.isStarted()) {
             liveliness.start(12);
+        }
+
+        if(ticksBooting >= 1){
+            ticksBooting++;
+        }
+
+        if(ticksBooting == 20 * 2){
+            ticksBooting = 0;
         }
 
 

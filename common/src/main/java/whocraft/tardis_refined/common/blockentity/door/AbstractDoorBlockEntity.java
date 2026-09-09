@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.constants.NbtConstants;
 
 import java.util.Optional;
@@ -32,6 +33,14 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     public AbstractDoorBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
         this.uuid_id = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (level instanceof ServerLevel sl) {
+            SublevelAccessor.get().onTeleportPositionUnloaded(sl, getBlockPos());
+        }
     }
 
     @Override

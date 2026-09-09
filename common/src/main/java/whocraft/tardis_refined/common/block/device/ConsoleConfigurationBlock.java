@@ -113,7 +113,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
 
             if (level instanceof ServerLevel serverLevel) {
-                if (serverLevel.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+                if (TRDimensionTypes.isTARDISDimension(level)) {
                     TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
                         if (!operator.getPilotingManager().isInFlight()) {
                             if (player.isShiftKeyDown()) { //If we are destroying the console block

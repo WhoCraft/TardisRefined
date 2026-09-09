@@ -1,5 +1,9 @@
 package whocraft.tardis_refined.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,6 +46,17 @@ public class PlayerEntityMixin {
             });
         }
 
+    }
+
+    @ModifyReturnValue(method = "isInvulnerableTo", at = @At("RETURN"))
+    public boolean isInvulnerable(boolean original, @Local(argsOnly = true) DamageSource damageSource) {
+        if (!original) {
+            var playerInfo = TardisPlayerInfo.get((Player) (Object) this);
+            if (playerInfo.isPresent()) {
+                return playerInfo.get().isViewingTardis();
+            }
+        }
+        return original;
     }
 
 

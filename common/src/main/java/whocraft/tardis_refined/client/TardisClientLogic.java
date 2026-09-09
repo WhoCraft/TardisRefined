@@ -16,13 +16,14 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.client.sounds.HumSoundManager;
 import whocraft.tardis_refined.client.sounds.QuickSimpleSound;
 import whocraft.tardis_refined.client.sounds.TRSoundInstances;
 import whocraft.tardis_refined.common.GravityUtil;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.hum.HumEntry;
+import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.util.ClientHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -58,7 +59,7 @@ public class TardisClientLogic {
             }
         });
 
-        if (player.level().dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+        if (TRDimensionTypes.isTARDISDimension(player.level())) {
             ClientLevel tardisLevel = Minecraft.getInstance().level;
             createWorldAmbience(player);
             handleTardisLoopingSounds(clientData, player, tardisLevel);
@@ -221,7 +222,7 @@ public class TardisClientLogic {
             //Play hums, and use the dedicated HumSoundManager to stop and start sounds
             HumEntry humEntry = clientData.getHumEntry();
             if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
-                HumSoundManager.playHum(SoundEvent.createVariableRangeEvent(humEntry.getSoundEventId()), player, targetLevel);
+                HumSoundManager.playHum(SoundEvent.createFixedRangeEvent(humEntry.getSoundEventId(), 1F), player, targetLevel);
             }
 
             //Hum ambient sounds
@@ -274,12 +275,12 @@ public class TardisClientLogic {
 
         if (player.level().dimension() == clientData.getLevelKey()) {
             if (clientData.isCrashing()) {
-                player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
-                player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f);
+                player.setXRot((float) (player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f * TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
+                player.setYHeadRot((float) (player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * 0.5f * TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
             } else {
                 if (clientData.isFlying()) {
-                    player.setXRot(player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
-                    player.setYHeadRot(player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f));
+                    player.setXRot((float) (player.getXRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f)* TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
+                    player.setYHeadRot((float) (player.getYHeadRot() + (player.getRandom().nextFloat() - 0.5f) * (clientData.getThrottleStage() * 0.1f)* TRConfig.CLIENT.SCREEN_SHAKE_MULTIPLIER.get()));
                 }
             }
         }

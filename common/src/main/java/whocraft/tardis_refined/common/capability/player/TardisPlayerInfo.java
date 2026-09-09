@@ -9,16 +9,19 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Abilities;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.dimension.TardisTeleportData;
 import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.common.network.messages.player.C2SExitTardisView;
 import whocraft.tardis_refined.common.network.messages.player.S2CResetPostShellView;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncTardisPlayerView;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
-import whocraft.tardis_refined.common.util.TardisHelper;
+import whocraft.tardis_refined.common.util.TRTeleporter;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -49,7 +52,7 @@ public class TardisPlayerInfo implements TardisPilot {
             TardisPlayerInfo.get(serverPlayer).ifPresent(tardisPlayerInfo -> {
                 if (tardisPlayerInfo.isViewingTardis()) {
                     if (Objects.equals(tardisPlayerInfo.getViewedTardis().toString(), UUID.fromString(tardisLevelOperator.getLevelKey().location().getPath()).toString())) {
-                        tardisPlayerInfo.setupPlayerForInspection(serverPlayer, tardisLevelOperator, tardisNavLocation, timeVortex);
+                        tardisPlayerInfo.startShellView(serverPlayer, tardisLevelOperator, tardisNavLocation, timeVortex);
                     }
                 }
             });
@@ -89,7 +92,7 @@ public class TardisPlayerInfo implements TardisPilot {
     }
 
     @Override
-    public void setupPlayerForInspection(ServerPlayer serverPlayer, TardisLevelOperator tardisLevelOperator, TardisNavLocation spectateTarget, boolean timeVortex) {
+    public void startShellView(ServerPlayer serverPlayer, TardisLevelOperator tardisLevelOperator, TardisNavLocation spectateTarget, boolean timeVortex) {
 
         // Set the player's viewed TARDIS UUID
         UUID uuid = UUID.fromString(tardisLevelOperator.getLevelKey().location().getPath());
@@ -104,10 +107,13 @@ public class TardisPlayerInfo implements TardisPilot {
 
         if (spectateTarget != null) {
 
-            TardisNavLocation sourceLocation = tardisLevelOperator.getPilotingManager().getCurrentLocation();
+            Vec3 accurateSpectatePos = spectateTarget.getRealAccuratePosition(spectateTarget.getLevel().getServer());
+            BlockPos spectatePos = BlockPos.containing(accurateSpectatePos);
 
-            if (spectateTarget.getPosition().distManhattan(new Vec3i((int) player.position().x, (int) player.position().y, (int) player.position().z)) > 3 || !player.level().dimension().location().toString().equals(spectateTarget.getDimensionKey().location().toString())) {
-                TardisHelper.teleportEntityTardis(tardisLevelOperator, player, sourceLocation, spectateTarget, false);
+            var sub = SublevelAccessor.get();
+
+            if (spectatePos.distManhattan(new Vec3i((int) player.position().x, (int) player.position().y, (int) player.position().z)) > 3 || !player.level().dimension().location().toString().equals(spectateTarget.getDimensionKey().location().toString())) {
+                TRTeleporter.simpleTeleport(player, spectateTarget.getLevel(), accurateSpectatePos.x, accurateSpectatePos.y, accurateSpectatePos.z, playerPreviousRot, playerPreviousYaw);
             }
             updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), true);
             setRenderVortex(timeVortex);
@@ -126,23 +132,8 @@ public class TardisPlayerInfo implements TardisPilot {
         this.playerPreviousPos = playerPreviousPos;
     }
 
-    @Override
-    public void endPlayerForInspection(ServerPlayer serverPlayer) {
-        if (!isViewingTardis()) return;
-        BlockPos targetPosition = getPlayerPreviousPos().getPosition();
-
-        TardisTeleportData.scheduleEntityTeleport(serverPlayer, getPlayerPreviousPos().getDimensionKey(), targetPosition.getX(), targetPosition.getY(), targetPosition.getZ(), playerPreviousYaw, playerPreviousRot);
-        updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), false);
-        serverPlayer.onUpdateAbilities();
-        NetworkManager.get().sendToPlayer(serverPlayer, new S2CResetPostShellView());
-
-        setPlayerPreviousPos(TardisNavLocation.ORIGIN);
-        setRenderVortex(false);
-        // Clear the viewed TARDIS UUID
-        setViewedTardis(null);
-
-        syncToClients(null);
-
+    public static void onExitKeybindPressed() {
+        NetworkManager.get().sendToServer(new C2SExitTardisView());
     }
 
     @Override
@@ -213,9 +204,30 @@ public class TardisPlayerInfo implements TardisPilot {
     }
 
     @Override
+    public void endShellView(ServerPlayer serverPlayer) {
+        if (!isViewingTardis()) return;
+        BlockPos targetPosition = getPlayerPreviousPos().getPosition();
+
+        TRTeleporter.simpleTeleport(serverPlayer, DimensionUtil.getLevel(getPlayerPreviousPos().getDimensionKey()), targetPosition.getX() + 0.5, targetPosition.getY(), targetPosition.getZ() + 0.5, playerPreviousYaw, playerPreviousRot);
+        updatePlayerAbilities(serverPlayer, serverPlayer.getAbilities(), false);
+        serverPlayer.onUpdateAbilities();
+        NetworkManager.get().sendToPlayer(serverPlayer, new S2CResetPostShellView());
+
+        setPlayerPreviousPos(TardisNavLocation.ORIGIN);
+        setRenderVortex(false);
+        // Clear the viewed TARDIS UUID
+        setViewedTardis(null);
+
+        syncToClients(null);
+
+    }
+
+    @Override
     public void syncToClients(@Nullable ServerPlayer serverPlayerEntity) {
         if (player != null && player.level().isClientSide)
             throw new IllegalStateException("Don't sync client -> server");
+
+        if (Platform.getServer() == null) return; // Avoid crash on logout.
 
         CompoundTag nbt = saveData();
 
@@ -225,10 +237,6 @@ public class TardisPlayerInfo implements TardisPilot {
         } else {
             NetworkManager.get().sendToPlayer(serverPlayerEntity, message);
         }
-    }
-
-    public static void onExitKeybindPressed(){
-        NetworkManager.get().sendToServer(new C2SExitTardisView());
     }
 
     @Override

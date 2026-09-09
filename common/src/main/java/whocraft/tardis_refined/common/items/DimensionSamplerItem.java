@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -36,10 +37,10 @@ public class DimensionSamplerItem extends Item {
     public int getColor(ItemStack itemStack) {
         DyedItemColor dyedItemColor = itemStack.get(DataComponents.DYED_COLOR);
         if (dyedItemColor != null) {
-            return dyedItemColor.rgb();
+            return FastColor.ARGB32.opaque(dyedItemColor.rgb());
         }
 
-        return DyeColor.PINK.getTextColor();
+        return FastColor.ARGB32.opaque(DyeColor.PINK.getTextColor());
     }
 
     public static ItemStack forceColor(ItemStack itemStack, int color) {
@@ -75,8 +76,8 @@ public class DimensionSamplerItem extends Item {
                 ResourceLocation potentialDim = itemStack.get(TRItemData.POTENTIAL_DIM.get());
                 ResourceKey<Level> currentDim = serverLevel.dimension();
 
-                if (currentDim.location().toString().equals(potentialDim)) {
-                    int timer = itemStack.get(TRItemData.TIMER.get()) + 1;
+                if (currentDim.location().equals(potentialDim)) {
+                    int timer = itemStack.getOrDefault(TRItemData.TIMER.get(), 0) + 1;
 
                     if (timer >= TIMER_MAX) {
                         saveSavedDim(itemStack, ResourceKey.create(DIMENSION, potentialDim));
@@ -98,7 +99,7 @@ public class DimensionSamplerItem extends Item {
     @Override
     public void appendHoverText(ItemStack itemStack, TooltipContext tooltipContext, List<Component> list, TooltipFlag tooltipFlag) {
         if (itemStack.has(TRItemData.TIMER.get()) && itemStack.has(TRItemData.POTENTIAL_DIM.get())) {
-            int timer = itemStack.get(TRItemData.TIMER.get());
+            int timer = itemStack.getOrDefault(TRItemData.TIMER.get(), 0);
             double progress = (double) timer / TIMER_MAX * 100;
             list.add(Component.translatable(ModMessages.TOOLTIP_DIM_PROGRESS, Math.round(progress) + "%"));
         } else if (itemStack.has(TRItemData.SAVED_DIM.get())) {

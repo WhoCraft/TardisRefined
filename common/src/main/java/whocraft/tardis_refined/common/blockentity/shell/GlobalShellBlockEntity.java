@@ -19,18 +19,21 @@ import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
-import whocraft.tardis_refined.common.items.KeyItem;
 import whocraft.tardis_refined.common.items.KeyItemData;
 import whocraft.tardis_refined.common.tardis.manager.AestheticHandler;
 import whocraft.tardis_refined.common.tardis.manager.TardisExteriorManager;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
-import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
@@ -40,7 +43,6 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
 
     private ResourceLocation shellTheme;
     private ShellPattern basePattern;
-
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.GLOBAL_SHELL_BLOCK.get(), blockPos, blockState);
@@ -77,6 +79,19 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     }
 
     @Override
+    public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
+        super.tick(level, blockPos, blockState, blockEntity);
+	    //noinspection ConstantValue IntelliJ got confused by this for some reason...
+	    if (
+                !level.isClientSide() &&
+                SublevelAccessor.get().isBlockInSublevelSpace(level, blockPos) &&
+                ModCompatChecker.immersivePortals() && ImmersivePortals.doPortalsExistForTardis(ImmersivePortals.getUUIDForTARDIS(TARDIS_ID))
+        ) {
+            TardisLevelOperator.get(DimensionUtil.getLevel(blockEntity.TARDIS_ID)).ifPresent(ImmersivePortals::updatePortalPositions);
+        }
+    }
+
+    @Override
     public void loadAdditional(CompoundTag pTag, HolderLookup.Provider provider) {
         super.loadAdditional(pTag, provider);
         if (pTag.contains(NbtConstants.THEME)) {
@@ -100,6 +115,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         if (this.basePattern == null) {
             this.basePattern = pattern();
         }
+
     }
 
 
@@ -144,12 +160,17 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 }
 
                 boolean validKey = KeyItemData.containsTardis(stack, TARDIS_ID);
+                boolean locked = exteriorManager.locked();
                 if (validKey) {
-                    boolean locked = !exteriorManager.locked();
-                    tardisLevelOperator.setDoorLocked(locked);
-                    tardisLevelOperator.setDoorClosed(locked);
-                    PlayerUtil.sendMessage(player, Component.translatable(locked ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED), true);
+                    tardisLevelOperator.setDoorLocked(!locked);
+                    tardisLevelOperator.setDoorClosed(!locked);
+                    PlayerUtil.sendMessage(player, Component.translatable(exteriorManager.locked() ? ModMessages.DOOR_LOCKED : ModMessages.DOOR_UNLOCKED), true);
                     return true;
+                } else {
+                    if(locked) {
+                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.DOOR_LOCKED), true);
+                        return true;
+                    }
                 }
 
                 if (!exteriorManager.locked()) { //If the Tardis thinks it is not locked, open this shell's door

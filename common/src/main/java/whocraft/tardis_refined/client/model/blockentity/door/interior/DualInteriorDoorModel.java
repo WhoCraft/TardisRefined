@@ -3,8 +3,9 @@ package whocraft.tardis_refined.client.model.blockentity.door.interior;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.jeryn.anim.tardis.JsonToAnimationDefinition;
+import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -26,10 +27,10 @@ public class DualInteriorDoorModel extends ShellDoorModel {
 
     public DualInteriorDoorModel(ModelPart root, float openAmount, boolean openLeft, boolean openRight) {
         this.root = root;
-        this.leftDoor = JsonToAnimationDefinition.findPart(this, "left_door");
-        this.frame = JsonToAnimationDefinition.findPart(this, "frame");
-        this.rightDoor = JsonToAnimationDefinition.findPart(this, "right_door");
-        this.portal = JsonToAnimationDefinition.findPart(this, "portal");
+        this.leftDoor = Frame.findPart(this, "left_door");
+        this.frame = Frame.findPart(this, "frame");
+        this.rightDoor = Frame.findPart(this, "right_door");
+        this.portal = Frame.findPart(this, "portal");
         this.openAmount = openAmount;
         this.openLeft = openLeft;
         this.openRight = openRight;
@@ -67,7 +68,7 @@ public class DualInteriorDoorModel extends ShellDoorModel {
         setDoorPosition(open);
         this.root().getAllParts().forEach(modelPart -> modelPart.visible = false);
         this.portal.visible = true;
-        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, FastColor.ARGB32.color(FastColor.ARGB32.alpha(color), 0, 0, 0));
     }
 
     @Override

@@ -15,13 +15,16 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import whocraft.tardis_refined.TardisRefined;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
@@ -32,6 +35,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class TRTeleporter {
+
+    public static Logger LOGGER = LogManager.getLogger("TardisRefined/TRTeleporter");
 
     /**
      * Variant of teleport method where there is no need to track teleported entities
@@ -82,6 +87,11 @@ public class TRTeleporter {
         Preconditions.checkNotNull(destination, "A target level must be provided for teleportation");
         Preconditions.checkState(!pEntity.level().isClientSide(), "Entities can only be teleported on the server side");
 
+        // Prevent teleports into sublevel space because on Sable it crashes the game and can corrupt the world.
+        if (SublevelAccessor.get().isBlockInSublevelSpace(destination, new Vec3(pX, pY, pZ))) {
+            return false;
+        }
+
         float updatedYRot = Mth.wrapDegrees(pYaw);
         float updatedXRot = Mth.wrapDegrees(pPitch);
 
@@ -89,6 +99,14 @@ public class TRTeleporter {
             pEntity.setYRot(updatedYRot); //Set the desired yRot and xRot before teleportation. For non-players, this means the facing is copied over to the copy of the entity which we recreate. For players, it should update the rotation with the correct facing at the destination
             pEntity.setXRot(updatedXRot);
             ImmersivePortals.teleportViaIp(pEntity, destination, pX, pY, pZ);
+            // The rotation won't be set properly unless we set it afterward.
+            if (pEntity instanceof ServerPlayer player) {
+                player.connection.teleport(
+                        player.getX(), player.getY(), player.getZ(),
+                        updatedYRot, updatedXRot,
+                        Set.of(RelativeMovement.X, RelativeMovement.Y, RelativeMovement.Z)
+                );
+            }
             return true;
         }
 
@@ -423,6 +441,12 @@ public class TRTeleporter {
      */
     public static boolean teleportIfCollided(ServerLevel serverLevel, BlockPos blockPos, Entity entity, AABB teleportAABB) {
         AABB entityBoundingBox = TRTeleporter.getBoundingBoxWithMovement(entity);
+
+        var sub = SublevelAccessor.get().getContainingSublevelIfLoaded(serverLevel, blockPos);
+        if (sub.isPresent()) {
+            teleportAABB = sub.get().toMainLevelAABB(teleportAABB);
+        }
+
         double insideBlockExpansion = 1.0E-7D; //Hardcoded value replicates logic from Entity#checkInsideBlocks
         AABB inflatedEntityBoundingBox = entityBoundingBox.inflate(insideBlockExpansion);
         AABB inflatedTeleportBoundingBox = teleportAABB.inflate(insideBlockExpansion);
@@ -544,19 +568,19 @@ public class TRTeleporter {
         if (teleportedEntities != null) {
             if (!teleportedEntities.isEmpty()) {
                 if (teleportedEntities.contains(pEntity)) { //If we are calling this method by itself such as teleporting passengers, check if we have already teleported the entity
-                    TardisRefined.LOGGER.warn("Failed to teleport entity type as it has already been teleported: {}", pEntity.getType());
+                    LOGGER.warn("Failed to teleport entity type as it has already been teleported: {}", pEntity.getType());
                     return false;
                 }
             }
         }
 
         if (pEntity.getType().is(TRTagKeys.TARDIS_TELEPORT_BLACKLIST)) { //Stop teleporting if the entity being teleported is blacklisted
-            TardisRefined.LOGGER.warn("Failed to teleport entity type due to it being blacklisted: {}", pEntity.getType());
+            LOGGER.warn("Failed to teleport entity type due to it being blacklisted: {}", pEntity.getType());
             return false;
         }
         if (safeBlockCheck) {
             if (!canTeleportTo(blockpos, destination, pEntity)) {
-                TardisRefined.LOGGER.warn("Failed to teleport entity type due to destination location being unsafe: {}", pEntity.getType());
+                LOGGER.warn("Failed to teleport entity type due to destination location being unsafe: {}", pEntity.getType());
                 return false;
             }
         }

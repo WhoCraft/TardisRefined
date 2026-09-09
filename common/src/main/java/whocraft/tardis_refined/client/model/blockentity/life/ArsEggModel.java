@@ -2,7 +2,7 @@ package whocraft.tardis_refined.client.model.blockentity.life;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.jeryn.anim.tardis.JsonToAnimationDefinition;
+import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.HierarchicalModel;
@@ -17,8 +17,8 @@ import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 
 public class ArsEggModel extends HierarchicalModel {
 
-    public static final AnimationDefinition CRASHING = JsonToAnimationDefinition.loadAnimation(Minecraft.getInstance().getResourceManager(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "animated/living/ars_egg/crashing.json"));
-    public static final AnimationDefinition SWINGING = JsonToAnimationDefinition.loadAnimation(Minecraft.getInstance().getResourceManager(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "animated/living/ars_egg/swinging.json"));
+    public static final AnimationDefinition CRASHING = Frame.loadAnimation(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "frame/living/ars_egg/crashing.json"));
+    public static final AnimationDefinition SWINGING = Frame.loadAnimation(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "frame/living/ars_egg/swinging.json"));
 
     private final ModelPart Lamp;
     private final ModelPart root;

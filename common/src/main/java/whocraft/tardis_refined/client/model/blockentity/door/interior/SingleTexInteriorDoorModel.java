@@ -3,8 +3,9 @@ package whocraft.tardis_refined.client.model.blockentity.door.interior;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.jeryn.anim.tardis.JsonToAnimationDefinition;
+import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
@@ -19,9 +20,9 @@ public class SingleTexInteriorDoorModel extends ShellDoorModel {
 
     public SingleTexInteriorDoorModel(ModelPart root) {
         this.root = root;
-        this.door = JsonToAnimationDefinition.findPart(this, "door");
-        this.frame = JsonToAnimationDefinition.findPart(this, "frame");
-        this.portal = JsonToAnimationDefinition.findPart(this, "portal");
+        this.door = Frame.findPart(this, "door");
+        this.frame = Frame.findPart(this, "frame");
+        this.portal = Frame.findPart(this, "portal");
     }
 
 
@@ -57,7 +58,7 @@ public class SingleTexInteriorDoorModel extends ShellDoorModel {
         setDoorPosition(open);
         this.root().getAllParts().forEach(modelPart -> modelPart.visible = false);
         this.portal.visible = true;
-        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, color);
+        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, FastColor.ARGB32.color(FastColor.ARGB32.alpha(color), 0, 0, 0));
     }
 
     @Override

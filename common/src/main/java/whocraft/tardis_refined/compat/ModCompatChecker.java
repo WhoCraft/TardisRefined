@@ -1,6 +1,12 @@
 package whocraft.tardis_refined.compat;
 
+import whocraft.tardis_refined.common.util.Platform;
+
 public class ModCompatChecker {
+
+    public static boolean dimLib() {
+        return Platform.isModLoaded("dimlib");
+    }
 
     public static boolean immersivePortals() {
         try {
@@ -11,4 +17,15 @@ public class ModCompatChecker {
         }
     }
 
+    public static boolean create() {
+        return Platform.isModLoaded("create");
+    }
+
+    public static boolean valkyrienSkies() {
+        return Platform.isModLoaded("valkyrienskies");
+    }
+
+    public static boolean sable() {
+        return Platform.isModLoaded("sable");
+    }
 }

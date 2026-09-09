@@ -4,6 +4,7 @@ import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
@@ -31,6 +32,7 @@ import whocraft.tardis_refined.common.block.life.EyeBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.protection.ProtectedZone;
+import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -38,6 +40,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MiscHelper {
+
+    @ExpectPlatform
+    public static Packet<ClientGamePacketListener> spawnPacket(Entity entity) {
+        throw new RuntimeException(PlatformWarning.addWarning(MiscHelper.class));
+    }
+
+    public static String convertTicksToRealTime(int ticks) {
+        long totalSeconds = ticks / 20;
+
+        long years = totalSeconds / (60L * 60 * 24 * 30 * 12);
+        long remainingAfterYears = totalSeconds % (60L * 60 * 24 * 30 * 12);
+
+        long months = remainingAfterYears / (60L * 60 * 24 * 30);
+        long remainingAfterMonths = remainingAfterYears % (60L * 60 * 24 * 30);
+
+        long days = remainingAfterMonths / (60L * 60 * 24);
+        long remainingAfterDays = remainingAfterMonths % (60L * 60 * 24);
+
+        long hours = remainingAfterDays / (60L * 60);
+        long remainingAfterHours = remainingAfterDays % (60L * 60);
+
+        long minutes = remainingAfterHours / 60;
+        long seconds = remainingAfterHours % 60;
+
+        StringBuilder result = new StringBuilder();
+        if (years > 0) {
+            result.append(years).append(years == 1 ? " year, " : " years, ");
+        }
+        if (months > 0) {
+            result.append(months).append(months == 1 ? " month, " : " months, ");
+        }
+        if (days > 0) {
+            result.append(days).append(days == 1 ? " day, " : " days, ");
+        }
+        if (hours > 0) {
+            result.append(hours).append(hours == 1 ? " hour, " : " hours, ");
+        }
+        if (minutes > 0) {
+            result.append(minutes).append(minutes == 1 ? " minute, " : " minutes, ");
+        }
+        if (seconds > 0 || result.isEmpty()) {
+            result.append(seconds).append(seconds == 1 ? " second" : " seconds");
+        } else {
+            result.setLength(result.length() - 2);
+        }
+
+        return result.toString();
+    }
 
     public static boolean isBlockPosInBox(BlockPos blockPos, AABB aabb) {
         return aabb.contains(blockPos.getX(), blockPos.getY(), blockPos.getZ());
@@ -47,8 +97,70 @@ public class MiscHelper {
         return ResourceKey.create(Registries.DIMENSION, identifier);
     }
 
+    public static boolean performTeleport(Entity pEntity, ServerLevel pLevel, double pX, double pY, double pZ, float pYaw, float pPitch) {
+
+        TardisRefined.LOGGER.debug("Teleported {} to {} {} {}", pEntity.getDisplayName().getString(), pX, pY, pZ);
+        int xRound = (int) pX;
+        int yRound = (int) pY;
+        int zRound = (int) pZ;
+
+        BlockPos blockpos = new BlockPos(xRound, yRound, zRound);
+
+        if (!Level.isInSpawnableBounds(blockpos)) {
+            return false;
+        } else {
+            float f = Mth.wrapDegrees(pYaw);
+            float f1 = Mth.wrapDegrees(pPitch);
+            if (pEntity instanceof ServerPlayer serverPlayer) {
+                ChunkPos chunkpos = new ChunkPos(blockpos);
+                pLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, pEntity.getId());
+                pEntity.stopRiding();
+                if (serverPlayer.isSleeping()) {
+                    serverPlayer.stopSleepInBed(true, true);
+                }
+
+                if (pLevel == pEntity.level()) {
+                    serverPlayer.connection.teleport(pX, pY, pZ, f, f1);
+                } else {
+                    serverPlayer.teleportTo(pLevel, pX, pY, pZ, f, f1);
+                }
+                pEntity.setYHeadRot(f);
+            } else {
+                float f2 = Mth.clamp(f1, -90.0F, 90.0F);
+                if (pLevel == pEntity.level()) {
+                    pEntity.moveTo(pX, pY, pZ, f, f2);
+                    pEntity.setYHeadRot(f);
+                } else {
+                    pEntity.unRide();
+                    Entity entity = pEntity;
+                    pEntity = pEntity.getType().create(pLevel);
+                    if (pEntity == null) {
+                        return false;
+                    }
+
+                    pEntity.restoreFrom(entity);
+                    pEntity.moveTo(pX, pY, pZ, f, f2);
+                    pEntity.setYHeadRot(f);
+                    entity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
+                    pLevel.addDuringTeleport(pEntity);
+                }
+            }
+
+            if (!(pEntity instanceof LivingEntity) || !((LivingEntity) pEntity).isFallFlying()) {
+                pEntity.setDeltaMovement(pEntity.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D));
+                pEntity.setOnGround(true);
+            }
+
+            if (pEntity instanceof PathfinderMob) {
+                ((PathfinderMob) pEntity).getNavigation().stop();
+            }
+
+            return true;
+        }
+    }
+
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
-        if (level.dimensionTypeRegistration() == TRDimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
+        if (TRDimensionTypes.isTARDISDimension(level) && level instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
 
             // Consoles
@@ -69,7 +181,7 @@ public class MiscHelper {
 
     public static boolean shouldCancelBreaking(Level world, Entity entity, BlockPos pos, BlockState state) {
 
-        if (world.dimensionTypeRegistration() == TRDimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
+        if (TRDimensionTypes.isTARDISDimension(world) && world instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
             for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
                 boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
@@ -77,7 +189,7 @@ public class MiscHelper {
             }
         }
 
-        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
+        return (state.getBlock() instanceof GlobalConsoleBlock && TRDimensionTypes.isTARDISDimension(world)) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
@@ -87,6 +199,20 @@ public class MiscHelper {
     public static String getCleanName(String name) {
         var noUnderscores = name.replace("_", " ");
         return WordUtils.capitalizeFully(noUnderscores);
+    }
+
+    public static Component getDimensionNameWithSublevel(TardisNavLocation location) {
+        return getDimensionNameWithSublevel(location, ", ");
+    }
+
+    public static Component getDimensionNameWithSublevel(TardisNavLocation location, String divider) {
+        return getDimensionNameWithSublevel(location, Component.literal(divider));
+    }
+
+    public static Component getDimensionNameWithSublevel(TardisNavLocation location, Component divider) {
+        var name = Component.literal(getCleanDimensionName(location.getDimensionKey()));
+        location.getSublevelDescription().ifPresent(data -> name.append(divider).append(data));
+        return name;
     }
 
     public static DamageSource getDamageSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey) {

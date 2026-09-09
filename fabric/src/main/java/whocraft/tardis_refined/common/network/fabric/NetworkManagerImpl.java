@@ -35,6 +35,7 @@ public class NetworkManagerImpl extends NetworkManager {
         return new NetworkManagerImpl();
     }
 
+    @Override
     public <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver) {
         PayloadTypeRegistry.playS2C().register(type, codec);
 
@@ -45,7 +46,13 @@ public class NetworkManagerImpl extends NetworkManager {
 
     @Environment(EnvType.CLIENT)
     private static <T extends CustomPacketPayload> void registerClientReceiver(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver) {
-        ClientPlayNetworking.registerGlobalReceiver(type, (payload, context) -> receiver.receive(payload, makeContext(context.player(), context.client(), true)));
+	    //noinspection Convert2Lambda We need to use an abstract class because otherwise the server tries to load the Minecraft class.
+	    ClientPlayNetworking.registerGlobalReceiver(type, new ClientPlayNetworking.PlayPayloadHandler<T>() {
+            @Override
+            public void receive(T payload, ClientPlayNetworking.Context context) {
+                receiver.receive(payload, makeContext(context.player(), context.client(), true));
+            }
+        });
     }
 
     public <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver) {

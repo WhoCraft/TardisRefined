@@ -1,22 +1,38 @@
 package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BarrierBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
+import whocraft.tardis_refined.registry.TRItemRegistry;
+import whocraft.tardis_refined.registry.TRSoundRegistry;
 
-import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.LOCKED;
-import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.OPEN;
+import static whocraft.tardis_refined.common.block.door.BulkHeadDoorBlock.*;
 
 public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityTicker<BulkHeadDoorBlockEntity> {
+
+    private String doorName;
 
     public BulkHeadDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
         super(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), blockPos, blockState);
@@ -36,7 +52,7 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
         double centerZ = blockPos.getZ() + 0.5;
 
         for (Entity entity : level.getEntitiesOfClass(Entity.class, new AABB(centerX - detectionRadius, centerY - detectionRadius, centerZ - detectionRadius, centerX + detectionRadius, centerY + detectionRadius, centerZ + detectionRadius))) {
-            if (entity instanceof LivingEntity) {
+            if (entity instanceof LivingEntity && !entity.isCrouching()) {
                 toggleDoor(level, blockPos, blockState, true);
                 return;
             }
@@ -56,10 +72,72 @@ public class BulkHeadDoorBlockEntity extends BlockEntity implements BlockEntityT
      */
     public void toggleDoor(Level level, BlockPos blockPos, BlockState blockState, boolean isOpen) {
 
+        // Remove the old barrier blocks.
+        if (level.getBlockState(blockPos.above()).getBlock() instanceof BarrierBlock barrierBlock) {
+            BulkHeadDoorBlock.clearDoor(level, blockPos, blockState);
+        }
+
         if (level.getBlockState(blockPos).hasProperty(OPEN) && level.getBlockState(blockPos).getValue(OPEN) != isOpen) {
             level.playSound(null, blockPos, !isOpen ? SoundEvents.PISTON_EXTEND : SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 1, 1);
         }
         level.setBlock(blockPos, blockState.setValue(OPEN, isOpen), Block.UPDATE_CLIENTS);
     }
 
+    public InteractionResult onRightClick(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
+        ItemStack itemInHand = player.getMainHandItem();
+
+        if (itemInHand.getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
+            if (blockState.hasProperty(TYPE)) {
+                BlockState nextType = blockState.cycle(TYPE);
+                level.setBlock(blockPos, nextType, 3);
+                level.playSound(null, blockPos, TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        if (itemInHand.getItem() == Items.NAME_TAG) {
+            this.doorName = itemInHand.getDisplayName().getString();
+            sendUpdates();
+        }
+
+
+        return InteractionResult.SUCCESS;
+    }
+
+    public void sendUpdates() {
+        level.sendBlockUpdated(this.getBlockPos(), level.getBlockState(this.getBlockPos()), level.getBlockState(this.getBlockPos()), Block.UPDATE_CLIENTS);
+        setChanged();
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+        CompoundTag tag = super.getUpdateTag(provider);
+        saveAdditional(tag, provider);
+        return tag;
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
+
+        if (doorName != null) {
+            compoundTag.putString("bulkhead_door_name", doorName);
+        }
+
+
+        super.saveAdditional(compoundTag, provider);
+    }
+
+    @Override
+    public void loadAdditional(CompoundTag compoundTag, HolderLookup.@NotNull Provider provider) {
+        doorName = compoundTag.getString("bulkhead_door_name");
+        super.loadAdditional(compoundTag, provider);
+    }
+
+    public String getDoorName() {
+        return doorName;
+    }
 }

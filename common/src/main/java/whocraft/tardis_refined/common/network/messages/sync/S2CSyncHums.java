@@ -8,9 +8,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
-import whocraft.tardis_refined.common.hum.HumEntry;
-import whocraft.tardis_refined.common.hum.TardisHums;
-import whocraft.tardis_refined.common.network.NetworkManager;
+import whocraft.tardis_refined.common.network.*;
+import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 
 import java.util.Map;
 

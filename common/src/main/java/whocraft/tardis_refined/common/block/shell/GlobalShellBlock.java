@@ -5,7 +5,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -22,12 +21,17 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelAccessor;
+import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 
 public class GlobalShellBlock extends ShellBaseBlock {
 
@@ -60,6 +64,14 @@ public class GlobalShellBlock extends ShellBaseBlock {
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
         if (blockGetter.getBlockEntity(blockPos) instanceof GlobalShellBlockEntity shellBlockEntity) {
+            //noinspection ConstantValue IntelliJ got confused by this for some reason...
+            if (
+                    !TRConfig.COMMON.IP_SUBLEVEL_COLLISION.get() &&
+                    ModCompatChecker.immersivePortals() && ImmersivePortals.isTeleportingPortalPresent(shellBlockEntity.getTardisId()) &&
+                    SublevelAccessor.get().isBlockInSublevelSpace(shellBlockEntity.getLevel(), blockPos)
+            ) {
+                return Shapes.empty();
+            }
             if (shellBlockEntity.theme() == ShellTheme.BRIEFCASE.getId())
                 return BRIEFCASE_COLLISION_SHAPE;
         }
@@ -76,9 +88,9 @@ public class GlobalShellBlock extends ShellBaseBlock {
     }
 
     @Nullable
-    @Override
+    @Override // Always assume it's placed by another mod. That setting is set to false when the TARDIS_ID is set.
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
-        return new GlobalShellBlockEntity(blockPos, blockState);
+        return new GlobalShellBlockEntity(blockPos, blockState).setPlacedByOtherMod(true);
     }
 
     @Nullable

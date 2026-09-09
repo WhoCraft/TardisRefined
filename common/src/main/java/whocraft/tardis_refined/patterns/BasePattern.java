@@ -1,8 +1,10 @@
 package whocraft.tardis_refined.patterns;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
@@ -24,7 +26,11 @@ public abstract class BasePattern {
     }
 
     public BasePattern(ResourceLocation identifier) {
-        this(identifier, TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
+        this(identifier, serialize(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
+    }
+
+    public static String serialize(Component component) {
+        return TardisRefined.GSON.toJson(ComponentSerialization.CODEC.encodeStart(JsonOps.INSTANCE, component).getOrThrow());
     }
 
     public BasePattern(ResourceLocation identifier, String name) {

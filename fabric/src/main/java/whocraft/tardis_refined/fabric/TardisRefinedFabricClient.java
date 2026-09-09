@@ -8,23 +8,26 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.ParticleGallifrey;
 import whocraft.tardis_refined.client.TRKeybinds;
 import whocraft.tardis_refined.client.TRParticles;
+import whocraft.tardis_refined.client.particle.ParticleGallifrey;
 import whocraft.tardis_refined.client.renderer.blockentity.RootPlantRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.console.GlobalConsoleRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ArtronPillarRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.AstralManipulatorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.device.ConsoleConfigurationRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorExtensionRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.BulkHeadDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.GlobalDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.door.RootShellDoorRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.ArsEggRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.life.EyeRenderer;
+import whocraft.tardis_refined.client.renderer.blockentity.life.ZeitonGlassRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.GlobalShellRenderer;
 import whocraft.tardis_refined.client.renderer.blockentity.shell.RootShellRenderer;
 import whocraft.tardis_refined.client.renderer.entity.ControlEntityRenderer;
@@ -37,7 +40,6 @@ import whocraft.tardis_refined.registry.*;
 public class TardisRefinedFabricClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-
         establishBlockEntityRenderers();
         ModelRegistry.init();
         ModEvents.addClientEvents();
@@ -45,6 +47,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         registerEntityRenderers();
 
         KeyBindingHelper.registerKeyBinding(TRKeybinds.EXIT_EXTERIOR_VIEW);
+        KeyBindingHelper.registerKeyBinding(TRKeybinds.TOGGLE_INFO_EXTERIOR_VIEW);
         ItemProperties.register(TRItemRegistry.TEST_TUBE.get(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "is_sampled"), (itemStack, clientLevel, livingEntity, i) -> DimensionSamplerItem.hasDimAtAll(itemStack) ? 1 : 0);
 
     }
@@ -64,6 +67,9 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ARS_EGG.get(), ArsEggRenderer::new);
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.THE_EYE.get(), EyeRenderer::new);
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.BULK_HEAD_DOOR.get(), BulkHeadDoorRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.BULK_HEAD_DOOR_EXT.get(), BulkHeadDoorExtensionRenderer::new);
+        BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ZEITON_GLASS.get(), ZeitonGlassRenderer::new);
+
 
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.CONSOLE_CONFIGURATION.get(), ConsoleConfigurationRenderer::new);
         BlockEntityRendererRegistry.register(TRBlockEntityRegistry.ASTRAL_MANIPULATOR.get(), AstralManipulatorRenderer::new);
@@ -82,7 +88,7 @@ public class TardisRefinedFabricClient implements ClientModInitializer {
         EntityRendererRegistry.register(TREntityRegistry.CONTROL_ENTITY.get(), ControlEntityRenderer::new);
 
         if (ModCompatChecker.immersivePortals()) {
-            ImmersivePortalsClient.doClientRenderers();
+            ImmersivePortalsClient.doClientRenderers(EntityRendererRegistry::register);
         }
 
     }
