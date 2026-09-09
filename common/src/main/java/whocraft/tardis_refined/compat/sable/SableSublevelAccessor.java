@@ -86,7 +86,9 @@ public class SableSublevelAccessor implements SublevelAccessor {
 
     @Override
     public void onTeleportPositionUnloaded(ServerLevel level, BlockPos pos) {
-        pendingSaves.add(level);
+        if (isBlockInSublevelSpace(level, pos)) {
+            pendingSaves.add(level);
+        }
     }
 
     public static class SableSublevel implements Sublevel {
