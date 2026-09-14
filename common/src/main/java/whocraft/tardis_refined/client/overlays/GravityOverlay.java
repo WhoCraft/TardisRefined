@@ -16,84 +16,84 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 public class GravityOverlay {
 
-    private static boolean isInShaft = false;
+    private static final int DISPLAY_TIME = 100; // 5 seconds @ 20 TPS
 
-    private static void checkOverlay(Player player) {
-        isInShaft = GravityUtil.isInGravityShaft(player);
-    }
+    private static boolean wasInShaft = false;
+    private static int timer = 0;
 
-    public static void renderOverlay(GuiGraphics guiGraphics) {
+    public static void tick() {
         Minecraft mc = Minecraft.getInstance();
-        Font fontRenderer = mc.font;
         LocalPlayer player = mc.player;
-        PoseStack poseStack = guiGraphics.pose();
 
-        // Perform overlay checks periodically
-        if (player.tickCount % 100 == 0) {
-            checkOverlay(player);
+        if (player == null)
+            return;
+
+        boolean inShaft = GravityUtil.isInGravityShaft(player);
+
+        // Just entered the shaft
+        if (inShaft && !wasInShaft) {
+            timer = DISPLAY_TIME;
         }
 
-        if (isInShaft && !mc.options.renderDebug) {
-            poseStack.pushPose();
-            poseStack.scale(1.2f, 1.2f, 1.2f);
+        wasInShaft = inShaft;
 
-            // Padding for better positioning
-            int padding = 15; // Amount of padding from the screen edges
-            int x = padding;
-            int y = padding;
-
-            Component ascendKey = mc.options.keyJump.key.getDisplayName();
-            Component descendKey = mc.options.keyShift.key.getDisplayName();
-
-            // Get the translated strings for both keys
-            String ascendKeyText = Component.translatable(ModMessages.ASCEND_KEY, ascendKey).getString();
-            String descendKeyText = Component.translatable(ModMessages.DESCEND_KEY, descendKey).getString();
-
-            // Calculate the longest key text width
-            int maxWidth = Math.max(fontRenderer.width(ascendKeyText), fontRenderer.width(descendKeyText));
-
-            MultiBufferSource.BufferSource renderImpl = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-
-            // Render both key texts
-            fontRenderer.drawInBatch(
-                    ascendKeyText,
-                    x,
-                    y,
-                    ChatFormatting.WHITE.getColor(),
-                    true,
-                    Transformation.identity().getMatrix(),
-                    renderImpl,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    15728880
-            );
-
-            fontRenderer.drawInBatch(
-                    descendKeyText,
-                    x,
-                    y + fontRenderer.lineHeight,
-                    ChatFormatting.WHITE.getColor(),
-                    true,
-                    Transformation.identity().getMatrix(),
-                    renderImpl,
-                    Font.DisplayMode.NORMAL,
-                    0,
-                    15728880
-            );
-
-            renderImpl.endBatch();
-
-            guiGraphics.fill(
-                    x - 5,
-                    y - 5,
-                    x + maxWidth,
-                    y + fontRenderer.lineHeight * 2,
-                    0x88000000
-            );
-
-            poseStack.popPose();
+        if (timer > 0) {
+            timer--;
         }
     }
 
+    public static void renderOverlay(GuiGraphics graphics) {
+        tick();
 
+        if (timer <= 0)
+            return;
+
+        Minecraft mc = Minecraft.getInstance();
+        Font font = mc.font;
+
+        float alpha = 1.0f;
+
+        if (timer > DISPLAY_TIME - 10)
+            alpha = (DISPLAY_TIME - timer) / 10f;
+        else if (timer < 10)
+            alpha = timer / 10f;
+
+        String title = "Gravity Shaft";
+        String line1 = "[" + mc.options.keyJump.getTranslatedKeyMessage().getString() + "] Ascend";
+        String line2 = "[" + mc.options.keyShift.getTranslatedKeyMessage().getString() + "] Descend";
+
+        int padding = 6;
+        int lineSpacing = 11;
+
+        int width = Math.max(
+                font.width(title),
+                Math.max(font.width(line1), font.width(line2))
+        ) + padding * 2;
+
+        int height = padding * 2 + lineSpacing * 3;
+
+        int x = 8;
+        int y = 8;
+
+        int bg = ((int) (alpha * 170) << 24);
+        int border = ((int) (alpha * 255) << 24) | 0x5A8CFF;
+        int titleColor = ((int) (alpha * 255) << 24) | 0x8FC8FF;
+        int textColor = ((int) (alpha * 255) << 24) | 0xFFFFFF;
+
+        // Background
+        graphics.fill(x, y, x + width, y + height, bg);
+
+        // Border
+        graphics.fill(x, y, x + width, y + 1, border);
+        graphics.fill(x, y + height - 1, x + width, y + height, border);
+        graphics.fill(x, y, x + 1, y + height, border);
+        graphics.fill(x + width - 1, y, x + width, y + height, border);
+
+        int textX = x + padding;
+        int textY = y + padding;
+
+        graphics.drawString(font, title, textX, textY, titleColor, true);
+        graphics.drawString(font, line1, textX, textY + lineSpacing, textColor, true);
+        graphics.drawString(font, line2, textX, textY + lineSpacing * 2, textColor, true);
+    }
 }

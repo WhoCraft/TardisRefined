@@ -47,28 +47,30 @@ public class BulkHeadDoorRenderer implements BlockEntityRenderer<BulkHeadDoorBlo
         bulkHeadDoorModel.renderToBuffer(poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(getTextureForState(blockstate))), i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         if (blockEntity.getDoorName() != null && !isOpen) {
-            Matrix4f textMatrix = poseStack.last().pose();
-            poseStack.scale(-0.025F, 0.025F, 0.025F);
-            int verticalTextOffset = 0;
-            float offDoorOffset = 8f;
-
             Font font = Minecraft.getInstance().font;
-
             Component name = Component.literal(blockEntity.getDoorName());
-
-            float textHorizontalPosition = (float) -(font.width(name) / 2);
-
             FormattedCharSequence sequence = name.getVisualOrderText();
 
-            poseStack.translate(0, 10f, offDoorOffset*2-4.75);
+            int textWidth = font.width(name);
 
+            float maxTextWidth = 100f;
+            float textScale = Math.min(1f, maxTextWidth / textWidth);
 
-            font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 1, textMatrix, multiBufferSource, 255);
+            float baseScale = 0.025F;
+            float offDoorOffset = 8f;
+
+            poseStack.scale(-baseScale * textScale, baseScale * textScale, baseScale * textScale);
+
+            float textHorizontalPosition = -(textWidth / 2f);
+
+            Matrix4f textMatrix = poseStack.last().pose();
+
+            poseStack.translate(0, 10f / textScale, (offDoorOffset * 2 - 4.75) / textScale);
+            font.drawInBatch8xOutline(sequence, textHorizontalPosition, 0f, 16777215, 1, textMatrix, multiBufferSource, 255);
 
             poseStack.mulPose(Axis.YP.rotationDegrees(180f));
-            poseStack.translate(0, 0, offDoorOffset*2+6);
-
-            font.drawInBatch8xOutline(sequence, textHorizontalPosition, (float) verticalTextOffset, 16777215, 1, textMatrix, multiBufferSource, 255);
+            poseStack.translate(0, 0, (offDoorOffset * 2 + 6) / textScale);
+            font.drawInBatch8xOutline(sequence, textHorizontalPosition, 0f, 16777215, 1, textMatrix, multiBufferSource, 255);
         }
 
         poseStack.popPose();

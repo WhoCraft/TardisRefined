@@ -42,6 +42,7 @@ import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRItemRegistry;
 import whocraft.tardis_refined.registry.TRPointOfInterestTypes;
@@ -67,8 +68,6 @@ public class ModEvents {
             // Load Levels
             ServerLevel world = server.getLevel(Level.OVERWORLD);
             DimensionHandler.loadLevels(world);
-
-            // We call this here to make sure blocks are registered
             TRPointOfInterestTypes.registerBlockStates();
 
         });

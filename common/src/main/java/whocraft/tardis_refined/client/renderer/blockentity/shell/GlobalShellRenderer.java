@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -21,7 +22,11 @@ import whocraft.tardis_refined.common.block.shell.GlobalShellBlock;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
 import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
 import whocraft.tardis_refined.patterns.ShellPattern;
+
+import java.util.Optional;
 
 public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlockEntity>, BlockEntityRendererProvider<GlobalShellBlockEntity> {
 
@@ -32,6 +37,13 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
     @Override
     public void render(GlobalShellBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         if (blockEntity.getTardisId() == null) return;
+
+        if (ModCompatChecker.immersivePortals()) {
+            if (ImmersivePortalsClient.shouldStopRenderingInPortal()) {
+                return;
+            }
+        }
+
 
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.5F, 0.5F);
@@ -60,7 +72,13 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         Biome biome = level.getBiome(blockPos).value();
         Biome.Precipitation precipitation = biome.getPrecipitationAt(blockPos);
         boolean renderSnow = biome.hasPrecipitation() && precipitation == Biome.Precipitation.SNOW;
+        Optional<Object> portal = currentModel.getAnyDescendantWithName("portal")
+                .stream()
+                .findFirst();
 
+        if (portal.isPresent() && portal.get() instanceof ModelPart modelPart) {
+            modelPart.visible = false;
+        }
         currentModel.renderShell(blockEntity, isOpen, true, poseStack, bufferSource.getBuffer(TRShaders.translucentWithSnow(currentModel.getShellTexture(pattern, false), renderSnow)), packedLight, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         /*Emmissive*/
@@ -68,6 +86,13 @@ public class GlobalShellRenderer implements BlockEntityRenderer<GlobalShellBlock
         if (pattern.shellTexture().emissive()) {
             RenderType glowingRenderType = TRShaders.glow(currentModel.getShellTexture(pattern, true), 1F);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(glowingRenderType);
+            Optional<Object> portal2 = currentModel.getAnyDescendantWithName("portal")
+                    .stream()
+                    .findFirst();
+
+            if (portal2.isPresent() && portal2.get() instanceof ModelPart modelPart) {
+                modelPart.visible = false;
+            }
             currentModel.renderShell(blockEntity, isOpen, false, poseStack, vertexConsumer, 15728640, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, (isRegenerating) ? sine : 1f);
         } else {
             if (isRegenerating) {

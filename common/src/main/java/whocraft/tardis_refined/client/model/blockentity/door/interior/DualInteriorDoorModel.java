@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
@@ -66,6 +67,7 @@ public class DualInteriorDoorModel extends ShellDoorModel {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         setDoorPosition(open);
         this.root().getAllParts().forEach(modelPart -> modelPart.visible = false);
+
         this.portal.visible = true;
         portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, 0, 0, 0, alpha);
     }
