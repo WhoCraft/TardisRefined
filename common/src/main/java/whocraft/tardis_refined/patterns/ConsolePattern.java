@@ -2,7 +2,7 @@ package whocraft.tardis_refined.patterns;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.patterns.sound.ConsoleSoundProfile;
 import whocraft.tardis_refined.patterns.sound.TRConsoleSoundProfiles;
@@ -13,7 +13,7 @@ public class ConsolePattern extends BasePattern {
 
     public static final Codec<ConsolePattern> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-                ResourceLocation.CODEC.fieldOf("id").forGetter(ConsolePattern::id),
+                Identifier.CODEC.fieldOf("id").forGetter(ConsolePattern::id),
                 Codec.STRING.orElse("Placeholder").fieldOf("name_component").forGetter(BasePattern::name),
                 PatternTexture.getCodec().fieldOf("texture_definition").forGetter(ConsolePattern::patternTexture),
                 ConsoleSoundProfile.CODEC.optionalFieldOf("sound_profile").orElse(Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE)).forGetter(ConsolePattern::soundProfile)
@@ -24,16 +24,16 @@ public class ConsolePattern extends BasePattern {
     private final Optional<ConsoleSoundProfile> consoleSoundProfile;
 
     public ConsolePattern(String identifier, PatternTexture textureDefinition, Optional<ConsoleSoundProfile> consoleSoundProfile) {
-        this(new ResourceLocation(TardisRefined.MODID, identifier), textureDefinition, consoleSoundProfile);
+        this(Identifier.fromNamespaceAndPath(TardisRefined.MODID, identifier), textureDefinition, consoleSoundProfile);
     }
 
-    public ConsolePattern(ResourceLocation identifier, PatternTexture textureDefinition, Optional<ConsoleSoundProfile> consoleSoundProfile) {
+    public ConsolePattern(Identifier identifier, PatternTexture textureDefinition, Optional<ConsoleSoundProfile> consoleSoundProfile) {
         super(identifier);
         this.patternTexture = textureDefinition;
         this.consoleSoundProfile = consoleSoundProfile;
     }
 
-    public ConsolePattern(ResourceLocation identifier, String name, PatternTexture textureDefinition, Optional<ConsoleSoundProfile> consoleSoundProfile) {
+    public ConsolePattern(Identifier identifier, String name, PatternTexture textureDefinition, Optional<ConsoleSoundProfile> consoleSoundProfile) {
         super(identifier, name);
         this.patternTexture = textureDefinition;
         this.consoleSoundProfile = consoleSoundProfile;
@@ -43,11 +43,11 @@ public class ConsolePattern extends BasePattern {
         return patternTexture;
     }
 
-    public ResourceLocation texture() {
+    public Identifier texture() {
         return this.patternTexture.texture();
     }
 
-    public ResourceLocation emissiveTexture() {
+    public Identifier emissiveTexture() {
         return this.patternTexture.emissiveTexture();
     }
 

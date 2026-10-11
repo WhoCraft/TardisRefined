@@ -1,32 +1,22 @@
 package whocraft.tardis_refined.common.dimension.fabric;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Lifecycle;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.minecraft.core.BlockPos;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLevelEvents;
 import net.minecraft.core.MappedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistrationInfo;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.TicketType;
-import net.minecraft.server.level.progress.ChunkProgressListener;
-import net.minecraft.util.Unit;
-import net.minecraft.world.RandomSequences;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.BiomeManager;
-import net.minecraft.world.level.border.BorderChangeListener;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.storage.DerivedLevelData;
 import net.minecraft.world.level.storage.LevelStorageSource;
-import net.minecraft.world.level.storage.WorldData;
 import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortals;
 import whocraft.tardis_refined.mixin.MappedRegistryAccessor;
 
 import java.util.concurrent.Executor;
@@ -49,25 +39,37 @@ public class DimensionHandlerImpl {
         MinecraftServer server = getServer();
         ServerLevel overworld = server.getLevel(Level.OVERWORLD);
 
-        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.location());
+        final ResourceKey<LevelStem> dimensionKey = ResourceKey.create(Registries.LEVEL_STEM, id.identifier());
 
         LevelStem dimension = dimensionFactory.apply(server, dimensionKey);
 
-        ChunkProgressListener chunkListener = server.progressListenerFactory.create(11);
         Executor executor = server.executor;
         LevelStorageSource.LevelStorageAccess levelSave = DimensionHandler.getStorage();
 
-        WorldData serverConfig = server.getWorldData();
-        DerivedLevelData derivedWorldInfo = new DerivedLevelData(serverConfig, serverConfig.overworldData());
+        DerivedLevelData derivedWorldInfo = new DerivedLevelData(server.getWorldData(), server.getWorldData().overworldData());
 
         //Actually register our dimension
-        Registry<LevelStem> dimensionRegistry = server.registryAccess().registryOrThrow(Registries.LEVEL_STEM);
+        Registry<LevelStem> dimensionRegistry = server.registryAccess().lookupOrThrow(Registries.LEVEL_STEM);
         if (dimensionRegistry instanceof MappedRegistry<LevelStem> writableRegistry) {
             MappedRegistryAccessor accessor = (MappedRegistryAccessor) writableRegistry;
-            accessor.setFrozen(false); //Must unfreeze registry to allow our dimension to persist
-            writableRegistry.register(dimensionKey, dimension, Lifecycle.stable());
+            // The registry was frozen (and its tag set bound) during normal server
+            // startup. Replacing the tag set with MappedRegistry's unbound sentinel
+            // is required before thawing it; otherwise the next RegistryAccess.freeze()
+            // during client registry negotiation fails with "Tags already present".
+            if (writableRegistry.containsKey(dimensionKey)) {
+                dimension = writableRegistry.getValue(dimensionKey);
+            } else {
+                accessor.setFrozen(false); // Thaw only for the registration itself.
+                try {
+                    writableRegistry.register(dimensionKey, dimension, RegistrationInfo.BUILT_IN);
+                } finally {
+                    // RegistryAccess.freeze() must see this registry as frozen. Leaving it
+                    // unfrozen makes 26.3 attempt to bind tags a second time during sync.
+                    accessor.setFrozen(true);
+                }
+            }
         } else {
-            throw new IllegalStateException(String.format("Unable to register dimension %s -- dimension registry not writable", dimensionKey.location()));
+            throw new IllegalStateException(String.format("Unable to register dimension %s -- dimension registry not writable", dimensionKey.identifier()));
         }
 
         // now we have everything we need to create the world instance
@@ -78,33 +80,19 @@ public class DimensionHandlerImpl {
                 derivedWorldInfo,
                 id,
                 dimension,
-                chunkListener,
-                false, // boolean: is-debug-world
-                BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed()),
-                ImmutableList.of(), // "special spawn list"
-                // phantoms, raiders, travelling traders, cats are overworld special spawns
-                // the dimension loader is hardcoded to initialize preexisting non-overworld worlds with no special spawn lists
-                // so this can probably be left empty for best results and spawns should be handled via other means
-                false, // "tick time", true for overworld, always false for everything else
-                new RandomSequences(BiomeManager.obfuscateSeed(serverConfig.worldGenOptions().seed())));
+                false,
+                overworld.getSeed(),
+                ImmutableList.of(),
+                false);
 
         addDimension(newLevel.dimension());
 
-        overworld.getWorldBorder().addListener(new BorderChangeListener.DelegateBorderChangeListener(newLevel.getWorldBorder()));
-
         server.levels.put(id, newLevel);
 
-        ServerWorldEvents.LOAD.invoker().onWorldLoad(server, newLevel);
+        ServerLevelEvents.LOAD.invoker().onLevelLoad(server, newLevel);
 
         new S2CSyncLevelList(newLevel.dimension(), true).sendToAll();
 
-
-        BlockPos blockPos = new BlockPos(0, 0, 0);
-        ChunkPos chunkPos = new ChunkPos(blockPos);
-        chunkListener.updateSpawnPos(chunkPos);
-        ServerChunkCache serverchunkcache = newLevel.getChunkSource();
-        serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
-        serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
 
         return newLevel;
     }

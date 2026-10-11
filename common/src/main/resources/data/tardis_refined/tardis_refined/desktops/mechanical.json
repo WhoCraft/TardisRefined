@@ -1,0 +1,5 @@
+{
+  "id": "tardis_refined:mechanical",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Mechanical\"}",
+  "structure": "tardis_refined:desktop/mechanical"
+}

@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
 import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.network.MessageContext;
@@ -17,13 +17,13 @@ import java.util.Map;
 
 public class S2CSyncHums extends MessageS2C {
 
-    //We use an unboundedMapCodec. However it is limited in that it can only parse objects whose keys can be serialised to a string, such as ResourceLocation
+    //We use an unboundedMapCodec. However it is limited in that it can only parse objects whose keys can be serialised to a string, such as Identifier
     //E.g. If you used an int as a key, the unboundedMapCodec will not parse it and will error.
-    private static final Codec<Map<ResourceLocation, HumEntry>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, HumEntry.codec());
-    private Map<ResourceLocation, HumEntry> tardisHums = new HashMap<>();
+    private static final Codec<Map<Identifier, HumEntry>> MAPPER = Codec.unboundedMap(Identifier.CODEC, HumEntry.codec());
+    private Map<Identifier, HumEntry> tardisHums = new HashMap<>();
 
 
-    public S2CSyncHums(Map<ResourceLocation, HumEntry> tardisHums) {
+    public S2CSyncHums(Map<Identifier, HumEntry> tardisHums) {
         this.tardisHums = tardisHums;
     }
 
@@ -45,7 +45,7 @@ public class S2CSyncHums extends MessageS2C {
     @Override
     public void handle(MessageContext context) {
         TardisHums.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, HumEntry> entry : this.tardisHums.entrySet()) {
+        for (Map.Entry<Identifier, HumEntry> entry : this.tardisHums.entrySet()) {
             TardisHums.getRegistry().put(entry.getKey(), entry.getValue());
         }
     }

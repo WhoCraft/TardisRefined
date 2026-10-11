@@ -22,8 +22,10 @@ public class LoopingVortexSound extends LoopingFlightSound {
     @Override
     public void playSoundInstance(Player player) {
         TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
-            TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
-            if (tardisPlayerInfo.isRenderVortex() && tardisPlayerInfo.isViewingTardis() && !tardisClientData.isLanding() && !tardisClientData.isTakingOff()) {
+            TardisClientData tardisClientData = TardisClientData.getForTardis(tardisPlayerInfo.getViewedTardis());
+            if (tardisClientData != null && (tardisClientData.isFlying() || tardisClientData.isTakingOff())
+                    && tardisPlayerInfo.isRenderVortex() && tardisPlayerInfo.isViewingTardis()
+                    && !tardisClientData.isLanding()) {
                 Vec3 facingDirection = player.getLookAngle();
                 Vec3 newPosition = player.position().add(facingDirection.scale(3));
                 setLocation(newPosition);

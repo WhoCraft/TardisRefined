@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortalsClient;
 
 public class SingleInteriorDoorModel extends ShellDoorModel {
 
@@ -31,7 +31,7 @@ public class SingleInteriorDoorModel extends ShellDoorModel {
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         this.root().getAllParts().forEach(ModelPart::resetPose);
         this.portal.visible = false;
-        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -42,7 +42,7 @@ public class SingleInteriorDoorModel extends ShellDoorModel {
             modelPart.visible = true;
         });
         this.portal.visible = false;
-        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -58,7 +58,7 @@ public class SingleInteriorDoorModel extends ShellDoorModel {
         setDoorPosition(open);
         this.root().getAllParts().forEach(modelPart -> modelPart.visible = false);
         this.portal.visible = true;
-        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, 0, 0, 0, alpha);
+        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay);
     }
 
     @Override

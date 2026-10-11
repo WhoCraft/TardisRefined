@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.common.block.device;
 
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -18,7 +20,6 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
@@ -34,7 +35,7 @@ import whocraft.tardis_refined.registry.TRUpgrades;
 
 public class LandingPadBlock extends Block {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     public LandingPadBlock(Properties properties) {
         super(properties);
@@ -59,7 +60,7 @@ public class LandingPadBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (!player.level().isClientSide()) {
             if (level instanceof ServerLevel serverLevel) {
@@ -95,7 +96,7 @@ public class LandingPadBlock extends Block {
                                     PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_NOT_UNLOCKED), true);
                                 }
 
-                                return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                                return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
                             }
                         }
                         PlayerUtil.sendMessage(player, Component.translatable(ModMessages.LANDING_PAD_BANNED_DIM), true);

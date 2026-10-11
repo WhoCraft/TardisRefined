@@ -5,7 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
@@ -30,13 +30,13 @@ public class HumSelectionScreen extends MonitorOS {
     private HumEntry currentHumEntry;
 
     public HumSelectionScreen() {
-        super(Component.translatable(ModMessages.UI_MONITOR_SELECT_HUM), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(ModMessages.UI_MONITOR_SELECT_HUM), Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
     }
 
     public static void selectHum(HumEntry theme) {
         assert Minecraft.getInstance().player != null;
         new C2SChangeHum(Minecraft.getInstance().player.level().dimension(), theme).send();
-        //Minecraft.getInstance().setScreen(null);
+        //Minecraft.getInstance().setScreenAndShow(null);
     }
 
     @Override
@@ -64,7 +64,6 @@ public class HumSelectionScreen extends MonitorOS {
         int vPos = (height - monitorHeight) / 2;
         int leftPos = this.width / 2 - 75;
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 150, 80, leftPos, vPos + 15, vPos + monitorHeight - 30, 12);
-        selectionList.setRenderBackground(false);
 
         Collection<HumEntry> knownHums = TardisHums.getRegistry().values();
         knownHums = knownHums.stream().sorted(Comparator.comparing(HumEntry::getNameComponent)).toList();
@@ -74,7 +73,7 @@ public class HumSelectionScreen extends MonitorOS {
             Component tooltip;
 
             try {
-                name = Component.Serializer.fromJson(new StringReader(humEntry.getNameComponent()));
+                name = whocraft.tardis_refined.common.util.ComponentJson.parse(humEntry.getNameComponent());
                 tooltip = Component.literal(ChatFormatting.BLUE + Platform.getModName(humEntry.getIdentifier().getNamespace()));
             } catch (Exception ex) {
                 LOGGER.error("Could not process Name for hum {}", humEntry.getIdentifier());
@@ -94,7 +93,7 @@ public class HumSelectionScreen extends MonitorOS {
             }, leftPos);
 
             entry.setTooltip(tooltip);
-            selectionList.children().add(entry);
+            selectionList.addEntryPublic(entry);
         }
 
         return selectionList;

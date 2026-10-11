@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -149,7 +149,7 @@ public class UpgradeTab {
                     connection.addLine(new ConnectionLine(startX, endY, endX, endY));
                 }
 
-                connection.color = entry.upgradeEntry.isUnlocked(upgradeHandler) ? new Color(ChatFormatting.WHITE.getColor()) : Color.GRAY;
+                connection.color = entry.upgradeEntry.isUnlocked(upgradeHandler) ? Color.WHITE : Color.GRAY;
                 this.connections.add(connection);
             }
         }
@@ -215,15 +215,15 @@ public class UpgradeTab {
         return this.title;
     }
 
-    public void drawTab(GuiGraphics guiGraphics, int offsetX, int offsetY, boolean isSelected) {
+    public void drawTab(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, boolean isSelected) {
         this.type.draw(guiGraphics, offsetX, offsetY, isSelected, this.index);
     }
 
-    public void drawIcon(GuiGraphics guiGraphics, int offsetX, int offsetY) {
+    public void drawIcon(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY) {
         //TODO Render iTem this.type.drawIcon(guiGraphics, DataContext.forPower(this.minecraft.player, this.powerHolder), offsetX, offsetY, this.index, this.icon);
     }
 
-    public void drawContents(GuiGraphics guiGraphics, int x, int y) {
+    public void drawContents(GuiGraphicsExtractor guiGraphics, int x, int y) {
         if (!this.centered) {
             this.scrollX = 117 - (this.maxX + this.minX) / 2D;
             this.scrollY = 56 - (this.maxY + this.minY) / 2D;
@@ -231,8 +231,8 @@ public class UpgradeTab {
         }
 
         guiGraphics.enableScissor(x, y, x + UpgradesScreen.WINDOW_INSIDE_WIDTH, y + UpgradesScreen.WINDOW_INSIDE_HEIGHT);
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate((float) x, (float) y, 0.0F);
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().translate((float) x, (float) y);
 
         int i = Mth.floor(this.scrollX);
         int j = Mth.floor(this.scrollY);
@@ -253,13 +253,13 @@ public class UpgradeTab {
             widget.drawIcon(this.minecraft, guiGraphics, i + widget.getX() + 16, j + widget.getY() + 13);
         }
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
         guiGraphics.disableScissor();
     }
 
-    public void drawTooltips(GuiGraphics guiGraphics, int mouseX, int mouseY, int width, int height, boolean overlayActive) {
-        guiGraphics.pose().pushPose();
-        guiGraphics.pose().translate(0.0F, 0.0F, -200.0F);
+    public void drawTooltips(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int width, int height, boolean overlayActive) {
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.nextStratum();
         guiGraphics.fill(0, 0, UpgradesScreen.WINDOW_INSIDE_WIDTH, UpgradesScreen.WINDOW_INSIDE_HEIGHT, Mth.floor(this.fade * 255.0F) << 24);
         boolean flag = false;
 
@@ -268,7 +268,10 @@ public class UpgradeTab {
             int j = Mth.floor(this.scrollY);
             if (mouseX > 0 && mouseX < UpgradesScreen.WINDOW_INSIDE_WIDTH && mouseY > 0 && mouseY < UpgradesScreen.WINDOW_INSIDE_HEIGHT) {
 
-                for (UpgradeWidget widget : this.entries) {
+                // Entries are rendered in list order, so the last matching entry is
+                // visually on top when nodes overlap. Match that order for hover too.
+                for (int entryIndex = this.entries.size() - 1; entryIndex >= 0; entryIndex--) {
+                    UpgradeWidget widget = this.entries.get(entryIndex);
                     if (widget.isMouseOver(i, j, mouseX, mouseY)) {
                         flag = true;
                         widget.drawHover(guiGraphics, i, j, this.fade, width, height);
@@ -278,7 +281,7 @@ public class UpgradeTab {
             }
         }
 
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
 
         if (!overlayActive) {
             if (flag) {
@@ -293,7 +296,9 @@ public class UpgradeTab {
         int i = Mth.floor(this.scrollX);
         int j = Mth.floor(this.scrollY);
         if (mouseX > 0 && mouseX < UpgradesScreen.WINDOW_INSIDE_WIDTH && mouseY > 0 && mouseY < UpgradesScreen.WINDOW_INSIDE_HEIGHT) {
-            for (UpgradeWidget entry : this.entries) {
+            // Match the topmost rendered node when upgrade icons overlap.
+            for (int entryIndex = this.entries.size() - 1; entryIndex >= 0; entryIndex--) {
+                UpgradeWidget entry = this.entries.get(entryIndex);
                 if (entry.isMouseOver(i, j, mouseX, mouseY)) {
                     return entry;
                 }
@@ -339,13 +344,13 @@ public class UpgradeTab {
             return this;
         }
 
-        public void drawOutlines(UpgradeTab gui, GuiGraphics guiGraphics, int x, int y) {
+        public void drawOutlines(UpgradeTab gui, GuiGraphicsExtractor guiGraphics, int x, int y) {
             for (ConnectionLine lines : this.lines) {
                 lines.draw(gui, guiGraphics, x, y, true, Color.BLACK);
             }
         }
 
-        public void draw(UpgradeTab gui, GuiGraphics guiGraphics, int x, int y) {
+        public void draw(UpgradeTab gui, GuiGraphicsExtractor guiGraphics, int x, int y) {
             for (ConnectionLine lines : this.lines) {
                 lines.draw(gui, guiGraphics, x, y, false, this.color);
             }
@@ -364,26 +369,26 @@ public class UpgradeTab {
             this.endY = Math.max(startY, endY);
         }
 
-        public void draw(UpgradeTab upgradeTab, GuiGraphics guiGraphics, int x, int y, boolean outline, Color color) {
+        public void draw(UpgradeTab upgradeTab, GuiGraphicsExtractor guiGraphics, int x, int y, boolean outline, Color color) {
             // AARRGGBB
             int colorCode = color.getRGB();
             if (outline) {
                 if (this.startY == endY) {
                     //hLine
-                    guiGraphics.hLine(x + startX - 2, x + endX + 1, y + startY - 2, colorCode);
-                    guiGraphics.hLine(x + startX - 2, x + endX + 1, y + startY + 1, colorCode);
+                    guiGraphics.horizontalLine(x + startX - 2, x + endX + 1, y + startY - 2, colorCode);
+                    guiGraphics.horizontalLine(x + startX - 2, x + endX + 1, y + startY + 1, colorCode);
                 } else if (this.startX == endX) {
                     //vLine
-                    guiGraphics.vLine(x + startX - 2, y + startY - 2, y + endY + 1, colorCode);
-                    guiGraphics.vLine(x + startX + 1, y + startY - 2, y + endY + 1, colorCode);
+                    guiGraphics.verticalLine(x + startX - 2, y + startY - 2, y + endY + 1, colorCode);
+                    guiGraphics.verticalLine(x + startX + 1, y + startY - 2, y + endY + 1, colorCode);
                 }
             } else {
                 if (this.startY == endY) {
-                    guiGraphics.hLine(x + startX - 1, x + endX, y + startY - 1, colorCode);
-                    guiGraphics.hLine(x + startX - 1, x + endX, y + startY, colorCode);
+                    guiGraphics.horizontalLine(x + startX - 1, x + endX, y + startY - 1, colorCode);
+                    guiGraphics.horizontalLine(x + startX - 1, x + endX, y + startY, colorCode);
                 } else if (this.startX == endX) {
-                    guiGraphics.vLine(x + startX - 1, y + startY - 1, y + endY, colorCode);
-                    guiGraphics.vLine(x + startX, y + startY - 1, y + endY, colorCode);
+                    guiGraphics.verticalLine(x + startX - 1, y + startY - 1, y + endY, colorCode);
+                    guiGraphics.verticalLine(x + startX, y + startY - 1, y + endY, colorCode);
                 }
             }
         }

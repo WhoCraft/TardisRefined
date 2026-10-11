@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -18,16 +18,16 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class FactoryConsoleModel extends TardisModel implements ConsoleUnit {
 
     // Load Animations in
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/flight.json"));
-    public static final AnimationDefinition CRASH = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/crash.json"));
-    public static final AnimationDefinition POWER_ON = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/power_on.json"));
-    public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/factory/power_off.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/factory/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/factory/flight.json"));
+    public static final AnimationDefinition CRASH = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/factory/crash.json"));
+    public static final AnimationDefinition POWER_ON = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/factory/power_on.json"));
+    public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/factory/power_off.json"));
     
-    private static final ResourceLocation FACTORY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
+    private static final Identifier FACTORY_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/factory/factory_console.png");
   
   
     private final ModelPart root;
@@ -45,7 +45,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
-        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
 
@@ -98,7 +98,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
         }
 
         // Final render call
-        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
 
@@ -116,7 +116,7 @@ public class FactoryConsoleModel extends HierarchicalModel implements ConsoleUni
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return FACTORY_TEXTURE;
     }
 }

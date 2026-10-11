@@ -10,7 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
 import whocraft.tardis_refined.registry.TRUpgrades;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
+public class UpgradeArgumentType implements ArgumentType<Identifier> {
 
     public static final DynamicCommandExceptionType INVALID_UPGRADE_EXCEPTION = new DynamicCommandExceptionType((upgrade) -> Component.translatable(ModMessages.CMD_ARG_UPGRADE_INVALID, upgrade));
     private static final Collection<String> EXAMPLES = Stream.of(TRUpgrades.ARCHITECTURE_SYSTEM).map((upgrade) -> {
@@ -32,7 +32,7 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
     }
 
     public static Upgrade getUpgrade(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
-        ResourceLocation resourcelocation = context.getArgument(name, ResourceLocation.class);
+        Identifier resourcelocation = context.getArgument(name, Identifier.class);
         Upgrade upgrade = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(resourcelocation);
         if (upgrade == null)
             throw INVALID_UPGRADE_EXCEPTION.create(resourcelocation);
@@ -40,8 +40,8 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
             return upgrade;
     }
 
-    public static ResourceLocation getUpgradeId(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
-        ResourceLocation resourcelocation = context.getArgument(name, ResourceLocation.class);
+    public static Identifier getUpgradeId(CommandContext<CommandSourceStack> context, String name) throws CommandSyntaxException {
+        Identifier resourcelocation = context.getArgument(name, Identifier.class);
         if (TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(resourcelocation) == null)
             throw INVALID_UPGRADE_EXCEPTION.create(resourcelocation);
         else
@@ -49,8 +49,8 @@ public class UpgradeArgumentType implements ArgumentType<ResourceLocation> {
     }
 
     @Override
-    public ResourceLocation parse(StringReader reader) throws CommandSyntaxException {
-        return ResourceLocation.read(reader);
+    public Identifier parse(StringReader reader) throws CommandSyntaxException {
+        return Identifier.read(reader);
     }
 
     @Override

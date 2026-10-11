@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -18,13 +18,13 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class ToyotaConsoleModel extends TardisModel implements ConsoleUnit {
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/toyota/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/toyota/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/toyota/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/toyota/flight.json"));
 
 
-    private static final ResourceLocation TOYOTA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
+    private static final Identifier TOYOTA_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/toyota/toyota_console.png");
     private final ModelPart bone181;
     private final ModelPart throttle;
     private final ModelPart handbrake;
@@ -38,11 +38,15 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
     public ModelPart root() {
+        // Match the original 1.20.1 implementation: the model's authored
+        // render root is bone181. bb_main is a separate auxiliary group and
+        // rendering the whole layer adds geometry that was not part of the
+        // original console model.
         return this.bone181;
     }
 
@@ -72,11 +76,11 @@ public class ToyotaConsoleModel extends HierarchicalModel implements ConsoleUnit
 
         this.handbrake.yRot = reactions.isHandbrakeEngaged() ? 2f : -1f;
 
-        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return TOYOTA_TEXTURE;
     }
 

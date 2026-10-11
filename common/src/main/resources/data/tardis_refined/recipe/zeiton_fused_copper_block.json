@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "tardis_refined:zeiton_ingot",
+    "minecraft:copper_block"
+  ],
+  "result": {
+    "id": "tardis_refined:zeiton_fused_copper_block"
+  }
+}

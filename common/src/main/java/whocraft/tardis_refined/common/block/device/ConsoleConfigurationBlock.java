@@ -1,11 +1,13 @@
 package whocraft.tardis_refined.common.block.device;
 
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+
 import com.mojang.brigadier.StringReader;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,7 +21,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -47,7 +48,7 @@ import static net.minecraft.world.phys.shapes.BooleanOp.OR;
 
 public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     public static VoxelShape SHAPE = Stream.of(
             Shapes.join(Block.box(2, 6, 8, 14, 11, 8), Block.box(2, 6, 8, 14, 11, 8), OR),
@@ -84,7 +85,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (interactionHand != InteractionHand.MAIN_HAND) {
             return InteractionResult.PASS;
@@ -92,28 +93,31 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
         if (!player.level().isClientSide()) {
 
-            var offset = blockState.getValue(FACING).getNormal();
-            BlockPos consolePos = blockPos.offset(offset);
+            BlockPos consolePos = findPairedConsolePos(level, blockPos, blockState.getValue(FACING));
+            whocraft.tardis_refined.TardisRefined.LOGGER.info("Console configurator block interaction: player={}, item={}, position={}, facing={}, target={}, targetBlockEntity={}",
+                    player.getGameProfile().name(), stack.getItem(), blockPos, blockState.getValue(FACING), consolePos,
+                    level.getBlockEntity(consolePos) == null ? "none" : level.getBlockEntity(consolePos).getType());
 
             if (player.getMainHandItem().getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
                 this.changePattern(level, blockPos, consolePos, player);
-                return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
             }
 
 
             if (level instanceof ServerLevel serverLevel) {
-                if (serverLevel.dimensionTypeId() == TRDimensionTypes.TARDIS) {
-                    TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
-                        if (!operator.getPilotingManager().isInFlight()) {
-                            if (player.isShiftKeyDown()) { //If we are destroying the console block
-                                this.removeGlobalConsoleBlock(consolePos, level);
-                            } else {
-                                this.changeConsoleTheme(level, blockPos, consolePos);
-                            }
-                        } else {
-                            PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT), true);
-                        }
-                    });
+                if (serverLevel.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
+                    // A missing operator must not swallow the interaction. This can happen
+                    // briefly while the interior capability is being initialized.
+                    boolean inFlight = TardisLevelOperator.get(serverLevel)
+                            .map(operator -> operator.getPilotingManager().isInFlight())
+                            .orElse(false);
+                    if (inFlight) {
+                        PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT), true);
+                    } else if (player.isShiftKeyDown()) {
+                        this.removeGlobalConsoleBlock(consolePos, level);
+                    } else {
+                        this.changeConsoleTheme(level, blockPos, consolePos);
+                    }
                 } else {
                     if (player.isShiftKeyDown()) { //If we are destroying the console block
                         this.removeGlobalConsoleBlock(consolePos, level);
@@ -124,10 +128,10 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             }
 
 
-            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+            return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
         }
 
-        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+        return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 
     /**
@@ -142,7 +146,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
         if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity consoleConfigurationBlockEntity) {
 
-            ResourceLocation consoleThemeId = consoleConfigurationBlockEntity.theme();
+            Identifier consoleThemeId = consoleConfigurationBlockEntity.theme();
 
             level.setBlockAndUpdate(consolePos, TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get().defaultBlockState());
 
@@ -150,6 +154,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
             if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) { //Set console theme
                 globalConsoleBlockEntity.setConsoleTheme(consoleThemeId);
+                globalConsoleBlockEntity.setPattern(consoleConfigurationBlockEntity.pattern());
 
                 level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
 
@@ -195,7 +200,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
         if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity consoleConfigurationBlockEntity) {
             if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity globalConsoleBlockEntity) { //Change console theme
-                ResourceLocation currentConsoleThemeId = globalConsoleBlockEntity.theme();
+                Identifier currentConsoleThemeId = globalConsoleBlockEntity.theme();
 
                 if (ConsolePatterns.getPatternsForTheme(currentConsoleThemeId).size() == 1) { //If there is only one pattern for this theme, don't iterate and warn the player
                     level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_BIT.value(), SoundSource.PLAYERS, 100, (float) (0.1 + (level.getRandom().nextFloat() * 0.5)));
@@ -203,10 +208,11 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                 }
 
                 globalConsoleBlockEntity.setPattern(ConsolePatterns.next(currentConsoleThemeId, globalConsoleBlockEntity.pattern()));
-                PlayerUtil.sendMessage(player, Component.Serializer.fromJson(new StringReader(globalConsoleBlockEntity.pattern().name())), true);
+                consoleConfigurationBlockEntity.setConsolePattern(globalConsoleBlockEntity.pattern());
+                PlayerUtil.sendMessage(player, whocraft.tardis_refined.common.util.ComponentJson.parse(globalConsoleBlockEntity.pattern().name()), true);
                 level.playSound(null, player.getX(), player.getY(), player.getZ(), TRSoundRegistry.PATTERN_MANIPULATOR.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
-                player.getCooldowns().addCooldown(TRItemRegistry.PATTERN_MANIPULATOR.get(), 20);
+                player.getCooldowns().addCooldown(player.getMainHandItem(), 20);
                 return true;
             }
         }
@@ -227,7 +233,14 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
         BlockEntity expectedConsoleBlockEntity = level.getBlockEntity(consolePos);
 
         if (expectedConfiguratorBlockEntity instanceof ConsoleConfigurationBlockEntity configurationBlockEntity) { //Change console theme
-            ResourceLocation nextTheme = this.nextTheme(configurationBlockEntity);
+            // When a configurator is paired after a console already exists, its saved
+            // selection can be stale. Use the visible console as the starting point.
+            if (expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity pairedConsole) {
+                configurationBlockEntity.setConsoleTheme(pairedConsole.theme());
+                configurationBlockEntity.setConsolePattern(pairedConsole.pattern());
+            }
+            Identifier nextTheme = this.nextTheme(configurationBlockEntity);
+            if (nextTheme == null) return false;
 
             configurationBlockEntity.setConsoleTheme(nextTheme);
 
@@ -235,14 +248,14 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
 
                 consoleBlockEntity.setConsoleTheme(nextTheme);
 
-                //Kill previous controls and update control positions to that of the current theme
-                consoleBlockEntity.spawnControlEntities();
-
                 // Change theme and set the current pattern to the default
                 ConsolePattern defaultOrEquivalentPattern = ConsolePatterns.getPatternOrDefault(nextTheme, ResourceConstants.DEFAULT_PATTERN_ID);
 
                 if (defaultOrEquivalentPattern != null) {
                     consoleBlockEntity.setPattern(defaultOrEquivalentPattern);
+                    configurationBlockEntity.setConsolePattern(defaultOrEquivalentPattern);
+                    // Rebuild control entities only after the new theme is installed.
+                    consoleBlockEntity.spawnControlEntities();
 
                     level.playSound(null, consolePos, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.BLOCKS, 3, 0.45f);
 
@@ -251,15 +264,83 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
                     }
                 }
             }
+            whocraft.tardis_refined.TardisRefined.LOGGER.info(
+                    "Console configurator applied selection: position={}, pairedPosition={}, paired={}, theme={}",
+                    configuratorPos, consolePos, expectedConsoleBlockEntity instanceof GlobalConsoleBlockEntity, nextTheme);
             return true;
         }
+        whocraft.tardis_refined.TardisRefined.LOGGER.warn(
+                "Console configurator could not apply selection: position={}, configuratorBlockEntity={}, pairedPosition={}, pairedBlockEntity={}",
+                configuratorPos, expectedConfiguratorBlockEntity == null ? "none" : expectedConfiguratorBlockEntity.getType(),
+                consolePos, expectedConsoleBlockEntity == null ? "none" : expectedConsoleBlockEntity.getType());
         return false;
     }
 
-    private ResourceLocation nextTheme(ConsoleConfigurationBlockEntity blockEntity) {
-        ResourceLocation consoleThemeId = blockEntity.theme();
+    /** Handles the amethyst screwdriver directly so item use cannot swallow the
+     * configurator's normal block interaction. */
+    public InteractionResult useScrewdriver(Level level, BlockPos configuratorPos, Player player) {
+        if (level.isClientSide()) return InteractionResult.SUCCESS;
+        BlockState state = level.getBlockState(configuratorPos);
+        if (!state.is(this)) return InteractionResult.PASS;
+        BlockPos consolePos = findPairedConsolePos(level, configuratorPos, state.getValue(FACING));
+        whocraft.tardis_refined.TardisRefined.LOGGER.info("Console configurator screwdriver dispatch: player={}, position={}, facing={}, target={}, targetBlockEntity={}",
+                player.getGameProfile().name(), configuratorPos, state.getValue(FACING), consolePos,
+                level.getBlockEntity(consolePos) == null ? "none" : level.getBlockEntity(consolePos).getType());
+        if (level instanceof ServerLevel serverLevel
+                && serverLevel.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
+            boolean inFlight = TardisLevelOperator.get(serverLevel)
+                    .map(operator -> operator.getPilotingManager().isInFlight())
+                    .orElse(false);
+            if (inFlight) {
+                PlayerUtil.sendMessage(player, Component.translatable(ModMessages.CONSOLE_CONFIGURATION_NOT_IN_FLIGHT), true);
+            } else {
+                this.changeConsoleTheme(level, configuratorPos, consolePos);
+            }
+        } else {
+            this.changeConsoleTheme(level, configuratorPos, consolePos);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** Finds a paired console, preferring a directly adjacent console. Some
+     * desktop layouts place the configurator beside the console controls,
+     * rather than directly beside the console block, so also search locally. */
+    public static BlockPos findPairedConsolePos(Level level, BlockPos configuratorPos, Direction facing) {
+        BlockPos adjacent = findAdjacentConsolePos(level, configuratorPos, facing);
+        if (adjacent != null) return adjacent;
+
+        BlockPos nearest = null;
+        double nearestDistance = Double.MAX_VALUE;
+        int searchRadius = 8;
+        for (BlockPos candidate : BlockPos.betweenClosed(
+                configuratorPos.offset(-searchRadius, -searchRadius, -searchRadius),
+                configuratorPos.offset(searchRadius, searchRadius, searchRadius))) {
+            if (!(level.getBlockEntity(candidate) instanceof GlobalConsoleBlockEntity)) continue;
+            double distance = candidate.distToCenterSqr(configuratorPos.getX() + 0.5,
+                    configuratorPos.getY() + 0.5, configuratorPos.getZ() + 0.5);
+            if (distance < nearestDistance) {
+                nearest = candidate.immutable();
+                nearestDistance = distance;
+            }
+        }
+        return nearest != null ? nearest : configuratorPos.relative(facing);
+    }
+
+    /** Returns only a directly adjacent console, used to avoid drawing the
+     * hologram on top of a console occupying the neighboring block. */
+    public static @Nullable BlockPos findAdjacentConsolePos(Level level, BlockPos configuratorPos, Direction facing) {
+        BlockPos facingPos = configuratorPos.relative(facing);
+        if (level.getBlockEntity(facingPos) instanceof GlobalConsoleBlockEntity) return facingPos;
+        BlockPos oppositePos = configuratorPos.relative(facing.getOpposite());
+        if (level.getBlockEntity(oppositePos) instanceof GlobalConsoleBlockEntity) return oppositePos;
+        return null;
+    }
+
+    private Identifier nextTheme(ConsoleConfigurationBlockEntity blockEntity) {
+        Identifier consoleThemeId = blockEntity.theme();
         //Get next console theme
-        List<ResourceLocation> themesList = ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.keySet().stream().toList();
+        List<Identifier> themesList = ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.keySet().stream().toList();
+        if (themesList.isEmpty()) return null;
         int index = themesList.indexOf(consoleThemeId);
         int nextIndex = index + 1;
         if (nextIndex >= themesList.size()) {
@@ -274,7 +355,7 @@ public class ConsoleConfigurationBlock extends BaseEntityBlock {
             double xCoord = pos.getX() + level.getRandom().nextDouble();
             double yCoord = pos.getY() + level.getRandom().nextDouble() * 0.5D + 0.5D;
             double zCoord = pos.getZ() + level.getRandom().nextDouble();
-            level.addParticle(ParticleTypes.FLASH, xCoord, yCoord, zCoord, 0.0D, 0.0D, 0.0D);
+            level.addParticle(net.minecraft.core.particles.ColorParticleOption.create(ParticleTypes.FLASH, 0xFFFFFFFF), xCoord, yCoord, zCoord, 0.0D, 0.0D, 0.0D);
             level.addParticle(ParticleTypes.CLOUD, xCoord, yCoord, zCoord, 0.0D, 0.0D, 0.0D);
         }
     }

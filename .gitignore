@@ -93,7 +93,10 @@ $RECYCLE.BIN/
 *.lnk
 
 .gradle
+.gradle-home/
+.gradle-tmp/
 build/
+outputs/
 
 # Ignore Gradle GUI config
 gradle-app.setting

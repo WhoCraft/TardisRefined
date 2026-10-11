@@ -23,7 +23,7 @@ public class EyeBlock extends BaseEntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState blockState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Nullable
@@ -50,7 +50,7 @@ public class EyeBlock extends BaseEntityBlock {
 
         if (randomSource.nextInt(2) == 0) {
             for (int i = 0; i < randomSource.nextInt(5) + 1; ++i) {
-                level.addParticle(ParticleTypes.LAVA, true, (double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.5, (double) blockPos.getZ() + 0.5, (double) (randomSource.nextFloat() / 2.0F), 5.0E-5, (double) (randomSource.nextFloat() / 2.0F));
+                level.addParticle(ParticleTypes.LAVA, true, true, (double) blockPos.getX() + 0.5, (double) blockPos.getY() + 0.5, (double) blockPos.getZ() + 0.5, (double) (randomSource.nextFloat() / 2.0F), 5.0E-5, (double) (randomSource.nextFloat() / 2.0F));
             }
 
         }

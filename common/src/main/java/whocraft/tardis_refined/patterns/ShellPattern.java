@@ -2,7 +2,7 @@ package whocraft.tardis_refined.patterns;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.common.util.RegistryHelper;
 import whocraft.tardis_refined.patterns.sound.ShellSoundProfile;
 import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
@@ -13,7 +13,7 @@ public class ShellPattern extends BasePattern {
 
     public static final Codec<ShellPattern> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-                ResourceLocation.CODEC.fieldOf("id").forGetter(ShellPattern::id),
+                Identifier.CODEC.fieldOf("id").forGetter(ShellPattern::id),
                 Codec.STRING.orElse("Placeholder").fieldOf("name_component").forGetter(ShellPattern::name),
                 PatternTexture.getCodec().fieldOf("exterior").forGetter(ShellPattern::shellTexture),
                 PatternTexture.getCodec().fieldOf("interior").forGetter(ShellPattern::doorTexture),
@@ -30,14 +30,14 @@ public class ShellPattern extends BasePattern {
         this(RegistryHelper.makeKey(identifier), exteriorDoorTexture, interiorDoorTexture, shellSoundProfile);
     }
 
-    public ShellPattern(ResourceLocation identifier, PatternTexture exteriorDoorTexture, PatternTexture interiorDoorTexture, Optional<ShellSoundProfile> shellSoundProfile) {
+    public ShellPattern(Identifier identifier, PatternTexture exteriorDoorTexture, PatternTexture interiorDoorTexture, Optional<ShellSoundProfile> shellSoundProfile) {
         super(identifier);
         this.exteriorDoorTexture = exteriorDoorTexture;
         this.interiorDoorTexture = interiorDoorTexture;
         this.shellSoundProfile = shellSoundProfile;
     }
 
-    public ShellPattern(ResourceLocation identifier, String name, PatternTexture exteriorDoorTexture, PatternTexture interiorDoorTexture, Optional<ShellSoundProfile> shellSoundProfile) {
+    public ShellPattern(Identifier identifier, String name, PatternTexture exteriorDoorTexture, PatternTexture interiorDoorTexture, Optional<ShellSoundProfile> shellSoundProfile) {
         super(identifier, name);
         this.exteriorDoorTexture = exteriorDoorTexture;
         this.interiorDoorTexture = interiorDoorTexture;

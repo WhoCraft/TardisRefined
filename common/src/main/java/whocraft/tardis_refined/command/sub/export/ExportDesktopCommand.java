@@ -7,12 +7,13 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ComponentArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.storage.LevelResource;
 import whocraft.tardis_refined.common.tardis.themes.DesktopTheme;
@@ -26,7 +27,7 @@ import java.nio.file.Path;
 
 public class ExportDesktopCommand implements Command<CommandSourceStack> {
 
-    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static ArgumentBuilder<CommandSourceStack, ?> register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         return Commands.literal("desktop")
                 .then(Commands.argument("pos1", BlockPosArgument.blockPos())
                         .then(Commands.argument("pos2", BlockPosArgument.blockPos())
@@ -34,21 +35,21 @@ public class ExportDesktopCommand implements Command<CommandSourceStack> {
                                         .then(Commands.argument("namespace", StringArgumentType.word())
                                                 .then(Commands.argument("desktop_id", StringArgumentType.word())
                                                         .then(Commands.argument("datapack_name", StringArgumentType.string())
-                                                                .then(Commands.argument("desktop_display_name", ComponentArgument.textComponent())
+                                                                .then(Commands.argument("desktop_display_name", ComponentArgument.textComponent(buildContext))
                                                                         .executes(context -> exportDesktop(context, BlockPosArgument.getSpawnablePos(context, "pos1"),
                                                                                 BlockPosArgument.getSpawnablePos(context, "pos2"),
                                                                                 BoolArgumentType.getBool(context, "include_entities"),
                                                                                 StringArgumentType.getString(context, "namespace").toLowerCase(),
                                                                                 StringArgumentType.getString(context, "desktop_id").toLowerCase(),
                                                                                 StringArgumentType.getString(context, "datapack_name").toLowerCase(),
-                                                                                ComponentArgument.getComponent(context, "desktop_display_name")
+                                                                                ComponentArgument.getRawComponent(context, "desktop_display_name")
                                                                         )))))))));
 
     }
 
     private static int exportDesktop(CommandContext<CommandSourceStack> context, BlockPos bottomCorner, BlockPos topCorner, boolean includeEntities, String namespace, String desktopId, String datapackName, Component displayName) {
-        ResourceLocation loc = new ResourceLocation(namespace, desktopId);
-        DesktopTheme theme = new DesktopTheme(loc, loc, Component.Serializer.toJson(displayName));
+        Identifier loc = Identifier.fromNamespaceAndPath(namespace, desktopId);
+        DesktopTheme theme = new DesktopTheme(loc, loc, whocraft.tardis_refined.common.util.ComponentJson.toJson(displayName));
         ServerPlayer sender = context.getSource().getPlayer();
 
         MinecraftServerStorageAccessor accessor = (MinecraftServerStorageAccessor) context.getSource().getServer();

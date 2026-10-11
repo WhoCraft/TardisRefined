@@ -3,11 +3,10 @@ package whocraft.tardis_refined.common.dimension;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -20,7 +19,7 @@ import whocraft.tardis_refined.common.util.PlatformWarning;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.chunk.TardisChunkGenerator;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortals;
 import whocraft.tardis_refined.mixin.MinecraftServerStorageAccessor;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
@@ -68,7 +67,7 @@ public class DimensionHandler {
 
         JsonArray dimensions = new JsonArray();
         for (ResourceKey<Level> level : LEVELS) {
-            dimensions.add(level.location().toString());
+            dimensions.add(level.identifier().toString());
         }
 
         jsonObject.add("tardis_dimensions", dimensions);
@@ -83,7 +82,7 @@ public class DimensionHandler {
         }
     }
 
-    public static ServerLevel getOrCreateInterior(Level interactionLevel, ResourceLocation resourceLocation) {
+    public static ServerLevel getOrCreateInterior(Level interactionLevel, Identifier resourceLocation) {
 
         ResourceKey<Level> levelResourceKey = ResourceKey.create(Registries.DIMENSION, resourceLocation);
 
@@ -117,7 +116,7 @@ public class DimensionHandler {
             JsonObject jsonObject = TardisRefined.GSON.fromJson(reader, JsonObject.class);
             for (JsonElement dimension : jsonObject.get("tardis_dimensions").getAsJsonArray()) {
                 LOGGER.info("Attempting to load {}", dimension.getAsString());
-                ResourceLocation id = new ResourceLocation(dimension.getAsString());
+                Identifier id = Identifier.parse(dimension.getAsString());
                 ResourceKey<Level> levelKey = ResourceKey.create(Registries.DIMENSION, id);
                 if (getExistingLevel(serverLevel, levelKey) == null) {
                     LOGGER.warn("Level {} not found! Creating new level instance", dimension.getAsString());
@@ -134,20 +133,19 @@ public class DimensionHandler {
 
     }
 
-    @ExpectPlatform
-    public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
-        throw new RuntimeException(PlatformWarning.addWarning(DimensionHandler.class));
+    private static ServerLevel createDimension(Level level, ResourceKey<Level> id){
+        return whocraft.tardis_refined.common.dimension.fabric.DimensionHandlerImpl.createDimension(level, id);
     }
 
     public static LevelStem formLevelStem(MinecraftServer server, ResourceKey<LevelStem> stem) {
         RegistryAccess access = server.registryAccess();
 
-        return new LevelStem(access.registryOrThrow(Registries.DIMENSION_TYPE).getHolderOrThrow(TRDimensionTypes.TARDIS), new TardisChunkGenerator(access.registryOrThrow(Registries.BIOME).getHolderOrThrow(ChunkGenerators.TARDIS_BIOME)));
+        return new LevelStem(access.lookupOrThrow(Registries.DIMENSION_TYPE).getOrThrow(TRDimensionTypes.TARDIS), new TardisChunkGenerator(access.lookupOrThrow(Registries.BIOME).getOrThrow(ChunkGenerators.TARDIS_BIOME)));
     }
 
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, String id) {
-        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, id)));
+        return getExistingLevel(serverLevel, ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TardisRefined.MODID, id)));
     }
 
     public static ServerLevel getExistingLevel(ServerLevel serverLevel, ResourceKey<Level> levelResourceKey) {

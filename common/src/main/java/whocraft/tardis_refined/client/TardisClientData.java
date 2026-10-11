@@ -2,7 +2,7 @@ package whocraft.tardis_refined.client;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -16,6 +16,7 @@ import whocraft.tardis_refined.patterns.ShellPatterns;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TardisClientData {
     private static final List<TardisClientData> DATA = new ArrayList<>();
@@ -46,9 +47,11 @@ public class TardisClientData {
     private int tardisState = 0;
     private int recoveryTicks = 0;
     private float journeyProgress = 0;
-    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
-    private ResourceLocation vortex = VortexRegistry.FLOW.getId();
-    private ResourceLocation shellPattern = ShellPatterns.DEFAULT.id();
+    private Identifier shellTheme = ShellTheme.HALF_BAKED.getId();
+    private Identifier vortex = VortexRegistry.FLOW.getId();
+    private Identifier shellPattern = ShellPatterns.DEFAULT.id();
+    private Identifier consoleTheme;
+    private Identifier consolePattern;
     private HumEntry humEntry = TardisHums.getDefaultHum();
     public TardisClientData(ResourceKey<Level> resourceKey) {
         this.levelKey = resourceKey;
@@ -58,11 +61,11 @@ public class TardisClientData {
         DATA.add(tardisClientData);
     }
 
-    public ResourceLocation getVortex() {
+    public Identifier getVortex() {
         return vortex;
     }
 
-    public void setVortex(ResourceLocation vortex) {
+    public void setVortex(Identifier vortex) {
         this.vortex = vortex;
     }
 
@@ -81,6 +84,17 @@ public class TardisClientData {
         TardisClientData newData = new TardisClientData(levelResourceKey);
         DATA.add(newData);
         return newData;
+    }
+
+    /** Finds client state for the specific TARDIS being viewed from its UUID. */
+    public static TardisClientData getForTardis(UUID tardisId) {
+        if (tardisId == null) return null;
+        for (TardisClientData data : DATA) {
+            if (data.levelKey.identifier().getPath().equals(tardisId.toString())) {
+                return data;
+            }
+        }
+        return null;
     }
 
     public static List<TardisClientData> getAllEntries() {
@@ -106,12 +120,28 @@ public class TardisClientData {
         this.journeyProgress = journeyProgress;
     }
 
-    public ResourceLocation getShellTheme() {
+    public Identifier getShellTheme() {
         return shellTheme;
     }
 
-    public void setShellTheme(ResourceLocation shellTheme) {
+    public void setShellTheme(Identifier shellTheme) {
         this.shellTheme = shellTheme;
+    }
+
+    public Identifier getConsoleTheme() {
+        return consoleTheme;
+    }
+
+    public void setConsoleTheme(Identifier consoleTheme) {
+        this.consoleTheme = consoleTheme;
+    }
+
+    public Identifier getConsolePattern() {
+        return consolePattern;
+    }
+
+    public void setConsolePattern(Identifier consolePattern) {
+        this.consolePattern = consolePattern;
     }
 
     public HumEntry getHumEntry() {
@@ -130,11 +160,11 @@ public class TardisClientData {
         this.throttleStage = stage;
     }
 
-    public ResourceLocation getShellPattern() {
+    public Identifier getShellPattern() {
         return shellPattern;
     }
 
-    public void setShellPattern(ResourceLocation shellPattern) {
+    public void setShellPattern(Identifier shellPattern) {
         this.shellPattern = shellPattern;
     }
 
@@ -216,6 +246,8 @@ public class TardisClientData {
         compoundTag.putString("shellTheme", shellTheme.toString());
         compoundTag.putString("vortex", vortex.toString());
         compoundTag.putString("shellPattern", shellPattern.toString());
+        if (consoleTheme != null) compoundTag.putString("consoleTheme", consoleTheme.toString());
+        if (consolePattern != null) compoundTag.putString("consolePattern", consolePattern.toString());
 
         compoundTag.putString(NbtConstants.TARDIS_CURRENT_HUM, humEntry.getIdentifier().toString());
 
@@ -231,25 +263,27 @@ public class TardisClientData {
      * @param compoundTag A CompoundTag containing the serialized Tardis data.
      */
     public void deserializeNBT(CompoundTag compoundTag) {
-        flying = compoundTag.getBoolean("flying");
-        throttleStage = compoundTag.getInt(NbtConstants.THROTTLE_STAGE);
-        isHandbrakeEngaged = compoundTag.getBoolean(NbtConstants.HANDBRAKE_ENGAGED);
-        isLanding = compoundTag.getBoolean("isLanding");
-        isTakingOff = compoundTag.getBoolean("isTakingOff");
-        isInDangerZone = compoundTag.getBoolean("isInDangerZone");
-        flightShakeScale = compoundTag.getFloat("flightShakeScale");
-        isOnCooldown = compoundTag.getBoolean("isOnCooldown");
-        recoveryTicks = compoundTag.getInt("recoveryTicks");
-        journeyProgress = compoundTag.getFloat("journeyProgress");
+        flying = compoundTag.getBooleanOr("flying", false);
+        throttleStage = compoundTag.getIntOr(NbtConstants.THROTTLE_STAGE, 0);
+        isHandbrakeEngaged = compoundTag.getBooleanOr(NbtConstants.HANDBRAKE_ENGAGED, false);
+        isLanding = compoundTag.getBooleanOr("isLanding", false);
+        isTakingOff = compoundTag.getBooleanOr("isTakingOff", false);
+        isInDangerZone = compoundTag.getBooleanOr("isInDangerZone", false);
+        flightShakeScale = compoundTag.getFloatOr("flightShakeScale", 0.0F);
+        isOnCooldown = compoundTag.getBooleanOr("isOnCooldown", false);
+        recoveryTicks = compoundTag.getIntOr("recoveryTicks", 0);
+        journeyProgress = compoundTag.getFloatOr("journeyProgress", 0.0F);
         // Load shellTheme and shellPattern
-        shellTheme = new ResourceLocation(compoundTag.getString("shellTheme"));
-        shellPattern = new ResourceLocation(compoundTag.getString("shellPattern"));
-        vortex = new ResourceLocation(compoundTag.getString("vortex"));
+        shellTheme = Identifier.parse(compoundTag.getStringOr("shellTheme", ""));
+        shellPattern = Identifier.parse(compoundTag.getStringOr("shellPattern", ""));
+        consoleTheme = compoundTag.getString("consoleTheme").map(Identifier::parse).orElse(null);
+        consolePattern = compoundTag.getString("consolePattern").map(Identifier::parse).orElse(null);
+        vortex = Identifier.parse(compoundTag.getStringOr("vortex", ""));
 
-        setHumEntry(TardisHums.getHumById(new ResourceLocation(compoundTag.getString(NbtConstants.TARDIS_CURRENT_HUM))));
+        setHumEntry(TardisHums.getHumById(Identifier.parse(compoundTag.getStringOr(NbtConstants.TARDIS_CURRENT_HUM, ""))));
 
-        fuel = compoundTag.getDouble(NbtConstants.FUEL);
-        maximumFuel = compoundTag.getDouble(NbtConstants.MAXIMUM_FUEL);
+        fuel = compoundTag.getDoubleOr(NbtConstants.FUEL, 0.0D);
+        maximumFuel = compoundTag.getDoubleOr(NbtConstants.MAXIMUM_FUEL, 0.0D);
     }
 
     /**

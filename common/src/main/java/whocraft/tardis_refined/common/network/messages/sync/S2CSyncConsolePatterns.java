@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.UnboundedMapCodec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -19,10 +19,10 @@ import java.util.Map;
 
 public class S2CSyncConsolePatterns extends MessageS2C {
 
-    protected final UnboundedMapCodec<ResourceLocation, List<ConsolePattern>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, ConsolePattern.CODEC.listOf().xmap(List::copyOf, List::copyOf));
-    protected Map<ResourceLocation, List<ConsolePattern>> patterns = new HashMap<>();
+    protected final UnboundedMapCodec<Identifier, List<ConsolePattern>> MAPPER = Codec.unboundedMap(Identifier.CODEC, ConsolePattern.CODEC.listOf().xmap(List::copyOf, List::copyOf));
+    protected Map<Identifier, List<ConsolePattern>> patterns = new HashMap<>();
 
-    public S2CSyncConsolePatterns(Map<ResourceLocation, List<ConsolePattern>> patterns) {
+    public S2CSyncConsolePatterns(Map<Identifier, List<ConsolePattern>> patterns) {
         this.patterns = patterns;
     }
 

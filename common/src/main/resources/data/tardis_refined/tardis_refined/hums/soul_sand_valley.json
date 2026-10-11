@@ -1,0 +1,9 @@
+{
+  "ambient_sounds": [
+    "minecraft:ambient.soul_sand_valley.additions",
+    "minecraft:ambient.soul_sand_valley.mood"
+  ],
+  "hum_sound": "minecraft:ambient.soul_sand_valley.loop",
+  "id": "tardis_refined:soul_sand_valley",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Soul Sand Valley\"}"
+}

@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -52,7 +52,7 @@ public class ImmersivePortals {
 
     private static final Map<UUID, PortalEntry> EXISTING_PORTALS = new HashMap<>();
     // First 4 is exterior, last 4 is door offsets, in order of East, South, West, North
-    private static final Map<ResourceLocation, PortalOffets> THEME_OFFSETS = new HashMap<>();
+    private static final Map<Identifier, PortalOffets> THEME_OFFSETS = new HashMap<>();
     public static RegistrySupplier<EntityType<BotiPortalEntity>> BOTI_PORTAL = null;
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/ImmersivePortals");
 
@@ -229,7 +229,7 @@ public class ImmersivePortals {
 
 
     private static void detectMissingSetup() {
-        for (ResourceLocation value : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
+        for (Identifier value : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
             if (!isShellThemeSupported(value) && !value.equals(ShellTheme.getKey(ShellTheme.BRIEFCASE.get()))) {
                 LOGGER.info("{} shell has not been setup for ImmersivePortals", value);
             }
@@ -241,7 +241,7 @@ public class ImmersivePortals {
         THEME_OFFSETS.put(ShellTheme.getKey(shellTheme), portalOffets);
     }
 
-    public static boolean isShellThemeSupported(ResourceLocation shellTheme) {
+    public static boolean isShellThemeSupported(Identifier shellTheme) {
         return THEME_OFFSETS.containsKey(shellTheme);
     }
 
@@ -251,7 +251,7 @@ public class ImmersivePortals {
                 if (!door.isMainDoor()) {
                     return true;
                 }
-                if (serverLevel.dimensionTypeId().equals(TRDimensionTypes.TARDIS)) {
+                if (serverLevel.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
                     TardisLevelOperator.get(serverLevel).ifPresent(ImmersivePortals::destroyPortals);
                 }
             }
@@ -277,7 +277,7 @@ public class ImmersivePortals {
         AestheticHandler aestheticsHandler = operator.getAestheticHandler();
         TardisInteriorManager interiorManager = operator.getInteriorManager();
 
-        ResourceLocation theme = aestheticsHandler.getShellTheme();
+        Identifier theme = aestheticsHandler.getShellTheme();
         TardisInternalDoor door = operator.getInternalDoor();
         TardisPilotingManager pilotingManager = operator.getPilotingManager();
 
@@ -349,7 +349,7 @@ public class ImmersivePortals {
         interiorPortal.reloadPortal();
     }
 
-    private static void updatePortalEntry(TardisLevelOperator operator, UUID dimId, BotiPortalEntity interiorPortal, BotiPortalEntity exteriorPortal, ResourceLocation theme) {
+    private static void updatePortalEntry(TardisLevelOperator operator, UUID dimId, BotiPortalEntity interiorPortal, BotiPortalEntity exteriorPortal, Identifier theme) {
         destroyPortals(operator);
         EXISTING_PORTALS.put(dimId, new PortalEntry(interiorPortal, exteriorPortal, ShellTheme.getShellTheme(theme), dimId));
     }

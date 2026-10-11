@@ -24,7 +24,7 @@ public class C2SUnlockUpgrade extends MessageC2S {
     }
 
     public C2SUnlockUpgrade(FriendlyByteBuf buf) {
-        this.upgrade = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(buf.readResourceLocation());
+        this.upgrade = TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(buf.readIdentifier());
     }
 
     @NotNull
@@ -35,13 +35,13 @@ public class C2SUnlockUpgrade extends MessageC2S {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(Objects.requireNonNull(TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(this.upgrade)));
+        buf.writeIdentifier(Objects.requireNonNull(TRUpgrades.UPGRADE_DEFERRED_REGISTRY.getKey(this.upgrade)));
     }
 
     @Override
     public void handle(MessageContext context) {
 
-        ServerLevel serverLevel = context.getPlayer().serverLevel();
+        ServerLevel serverLevel = context.getPlayer().level();
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
             boolean available = !upgradeHandler.isUpgradeUnlocked(upgrade) && upgradeHandler.getUpgradePoints() >= upgrade.getSkillPointsRequired();

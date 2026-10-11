@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 150,
+  "experience": 0.8,
+  "ingredient": "tardis_refined:raw_zeiton",
+  "result": {
+    "id": "tardis_refined:zeiton_ingot"
+  }
+}

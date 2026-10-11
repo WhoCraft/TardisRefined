@@ -84,17 +84,16 @@ public class ArsEggBlock extends BaseEntityBlock {
         return null;
     }
 
-    @Override
     public boolean isPathfindable(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, PathComputationType pathComputationType) {
         return false;
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+    public BlockState updateShape(BlockState blockState, net.minecraft.world.level.LevelReader levelReader, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, net.minecraft.util.RandomSource randomSource) {
         if (blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+            tickAccess.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelReader));
         }
-        return getConnectedDirection(blockState).getOpposite() == direction && !blockState.canSurvive(levelAccessor, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        return getConnectedDirection(blockState).getOpposite() == direction && !blockState.canSurvive(levelReader, blockPos) ? Blocks.AIR.defaultBlockState() : super.updateShape(blockState, levelReader, tickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }
 
     @Override
@@ -120,16 +119,27 @@ public class ArsEggBlock extends BaseEntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        openUpgradeTree(level, blockPos, player);
+        // The egg consumes the interaction. Falling through lets the held item run
+        // its use/place action, which can produce an unrelated placement sound.
+        return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState blockState, Level level, BlockPos blockPos, Player player, BlockHitResult blockHitResult) {
+        openUpgradeTree(level, blockPos, player);
+        return InteractionResult.SUCCESS;
+    }
+
+    private void openUpgradeTree(Level level, BlockPos blockPos, Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            TardisLevelOperator.get(serverPlayer.serverLevel()).ifPresent(tardisLevelOperator -> {
+            TardisLevelOperator.get(serverPlayer.level()).ifPresent(tardisLevelOperator -> {
                 if (TardisHelper.isInArsArea(blockPos)) {
                     CompoundTag upgradeNbt = tardisLevelOperator.getUpgradeHandler().saveData(new CompoundTag());
                     new S2CDisplayUpgradeScreen(upgradeNbt).send(serverPlayer);
                 }
             });
         }
-
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 }

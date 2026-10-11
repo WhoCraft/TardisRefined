@@ -59,7 +59,7 @@ public class BigBenShellModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.door.yRot = (open) ? -275f : 0;
+        this.door.yRot = open ? (float) Math.toRadians(-275.0F) : 0.0F;
 
     }
 
@@ -120,25 +120,25 @@ public class BigBenShellModel extends ShellModel {
         S_big_hand.zRot = (float) Math.toRadians(-minuteHandDegree);
         S_small_hand.zRot = (float) Math.toRadians(-hourHandDegree);
 
-        door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        sides.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone24.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone28.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone15.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone19.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone27.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        N_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        N_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        S_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        S_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        W_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        W_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        E_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        E_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        sides.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone24.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone5.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone28.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone15.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone19.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone27.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        N_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        N_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        S_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        S_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        W_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        W_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        E_big_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        E_small_hand.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.patterns;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,13 +25,13 @@ public class ShellPatterns {
     public static final ShellPattern DEFAULT = (ShellPattern) new ShellPattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(exteriorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false)
             , new PatternTexture(interiorTextureLocation(ShellTheme.FACTORY.getId(), ShellTheme.FACTORY.getId().getPath()), false), Optional.of(TRShellSoundProfiles.DEFAULT_SOUND_PROFILE)).setThemeId(ConsoleTheme.FACTORY.getId());
     public static PatternReloadListener<ShellPatternCollection, ShellPattern> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/shell", ShellPatternCollection.CODEC, patternCollections -> PatternReloadListener.processPatternCollections(patternCollections));
-    private static final Map<ResourceLocation, List<ShellPattern>> DEFAULT_PATTERNS = new HashMap<>();
+    private static final Map<Identifier, List<ShellPattern>> DEFAULT_PATTERNS = new HashMap<>();
 
     public static PatternReloadListener<ShellPatternCollection, ShellPattern> getReloadListener() {
         return PATTERNS;
     }
 
-    public static Map<ResourceLocation, List<ShellPattern>> getRegistry() {
+    public static Map<Identifier, List<ShellPattern>> getRegistry() {
         return PATTERNS.getData();
     }
 
@@ -39,21 +39,21 @@ public class ShellPatterns {
     /**
      * Lookup the list of {@link ShellPattern}(s) in a {@link ShellPatternCollection} for a given {@link ShellTheme}
      */
-    public static List<ShellPattern> getPatternsForTheme(ResourceLocation shellThemeId) {
+    public static List<ShellPattern> getPatternsForTheme(Identifier shellThemeId) {
         return PATTERNS.getData().get(shellThemeId);
     }
 
     /**
      * Retrieves a pattern from a default list of patterns, for use when Capabiliteis or Cardinal Components classloads patterns before datapack loading
      */
-    public static List<ShellPattern> getPatternsForThemeDefault(ResourceLocation shellThemeId) {
+    public static List<ShellPattern> getPatternsForThemeDefault(Identifier shellThemeId) {
         return DEFAULT_PATTERNS.get(shellThemeId);
     }
 
     /**
      * Helper method to get a {@link ShellPatternCollection} by theme ID
      */
-    public static List<ShellPattern> getPatternCollectionForTheme(ResourceLocation shellThemeId) {
+    public static List<ShellPattern> getPatternCollectionForTheme(Identifier shellThemeId) {
         return PATTERNS.getData().get(shellThemeId);
     }
 
@@ -63,9 +63,9 @@ public class ShellPatterns {
      * <br> as well as a one-to-one relationship between a {@link ShellPatternCollection} and {@link ShellTheme},
      * we will iterate through all {@link ShellPatternCollection} (which holds the theme ID) and find matchine ones
      */
-    public static ResourceLocation getThemeForPattern(ShellPattern pattern) {
-        Map<ResourceLocation, List<ShellPattern>> entries = ShellPatterns.getRegistry();
-        for (Map.Entry<ResourceLocation, List<ShellPattern>> entry : entries.entrySet()) {
+    public static Identifier getThemeForPattern(ShellPattern pattern) {
+        Map<Identifier, List<ShellPattern>> entries = ShellPatterns.getRegistry();
+        for (Map.Entry<Identifier, List<ShellPattern>> entry : entries.entrySet()) {
             if (pattern.getThemeId() == entry.getKey()) {
                 return pattern.getThemeId();
             }
@@ -77,7 +77,7 @@ public class ShellPatterns {
      * Sanity check to make sure a Pattern for a {@link ShellTheme} exists
      * <br> A likely use case for this is when entries for the patterns are being modified in some way, such as when something triggers datapacks to be reloaded
      */
-    public static boolean doesPatternExist(ResourceLocation themeId, ResourceLocation patternId) {
+    public static boolean doesPatternExist(Identifier themeId, Identifier patternId) {
         List<ShellPattern> basePatterns = getPatternsForTheme(themeId);
         for (ShellPattern basePattern : basePatterns) {
             if (Objects.equals(basePattern.id(), patternId)) {
@@ -90,7 +90,7 @@ public class ShellPatterns {
     /**
      * Lookup up a {@link ShellPattern} within a particular {@link ShellTheme} or get the first one in the list if the input pattern id cannot be found
      */
-    public static ShellPattern getPatternOrDefault(ResourceLocation themeId, ResourceLocation patternId) {
+    public static ShellPattern getPatternOrDefault(Identifier themeId, Identifier patternId) {
         List<ShellPattern> basePatterns = getPatternsForTheme(themeId);
         for (ShellPattern basePattern : basePatterns) {
             if (Objects.equals(basePattern.id(), patternId)) {
@@ -100,7 +100,7 @@ public class ShellPatterns {
         return basePatterns.get(0);
     }
 
-    public static ShellPattern next(ResourceLocation shellTheme, ShellPattern currentPattern) {
+    public static ShellPattern next(Identifier shellTheme, ShellPattern currentPattern) {
         List<ShellPattern> collection = getPatternCollectionForTheme(shellTheme);
         return next(collection, currentPattern);
     }
@@ -128,7 +128,7 @@ public class ShellPatterns {
      *
      * @implSpec INTERNAL USE ONLY
      */
-    public static ShellPattern addDefaultPattern(ResourceLocation themeId, ShellPattern datagenPattern) {
+    public static ShellPattern addDefaultPattern(Identifier themeId, ShellPattern datagenPattern) {
         List<ShellPattern> patternList;
         ShellPattern pattern = (ShellPattern) datagenPattern.setThemeId(themeId);
         if (DEFAULT_PATTERNS.containsKey(themeId)) {
@@ -144,30 +144,30 @@ public class ShellPatterns {
         return pattern;
     }
 
-    public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture) {
+    public static ShellPattern addDefaultPattern(Identifier themeId, String patternName, boolean hasEmissiveTexture) {
         return addDefaultPattern(themeId, patternName, hasEmissiveTexture, Optional.of(TRShellSoundProfiles.DEFAULT_SOUND_PROFILE));
     }
 
-    public static ShellPattern addDefaultPattern(ResourceLocation themeId, String patternName, boolean hasEmissiveTexture, Optional<ShellSoundProfile> soundProfile) {
+    public static ShellPattern addDefaultPattern(Identifier themeId, String patternName, boolean hasEmissiveTexture, Optional<ShellSoundProfile> soundProfile) {
         ShellPattern pattern = (ShellPattern) new ShellPattern(patternName, new PatternTexture(exteriorTextureLocation(themeId, patternName), hasEmissiveTexture)
                 , new PatternTexture(interiorTextureLocation(themeId, patternName), hasEmissiveTexture), soundProfile).setThemeId(themeId);
         return addDefaultPattern(themeId, pattern);
     }
 
-    public static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String textureName) {
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
+    public static Identifier exteriorTextureLocation(Identifier themeId, String textureName) {
+        return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
     }
 
-    public static ResourceLocation exteriorTextureLocation(ResourceLocation themeId, String modid, String textureName) {
-        return new ResourceLocation(modid, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
+    public static Identifier exteriorTextureLocation(Identifier themeId, String modid, String textureName) {
+        return Identifier.fromNamespaceAndPath(modid, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + ".png");
     }
 
-    public static ResourceLocation interiorTextureLocation(ResourceLocation themeId, String modid, String textureName) {
-        return new ResourceLocation(modid, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
+    public static Identifier interiorTextureLocation(Identifier themeId, String modid, String textureName) {
+        return Identifier.fromNamespaceAndPath(modid, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
     }
 
-    public static ResourceLocation interiorTextureLocation(ResourceLocation themeId, String textureName) {
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
+    public static Identifier interiorTextureLocation(Identifier themeId, String textureName) {
+        return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/shell/" + themeId.getPath() + "/" + textureName + "_interior.png");
     }
 
     /**
@@ -176,12 +176,12 @@ public class ShellPatterns {
      *
      * @implNote Used for datagen providers when we may need to lookup the map multiple times, but only need to register default entries once.
      */
-    public static Map<ResourceLocation, List<ShellPattern>> getDefaultPatterns() {
+    public static Map<Identifier, List<ShellPattern>> getDefaultPatterns() {
         return DEFAULT_PATTERNS;
     }
 
-    public static Map<ResourceLocation, ShellPatternCollection> getDefaultPatternsDatagen() {
-        Map<ResourceLocation, ShellPatternCollection> defaults = new HashMap<>();
+    public static Map<Identifier, ShellPatternCollection> getDefaultPatternsDatagen() {
+        Map<Identifier, ShellPatternCollection> defaults = new HashMap<>();
         DEFAULT_PATTERNS.forEach((key, value) -> defaults.put(key, (ShellPatternCollection) new ShellPatternCollection(value).setThemeId(key)));
         return defaults;
     }
@@ -190,10 +190,10 @@ public class ShellPatterns {
      * Registers the Tardis Refined default Shell Patterns and returns a map of them by Theme ID
      * <br> Should only be called ONCE when needed
      */
-    public static Map<ResourceLocation, List<ShellPattern>> registerDefaultPatterns() {
+    public static Map<Identifier, List<ShellPattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
-        for (ResourceLocation shellTheme : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
+        for (Identifier shellTheme : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
             if(shellTheme == ShellTheme.SHULKER.getId()){
                 continue;
             }

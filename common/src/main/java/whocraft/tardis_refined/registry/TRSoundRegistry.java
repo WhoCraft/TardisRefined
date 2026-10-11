@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.registry;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import whocraft.tardis_refined.TardisRefined;
 
@@ -50,7 +50,7 @@ public class TRSoundRegistry {
     public static final RegistrySupplier<SoundEvent> GRAVITY_TUNNEL = setUpSound("gravity_tunnel");
 
     private static RegistrySupplier<SoundEvent> setUpSound(String soundName) {
-        SoundEvent sound = SoundEvent.createVariableRangeEvent(new ResourceLocation(TardisRefined.MODID, soundName));
+        SoundEvent sound = SoundEvent.createVariableRangeEvent(Identifier.fromNamespaceAndPath(TardisRefined.MODID, soundName));
         return SOUNDS.register(soundName, () -> sound);
     }
 }

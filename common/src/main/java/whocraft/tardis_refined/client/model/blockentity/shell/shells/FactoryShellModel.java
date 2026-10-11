@@ -26,7 +26,7 @@ public class FactoryShellModel extends ShellModel {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        realRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        realRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -41,8 +41,8 @@ public class FactoryShellModel extends ShellModel {
     @Override
     public void setDoorPosition(boolean open) {
         if (open) {
-            this.leftDoor.yRot = 250f;
-            this.rightDoor.yRot = -250f;
+            this.leftDoor.yRot = (float) Math.toRadians(250.0F);
+            this.rightDoor.yRot = (float) Math.toRadians(-250.0F);
         } else {
             this.leftDoor.yRot = 0;
             this.rightDoor.yRot = 0;

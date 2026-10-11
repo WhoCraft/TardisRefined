@@ -1,10 +1,13 @@
 package whocraft.tardis_refined.client.renderer.blockentity.device;
 
+import whocraft.tardis_refined.client.renderer.LegacyBlockEntityRenderer;
+import whocraft.tardis_refined.client.renderer.DeferredGeometryBuffer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,18 +18,15 @@ import whocraft.tardis_refined.common.items.ScrewdriverItem;
 
 import java.awt.*;
 
-public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralManipulatorBlockEntity>, BlockEntityRendererProvider<AstralManipulatorBlockEntity> {
+public class AstralManipulatorRenderer extends LegacyBlockEntityRenderer<AstralManipulatorBlockEntity> {
 
     public AstralManipulatorRenderer(Context context) {
+        super(context);
     }
 
-    @Override
-    public BlockEntityRenderer<AstralManipulatorBlockEntity> create(Context context) {
-        return new AstralManipulatorRenderer(context);
-    }
 
     @Override
-    public void render(AstralManipulatorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    protected void renderLegacy(AstralManipulatorBlockEntity blockEntity, float partialTick, PoseStack poseStack, DeferredGeometryBuffer bufferSource, int packedLight) {
 
         var pointA = blockEntity.getPointABlockPos();
         if (pointA != null && blockEntity.shouldDisplay()) {
@@ -74,7 +74,10 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
 
             poseStack.pushPose();
             poseStack.translate(-posAOffsetX, -posAOffsetY, -posAOffsetZ);
-            VertexConsumer vertexBuilder = bufferSource.getBuffer(RenderType.lightning());
+            // This is a translucent filled volume, not a lightning bolt. 26.3's
+            // debug-filled-box pipeline supports the color/alpha geometry emitted
+            // by drawGlowingBox and participates in the normal translucent pass.
+            VertexConsumer vertexBuilder = bufferSource.getBuffer(RenderTypes.debugFilledBox());
 
             if (Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof ScrewdriverItem screwdriverItem) {
                 Color color = new Color(screwdriverItem.getColor(Minecraft.getInstance().player.getItemBySlot(EquipmentSlot.MAINHAND)));
@@ -88,6 +91,16 @@ public class AstralManipulatorRenderer implements BlockEntityRenderer<AstralMani
         }
 
 
+    }
+
+    /**
+     * The projection can extend several blocks away from its owning manipulator.
+     * The default block-entity frustum bounds cover only the manipulator block,
+     * which can cull the selected volume once its far end leaves the camera view.
+     */
+    @Override
+    public boolean shouldRenderOffScreen() {
+        return true;
     }
 
 

@@ -2,7 +2,7 @@ package whocraft.tardis_refined.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import whocraft.tardis_refined.TardisRefined;
@@ -13,7 +13,7 @@ import whocraft.tardis_refined.common.util.RegistryHelper;
 
 public class TRUpgrades {
 
-    public static final ResourceKey<Registry<Upgrade>> UPGRADE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "upgrade"));
+    public static final ResourceKey<Registry<Upgrade>> UPGRADE_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "upgrade"));
 
     /**
      * Tardis Refined instance of the Upgrade registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only

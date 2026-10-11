@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.network.messages.screens;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.ScreenHandler;
 import whocraft.tardis_refined.common.network.MessageContext;
@@ -14,14 +14,14 @@ import whocraft.tardis_refined.common.network.TardisNetwork;
 
 public class S2COpenShellSelection extends MessageS2C {
 
-    private final ResourceLocation currentShell;
+    private final Identifier currentShell;
 
-    public S2COpenShellSelection(ResourceLocation currentShell) {
+    public S2COpenShellSelection(Identifier currentShell) {
         this.currentShell = currentShell;
     }
 
     public S2COpenShellSelection(FriendlyByteBuf friendlyByteBuf) {
-        this.currentShell = friendlyByteBuf.readResourceLocation();
+        this.currentShell = friendlyByteBuf.readIdentifier();
     }
 
     @NotNull
@@ -32,7 +32,7 @@ public class S2COpenShellSelection extends MessageS2C {
 
     @Override
     public void toBytes(FriendlyByteBuf buf) {
-        buf.writeResourceLocation(this.currentShell);
+        buf.writeIdentifier(this.currentShell);
     }
 
 

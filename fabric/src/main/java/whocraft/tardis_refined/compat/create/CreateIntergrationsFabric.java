@@ -4,7 +4,7 @@ import com.simibubi.create.content.redstone.displayLink.AllDisplayBehaviours;
 import com.simibubi.create.content.redstone.displayLink.DisplayBehaviour;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
@@ -25,7 +25,7 @@ public class CreateIntergrationsFabric {
     public static void init() {
 
         // Register big data
-        DisplayBehaviour tardisOverallData = AllDisplayBehaviours.register(new ResourceLocation(TardisRefined.MODID, "tardis_bigdata"), new TardisDisplaySource());
+        DisplayBehaviour tardisOverallData = AllDisplayBehaviours.register(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "tardis_bigdata"), new TardisDisplaySource());
         AllDisplayBehaviours.assignBlockEntity(tardisOverallData, FLIGHT_DETECTOR.get());
 
 
@@ -37,8 +37,8 @@ public class CreateIntergrationsFabric {
             }
 
             @Override
-            public ResourceLocation getId() {
-                return new ResourceLocation(TardisRefined.MODID, "fuel");
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "fuel");
             }
         });
 
@@ -50,8 +50,8 @@ public class CreateIntergrationsFabric {
             }
 
             @Override
-            public ResourceLocation getId() {
-                return new ResourceLocation(TardisRefined.MODID, "door");
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "door");
             }
         });
 
@@ -63,8 +63,8 @@ public class CreateIntergrationsFabric {
             }
 
             @Override
-            public ResourceLocation getId() {
-                return new ResourceLocation(TardisRefined.MODID, "locked");
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "locked");
             }
         });
 
@@ -80,8 +80,8 @@ public class CreateIntergrationsFabric {
             }
 
             @Override
-            public ResourceLocation getId() {
-                return new ResourceLocation(TardisRefined.MODID, "gps");
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "gps");
             }
         });
 
@@ -93,8 +93,8 @@ public class CreateIntergrationsFabric {
             }
 
             @Override
-            public ResourceLocation getId() {
-                return new ResourceLocation(TardisRefined.MODID, "destination");
+            public Identifier getId() {
+                return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "destination");
             }
         });
 

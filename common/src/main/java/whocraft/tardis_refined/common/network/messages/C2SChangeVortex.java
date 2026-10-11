@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.network.messages;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -18,16 +18,16 @@ import java.util.Optional;
 public class C2SChangeVortex extends MessageC2S {
 
     private final ResourceKey<Level> resourceKey;
-    private final ResourceLocation vortex;
+    private final Identifier vortex;
 
-    public C2SChangeVortex(ResourceKey<Level> tardisLevel, ResourceLocation theme) {
+    public C2SChangeVortex(ResourceKey<Level> tardisLevel, Identifier theme) {
         this.resourceKey = tardisLevel;
         this.vortex = theme;
     }
 
     public C2SChangeVortex(FriendlyByteBuf buffer) {
         resourceKey = buffer.readResourceKey(Registries.DIMENSION);
-        this.vortex = buffer.readResourceLocation();
+        this.vortex = buffer.readIdentifier();
     }
 
     @NotNull
@@ -39,12 +39,12 @@ public class C2SChangeVortex extends MessageC2S {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.resourceKey);
-        buf.writeResourceLocation(this.vortex);
+        buf.writeIdentifier(this.vortex);
     }
 
     @Override
     public void handle(MessageContext context) {
-        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
+        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().level().getServer().getLevel(resourceKey));
         level.flatMap(TardisLevelOperator::get).ifPresent(y -> y.getAestheticHandler().setVortex(this.vortex));
 
     }

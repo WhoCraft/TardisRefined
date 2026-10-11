@@ -7,11 +7,12 @@ import net.minecraft.util.ParticleUtils;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.sounds.AmbientLeavesBlockSoundPlayer;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class ARSLeavesBlock extends LeavesBlock {
     public ARSLeavesBlock(Properties properties) {
-        super(properties);
+        super(AmbientLeavesBlockSoundPlayer.noAmbientSound(), properties);
     }
 
     @Override

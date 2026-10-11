@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "B": "minecraft:stone_button",
+    "L": "minecraft:lapis_lazuli",
+    "R": "minecraft:blaze_rod"
+  },
+  "pattern": [
+    " A ",
+    "BR ",
+    " L "
+  ],
+  "result": {
+    "id": "tardis_refined:amethyst_screwdriver"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "G": "minecraft:glass_pane",
+    "S": "minecraft:stick",
+    "Z": "tardis_refined:zeiton_ingot"
+  },
+  "pattern": [
+    "S S",
+    "S S",
+    "GZG"
+  ],
+  "result": {
+    "id": "tardis_refined:glasses"
+  },
+  "show_notification": true
+}

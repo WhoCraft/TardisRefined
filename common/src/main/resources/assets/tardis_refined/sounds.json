@@ -1,0 +1,218 @@
+{
+  "alarm": {
+    "sounds": [
+      "tardis_refined:tardis/alarm"
+    ],
+    "subtitle": "sound.alarm.subtitle"
+  },
+  "ars_hum": {
+    "sounds": [
+      "tardis_refined:tardis/ars/ars_hum"
+    ],
+    "subtitle": "sound.ars_hum.subtitle"
+  },
+  "artron_pillar_active": {
+    "sounds": [
+      "tardis_refined:blocks/artron_pillar_active"
+    ],
+    "subtitle": "sound.artron_pillar.subtitle"
+  },
+  "bulkhead_locked": {
+    "sounds": [
+      "tardis_refined:blocks/bulkhead_locked"
+    ],
+    "subtitle": "sound.bulkhead_locked.subtitle"
+  },
+  "cloister_bell": {
+    "sounds": [
+      {
+        "name": "block/bell/resonate",
+        "pitch": 0.85
+      },
+      {
+        "name": "block/bell/resonate",
+        "pitch": 0.9
+      }
+    ],
+    "subtitle": "sound.cloister_bell.subtitle"
+  },
+  "console_power_on": {
+    "sounds": [
+      "tardis_refined:tardis/console_power_on"
+    ],
+    "subtitle": "sound.console_power_on.subtitle"
+  },
+  "corridor_teleporter": {
+    "sounds": [
+      "tardis_refined:blocks/corridor_teleporter"
+    ],
+    "subtitle": "sound.corridor_teleporter.subtitle"
+  },
+  "corridor_teleporter_success": {
+    "sounds": [
+      "tardis_refined:blocks/corridor_teleporter_success"
+    ],
+    "subtitle": "sound.corridor_teleporter_success.subtitle"
+  },
+  "destination_ding": {
+    "sounds": [
+      "tardis_refined:tardis/destination_ding"
+    ],
+    "subtitle": "sound.destination_ding.subtitle"
+  },
+  "flight_fail_start": {
+    "sounds": [
+      "tardis_refined:tardis/flight_fail_start"
+    ],
+    "subtitle": "sound.flight_fail_start.subtitle"
+  },
+  "gravity_tunnel": {
+    "sounds": [
+      "tardis_refined:gravity_tunnel"
+    ],
+    "subtitle": "sound.gravity_tunnel.subtitle"
+  },
+  "hum_aviatrax": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_aviatrax"
+    ],
+    "subtitle": "sound.hum_aviatrax.subtitle"
+  },
+  "hum_cave": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_cave"
+    ],
+    "subtitle": "sound.hum_cave.subtitle"
+  },
+  "hum_classic": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_classic"
+    ],
+    "subtitle": "sound.hum_classic.subtitle"
+  },
+  "hum_copper": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_copper"
+    ],
+    "subtitle": "sound.hum_copper.subtitle"
+  },
+  "hum_coral": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_coral"
+    ],
+    "subtitle": "sound.hum_coral.subtitle"
+  },
+  "hum_toyota": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_toyota"
+    ],
+    "subtitle": "sound.hum_toyota.subtitle"
+  },
+  "hum_victorian": {
+    "sounds": [
+      "tardis_refined:tardis/interior_hums/hum_victorian"
+    ],
+    "subtitle": "sound.hum_victorian.subtitle"
+  },
+  "interior_creaks": {
+    "sounds": [
+      "tardis_refined:tardis/ambience/interior_creaks_1",
+      "tardis_refined:tardis/ambience/interior_creaks_2",
+      "tardis_refined:tardis/ambience/interior_creaks_3"
+    ],
+    "subtitle": "sound.interior_creaks.subtitle"
+  },
+  "interior_voice": {
+    "sounds": [
+      "tardis_refined:tardis/ambience/w1",
+      "tardis_refined:tardis/ambience/w2",
+      "tardis_refined:tardis/ambience/w3",
+      "tardis_refined:tardis/ambience/w4"
+    ],
+    "subtitle": "sound.interior_voice.subtitle"
+  },
+  "low_fuel": {
+    "sounds": [
+      "tardis_refined:tardis/low_fuel"
+    ],
+    "subtitle": "sound.low_fuel.subtitle"
+  },
+  "mallet": {
+    "sounds": [
+      "tardis_refined:tools/mallet"
+    ],
+    "subtitle": "sound.mallet.subtitle"
+  },
+  "pattern_manipulator": {
+    "sounds": [
+      "tardis_refined:gadgets/pattern_manipulator"
+    ],
+    "subtitle": "sound.pattern_manipulator.subtitle"
+  },
+  "screwdriver_connect": {
+    "sounds": [
+      "tardis_refined:tools/screwdriver/screwdriver_connect"
+    ],
+    "subtitle": "sound.screwdriver_connect.subtitle"
+  },
+  "screwdriver_discard": {
+    "sounds": [
+      "tardis_refined:tools/screwdriver/screwdriver_discard"
+    ],
+    "subtitle": "sound.screwdriver_discard.subtitle"
+  },
+  "screwdriver_short": {
+    "sounds": [
+      "tardis_refined:tools/screwdriver/screwdriver_short"
+    ],
+    "subtitle": "sound.screwdriver_short.subtitle"
+  },
+  "static": {
+    "sounds": [
+      "tardis_refined:ui/static"
+    ],
+    "subtitle": "sound.static.subtitle"
+  },
+  "tardis_crash_land": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_crash_land"
+    ],
+    "subtitle": "sound.tardis_crash_land.subtitle"
+  },
+  "tardis_land": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_land"
+    ],
+    "subtitle": "sound.tardis_land.subtitle"
+  },
+  "tardis_misc_sparkle": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_misc_sparkle"
+    ],
+    "subtitle": "sound.tardis_misc_sparkle.subtitle"
+  },
+  "tardis_single_fly": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_single_fly"
+    ],
+    "subtitle": "sound.tardis_single_fly.subtitle"
+  },
+  "tardis_takeoff": {
+    "sounds": [
+      "tardis_refined:tardis/tardis_takeoff"
+    ],
+    "subtitle": "sound.tardis_takeoff.subtitle"
+  },
+  "time_blast": {
+    "sounds": [
+      "tardis_refined:tardis/time_blast"
+    ],
+    "subtitle": "sound.time_blast.subtitle"
+  },
+  "vortex": {
+    "sounds": [
+      "tardis_refined:tardis/vortex"
+    ],
+    "subtitle": "sound.vortex.subtitle"
+  }
+}

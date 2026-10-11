@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.mixin.fabric;
 
 import whocraft.tardis_refined.client.model.pallidium.ModelLayerManager;
-import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -27,8 +27,10 @@ public class ReloadableResourceManagerMixin {
 
     @Inject(at = @At("RETURN"), method = "registerReloadListener")
     private void registerReloadListener(PreparableReloadListener listener, CallbackInfo callbackInfo) {
-        if (this.type == PackType.CLIENT_RESOURCES && listener instanceof EntityModelSet) {
-            this.listeners.add(new ModelLayerManager());
+        if (this.type == PackType.CLIENT_RESOURCES && listener instanceof BlockEntityRenderDispatcher) {
+            // Layer definitions must be applied after EntityModelSet loads its
+            // vanilla roots, but before block entity renderers bake their layers.
+            this.listeners.add(this.listeners.size() - 1, new ModelLayerManager());
         }
     }
 

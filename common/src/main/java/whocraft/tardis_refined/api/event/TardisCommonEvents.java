@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.api.event;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.LevelAccessor;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
@@ -215,7 +215,7 @@ public class TardisCommonEvents {
          * @param theme               The theme the TARDIS changed to.
          * @param shellChangeSource   - Finds the source of the Shell Update. E.g. If the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version
          */
-        void onShellChange(TardisLevelOperator tardisLevelOperator, ResourceLocation theme, ShellChangeSource shellChangeSource);
+        void onShellChange(TardisLevelOperator tardisLevelOperator, Identifier theme, ShellChangeSource shellChangeSource);
     }
 
     /**

@@ -2,6 +2,8 @@ package whocraft.tardis_refined.common.blockentity.device;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
@@ -54,17 +56,17 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag);
 
         compoundTag.putBoolean(SHOULD_DISPLAY, this.shouldDisplay);
 
         if (this.pointABlockPos != null) {
-            compoundTag.put(MAN_POINT_A, NbtUtils.writeBlockPos(this.pointABlockPos));
+            compoundTag.store(MAN_POINT_A, BlockPos.CODEC, this.pointABlockPos);
         }
 
         if (this.pointBBlockPos != null) {
-            compoundTag.put(MAN_POINT_B, NbtUtils.writeBlockPos(this.pointBBlockPos));
+            compoundTag.store(MAN_POINT_B, BlockPos.CODEC, this.pointBBlockPos);
 
         }
     }
@@ -104,20 +106,14 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    protected void loadAdditional(ValueInput tag) {
 
-        if (tag.contains(MAN_POINT_A)) {
-            this.pointABlockPos = NbtUtils.readBlockPos(tag.getCompound(MAN_POINT_A));
-        }
-        if (tag.contains(MAN_POINT_B)) {
-            this.pointBBlockPos = NbtUtils.readBlockPos(tag.getCompound(MAN_POINT_B));
-        }
+        this.pointABlockPos = tag.read(MAN_POINT_A, BlockPos.CODEC).orElse(null);
+        this.pointBBlockPos = tag.read(MAN_POINT_B, BlockPos.CODEC).orElse(null);
 
-        if (tag.contains(SHOULD_DISPLAY)) {
-            this.shouldDisplay = tag.getBoolean(SHOULD_DISPLAY);
-        }
+        this.shouldDisplay = tag.getBooleanOr(SHOULD_DISPLAY, false);
 
-        super.load(tag);
+        super.loadAdditional(tag);
     }
 
 
@@ -196,12 +192,6 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
         setChanged();
     }
 
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag);
-        return tag;
-    }
-
 
     private boolean attemptToBuild(BlockPos pointA, BlockPos pointB) {
 
@@ -264,13 +254,13 @@ public class AstralManipulatorBlockEntity extends BlockEntity {
                     level.setBlock(blockPos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                 }
 
-                List<ItemEntity> droppedItems = getLevel().getEntitiesOfClass(ItemEntity.class, new AABB(pointABlockPos, pointBBlockPos).inflate(1));
+                List<ItemEntity> droppedItems = getLevel().getEntitiesOfClass(ItemEntity.class, AABB.encapsulatingFullBlocks(pointABlockPos, pointBBlockPos).inflate(1));
                 droppedItems.forEach(Entity::discard);
 
                 if (recipe.result() instanceof ManipulatorBlockResult blockResult) {
                     BlockState blockState = blockResult.recipeOutput();
                     if (blockState != null) {
-                        Vec3 centerVector = new AABB(pointABlockPos, pointBBlockPos).getCenter();
+                        Vec3 centerVector = AABB.encapsulatingFullBlocks(pointABlockPos, pointBBlockPos).getCenter();
                         int min = Math.min(pointABlockPos.getY(), pointBBlockPos.getY());
 
                         BlockPos centerPos = new BlockPos((int) centerVector.x, min, (int) centerVector.z);

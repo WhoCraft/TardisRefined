@@ -8,6 +8,6 @@ import net.minecraft.world.entity.Entity;
 public class MiscHelperImpl {
 
     public static Packet<ClientGamePacketListener> spawnPacket(Entity entity) {
-        return new ClientboundAddEntityPacket(entity);
+        return new ClientboundAddEntityPacket(entity, entity.getId(), entity.blockPosition());
     }
 }

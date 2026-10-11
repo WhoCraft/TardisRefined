@@ -91,8 +91,8 @@ public class NukaShellModel extends ShellModel {
     @Override
     public void setDoorPosition(boolean open) {
         if (open) {
-            this.left_door.yRot = 250f;
-            this.right_door.yRot = -250f;
+            this.left_door.yRot = (float) Math.toRadians(250.0F);
+            this.right_door.yRot = (float) Math.toRadians(-250.0F);
         } else {
             this.left_door.yRot = 0;
             this.right_door.yRot = 0;
@@ -112,17 +112,17 @@ public class NukaShellModel extends ShellModel {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        sign.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        black.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        wheel_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        wheel_2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        wheel_3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        wheel_4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        sign.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone2.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        black.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        wheel_1.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        wheel_2.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        wheel_3.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        wheel_4.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

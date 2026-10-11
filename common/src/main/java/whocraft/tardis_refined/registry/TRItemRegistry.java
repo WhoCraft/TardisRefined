@@ -1,7 +1,8 @@
 package whocraft.tardis_refined.registry;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import whocraft.tardis_refined.TardisRefined;
@@ -17,17 +18,17 @@ public class TRItemRegistry {
     public static final RegistrySupplier<CreativeModeTab> MAIN_TAB = TABS.register("main_tab", TRItemRegistry::getCreativeTab);
     public static final DeferredRegistry<Item> ITEMS = DeferredRegistry.create(TardisRefined.MODID, Registries.ITEM);
     public static List<RegistrySupplier<Item>> TAB_ITEMS = new ArrayList<>();
-    public static final RegistrySupplier<Item> KEY = register("tardis_key", () -> new KeyItem(new Item.Properties().stacksTo(1)), true);
-    public static final RegistrySupplier<Item> SCREWDRIVER = register("amethyst_screwdriver", () -> new ScrewdriverItem(new Item.Properties().stacksTo(1)), true);
-    public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = register("pattern_manipulator", () -> new Item(new Item.Properties().stacksTo(1)), true);
-    public static final RegistrySupplier<Item> DRILL = register("drill", () -> new DrillItem(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> KEY = register("tardis_key", () -> new KeyItem(itemProperties("tardis_key").stacksTo(1)), true);
+    public static final RegistrySupplier<Item> SCREWDRIVER = register("amethyst_screwdriver", () -> new ScrewdriverItem(itemProperties("amethyst_screwdriver").stacksTo(1)), true);
+    public static final RegistrySupplier<Item> PATTERN_MANIPULATOR = register("pattern_manipulator", () -> new Item(itemProperties("pattern_manipulator").stacksTo(1)), true);
+    public static final RegistrySupplier<Item> DRILL = register("drill", () -> new DrillItem(itemProperties("drill").stacksTo(1)), true);
 
-    public static final RegistrySupplier<Item> RAW_ZEITON = register("raw_zeiton", () -> new Item(new Item.Properties()), true);
-    public static final RegistrySupplier<ZeitonIngotItem> ZEITON_INGOT = register("zeiton_ingot", () -> new ZeitonIngotItem(new Item.Properties()), true);
-    public static final RegistrySupplier<Item> ZEITON_NUGGET = register("zeiton_nugget", () -> new Item(new Item.Properties()), true);
-    public static final RegistrySupplier<GlassesItem> GLASSES = register("glasses", () -> new GlassesItem(new Item.Properties()), true);
-    public static final RegistrySupplier<MalletItem> MALLET = register("mallet", () -> new MalletItem(new Item.Properties().stacksTo(1).durability(50)), true);
-    public static final RegistrySupplier<DimensionSamplerItem> TEST_TUBE = register("test_tube", () -> new DimensionSamplerItem(new Item.Properties().stacksTo(1)), true);
+    public static final RegistrySupplier<Item> RAW_ZEITON = register("raw_zeiton", () -> new Item(itemProperties("raw_zeiton")), true);
+    public static final RegistrySupplier<ZeitonIngotItem> ZEITON_INGOT = register("zeiton_ingot", () -> new ZeitonIngotItem(itemProperties("zeiton_ingot")), true);
+    public static final RegistrySupplier<Item> ZEITON_NUGGET = register("zeiton_nugget", () -> new Item(itemProperties("zeiton_nugget")), true);
+    public static final RegistrySupplier<GlassesItem> GLASSES = register("glasses", () -> new GlassesItem(itemProperties("glasses").equippable(net.minecraft.world.entity.EquipmentSlot.HEAD)), true);
+    public static final RegistrySupplier<MalletItem> MALLET = register("mallet", () -> new MalletItem(itemProperties("mallet").stacksTo(1).durability(50)), true);
+    public static final RegistrySupplier<DimensionSamplerItem> TEST_TUBE = register("test_tube", () -> new DimensionSamplerItem(itemProperties("test_tube").stacksTo(1)), true);
 
 
     private static <T extends Item> RegistrySupplier<T> register(String id, Supplier<T> itemSupplier, boolean addToTab) {
@@ -38,9 +39,15 @@ public class TRItemRegistry {
         return item;
     }
 
-    @ExpectPlatform
-    public static CreativeModeTab getCreativeTab() {
-        throw new RuntimeException(PlatformWarning.addWarning(TRItemRegistry.class));
+    public static CreativeModeTab getCreativeTab(){
+        return whocraft.tardis_refined.registry.fabric.TRItemRegistryImpl.getCreativeTab();
+    }
+
+    public static Item.Properties itemProperties(String id) {
+        return new Item.Properties().setId(ResourceKey.create(
+                Registries.ITEM,
+                Identifier.fromNamespaceAndPath(TardisRefined.MODID, id)
+        ));
     }
 
 

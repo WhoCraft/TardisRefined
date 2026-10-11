@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.compat;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -94,8 +94,8 @@ public class CuriosTrinketsUtil {
         private final String identifier;
 
         public Slot(String forge, String fabric) {
-            this.forge = TagKey.create(Registries.ITEM, new ResourceLocation("curios:" + forge));
-            this.fabric = TagKey.create(Registries.ITEM, new ResourceLocation("trinkets:" + fabric));
+            this.forge = TagKey.create(Registries.ITEM, Identifier.parse("curios:" + forge));
+            this.fabric = TagKey.create(Registries.ITEM, Identifier.parse("trinkets:" + fabric));
             this.identifier = Platform.isForge() ? forge : fabric;
         }
 

@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.registry.fabric;
 
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -12,7 +11,9 @@ import whocraft.tardis_refined.registry.TRItemRegistry;
 
 public class TRItemRegistryImpl {
 
-    public static final CreativeModeTab ITEM_GROUP = FabricItemGroup.builder().icon(() -> new ItemStack(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get())).displayItems((enabledFeatures, entries) -> {
+    public static final CreativeModeTab ITEM_GROUP = CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
+            .icon(() -> new ItemStack(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get()))
+            .displayItems((enabledFeatures, entries) -> {
         for (RegistrySupplier<Item> item : TRItemRegistry.TAB_ITEMS) {
             entries.accept(item.get());
         }

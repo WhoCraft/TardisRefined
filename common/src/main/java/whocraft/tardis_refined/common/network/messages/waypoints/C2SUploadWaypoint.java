@@ -48,7 +48,7 @@ public class C2SUploadWaypoint extends MessageC2S {
     @Override
     public void handle(MessageContext context) {
         ServerPlayer player = context.getPlayer();
-        ServerLevel serverLevel = player.serverLevel();
+        ServerLevel serverLevel = player.level();
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             if (coordInputType == CoordInputType.WAYPOINT) {

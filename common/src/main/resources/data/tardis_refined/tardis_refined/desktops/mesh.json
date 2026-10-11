@@ -1,0 +1,5 @@
+{
+  "id": "tardis_refined:mesh",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Mesh\"}",
+  "structure": "tardis_refined:desktop/mesh"
+}

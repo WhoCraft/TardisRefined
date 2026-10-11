@@ -6,9 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -18,16 +18,16 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 
-public class VictorianConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class VictorianConsoleModel extends TardisModel implements ConsoleUnit {
 
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/flight.json"));
-    public static final AnimationDefinition CRASH = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/crash.json"));
-    public static final AnimationDefinition POWER_ON = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/power_on.json"));
-    public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/victorian/power_off.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/victorian/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/victorian/flight.json"));
+    public static final AnimationDefinition CRASH = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/victorian/crash.json"));
+    public static final AnimationDefinition POWER_ON = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/victorian/power_on.json"));
+    public static final AnimationDefinition POWER_OFF = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/victorian/power_off.json"));
 
-    private static final ResourceLocation VICTORIAN_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
+    private static final Identifier VICTORIAN_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/victorian/victorian_console.png");
 
     private final ModelPart root;
 
@@ -42,7 +42,7 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         root().getAllParts().forEach(ModelPart::resetPose);
-        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -100,12 +100,12 @@ public class VictorianConsoleModel extends HierarchicalModel implements ConsoleU
             throttle_control.yRot = 1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
         }
 
-        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return VICTORIAN_TEXTURE;
     }
 

@@ -1,0 +1,106 @@
+{
+  "type": "tardis_refined:astral_manipulator",
+  "ingredients": [
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_copper_block"
+      },
+      "relative_pos": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:amethyst_block"
+      },
+      "relative_pos": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_copper_block"
+      },
+      "relative_pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:amethyst_block"
+      },
+      "relative_pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:observer",
+        "properties": {
+          "facing": "up",
+          "powered": "false"
+        }
+      },
+      "relative_pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:amethyst_block"
+      },
+      "relative_pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_copper_block"
+      },
+      "relative_pos": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:amethyst_block"
+      },
+      "relative_pos": [
+        2,
+        0,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_copper_block"
+      },
+      "relative_pos": [
+        2,
+        0,
+        2
+      ]
+    }
+  ],
+  "result": {
+    "type": "tardis_refined:item_result",
+    "data": {
+      "id": "tardis_refined:console_configuration",
+      "count": 1
+    }
+  }
+}

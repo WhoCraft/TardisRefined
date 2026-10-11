@@ -5,11 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
@@ -19,14 +19,14 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class NukaConsoleModel extends TardisModel implements ConsoleUnit {
 
 
 
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/nuka/flight.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/nuka/flight.json"));
 
 
-    private static final ResourceLocation NUKA_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/nuka/nuka_console.png");
+    private static final Identifier NUKA_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/nuka/nuka_console.png");
     private final ModelPart rotor_zminus3_yplus5_rotateY;
     private final ModelPart panels;
     private final ModelPart console;
@@ -54,13 +54,13 @@ public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone37.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone43.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone67.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone61.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        console.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone37.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone43.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone67.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone61.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -88,17 +88,17 @@ public class NukaConsoleModel extends HierarchicalModel implements ConsoleUnit {
         float rot = -1f + (2 * ((float) reactions.getThrottleStage() / TardisPilotingManager.MAX_THROTTLE_STAGE));
         throttle.xRot = rot;
 
-        rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone37.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone43.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone67.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone61.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        rotor_zminus3_yplus5_rotateY.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        panels.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        console.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone37.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone43.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone67.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone61.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return NUKA_TEXTURE;
     }
 

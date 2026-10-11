@@ -1,0 +1,82 @@
+{
+  "type": "tardis_refined:astral_manipulator",
+  "ingredients": [
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_block"
+      },
+      "relative_pos": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:polished_deepslate_wall",
+        "properties": {
+          "east": "none",
+          "north": "none",
+          "south": "none",
+          "up": "true",
+          "waterlogged": "false",
+          "west": "none"
+        }
+      },
+      "relative_pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:polished_deepslate_wall",
+        "properties": {
+          "east": "none",
+          "north": "none",
+          "south": "none",
+          "up": "true",
+          "waterlogged": "false",
+          "west": "none"
+        }
+      },
+      "relative_pos": [
+        0,
+        2,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_lantern",
+        "properties": {
+          "hanging": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        0,
+        3,
+        0
+      ]
+    }
+  ],
+  "result": {
+    "type": "tardis_refined:block_result",
+    "blockstate": {
+      "id": "tardis_refined:artron_pillar",
+      "properties": {
+        "powered": "false"
+      }
+    },
+    "data": {
+      "blockstate": {
+        "id": "tardis_refined:artron_pillar",
+        "properties": {
+          "powered": "false"
+        }
+      }
+    }
+  }
+}

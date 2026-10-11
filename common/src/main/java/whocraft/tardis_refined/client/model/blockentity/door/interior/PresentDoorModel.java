@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortalsClient;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortalsClient;
 
 public class PresentDoorModel extends ShellDoorModel {
 
@@ -33,7 +33,7 @@ public class PresentDoorModel extends ShellDoorModel {
             modelPart.visible = true;
         });
         this.portal.visible = false;
-        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class PresentDoorModel extends ShellDoorModel {
         setDoorPosition(open);
         this.root().getAllParts().forEach(modelPart -> modelPart.visible = false);
         this.portal.visible = true;
-        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        portal.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

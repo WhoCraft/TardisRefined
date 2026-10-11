@@ -12,7 +12,7 @@ public class HumSoundManager {
     private static final Minecraft MC = Minecraft.getInstance();
 
     private static LoopingHumSound currentSound;
-    private static SoundEvent currentRawSound = SoundEvents.CAT_DEATH;
+    private static SoundEvent currentRawSound = SoundEvents.AMBIENT_CAVE.value();
 
     public static void playHum(SoundEvent soundEvent, Player player, Level targetLevel) {
         stopCurrentHum();

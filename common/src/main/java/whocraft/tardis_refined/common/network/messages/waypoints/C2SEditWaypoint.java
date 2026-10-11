@@ -41,7 +41,7 @@ public class C2SEditWaypoint extends MessageC2S {
     public void handle(MessageContext context) {
 
         ServerPlayer player = context.getPlayer();
-        ServerLevel serverLevel = player.serverLevel();
+        ServerLevel serverLevel = player.level();
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();

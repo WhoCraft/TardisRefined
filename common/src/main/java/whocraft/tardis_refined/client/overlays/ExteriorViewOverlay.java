@@ -1,14 +1,13 @@
 package whocraft.tardis_refined.client.overlays;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TRKeybinds;
@@ -20,13 +19,13 @@ import whocraft.tardis_refined.constants.ModMessages;
 
 public class ExteriorViewOverlay {
 
-    public static final ResourceLocation BAR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/bar/journey_bar.png");
-    public static final ResourceLocation FUEL_BAR_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/bar/fuel_bar.png");
+    public static final Identifier BAR_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/bar/journey_bar.png");
+    public static final Identifier FUEL_BAR_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/bar/fuel_bar.png");
     public static boolean shouldRender = true;
     private static final RenderHelper.CustomProgressBar PROGRESS_BAR = new RenderHelper.CustomProgressBar(BAR_TEXTURE, 256, 256, 5, 182, 60);
     public static final RenderHelper.CustomProgressBar FUEL_BAR = new RenderHelper.CustomProgressBar(FUEL_BAR_TEXTURE, 256, 256, 11, 127, 60);
 
-    public static void renderOverlay(GuiGraphics guiGraphics) {
+    public static void renderOverlay(GuiGraphicsExtractor guiGraphics) {
         Minecraft mc = Minecraft.getInstance();
         if (!shouldRender)
             return;
@@ -37,7 +36,6 @@ public class ExteriorViewOverlay {
                 return;
 
             TardisClientData tardisClientData = TardisClientData.getInstance(tardisPlayerInfo.getPlayerPreviousPos().getDimensionKey());
-            PoseStack poseStack = guiGraphics.pose();
             int screenWidth = mc.getWindow().getGuiScaledWidth();
             int screenHeight = mc.getWindow().getGuiScaledHeight();
 
@@ -70,50 +68,41 @@ public class ExteriorViewOverlay {
 
             int coordsWidth = mc.font.width(coordsMessage);
 
-            poseStack.pushPose();
-
             // Render keybind message
-            if (mc.screen == null) {
-                poseStack.pushPose();
+            if (mc.gui.screen() == null) {
                 int messageWidth = mc.font.width(message);
-                poseStack.translate(5 + messageWidth / 2f, -3 + screenHeight - mc.font.lineHeight / 2f, 0);
-                guiGraphics.fill(-messageWidth / 2, -3 - mc.font.lineHeight / 2, messageWidth / 2, 2 + mc.font.lineHeight / 2, 0x88000000);
-                guiGraphics.drawString(mc.font, message.getString(), 8 - messageWidth / 2, -mc.font.lineHeight / 2, 0xFFFFFF, false);
-                poseStack.popPose();
+                int messageX = 5;
+                int messageY = screenHeight - mc.font.lineHeight - 5;
+                guiGraphics.fill(messageX - 3, messageY - 2, messageX + messageWidth + 3, messageY + mc.font.lineHeight + 2, 0x88000000);
+                guiGraphics.text(mc.font, message.getString(), messageX, messageY, 0xFFFFFFFF);
             }
 
             // Render fuel bar
             {
-                poseStack.pushPose();
                 FUEL_BAR.animate = tardisClientData.isFlying();
-                poseStack.translate(20, 20, 0);
-                FUEL_BAR.blit(guiGraphics, 0, 0, (double) remainingFuel / maxFuel);
-                guiGraphics.drawString(mc.font, fuelMessage.getString(), 3, 2, 0x572200, false);
-                poseStack.popPose();
+                FUEL_BAR.blit(guiGraphics, 20, 20, maxFuel == 0 ? 0 : (double) remainingFuel / maxFuel);
+                guiGraphics.text(mc.font, fuelMessage.getString(), 23, 22, 0xFF572200);
             }
 
-            guiGraphics.drawString(mc.font, throttleMessage.getString(), 20, 35, 0xFFFFFF, false);
+            guiGraphics.text(mc.font, throttleMessage.getString(), 20, 35, 0xFFFFFFFF);
 
             float journeyProgress = tardisClientData.getJourneyProgress() / 100.0f;
 
             if (!tardisClientData.isFlying()) {
-                poseStack.pushPose();
-                poseStack.translate(screenWidth - coordsWidth - 10, 22, 0);
-                guiGraphics.fill(-2, -3, coordsWidth + 2, mc.font.lineHeight + 2, 0x88000000);
-                guiGraphics.drawString(mc.font, coordsMessage.getString(), 0, 0, 0xFFFFFF, false);
-                poseStack.popPose();
+                int coordsX = screenWidth - coordsWidth - 10;
+                guiGraphics.fill(coordsX - 2, 19, coordsX + coordsWidth + 2, 22 + mc.font.lineHeight, 0x88000000);
+                guiGraphics.text(mc.font, coordsMessage.getString(), coordsX, 22, 0xFFFFFFFF);
             }
 
             // Render journey progress bar
             if (tardisClientData.isFlying())
                 renderJourneyProgressBar(guiGraphics, journeyProgress);
 
-            poseStack.popPose();
         });
     }
 
 
-    public static void renderJourneyProgressBar(GuiGraphics guiGraphics, float journeyProgress) {
+    public static void renderJourneyProgressBar(GuiGraphicsExtractor guiGraphics, float journeyProgress) {
         Minecraft mc = Minecraft.getInstance();
 
         int screenWidth = mc.getWindow().getGuiScaledWidth();
@@ -138,7 +127,7 @@ public class ExteriorViewOverlay {
         int textX = (screenWidth - fontRenderer.width(progressText)) / 2;
         int textY = barY - 10;
 
-        guiGraphics.drawString(mc.font, progressText, textX, textY, 0xFFFFFF, false); // White text
+        guiGraphics.text(mc.font, progressText, textX, textY, 0xFFFFFFFF); // White text
     }
 
 

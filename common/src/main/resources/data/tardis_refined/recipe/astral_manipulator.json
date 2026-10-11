@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "redstone",
+  "key": {
+    "A": "minecraft:amethyst_block",
+    "I": "minecraft:iron_ingot",
+    "L": "minecraft:redstone_lamp",
+    "R": "minecraft:redstone_torch"
+  },
+  "pattern": [
+    "IAA",
+    "ILA",
+    "RII"
+  ],
+  "result": {
+    "id": "tardis_refined:astral_manipulator"
+  },
+  "show_notification": true
+}

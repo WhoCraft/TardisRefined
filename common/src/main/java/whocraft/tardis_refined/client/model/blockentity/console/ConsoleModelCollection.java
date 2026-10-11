@@ -3,7 +3,7 @@ package whocraft.tardis_refined.client.model.blockentity.console;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class ConsoleModelCollection {
 
-    public static HashMap<ResourceLocation, ConsoleModelEntry> CONSOLE_MODELS = new HashMap<>();
+    public static HashMap<Identifier, ConsoleModelEntry> CONSOLE_MODELS = new HashMap<>();
     private static ConsoleModelCollection instance = null;
     ConsoleUnit toyotaConsoleModel, coralConsoleModel, copperConsoleModel, nukaConsoleModel, factoryConsoleModel, crystalConsoleModel, victorianConsoleModel, mystConsoleModel, initiativeConsoleModel, refurbishedConsoleModel;
 
@@ -69,7 +69,7 @@ public class ConsoleModelCollection {
         for (Map.Entry<ResourceKey<ConsoleTheme>, ConsoleTheme> entry : ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.entrySet()) {
             ResourceKey<ConsoleTheme> key = entry.getKey();
             Validate.isTrue(
-                    CONSOLE_MODELS.containsKey(key.location()),
+                    CONSOLE_MODELS.containsKey(key.identifier()),
                     String.format("Missing registered model for console theme: %s", key)
             );
         }
@@ -83,7 +83,7 @@ public class ConsoleModelCollection {
      *
      * @param consoleModel The ConsoleUnit to register.
      */
-    public void registerModel(ResourceLocation resourceLocation, ConsoleModelEntry consoleModel) {
+    public void registerModel(Identifier resourceLocation, ConsoleModelEntry consoleModel) {
         if (consoleModel == null) {
             LOGGER.warn("Attempted to register a null console model.");
             return;
@@ -99,7 +99,7 @@ public class ConsoleModelCollection {
     }
 
 
-    public ConsoleModelEntry getConsoleEntry(ResourceLocation themeId) {
+    public ConsoleModelEntry getConsoleEntry(Identifier themeId) {
         ConsoleModelEntry consoleModelEntry = CONSOLE_MODELS.get(themeId);
         if (consoleModelEntry == null) {
             LOGGER.warn("Could not find model for {}, did you bind it?", themeId);

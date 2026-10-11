@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.client.screen.components;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 
 public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>> extends ObjectSelectionList<T> {
@@ -17,27 +17,21 @@ public class GenericMonitorSelectionList<T extends ObjectSelectionList.Entry<T>>
      * @param itemHeight - height of each item in the list
      */
     public GenericMonitorSelectionList(Minecraft minecraft, int width, int height, int xLeftPos, int yStart, int yEnd, int itemHeight) {
-        super(minecraft, width, height, yStart, yEnd, itemHeight); //Don't add anything to the y1 variable otherwise the entry button will be slighter taller than expected
-        this.setLeftPos(xLeftPos);
-        this.setRenderHeader(false, 0);
+        super(minecraft, width, yEnd - yStart, yStart, itemHeight);
+        this.updateSizeAndPosition(width, yEnd - yStart, xLeftPos, yStart);
+    }
 
-        this.setRenderTopAndBottom(false);
-        this.setRenderSelection(false);
-
-        this.setRenderBackground(true);
+    public void addEntryPublic(T entry) {
+        super.addEntry(entry);
     }
 
     @Override
-    protected int getScrollbarPosition() {
-        return this.x1 - 6;
+    protected void extractListSeparators(GuiGraphicsExtractor guiGraphics) {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    protected void extractSelection(GuiGraphicsExtractor guiGraphics, T entry, int top) {
     }
 
 
 }
-
-

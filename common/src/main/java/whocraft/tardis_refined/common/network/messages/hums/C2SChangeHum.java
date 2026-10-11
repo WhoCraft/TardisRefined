@@ -30,7 +30,7 @@ public class C2SChangeHum extends MessageC2S {
 
     public C2SChangeHum(FriendlyByteBuf buffer) {
         this.resourceKey = buffer.readResourceKey(Registries.DIMENSION);
-        this.humEntry = TardisHums.getHumById(buffer.readResourceLocation());
+        this.humEntry = TardisHums.getHumById(buffer.readIdentifier());
     }
 
     @NotNull
@@ -42,12 +42,12 @@ public class C2SChangeHum extends MessageC2S {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.resourceKey);
-        buf.writeResourceLocation(this.humEntry.getIdentifier());
+        buf.writeIdentifier(this.humEntry.getIdentifier());
     }
 
     @Override
     public void handle(MessageContext context) {
-        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
+        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().level().getServer().getLevel(resourceKey));
         level.ifPresent(x -> {
             TardisLevelOperator.get(x).ifPresent(operator -> {
                 TardisInteriorManager tardisInteriorManager = operator.getInteriorManager();

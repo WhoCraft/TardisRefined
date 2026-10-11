@@ -57,9 +57,9 @@ public class TardisWaypointManager extends BaseHandler {
     @Override
     public void loadData(CompoundTag tag) {
         waypoints.clear();
-        ListTag waypointsList = tag.getList("Waypoints", 10);
+        ListTag waypointsList = tag.getListOrEmpty("Waypoints");
         for (int i = 0; i < waypointsList.size(); i++) {
-            CompoundTag locationTag = waypointsList.getCompound(i);
+            CompoundTag locationTag = waypointsList.getCompoundOrEmpty(i);
             TardisWaypoint waypoint = TardisWaypoint.deserialise(locationTag);
             waypoints.add(waypoint);
         }

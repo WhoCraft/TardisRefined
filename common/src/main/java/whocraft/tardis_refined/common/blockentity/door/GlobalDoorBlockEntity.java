@@ -2,10 +2,12 @@ package whocraft.tardis_refined.common.blockentity.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -25,7 +27,7 @@ import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements BlockEntityTicker<InternalDoorBlockEntity> {
 
-    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
+    private Identifier shellTheme = ShellTheme.HALF_BAKED.getId();
     private ShellPattern basePattern;
 
     public GlobalDoorBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -49,23 +51,16 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements Bl
         setChanged();
     }
 
-    public ResourceLocation theme() {
+    public Identifier theme() {
         if (this.shellTheme == null) {
             this.shellTheme = ShellTheme.HALF_BAKED.getId();
         }
         return this.shellTheme;
     }
 
-    public void setShellTheme(ResourceLocation shellTheme) {
+    public void setShellTheme(Identifier shellTheme) {
         this.shellTheme = shellTheme;
         this.setChanged();
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag compoundTag = new CompoundTag();
-        saveAdditional(compoundTag);
-        return compoundTag;
     }
 
     @Nullable
@@ -75,16 +70,16 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements Bl
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
+    protected void loadAdditional(ValueInput pTag) {
+        super.loadAdditional(pTag);
 
-        if (pTag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.THEME));
+        if (pTag.getString(NbtConstants.THEME).isPresent()) {
+            Identifier themeId = Identifier.parse(pTag.getStringOr(NbtConstants.THEME, ""));
             this.shellTheme = themeId;
         }
 
-        if (pTag.contains(NbtConstants.PATTERN)) {
-            ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+        if (pTag.getString(NbtConstants.PATTERN).isPresent()) {
+            Identifier currentPattern = Identifier.parse(pTag.getStringOr(NbtConstants.PATTERN, ""));
             if (ShellPatterns.doesPatternExist(this.shellTheme, currentPattern)) {
                 this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
             }
@@ -101,7 +96,7 @@ public class GlobalDoorBlockEntity extends InternalDoorBlockEntity implements Bl
 
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
+    protected void saveAdditional(ValueOutput pTag) {
         super.saveAdditional(pTag);
         if (this.shellTheme != null) {
             pTag.putString(NbtConstants.THEME, this.shellTheme.toString());

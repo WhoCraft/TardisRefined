@@ -1,55 +1,42 @@
 package whocraft.tardis_refined.common.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import dev.architectury.injectables.annotations.PlatformOnly;
-import dev.architectury.injectables.targets.ArchitecturyTarget;
 import net.minecraft.server.MinecraftServer;
 
 import java.util.Collection;
 
 public class Platform {
 
-    private static final boolean FORGE = ArchitecturyTarget.getCurrentTarget().equals(PlatformOnly.FORGE);
-
-    @ExpectPlatform
-    public static boolean isProduction() {
-        throw new AssertionError();
+    public static boolean isProduction(){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.isProduction();
     }
 
-    @ExpectPlatform
-    public static boolean isModLoaded(String id) {
-        throw new AssertionError();
+    public static boolean isModLoaded(String id){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.isModLoaded(id);
     }
 
-    @ExpectPlatform
-    public static Collection<String> getModIds() {
-        throw new AssertionError();
+    public static Collection<String> getModIds(){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.getModIds();
     }
 
-    @ExpectPlatform
-    public static boolean isClient() {
-        throw new AssertionError();
+    public static boolean isClient(){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.isClient();
     }
 
-    @ExpectPlatform
-    public static boolean isServer() {
-        throw new AssertionError();
+    public static boolean isServer(){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.isServer();
     }
 
-    @ExpectPlatform
-    public static boolean isForge() {
-        throw new AssertionError();
+    public static boolean isForge(){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.isForge();
     }
 
-    @ExpectPlatform
-    public static MinecraftServer getServer() {
-        throw new AssertionError();
+    public static MinecraftServer getServer(){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.getServer();
     }
 
 
-    @ExpectPlatform
-    public static String getModName(String namespace) {
-        throw new AssertionError();
+    public static String getModName(String namespace){
+        return whocraft.tardis_refined.common.util.fabric.PlatformImpl.getModName(namespace);
     }
 
 }

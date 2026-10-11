@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.network.messages.player;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -43,7 +43,7 @@ public class ExitTardisViewMessage extends MessageC2S {
         TardisPlayerInfo.get(player).ifPresent(tardisInfo -> {
             if (tardisInfo.isViewingTardis()) {
                 ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION,
-                        new ResourceLocation(TardisRefined.MODID, tardisInfo.getViewedTardis().toString()));
+                        Identifier.fromNamespaceAndPath(TardisRefined.MODID, tardisInfo.getViewedTardis().toString()));
                 ServerLevel tardisLevel = DimensionUtil.getLevel(key);
                 if (tardisLevel != null) {
                     TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {

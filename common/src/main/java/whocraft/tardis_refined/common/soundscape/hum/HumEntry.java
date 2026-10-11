@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MiscHelper;
 import whocraft.tardis_refined.common.util.RegistryHelper;
@@ -16,15 +16,15 @@ import java.util.List;
 public class HumEntry {
 
     private static final Codec<HumEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ResourceLocation.CODEC.fieldOf("id").forGetter(HumEntry::getIdentifier),
-            ResourceLocation.CODEC.fieldOf("hum_sound").forGetter(HumEntry::getSoundEventId),
-            Codec.list(ResourceLocation.CODEC).fieldOf("ambient_sounds").forGetter(HumEntry::getAmbientSounds),
+            Identifier.CODEC.fieldOf("id").forGetter(HumEntry::getIdentifier),
+            Identifier.CODEC.fieldOf("hum_sound").forGetter(HumEntry::getSoundEventId),
+            Codec.list(Identifier.CODEC).fieldOf("ambient_sounds").forGetter(HumEntry::getAmbientSounds),
             Codec.STRING.orElse("Placeholder").fieldOf("name_component").forGetter(HumEntry::getNameComponent)
     ).apply(instance, HumEntry::new));
 
-    private final ResourceLocation identifier;
-    private ResourceLocation soundEventId;
-    private List<ResourceLocation> ambientSounds;
+    private final Identifier identifier;
+    private Identifier soundEventId;
+    private List<Identifier> ambientSounds;
     private String nameComponent;
 
     /**
@@ -35,7 +35,7 @@ public class HumEntry {
      * @param ambientSounds - List of ambient sounds that can play in addition to the Hum sound event
      * @param nameComponent - the string that will be displayed. Can be either a language file translation key or a component
      */
-    public HumEntry(ResourceLocation identifier, ResourceLocation soundEventId, List<ResourceLocation> ambientSounds, String nameComponent) {
+    public HumEntry(Identifier identifier, Identifier soundEventId, List<Identifier> ambientSounds, String nameComponent) {
         this.identifier = identifier;
         this.soundEventId = soundEventId;
         this.ambientSounds = ambientSounds;
@@ -49,7 +49,7 @@ public class HumEntry {
      * @param soundEventId
      * @param ambientSounds
      */
-    public HumEntry(ResourceLocation identifier, ResourceLocation soundEventId, List<ResourceLocation> ambientSounds) {
+    public HumEntry(Identifier identifier, Identifier soundEventId, List<Identifier> ambientSounds) {
         this(identifier, soundEventId, ambientSounds, TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
     }
 
@@ -60,7 +60,7 @@ public class HumEntry {
      * @param soundEventId  - the underlying SoundEvent id
      * @param ambientSounds - List of ambient sounds that can play in addition to the Hum sound event
      */
-    public HumEntry(String identifier, ResourceLocation soundEventId, List<ResourceLocation> ambientSounds) {
+    public HumEntry(String identifier, Identifier soundEventId, List<Identifier> ambientSounds) {
         this(RegistryHelper.makeKey(identifier), soundEventId, ambientSounds);
     }
 
@@ -70,7 +70,7 @@ public class HumEntry {
      * @param identifier   - Enter the registry name. No need to add namespace because the TardisRefined namespace is already added
      * @param soundEventId - the underlying SoundEvent id
      */
-    public HumEntry(String identifier, ResourceLocation soundEventId) {
+    public HumEntry(String identifier, Identifier soundEventId) {
         this(identifier, soundEventId, new ArrayList<>());
     }
 
@@ -82,24 +82,24 @@ public class HumEntry {
     /**
      * Gets the underlying SoundEvent's ID
      */
-    public ResourceLocation getSoundEventId() {
+    public Identifier getSoundEventId() {
         return soundEventId;
     }
 
-    public HumEntry setSoundEventId(ResourceLocation soundEventId) {
+    public HumEntry setSoundEventId(Identifier soundEventId) {
         this.soundEventId = soundEventId;
         return this;
     }
 
-    public ResourceLocation getIdentifier() {
+    public Identifier getIdentifier() {
         return identifier;
     }
 
-    public List<ResourceLocation> getAmbientSounds() {
+    public List<Identifier> getAmbientSounds() {
         return ambientSounds;
     }
 
-    public HumEntry setAmbientSounds(List<ResourceLocation> ambientSounds) {
+    public HumEntry setAmbientSounds(List<Identifier> ambientSounds) {
         this.ambientSounds = ambientSounds;
         return this;
     }

@@ -71,21 +71,21 @@ public class GlobalDoorBlock extends InternalDoorBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (interactionHand == InteractionHand.MAIN_HAND) {
             if (!player.level().isClientSide()) {
                 if (level instanceof ServerLevel serverLevel) {
                     if (TardisLevelOperator.get(serverLevel).isPresent()) {
                         if (serverLevel.getBlockEntity(blockPos) instanceof GlobalDoorBlockEntity entity) {
                             entity.onRightClick(blockState, entity, player);
-                            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                            return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
                         }
                     }
                 }
             }
         }
 
-        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+        return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
     }
 
     @Override

@@ -17,7 +17,7 @@ public class GravityUtil {
     private static final double ACCELERATION = 0.2;
 
     public static boolean isInAntiGrav(Player player, AABB box, Level level) {
-        if (level.dimensionTypeId() != TRDimensionTypes.TARDIS) return false;
+        if (!level.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) return false;
 
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
         for (BlockPos pos : betweenClosed(new BlockPos((int) box.maxX, (int) box.maxY, (int) box.maxZ), new BlockPos((int) box.minX, (int) box.minY, (int) box.minZ))) {
@@ -38,9 +38,9 @@ public class GravityUtil {
 
     private static void spawnParticlesWithinAABB(Level level, AABB box) {
         for (int i = 0; i < 2; i++) {
-            double x = box.minX + (box.maxX - box.minX) * level.random.nextDouble();
-            double y = box.minY + (box.maxY - box.minY) * level.random.nextDouble();
-            double z = box.minZ + (box.maxZ - box.minZ) * level.random.nextDouble();
+            double x = box.minX + (box.maxX - box.minX) * level.getRandom().nextDouble();
+            double y = box.minY + (box.maxY - box.minY) * level.getRandom().nextDouble();
+            double z = box.minZ + (box.maxZ - box.minZ) * level.getRandom().nextDouble();
             level.addParticle(ParticleTypes.ASH, x, y, z, 0, 0.2, 0);
         }
     }

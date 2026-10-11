@@ -1,7 +1,8 @@
 package whocraft.tardis_refined.mixin;
 
-import net.minecraft.client.player.Input;
+import net.minecraft.world.entity.player.Input;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.player.ClientInput;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -16,7 +17,7 @@ import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 public class LocalPlayerMixin {
 
     @Shadow
-    public Input input;
+    public ClientInput input;
 
     @Unique
     private long lastToggleInfoTime = 0;
@@ -28,7 +29,7 @@ public class LocalPlayerMixin {
     }
 
     @Unique
-    private void tardisRefined$handleInput(LocalPlayer localPlayer, Input input) {
+    private void tardisRefined$handleInput(LocalPlayer localPlayer, ClientInput input) {
         TardisPlayerInfo.get(localPlayer).ifPresent(tardisPlayerInfo -> {
             if (tardisPlayerInfo.isViewingTardis()) {
                 tardisRefined$blockMovement(input);
@@ -37,7 +38,7 @@ public class LocalPlayerMixin {
     }
 
     @Unique
-    private void tardisRefined$blockMovement(Input moveType) {
+    private void tardisRefined$blockMovement(ClientInput moveType) {
         // Set all movement-related fields to false or 0.0F to block movement
 
         if (TRKeybinds.EXIT_EXTERIOR_VIEW.isDown()) {
@@ -53,12 +54,6 @@ public class LocalPlayerMixin {
             }
         }
 
-        moveType.right = false;
-        moveType.left = false;
-        moveType.down = false;
-        moveType.jumping = false;
-        moveType.forwardImpulse = 0.0F;
-        moveType.shiftKeyDown = false;
-        moveType.leftImpulse = 0.0F;
+        this.input.keyPresses = Input.EMPTY;
     }
 }

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:iron_ingot",
+    "minecraft:tripwire_hook"
+  ],
+  "result": {
+    "id": "tardis_refined:tardis_key"
+  }
+}

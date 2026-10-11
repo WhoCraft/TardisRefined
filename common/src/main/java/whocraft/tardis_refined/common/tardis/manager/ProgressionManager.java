@@ -6,7 +6,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.common.util.DimensionUtil;
@@ -30,7 +30,7 @@ public class ProgressionManager extends BaseHandler {
         }
 
         for (String defaults : TRConfig.SERVER.ADVENTURE_MODE_DEFAULTS.get()) {
-            ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(defaults));
+            ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, Identifier.parse(defaults));
             addDiscoveredLevel(level);
         }
 
@@ -73,7 +73,7 @@ public class ProgressionManager extends BaseHandler {
     public CompoundTag saveData(CompoundTag tag) {
         ListTag levelsList = new ListTag();
         for (ResourceKey<Level> level : DISCOVERED_LEVELS) {
-            levelsList.add(StringTag.valueOf(level.location().toString()));
+            levelsList.add(StringTag.valueOf(level.identifier().toString()));
         }
         tag.put("DiscoveredLevels", levelsList);
         return tag;
@@ -82,11 +82,11 @@ public class ProgressionManager extends BaseHandler {
     @Override
     public void loadData(CompoundTag tag) {
         if (tag.contains("DiscoveredLevels")) {
-            ListTag levelsList = tag.getList("DiscoveredLevels", Tag.TAG_STRING);
+            ListTag levelsList = tag.getListOrEmpty("DiscoveredLevels");
             DISCOVERED_LEVELS.clear();
             for (Tag levelTag : levelsList) {
-                String levelKey = levelTag.getAsString();
-                ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(levelKey));
+                String levelKey = levelTag.asString().orElse("");
+                ResourceKey<Level> level = ResourceKey.create(Registries.DIMENSION, Identifier.parse(levelKey));
                 DISCOVERED_LEVELS.add(level);
             }
         }

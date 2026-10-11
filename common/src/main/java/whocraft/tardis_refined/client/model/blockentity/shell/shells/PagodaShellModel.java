@@ -45,7 +45,7 @@ public class PagodaShellModel extends ShellModel {
     }
 
     public void setDoorPosition(boolean open) {
-        this.door.yRot = (open) ? -275f : 0;
+        this.door.yRot = open ? (float) Math.toRadians(-275.0F) : 0.0F;
 
     }
 
@@ -56,13 +56,13 @@ public class PagodaShellModel extends ShellModel {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone17.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone21.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone13.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone4.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone17.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone21.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone13.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone9.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 }

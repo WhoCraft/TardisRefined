@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "hanging=false,waterlogged=false": {
+      "model": "tardis_refined:block/zeiton_lantern"
+    },
+    "hanging=false,waterlogged=true": {
+      "model": "tardis_refined:block/zeiton_lantern"
+    },
+    "hanging=true,waterlogged=false": {
+      "model": "tardis_refined:block/zeiton_lantern_hanging"
+    },
+    "hanging=true,waterlogged=true": {
+      "model": "tardis_refined:block/zeiton_lantern_hanging"
+    }
+  }
+}

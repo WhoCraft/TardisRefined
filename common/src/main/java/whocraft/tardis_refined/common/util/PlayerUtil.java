@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -41,19 +42,27 @@ public class PlayerUtil {
 
     public static void sendMessage(LivingEntity livingEntity, String message, boolean hotBar) {
         if (!(livingEntity instanceof Player player)) return;
-        if (!player.level().isClientSide) {
-            player.displayClientMessage(Component.translatable(message), hotBar);
+        if (!player.level().isClientSide()) {
+            sendServerMessage(player, Component.translatable(message), hotBar);
         }
     }
 
     public static void sendMessage(LivingEntity livingEntity, Component translation, boolean hotBar) {
         if (!(livingEntity instanceof Player player)) return;
-        if (!player.level().isClientSide) {
-            player.displayClientMessage(translation, hotBar);
+        if (!player.level().isClientSide()) {
+            sendServerMessage(player, translation, hotBar);
         }
     }
 
-    public static void applyPotionIfAbsent(LivingEntity player, MobEffect potion, int length, int amplifier, boolean ambient, boolean showParticles) {
+    private static void sendServerMessage(Player player, Component message, boolean hotBar) {
+        if (player instanceof ServerPlayer serverPlayer && hotBar) {
+            serverPlayer.connection.send(new net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket(message));
+        } else {
+            player.sendSystemMessage(message);
+        }
+    }
+
+    public static void applyPotionIfAbsent(LivingEntity player, Holder<MobEffect> potion, int length, int amplifier, boolean ambient, boolean showParticles) {
         if (potion == null) return;
         if (player.getEffect(potion) == null) {
             player.addEffect(new MobEffectInstance(potion, length, amplifier, ambient, showParticles));
@@ -61,7 +70,7 @@ public class PlayerUtil {
     }
 
     public static AABB getReach(BlockPos pos, int range) {
-        return new AABB(pos.above(range).north(range).west(range), pos.below(range).south(range).east(range));
+        return AABB.encapsulatingFullBlocks(pos.above(range).north(range).west(range), pos.below(range).south(range).east(range));
     }
 
     /**

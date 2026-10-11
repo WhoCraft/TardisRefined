@@ -1,51 +1,45 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
-  "version": "${mod_version}",
-  "name": "${mod_name}",
-  "description": "${mod_description}",
-  "authors": [
-    "${mod_authors}"
-  ],
-  "contributors": [
-    "${credits}"
-  ],
+  "id": "tardis_refined",
+  "version": "${version}",
+  "name": "TARDIS Refined",
+  "description": "TARDIS: Refined is a Minecraft mod based on the world of Doctor Who that adds a personal, teleporting base to the game.",
+  "authors": ["River", "Jeryn99", "Magic Man", "ILikePandas", "Jacob K", "50ap5ud5", "acuadragon100"],
+  "contributors": ["Commoble", "Lucraft", "starray1000000", "Monsterwaill", "TheJudge", "LoxiGoose"],
   "contact": {
-    "sources": "${display_url}",
-    "issues": "${issue_tracker_url}",
-    "homepage": "${homepage_url}"
+    "sources": "https://github.com/Whocraft/TardisRefined",
+    "issues": "https://github.com/Whocraft/TardisRefined/issues",
+    "homepage": "https://github.com/Whocraft/TardisRefined"
   },
-  "license": "${license}",
-  "icon": "${logo_file}",
+  "license": "https://github.com/Whocraft/TardisRefined/blob/mc/1.20.1/LICENSE.MD",
+  "icon": "tardis_refined.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "whocraft.tardis_refined.fabric.TardisRefinedFabric"
-    ],
+    "main": ["whocraft.tardis_refined.fabric.TardisRefinedFabric"],
     "cardinal-components": [
       "whocraft.tardis_refined.common.capability.fabric.TRComponents",
       "whocraft.tardis_refined.common.capability.player.fabric.TardisPlayerComponents"
     ],
-    "client": [
-      "whocraft.tardis_refined.fabric.TardisRefinedFabricClient"
-    ]
+    "client": ["whocraft.tardis_refined.fabric.TardisRefinedFabricClient"]
   },
   "mixins": [
-    "${mod_id}.mixins.json",
-    "${mod_id}-common.mixins.json"
+    "tardis_refined.mixins.json",
+    "tardis_refined-common.mixins.json"
   ],
+  "accessWidener": "tardis_refined.accesswidener",
   "depends": {
-    "fabricloader": "${fabric_loader_version_range}",
-    "minecraft": "${fabric_minecraft_version_range}",
-    "fabric-api": "${fabric_api_version_range}"
-  },
-  "suggests": {
-    "imm_ptl_core": "${fabric_immersive_portals_version_range}"
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": ">=0.161.0+26.3",
+    "cardinal-components-base": ">=8.1.0",
+    "forgeconfigapiport": ">=26.3.1",
+    "geckolib": ">=5.5.7"
   },
   "custom": {
     "cardinal-components": [
-      "${mod_id}:tardis_data",
-      "${mod_id}:tardis_player_info"
+      "tardis_refined:tardis_data",
+      "tardis_refined:tardis_player_info"
     ]
   }
 }

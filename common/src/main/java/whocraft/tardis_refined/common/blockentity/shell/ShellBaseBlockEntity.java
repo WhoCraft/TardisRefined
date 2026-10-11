@@ -2,12 +2,15 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -32,7 +35,7 @@ import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortals;
 import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.registry.TRUpgrades;
@@ -62,10 +65,9 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
-        if (pTag.contains(NbtConstants.TARDIS_ID))
-            this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(pTag.getString(NbtConstants.TARDIS_ID)));
+    protected void loadAdditional(ValueInput pTag) {
+        super.loadAdditional(pTag);
+        pTag.getString(NbtConstants.TARDIS_ID).ifPresent(id -> this.TARDIS_ID = ResourceKey.create(Registries.DIMENSION, Identifier.parse(id)));
         updateCurrentLocation();
     }
 
@@ -86,14 +88,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     }
 
     @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = this.saveWithFullMetadata();
-        this.saveAdditional(tag);
-        return tag;
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag pTag) {
+    protected void saveAdditional(ValueOutput pTag) {
         if (this.TARDIS_ID == null) {
             TardisRefined.LOGGER.error("Error in saveAdditional: null Tardis ID (Invalid block or not terraformed yet?) [" + this.getBlockPos().toShortString() + "]");
             return;
@@ -101,12 +96,22 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
         super.saveAdditional(pTag);
         if (this.TARDIS_ID != null)
-            pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.location().toString());
+            pTag.putString(NbtConstants.TARDIS_ID, TARDIS_ID.identifier().toString());
     }
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    /**
+     * Supplies the custom state needed by the client renderer and interactions.
+     * In newer Minecraft versions the default block-entity update tag is empty;
+     * create(this) uses this method for its packet payload.
+     */
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return this.saveWithoutMetadata(registries);
     }
 
     public boolean shouldSetup() {
@@ -124,7 +129,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
                 return;
             }
 
-            ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.location());
+            ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, this.TARDIS_ID.identifier());
             TardisLevelOperator.get(interior).ifPresent(cap -> {
 
                 UpgradeHandler upgradeHandler = cap.getUpgradeHandler();
@@ -132,10 +137,10 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
                 if (cap.isTardisReady() && (blockState.getValue(ShellBaseBlock.OPEN) || (cap.getPilotingManager().isLanding() && TRUpgrades.MATERIALIZE_AROUND.get().isUnlocked(upgradeHandler)))) {
                     if (aesthetics.getShellTheme() != null) {
-                        ResourceLocation theme = aesthetics.getShellTheme();
+                        Identifier theme = aesthetics.getShellTheme();
 
                         if (ModCompatChecker.immersivePortals()) {
-                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(TARDIS_ID.location().getPath()))) {
+                            if (ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(TARDIS_ID.identifier().getPath()))) {
                                 return;
                             }
                         }
@@ -154,7 +159,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
 
     @Override
     public void tick(Level level, BlockPos blockPos, BlockState blockState, ShellBaseBlockEntity blockEntity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ResourceKey<Level> tardisId = getTardisId();
             if (tardisId == null) return;
             ServerLevel tardisLevel = DimensionUtil.getLevel(tardisId);
@@ -209,7 +214,7 @@ public abstract class ShellBaseBlockEntity extends BlockEntity implements Exteri
     @Override
     public BlockPos getTeleportPosition() {
         Direction direction = getBlockState().getValue(ShellBaseBlock.FACING);
-        return this.getBlockPos().offset(direction.getOpposite().getNormal());
+        return this.getBlockPos().offset(direction.getOpposite().getStep());
     }
 
     @Override

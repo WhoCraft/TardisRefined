@@ -1,0 +1,9 @@
+{
+  "ambient_sounds": [
+    "minecraft:ambient.warped_forest.additions",
+    "minecraft:ambient.warped_forest.mood"
+  ],
+  "hum_sound": "minecraft:ambient.warped_forest.loop",
+  "id": "tardis_refined:warped_forest",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Warped Forest\"}"
+}

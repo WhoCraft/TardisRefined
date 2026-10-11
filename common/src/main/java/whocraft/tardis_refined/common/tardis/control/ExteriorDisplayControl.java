@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
@@ -12,11 +12,11 @@ import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 
 public class ExteriorDisplayControl extends Control {
 
-    public ExteriorDisplayControl(ResourceLocation id, String langId) {
+    public ExteriorDisplayControl(Identifier id, String langId) {
         super(id, langId);
     }
 
-    public ExteriorDisplayControl(ResourceLocation id) {
+    public ExteriorDisplayControl(Identifier id) {
         super(id);
     }
 

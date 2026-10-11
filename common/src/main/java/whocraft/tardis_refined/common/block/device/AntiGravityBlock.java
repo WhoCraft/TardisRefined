@@ -46,19 +46,19 @@ public class AntiGravityBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
-        if (!level.isClientSide && interactionHand == InteractionHand.MAIN_HAND && player.getItemInHand(interactionHand).getItem() instanceof ScrewdriverItem) {
+        if (!level.isClientSide() && interactionHand == InteractionHand.MAIN_HAND && player.getItemInHand(interactionHand).getItem() instanceof ScrewdriverItem) {
             int space = blockState.getValue(SPACE);
             int newSpace = space + 1;
             if (newSpace > MAX_SPACE) {
                 newSpace = DISABLED_SPACE;
             }
-            player.swing(interactionHand, true);
+            player.swing(interactionHand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
 
             level.setBlockAndUpdate(blockPos, blockState.setValue(SPACE, newSpace));
-            return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+            return InteractionResult.SUCCESS; //Use InteractionResult.SUCCESS for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
         }
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return super.useItemOn(stack, blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 }

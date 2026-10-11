@@ -18,7 +18,7 @@ public class LoopingHumSound extends LoopingTardisInteriorSound {
     @Override
     public void playSoundInstance(Player player) {
         setLocation(player.position());
-        if (soundEvent.getLocation().getNamespace().contains(NbtConstants.MINECRAFT)) {
+        if (soundEventRef.location().getNamespace().contains(NbtConstants.MINECRAFT)) {
             this.volume = 1f;
         } else {
             this.setVolume(0.10F);
@@ -28,12 +28,12 @@ public class LoopingHumSound extends LoopingTardisInteriorSound {
     // So, I don't like this. But it is necessary else we are making another Mixin, which isn't a bad thing but better to avoid
     // You need to call setSoundEvent and then call resolve, it's...yeah ok there's no excusing this
     @Override
-    public WeighedSoundEvents resolve(SoundManager soundManager) {
-        if (this.location.equals(SoundManager.INTENTIONALLY_EMPTY_SOUND_LOCATION)) {
+    public WeighedSoundEvents getOrResolve(SoundManager soundManager) {
+        if (this.getIdentifier().equals(SoundManager.INTENTIONALLY_EMPTY_SOUND_LOCATION)) {
             this.sound = SoundManager.INTENTIONALLY_EMPTY_SOUND;
             return SoundManager.INTENTIONALLY_EMPTY_SOUND_EVENT;
         } else {
-            WeighedSoundEvents weighedSoundEvents = soundManager.getSoundEvent(soundEvent.getLocation());
+            WeighedSoundEvents weighedSoundEvents = soundManager.getSoundEvent(soundEventRef.location());
             if (weighedSoundEvents == null) {
                 this.sound = SoundManager.EMPTY_SOUND;
             } else {

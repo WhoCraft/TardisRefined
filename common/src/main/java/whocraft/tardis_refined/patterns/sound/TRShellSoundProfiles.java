@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.patterns.sound;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
@@ -15,7 +15,7 @@ public class TRShellSoundProfiles {
     public static ConfiguredSound DEFAULT_DOOR_LOCK = new ConfiguredSound(BlockSetType.IRON.trapdoorClose(), 1F, 1.4F);
     public static ConfiguredSound DEFAULT_DOOR_UNLOCK = new ConfiguredSound(BlockSetType.IRON.trapdoorOpen(), 1F, 1F);
 
-    public static Map<ResourceLocation, ShellSoundProfile> DEFAULT_PATTERN_SOUND_PROFILES = new HashMap<>();
+    public static Map<Identifier, ShellSoundProfile> DEFAULT_PATTERN_SOUND_PROFILES = new HashMap<>();
     public static ShellSoundProfile DEFAULT_SOUND_PROFILE = new ShellSoundProfile()
             .setDoorOpen(DEFAULT_DOOR_OPEN)
             .setDoorClose(DEFAULT_DOOR_CLOSE)
@@ -52,7 +52,7 @@ public class TRShellSoundProfiles {
             .setDoorLocked(new ConfiguredSound(BlockSetType.BAMBOO.trapdoorClose(), 1F, 1.4F))
             .setDoorUnlocked(new ConfiguredSound(BlockSetType.BAMBOO.trapdoorOpen(), 1F, 1F));
 
-    public static Map<ResourceLocation, ShellSoundProfile> defaultSoundProfilesByTheme() {
+    public static Map<Identifier, ShellSoundProfile> defaultSoundProfilesByTheme() {
         DEFAULT_PATTERN_SOUND_PROFILES.put(ShellTheme.HALF_BAKED.getId(), HALF_BAKED_SOUND_PROFILE);
         DEFAULT_PATTERN_SOUND_PROFILES.put(ShellTheme.BRIEFCASE.getId(), DEFAULT_SOUND_PROFILE);
         DEFAULT_PATTERN_SOUND_PROFILES.put(ShellTheme.PHONE_BOOTH.getId(), SPRUCE_SOUND_PROFILE);

@@ -1,10 +1,10 @@
 package whocraft.tardis_refined.common.tardis.themes;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
@@ -16,7 +16,7 @@ public class ShellTheme implements Theme {
     /**
      * Registry Key for the ShellTheme registry. For addon mods, use this as the registry key
      */
-    public static final ResourceKey<Registry<ShellTheme>> SHELL_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "shell_theme"));
+    public static final ResourceKey<Registry<ShellTheme>> SHELL_THEME_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "shell_theme"));
 
     /**
      * Tardis Refined instance of the ShellTheme registry. Addon Mods: DO NOT USE THIS, it is only for Tardis Refined use only
@@ -45,7 +45,7 @@ public class ShellTheme implements Theme {
     public static final RegistrySupplier<ShellTheme> PATHFINDER = registerShellTheme("pathfinder");
     public static final RegistrySupplier<ShellTheme> SHULKER = registerShellTheme("shulker");
 
-    public static ShellTheme getShellTheme(ResourceLocation resourceLocation) {
+    public static ShellTheme getShellTheme(Identifier resourceLocation) {
         ShellTheme potentialTheme = SHELL_THEME_DEFERRED_REGISTRY.get(resourceLocation);
         if (potentialTheme != null) {
             return potentialTheme;
@@ -53,29 +53,29 @@ public class ShellTheme implements Theme {
         return HALF_BAKED.get();
     }
 
-    public static ResourceLocation getKey(ShellTheme shellTheme) {
+    public static Identifier getKey(ShellTheme shellTheme) {
         return SHELL_THEME_DEFERRED_REGISTRY.getKey(shellTheme);
     }
 
-    private ResourceLocation translationKey;
+    private Identifier translationKey;
     private boolean producesLight;
 
 
-    public ShellTheme(ResourceLocation translationKey, boolean producesLight) {
+    public ShellTheme(Identifier translationKey, boolean producesLight) {
         this.translationKey = translationKey;
         this.producesLight = producesLight;
     }
 
-    public ShellTheme(ResourceLocation translationKey) {
+    public ShellTheme(Identifier translationKey) {
         this(translationKey, false);
     }
 
     private static RegistrySupplier<ShellTheme> registerShellTheme(String id) {
-        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id)));
+        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(Identifier.fromNamespaceAndPath(TardisRefined.MODID, id)));
     }
 
     private static RegistrySupplier<ShellTheme> registerShellTheme(String id, boolean producesLight) {
-        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(new ResourceLocation(TardisRefined.MODID, id), producesLight));
+        return SHELL_THEME_DEFERRED_REGISTRY.register(id, () -> new ShellTheme(Identifier.fromNamespaceAndPath(TardisRefined.MODID, id), producesLight));
     }
 
     @Override

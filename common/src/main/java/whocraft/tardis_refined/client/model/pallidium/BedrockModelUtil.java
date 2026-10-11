@@ -8,6 +8,11 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.core.Direction;
 import net.minecraft.util.GsonHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import whocraft.tardis_refined.mixin.fabric.CubeDefinitionAccessor;
+import whocraft.tardis_refined.mixin.fabric.PartDefinitionAccessor;
+import whocraft.tardis_refined.mixin.fabric.CubeDeformationAccessor;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -24,7 +29,13 @@ import static whocraft.tardis_refined.client.model.blockentity.shell.ShellModel.
  */
 public class BedrockModelUtil {
 
+    private static final Logger LOGGER = LogManager.getLogger("TardisRefined/BedrockModel");
+
     public static LayerDefinition parseAsLayerDefinition(JsonObject json) {
+        return parseAsLayerDefinition(json, "unknown");
+    }
+
+    public static LayerDefinition parseAsLayerDefinition(JsonObject json, String modelId) {
         var geometry = GsonHelper.getAsJsonArray(json, "minecraft:geometry");
 
         if (geometry.isEmpty()) {
@@ -45,6 +56,8 @@ public class BedrockModelUtil {
         var bones = GsonHelper.getAsJsonArray(geo, "bones", new JsonArray());
         Map<String, BedrockModelPartCache> cache = new HashMap<>();
         Map<String, PartDefinition> modelParts = new HashMap<>();
+        int cubeCount = 0;
+        int maxHierarchyDepth = 0;
 
         for (JsonElement b : bones) {
             var bone = GsonHelper.convertToJsonObject(b, "minecraft:geomeotry[].bones.$");
@@ -52,7 +65,9 @@ public class BedrockModelUtil {
             var parent = GsonHelper.getAsString(bone, "parent", null);
             var pivot = GsonUtil.getFloatArray(bone, 3, "pivot", 0, 0, 0);
             var rotation = GsonUtil.getFloatArray(bone, 3, "rotation", 0, 0, 0);
-            var cubesJson = GsonHelper.getAsJsonArray(bone, "cubes", new JsonArray());
+                var cubesJson = GsonHelper.getAsJsonArray(bone, "cubes", new JsonArray());
+                cubeCount += cubesJson.size();
+                maxHierarchyDepth = Math.max(maxHierarchyDepth, parent == null ? 1 : 2);
             List<BedrockModelCube> cubes = new ArrayList<>();
 
             for (JsonElement cj : cubesJson) {
@@ -85,8 +100,24 @@ public class BedrockModelUtil {
                 }
             }
 
+            // Keep the model angles consistent with the original 1.20.1 rendering
+            // convention. Negating X/Y here regressed the factory console and shell.
+            Vector3f minecraftRotation = new Vector3f(
+                    (float) Math.toRadians(rotation[0]),
+                    (float) Math.toRadians(rotation[1]),
+                    (float) Math.toRadians(rotation[2]));
             cache.put(name, new BedrockModelPartCache(name, parent, new Vector3f(pivot[0], pivot[1], pivot[2]),
-                    new Vector3f((float) Math.toRadians(rotation[0]), (float) Math.toRadians(rotation[1]), (float) Math.toRadians(rotation[2])), cubes));
+                    minecraftRotation, cubes));
+        }
+        List<BedrockModelPartCache> allParts = new ArrayList<>(cache.values());
+
+        // This is emitted once when the resource is baked, rather than per
+        // frame. It makes the actual model/resource and source geometry
+        // visible in latest.log when a console looks corrupted.
+        if (modelId.contains("refurbished")) {
+            LOGGER.info("Refurbished model parse begin: id={}, format={}, texture={}x{}, bones={}, cubes={}",
+                    modelId, GsonHelper.getAsString(json, "format_version", "unknown"),
+                    textureWidth, textureHeight, cache.size(), cubeCount);
         }
 
         // Validate parents
@@ -99,6 +130,13 @@ public class BedrockModelUtil {
                     cache.get(e.getValue().parentName).children.add(e.getValue());
                 }
             }
+        }
+
+        if (modelId.contains("refurbished")) {
+            maxHierarchyDepth = cache.values().stream().mapToInt(BedrockModelPartCache::hierarchyDepth).max().orElse(0);
+            LOGGER.info("Refurbished model hierarchy: id={}, roots={}, maxDepth={}", modelId,
+                    cache.values().stream().filter(part -> part.parent == null).map(part -> part.name).sorted().toList(),
+                    maxHierarchyDepth);
         }
 
         // Organize hierarchy
@@ -119,6 +157,14 @@ public class BedrockModelUtil {
                     }
                 }
             }
+        }
+
+        if (modelId.contains("refurbished")) {
+            allParts.stream().sorted(Comparator.comparing(part -> part.name)).forEach(part ->
+                    LOGGER.info("Refurbished bone: id={}, name={}, parent={}, sourcePivot={}, absoluteMinecraftPivot={}, localPose={}, rotationRadians={}, cubes={}, cubeBounds={}",
+                            modelId, part.name, part.parentName, part.unconvertedPivot,
+                            part.absoluteMinecraftPivot, part.pivot, part.rotation, part.cubes.size(), part.cubeBounds()));
+            LOGGER.info("Refurbished model parse complete: id={}, attachedRoots={}", modelId, modelParts.keySet().stream().sorted().toList());
         }
 
         return LayerDefinition.create(meshDefinition, textureWidth, textureHeight);
@@ -161,23 +207,29 @@ public class BedrockModelUtil {
         if (parent != null) {
             json.addProperty("parent", parent);
         }
-        var fixedPivot = new Vector3f(part.partPose.x, part.partPose.y, part.partPose.z);
+        PartPose partPose = ((PartDefinitionAccessor) part).tr$getPartPose();
+        var fixedPivot = new Vector3f(partPose.x(), partPose.y(), partPose.z());
         for (PartDefinition parentPart : parents) {
-            fixedPivot.add(parentPart.partPose.x, parentPart.partPose.y, parentPart.partPose.z);
+            PartPose parentPose = ((PartDefinitionAccessor) parentPart).tr$getPartPose();
+            fixedPivot.add(parentPose.x(), parentPose.y(), parentPose.z());
         }
         fixedPivot.sub(0, 24, 0).mul(1, -1, 1);
         json.add("pivot", vec3ToJsonArray(fixedPivot));
-        json.add("rotation", vec3ToJsonArray(Math.toDegrees(part.partPose.xRot), Math.toDegrees(part.partPose.yRot), Math.toDegrees(part.partPose.zRot)));
+        json.add("rotation", vec3ToJsonArray(Math.toDegrees(partPose.xRot()), Math.toDegrees(partPose.yRot()), Math.toDegrees(partPose.zRot())));
 
         var cubes = new JsonArray();
 
-        for (CubeDefinition c : part.cubes) {
+        for (CubeDefinition c : ((PartDefinitionAccessor) part).tr$getCubes()) {
+            CubeDefinitionAccessor cubeAccess = (CubeDefinitionAccessor) c;
+            org.joml.Vector3fc origin = cubeAccess.tr$getOrigin();
+            org.joml.Vector3fc dimensions = cubeAccess.tr$getDimensions();
             var cube = new JsonObject();
-            var fixedOrigin = new Vector3f().set(c.origin).add(fixedPivot.x, 0, fixedPivot.z);
-            fixedOrigin.y = (fixedOrigin.y + c.dimensions.y - fixedPivot.y) * -1;
+            var fixedOrigin = new Vector3f(origin).add(fixedPivot.x, 0, fixedPivot.z);
+            fixedOrigin.y = (fixedOrigin.y + dimensions.y() - fixedPivot.y) * -1;
             cube.add("origin", vec3ToJsonArray(fixedOrigin));
-            cube.add("size", vec3ToJsonArray(c.dimensions));
-            cube.addProperty("inflate", (c.grow.growX + c.grow.growY + c.grow.growZ) / 3D);
+            cube.add("size", vec3ToJsonArray(new Vector3f(dimensions)));
+            CubeDeformationAccessor grow = (CubeDeformationAccessor) cubeAccess.tr$getGrow();
+            cube.addProperty("inflate", (grow.tr$getGrowX() + grow.tr$getGrowY() + grow.tr$getGrowZ()) / 3D);
 
             if (c instanceof ExtendedCubeListBuilder.PerFaceCubeDefinition perFace) {
                 var uv = new JsonObject();
@@ -190,7 +242,7 @@ public class BedrockModelUtil {
                 }
                 cube.add("uv", uv);
             } else {
-                cube.add("uv", uvPairToJsonArray(c.texCoord));
+                cube.add("uv", uvPairToJsonArray(cubeAccess.tr$getTexCoord()));
             }
 
             cube.addProperty("mirror", c.mirror);
@@ -235,6 +287,7 @@ public class BedrockModelUtil {
         public BedrockModelPartCache parent;
         public List<BedrockModelPartCache> children = new ArrayList<>();
         private final Vector3f unconvertedPivot;
+        private final Vector3f absoluteMinecraftPivot;
         private final Vector3f pivot;
         private final Vector3f rotation;
         private final List<BedrockModelCube> cubes;
@@ -242,8 +295,12 @@ public class BedrockModelUtil {
         public BedrockModelPartCache(String name, @Nullable String parentName, Vector3f pivot, Vector3f rotation, List<BedrockModelCube> cubes) {
             this.name = name;
             this.parentName = parentName;
-            this.unconvertedPivot = pivot;
-            this.pivot = pivot;
+            // Keep the source-space pivot intact. Bedrock pivots are absolute
+            // model coordinates; Minecraft child poses are relative to their
+            // immediate parent, so both coordinate spaces must remain available.
+            this.unconvertedPivot = new Vector3f(pivot);
+            this.absoluteMinecraftPivot = new Vector3f(pivot).mul(1, -1, 1).add(0, 24, 0);
+            this.pivot = new Vector3f(pivot);
             this.rotation = rotation;
             this.cubes = cubes;
         }
@@ -262,16 +319,31 @@ public class BedrockModelUtil {
         }
 
         public BedrockModelPartCache convert() {
-            this.cubes.forEach(c -> c.convert(this.pivot, this.name));
-            this.pivot.mul(1, -1, 1).add(0, 24, 0);
-            var parent = this.parent;
-
-            while (parent != null) {
-                this.pivot.sub(parent.unconvertedPivot);
-                parent = parent.parent;
+            this.cubes.forEach(c -> c.convert(this.unconvertedPivot, this.name));
+            this.pivot.set(this.absoluteMinecraftPivot);
+            if (this.parent != null) {
+                // A child offset is its absolute pivot minus its parent's
+                // absolute pivot. Subtracting all ancestors (or their already
+                // relative offsets) makes deeply nested bones drift apart.
+                this.pivot.sub(this.parent.absoluteMinecraftPivot);
             }
 
             return this;
+        }
+
+        private int hierarchyDepth() {
+            return this.parent == null ? 1 : this.parent.hierarchyDepth() + 1;
+        }
+
+        private String cubeBounds() {
+            if (this.cubes.isEmpty()) return "empty";
+            float minX = Float.POSITIVE_INFINITY, minY = Float.POSITIVE_INFINITY, minZ = Float.POSITIVE_INFINITY;
+            float maxX = Float.NEGATIVE_INFINITY, maxY = Float.NEGATIVE_INFINITY, maxZ = Float.NEGATIVE_INFINITY;
+            for (BedrockModelCube cube : this.cubes) {
+                minX = Math.min(minX, cube.origin.x); minY = Math.min(minY, cube.origin.y); minZ = Math.min(minZ, cube.origin.z);
+                maxX = Math.max(maxX, cube.origin.x + cube.size.x); maxY = Math.max(maxY, cube.origin.y + cube.size.y); maxZ = Math.max(maxZ, cube.origin.z + cube.size.z);
+            }
+            return "[" + minX + "," + minY + "," + minZ + " -> " + maxX + "," + maxY + "," + maxZ + "]";
         }
     }
 

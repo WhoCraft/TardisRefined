@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -127,7 +127,7 @@ public class TardisInteriorManager extends TickableHandler {
         tag.putBoolean(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS, this.hasGeneratedCorridors);
 
         if (this.corridorAirlockCenter != null) {
-            tag.put(NbtConstants.TARDIS_IM_AIRLOCK_CENTER, NbtUtils.writeBlockPos(this.corridorAirlockCenter));
+            tag.put(NbtConstants.TARDIS_IM_AIRLOCK_CENTER, BlockPos.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, this.corridorAirlockCenter).getOrThrow());
         }
 
 
@@ -144,16 +144,36 @@ public class TardisInteriorManager extends TickableHandler {
 
     @Override
     public void loadData(CompoundTag tag) {
-        this.isWaitingToGenerate = tag.getBoolean(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE);
-        this.isGeneratingDesktop = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATING_DESKTOP);
-        this.interiorGenerationCooldown = tag.getInt(NbtConstants.TARDIS_IM_GENERATION_COOLDOWN);
-        this.hasGeneratedCorridors = tag.getBoolean(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS);
-        this.preparedTheme = TardisDesktops.getDesktopById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_IM_PREPARED_THEME)));
-        this.currentTheme = tag.contains(NbtConstants.TARDIS_IM_CURRENT_THEME) ? TardisDesktops.getDesktopById(new ResourceLocation((NbtConstants.TARDIS_IM_CURRENT_THEME))) : preparedTheme;
-        this.corridorAirlockCenter = NbtUtils.readBlockPos(tag.getCompound(NbtConstants.TARDIS_IM_AIRLOCK_CENTER));
-        this.humEntry = TardisHums.getHumById(new ResourceLocation(tag.getString(NbtConstants.TARDIS_CURRENT_HUM)));
+        this.isWaitingToGenerate = tag.getBooleanOr(NbtConstants.TARDIS_IM_IS_WAITING_TO_GENERATE, false);
+        this.isGeneratingDesktop = tag.getBooleanOr(NbtConstants.TARDIS_IM_GENERATING_DESKTOP, false);
+        this.interiorGenerationCooldown = tag.getIntOr(NbtConstants.TARDIS_IM_GENERATION_COOLDOWN, 0);
+        this.hasGeneratedCorridors = tag.getBooleanOr(NbtConstants.TARDIS_IM_GENERATED_CORRIDORS, false);
+        this.preparedTheme = TardisDesktops.getDesktopById(Identifier.parse(tag.getStringOr(NbtConstants.TARDIS_IM_PREPARED_THEME, "")));
+        String currentThemeId = tag.getStringOr(NbtConstants.TARDIS_IM_CURRENT_THEME, "");
+        this.currentTheme = currentThemeId.isBlank()
+                ? (preparedTheme != null ? preparedTheme : TardisDesktops.DEFAULT_OVERGROWN_THEME)
+                : TardisDesktops.getDesktopById(Identifier.parse(currentThemeId));
 
-        this.fuelForIntChange = tag.getDouble(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE);
+        // BlockPos.CODEC stores its value as a list/int-array in current saves.
+        // Reading it through getCompoundOrEmpty silently replaced that value
+        // with an empty compound, and getOrThrow then aborted the entire TARDIS
+        // component load before upgrades, fuel, and shell state were restored.
+        net.minecraft.nbt.Tag encodedAirlockCenter = tag.get(NbtConstants.TARDIS_IM_AIRLOCK_CENTER);
+        if (encodedAirlockCenter != null) {
+            BlockPos decodedCenter = BlockPos.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, encodedAirlockCenter)
+                    .result()
+                    .orElse(null);
+            if (decodedCenter != null) {
+                this.corridorAirlockCenter = decodedCenter;
+            } else if (encodedAirlockCenter instanceof CompoundTag legacyCenter
+                    && legacyCenter.contains("X") && legacyCenter.contains("Y") && legacyCenter.contains("Z")) {
+                this.corridorAirlockCenter = new BlockPos(
+                        legacyCenter.getIntOr("X", 0), legacyCenter.getIntOr("Y", 0), legacyCenter.getIntOr("Z", 0));
+            }
+        }
+        this.humEntry = TardisHums.getHumById(Identifier.parse(tag.getStringOr(NbtConstants.TARDIS_CURRENT_HUM, "")));
+
+        this.fuelForIntChange = tag.getDoubleOr(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE, 0.0D);
         if (!tag.contains(NbtConstants.TARDIS_IM_FUEL_FOR_INT_CHANGE)) {
             this.fuelForIntChange = 500; // Default
         }
@@ -309,7 +329,7 @@ public class TardisInteriorManager extends TickableHandler {
         BlockPos.betweenClosedStream(portalDoorLength).forEach(x -> level.setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
         BlockPos.betweenClosedStream(portalDoorWidth).forEach(x -> level.setBlock(x, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL));
 
-        LightningBolt lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, this.operator.getLevel());
+        LightningBolt lightningBolt = new LightningBolt((net.minecraft.world.entity.EntityType<? extends LightningBolt>) (net.minecraft.world.entity.EntityType<?>) net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("lightning_bolt")), this.operator.getLevel());
         lightningBolt.setPos(eyeCenter);
         this.operator.getLevel().addFreshEntity(lightningBolt);
 
@@ -318,7 +338,7 @@ public class TardisInteriorManager extends TickableHandler {
     }
 
     public List<LivingEntity> getCorridorEntities(Level level) {
-        return level.getEntitiesOfClass(LivingEntity.class, new AABB(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)));
+        return level.getEntitiesOfClass(LivingEntity.class, AABB.encapsulatingFullBlocks(STATIC_CORRIDOR_POSITION.north(2).west(2), STATIC_CORRIDOR_POSITION.south(2).east(2).above(4)));
     }
 
     public List<LivingEntity> getAirlockEntities(Level level) {
@@ -327,7 +347,7 @@ public class TardisInteriorManager extends TickableHandler {
             return new ArrayList<>();
         }
 
-        return level.getEntitiesOfClass(LivingEntity.class, new AABB(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
+        return level.getEntitiesOfClass(LivingEntity.class, AABB.encapsulatingFullBlocks(corridorAirlockCenter.north(2).west(2), corridorAirlockCenter.south(2).east(2).above(4)));
     }
 
     public boolean isInAirlock(LivingEntity livingEntity) {
@@ -354,12 +374,12 @@ public class TardisInteriorManager extends TickableHandler {
      */
     public void handleDesktopGeneration(ServerLevel level) {
         if (this.isWaitingToGenerate) {
-            if (level.random.nextInt(30) == 0) {
-                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.random.nextFloat(), level.random.nextFloat() * 0.7F + 0.3F);
+            if (level.getRandom().nextInt(30) == 0) {
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.FIRE_AMBIENT, SoundSource.BLOCKS, 5.0F + level.getRandom().nextFloat(), level.getRandom().nextFloat() * 0.7F + 0.3F);
             }
 
-            if (level.random.nextInt(100) == 0) {
-                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.random.nextFloat(), 0.1f);
+            if (level.getRandom().nextInt(100) == 0) {
+                level.playSound(null, TardisArchitectureHandler.DESKTOP_CENTER_POS, SoundEvents.BEACON_POWER_SELECT, SoundSource.BLOCKS, 15.0F + level.getRandom().nextFloat(), 0.1f);
             }
             //This check doesn't actually work for players that respawn, login or teleport to the Tardis dimension when the Tardis is waiting to generate because our tick method is being called at the start of the server tick.
             //To mitigate the problem where players become stuck inside the stone and suffocate to death, we call TardisLevelOperator#ejectPlayer in the relevant Events.
@@ -367,10 +387,12 @@ public class TardisInteriorManager extends TickableHandler {
                 if (this.operator.triggerRegenState(true)) { //Make sure we actually triggered the regen state before thinking we are good to go
                     this.operator.forceEjectAllPlayers(); //Teleport all players to the exterior in case they still remain.
                     TardisCommonEvents.DESKTOP_CHANGE_EVENT.invoker().onDesktopChange(operator);
-                    this.generateDesktop(this.preparedTheme); //During desktop generation, if the state is still the initial cave state, we will update it to terraformed but no eye activated
-
+                    // Desktop placement can remove the active Terraformer block. Mark the wait as
+                    // complete first so its removal callback cannot cancel this generation and
+                    // clear preparedTheme while the desktop is being built.
                     this.isWaitingToGenerate = false;
                     this.isGeneratingDesktop = true;
+                    this.generateDesktop(this.preparedTheme); //During desktop generation, if the state is still the initial cave state, we will update it to terraformed but no eye activated
                 }
             }
         }
@@ -381,9 +403,16 @@ public class TardisInteriorManager extends TickableHandler {
                 interiorGenerationCooldown--;
             }
 
-            if (interiorGenerationCooldown == 0) {
-                if (this.operator.triggerRegenState(false)) //Make sure we actually triggered the regen state before saying we are good to go.
+            if (interiorGenerationCooldown <= 0) {
+                DesktopTheme themeToVerify = this.preparedTheme != null ? this.preparedTheme : this.currentTheme;
+                if (themeToVerify != null) {
+                    TardisArchitectureHandler.repairDesktopStructureIfNeeded(level, themeToVerify);
+                } else {
+                    whocraft.tardis_refined.TardisRefined.LOGGER.error("Skipping desktop structure verification because both prepared and current desktop themes are missing");
+                }
+                if (this.operator.triggerRegenState(false)) { //Make sure we actually triggered the regen state before saying we are good to go.
                     this.isGeneratingDesktop = false;
+                }
             }
 
             if (level.getGameTime() % 60 == 0) {
@@ -433,7 +462,7 @@ public class TardisInteriorManager extends TickableHandler {
         this.preparedTheme = theme;
         this.isWaitingToGenerate = true;
 
-        // Cooldown based on upgrades
+        // Cooldown based on upgrades. Keep the original three-minute generation time.
         int cooldownSeconds = 180;
 
         UpgradeHandler upgradeHandler = this.operator.getUpgradeHandler();
@@ -454,6 +483,9 @@ public class TardisInteriorManager extends TickableHandler {
     }
 
     public void cancelDesktopChange() {
+        if (this.isGeneratingDesktop) {
+            return;
+        }
         this.preparedTheme = null;
         this.isWaitingToGenerate = false;
     }

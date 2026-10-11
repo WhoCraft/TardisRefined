@@ -2,12 +2,11 @@ package whocraft.tardis_refined.client.screen.components;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 public class BackgroundlessButton extends Button {
@@ -21,10 +20,9 @@ public class BackgroundlessButton extends Button {
     }
 
     @Override
-    protected void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        guiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+    protected void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int i = this.active ? 16777215 : 10526880;
-        guiGraphics.drawString(Minecraft.getInstance().font, this.getMessage(), this.getX(), this.getY(), i | Mth.ceil(this.alpha * 255.0F) << 24, false);
+        guiGraphics.text(Minecraft.getInstance().font, this.getMessage(), this.getX(), this.getY(), i | (int) (this.alpha * 255.0F) << 24);
     }
 
     @Environment(EnvType.CLIENT)

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:glass_pane",
+    "minecraft:slime_ball"
+  ],
+  "result": {
+    "id": "tardis_refined:test_tube"
+  }
+}

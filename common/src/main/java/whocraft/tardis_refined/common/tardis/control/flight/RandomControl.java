@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -13,11 +13,11 @@ import whocraft.tardis_refined.compat.ModCompatChecker;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 
 public class RandomControl extends whocraft.tardis_refined.common.tardis.control.Control {
-    public RandomControl(ResourceLocation id) {
+    public RandomControl(Identifier id) {
         super(id);
     }
 
-    public RandomControl(ResourceLocation id, String langId) {
+    public RandomControl(Identifier id, String langId) {
         super(id, langId);
     }
 
@@ -32,9 +32,9 @@ public class RandomControl extends whocraft.tardis_refined.common.tardis.control
                 currentExLoc = VSHelper.toWorldPosition(pilotManager.getCurrentLocation().getLevel(), currentExLoc);
             }
             pilotManager.getTargetLocation().setPosition(
-                    new BlockPos((currentExLoc.getX() - (increment / 2)) + operator.getLevel().random.nextInt(increment * 2),
+                    new BlockPos((currentExLoc.getX() - (increment / 2)) + operator.getLevel().getRandom().nextInt(increment * 2),
                             150,
-                            (currentExLoc.getZ() - (increment / 2)) + operator.getLevel().random.nextInt(increment * 2)
+                            (currentExLoc.getZ() - (increment / 2)) + operator.getLevel().getRandom().nextInt(increment * 2)
                     )
             );
 

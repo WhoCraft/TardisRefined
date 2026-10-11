@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.InkSacItem;
@@ -32,11 +32,11 @@ public class CorridorGenerator {
             if (itemStack.getItem() == Items.COMMAND_BLOCK_MINECART) {
 
                 String name = "gs_r" + level.getRandom().nextInt(1000);
-                StructureTemplateManager manager = level.getServer().getStructureManager();
-                StructureTemplate template = manager.getOrCreate(new ResourceLocation(name));
-                template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 28, 48), false, Blocks.STRUCTURE_VOID);
+                StructureTemplateManager manager = level.getStructureTemplateManager();
+                StructureTemplate template = manager.getOrCreate(Identifier.parse(name));
+                template.fillFromWorld(level, blockPos.above(), new BlockPos(48, 28, 48), false, java.util.List.of(Blocks.STRUCTURE_VOID));
                 template.setAuthor("");
-                manager.save(new ResourceLocation(name));
+                manager.save(Identifier.parse(name));
 
                 PlayerUtil.sendMessage(player, Component.translatable("Generated structure at: " + name), false);
             }
@@ -89,11 +89,11 @@ public class CorridorGenerator {
                     // Place the final piece.
                     int finalX = x;
                     int finalZ = z;
-                    level.getServer().getStructureManager().get(getStructureResourceLocationByType(currentBlockState, directionBlockStates)).ifPresent(structure -> {
+                    ServerLevel slevel = (ServerLevel) level;
+                    slevel.getStructureTemplateManager().get(getStructureIdentifierByType(currentBlockState, directionBlockStates)).ifPresent(structure -> {
 
                         BlockPos position = new BlockPos(corner.getX() + (finalX * PLACEMENT_OFFSET), corner.getY() + 10, corner.getZ() + (finalZ * PLACEMENT_OFFSET));
                         StructurePlaceSettings settings = new StructurePlaceSettings();
-                        ServerLevel slevel = (ServerLevel) level;
                         structure.placeInWorld(slevel, position, position, settings, level.getRandom(), 3);
                     });
                 }
@@ -103,17 +103,17 @@ public class CorridorGenerator {
         level.setBlockAndUpdate(corner.above(9), TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get().defaultBlockState());
     }
 
-    private static ResourceLocation getStructureResourceLocationByType(BlockState blockState, BlockState[] results) {
+    private static Identifier getStructureIdentifierByType(BlockState blockState, BlockState[] results) {
 
         if (blockState == Blocks.GLOWSTONE.defaultBlockState()) {
-            return getRoomPieceResourceLocation(results);
+            return getRoomPieceIdentifier(results);
         }
 
         if (blockState == Blocks.REDSTONE_BLOCK.defaultBlockState()) {
-            return getRoomPieceConnectionResourceLocation(results);
+            return getRoomPieceConnectionIdentifier(results);
         }
 
-        return getCorridorPieceResourceLocation(results);
+        return getCorridorPieceIdentifier(results);
     }
 
     private static BlockState getBlockStateAtGridPos(BlockState[][] states, int x, int z) {
@@ -122,97 +122,97 @@ public class CorridorGenerator {
         return states[x][z];
     }
 
-    private static ResourceLocation getRoomPieceConnectionResourceLocation(BlockState[] results) {
+    private static Identifier getRoomPieceConnectionIdentifier(BlockState[] results) {
         // CHECK IF NORTH/SOUTH/EAST/WEST
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && !doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("room_entry_ns");
+            return createIdentifier("room_entry_ns");
         }
 
         if (!doesBlockExist(results[0]) && !doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("room_entry_ew");
+            return createIdentifier("room_entry_ew");
         }
 
-        return new ResourceLocation("");
+        return Identifier.parse("");
     }
 
-    private static ResourceLocation getRoomPieceResourceLocation(BlockState[] results) {
+    private static Identifier getRoomPieceIdentifier(BlockState[] results) {
 
 
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
 
             if (isBlockRoomConnection(results[0])) {
-                return createResourceLocation("room_door_n");
+                return createIdentifier("room_door_n");
             }
             if (isBlockRoomConnection(results[1])) {
-                return createResourceLocation("room_door_s");
+                return createIdentifier("room_door_s");
             }
             if (isBlockRoomConnection(results[2])) {
-                return createResourceLocation("room_door_e");
+                return createIdentifier("room_door_e");
             }
             if (isBlockRoomConnection(results[3])) {
-                return createResourceLocation("room_door_w");
+                return createIdentifier("room_door_w");
             }
 
 
-            return createResourceLocation("room_center");
+            return createIdentifier("room_center");
         }
 
         // CHECK IF NORTH/SOUTH/EAST/WEST
         if (doesBlockExist(results[0]) && !doesBlockExist(results[1]) && doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("room_wall_ne");
+            return createIdentifier("room_wall_ne");
         }
 
         if (doesBlockExist(results[0]) && !doesBlockExist(results[1]) && !doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("room_wall_nw");
+            return createIdentifier("room_wall_nw");
         }
 
         if (!doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("room_wall_se");
+            return createIdentifier("room_wall_se");
         }
 
         if (!doesBlockExist(results[0]) && doesBlockExist(results[1]) && !doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("room_wall_sw");
+            return createIdentifier("room_wall_sw");
         }
 
         if (doesBlockExist(results[0]) && !doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
 
             if (isBlockRoomConnection(results[1])) {
-                return createResourceLocation("room_door_s");
+                return createIdentifier("room_door_s");
             }
 
-            return createResourceLocation("room_wall_nwe");
+            return createIdentifier("room_wall_nwe");
         }
 
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
 
             if (isBlockRoomConnection(results[3])) {
-                return createResourceLocation("room_door_w");
+                return createIdentifier("room_door_w");
             }
 
-            return createResourceLocation("room_wall_nse");
+            return createIdentifier("room_wall_nse");
 
         }
 
         if (!doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
 
             if (isBlockRoomConnection(results[0])) {
-                return createResourceLocation("room_door_n");
+                return createIdentifier("room_door_n");
             }
 
-            return createResourceLocation("room_wall_sew");
+            return createIdentifier("room_wall_sew");
         }
 
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && !doesBlockExist(results[2]) && doesBlockExist(results[3])) {
 
             if (isBlockRoomConnection(results[2])) {
-                return createResourceLocation("room_door_e");
+                return createIdentifier("room_door_e");
             }
 
-            return createResourceLocation("room_wall_nsw");
+            return createIdentifier("room_wall_nsw");
         }
 
 
-        return new ResourceLocation("");
+        return Identifier.parse("");
     }
 
     private static boolean doesBlockExist(BlockState blockState) {
@@ -224,60 +224,59 @@ public class CorridorGenerator {
     }
 
 
-    private static ResourceLocation getCorridorPieceResourceLocation(BlockState[] results) {
+    private static Identifier getCorridorPieceIdentifier(BlockState[] results) {
 
         // CHECK IF NORTH/SOUTH/EAST/WEST
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && !doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_ns");
+            return createIdentifier("corridor_piece_ns");
         }
 
         if (!doesBlockExist(results[0]) && !doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_ew");
+            return createIdentifier("corridor_piece_ew");
         }
 
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_cross");
+            return createIdentifier("corridor_piece_cross");
         }
 
         // CHECK IF NORTH/SOUTH/EAST/WEST
         if (doesBlockExist(results[0]) && !doesBlockExist(results[1]) && doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_ne");
+            return createIdentifier("corridor_piece_ne");
         }
 
         if (doesBlockExist(results[0]) && !doesBlockExist(results[1]) && !doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_nw");
+            return createIdentifier("corridor_piece_nw");
         }
 
         if (!doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_se");
+            return createIdentifier("corridor_piece_se");
         }
 
         if (!doesBlockExist(results[0]) && doesBlockExist(results[1]) && !doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_sw");
+            return createIdentifier("corridor_piece_sw");
         }
 
         if (doesBlockExist(results[0]) && !doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_new");
+            return createIdentifier("corridor_piece_new");
         }
 
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && !doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_nse");
+            return createIdentifier("corridor_piece_nse");
         }
 
         if (!doesBlockExist(results[0]) && doesBlockExist(results[1]) && doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_sew");
+            return createIdentifier("corridor_piece_sew");
         }
 
         if (doesBlockExist(results[0]) && doesBlockExist(results[1]) && !doesBlockExist(results[2]) && doesBlockExist(results[3])) {
-            return createResourceLocation("corridor_piece_nsw");
+            return createIdentifier("corridor_piece_nsw");
         }
 
-        return new ResourceLocation("");
+        return Identifier.parse("");
     }
 
-    private static ResourceLocation createResourceLocation(String id) {
-        return new ResourceLocation(TardisRefined.MODID, "corridor_template/" + id);
+    private static Identifier createIdentifier(String id) {
+        return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "corridor_template/" + id);
     }
 
 }
-

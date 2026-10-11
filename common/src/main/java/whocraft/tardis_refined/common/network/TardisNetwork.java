@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.common.network;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.network.messages.*;
 import whocraft.tardis_refined.common.network.messages.hums.C2SChangeHum;
@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.network.messages.waypoints.*;
 
 public class TardisNetwork {
 
-    public static final NetworkManager NETWORK = NetworkManager.create(new ResourceLocation(TardisRefined.MODID, "channel"));
+    public static final NetworkManager NETWORK = NetworkManager.create(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "channel"));
 
     public static MessageType MONITOR_CLOSED, MONITOR_POSITION_DATA, OPEN_CRAFTING_SCREEN, START_VORTEX_SESSION, END_VORTEX_SESSION, TARDIS_EXIT, OPEN_SHELL_SELECT, SYNC_HUMS, OPEN_WAYPOINTS_DISPLAY, DEL_WAYPOINT, CLIENT_OPEN_COORDS_DISPLAY, SERVER_OPEN_COORDS_DISPLAY, UPGRADE_SCREEN_S2C,
             REQUEST_SHELL_C2S, CLIENT_OPEN_COORDS_SCREEN, SERVER_OPEN_COORDS_SCREEN, CLIENT_OPEN_EDIT_COORDS_SCREEN, SERVER_OPEN_EDIT_COORDS_SCREEN, UPLOAD_WAYPOINT,
@@ -64,7 +64,6 @@ public class TardisNetwork {
         CLIENT_OPEN_COORDS_SCREEN = NETWORK.registerC2S("client_open_coords_screen", C2SOpenCoordinatesDisplayMessage::new);
         UNLOCK_UPGRADE = NETWORK.registerC2S("unlock_upgrade", C2SUnlockUpgrade::new);
         REQUEST_SHELL_C2S = NETWORK.registerC2S("request_shell_c2s", C2SRequestShellSelection::new);
-        TARDIS_EXIT = NETWORK.registerC2S("tardis_exit", ExitTardisViewMessage::new);
         MONITOR_CLOSED = NETWORK.registerC2S("monitor_closed", C2SMonitorClosed::new);
         CHANGE_HUM = NETWORK.registerC2S("change_hum", C2SChangeHum::new);
         EJECT_PLAYER = NETWORK.registerC2S("eject_player", C2SEjectPlayer::new);

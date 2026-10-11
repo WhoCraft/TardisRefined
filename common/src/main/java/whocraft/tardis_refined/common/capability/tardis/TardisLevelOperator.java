@@ -1,12 +1,11 @@
 package whocraft.tardis_refined.common.capability.tardis;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -15,6 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.api.event.ShellChangeSource;
 import whocraft.tardis_refined.api.event.ShellChangeSources;
 import whocraft.tardis_refined.api.event.TardisCommonEvents;
@@ -34,14 +34,16 @@ import whocraft.tardis_refined.common.tardis.TardisArchitectureHandler;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.TardisNavLocation;
 import whocraft.tardis_refined.common.tardis.manager.*;
+import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.util.TardisHelper;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortals;
 import whocraft.tardis_refined.compat.valkyrienskies.VSHelper;
 import whocraft.tardis_refined.constants.NbtConstants;
 import whocraft.tardis_refined.patterns.ShellPattern;
 import whocraft.tardis_refined.patterns.ShellPatterns;
+import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 
@@ -71,6 +73,8 @@ public class TardisLevelOperator {
 
     private boolean hasInitiallyGenerated = false;
     private TardisInternalDoor internalDoor = null;
+    private BlockPos internalDoorPosition = null;
+    private UUID pilotVillagerUuid;
     // TARDIS state refers to different stages of TARDIS creation. This allows for different logic to operate in those moments.
     private int tardisState = 0;
 
@@ -91,9 +95,8 @@ public class TardisLevelOperator {
         this.progressionManager = new ProgressionManager();
     }
 
-    @ExpectPlatform
-    public static Optional<TardisLevelOperator> get(ServerLevel level) {
-        throw new AssertionError();
+    public static Optional<TardisLevelOperator> get(ServerLevel level){
+        return whocraft.tardis_refined.common.capability.tardis.fabric.TardisLevelOperatorImpl.get(level);
     }
 
     public UpgradeHandler getUpgradeHandler() {
@@ -108,6 +111,23 @@ public class TardisLevelOperator {
         return aestheticHandler;
     }
 
+    /** Reads appearance from the exterior that players can actually see. */
+    public Identifier getExteriorShellTheme() {
+        TardisNavLocation location = pilotingManager.getCurrentLocation();
+        if (location != null && location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity shell) {
+            return shell.theme();
+        }
+        return aestheticHandler.getShellTheme();
+    }
+
+    public ShellPattern getExteriorShellPattern() {
+        TardisNavLocation location = pilotingManager.getCurrentLocation();
+        if (location != null && location.getLevel().getBlockEntity(location.getPosition()) instanceof GlobalShellBlockEntity shell) {
+            return shell.pattern();
+        }
+        return aestheticHandler.shellPattern();
+    }
+
     public FlightDanceManager getFlightDanceManager() {
         return this.flightDanceManager;
     }
@@ -115,10 +135,14 @@ public class TardisLevelOperator {
     public CompoundTag serializeNBT() {
         CompoundTag compoundTag = new CompoundTag();
         compoundTag.putBoolean(NbtConstants.TARDIS_IS_SETUP, this.hasInitiallyGenerated);
+        if (this.pilotVillagerUuid != null) {
+            compoundTag.putString("tardis_pilot_villager", this.pilotVillagerUuid.toString());
+        }
 
-        if (this.internalDoor != null) {
-            compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
-            compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION, NbtUtils.writeBlockPos(this.internalDoor.getDoorPosition()));
+        if (this.internalDoor != null || this.internalDoorPosition != null) {
+            if (this.internalDoor != null) compoundTag.putString(NbtConstants.TARDIS_INTERNAL_DOOR_ID, this.internalDoor.getID());
+            BlockPos doorPosition = this.internalDoor != null ? this.internalDoor.getDoorPosition() : this.internalDoorPosition;
+            compoundTag.put(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION, BlockPos.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, doorPosition).getOrThrow());
         }
 
         compoundTag = this.exteriorManager.saveData(compoundTag);
@@ -130,19 +154,36 @@ public class TardisLevelOperator {
         compoundTag = this.flightDanceManager.saveData(compoundTag);
         compoundTag = this.progressionManager.saveData(compoundTag);
 
+        Identifier selectedConsoleTheme = this.tardisClientData.getConsoleTheme();
+        if (selectedConsoleTheme != null) {
+            compoundTag.putString("selected_console_theme", selectedConsoleTheme.toString());
+        }
+        Identifier selectedConsolePattern = this.tardisClientData.getConsolePattern();
+        if (selectedConsolePattern != null) {
+            compoundTag.putString("selected_console_pattern", selectedConsolePattern.toString());
+        }
+
         compoundTag.putInt("tardis_state", this.tardisState);
 
         return compoundTag;
     }
 
     public void deserializeNBT(CompoundTag tag) {
-        this.hasInitiallyGenerated = tag.getBoolean(NbtConstants.TARDIS_IS_SETUP);
+        this.hasInitiallyGenerated = tag.getBooleanOr(NbtConstants.TARDIS_IS_SETUP, false);
+        String pilotUuid = tag.getStringOr("tardis_pilot_villager", "");
+        try {
+            this.pilotVillagerUuid = pilotUuid.isEmpty() ? null : UUID.fromString(pilotUuid);
+        } catch (IllegalArgumentException ignored) {
+            this.pilotVillagerUuid = null;
+        }
 
-        CompoundTag doorPos = tag.getCompound(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
+        net.minecraft.nbt.Tag doorPos = tag.get(NbtConstants.TARDIS_INTERNAL_DOOR_POSITION);
         if (doorPos != null) {
-            if (level.getBlockEntity(NbtUtils.readBlockPos(doorPos)) instanceof TardisInternalDoor door) {
+            BlockPos parsedDoorPos = BlockPos.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, doorPos).result().orElse(null);
+            this.internalDoorPosition = parsedDoorPos;
+            if (parsedDoorPos != null && level.getBlockEntity(parsedDoorPos) instanceof TardisInternalDoor door) {
                 this.internalDoor = door;
-                this.internalDoor.setID(tag.getString(NbtConstants.TARDIS_INTERNAL_DOOR_ID));
+                this.internalDoor.setID(tag.getStringOr(NbtConstants.TARDIS_INTERNAL_DOOR_ID, ""));
             }
         }
 
@@ -156,7 +197,34 @@ public class TardisLevelOperator {
         this.flightDanceManager.loadData(tag);
         this.progressionManager.loadData(tag);
 
-        this.tardisState = tag.getInt("tardis_state");
+        this.tardisState = tag.getIntOr("tardis_state", 0);
+
+        // Preserve a configurator-selected console across restarts. Older saves
+        // lack these fields, so derive their initial appearance from the desktop.
+        Identifier savedConsoleTheme = tag.getString("selected_console_theme")
+                .map(Identifier::parse).orElse(null);
+        if (savedConsoleTheme == null
+                || ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.get(savedConsoleTheme) == null) {
+            savedConsoleTheme = TardisArchitectureHandler.getConsoleThemeForDesktop(this.interiorManager.currentTheme());
+        }
+        if (savedConsoleTheme != null) {
+            this.tardisClientData.setConsoleTheme(savedConsoleTheme);
+        }
+        Identifier savedConsolePattern = tag.getString("selected_console_pattern")
+                .map(Identifier::parse).orElse(null);
+        if (savedConsolePattern != null && savedConsoleTheme != null
+                && ConsolePatterns.doesPatternExist(savedConsoleTheme, savedConsolePattern)) {
+            this.tardisClientData.setConsolePattern(savedConsolePattern);
+        }
+        if (this.level instanceof ServerLevel serverLevel) {
+            if (this.tardisClientData.getConsolePattern() == null) {
+                Identifier desktopConsolePattern = TardisArchitectureHandler.getConsolePatternForDesktop(
+                        serverLevel, this.interiorManager.currentTheme());
+                if (desktopConsolePattern != null) {
+                    this.tardisClientData.setConsolePattern(desktopConsolePattern);
+                }
+            }
+        }
 
         tardisClientData.sync();
     }
@@ -167,6 +235,14 @@ public class TardisLevelOperator {
 
     public ResourceKey<Level> getLevelKey() {
         return this.levelKey;
+    }
+
+    public UUID getPilotVillagerUuid() {
+        return this.pilotVillagerUuid;
+    }
+
+    public void setPilotVillagerUuid(UUID pilotVillagerUuid) {
+        this.pilotVillagerUuid = pilotVillagerUuid;
     }
 
     public void tick(ServerLevel level) {
@@ -191,8 +267,8 @@ public class TardisLevelOperator {
         var shouldSync = level.getGameTime() % 40 == 0;
         if (shouldSync) {
             tardisClientData.setIsOnCooldown(pilotingManager.isInRecovery());
-            tardisClientData.setShellTheme(aestheticHandler.getShellTheme());
-            tardisClientData.setShellPattern(aestheticHandler.shellPattern().id());
+            tardisClientData.setShellTheme(getExteriorShellTheme());
+            tardisClientData.setShellPattern(getExteriorShellPattern().id());
             tardisClientData.setHumEntry(interiorManager.getHumEntry());
             tardisClientData.setFuel(pilotingManager.getFuel());
             tardisClientData.setMaximumFuel(pilotingManager.getMaximumFuel());
@@ -302,9 +378,9 @@ public class TardisLevelOperator {
         }
 
         if (aestheticHandler.getShellTheme() != null) {
-            ResourceLocation theme = aestheticHandler.getShellTheme();
+            Identifier theme = aestheticHandler.getShellTheme();
             if (ModCompatChecker.immersivePortals() && !(this.internalDoor instanceof RootShellDoorBlockEntity)) {
-                if (!ignoreDoor && level.dimensionTypeId() == TRDimensionTypes.TARDIS && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(doorLevel.dimension().location().getPath()))) {
+                if (!ignoreDoor && level.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS) && ImmersivePortals.isShellThemeSupported(theme) && ImmersivePortals.doPortalsExistForTardis(UUID.fromString(doorLevel.dimension().identifier().getPath()))) {
                     return false;
                 }
             }
@@ -349,6 +425,11 @@ public class TardisLevelOperator {
     public boolean forceEjectPlayer(ServerPlayer player) {
         if (player != null) {
             TardisNavLocation location = this.getPilotingManager().getCurrentLocation();
+            if (location == null || location.getLevel() == null) {
+                TardisRefined.LOGGER.warn("Could not eject player {} from {}: TARDIS has no valid current location",
+                        player.getGameProfile().name(), this.level.dimension().identifier());
+                return false;
+            }
             return this.exitTardis(player, location.getLevel(), location.getPosition(), location.getDirection(), true);
         }
         return false;
@@ -406,7 +487,7 @@ public class TardisLevelOperator {
      *
      * @param location         - location of the block we are updating
      * @param targetBlockState - Only leave this empty if we are landing the Tardis after finishing flight, otherwise provide a value to indicate we are updating specific data on an existing Tardis shell.
-     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, ShellChangeSource)}
+     * @implNote You must call this after calling {@link TardisLevelOperator#setShellTheme(Identifier, Identifier, ShellChangeSource)}
      */
     public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> targetBlockState) {
         setOrUpdateExteriorBlock(location, targetBlockState, false, ShellChangeSources.GENERIC_UPDATE);
@@ -419,11 +500,11 @@ public class TardisLevelOperator {
      * @param overridingBlockState - Pass in an updated exterior shell blockstate with the data you want to include. Only leave this empty if we are landing the Tardis after finishing flight, otherwise provide a value to indicate we are updating specific data on an existing Tardis shell.
      * @param startingRegen        - If we are starting or finishing the regenerating of the Tardis. e.g. During Desktop generation.
      * @param shellChangeSource    - Source of the shell update. If the Shell Change event was caused by a Tardis being setup from a Root Shell to a fully functioning version.
-     * @implNote If we have updated the ShellTheme but haven't updated the Exterior data yet, you must call this after calling {@link TardisLevelOperator#setShellTheme(ResourceLocation, ResourceLocation, ShellChangeSource)}
+     * @implNote If we have updated the ShellTheme but haven't updated the Exterior data yet, you must call this after calling {@link TardisLevelOperator#setShellTheme(Identifier, Identifier, ShellChangeSource)}
      */
     public void setOrUpdateExteriorBlock(TardisNavLocation location, Optional<BlockState> overridingBlockState, boolean startingRegen, ShellChangeSource shellChangeSource) {
         AestheticHandler aestheticHandler = this.getAestheticHandler();
-        ResourceLocation theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
+        Identifier theme = (aestheticHandler.getShellTheme() != null) ? aestheticHandler.getShellTheme() : ShellTheme.HALF_BAKED.getId();
         ShellTheme shellTheme = ShellTheme.getShellTheme(theme);
         ShellPattern shellPattern = aestheticHandler.getShellTheme() != null ? aestheticHandler.shellPattern() : null;
 
@@ -466,6 +547,9 @@ public class TardisLevelOperator {
         // Set TARDIS Id, so the block actually knows what it is
         if (targetLevel.getBlockEntity(targetLocation) instanceof GlobalShellBlockEntity globalShellBlockEntity) {
             globalShellBlockEntity.setTardisId(levelKey);
+            // setBlock above may recreate the block entity. Restore both parts
+            // of its selected appearance, not only the pattern texture.
+            globalShellBlockEntity.setShellTheme(theme);
             globalShellBlockEntity.setPattern(shellPattern);
             globalShellBlockEntity.sendUpdates();
         }
@@ -536,7 +620,7 @@ public class TardisLevelOperator {
     /**
      * Unified logic to update the Tardis' ShellTheme and Pattern, as well as the exterior and internal doors
      */
-    public void setShellTheme(ResourceLocation shellTheme, ResourceLocation shellPattern, ShellChangeSource shellChangeSource) {
+    public void setShellTheme(Identifier shellTheme, Identifier shellPattern, ShellChangeSource shellChangeSource) {
         aestheticHandler.setShellTheme(shellTheme, shellPattern, this.getPilotingManager().getCurrentLocation());
         aestheticHandler.setShellPattern(ShellPatterns.getPatternOrDefault(shellTheme, shellPattern));
 
@@ -569,6 +653,11 @@ public class TardisLevelOperator {
     }
 
     public TardisInternalDoor getInternalDoor() {
+        if (this.internalDoor == null && this.internalDoorPosition != null) {
+            if (this.level.getBlockEntity(this.internalDoorPosition) instanceof TardisInternalDoor door) {
+                this.setInternalDoor(door);
+            }
+        }
         return this.internalDoor;
     }
 
@@ -582,6 +671,7 @@ public class TardisLevelOperator {
             this.internalDoor.onSetMainDoor(false);
         }
         this.internalDoor = door;
+        this.internalDoorPosition = door == null ? null : door.getDoorPosition();
         if (door != null) //If the new door value is not null
             this.internalDoor.onSetMainDoor(true);
     }

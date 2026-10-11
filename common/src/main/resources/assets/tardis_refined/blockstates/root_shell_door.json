@@ -1,0 +1,100 @@
+{
+  "variants": {
+    "facing=east,locked=false,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=false,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=false,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=false,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=true,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=true,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=true,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=east,locked=true,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=false,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=false,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=false,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=false,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=true,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=true,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=true,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=north,locked=true,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=false,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=false,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=false,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=false,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=true,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=true,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=true,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=south,locked=true,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=false,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=false,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=false,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=false,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=true,offset=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=true,offset=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=true,offset=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "facing=west,locked=true,offset=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    }
+  }
+}

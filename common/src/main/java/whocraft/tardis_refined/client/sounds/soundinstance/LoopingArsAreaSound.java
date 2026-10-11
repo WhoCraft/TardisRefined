@@ -17,7 +17,7 @@ public class LoopingArsAreaSound extends LoopingTardisInteriorSound {
     @Override
     public void playSoundInstance(Player player) {
         BlockPos position = player.blockPosition();
-        Vec3 playerVec = position.getCenter();
+        Vec3 playerVec = Vec3.atCenterOf(position);
         this.setLocation(playerVec);
         double distance = playerVec.distanceTo(new Vec3(x, y, z));
         double maxDistance = 11.0;

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "tardis_refined:block/ars_leaves",
+    "side": "tardis_refined:block/ars_leaves",
+    "top": "tardis_refined:block/ars_leaves"
+  }
+}

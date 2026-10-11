@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.patterns;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
@@ -20,35 +20,35 @@ public class ConsolePatterns {
 
     public static final ConsolePattern DEFAULT = (ConsolePattern) new ConsolePattern(ResourceConstants.DEFAULT_PATTERN_ID, new PatternTexture(createConsolePatternTextureLocation(ConsoleTheme.FACTORY.getId(), ConsoleTheme.FACTORY.getId().getPath() + "_console"), true), Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE)).setThemeId(ConsoleTheme.FACTORY.getId());
     private static final PatternReloadListener<ConsolePatternCollection, ConsolePattern> PATTERNS = PatternReloadListener.createListener(TardisRefined.MODID + "/patterns/console", ConsolePatternCollection.CODEC, patternCollections -> PatternReloadListener.processPatternCollections(patternCollections));
-    private static final Map<ResourceLocation, List<ConsolePattern>> DEFAULT_PATTERNS = new HashMap<>();
+    private static final Map<Identifier, List<ConsolePattern>> DEFAULT_PATTERNS = new HashMap<>();
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/ConsolePatterns");
 
     public static PatternReloadListener<ConsolePatternCollection, ConsolePattern> getReloadListener() {
         return PATTERNS;
     }
 
-    public static Map<ResourceLocation, List<ConsolePattern>> getRegistry() {
+    public static Map<Identifier, List<ConsolePattern>> getRegistry() {
         return PATTERNS.getData();
     }
 
     /**
      * Lookup the list of {@link ConsolePattern}(s) in a {@link ConsolePatternCollection} for a given {@link ConsoleTheme}
      */
-    public static List<ConsolePattern> getPatternsForTheme(ResourceLocation consoleThemeId) {
+    public static List<ConsolePattern> getPatternsForTheme(Identifier consoleThemeId) {
         return PATTERNS.getData().get(consoleThemeId);
     }
 
     /**
      * Retrieves a pattern from a default list of patterns, for use when Capabiliteis or Cardinal Components classloads patterns before datapack loading
      */
-    public static List<ConsolePattern> getPatternsForThemeDefault(ResourceLocation consoleThemeId) {
+    public static List<ConsolePattern> getPatternsForThemeDefault(Identifier consoleThemeId) {
         return DEFAULT_PATTERNS.get(consoleThemeId);
     }
 
     /**
      * Helper method to get a {@link ConsolePatternCollection} by theme ID
      */
-    public static List<ConsolePattern> getPatternCollectionForTheme(ResourceLocation consoleThemeId) {
+    public static List<ConsolePattern> getPatternCollectionForTheme(Identifier consoleThemeId) {
         return PATTERNS.getData().get(consoleThemeId);
     }
 
@@ -59,8 +59,8 @@ public class ConsolePatterns {
      * we will iterate through all {@link ShellPatternCollection} (which holds the theme ID) and find matchine ones
      */
     public static ConsoleTheme getThemeForPattern(ConsolePattern pattern) {
-        Map<ResourceLocation, List<ConsolePattern>> entries = ConsolePatterns.getRegistry();
-        for (Map.Entry<ResourceLocation, List<ConsolePattern>> entry : entries.entrySet()) {
+        Map<Identifier, List<ConsolePattern>> entries = ConsolePatterns.getRegistry();
+        for (Map.Entry<Identifier, List<ConsolePattern>> entry : entries.entrySet()) {
             if (pattern.getThemeId() == entry.getKey()) {
                 return ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.get(entry.getKey());
             }
@@ -72,7 +72,7 @@ public class ConsolePatterns {
      * Sanity check to make sure a Pattern for a ConsoleTheme exists
      * <br> A likely use case for this is when entries for the patterns are being modified in some way, such as when something triggers datapacks to be reloaded
      */
-    public static boolean doesPatternExist(ResourceLocation consoleThemeId, ResourceLocation patternId) {
+    public static boolean doesPatternExist(Identifier consoleThemeId, Identifier patternId) {
         List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleThemeId);
         for (ConsolePattern consolePattern : consolePatterns) {
             if (Objects.equals(consolePattern.id(), patternId)) {
@@ -85,7 +85,7 @@ public class ConsolePatterns {
     /**
      * Lookup up a {@link ConsolePattern} within a particular {@link ConsoleTheme} or get the first one in the list if the input pattern id cannot be found
      */
-    public static ConsolePattern getPatternOrDefault(ResourceLocation consoleThemeId, ResourceLocation id) {
+    public static ConsolePattern getPatternOrDefault(Identifier consoleThemeId, Identifier id) {
         List<ConsolePattern> consolePatterns = getPatternsForTheme(consoleThemeId);
         for (ConsolePattern consolePattern : consolePatterns) {
             if (Objects.equals(consolePattern.id(), id)) {
@@ -95,7 +95,7 @@ public class ConsolePatterns {
         return consolePatterns.get(0);
     }
 
-    public static ConsolePattern next(ResourceLocation consoleThemeId, ConsolePattern currentPattern) {
+    public static ConsolePattern next(Identifier consoleThemeId, ConsolePattern currentPattern) {
         List<ConsolePattern> collection = getPatternCollectionForTheme(consoleThemeId);
         return next(collection, currentPattern);
     }
@@ -115,7 +115,7 @@ public class ConsolePatterns {
         return patterns.get(prevIndex + 1);
     }
 
-    private static void addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture) {
+    private static void addDefaultPattern(Identifier themeId, String patternId, String textureName, boolean hasEmissiveTexture) {
         addDefaultPattern(themeId, patternId, textureName, hasEmissiveTexture, Optional.of(TRConsoleSoundProfiles.DEFAULT_SOUND_PROFILE));
     }
 
@@ -127,7 +127,7 @@ public class ConsolePatterns {
      *
      * @implSpec INTERNAL USE ONLY
      */
-    private static void addDefaultPattern(ResourceLocation themeId, String patternId, String textureName, boolean hasEmissiveTexture, Optional<ConsoleSoundProfile> soundProfile) {
+    private static void addDefaultPattern(Identifier themeId, String patternId, String textureName, boolean hasEmissiveTexture, Optional<ConsoleSoundProfile> soundProfile) {
         List<ConsolePattern> consolePatternList;
         ConsolePattern pattern = (ConsolePattern) new ConsolePattern(patternId, new PatternTexture(createConsolePatternTextureLocation(themeId, textureName), hasEmissiveTexture), soundProfile).setThemeId(themeId);
 
@@ -147,8 +147,8 @@ public class ConsolePatterns {
     /**
      * @implSpec INTERNAL USE ONLY
      */
-    private static ResourceLocation createConsolePatternTextureLocation(ResourceLocation themeId, String textureName) {
-        return new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/" + themeId.getPath().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
+    private static Identifier createConsolePatternTextureLocation(Identifier themeId, String textureName) {
+        return Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/" + themeId.getPath().toLowerCase(Locale.ENGLISH) + "/" + textureName + ".png");
     }
 
     /**
@@ -157,12 +157,12 @@ public class ConsolePatterns {
      *
      * @implNote Used for datagen providers when we may need to lookup the map multiple times, but only need to register default entries once.
      */
-    public static Map<ResourceLocation, List<ConsolePattern>> getDefaultPatterns() {
+    public static Map<Identifier, List<ConsolePattern>> getDefaultPatterns() {
         return DEFAULT_PATTERNS;
     }
 
-    public static Map<ResourceLocation, ConsolePatternCollection> getDefaultPatternsDatagen() {
-        Map<ResourceLocation, ConsolePatternCollection> defaults = new HashMap<>();
+    public static Map<Identifier, ConsolePatternCollection> getDefaultPatternsDatagen() {
+        Map<Identifier, ConsolePatternCollection> defaults = new HashMap<>();
         DEFAULT_PATTERNS.forEach((key, value) -> defaults.put(key, (ConsolePatternCollection) new ConsolePatternCollection(value).setThemeId(key)));
         return defaults;
     }
@@ -171,10 +171,10 @@ public class ConsolePatterns {
      * Registers the Tardis Refined default Console Patterns and returns a map of them by Theme ID
      * <br> Should only be called ONCE when needed
      */
-    public static Map<ResourceLocation, List<ConsolePattern>> registerDefaultPatterns() {
+    public static Map<Identifier, List<ConsolePattern>> registerDefaultPatterns() {
         DEFAULT_PATTERNS.clear();
         /*Add Base Textures*/
-        for (ResourceLocation consoleTheme : ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.keySet()) {
+        for (Identifier consoleTheme : ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.keySet()) {
             boolean hasDefaultEmission = consoleTheme == ConsoleTheme.VICTORIAN.getId() || consoleTheme == ConsoleTheme.COPPER.getId() || consoleTheme == ConsoleTheme.CRYSTAL.getId() || consoleTheme == ConsoleTheme.CORAL.getId() || consoleTheme == ConsoleTheme.FACTORY.getId() || consoleTheme == ConsoleTheme.INITIATIVE.getId() || consoleTheme == ConsoleTheme.TOYOTA.getId();
             addDefaultPattern(consoleTheme, ResourceConstants.DEFAULT_PATTERN_ID.getPath(), consoleTheme.getPath() + "_console", hasDefaultEmission);
         }

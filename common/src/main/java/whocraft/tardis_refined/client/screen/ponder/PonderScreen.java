@@ -1,16 +1,11 @@
 package whocraft.tardis_refined.client.screen.ponder;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.gui.components.ObjectSelectionList;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +34,7 @@ public class PonderScreen extends MonitorOS {
     private boolean isDragging = false;
 
     public PonderScreen(ManipulatorCraftingRecipe recipe) {
-        super(getResultName(recipe), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(getResultName(recipe), Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
 
         this.setEvents(() -> {
 
@@ -86,7 +81,6 @@ public class PonderScreen extends MonitorOS {
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(
                 this.minecraft, 105, 80, leftPos, topPos + 15, topPos + monitorHeight - 30, 12
         );
-        selectionList.setRenderBackground(false);
 
         // Map to track item names and their counts
         Map<String, Integer> itemCounts = new HashMap<>();
@@ -101,47 +95,30 @@ public class PonderScreen extends MonitorOS {
             SelectionListEntry selectionListEntry = new SelectionListEntry(
                     Component.literal(itemNameWithCount), (entryCallback) -> {
             }, leftPos);
-            selectionList.children().add(selectionListEntry);
+            selectionList.addEntryPublic(selectionListEntry);
         }
 
         return selectionList;
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         assert minecraft != null;
 
         if (recipe.ingredients().isEmpty()) return;
 
-        PoseStack pose = guiGraphics.pose();
-
-        Lighting.setupFor3DItems();
-        pose.pushPose();
-        pose.translate((float) width / 2 - 50, height / 2f, 500);
-        pose.mulPose(Axis.XP.rotationDegrees(rotationX / 2));
-        pose.mulPose(Axis.YP.rotationDegrees(rotationY));
-        pose.scale(-20, -20, -20);
-        pose.translate(-xSize / 2f, -ySize / 2f, -zSize / 2f);
-
-        int i = 0;
-        int e = age / 10;
+        int panelX = width / 2;
+        int panelY = Math.max(40, height / 4);
+        guiGraphics.centeredText(minecraft.font, "Recipe ingredients", panelX, panelY, 0xFFFFFFFF);
+        int row = 0;
         for (ManipulatorCraftingIngredient ingredient : recipe.ingredients()) {
-            if (i > e % recipe.ingredients().size()) break;
-            BlockState s = ingredient.inputBlockState();
             BlockPos pos = ingredient.relativeBlockPos();
-            pose.pushPose();
-            pose.translate(pos.getX(), pos.getY(), pos.getZ());
-            assert minecraft.level != null;
-            RenderSystem.setShaderColor(1, 1, 1, 1);
-            minecraft.getBlockRenderer().renderSingleBlock(s, guiGraphics.pose(), guiGraphics.bufferSource(), LightTexture.FULL_BLOCK, OverlayTexture.NO_OVERLAY);
-            pose.popPose();
-            i++;
+            String line = ingredient.inputBlockState().getBlock().getName().getString()
+                    + "  (" + pos.getX() + ", " + pos.getY() + ", " + pos.getZ() + ")";
+            guiGraphics.text(minecraft.font, line, panelX - 70, panelY + 16 + row * 12, 0xFFE0E0E0);
+            row++;
         }
-
-        guiGraphics.flush();
-        Lighting.setupFor3DItems();
-        pose.popPose();
     }
 
     @Override
@@ -151,27 +128,27 @@ public class PonderScreen extends MonitorOS {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
         if (isDragging) {
             rotationY += (float) (deltaX * 0.5f);
             rotationX -= (float) (deltaY * 0.5f);
             rotationX = Math.max(-90, Math.min(90, rotationX));
         }
-        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+        return super.mouseDragged(event, deltaX, deltaY);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         isDragging = true;
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (button == 0) { // Left mouse button
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (event.button() == 0) { // Left mouse button
             isDragging = false;
             return true;
         }
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(event);
     }
 }

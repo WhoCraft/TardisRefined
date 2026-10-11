@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": "minecraft:stick",
+    "Z": "minecraft:stone"
+  },
+  "pattern": [
+    "ZZZ",
+    "ZZZ",
+    " S "
+  ],
+  "result": {
+    "id": "tardis_refined:mallet"
+  },
+  "show_notification": true
+}

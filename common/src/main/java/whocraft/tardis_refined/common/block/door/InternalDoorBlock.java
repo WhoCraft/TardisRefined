@@ -1,5 +1,7 @@
 package whocraft.tardis_refined.common.block.door;
 
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -15,7 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -24,11 +25,10 @@ import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.common.blockentity.door.InternalDoorBlockEntity;
 import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.util.TRTeleporter;
 
 public class InternalDoorBlock extends BaseEntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty OFFSET = BooleanProperty.create("offset");
 
@@ -112,7 +112,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean bl) {
 
         if (!level.isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level;
@@ -121,7 +121,11 @@ public class InternalDoorBlock extends BaseEntityBlock {
                 TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
                     if (!tardisLevelOperator.getPilotingManager().isInFlight()) {
                         AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
-                        if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
+                        // entityInside already means the entity is intersecting this block. Test its
+                        // current box against the actual doorway instead of a swept movement box;
+                        // the latter can miss a slow walk through the doorway after the 26.3 tick
+                        // movement changes.
+                        if (teleportAABB.inflate(1.0E-7D).intersects(entity.getBoundingBox().inflate(1.0E-7D))) {
                             door.onAttemptEnter(blockState, serverLevel, blockPos, entity);
                         }
                     }

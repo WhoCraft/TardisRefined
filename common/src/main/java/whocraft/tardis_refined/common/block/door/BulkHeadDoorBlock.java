@@ -2,6 +2,8 @@ package whocraft.tardis_refined.common.block.door;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
@@ -22,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -52,7 +53,7 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
         }
     }
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
     public static final EnumProperty<BulkHeadType> TYPE = EnumProperty.create("bulkhead", BulkHeadType.class);
@@ -103,7 +104,7 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
 
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (player.getItemInHand(interactionHand).getItem() == TRItemRegistry.PATTERN_MANIPULATOR.get()) {
             if (blockState.hasProperty(TYPE)) {
                 BlockState nextType = blockState.cycle(TYPE);
@@ -113,12 +114,12 @@ public class BulkHeadDoorBlock extends BaseEntityBlock {
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return super.useItemOn(stack, blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
 
     @Override
-    public void playerDestroy(Level level, Player player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
+    public void playerDestroy(ServerLevel level, ServerPlayer player, BlockPos blockPos, BlockState blockState, @Nullable BlockEntity blockEntity, ItemStack itemStack) {
         super.playerDestroy(level, player, blockPos, blockState, blockEntity, itemStack);
         destroy(level, blockPos, blockState);
     }

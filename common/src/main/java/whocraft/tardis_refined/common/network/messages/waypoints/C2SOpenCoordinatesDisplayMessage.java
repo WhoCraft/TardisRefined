@@ -46,7 +46,7 @@ public class C2SOpenCoordinatesDisplayMessage extends MessageC2S {
     @Override
     public void handle(MessageContext context) {
         ServerPlayer serverPlayer = context.getPlayer();
-        ServerLevel level = serverPlayer.serverLevel();
+        ServerLevel level = serverPlayer.level();
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
             List<ResourceKey<Level>> dimensions = tardisLevelOperator.getProgressionManager().getDiscoveredLevels();
             TardisPilotingManager pilotManager = tardisLevelOperator.getPilotingManager();

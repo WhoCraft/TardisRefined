@@ -1,9 +1,11 @@
 package whocraft.tardis_refined.common.capability.player.fabric;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
+import org.ladysnake.cca.api.v3.component.ComponentV3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 
 import java.util.Objects;
@@ -24,16 +26,13 @@ public class TardisPlayerInfoImpl extends TardisPlayerInfo implements ComponentV
     }
 
     @Override
-    public void readFromNbt(CompoundTag tag) {
-        this.loadData(tag);
+    public void readData(ValueInput input) {
+        input.read("tardis_refined_data", CompoundTag.CODEC).ifPresent(this::loadData);
     }
 
     @Override
-    public void writeToNbt(CompoundTag tag) {
-        CompoundTag nbt = this.saveData();
-        for (String key : nbt.getAllKeys()) {
-            tag.put(key, Objects.requireNonNull(nbt.get(key)));
-        }
+    public void writeData(ValueOutput output) {
+        output.store("tardis_refined_data", CompoundTag.CODEC, this.saveData());
     }
 
 

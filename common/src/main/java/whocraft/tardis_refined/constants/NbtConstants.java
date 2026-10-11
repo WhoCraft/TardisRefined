@@ -79,7 +79,7 @@ public class NbtConstants {
 
     public static TardisNavLocation getTardisNavLocation(CompoundTag targetTag, String entry) {
         if (targetTag.contains(entry)) {
-            CompoundTag savedLocationTag = targetTag.getCompound(entry);
+            CompoundTag savedLocationTag = targetTag.getCompoundOrEmpty(entry);
             return TardisNavLocation.deserialize(savedLocationTag);
         }
         return TardisNavLocation.ORIGIN;

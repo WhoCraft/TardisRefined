@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.tardis.manager;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import whocraft.tardis_refined.TardisRefined;
@@ -23,8 +23,8 @@ public class AestheticHandler extends BaseHandler {
     private final TardisLevelOperator tardisOperator;
 
     // Shell
-    private ResourceLocation shellTheme = ShellTheme.HALF_BAKED.getId();
-    private ResourceLocation vortex = VortexRegistry.FLOW.getId();
+    private Identifier shellTheme = ShellTheme.HALF_BAKED.getId();
+    private Identifier vortex = VortexRegistry.FLOW.getId();
     private ShellPattern shellPattern = ShellPatterns.DEFAULT;
 
 
@@ -43,18 +43,18 @@ public class AestheticHandler extends BaseHandler {
     }
 
 
-    public ResourceLocation getShellTheme() {
+    public Identifier getShellTheme() {
         if (shellTheme.getNamespace().contains("minecraft")) {
             return ShellTheme.HALF_BAKED.getId();
         }
         return shellTheme;
     }
 
-    public ResourceLocation getVortex() {
+    public Identifier getVortex() {
         return vortex;
     }
 
-    public void setVortex(ResourceLocation vortex) {
+    public void setVortex(Identifier vortex) {
         this.vortex = vortex;
     }
 
@@ -64,9 +64,13 @@ public class AestheticHandler extends BaseHandler {
      * @param theme        - the Shell Theme ID
      * @param shellPattern - the Shell Theme Pattern
      */
-    public boolean setShellTheme(ResourceLocation theme, ResourceLocation shellPattern, TardisNavLocation tardisNavLocation) {
+    public boolean setShellTheme(Identifier theme, Identifier shellPattern, TardisNavLocation tardisNavLocation) {
         this.setShellPattern(ShellPatterns.getPatternOrDefault(theme, shellPattern));
         this.shellTheme = theme;
+
+        // The interior door's own renderer uses its block entity appearance.
+        // Keep it updated even when no exterior landing location is available.
+        updateInteriorDoors(theme, shellPattern);
 
         if (tardisNavLocation == null)
             return false;
@@ -75,26 +79,33 @@ public class AestheticHandler extends BaseHandler {
         ServerLevel lastKnownLocationLevel = tardisNavLocation.getLevel();
         //Copy over important data such as Tardis ID to the internal door and exterior shell
         updateShellBlock(theme, shellPattern, lastKnownLocationLevel, lastKnownLocationPosition);
-        updateInteriorDoors(theme, shellPattern);
-
         return true;
     }
 
-    private void updateInteriorDoors(ResourceLocation theme, ResourceLocation shellPattern) {
-        if (tardisOperator.getInternalDoor() != null) {
-            BlockPos internalDoorPos = tardisOperator.getInternalDoor().getDoorPosition();
-            BlockEntity blockEntity = tardisOperator.getLevel().getBlockEntity(internalDoorPos);
+    private void updateInteriorDoors(Identifier theme, Identifier shellPattern) {
+        var internalDoor = tardisOperator.getInternalDoor();
+        if (internalDoor == null) {
+            TardisRefined.LOGGER.warn("Could not update interior shell appearance for {}: no main internal door is registered",
+                    tardisOperator.getLevel().dimension().identifier());
+            return;
+        }
 
-            if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
-                doorBlockEntity.setShellTheme(theme);
-                doorBlockEntity.setPattern(ShellPatterns.getPatternOrDefault(shellTheme, shellPattern));
-                tardisOperator.setInternalDoor(doorBlockEntity);
-                doorBlockEntity.sendUpdates();
-            }
+        BlockPos internalDoorPos = internalDoor.getDoorPosition();
+        BlockEntity blockEntity = tardisOperator.getLevel().getBlockEntity(internalDoorPos);
+        if (blockEntity instanceof GlobalDoorBlockEntity doorBlockEntity) {
+            doorBlockEntity.setShellTheme(theme);
+            doorBlockEntity.setPattern(ShellPatterns.getPatternOrDefault(theme, shellPattern));
+            doorBlockEntity.sendUpdates();
+            TardisRefined.LOGGER.info("Updated interior shell appearance for {} at {}: theme={}, pattern={}",
+                    tardisOperator.getLevel().dimension().identifier(), internalDoorPos, theme, doorBlockEntity.pattern().id());
+        } else {
+            TardisRefined.LOGGER.warn("Could not update interior shell appearance for {} at {}: block entity was {}",
+                    tardisOperator.getLevel().dimension().identifier(), internalDoorPos,
+                    blockEntity == null ? "null" : blockEntity.getClass().getName());
         }
     }
 
-    private void updateShellBlock(ResourceLocation theme, ResourceLocation shellPattern, ServerLevel lastKnownLocationLevel, BlockPos lastKnownLocationPosition) {
+    private void updateShellBlock(Identifier theme, Identifier shellPattern, ServerLevel lastKnownLocationLevel, BlockPos lastKnownLocationPosition) {
         var shellBlockEntity = lastKnownLocationLevel.getBlockEntity(lastKnownLocationPosition);
         if (shellBlockEntity instanceof GlobalShellBlockEntity entity) {
             entity.setTardisId(tardisOperator.getLevel().dimension());
@@ -131,18 +142,18 @@ public class AestheticHandler extends BaseHandler {
         boolean needsDataFixed = false;
 
         if (tag.contains("aesthetic")) {
-            CompoundTag aestheticTag = tag.getCompound("aesthetic");
+            CompoundTag aestheticTag = tag.getCompoundOrEmpty("aesthetic");
 
             if (aestheticTag.contains("vortex")) {
-                this.vortex = new ResourceLocation(aestheticTag.getString("vortex"));
+                this.vortex = Identifier.parse(aestheticTag.getStringOr("vortex", ""));
             }
 
             // Shell
             if (aestheticTag.contains("shell")) {
-                CompoundTag shellInfo = aestheticTag.getCompound("shell");
+                CompoundTag shellInfo = aestheticTag.getCompoundOrEmpty("shell");
 
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_THEME)) {
-                    ResourceLocation themeId = new ResourceLocation(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_THEME));
+                    Identifier themeId = Identifier.parse(shellInfo.getStringOr(NbtConstants.TARDIS_EXT_CURRENT_THEME, ""));
                     ShellTheme theme = ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.get(themeId);
 
                     if (theme == null) {
@@ -158,7 +169,7 @@ public class AestheticHandler extends BaseHandler {
                 }
 
                 if (shellInfo.contains(NbtConstants.TARDIS_EXT_CURRENT_PATTERN) && !needsDataFixed) {
-                    ResourceLocation currentPattern = new ResourceLocation(shellInfo.getString(NbtConstants.TARDIS_EXT_CURRENT_PATTERN));
+                    Identifier currentPattern = Identifier.parse(shellInfo.getStringOr(NbtConstants.TARDIS_EXT_CURRENT_PATTERN, ""));
 
                     if (ShellPatterns.doesPatternExist(shellTheme, currentPattern)) {
                         this.shellPattern = ShellPatterns.getPatternOrDefault(shellTheme, currentPattern);
@@ -177,6 +188,20 @@ public class AestheticHandler extends BaseHandler {
         if (this.shellPattern == null || needsDataFixed) {
             this.shellPattern = ShellPatterns.DEFAULT;
         }
+
+        // The exterior block entity and monitor receive the saved theme
+        // directly, but the flight shell preview reads TardisClientData.
+        // Hydrate both appearance fields after loading so that preview does
+        // not keep the client's default shell until a later periodic sync.
+        TardisClientData clientData = tardisOperator.tardisClientData();
+        clientData.setShellTheme(getShellTheme());
+        clientData.setShellPattern(shellPattern.id());
+        clientData.sync();
+
+        // Existing TARDIS saves can have a GlobalDoorBlockEntity that still
+        // contains the factory appearance from initial generation. Refresh it
+        // from the saved aesthetic after all manager data has been restored.
+        updateInteriorDoors(getShellTheme(), shellPattern.id());
     }
 
 

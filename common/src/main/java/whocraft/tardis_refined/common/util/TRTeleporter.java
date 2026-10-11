@@ -6,7 +6,6 @@ import net.minecraft.network.protocol.game.ClientboundChangeDifficultyPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerAbilitiesPacket;
 import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -18,7 +17,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.WalkNodeEvaluator;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -26,7 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.compat.ModCompatChecker;
-import whocraft.tardis_refined.compat.portals.ImmersivePortals;
+import whocraft.tardis_refined.compat.portals26.ImmersivePortals;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
 import java.util.ArrayList;
@@ -152,8 +151,8 @@ public class TRTeleporter {
     }
 
     private static Entity postTeleportCommon(Entity teleportedEntity, ServerLevel destination, double pX, double pY, double pZ) {
-        ChunkPos chunkpos = new ChunkPos(BlockPos.containing(pX, pY, pZ));
-        destination.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, teleportedEntity.getId());
+        ChunkPos chunkpos = ChunkPos.containing(BlockPos.containing(pX, pY, pZ));
+        destination.getChunkSource().addTicketWithRadius(TicketType.PORTAL, chunkpos, 1);
 
         //Handle Elytra flying - Logic matches vanilla TeleportCommand
         if ((teleportedEntity instanceof LivingEntity livingEntity)) {
@@ -170,7 +169,7 @@ public class TRTeleporter {
         if (teleportedEntity instanceof LivingEntity livingEntity) {
             if (livingEntity instanceof ServerPlayer serverPlayer) {
                 for (MobEffectInstance effectInstance : new ArrayList<>(livingEntity.getActiveEffects())) {
-                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effectInstance));
+                    serverPlayer.connection.send(new ClientboundUpdateMobEffectPacket(serverPlayer.getId(), effectInstance, false));
                 }
             } else {
                 reAddStatusEffectTempFix(livingEntity);
@@ -215,7 +214,7 @@ public class TRTeleporter {
 
             ServerPlayer teleportedPlayer = serverPlayer;
 
-            double vehicleOffset = teleportedPlayer.getMyRidingOffset();
+            double vehicleOffset = teleportedPlayer.getBbHeight() * 0.5;
 
             teleportedPlayer.stopRiding(); //Dismount the player from riding the vehicle
 
@@ -227,7 +226,7 @@ public class TRTeleporter {
 
             //If for some reason the vehicle is actually a player (Can occur if the multiplayer server adds a plugin that allows players to mount other players)
             if (vehicle instanceof ServerPlayer vehiclePlayer) {
-                vehiclePlayer.teleportTo(destination, pX, pY, pZ, updatedYRot, updatedXRot);
+                vehiclePlayer.teleportTo(destination, pX, pY, pZ, Set.of(), updatedYRot, updatedXRot, false);
                 teleportedVehicle = vehiclePlayer;
             } else { //Normally the vehicle is a non-player entity so we will handle it as an extra non-player entity teleport
                 teleportedVehicle = teleportNonPlayerEntity(vehicle, destination, pX, pY, pZ, vehicle.getYRot(), vehicle.getXRot());
@@ -235,7 +234,7 @@ public class TRTeleporter {
                     updatePosAndLastTickPos(teleportedVehicle, newVehiclePos, newVehicleLastTickPos);
             }
 
-            destination.getServer().tell(new TickTask(10, () -> teleportedPlayer.startRiding(teleportedVehicle, true))); //Remount the vehicle after teleporting the vehicle to the player across dimensions
+            if (teleportedVehicle != null) destination.getServer().executeIfPossible(() -> teleportedPlayer.startRiding(teleportedVehicle, true, true));
 
             reSyncVehicleToPassengerPos(serverPlayer);
         }
@@ -277,7 +276,7 @@ public class TRTeleporter {
      * @return
      */
     private static ServerPlayer teleportPlayerOtherDimension(ServerPlayer serverPlayer, ServerLevel destination, double pX, double pY, double pZ, float updatedYRot, float updatedXRot) {
-        serverPlayer.teleportTo(destination, pX, pY, pZ, updatedYRot, updatedXRot);
+        serverPlayer.teleportTo(destination, pX, pY, pZ, Set.of(), updatedYRot, updatedXRot, false);
         return serverPlayer;
     }
 
@@ -328,7 +327,7 @@ public class TRTeleporter {
                         passenger -> teleportPassengerForNonEntityDimensionTeleport(passenger, destination, pX, pY, pZ, yRot, adjustedXRot)
                 ).collect(Collectors.toList()).forEach(teleportedPassenger -> {
                     if (teleportedPassenger != null) {
-                        destination.getServer().tell(new TickTask(10, () -> teleportedPassenger.startRiding(finalTeleportedEntity, true)));
+                        if (finalTeleportedEntity != null) destination.getServer().executeIfPossible(() -> teleportedPassenger.startRiding(finalTeleportedEntity, true, true));
                     }
                 });
             }
@@ -390,7 +389,9 @@ public class TRTeleporter {
     }
 
     private static Entity teleportNonPlayerEntitySameDimension(Entity pEntity, double pX, double pY, double pZ, float yRot, float xRot) {
-        pEntity.moveTo(pX, pY, pZ, yRot, xRot);
+        pEntity.setPos(pX, pY, pZ);
+        pEntity.setYRot(yRot);
+        pEntity.setXRot(xRot);
         pEntity.setYHeadRot(yRot);
         pEntity.setYBodyRot(yRot);
         pEntity.setPortalCooldown();
@@ -401,13 +402,15 @@ public class TRTeleporter {
         //Use most of this logic from Entity#changeDimension which is most suitable as it has most syncing logic. However, we want to exclude the use of PortalInfo as it plays the vanilla portal sounds
         Entity newEntity = pEntity;
 
-        newEntity = newEntity.getType().create(destination);
+        newEntity = newEntity.getType().create(destination, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
         if (newEntity == null) {
             return null;
         }
 
         newEntity.restoreFrom(pEntity);
-        newEntity.moveTo(pX, pY, pZ, yRot, xRot);
+        newEntity.setPos(pX, pY, pZ);
+        newEntity.setYRot(yRot);
+        newEntity.setXRot(xRot);
         newEntity.setYHeadRot(yRot);
         newEntity.setPortalCooldown();
 
@@ -480,7 +483,7 @@ public class TRTeleporter {
             return false;
         }
 
-        double vehicleOffset = entity.getMyRidingOffset();
+        double vehicleOffset = entity.getBbHeight() * 0.5;
 
         Vec3 oldMotion = vehicle.getDeltaMovement();
 
@@ -491,7 +494,6 @@ public class TRTeleporter {
         //Prevent minecarts, boats and LivingEntity types from interpolating their position so that it doesn't fall into unloaded chunks
         //Directly set their position and rotation so that the interpolation will not happen
         vehicle.setPos(newVehiclePos.x(), newVehiclePos.y(), newVehiclePos.z());
-        vehicle.lerpTo(newVehiclePos.x(), newVehiclePos.y(), newVehiclePos.z(), vehicle.getYRot(), vehicle.getXRot(), 0, false);
 
         updatePosAndLastTickPos(vehicle, newVehiclePos, newVehicleLastTickPos);
 
@@ -536,8 +538,11 @@ public class TRTeleporter {
     }
 
     public static boolean canTeleportTo(BlockPos pPos, Level level, Entity entity) {
-        BlockPathTypes blockpathtypes = WalkNodeEvaluator.getBlockPathTypeStatic(level, pPos.mutable());
-        if (blockpathtypes != BlockPathTypes.WALKABLE) {
+        PathType pathType = entity instanceof net.minecraft.world.entity.Mob mob
+                ? WalkNodeEvaluator.getPathTypeStatic(mob, pPos)
+                : (level.getBlockState(pPos).getCollisionShape(level, pPos).isEmpty()
+                    ? PathType.WALKABLE : PathType.BLOCKED);
+        if (pathType != PathType.WALKABLE) {
             return false;
         } else {
             BlockPos blockpos = pPos.subtract(entity.blockPosition());
@@ -561,7 +566,7 @@ public class TRTeleporter {
             }
         }
 
-        if (pEntity.getType().is(TRTagKeys.TARDIS_TELEPORT_BLACKLIST)) { //Stop teleporting if the entity being teleported is blacklisted
+        if (pEntity.getType().builtInRegistryHolder().is(TRTagKeys.TARDIS_TELEPORT_BLACKLIST)) { //Stop teleporting if the entity being teleported is blacklisted
             LOGGER.warn("Failed to teleport entity type due to it being blacklisted: {}", pEntity.getType());
             return false;
         }

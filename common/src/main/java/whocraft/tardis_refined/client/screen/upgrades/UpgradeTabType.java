@@ -2,7 +2,8 @@ package whocraft.tardis_refined.client.screen.upgrades;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
@@ -32,7 +33,7 @@ enum UpgradeTabType {
         return this.max;
     }
 
-    public void draw(GuiGraphics guiGraphics, int offsetX, int offsetY, boolean isSelected, int index) {
+    public void draw(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, boolean isSelected, int index) {
         int i = this.textureX;
         if (index > 0) {
             i += this.width;
@@ -43,10 +44,10 @@ enum UpgradeTabType {
         }
 
         int j = isSelected ? this.textureY + this.height : this.textureY;
-        guiGraphics.blit(UpgradesScreen.WINDOW, offsetX + this.getX(index), offsetY + this.getY(index), i, j, this.width, this.height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, UpgradesScreen.WINDOW, offsetX + this.getX(index), offsetY + this.getY(index), i, j, this.width, this.height, 256, 256);
     }
 
-    public void drawIcon(GuiGraphics guiGraphics, int offsetX, int offsetY, int index, ItemStack stack) {
+    public void drawIcon(GuiGraphicsExtractor guiGraphics, int offsetX, int offsetY, int index, ItemStack stack) {
         int i = offsetX + this.getX(index);
         int j = offsetY + this.getY(index);
         switch (this) {

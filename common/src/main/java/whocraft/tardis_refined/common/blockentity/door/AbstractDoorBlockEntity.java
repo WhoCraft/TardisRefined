@@ -3,6 +3,8 @@ package whocraft.tardis_refined.common.blockentity.door;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
@@ -78,7 +81,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     @Override
     public BlockPos getTeleportPosition() {
         Direction direction = this.getBlockState().getValue(InternalDoorBlock.FACING);
-        return this.getBlockPos().offset(direction.getOpposite().getNormal());
+        return this.getBlockPos().offset(direction.getOpposite().getStep());
 
     }
 
@@ -126,7 +129,7 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
 
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag);
 
         compoundTag.putBoolean(NbtConstants.DOOR_IS_MAIN_DOOR, this.isMainDoor);
@@ -134,10 +137,10 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
     }
 
     @Override
-    public void load(CompoundTag compoundTag) {
-        super.load(compoundTag);
-        this.isMainDoor = compoundTag.getBoolean(NbtConstants.DOOR_IS_MAIN_DOOR);
-        this.uuid_id = compoundTag.getString(NbtConstants.DOOR_ID);
+    protected void loadAdditional(ValueInput compoundTag) {
+        super.loadAdditional(compoundTag);
+        this.isMainDoor = compoundTag.getBooleanOr(NbtConstants.DOOR_IS_MAIN_DOOR, false);
+        this.uuid_id = compoundTag.getStringOr(NbtConstants.DOOR_ID, "");
     }
 
     @Override
@@ -146,8 +149,15 @@ public class AbstractDoorBlockEntity extends BlockEntity implements TardisIntern
             Optional<TardisLevelOperator> data = TardisLevelOperator.get(serverLevel);
             data.ifPresent(tardisLevelOperator -> {
                 tardisLevelOperator.setInternalDoor(this);
-                tardisLevelOperator.exitTardis(entity, serverLevel, doorPos, blockState.getValue(InternalDoorBlock.FACING), false);
+                boolean exited = tardisLevelOperator.exitTardis(entity, serverLevel, doorPos, blockState.getValue(InternalDoorBlock.FACING), false);
+                TardisRefined.LOGGER.info("Interior door exit {} for {} at {} (open={}, currentLocation={})",
+                        exited ? "succeeded" : "failed", entity.getName().getString(), doorPos,
+                        this.isOpen(), tardisLevelOperator.getPilotingManager().getCurrentLocation());
             });
+            if (data.isEmpty()) {
+                TardisRefined.LOGGER.warn("Interior door exit rejected at {}: no TARDIS operator for {}",
+                        doorPos, serverLevel.dimension().identifier());
+            }
         }
     }
 

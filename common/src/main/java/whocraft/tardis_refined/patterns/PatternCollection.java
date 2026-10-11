@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.patterns;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public abstract class PatternCollection<T extends BasePattern> {
 
-    protected ResourceLocation themeId;
+    protected Identifier themeId;
 
     protected List<T> patterns;
 
@@ -30,7 +30,7 @@ public abstract class PatternCollection<T extends BasePattern> {
         this.patterns = patterns;
     }
 
-    public PatternCollection setThemeId(ResourceLocation themeId) {
+    public PatternCollection setThemeId(Identifier themeId) {
         this.themeId = themeId;
         return this;
     }
@@ -48,7 +48,7 @@ public abstract class PatternCollection<T extends BasePattern> {
         return this;
     }
 
-    public ResourceLocation themeId() {
+    public Identifier themeId() {
         return this.themeId;
     }
 

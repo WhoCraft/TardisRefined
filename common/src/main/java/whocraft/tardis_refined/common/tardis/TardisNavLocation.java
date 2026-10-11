@@ -5,7 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.common.util.DimensionUtil;
@@ -61,12 +61,12 @@ public class TardisNavLocation {
 
     public static TardisNavLocation deserialize(CompoundTag tag) {
         TardisNavLocation loc = new TardisNavLocation(
-                BlockPos.of(tag.getLong("position")),
-                Direction.values()[tag.getInt("direction")],
-                ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tag.getString("dimension"))));
+                BlockPos.of(tag.getLongOr("position", 0L)),
+                Direction.values()[tag.getIntOr("direction", 0)],
+                ResourceKey.create(Registries.DIMENSION, Identifier.parse(tag.getStringOr("dimension", ""))));
 
         if (tag.contains("name"))
-            loc.setName(tag.getString("name"));
+            loc.setName(tag.getStringOr("name", ""));
 
         loc.level = DimensionUtil.getLevel(loc.dimensionKey);
         return loc;
@@ -75,7 +75,7 @@ public class TardisNavLocation {
     public CompoundTag serialise() {
         CompoundTag tag = new CompoundTag();
         tag.putLong("position", this.position.asLong());
-        tag.putString("dimension", this.dimensionKey.location().toString());
+        tag.putString("dimension", this.dimensionKey.identifier().toString());
         tag.putInt("direction", this.direction.ordinal());
         tag.putString("name", this.name);
         return tag;

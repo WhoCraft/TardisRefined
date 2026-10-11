@@ -1,9 +1,9 @@
 package whocraft.tardis_refined.common.capability.tardis.upgrades;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -24,13 +24,13 @@ public class Upgrade {
     private int cost = 1;
     private boolean posSet = false;
     private double posX = 0, posY = 0;
-    private ResourceLocation translationKey;
+    private Identifier translationKey;
 
     /**
      * @param icon
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
-    public Upgrade(Supplier<ItemStack> icon, ResourceLocation translationKey, UpgradeType upgradeType) {
+    public Upgrade(Supplier<ItemStack> icon, Identifier translationKey, UpgradeType upgradeType) {
         this.icon = icon;
         this.parent = null;
         this.translationKey = translationKey;
@@ -42,7 +42,7 @@ public class Upgrade {
      * @param parent         - the parent Upgrade object before we can unlock this current upgrade
      * @param translationKey - Requires the namespace of your mod (e.g. my_mod_id) and the registry object (E.g. explorer) to be used for display names and translation keys
      */
-    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, ResourceLocation translationKey, UpgradeType upgradeType) {
+    public Upgrade(Supplier<ItemStack> icon, Supplier<Upgrade> parent, Identifier translationKey, UpgradeType upgradeType) {
         this.icon = icon;
         this.parent = parent;
         this.translationKey = translationKey;

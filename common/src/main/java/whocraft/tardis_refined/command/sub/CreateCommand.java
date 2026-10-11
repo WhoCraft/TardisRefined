@@ -12,7 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
@@ -37,7 +37,7 @@ public class CreateCommand {
 
     private static int createTardis(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
 
-        ResourceLocation shellTheme = ShellArgumentType.getShellId(context, "shell");
+        Identifier shellTheme = ShellArgumentType.getShellId(context, "shell");
 
         DesktopTheme desktopTheme = DesktopArgumentType.getDesktop(context, "desktop");
 
@@ -45,9 +45,9 @@ public class CreateCommand {
         ServerLevel level = context.getSource().getLevel();
 
         //Create a Level Key with a randomised UUID
-        ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+        ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TardisRefined.MODID, UUID.randomUUID().toString()));
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(generatedLevelKey.identifier());
 
         context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_CREATE_TARDIS_IN_PROGRESS, tardisId));
 

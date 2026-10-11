@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,10 +15,10 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.block.life.ArsEggBlock;
 import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 
-public class ArsEggModel extends HierarchicalModel {
+public class ArsEggModel extends TardisModel {
 
-    public static final AnimationDefinition CRASHING = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/living/ars_egg/crashing.json"));
-    public static final AnimationDefinition SWINGING = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/living/ars_egg/swinging.json"));
+    public static final AnimationDefinition CRASHING = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/living/ars_egg/crashing.json"));
+    public static final AnimationDefinition SWINGING = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/living/ars_egg/swinging.json"));
 
     private final ModelPart Lamp;
     private final ModelPart root;
@@ -39,13 +39,13 @@ public class ArsEggModel extends HierarchicalModel {
             clamp.visible = blockState.getValue(ArsEggBlock.ALIVE);
         }
 
-        Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        Lamp.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

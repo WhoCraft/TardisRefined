@@ -4,7 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
@@ -200,12 +200,12 @@ public class UpgradeHandler {
 
     public void loadData(CompoundTag compoundTag) {
         CompoundTag nbt = (CompoundTag) compoundTag.get("upgrades");
-        this.upgradeXP = nbt.getInt("UpgradeXP");
-        this.upgradePoints = nbt.getInt("UpgradePoints");
-        this.overallTardisPoints = nbt.getInt("OverallPoints");
+        this.upgradeXP = nbt.getIntOr("UpgradeXP", 0);
+        this.upgradePoints = nbt.getIntOr("UpgradePoints", 0);
+        this.overallTardisPoints = nbt.getIntOr("OverallPoints", 0);
         this.unlockedUpgrades.clear();
-        for (Tag upgrade : nbt.getList("UnlockedUpgrades", StringTag.TAG_STRING)) {
-            this.unlockedUpgrades.add(TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(new ResourceLocation(upgrade.getAsString())));
+        for (Tag upgrade : nbt.getListOrEmpty("UnlockedUpgrades")) {
+            this.unlockedUpgrades.add(TRUpgrades.UPGRADE_DEFERRED_REGISTRY.get(Identifier.parse(upgrade.asString().orElse(""))));
         }
     }
 }

@@ -1,20 +1,20 @@
 package whocraft.tardis_refined.common.world.chunk;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ARSStructurePiece {
 
     public static int LOCKED_PIECE_CHUNK_SIZE = 3;
 
     // Resource location defined in constructor.
-    private ResourceLocation resourceLocation;
+    private Identifier resourceLocation;
 
     /**
      * 3x3 chunk structure used to place infinite corridor generation.
      *
-     * @param resourceLocation ResourceLocation of the structure file
+     * @param resourceLocation Identifier of the structure file
      */
-    public ARSStructurePiece(ResourceLocation resourceLocation) {
+    public ARSStructurePiece(Identifier resourceLocation) {
         this.resourceLocation = resourceLocation;
     }
 
@@ -23,7 +23,7 @@ public class ARSStructurePiece {
      *
      * @return resource location of the piece
      */
-    public ResourceLocation getResourceLocation() {
+    public Identifier getIdentifier() {
         return resourceLocation;
     }
 

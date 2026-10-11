@@ -8,11 +8,11 @@ import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TardisRefined;
@@ -21,7 +21,7 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class MystConsoleModel extends TardisModel implements ConsoleUnit {
 
     public static final AnimationDefinition MODEL_ROTOR_LOOP = AnimationDefinition.Builder.withLength(4f).looping()
             .addAnimation("rotor",
@@ -38,7 +38,7 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
                                     AnimationChannel.Interpolations.LINEAR),
                             new Keyframe(4f, KeyframeAnimations.degreeVec(0f, 240f, 0f),
                                     AnimationChannel.Interpolations.LINEAR))).build();
-    private static final ResourceLocation MYST_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
+    private static final Identifier MYST_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/myst/myst_console.png");
     private final ModelPart root;
     private final ModelPart base_console;
     private final ModelPart controls;
@@ -57,9 +57,9 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -83,11 +83,11 @@ public class MystConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
         handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
-        this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        this.root.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return MYST_TEXTURE;
     }
 

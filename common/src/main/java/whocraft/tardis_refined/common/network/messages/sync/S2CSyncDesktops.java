@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.common.network.MessageContext;
 import whocraft.tardis_refined.common.network.MessageS2C;
 import whocraft.tardis_refined.common.network.MessageType;
@@ -17,13 +17,13 @@ import java.util.Map;
 
 public class S2CSyncDesktops extends MessageS2C {
 
-    //We use an unboundedMapCodec. However it is limited in that it can only parse objects whose keys can be serialised to a string, such as ResourceLocation
+    //We use an unboundedMapCodec. However it is limited in that it can only parse objects whose keys can be serialised to a string, such as Identifier
     //E.g. If you used an int as a key, the unboundedMapCodec will not parse it and will error.
-    private static final Codec<Map<ResourceLocation, DesktopTheme>> MAPPER = Codec.unboundedMap(ResourceLocation.CODEC, DesktopTheme.getCodec());
-    private Map<ResourceLocation, DesktopTheme> desktops = new HashMap<>();
+    private static final Codec<Map<Identifier, DesktopTheme>> MAPPER = Codec.unboundedMap(Identifier.CODEC, DesktopTheme.getCodec());
+    private Map<Identifier, DesktopTheme> desktops = new HashMap<>();
 
 
-    public S2CSyncDesktops(Map<ResourceLocation, DesktopTheme> desktops) {
+    public S2CSyncDesktops(Map<Identifier, DesktopTheme> desktops) {
         this.desktops = desktops;
     }
 
@@ -45,7 +45,7 @@ public class S2CSyncDesktops extends MessageS2C {
     @Override
     public void handle(MessageContext context) {
         TardisDesktops.getRegistry().clear();
-        for (Map.Entry<ResourceLocation, DesktopTheme> entry : this.desktops.entrySet()) {
+        for (Map.Entry<Identifier, DesktopTheme> entry : this.desktops.entrySet()) {
             TardisDesktops.getRegistry().put(entry.getKey(), entry.getValue());
         }
     }

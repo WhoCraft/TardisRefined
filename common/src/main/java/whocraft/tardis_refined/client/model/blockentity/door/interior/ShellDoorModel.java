@@ -2,14 +2,14 @@ package whocraft.tardis_refined.client.model.blockentity.door.interior;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 import whocraft.tardis_refined.patterns.ShellPattern;
 
-public abstract class ShellDoorModel extends HierarchicalModel {
+public abstract class ShellDoorModel extends TardisModel {
 
     public abstract void renderFrame(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
 
@@ -27,8 +27,11 @@ public abstract class ShellDoorModel extends HierarchicalModel {
         throw new RuntimeException("Woah! You should not be calling this...how are you calling this?");
     }
 
-    public ResourceLocation getInteriorDoorTexture(GlobalDoorBlockEntity globalDoorBlockEntity) {
-        ShellPattern pattern = globalDoorBlockEntity.pattern();
+    public Identifier getInteriorDoorTexture(GlobalDoorBlockEntity globalDoorBlockEntity) {
+        return getInteriorDoorTexture(globalDoorBlockEntity.pattern());
+    }
+
+    public Identifier getInteriorDoorTexture(ShellPattern pattern) {
         return pattern.doorTexture().texture();
     }
 }

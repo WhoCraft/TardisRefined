@@ -43,8 +43,8 @@ public class PathfinderShellModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.l_door.yRot = (open) ? -275f : 0;
-        this.r_door.yRot = (open) ? 275f : 0;
+        this.l_door.yRot = open ? (float) Math.toRadians(-275.0F) : 0.0F;
+        this.r_door.yRot = open ? (float) Math.toRadians(275.0F) : 0.0F;
     }
 
     @Override
@@ -55,8 +55,8 @@ public class PathfinderShellModel extends ShellModel {
         }
         handleAllAnimations(entity, bone3, isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
-        bone3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-        l_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-        r_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+        bone3.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(this.getCurrentAlpha(), red, green, blue));
+        l_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(this.getCurrentAlpha(), red, green, blue));
+        r_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(this.getCurrentAlpha(), red, green, blue));
     }
 }

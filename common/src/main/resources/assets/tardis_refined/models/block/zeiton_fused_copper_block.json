@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "tardis_refined:block/zeiton_fused_copper_block"
+  }
+}

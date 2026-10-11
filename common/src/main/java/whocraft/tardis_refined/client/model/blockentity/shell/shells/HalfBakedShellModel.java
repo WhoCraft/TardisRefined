@@ -24,8 +24,8 @@ public class HalfBakedShellModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.leftDoor.yRot = open ? 250f : 0;
-        this.rightDoor.yRot = open ? -250f : 0;
+        this.leftDoor.yRot = open ? (float) Math.toRadians(250.0F) : 0.0F;
+        this.rightDoor.yRot = open ? (float) Math.toRadians(-250.0F) : 0.0F;
     }
 
     @Override

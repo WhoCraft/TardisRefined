@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "minecraft:iron_ingot",
+    "minecraft:tripwire_hook",
+    "minecraft:iron_door"
+  ],
+  "result": {
+    "id": "tardis_refined:tardis_door"
+  }
+}

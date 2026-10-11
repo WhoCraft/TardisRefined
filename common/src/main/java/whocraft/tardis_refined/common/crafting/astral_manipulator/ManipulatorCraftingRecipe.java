@@ -1,13 +1,13 @@
 package whocraft.tardis_refined.common.crafting.astral_manipulator;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -24,7 +24,7 @@ import java.util.List;
  * Main recipe object for the Astral Manipulator.
  **/
 public class ManipulatorCraftingRecipe implements CraftingRecipe {
-    public static final Codec<ManipulatorCraftingRecipe> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<ManipulatorCraftingRecipe> CODEC = RecordCodecBuilder.mapCodec(
             builder -> builder.group(
                     ManipulatorCraftingIngredient.CODEC.listOf().fieldOf("ingredients").forGetter(ManipulatorCraftingRecipe::ingredients),
                     ManipulatorCraftingResult.RESULT_CODEC.fieldOf("result").forGetter(ManipulatorCraftingRecipe::result)
@@ -33,7 +33,7 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
     // List of ingredient blocks for the recipe to work.
     private List<ManipulatorCraftingIngredient> ingredients;
     private ManipulatorCraftingResult result;
-    private ResourceLocation id;
+    private Identifier id;
 
     public ManipulatorCraftingRecipe(List<ManipulatorCraftingIngredient> itemList, ManipulatorCraftingResult recipeOutput) {
         this.ingredients = itemList;
@@ -52,23 +52,28 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
      * Helper to get all recipes without needing to use a Container. In 1.21+ recipes will be decoupled from Containers but until them, we will need this workaround
      */
     public static List<ManipulatorCraftingRecipe> getAllRecipes(Level level) {
-        List<ManipulatorCraftingRecipe> recipeHolders = level.getRecipeManager().getAllRecipesFor(TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get());
-        List<ManipulatorCraftingRecipe> recipeList = new ArrayList<>();
-        recipeHolders.forEach(recipeHolder -> recipeList.add(recipeHolder.setRegistryId(recipeHolder.id))); //Make sure to set registry id
-        return recipeList;
+        if (level == null) {
+            return List.of();
+        }
+
+        return ((net.minecraft.world.item.crafting.RecipeManager) level.recipeAccess()).getRecipes().stream()
+                .map(holder -> holder.value())
+                .filter(ManipulatorCraftingRecipe.class::isInstance)
+                .map(ManipulatorCraftingRecipe.class::cast)
+                .toList();
     }
 
     /**
      * Get the unique id for this recipe. Needed for debugging purposes, and also to make sure we keep track of the recipes in some manner
      */
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 
     /**
      * Sets the id for this recipe. ALWAYS call this when making a new instance of this, as the registry name is null by default
      */
-    public ManipulatorCraftingRecipe setRegistryId(ResourceLocation id) {
+    public ManipulatorCraftingRecipe setRegistryId(Identifier id) {
         this.id = id;
         return this;
     }
@@ -123,22 +128,31 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer container, Level level) {
+    public boolean matches(CraftingInput input, Level level) {
         return false;
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingInput input) {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public String group() {
+        return "";
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    public ItemStack getResultItem() {
         if (result.type() instanceof ManipulatorItemResult manipulatorItemResult) {
             return manipulatorItemResult.recipeOutput();
         }
@@ -154,7 +168,7 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
      * Required to allow vanilla to parse the recipe during datapack parsing
      */
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends CraftingRecipe> getSerializer() {
         return TRCraftingRecipeSerializers.ASTRAL_MANIPULATOR.get();
     }
 
@@ -162,8 +176,9 @@ public class ManipulatorCraftingRecipe implements CraftingRecipe {
      * Required to allow vanilla to parse the recipe during datapack parsing
      */
     @Override
-    public RecipeType<?> getType() {
-        return TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get();
+    @SuppressWarnings("unchecked")
+    public RecipeType<CraftingRecipe> getType() {
+        return (RecipeType<CraftingRecipe>) (RecipeType<?>) TRCraftingRecipeTypes.ASTRAL_MANIPULATOR_RECIPE.get();
     }
 
 

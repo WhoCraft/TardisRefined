@@ -6,6 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.client.TardisClientLogic;
 import whocraft.tardis_refined.common.network.MessageContext;
@@ -44,6 +45,14 @@ public class S2CSyncTardisClientData extends MessageS2C {
     public void handle(MessageContext context) {
         // Retrieve the TardisIntReactions instance for the current level
         TardisClientData data = TardisClientData.getInstance(level);
+        String oldTheme = String.valueOf(data.getShellTheme());
+        String oldPattern = String.valueOf(data.getShellPattern());
+        String newTheme = compoundTag.getStringOr("shellTheme", "<missing>");
+        String newPattern = compoundTag.getStringOr("shellPattern", "<missing>");
+        if (!oldTheme.equals(newTheme) || !oldPattern.equals(newPattern)) {
+            TardisRefined.LOGGER.info("Received TARDIS appearance sync for {}: theme {} -> {}, pattern {} -> {}",
+                    level.identifier(), oldTheme, newTheme, oldPattern, newPattern);
+        }
 
         // Deserialize the Tardis instance from the given CompoundTag
         data.deserializeNBT(compoundTag);

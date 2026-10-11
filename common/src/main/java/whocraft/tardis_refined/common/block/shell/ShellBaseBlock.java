@@ -13,8 +13,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.gameevent.GameEventListener;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -28,7 +28,7 @@ import whocraft.tardis_refined.common.util.TRTeleporter;
 
 public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWaterloggedBlock, Fallable {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
     public static final BooleanProperty REGEN = BooleanProperty.create("regen");
     public static final BooleanProperty LOCKED = BooleanProperty.create("locked");
@@ -69,24 +69,18 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     }
 
     @Override
-    public BlockState updateShape(BlockState blockState, Direction direction, BlockState blockState2, LevelAccessor levelAccessor, BlockPos blockPos, BlockPos blockPos2) {
+    public BlockState updateShape(BlockState blockState, net.minecraft.world.level.LevelReader levelReader, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos blockPos, Direction direction, BlockPos blockPos2, BlockState blockState2, net.minecraft.util.RandomSource randomSource) {
 /*
         levelAccessor.scheduleTick(blockPos, this, this.getDelayAfterPlace());
 */
 
         if (blockState.getValue(WATERLOGGED)) {
-            levelAccessor.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelAccessor));
+            tickAccess.scheduleTick(blockPos, Fluids.WATER, Fluids.WATER.getTickDelay(levelReader));
         }
 
-        return super.updateShape(blockState, direction, blockState2, levelAccessor, blockPos, blockPos2);
+        return super.updateShape(blockState, levelReader, tickAccess, blockPos, direction, blockPos2, blockState2, randomSource);
     }
 
-
-    @Nullable
-    @Override
-    public <T extends BlockEntity> GameEventListener getListener(ServerLevel pLevel, T pBlockEntity) {
-        return super.getListener(pLevel, pBlockEntity);
-    }
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
@@ -113,8 +107,7 @@ public abstract class ShellBaseBlock extends BaseEntityBlock implements SimpleWa
     }
 
 
-    @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean bl) {
         if (!level.isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level;
             if (serverLevel.getBlockEntity(blockPos) instanceof ExteriorShell shellEntity) {

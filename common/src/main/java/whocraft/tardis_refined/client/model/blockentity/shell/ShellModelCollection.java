@@ -2,7 +2,7 @@ package whocraft.tardis_refined.client.model.blockentity.shell;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ShellModelCollection {
 
-    public static Map<ResourceLocation, ShellEntry> SHELL_MODELS = new HashMap<>();
+    public static Map<Identifier, ShellEntry> SHELL_MODELS = new HashMap<>();
     private static ShellModel shulkerShellModel, factoryShellModel, policeBoxModel, phoneBoothModel, mysticModel, drifterModel,
             presentModel, vendingModel, briefcaseModel, groeningModel, bigBenModel, nukaModel, growthModel,
             portalooModel, pagodaModel, liftModel, hieroglyphModel, castleShellModel, pathfinderShellModel, halfBakedShellModel;
@@ -73,17 +73,17 @@ public class ShellModelCollection {
         shulkerShellModel = new ShulkerShellModel(context.bakeLayer((ModelRegistry.SHULKER_SHELL)));
 
         // Doors
-        factoryDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)), 250f);
-        mysticDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)), 250f);
-        nukaDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.NUKA_DOOR)), 250f);
-        castleDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.CASTLE_DOOR)), -90);
-        pathfinderDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.PATHFINDER_DOOR)), 275f);
-        policeBoxDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)), 300, true, false);
+        factoryDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.FACTORY_DOOR)), (float) Math.toRadians(250.0F));
+        mysticDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.MYSTIC_DOOR)), (float) Math.toRadians(250.0F));
+        nukaDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.NUKA_DOOR)), (float) Math.toRadians(250.0F));
+        castleDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.CASTLE_DOOR)), (float) Math.toRadians(-90.0F));
+        pathfinderDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.PATHFINDER_DOOR)), (float) Math.toRadians(275.0F));
+        policeBoxDoorModel = new DualInteriorDoorModel(context.bakeLayer((ModelRegistry.POLICE_BOX_DOOR)), (float) Math.toRadians(300.0F), true, false);
 
-        bigBenDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)), 275f);
+        bigBenDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.BIG_BEN_DOOR)), (float) Math.toRadians(275.0F));
         phoneBoothDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PHONE_BOOTH_DOOR)), (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f));
         portalooDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PORTALOO_DOOR)), (ModCompatChecker.immersivePortals() ? 1.75f : -1.75f));
-        groeningDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)), -275f);
+        groeningDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.GROENING_DOOR)), (float) Math.toRadians(-275.0F));
 
         drifterDoorModel = new SingleTexInteriorDoorModel(context.bakeLayer((ModelRegistry.DRIFTER_DOOR)));
         vendingDoorModel = new SingleTexInteriorDoorModel(context.bakeLayer((ModelRegistry.VENDING_DOOR)));
@@ -95,7 +95,7 @@ public class ShellModelCollection {
 
         growthDoorModel = new GrowthDoorModel(context.bakeLayer((ModelRegistry.GROWTH_DOOR)));
 
-        pagodaDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)), -275f);
+        pagodaDoorModel = new SingleInteriorDoorModel(context.bakeLayer((ModelRegistry.PAGODA_DOOR)), (float) Math.toRadians(-275.0F));
 
         liftDoorModel = new DualTexInteriorDoorModel(context.bakeLayer((ModelRegistry.LIFT_DOOR)));
 
@@ -134,7 +134,7 @@ public class ShellModelCollection {
 
 
     private void validateShellModels() {
-        for (ResourceLocation resourceLocation : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
+        for (Identifier resourceLocation : ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet()) {
             Validate.isTrue(
                     SHELL_MODELS.containsKey(resourceLocation),
                     String.format("Missing registered model for shell theme: %s", resourceLocation)
@@ -150,7 +150,7 @@ public class ShellModelCollection {
      * @param themeId The Shell theme Id.
      * @return Shell model tied with the shell theme.
      **/
-    public ShellEntry getShellEntry(ResourceLocation themeId) {
+    public ShellEntry getShellEntry(Identifier themeId) {
         return SHELL_MODELS.get(themeId);
     }
 

@@ -5,8 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -30,7 +29,7 @@ import java.util.function.Function;
  * @param <RAW>       - The object that the codec is parsing json into
  * @param <PROCESSED> - The type of the object after merging the parsed objects. Can be the same type as RAW
  */
-public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePreparableReloadListener<Map<ResourceLocation, PROCESSED>> {
+public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePreparableReloadListener<Map<Identifier, PROCESSED>> {
 
     protected final Codec<RAW> codec; // Make the codec protected access because some implementations may require extra logic to be added when we are decoding entries
     protected final String folderName;
@@ -44,7 +43,7 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
     /**
      * The raw data that we parsed from json last time resources were reloaded
      **/
-    protected Map<ResourceLocation, PROCESSED> data = new HashMap<>();
+    protected Map<Identifier, PROCESSED> data = new HashMap<>();
 
     /**
      * DO NOT USE THIS CONSTRUCTOR, use the factory method because this needs to use platform-specific logic.
@@ -80,18 +79,17 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
      * @param <PROCESSED> - The type of the object after merging the parsed objects. Can be the same type as RAW
      * @return
      */
-    @ExpectPlatform
-    public static <RAW, PROCESSED> MergeableCodecJsonReloadListener<RAW, PROCESSED> create(String folderName, Codec<PROCESSED> codec) {
-        throw new AssertionError();
+    public static <T> MergeableCodecJsonReloadListener<T, T> create(String folderName, Codec<T> codec){
+        return whocraft.tardis_refined.common.util.fabric.MergeableCodecJsonReloadListenerImpl.create(folderName, codec, raws -> raws.get(0));
     }
 
     @Override
-    protected Map<ResourceLocation, PROCESSED> prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+    protected Map<Identifier, PROCESSED> prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         //No need to define special syncing packet logic because the setSyncPacket method already subscribes us to the datapack sync events on the appropriate platform and defines the sync packet.
         LOGGER.info("Beginning loading of data for data loader: {}", this.folderName);
-        Map<ResourceLocation, PROCESSED> map = new HashMap<>();
+        Map<Identifier, PROCESSED> map = new HashMap<>();
 
-        Map<ResourceLocation, List<Resource>> resourceStacks = resourceManager.listResourceStacks(this.folderName, id -> id.getPath().endsWith(EXTENSION_NAME));
+        Map<Identifier, List<Resource>> resourceStacks = resourceManager.listResourceStacks(this.folderName, id -> id.getPath().endsWith(EXTENSION_NAME));
 
         map = this.mapValues(resourceStacks);
 
@@ -103,7 +101,7 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
      * Main-thread processing, runs after prepare concludes
      **/
     @Override
-    protected void apply(final Map<ResourceLocation, PROCESSED> processedData, final ResourceManager resourceManager, final ProfilerFiller profiler) {
+    protected void apply(final Map<Identifier, PROCESSED> processedData, final ResourceManager resourceManager, final ProfilerFiller profiler) {
         // now that we're on the main thread, we can finalize the data
         this.data = processedData;
     }
@@ -114,15 +112,15 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
      * @param inputs
      * @return
      */
-    protected Map<ResourceLocation, PROCESSED> mapValues(Map<ResourceLocation, List<Resource>> inputs) {
-        Map<ResourceLocation, PROCESSED> entries = new HashMap<>();
+    protected Map<Identifier, PROCESSED> mapValues(Map<Identifier, List<Resource>> inputs) {
+        Map<Identifier, PROCESSED> entries = new HashMap<>();
 
         for (var entry : inputs.entrySet()) {
 
             List<RAW> raws = new ArrayList<>();
-            ResourceLocation fullId = entry.getKey();
+            Identifier fullId = entry.getKey();
             String fullPath = fullId.getPath(); // includes folderName/ and .json
-            ResourceLocation key = new ResourceLocation(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
+            Identifier key = Identifier.fromNamespaceAndPath(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
 
             for (Resource resource : entry.getValue()) {
                 try (Reader reader = resource.openAsReader()) {
@@ -130,13 +128,9 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
 
                     // if we fail to parse json, log an error and continue
                     // if we succeeded, add the resulting T to the map
-                    this.codec.decode(JsonOps.INSTANCE, element)
-                            .get()
-                            .ifLeft(result -> {
-                                raws.add(result.getFirst());
-                                LOGGER.info("Adding entry for {}", key);
-                            })
-                            .ifRight(partial -> LOGGER.error("Error deserializing json {} in folder {} from pack {}: {}", key, this.folderName, resource.sourcePackId(), partial.message()));
+                    RAW decoded = this.codec.parse(JsonOps.INSTANCE, element).getOrThrow();
+                    raws.add(decoded);
+                    LOGGER.info("Adding entry for {}", key);
                 } catch (Exception e) {
                     LOGGER.error(String.format(Locale.ENGLISH, "Error reading resource %s in folder %s from pack %s: ", key, this.folderName, resource.sourcePackId()), e);
                 }
@@ -153,14 +147,14 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
      *
      * @return
      */
-    public Map<ResourceLocation, PROCESSED> getData() {
+    public Map<Identifier, PROCESSED> getData() {
         return this.data;
     }
 
     /**
      * Overrides the existing data, ONLY use for the sync packet
      */
-    public void setData(Map<ResourceLocation, PROCESSED> data) {
+    public void setData(Map<Identifier, PROCESSED> data) {
         this.data = data;
     }
 
@@ -183,7 +177,7 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
      * @param packetFactory
      * @return
      */
-    public MergeableCodecJsonReloadListener<RAW, PROCESSED> setSyncPacket(final NetworkManager networkManager, final Function<Map<ResourceLocation, PROCESSED>, MessageS2C> packetFactory) {
+    public MergeableCodecJsonReloadListener<RAW, PROCESSED> setSyncPacket(final NetworkManager networkManager, final Function<Map<Identifier, PROCESSED>, MessageS2C> packetFactory) {
         return this;
     }
 
@@ -194,7 +188,7 @@ public class MergeableCodecJsonReloadListener<RAW, PROCESSED> extends SimplePrep
      * @param networkManager
      * @param packetFactory  - applies the data to a sync packet that uses Message2C instance with a constructor containing a Map of entries
      */
-    protected void handleSyncPacket(ServerPlayer player, final NetworkManager networkManager, final Function<Map<ResourceLocation, PROCESSED>, MessageS2C> packetFactory) {
+    protected void handleSyncPacket(ServerPlayer player, final NetworkManager networkManager, final Function<Map<Identifier, PROCESSED>, MessageS2C> packetFactory) {
         MessageS2C packet = packetFactory.apply(this.data);
         if (player == null)
             networkManager.sendToAllPlayers(packet);

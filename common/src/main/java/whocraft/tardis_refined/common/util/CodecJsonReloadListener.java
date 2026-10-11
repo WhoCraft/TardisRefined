@@ -4,11 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.serialization.Dynamic;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,7 @@ import java.util.function.Function;
  *
  * @param <T>
  */
-public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener {
+public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener<Dynamic<?>> {
 
     public static Logger LOGGER = LogManager.getLogger("TardisRefined/CodecJsonReloadListener");
 
@@ -37,7 +38,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
     /**
      * The raw data that we parsed from json last time resources were reloaded
      **/
-    protected Map<ResourceLocation, T> data = new HashMap<>();
+    protected Map<Identifier, T> data = new HashMap<>();
 
     /**
      * DO NOT USE THIS CONSTRUCTOR, use the factory method because this needs to use platform-specific logic.
@@ -58,7 +59,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      * <br> The default implementation does not send the sync packet, hence the need for a factory method.
      */
     protected CodecJsonReloadListener(String folderName, Codec<T> codec, Gson gson) {
-        super(gson, folderName);
+        super(Codec.PASSTHROUGH, FileToIdConverter.json(folderName));
         this.folderName = folderName;
         this.codec = codec;
     }
@@ -72,15 +73,16 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      * @param <T>
      * @return
      */
-    @ExpectPlatform
-    public static <T> CodecJsonReloadListener<T> create(String folderName, Codec<T> codec) {
-        throw new AssertionError();
+    public static <T> CodecJsonReloadListener<T> create(String folderName, Codec<T> codec){
+        return whocraft.tardis_refined.common.util.fabric.CodecJsonReloadListenerImpl.create(folderName, codec);
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> jsons, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+    protected void apply(Map<Identifier, Dynamic<?>> resources, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         //No need to define special syncing packet logic because the setSyncPacket method already subscribes us to the datapack sync events on the appropriate platform and defines the sync packet.
         LOGGER.info("Beginning loading of data for data loader: {}", this.folderName);
+        Map<Identifier, JsonElement> jsons = new HashMap<>();
+        resources.forEach((id, dynamic) -> jsons.put(id, (JsonElement) dynamic.getValue()));
         this.data = this.mapValues(jsons);
         LOGGER.info("Data loader for {} loaded {} entries", this.folderName, this.data.size());
     }
@@ -91,21 +93,17 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      * @param inputs
      * @return
      */
-    protected Map<ResourceLocation, T> mapValues(Map<ResourceLocation, JsonElement> inputs) {
-        Map<ResourceLocation, T> entries = new HashMap<>();
+    protected Map<Identifier, T> mapValues(Map<Identifier, JsonElement> inputs) {
+        Map<Identifier, T> entries = new HashMap<>();
 
-        for (Map.Entry<ResourceLocation, JsonElement> entry : inputs.entrySet()) {
-            ResourceLocation key = entry.getKey();
+        for (Map.Entry<Identifier, JsonElement> entry : inputs.entrySet()) {
+            Identifier key = entry.getKey();
             JsonElement element = entry.getValue();
             // if we fail to parse json, log an error and continue
             // if we succeeded, add the resulting T to the map
-            this.codec.decode(JsonOps.INSTANCE, element)
-                    .get()
-                    .ifLeft(result -> {
-                        entries.put(key, result.getFirst());
-                        LOGGER.info("Adding entry {}", key);
-                    })
-                    .ifRight(partial -> LOGGER.error("Failed to parse data json for {} due to: {}", key, partial.message()));
+            T decoded = this.codec.parse(JsonOps.INSTANCE, element).getOrThrow();
+            entries.put(key, decoded);
+            LOGGER.info("Adding entry {}", key);
         }
         return entries;
     }
@@ -116,7 +114,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      *
      * @return
      */
-    public Map<ResourceLocation, T> getData() {
+    public Map<Identifier, T> getData() {
         return data;
     }
 
@@ -139,7 +137,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      * @param packetFactory
      * @return
      */
-    public CodecJsonReloadListener<T> setSyncPacket(final NetworkManager networkManager, final Function<Map<ResourceLocation, T>, MessageS2C> packetFactory) {
+    public CodecJsonReloadListener<T> setSyncPacket(final NetworkManager networkManager, final Function<Map<Identifier, T>, MessageS2C> packetFactory) {
         return this;
     }
 
@@ -150,7 +148,7 @@ public class CodecJsonReloadListener<T> extends SimpleJsonResourceReloadListener
      * @param networkManager
      * @param packetFactory  - applies the data to a sync packet that uses Message2C instance with a constructor containing a Map of entries
      */
-    protected void handleSyncPacket(ServerPlayer player, final NetworkManager networkManager, final Function<Map<ResourceLocation, T>, MessageS2C> packetFactory) {
+    protected void handleSyncPacket(ServerPlayer player, final NetworkManager networkManager, final Function<Map<Identifier, T>, MessageS2C> packetFactory) {
         MessageS2C packet = packetFactory.apply(this.data);
         if (player == null)
             networkManager.sendToAllPlayers(packet);

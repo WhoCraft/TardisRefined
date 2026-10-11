@@ -1,6 +1,5 @@
 package whocraft.tardis_refined.client;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
@@ -17,9 +16,8 @@ public class TRParticles {
     public static final RegistrySupplier<SimpleParticleType> ARS_LEAVES = TYPES.register("ars_leaves", TRParticles::getParticleType);
 
 
-    @ExpectPlatform
-    public static SimpleParticleType getParticleType() {
-        throw new RuntimeException(PlatformWarning.addWarning(TRParticles.class));
+    public static SimpleParticleType getParticleType(){
+        return whocraft.tardis_refined.client.fabric.TRParticlesImpl.getParticleType();
     }
 
 }

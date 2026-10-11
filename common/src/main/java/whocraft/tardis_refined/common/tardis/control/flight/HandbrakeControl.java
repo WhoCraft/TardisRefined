@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -10,11 +10,11 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class HandbrakeControl extends whocraft.tardis_refined.common.tardis.control.Control {
-    public HandbrakeControl(ResourceLocation id) {
+    public HandbrakeControl(Identifier id) {
         super(id, true);
     }
 
-    public HandbrakeControl(ResourceLocation id, String langId) {
+    public HandbrakeControl(Identifier id, String langId) {
         super(id, langId, true);
     }
 

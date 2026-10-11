@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "tardis_refined:item/air_lock_generator"
+  }
+}

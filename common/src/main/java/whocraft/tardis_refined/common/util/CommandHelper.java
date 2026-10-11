@@ -17,15 +17,15 @@ public class CommandHelper {
 
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_TARDISES = (context, suggestionBuilder) -> {
         Collection<ResourceKey<Level>> collection = DimensionUtil.getTardisLevels(context.getSource().getServer());
-        return SharedSuggestionProvider.suggestResource(collection.stream().map(ResourceKey::location), suggestionBuilder);
+        return SharedSuggestionProvider.suggestResource(collection.stream().map(ResourceKey::identifier), suggestionBuilder);
     };
 
     public static MutableComponent createComponentWithTooltip(String text, String tooltipText) {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {
             return style.withColor(ChatFormatting.YELLOW)
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, tooltipText));
+                    .withHoverEvent(new HoverEvent.ShowText(Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent.CopyToClipboard(tooltipText));
         });
         return component;
     }
@@ -34,8 +34,8 @@ public class CommandHelper {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {
             return style.withColor(ChatFormatting.YELLOW)
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, tooltipText));
+                    .withHoverEvent(new HoverEvent.ShowText(Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent.OpenFile(tooltipText));
         });
         return component;
     }
@@ -44,8 +44,8 @@ public class CommandHelper {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {
             return style.withColor(ChatFormatting.YELLOW)
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, tooltipText));
+                    .withHoverEvent(new HoverEvent.ShowText(Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent.OpenUrl(java.net.URI.create(tooltipText)));
         });
         return component;
     }
@@ -54,8 +54,8 @@ public class CommandHelper {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {
             return style.withColor(ChatFormatting.YELLOW)
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, tooltipText));
+                    .withHoverEvent(new HoverEvent.ShowText(Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent.SuggestCommand(tooltipText));
         });
         return component;
     }
@@ -67,8 +67,8 @@ public class CommandHelper {
         MutableComponent component = Component.literal("[" + text + "]");
         component.withStyle(style -> {
             return style.withColor(ChatFormatting.YELLOW)
-                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(tooltipText)))
-                    .withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, text));
+                    .withHoverEvent(new HoverEvent.ShowText(Component.literal(tooltipText)))
+                    .withClickEvent(new ClickEvent.CopyToClipboard(text));
         });
         return component;
     }

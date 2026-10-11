@@ -3,20 +3,22 @@ package whocraft.tardis_refined.client.screen.components;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 // I literally just grabbed this from 1.20.2
 public abstract class SpriteIconButton
         extends Button {
-    protected final ResourceLocation sprite;
+    protected final Identifier sprite;
     protected final int spriteWidth;
     protected final int spriteHeight;
 
-    SpriteIconButton(int i, int j, Component component, int k, int l, ResourceLocation resourceLocation, Button.OnPress onPress) {
+    SpriteIconButton(int i, int j, Component component, int k, int l, Identifier resourceLocation, Button.OnPress onPress) {
         super(0, 0, i, j, component, onPress, DEFAULT_NARRATION);
         this.spriteWidth = k;
         this.spriteHeight = l;
@@ -35,7 +37,7 @@ public abstract class SpriteIconButton
         private int width = 150;
         private int height = 20;
         @Nullable
-        private ResourceLocation sprite;
+        private Identifier sprite;
         private int spriteWidth;
         private int spriteHeight;
 
@@ -56,7 +58,7 @@ public abstract class SpriteIconButton
             return this;
         }
 
-        public Builder sprite(ResourceLocation resourceLocation, int i, int j) {
+        public Builder sprite(Identifier resourceLocation, int i, int j) {
             this.sprite = resourceLocation;
             this.spriteWidth = i;
             this.spriteHeight = j;
@@ -77,44 +79,34 @@ public abstract class SpriteIconButton
     @Environment(value = EnvType.CLIENT)
     public static class TextAndIcon
             extends SpriteIconButton {
-        protected TextAndIcon(int i, int j, Component component, int k, int l, ResourceLocation resourceLocation, Button.OnPress onPress) {
+        protected TextAndIcon(int i, int j, Component component, int k, int l, Identifier resourceLocation, Button.OnPress onPress) {
             super(i, j, component, k, l, resourceLocation, onPress);
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            super.renderWidget(guiGraphics, i, j, f);
+        protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
             int k = this.getX() + this.getWidth() - this.spriteWidth - 2;
             int l = this.getY() + this.getHeight() / 2 - this.spriteHeight / 2;
-            guiGraphics.blit(this.sprite, 0, 0, this.spriteWidth, this.spriteHeight, k, l, 10, 10);
-        }
-
-        @Override
-        public void renderString(GuiGraphics guiGraphics, Font font, int i) {
-            int j = this.getX() + 2;
-            int k = this.getX() + this.getWidth() - this.spriteWidth - 4;
-            int l = this.getX() + this.getWidth() / 2;
-            TextAndIcon.renderScrollingString(guiGraphics, font, this.getMessage(), l, j, this.getY(), k, this.getY() + this.getHeight());
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, k, l, this.spriteWidth, this.spriteHeight);
+            int textWidth = Math.max(0, this.getWidth() - this.spriteWidth - 8);
+            Font font = Minecraft.getInstance().font;
+            String text = font.substrByWidth(this.getMessage(), textWidth).getString();
+            guiGraphics.text(font, text, this.getX() + 2, this.getY() + (this.getHeight() - font.lineHeight) / 2, this.active ? 0xFFFFFFFF : 0xFFA0A0A0);
         }
     }
 
     @Environment(value = EnvType.CLIENT)
     public static class CenteredIcon
             extends SpriteIconButton {
-        protected CenteredIcon(int i, int j, Component component, int k, int l, ResourceLocation resourceLocation, Button.OnPress onPress) {
+        protected CenteredIcon(int i, int j, Component component, int k, int l, Identifier resourceLocation, Button.OnPress onPress) {
             super(i, j, component, k, l, resourceLocation, onPress);
         }
 
         @Override
-        public void renderWidget(GuiGraphics guiGraphics, int i, int j, float f) {
-            super.renderWidget(guiGraphics, i, j, f);
+        protected void extractContents(GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
             int k = this.getX() + this.getWidth() / 2 - this.spriteWidth / 2;
             int l = this.getY() + this.getHeight() / 2 - this.spriteHeight / 2;
-            guiGraphics.blit(this.sprite, 0, 0, this.spriteWidth, this.spriteHeight, k, l, 10, 10);
-        }
-
-        @Override
-        public void renderString(GuiGraphics guiGraphics, Font font, int i) {
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, k, l, this.spriteWidth, this.spriteHeight);
         }
     }
 }

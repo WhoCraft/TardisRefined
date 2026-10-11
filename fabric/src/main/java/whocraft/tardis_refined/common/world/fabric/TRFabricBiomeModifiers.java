@@ -4,7 +4,7 @@ import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import whocraft.tardis_refined.TardisRefined;
@@ -22,9 +22,9 @@ public class TRFabricBiomeModifiers {
      * Fabric's Biome Modification API isn't data driven and must be called for each feature/structure we add to a biome
      */
     private static void addToBiome(String featureName, String biomeKeyName, GenerationStep.Decoration step) {
-        BiomeModifications.create(new ResourceLocation(TardisRefined.MODID, featureName))
+        BiomeModifications.create(Identifier.fromNamespaceAndPath(TardisRefined.MODID, featureName))
                 .add(ModificationPhase.ADDITIONS,
-                        (context) -> context.hasTag(TagKey.create(Registries.BIOME, new ResourceLocation(TardisRefined.MODID, biomeKeyName))),
-                        (context) -> context.getGenerationSettings().addFeature(step, ResourceKey.create(Registries.PLACED_FEATURE, new ResourceLocation(TardisRefined.MODID, featureName))));
+                        (context) -> context.hasTag(TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath(TardisRefined.MODID, biomeKeyName))),
+                        (context) -> context.getGenerationSettings().addFeature(step, ResourceKey.create(Registries.PLACED_FEATURE, Identifier.fromNamespaceAndPath(TardisRefined.MODID, featureName))));
     }
 }

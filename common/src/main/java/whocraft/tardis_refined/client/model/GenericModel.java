@@ -1,10 +1,10 @@
 package whocraft.tardis_refined.client.model;
 
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.world.entity.Entity;
 
-public class GenericModel extends HierarchicalModel {
+public class GenericModel extends TardisModel {
 
     private final ModelPart root;
 

@@ -26,6 +26,8 @@ import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
 import whocraft.tardis_refined.common.tardis.TardisDesktops;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
+import whocraft.tardis_refined.common.util.PlayerUtil;
+import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.registry.TRDimensionTypes;
 import whocraft.tardis_refined.registry.TRSoundRegistry;
 
@@ -98,15 +100,15 @@ public class TerraformerBlock extends Block {
                 double particleX = (double) blockPos.getX() + randomSource.nextDouble();
                 double particleY = (double) blockPos.getY() + randomSource.nextDouble() * 0.5D + 0.5D;
                 double particleZ = (double) blockPos.getZ() + randomSource.nextDouble();
-                level.addParticle(ParticleTypes.FLASH, particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
+                level.addParticle(net.minecraft.core.particles.ColorParticleOption.create(ParticleTypes.FLASH, 0xFFFFFFFF), particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
                 level.addParticle(ParticleTypes.CLOUD, particleX, particleY, particleZ, 0.0D, 0.0D, 0.0D);
             }
         }
     }
 
     @Override
-    public void onRemove(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
-        super.onRemove(blockState, level, blockPos, blockState2, bl);
+    protected void affectNeighborsAfterRemoval(BlockState blockState, ServerLevel level, BlockPos blockPos, boolean moving) {
+        super.affectNeighborsAfterRemoval(blockState, level, blockPos, moving);
 
         if (level instanceof ServerLevel serverLevel) {
             if (blockState.getValue(ACTIVE)) {
@@ -121,15 +123,23 @@ public class TerraformerBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
 
         if (level instanceof ServerLevel serverLevel) {
             if (interactionHand == InteractionHand.MAIN_HAND) {
                 if (player.getMainHandItem().getItem() instanceof ScrewdriverItem screwdriverItem) {
                     screwdriverItem.playScrewdriverSound(serverLevel, blockPos, TRSoundRegistry.SCREWDRIVER_SHORT.get());
 
-                    if (checkIfStructure(serverLevel, blockPos)) {
-                        TardisLevelOperator.get(serverLevel).ifPresent(cap -> {
+                    if (!level.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
+                        PlayerUtil.sendMessage(player, ModMessages.TERRAFORMER_WRONG_DIMENSION, true);
+                    } else if (!checkIfStructure(serverLevel, blockPos)) {
+                        PlayerUtil.sendMessage(player, ModMessages.TERRAFORMER_INVALID_PATTERN, true);
+                    } else {
+                        var operator = TardisLevelOperator.get(serverLevel);
+                        if (operator.isEmpty()) {
+                            PlayerUtil.sendMessage(player, ModMessages.TERRAFORMER_NO_DATA, true);
+                        }
+                        operator.ifPresent(cap -> {
                             TardisInteriorManager interiorManager = cap.getInteriorManager();
                             if (interiorManager.isWaitingToGenerate()) {
                                 level.destroyBlock(blockPos, true);
@@ -138,23 +148,23 @@ public class TerraformerBlock extends Block {
                                     interiorManager.prepareDesktop(TardisDesktops.TERRAFORMED);
                                     destroyStructure(serverLevel, blockPos);
                                     serverLevel.setBlock(blockPos, blockState.setValue(ACTIVE, true), Block.UPDATE_ALL);
+                                } else {
+                                    PlayerUtil.sendMessage(player, ModMessages.TERRAFORMER_ALREADY_TERRAFORMED, true);
                                 }
                             }
                         });
-                    } else {
-                        blockState.setValue(ACTIVE, false);
                     }
 
                 }
             }
         }
 
-        return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+        return super.useItemOn(stack, blockState, level, blockPos, player, interactionHand, blockHitResult);
     }
 
     private boolean checkIfStructure(Level level, BlockPos blockPos) {
 
-        if (level.dimensionTypeId() != TRDimensionTypes.TARDIS) {
+        if (!level.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
             return false;
         }
 
@@ -169,7 +179,7 @@ public class TerraformerBlock extends Block {
                         return false;
                     }
                 } else {
-                    if (state.getBlock() != Blocks.COPPER_BLOCK) {
+                    if (state.getBlock() != Blocks.COPPER_BLOCK.weathering().unaffected()) {
                         return false;
                     }
                 }

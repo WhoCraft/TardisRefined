@@ -41,7 +41,7 @@ public class C2SCancelDesktopChange extends MessageC2S {
 
     @Override
     public void handle(MessageContext context) {
-        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
+        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().level().getServer().getLevel(resourceKey));
         level.ifPresent(x -> {
             TardisLevelOperator.get(x).ifPresent(y -> {
                 y.getInteriorManager().cancelDesktopChange();

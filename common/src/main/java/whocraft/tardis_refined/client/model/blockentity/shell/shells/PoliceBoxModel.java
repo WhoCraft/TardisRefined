@@ -27,9 +27,9 @@ public class PoliceBoxModel extends ShellModel {
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.scale(1.05f, 1.05f, 1.05f);
         poseStack.translate(0, -0.07, 0);
-        frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PoliceBoxModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.right_door.yRot = (open) ? -275f : 0;
+        this.right_door.yRot = open ? (float) Math.toRadians(-275.0F) : 0.0F;
     }
 
     @Override
@@ -55,9 +55,9 @@ public class PoliceBoxModel extends ShellModel {
         }
         handleAllAnimations(entity, frame, isBaseModel, open, poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 
-        frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
-        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, this.getCurrentAlpha());
+        frame.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(this.getCurrentAlpha(), red, green, blue));
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(this.getCurrentAlpha(), red, green, blue));
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(this.getCurrentAlpha(), red, green, blue));
     }
 
 }

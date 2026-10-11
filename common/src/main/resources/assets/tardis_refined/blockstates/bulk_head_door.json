@@ -1,0 +1,148 @@
+{
+  "variants": {
+    "bulkhead=modern,facing=east,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=east,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=east,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=east,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=north,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=north,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=north,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=north,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=south,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=south,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=south,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=south,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=west,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=west,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=west,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=modern,facing=west,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=east,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=east,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=east,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=east,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=north,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=north,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=north,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=north,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=south,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=south,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=south,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=south,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=west,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=west,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=west,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=rough,facing=west,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=east,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=east,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=east,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=east,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=north,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=north,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=north,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=north,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=south,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=south,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=south,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=south,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=west,locked=false,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=west,locked=false,open=true": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=west,locked=true,open=false": {
+      "model": "tardis_refined:block/empty"
+    },
+    "bulkhead=smooth,facing=west,locked=true,open=true": {
+      "model": "tardis_refined:block/empty"
+    }
+  }
+}

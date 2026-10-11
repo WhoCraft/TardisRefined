@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -17,11 +17,11 @@ import whocraft.tardis_refined.constants.ModMessages;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 
 public class ToggleDoorControl extends Control {
-    public ToggleDoorControl(ResourceLocation id) {
+    public ToggleDoorControl(Identifier id) {
         super(id);
     }
 
-    public ToggleDoorControl(ResourceLocation id, String langId) {
+    public ToggleDoorControl(Identifier id, String langId) {
         super(id, langId);
     }
 

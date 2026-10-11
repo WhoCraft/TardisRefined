@@ -49,7 +49,7 @@ public class UpgradesCommand {
 
     private static int unlockAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
@@ -64,7 +64,7 @@ public class UpgradesCommand {
 
     private static int lockAll(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             for (Map.Entry<ResourceKey<Upgrade>, Upgrade> entry : TRUpgrades.UPGRADE_DEFERRED_REGISTRY.entrySet()) {
@@ -82,7 +82,7 @@ public class UpgradesCommand {
         Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().lockUpgrade(upgrade);
@@ -98,7 +98,7 @@ public class UpgradesCommand {
         Upgrade upgrade = UpgradeArgumentType.getUpgrade(context, "upgrade");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().unlockUpgrade(upgrade);

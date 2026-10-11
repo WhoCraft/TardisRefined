@@ -6,9 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -19,13 +19,13 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class CopperConsoleModel extends TardisModel implements ConsoleUnit {
 
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/copper/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(new ResourceLocation(TardisRefined.MODID, "frame/console/copper/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/copper/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/copper/flight.json"));
 
-    private static final ResourceLocation COPPER_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
+    private static final Identifier COPPER_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
 
     private final ModelPart root;
     private final ModelPart rotor;
@@ -66,19 +66,19 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        misc.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        misc2.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        misc3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        misc4.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        misc5.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        north_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        north_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        east.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        south_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        south_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        west.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        misc.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        misc2.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        misc3.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        misc4.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        misc5.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        north_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        north_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        east.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        south_right.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        south_left.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        west.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -109,11 +109,11 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
 
         this.handbrake.zRot = !reactions.isHandbrakeEngaged() ? 1f : -1f;
 
-        modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        modelRoot.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return COPPER_TEXTURE;
     }
 

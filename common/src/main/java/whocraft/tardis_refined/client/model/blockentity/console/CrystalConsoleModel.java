@@ -10,11 +10,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -25,13 +25,13 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class CrystalConsoleModel extends TardisModel implements ConsoleUnit {
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/crystal/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/crystal/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/crystal/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/crystal/flight.json"));
 
 
-    private static final ResourceLocation CRYSTAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
+    private static final Identifier CRYSTAL_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/crystal/crystal_console.png");
     private final ModelPart base_control;
     private final ModelPart rotor;
     private final ModelPart rotor_purple;
@@ -57,12 +57,12 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -94,17 +94,17 @@ public class CrystalConsoleModel extends HierarchicalModel implements ConsoleUni
 
         this.handbrake.xRot = reactions.isHandbrakeEngaged() ? 0f : -0.5f;
 
-        base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        base_control.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        rotor.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        rotor_purple.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        controls.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        spinninglight.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
 
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return CRYSTAL_TEXTURE;
     }
 

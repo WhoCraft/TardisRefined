@@ -58,13 +58,13 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public InteractionResult use(BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+    protected InteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
         if (!(level instanceof ServerLevel serverLevel) || interactionHand != InteractionHand.MAIN_HAND) {
-            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+            return super.useItemOn(stack, blockState, level, blockPos, player, interactionHand, blockHitResult);
         }
 
         if (!(level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity)) {
-            return super.use(blockState, level, blockPos, player, interactionHand, blockHitResult);
+            return super.useItemOn(stack, blockState, level, blockPos, player, interactionHand, blockHitResult);
         }
 
         ItemStack itemStack = player.getItemInHand(interactionHand);
@@ -74,7 +74,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
                 new S2COpenCraftingScreen().send(serverPlayer);
             }
             astralManipulatorBlockEntity.clearDisplay();
-            return InteractionResult.sidedSuccess(false);
+            return InteractionResult.SUCCESS;
         }
 
         if (itemStack.getItem() instanceof ScrewdriverItem) {
@@ -82,7 +82,7 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
         }
 
         CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player);
-        return InteractionResult.sidedSuccess(true);
+        return InteractionResult.SUCCESS;
     }
 
 

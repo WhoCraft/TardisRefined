@@ -1,8 +1,8 @@
 package whocraft.tardis_refined.common.tardis.control;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +17,7 @@ import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.sound.ConfiguredSound;
 
 public abstract class Control {
-    protected final ResourceLocation id;
+    protected final Identifier id;
     protected final String langId;
     /**
      * Determines if this Control should be used for the FlightDance. This can be expanded to be used for other purposes in the future.
@@ -25,22 +25,22 @@ public abstract class Control {
     private boolean isCriticalForTardisOperation = false;
     private boolean canBeUsedPostCrash = false;
     private ConfiguredSound successSound = new ConfiguredSound(SoundEvents.ARROW_HIT_PLAYER);
-    private ConfiguredSound failSound = new ConfiguredSound(SoundEvents.ITEM_BREAK);
+    private ConfiguredSound failSound = new ConfiguredSound(SoundEvents.ITEM_BREAK.value());
 
-    protected Control(ResourceLocation id, String langId, boolean isCriticalForTardisOperation) {
+    protected Control(Identifier id, String langId, boolean isCriticalForTardisOperation) {
         this.id = id;
         this.langId = langId;
         this.isCriticalForTardisOperation = isCriticalForTardisOperation;
     }
 
-    protected Control(ResourceLocation id, String langId) {
+    protected Control(Identifier id, String langId) {
         this(id, langId, false);
     }
 
-    protected Control(ResourceLocation id, boolean isCriticalForTardisOperation) {
+    protected Control(Identifier id, boolean isCriticalForTardisOperation) {
         this(id, Util.makeDescriptionId("control", id), isCriticalForTardisOperation);
     }
-    protected Control(ResourceLocation id) {
+    protected Control(Identifier id) {
         this(id, false);
     }
 
@@ -105,7 +105,7 @@ public abstract class Control {
         return !isDeskopWaiting && TardisCommonEvents.PLAYER_CONTROL_INTERACT.invoker().canControlBeUsed(tardisLevelOperator, control, controlEntity) == EventResult.pass();
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return this.id;
     }
 

@@ -34,7 +34,7 @@ public class C2SChangeDesktop extends MessageC2S {
 
     public C2SChangeDesktop(FriendlyByteBuf buffer) {
         this.resourceKey = buffer.readResourceKey(Registries.DIMENSION);
-        this.desktopTheme = TardisDesktops.getDesktopById(buffer.readResourceLocation());
+        this.desktopTheme = TardisDesktops.getDesktopById(buffer.readIdentifier());
     }
 
     @NotNull
@@ -46,12 +46,12 @@ public class C2SChangeDesktop extends MessageC2S {
     @Override
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeResourceKey(this.resourceKey);
-        buf.writeResourceLocation(this.desktopTheme.getIdentifier());
+        buf.writeIdentifier(this.desktopTheme.getIdentifier());
     }
 
     @Override
     public void handle(MessageContext context) {
-        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().getServer().levels.get(resourceKey));
+        Optional<ServerLevel> level = Optional.ofNullable(context.getPlayer().level().getServer().getLevel(resourceKey));
         level.ifPresent(x -> {
             TardisLevelOperator.get(x).ifPresent(operator -> {
                 TardisPilotingManager pilotManager = operator.getPilotingManager();

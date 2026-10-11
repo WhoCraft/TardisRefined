@@ -2,8 +2,9 @@ package whocraft.tardis_refined.client.screen.components;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListEntry> {
@@ -49,11 +50,11 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (enabled) {
             press.onClick(this);
         }
-        return super.mouseClicked(d, e, i);
+        return super.mouseClicked(event, doubleClick);
     }
 
     /**
@@ -69,14 +70,19 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
      * @param partialTick
      */
     @Override
-    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-        int colour = isMouseOver ? ChatFormatting.YELLOW.getColor() :
-                (this.checked ? ChatFormatting.YELLOW.getColor() :
+    public void extractContent(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
+        int top = this.getY();
+        int left = this.getX();
+        int width = this.getWidth();
+        int height = this.getHeight();
+        int rgb = isMouseOver ? 0xFFFF55 :
+                (this.checked ? 0xFFFF55 :
                         this.itemDisplayName.getStyle().getColor() != null ?
                                 this.itemDisplayName.getStyle().getColor().getValue() :
-                                ChatFormatting.GOLD.getColor());
+                                0xFFAA00);
+        int colour = 0xFF000000 | (rgb & 0xFFFFFF);
         Component text = Component.literal((this.checked ? "> " : "") + this.itemDisplayName.getString());
-        this.renderText(guiGraphics, index, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, this.enabled ? colour : ChatFormatting.DARK_GRAY.getColor());
+        this.renderText(guiGraphics, 0, top, left, width, height, mouseX, mouseY, isMouseOver, partialTick, text, this.enabled ? colour : 0xFF555555);
 
         // Render tooltip if mouse is over
         if (isMouseOver && this.tooltip != null) {
@@ -84,18 +90,18 @@ public class SelectionListEntry extends ObjectSelectionList.Entry<SelectionListE
         }
     }
 
-    private void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    private void renderTooltip(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen != null) {
-            guiGraphics.renderTooltip(minecraft.font, this.tooltip, mouseX, mouseY);
+        if (minecraft.gui.screen() != null) {
+            guiGraphics.setTooltipForNextFrame(minecraft.font, this.tooltip, mouseX, mouseY);
         }
     }
 
-    public void renderText(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour) {
+    public void renderText(GuiGraphicsExtractor guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick, Component text, int textColour) {
         int heightCentre = top + height / 2;
         int xPos = this.listLeft + 2;
         int yPos = heightCentre - 9 / 2;
-        guiGraphics.drawString(Minecraft.getInstance().font, text, xPos, yPos, textColour);
+        guiGraphics.text(Minecraft.getInstance().font, text, xPos, yPos, textColour);
     }
 
     public void setChecked(boolean checked) {

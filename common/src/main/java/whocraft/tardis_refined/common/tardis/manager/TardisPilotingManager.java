@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,6 +24,7 @@ import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.shell.ShellBaseBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
+import whocraft.tardis_refined.common.blockentity.door.TardisInternalDoor;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.IncrementUpgrade;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.SpeedUpgrade;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.Upgrade;
@@ -108,33 +109,33 @@ public class TardisPilotingManager extends TickableHandler {
 
     @Override
     public void loadData(CompoundTag tag) {
-        this.autoLand = tag.getBoolean(NbtConstants.CONTROL_AUTOLAND);
-        this.isInFlight = tag.getBoolean(NbtConstants.CONTROL_IS_IN_FLIGHT);
+        this.autoLand = tag.getBooleanOr(NbtConstants.CONTROL_AUTOLAND, false);
+        this.isInFlight = tag.getBooleanOr(NbtConstants.CONTROL_IS_IN_FLIGHT, false);
 
-        this.isHandbrakeOn = tag.getBoolean(NbtConstants.IS_HANDBRAKE_ON);
-        this.throttleStage = tag.getInt(NbtConstants.THROTTLE_STAGE);
+        this.isHandbrakeOn = tag.getBooleanOr(NbtConstants.IS_HANDBRAKE_ON, false);
+        this.throttleStage = tag.getIntOr(NbtConstants.THROTTLE_STAGE, 0);
 
-        this.isPassivelyRefuelling = tag.getBoolean(NbtConstants.IS_PASSIVELY_REFUELING);
+        this.isPassivelyRefuelling = tag.getBooleanOr(NbtConstants.IS_PASSIVELY_REFUELING, false);
 
         setCurrentLocation(NbtConstants.getTardisNavLocation(tag, NbtConstants.CURRENT_LOCATION));
         setTargetLocation(NbtConstants.getTardisNavLocation(tag, NbtConstants.TARGET_LOCATION));
         this.fastReturnLocation = NbtConstants.getTardisNavLocation(tag, NbtConstants.RETURN_LOCATION);
 
-        this.currentConsoleBlockPos = NbtUtils.readBlockPos(tag.getCompound(CURRENT_CONSOLE_POS));
+        this.currentConsoleBlockPos = BlockPos.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag.get(CURRENT_CONSOLE_POS)).result().orElse(BlockPos.ZERO);
 
 
-        this.ticksCrashing = tag.getInt(NbtConstants.TICKS_CRASHING);
-        this.ticksinCrashRecovery = tag.getInt(NbtConstants.RECOVERY_TICKS);
-        this.isInCrashRecovery = tag.getBoolean(NbtConstants.IS_IN_RECOVERY);
-        this.flightDistance = tag.getInt(NbtConstants.FLIGHT_DISTANCE);
-        this.distanceCovered = tag.getInt(NbtConstants.DISTANCE_COVERED);
-        this.canUseControls = tag.getBoolean(CAN_USE_CONTROLS);
+        this.ticksCrashing = tag.getIntOr(NbtConstants.TICKS_CRASHING, 0);
+        this.ticksinCrashRecovery = tag.getIntOr(NbtConstants.RECOVERY_TICKS, 0);
+        this.isInCrashRecovery = tag.getBooleanOr(NbtConstants.IS_IN_RECOVERY, false);
+        this.flightDistance = tag.getIntOr(NbtConstants.FLIGHT_DISTANCE, 0);
+        this.distanceCovered = tag.getIntOr(NbtConstants.DISTANCE_COVERED, 0);
+        this.canUseControls = tag.getBooleanOr(CAN_USE_CONTROLS, false);
 
-        this.cordIncrementIndex = tag.getInt(NbtConstants.CONTROL_INCREMENT_INDEX);
-        this.speedModifier = tag.getInt(NbtConstants.SPEED_MODIFIER);
+        this.cordIncrementIndex = tag.getIntOr(NbtConstants.CONTROL_INCREMENT_INDEX, 0);
+        this.speedModifier = tag.getIntOr(NbtConstants.SPEED_MODIFIER, 0);
 
-        this.fuel = tag.getDouble(NbtConstants.FUEL);
-        this.maximumFuel = tag.getDouble(NbtConstants.MAXIMUM_FUEL);
+        this.fuel = tag.getDoubleOr(NbtConstants.FUEL, 0.0D);
+        this.maximumFuel = tag.getDoubleOr(NbtConstants.MAXIMUM_FUEL, 0.0D);
 
         if (!tag.contains(NbtConstants.MAXIMUM_FUEL)) {
             this.maximumFuel = DEFAULT_MAXIMUM_FUEL;
@@ -158,7 +159,8 @@ public class TardisPilotingManager extends TickableHandler {
         tag.putBoolean(NbtConstants.IS_PASSIVELY_REFUELING, this.isPassivelyRefuelling);
 
         if (currentConsoleBlockPos != null) {
-            tag.put(CURRENT_CONSOLE_POS, NbtUtils.writeBlockPos(this.currentConsoleBlockPos));
+            BlockPos.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, this.currentConsoleBlockPos).result()
+                    .ifPresent(positionTag -> tag.put(CURRENT_CONSOLE_POS, positionTag));
         }
 
 
@@ -337,13 +339,13 @@ public class TardisPilotingManager extends TickableHandler {
 
         ChunkPos chunkPos = level.getChunk(position).getPos();
 
-        var maxBuildHeight = level.getMaxBuildHeight();
-        var minHeight = level.getMinBuildHeight();
+        var maxBuildHeight = level.getMaxY();
+        var minHeight = level.getMinY();
 
         List<TardisNavLocation> solutionsInRow = new ArrayList<>();
 
         //Force load chunk to search positions
-        level.setChunkForced(chunkPos.x, chunkPos.z, true);
+        level.setChunkForced(chunkPos.x(), chunkPos.z(), true);
 
         //Set the default location to 0,0,0 at the target level. DO NOT set this to null else we cause a game crash
         TardisNavLocation closest = new TardisNavLocation(BlockPos.ZERO, Direction.NORTH, level);
@@ -393,7 +395,7 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         //Unforce chunk after we are done searching
-        level.setChunkForced(chunkPos.x, chunkPos.z, false);
+        level.setChunkForced(chunkPos.x(), chunkPos.z(), false);
 
         return closest;
     }
@@ -494,7 +496,7 @@ public class TardisPilotingManager extends TickableHandler {
     }
 
     private boolean isExitPositionSafe(ServerLevel level, BlockPos pos, Direction offsetDirection) {
-        BlockPos exitPosition = pos.offset(offsetDirection.getNormal()); //Check the block that is facing away from the doors.
+        BlockPos exitPosition = pos.offset(offsetDirection.getStep()); //Check the block that is facing away from the doors.
         if (this.isLegalLandingBlock(level, exitPosition.above())
                 && this.isLegalLandingBlock(level, exitPosition) //If there is a 2 block space for the entity to be placed at
                 && !this.isLegalLandingBlock(level, exitPosition.below()) //If there is a solid block beneath the exit position for the entity to stand on
@@ -583,10 +585,18 @@ public class TardisPilotingManager extends TickableHandler {
             }
 
 
+            TardisInternalDoor internalDoor = operator.getInternalDoor();
+            boolean internalDoorWasOpen = internalDoor != null && internalDoor.isOpen();
             operator.setDoorClosed(true);
-            if (operator.getInternalDoor() != null) {
-                operator.getLevel().playSound(null, operator.getInternalDoor().getDoorPosition(), TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
+            BlockPos takeoffSoundPosition = internalDoor != null ? internalDoor.getDoorPosition()
+                    : currentConsole != null ? currentConsole.getBlockPos() : null;
+            if (takeoffSoundPosition != null) {
+                operator.getLevel().playSound(null, takeoffSoundPosition, TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.AMBIENT, 10f, 1f);
             }
+            whocraft.tardis_refined.TardisRefined.LOGGER.info(
+                    "TARDIS takeoff started: internalDoor={}, doorWasOpen={}, doorClosed={}, soundPosition={}, exteriorLocation={}",
+                    internalDoor == null ? "unresolved" : internalDoor.getDoorPosition(), internalDoorWasOpen,
+                    internalDoor != null && !internalDoor.isOpen(), takeoffSoundPosition, currentLocationPreTakeoff);
             operator.getExteriorManager().playSoundAtShell(TRSoundRegistry.TARDIS_TAKEOFF.get(), SoundSource.BLOCKS, 1, 1);
 
 
@@ -643,7 +653,7 @@ public class TardisPilotingManager extends TickableHandler {
         }
 
         if (startingPoint.getLevel() != endingPoint.getLevel()) {
-            distance += 500 + this.operator.getLevel().random.nextInt(250);
+            distance += 500 + this.operator.getLevel().getRandom().nextInt(250);
         }
 
         return distance;
@@ -757,6 +767,7 @@ public class TardisPilotingManager extends TickableHandler {
         this.isInFlight = false;
         this.ticksTakingOff = 0;
         this.autoLand = false;
+        this.operator.getExteriorManager().setIsLanding(false);
 
         if (this.getFuel() < getMaximumFuel() * 0.1) {
             this.operator.getLevel().playSound(null, this.currentConsoleBlockPos, TRSoundRegistry.LOW_FUEL.get(), SoundSource.AMBIENT, 1000, 1);
@@ -790,7 +801,7 @@ public class TardisPilotingManager extends TickableHandler {
 
         float progress = getFlightPercentageCovered();
 
-        Vec3 targetPos = this.getTargetLocation().getPosition().getCenter();
+        Vec3 targetPos = Vec3.atCenterOf(this.getTargetLocation().getPosition());
         BlockPos currentLoc = this.getCurrentLocation().getPosition();
         Vec3 currentPos = new Vec3(currentLoc.getX(), currentLoc.getY(), currentLoc.getZ());
 
@@ -965,7 +976,7 @@ public class TardisPilotingManager extends TickableHandler {
 
             if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
 
-                ResourceLocation oldTheme = consoleBlockEntity.theme();
+                Identifier oldTheme = consoleBlockEntity.theme();
                 ConsolePattern oldPattern = consoleBlockEntity.pattern();
 
                 level.setBlock(this.currentConsole.getBlockPos(), this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, false), Block.UPDATE_ALL);
@@ -985,7 +996,7 @@ public class TardisPilotingManager extends TickableHandler {
 
         if (level.getBlockState(this.currentConsole.getBlockPos()).getBlock() instanceof GlobalConsoleBlock && level.getBlockEntity(this.currentConsole.getBlockPos()) instanceof GlobalConsoleBlockEntity consoleBlockEntity) {
 
-            ResourceLocation oldTheme = consoleBlockEntity.theme();
+            Identifier oldTheme = consoleBlockEntity.theme();
             ConsolePattern oldPattern = consoleBlockEntity.pattern();
 
             level.setBlock(this.currentConsoleBlockPos, this.currentConsole.getBlockState().setValue(GlobalConsoleBlock.POWERED, true), Block.UPDATE_ALL);

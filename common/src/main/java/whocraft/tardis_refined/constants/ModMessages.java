@@ -112,6 +112,10 @@ public class ModMessages {
     public static String DOOR_UNLOCKED = message("door_unlocked");
     public static String NO_DESKTOP_NO_FUEL = message("desktop_cancel_not_enough_fuel");
     public static String ASTRAL_MANIPULATOR_ENGAGED = message("astral_manipulator_engaged");
+    public static String TERRAFORMER_WRONG_DIMENSION = message("terraformer_wrong_dimension");
+    public static String TERRAFORMER_INVALID_PATTERN = message("terraformer_invalid_pattern");
+    public static String TERRAFORMER_ALREADY_TERRAFORMED = message("terraformer_already_terraformed");
+    public static String TERRAFORMER_NO_DATA = message("terraformer_no_data");
     public static String ROOT_PLANT_CUT_OPEN = message("root_plant_cut_open");
     public static String WAYPOINT_LOADED = message("waypoint_loaded");
     public static String CANNOT_START_NO_FUEL = message("cannot_start_no_fuel");

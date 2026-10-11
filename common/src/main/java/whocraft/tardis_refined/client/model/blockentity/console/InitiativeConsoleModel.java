@@ -5,11 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -20,13 +20,13 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class InitiativeConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class InitiativeConsoleModel extends TardisModel implements ConsoleUnit {
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/initiative/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/console/initiative/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/initiative/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/initiative/flight.json"));
 
 
-    private static final ResourceLocation INITIATIVE_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
+    private static final Identifier INITIATIVE_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/initiative/initiative_console.png");
     private final ModelPart root;
     private final ModelPart throttle;
     private final ModelPart handbrake;
@@ -41,7 +41,7 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -74,11 +74,11 @@ public class InitiativeConsoleModel extends HierarchicalModel implements Console
 
         handbrake.xRot = reactions.isHandbrakeEngaged() ? 1f : 0f;
 
-        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return INITIATIVE_TEXTURE;
     }
 

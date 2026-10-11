@@ -28,10 +28,10 @@ public class GrowthDoorModel extends ShellDoorModel {
         door_closed.visible = !isDoorOpen;
         door_open.visible = isDoorOpen;
 
-        door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
 
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "T": "minecraft:torch",
+    "Z": "tardis_refined:zeiton_nugget"
+  },
+  "pattern": [
+    "ZZZ",
+    "ZTZ",
+    "ZZZ"
+  ],
+  "result": {
+    "id": "tardis_refined:zeiton_lantern"
+  },
+  "show_notification": true
+}

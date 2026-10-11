@@ -51,7 +51,7 @@ public class CorridorTeleporterBlock extends Block implements EntityBlock {
 
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos blockPos, Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean bl) {
 
         if (!level.isClientSide()) {
             ServerLevel serverLevel = (ServerLevel) level;
@@ -61,7 +61,7 @@ public class CorridorTeleporterBlock extends Block implements EntityBlock {
         } else {
 
             for (int i = 0; i < 5; i++) {
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.PORTAL, new Vec3(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f), -0.5 + level.random.nextFloat(), 0.5f, -0.5 + level.random.nextFloat());
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.PORTAL, new Vec3(blockPos.getX() + 0.5f, blockPos.getY(), blockPos.getZ() + 0.5f), -0.5 + level.getRandom().nextFloat(), 0.5f, -0.5 + level.getRandom().nextFloat());
             }
         }
     }

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
@@ -32,9 +31,9 @@ public class TardisRefined {
 
     public static Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
-            .registerTypeHierarchyAdapter(Component.class, new Component.Serializer()).
-            registerTypeHierarchyAdapter(Style.class, new Style.Serializer())
-            .registerTypeAdapterFactory(new LowerCaseEnumTypeAdapterFactory()).create();
+            .registerTypeHierarchyAdapter(Component.class, new whocraft.tardis_refined.common.util.ComponentJson())
+            .registerTypeHierarchyAdapter(Style.class, new whocraft.tardis_refined.common.util.StyleJson())
+            .create();
 
     public static void init() {
 

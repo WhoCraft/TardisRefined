@@ -1,6 +1,7 @@
 package whocraft.tardis_refined.common.tardis;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 
 import java.util.UUID;
 
@@ -20,8 +21,9 @@ public class TardisWaypoint {
     }
 
     public static TardisWaypoint deserialise(CompoundTag tag) {
-        TardisNavLocation loc = TardisNavLocation.deserialize(tag.getCompound("location"));
-        UUID id = tag.getUUID("id");
+        TardisNavLocation loc = TardisNavLocation.deserialize(tag.getCompoundOrEmpty("location"));
+        UUID id = tag.getString("id").map(UUID::fromString)
+                .orElseGet(() -> tag.getIntArray("id").map(UUIDUtil::uuidFromIntArray).orElseGet(UUID::randomUUID));
         return new TardisWaypoint(id, loc);
     }
 
@@ -45,7 +47,7 @@ public class TardisWaypoint {
     public CompoundTag serialise() {
         CompoundTag tag = new CompoundTag();
         tag.put("location", this.location.serialise());
-        tag.putUUID("id", this.id);
+        tag.putString("id", this.id.toString());
 
         return tag;
     }

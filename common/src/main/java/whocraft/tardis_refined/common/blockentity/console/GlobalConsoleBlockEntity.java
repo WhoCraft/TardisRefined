@@ -3,10 +3,12 @@ package whocraft.tardis_refined.common.blockentity.console;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +20,16 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import com.geckolib.animatable.GeoBlockEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.util.GeckoLibUtil;
+import whocraft.tardis_refined.TRConfig;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.block.console.GlobalConsoleBlock;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -36,15 +47,54 @@ import whocraft.tardis_refined.registry.TRDamageSources;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity> {
+public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntityTicker<GlobalConsoleBlockEntity>, GeoBlockEntity {
+
+    private static final Map<String, RawAnimation> GEO_FLIGHT_ANIMATIONS = animations("flight",
+            "factory", "crystal", "copper", "toyota", "victorian", "myst", "nuka", "initiative", "refurbished");
+    private static final Map<String, RawAnimation> GEO_IDLE_ANIMATIONS = animations("idle",
+            "factory", "crystal", "copper", "toyota", "victorian", "myst", "initiative", "refurbished");
+
+    private final AnimatableInstanceCache geckoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(new AnimationController<>("console_flight", state -> {
+            if (this.level == null || !this.getBlockState().getValue(GlobalConsoleBlock.POWERED)) return PlayState.STOP;
+            TardisClientData data = TardisClientData.getInstance(this.level.dimension());
+            Identifier theme = this.theme();
+            if (theme == null) theme = data.getConsoleTheme();
+            if (theme == null) return PlayState.STOP;
+            String themeName = theme.getPath();
+            if (data.isFlying()) {
+                RawAnimation flight = GEO_FLIGHT_ANIMATIONS.get(themeName);
+                return flight == null ? PlayState.STOP : state.setAndContinue(flight);
+            }
+            if (TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get()) {
+                RawAnimation idle = GEO_IDLE_ANIMATIONS.get(themeName);
+                if (idle != null) return state.setAndContinue(idle);
+            }
+            return PlayState.STOP;
+        }));
+    }
+
+    private static Map<String, RawAnimation> animations(String clip, String... themes) {
+        Map<String, RawAnimation> result = new HashMap<>();
+        for (String theme : themes) {
+            result.put(theme, RawAnimation.begin().thenLoop("animation." + theme + "." + clip));
+        }
+        return Map.copyOf(result);
+    }
+    @Override public AnimatableInstanceCache getAnimatableInstanceCache() { return geckoCache; }
 
     private final List<ControlEntity> controlEntityList = new ArrayList<>();
     public AnimationState liveliness = new AnimationState();
     public AnimationState powerOff = new AnimationState();
     public AnimationState powerOn = new AnimationState();
     private boolean shouldSpawnControls = true;
-    private ResourceLocation consoleTheme;
+    private Identifier consoleTheme;
     private int ticksBooting = 0;
 
     private ConsolePattern basePattern;
@@ -63,17 +113,23 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         this.basePattern = this.pattern();
     }
 
-    public ResourceLocation theme() {
+    public Identifier theme() {
         if (this.consoleTheme == null) {
             this.consoleTheme = ConsoleTheme.FACTORY.getId();
         }
         return this.consoleTheme;
     }
 
-    public void setConsoleTheme(ResourceLocation themeId) {
+    public void setConsoleTheme(Identifier themeId) {
         this.consoleTheme = themeId;
         this.setChanged();
         this.sendUpdates();
+        if (this.level instanceof ServerLevel serverLevel) {
+            TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
+                operator.tardisClientData().setConsoleTheme(themeId);
+                operator.tardisClientData().sync();
+            });
+        }
     }
 
     public ConsolePattern pattern() {
@@ -88,11 +144,17 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         this.basePattern = basePattern;
         this.setChanged();
         this.sendUpdates();
+        if (this.level instanceof ServerLevel serverLevel && basePattern != null) {
+            TardisLevelOperator.get(serverLevel).ifPresent(operator -> {
+                operator.tardisClientData().setConsolePattern(basePattern.id());
+                operator.tardisClientData().sync();
+            });
+        }
         return this;
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
+    protected void saveAdditional(ValueOutput compoundTag) {
         super.saveAdditional(compoundTag);
 
         if (this.consoleTheme != null) {
@@ -107,16 +169,16 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    protected void loadAdditional(ValueInput tag) {
 
         boolean needsDataFixed = false;
 
-        if (tag.contains("ticks_booting")) {
-            this.ticksBooting = tag.getInt("ticks_booting");
+        if (tag.getInt("ticks_booting").isPresent()) {
+            this.ticksBooting = tag.getIntOr("ticks_booting", 0);
         }
 
-        if (tag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(tag.getString(NbtConstants.THEME));
+        if (tag.getString(NbtConstants.THEME).isPresent()) {
+            Identifier themeId = Identifier.parse(tag.getStringOr(NbtConstants.THEME, ""));
 
             ConsoleTheme theme = ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.get(themeId);
 
@@ -130,9 +192,9 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
 
-        if (tag.contains(NbtConstants.PATTERN) && !needsDataFixed) {
-            ResourceLocation currentPattern = new ResourceLocation(tag.getString(NbtConstants.PATTERN));
-            ResourceLocation theme = this.theme();
+        if (tag.getString(NbtConstants.PATTERN).isPresent() && !needsDataFixed) {
+            Identifier currentPattern = Identifier.parse(tag.getStringOr(NbtConstants.PATTERN, ""));
+            Identifier theme = this.theme();
             if (ConsolePatterns.doesPatternExist(theme, currentPattern)) {
                 this.basePattern = ConsolePatterns.getPatternOrDefault(theme, currentPattern);
             }
@@ -149,7 +211,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         }
 
 
-        super.load(tag);
+        super.loadAdditional(tag);
 
         this.spawnControlEntities();
     }
@@ -162,7 +224,7 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
         if (getLevel() instanceof ServerLevel serverLevel) {
 
             killControls();
-            ResourceLocation themeId = this.theme();
+            Identifier themeId = this.theme();
             ConsoleTheme consoleTheme = ConsoleTheme.CONSOLE_THEME_DEFERRED_REGISTRY.get(themeId);
             ControlSpecification[] controls = consoleTheme.getControlSpecificationList();
             for (ControlSpecification control : Arrays.stream(controls).toList()) {
@@ -194,13 +256,6 @@ public class GlobalConsoleBlockEntity extends BlockEntity implements BlockEntity
     public void setRemoved() {
         super.setRemoved();
 
-    }
-
-    @Override
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = super.getUpdateTag();
-        saveAdditional(tag);
-        return tag;
     }
 
     @Nullable

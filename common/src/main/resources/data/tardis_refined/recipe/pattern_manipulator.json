@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:iron_ingot",
+    "C": "minecraft:green_dye",
+    "E": "minecraft:redstone",
+    "L": "minecraft:lapis_lazuli",
+    "R": "minecraft:red_dye",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "RCL",
+    "EAE",
+    " S "
+  ],
+  "result": {
+    "id": "tardis_refined:pattern_manipulator"
+  },
+  "show_notification": true
+}

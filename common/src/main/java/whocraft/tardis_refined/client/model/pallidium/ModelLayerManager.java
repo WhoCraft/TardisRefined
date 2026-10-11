@@ -2,20 +2,24 @@ package whocraft.tardis_refined.client.model.pallidium;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.Dynamic;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.mixin.fabric.EntityModelSetAccessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,7 +33,7 @@ import static whocraft.tardis_refined.client.model.blockentity.shell.ShellModel.
  *   <li>Used with permission from Lucraft</li>
  * </ul>
  */
-public class ModelLayerManager extends SimpleJsonResourceReloadListener {
+public class ModelLayerManager extends SimpleJsonResourceReloadListener<Dynamic<?>> {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
@@ -37,20 +41,27 @@ public class ModelLayerManager extends SimpleJsonResourceReloadListener {
 
 
     public ModelLayerManager() {
-        super(GSON, "tardis_refined/model_layers");
+        super(Codec.PASSTHROUGH, FileToIdConverter.json("tardis_refined/model_layers"));
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
+    protected void apply(Map<Identifier, Dynamic<?>> object, @NotNull ResourceManager resourceManager, @NotNull ProfilerFiller profiler) {
         Map<ModelLayerLocation, LayerDefinition> jsonRoots = new HashMap<>();
         EntityModelSet entityModels = Minecraft.getInstance().getEntityModels();
-        var codeRoots = entityModels.roots;
+        EntityModelSetAccessor modelSetAccess = (EntityModelSetAccessor) entityModels;
+        var codeRoots = modelSetAccess.tr$getRoots();
         var roots = new HashMap<>(codeRoots);
 
         object.forEach((id, jsonElement) -> {
             ModelLayerLocation layerLocation = mapPathToModelLayerLoc(id);
             try {
-                LayerDefinition layerDefinition = parseLayerDefinition(jsonElement.getAsJsonObject(), layerLocation != null ? layerLocation.toString() : id.toString());
+                String modelId = layerLocation != null ? layerLocation.toString() : id.toString();
+                if (id.getPath().contains("refurbished")) {
+                    Identifier resourceId = Identifier.fromNamespaceAndPath(id.getNamespace(), "tardis_refined/model_layers/" + id.getPath() + ".json");
+                    LOGGER.info("Refurbished model resource selected: id={}, resource={}, packs={}", id, resourceId,
+                            resourceManager.getResourceStack(resourceId).stream().map(resource -> resource.sourcePackId()).toList());
+                }
+                LayerDefinition layerDefinition = parseLayerDefinition(((JsonElement) jsonElement.getValue()).getAsJsonObject(), modelId);
                 if (layerLocation != null)
                     jsonRoots.put(layerLocation, layerDefinition);
                 jsonRoots.put(new ModelLayerLocation(id, "main"), layerDefinition);
@@ -60,13 +71,13 @@ public class ModelLayerManager extends SimpleJsonResourceReloadListener {
         });
 
         roots.putAll(jsonRoots);
-        entityModels.roots = ImmutableMap.copyOf(roots);
+        modelSetAccess.tr$setRoots(ImmutableMap.copyOf(roots));
 
     }
 
     public static LayerDefinition parseLayerDefinition(JsonObject json, String id) {
         if (GsonHelper.isValidNode(json, "minecraft:geometry")) {
-            return BedrockModelUtil.parseAsLayerDefinition(json);
+            return BedrockModelUtil.parseAsLayerDefinition(json, id);
         }
 
         MeshDefinition meshDefinition = new MeshDefinition();
@@ -143,14 +154,14 @@ public class ModelLayerManager extends SimpleJsonResourceReloadListener {
 
     }
 
-    private static ModelLayerLocation mapPathToModelLayerLoc(ResourceLocation path) {
+    private static ModelLayerLocation mapPathToModelLayerLoc(Identifier path) {
         LOGGER.info("Loading model: {}", path.toString());
         int idx = path.getPath().indexOf('/');
         if (idx == -1) {
             return null;
         }
 
-        return new ModelLayerLocation(new ResourceLocation(path.getNamespace(), path.getPath().substring(idx + 1)), path.getPath().substring(0, idx));
+        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(path.getNamespace(), path.getPath().substring(idx + 1)), path.getPath().substring(0, idx));
     }
 
 

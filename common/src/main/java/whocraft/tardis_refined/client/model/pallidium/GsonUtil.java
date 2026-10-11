@@ -5,9 +5,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.ComponentSerialization;
+import net.minecraft.world.item.component.CustomData;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -90,17 +94,17 @@ public class GsonUtil {
         return json.has(memberName) ? getAsItemStack(json, memberName) : fallback;
     }
 
-    public static ResourceLocation convertToResourceLocation(JsonElement json, String memberName) {
+    public static Identifier convertToIdentifier(JsonElement json, String memberName) {
         if (json.isJsonPrimitive()) {
-            return new ResourceLocation(json.getAsString());
+            return Identifier.parse(json.getAsString());
         } else {
             throw new JsonSyntaxException("Expected " + memberName + " to be a resource location, was " + GsonHelper.getType(json));
         }
     }
 
-    public static ResourceLocation getAsResourceLocation(JsonObject json, String memberName) {
+    public static Identifier getAsIdentifier(JsonObject json, String memberName) {
         if (json.has(memberName)) {
-            return new ResourceLocation(GsonHelper.getAsString(json, memberName));
+            return Identifier.parse(GsonHelper.getAsString(json, memberName));
         } else {
             throw new JsonSyntaxException("Missing " + memberName + ", expected to find a resource location");
         }
@@ -113,9 +117,9 @@ public class GsonUtil {
             String[] s = json.getAsString().split("#", 2);
 
             if (s.length == 1) {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), "main");
+                return new ModelLayerLocation(Identifier.parse(s[0]), "main");
             } else {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), s[1]);
+                return new ModelLayerLocation(Identifier.parse(s[0]), s[1]);
             }
         } else {
             throw new JsonSyntaxException("Expected " + memberName + " to be a model layer location, was " + GsonHelper.getType(json));
@@ -128,9 +132,9 @@ public class GsonUtil {
             String[] s = GsonHelper.getAsString(json, memberName).split("#", 2);
 
             if (s.length == 1) {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), "main");
+                return new ModelLayerLocation(Identifier.parse(s[0]), "main");
             } else {
-                return new ModelLayerLocation(new ResourceLocation(s[0]), s[1]);
+                return new ModelLayerLocation(Identifier.parse(s[0]), s[1]);
             }
         } else {
             throw new JsonSyntaxException("Missing " + memberName + ", expected to find a model layer location");
@@ -259,7 +263,7 @@ public class GsonUtil {
 
     public static Component getAsComponent(JsonObject json, String memberName) {
         if (GsonHelper.isValidNode(json, memberName)) {
-            return Component.Serializer.fromJson(json.get(memberName));
+            return ComponentSerialization.CODEC.parse(JsonOps.INSTANCE, json.get(memberName)).getOrThrow();
         } else {
             throw new JsonSyntaxException("Missing " + memberName + ", expected to find a Text Component definition");
         }
@@ -275,12 +279,12 @@ public class GsonUtil {
     public static List<Component> getAsComponentList(JsonObject json, String memberName) {
         if (GsonHelper.isValidNode(json, memberName)) {
             if (json.get(memberName).isJsonPrimitive() || json.get(memberName).isJsonObject()) {
-                return List.of(Objects.requireNonNull(Component.Serializer.fromJson(json.get(memberName))));
+                return List.of(Objects.requireNonNull(ComponentSerialization.CODEC.parse(JsonOps.INSTANCE, json.get(memberName)).getOrThrow()));
             }
             JsonArray array = GsonHelper.convertToJsonArray(json.get(memberName), memberName);
             List<Component> list = new ArrayList<>();
             for (int i = 0; i < array.size(); i++) {
-                list.add(Component.Serializer.fromJson(array.get(i)));
+                list.add(ComponentSerialization.CODEC.parse(JsonOps.INSTANCE, array.get(i)).getOrThrow());
             }
             return list;
         } else {
@@ -488,18 +492,18 @@ public class GsonUtil {
 
     public static JsonElement nbtToJson(Tag nbt) {
         if (nbt instanceof NumericTag) {
-            return new JsonPrimitive(((NumericTag) nbt).getAsNumber());
+            return new JsonPrimitive(((NumericTag) nbt).box());
         } else if (nbt instanceof CollectionTag) {
             JsonArray jsonArray = new JsonArray();
-            for (int i = 0; i < ((CollectionTag<?>) nbt).size(); i++) {
-                jsonArray.add(nbtToJson(((CollectionTag<?>) nbt).get(i)));
+            for (int i = 0; i < ((CollectionTag) nbt).size(); i++) {
+                jsonArray.add(nbtToJson(((CollectionTag) nbt).get(i)));
             }
             return jsonArray;
         } else if (nbt instanceof StringTag) {
-            return new JsonPrimitive(nbt.getAsString());
+            return new JsonPrimitive(nbt.asString().orElse(""));
         } else if (nbt instanceof CompoundTag) {
             JsonObject jsonObject = new JsonObject();
-            for (String key : ((CompoundTag) nbt).getAllKeys()) {
+            for (String key : ((CompoundTag) nbt).keySet()) {
                 jsonObject.add(key, nbtToJson(((CompoundTag) nbt).get(key)));
             }
             return jsonObject;
@@ -518,8 +522,8 @@ public class GsonUtil {
         json.addProperty("item", BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
         json.addProperty("count", stack.getCount());
 
-        if (writeNbt && stack.hasTag()) {
-            json.add("nbt", nbtToJson(stack.getTag()));
+        if (writeNbt && stack.hasNonDefault(DataComponents.CUSTOM_DATA)) {
+            json.add("nbt", nbtToJson(stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag()));
         }
 
         return json;
@@ -527,22 +531,22 @@ public class GsonUtil {
 
     public static ItemStack readItemStack(JsonElement jsonElement) {
         if (jsonElement.isJsonPrimitive()) {
-            ResourceLocation id = new ResourceLocation(jsonElement.getAsString());
+            Identifier id = Identifier.parse(jsonElement.getAsString());
 
             if (!BuiltInRegistries.ITEM.containsKey(id)) {
                 throw new JsonParseException("Unknown item '" + id + "'");
             }
 
-            return new ItemStack(BuiltInRegistries.ITEM.get(id));
+            return new ItemStack(BuiltInRegistries.ITEM.getValue(id));
         } else if (jsonElement.isJsonObject()) {
             var json = jsonElement.getAsJsonObject();
-            ResourceLocation id = new ResourceLocation(GsonHelper.getAsString(json, "item"));
+            Identifier id = Identifier.parse(GsonHelper.getAsString(json, "item"));
 
             if (!BuiltInRegistries.ITEM.containsKey(id)) {
                 throw new JsonParseException("Unknown item '" + id + "'");
             }
 
-            Item item = BuiltInRegistries.ITEM.get(id);
+            Item item = BuiltInRegistries.ITEM.getValue(id);
 
             return new ItemStack(item, GsonHelper.getAsInt(json, "count", 1));
         } else {

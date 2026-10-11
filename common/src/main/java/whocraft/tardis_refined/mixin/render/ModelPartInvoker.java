@@ -10,6 +10,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface ModelPartInvoker {
 
     @Invoker("compile")
-    void invokeCompile(PoseStack.Pose pose, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha);
+    void invokeCompile(PoseStack.Pose pose, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int packedColor);
 
 }

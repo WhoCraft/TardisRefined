@@ -50,7 +50,7 @@ public class C2STravelToWaypoint extends MessageC2S {
     @Override
     public void handle(MessageContext context) {
         ServerPlayer player = context.getPlayer();
-        ServerLevel serverLevel = player.serverLevel();
+        ServerLevel serverLevel = player.level();
 
         TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager tardisWaypointManager = tardisLevelOperator.getTardisWaypointManager();

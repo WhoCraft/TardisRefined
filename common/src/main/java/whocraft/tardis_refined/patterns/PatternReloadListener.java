@@ -4,8 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MergeableCodecJsonReloadListener;
@@ -40,21 +39,20 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
     /**
      * Need to create this static method here as the Architectuary ExpectPlatform Annotation used in CodecJsonReloadListener requires a static builder method to construct an instance
      */
-    @ExpectPlatform
-    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger) {
-        throw new AssertionError();
+    public static <P extends PatternCollection, B extends BasePattern> PatternReloadListener<P, B> createListener(String folderName, Codec<P> codec, final Function<List<P>, List<B>> merger){
+        return whocraft.tardis_refined.patterns.fabric.PatternReloadListenerImpl.createListener(folderName, codec, merger);
     }
 
     @Override
-    protected Map<ResourceLocation, List<B>> mapValues(Map<ResourceLocation, List<Resource>> inputs) {
-        Map<ResourceLocation, List<B>> entries = new HashMap<>();
+    protected Map<Identifier, List<B>> mapValues(Map<Identifier, List<Resource>> inputs) {
+        Map<Identifier, List<B>> entries = new HashMap<>();
 
         for (var entry : inputs.entrySet()) {
 
             List<T> raws = new ArrayList<>();
-            ResourceLocation fullId = entry.getKey();
+            Identifier fullId = entry.getKey();
             String fullPath = fullId.getPath(); // includes folderName/ and .json
-            ResourceLocation key = new ResourceLocation(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
+            Identifier key = Identifier.fromNamespaceAndPath(fullId.getNamespace(), fullPath.substring(this.folderName.length() + 1, fullPath.length() - EXTENSION_LENGTH));
 
             for (Resource resource : entry.getValue()) {
                 try (Reader reader = resource.openAsReader()) {
@@ -62,13 +60,9 @@ public class PatternReloadListener<T extends PatternCollection, B extends BasePa
 
                     // if we fail to parse json, log an error and continue
                     // if we succeeded, add the resulting T to the map
-                    this.codec.decode(JsonOps.INSTANCE, element)
-                            .get()
-                            .ifLeft(result -> {
-                                raws.add((T) result.getFirst().setThemeId(key));
-                                LOGGER.info("Adding Pattern {} for {}", fullId, key);
-                            })
-                            .ifRight(partial -> TardisRefined.LOGGER.error("Error deserializing json {} in folder {} from pack {}: {}", key, this.folderName, resource.sourcePackId(), partial.message()));
+                    T decoded = this.codec.parse(JsonOps.INSTANCE, element).getOrThrow();
+                    raws.add((T) decoded.setThemeId(key));
+                    LOGGER.info("Adding Pattern {} for {}", fullId, key);
                 } catch (Exception e) {
                     LOGGER.error(String.format(Locale.ENGLISH, "Error reading resource %s in folder %s from pack %s: ", key, this.folderName, resource.sourcePackId()), e);
                 }

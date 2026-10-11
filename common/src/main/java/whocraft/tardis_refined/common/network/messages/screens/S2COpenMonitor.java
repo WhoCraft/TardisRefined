@@ -4,7 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.ScreenHandler;
 import whocraft.tardis_refined.common.capability.tardis.upgrades.UpgradeHandler;
@@ -23,14 +23,16 @@ public class S2COpenMonitor extends MessageS2C {
     private final TardisNavLocation currentLocation;
     private final TardisNavLocation targetLocation;
     private final CompoundTag upgradeHandlerNbt;
-    private final ResourceLocation currentShellTheme;
+    private final Identifier currentShellTheme;
+    private final Identifier currentShellPattern;
 
-    public S2COpenMonitor(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler, ResourceLocation currentShellTheme) {
+    public S2COpenMonitor(boolean desktopGenerating, TardisNavLocation currentLocation, TardisNavLocation targetLocation, UpgradeHandler upgradeHandler, Identifier currentShellTheme, Identifier currentShellPattern) {
         this.desktopGenerating = desktopGenerating;
         this.currentLocation = currentLocation;
         this.targetLocation = targetLocation;
         this.upgradeHandlerNbt = upgradeHandler.saveData(new CompoundTag());
         this.currentShellTheme = currentShellTheme;
+        this.currentShellPattern = currentShellPattern;
 
     }
 
@@ -39,7 +41,8 @@ public class S2COpenMonitor extends MessageS2C {
         this.currentLocation = TardisNavLocation.deserialize(Objects.requireNonNull(friendlyByteBuf.readNbt()));
         this.targetLocation = TardisNavLocation.deserialize(Objects.requireNonNull(friendlyByteBuf.readNbt()));
         this.upgradeHandlerNbt = friendlyByteBuf.readNbt();
-        this.currentShellTheme = friendlyByteBuf.readResourceLocation();
+        this.currentShellTheme = friendlyByteBuf.readIdentifier();
+        this.currentShellPattern = friendlyByteBuf.readIdentifier();
     }
 
     @NotNull
@@ -54,7 +57,8 @@ public class S2COpenMonitor extends MessageS2C {
         buf.writeNbt(currentLocation.serialise());
         buf.writeNbt(targetLocation.serialise());
         buf.writeNbt(upgradeHandlerNbt);
-        buf.writeResourceLocation(this.currentShellTheme);
+        buf.writeIdentifier(this.currentShellTheme);
+        buf.writeIdentifier(this.currentShellPattern);
     }
 
 
@@ -66,7 +70,7 @@ public class S2COpenMonitor extends MessageS2C {
     @Environment(EnvType.CLIENT)
     private void handleScreens() {
         // Open the monitor.
-        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation, currentShellTheme);
+        ScreenHandler.openMonitorScreen(desktopGenerating, upgradeHandlerNbt, currentLocation, targetLocation, currentShellTheme, currentShellPattern);
     }
 
 }

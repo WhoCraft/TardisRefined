@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.client.screen.ponder.PonderListScreen;
 import whocraft.tardis_refined.client.screen.screens.CancelDesktopScreen;
@@ -30,39 +30,37 @@ public class ScreenHandler {
 
     @Environment(EnvType.CLIENT)
     public static void setWaypointScreen(Collection<TardisWaypoint> waypoints) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.screen instanceof MonitorOS) {
-            ((MonitorOS) mc.screen).switchScreenToRight(new WaypointListScreen(waypoints));
+        if (Minecraft.getInstance().gui.screen() instanceof MonitorOS monitorOS) {
+            monitorOS.switchScreenToRight(new WaypointListScreen(waypoints));
             return;
         }
-        Minecraft.getInstance().setScreen(new WaypointListScreen(waypoints));
+        Minecraft.getInstance().setScreenAndShow(new WaypointListScreen(waypoints));
     }
 
     @Environment(EnvType.CLIENT)
     public static void setCoordinatesScreen(List<ResourceKey<Level>> levels, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.screen instanceof MonitorOS) {
-            ((MonitorOS) mc.screen).switchScreenToRight(new WaypointManageScreen(levels, coordInputType, tardisNavLocation));
+        if (Minecraft.getInstance().gui.screen() instanceof MonitorOS monitorOS) {
+            monitorOS.switchScreenToRight(new WaypointManageScreen(levels, coordInputType, tardisNavLocation));
             return;
         }
-        Minecraft.getInstance().setScreen(new WaypointManageScreen(levels, coordInputType, tardisNavLocation));
+        Minecraft.getInstance().setScreenAndShow(new WaypointManageScreen(levels, coordInputType, tardisNavLocation));
     }
 
     @Environment(EnvType.CLIENT)
     public static void setEditCoordinatesScreen(TardisWaypoint waypoint) {
-        Minecraft.getInstance().setScreen(new WaypointManageScreen(waypoint));
+        Minecraft.getInstance().setScreenAndShow(new WaypointManageScreen(waypoint));
     }
 
 
     @Environment(EnvType.CLIENT)
-    public static void openMonitorScreen(boolean desktopGenerating, CompoundTag upgradeHandlerNbt, TardisNavLocation currentLocation, TardisNavLocation targetLocation, ResourceLocation currentShellTheme) {
+    public static void openMonitorScreen(boolean desktopGenerating, CompoundTag upgradeHandlerNbt, TardisNavLocation currentLocation, TardisNavLocation targetLocation, Identifier currentShellTheme, Identifier currentShellPattern) {
         if (desktopGenerating) {
-            Minecraft.getInstance().setScreen(new CancelDesktopScreen());
+            Minecraft.getInstance().setScreenAndShow(new CancelDesktopScreen());
         } else {
             assert Minecraft.getInstance().level != null;
             UpgradeHandler upgradeHandlerClient = new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level));
             upgradeHandlerClient.loadData(upgradeHandlerNbt);
-            Minecraft.getInstance().setScreen(new MonitorScreen(currentLocation, targetLocation, upgradeHandlerClient, currentShellTheme));
+            Minecraft.getInstance().setScreenAndShow(new MonitorScreen(currentLocation, targetLocation, upgradeHandlerClient, currentShellTheme, currentShellPattern));
         }
     }
 
@@ -82,25 +80,24 @@ public class ScreenHandler {
         UpgradeHandler upgradeHandlerClient = new UpgradeHandler(new TardisLevelOperator(Minecraft.getInstance().level));
         upgradeHandlerClient.loadData(upgradeTag);
 
-        if (Minecraft.getInstance().screen instanceof UpgradesScreen screen && screen.selectedTab != null) {
+        if (Minecraft.getInstance().gui.screen() instanceof UpgradesScreen screen && screen.selectedTab != null) {
             screen.selectedTab.populate(upgradeHandlerClient);
         } else {
-            Minecraft.getInstance().setScreen(new UpgradesScreen(upgradeHandlerClient));
+            Minecraft.getInstance().setScreenAndShow(new UpgradesScreen(upgradeHandlerClient));
         }
     }
 
     @Environment(EnvType.CLIENT)
-    public static void openShellSelection(ResourceLocation currentShell) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.screen instanceof MonitorOS) {
-            ((MonitorOS) mc.screen).switchScreenToRight(new ShellSelectionScreen(currentShell));
+    public static void openShellSelection(Identifier currentShell) {
+        if (Minecraft.getInstance().gui.screen() instanceof MonitorOS monitorOS) {
+            monitorOS.switchScreenToRight(new ShellSelectionScreen(currentShell));
             return;
         }
-        Minecraft.getInstance().setScreen(new ShellSelectionScreen(currentShell));
+        Minecraft.getInstance().setScreenAndShow(new ShellSelectionScreen(currentShell));
     }
 
     @Environment(EnvType.CLIENT)
     public static void openCraftingScreen() {
-        Minecraft.getInstance().setScreen(new PonderListScreen());
+        Minecraft.getInstance().setScreenAndShow(new PonderListScreen());
     }
 }

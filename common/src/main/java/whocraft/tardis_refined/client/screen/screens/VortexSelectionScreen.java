@@ -1,14 +1,12 @@
 package whocraft.tardis_refined.client.screen.screens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.client.renderer.vortex.VortexRenderer;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
@@ -27,9 +25,9 @@ import java.util.Map;
 
 public class VortexSelectionScreen extends MonitorOS {
 
-    private final List<ResourceLocation> vortexList;
+    private final List<Identifier> vortexList;
 
-    public VortexSelectionScreen(ResourceLocation currentVortex) {
+    public VortexSelectionScreen(Identifier currentVortex) {
         super(Component.translatable(ModMessages.UI_MONITOR_VORTEX), null);
         this.vortexList = VortexRegistry.VORTEX_DEFERRED_REGISTRY.keySet().stream().toList();
         VortexSelectionScreen.currentVortex = currentVortex;
@@ -50,32 +48,25 @@ public class VortexSelectionScreen extends MonitorOS {
         addCancelButton(width / 2 - 11, height - vPos - 25);
     }
 
-    public void selectVortex(ResourceLocation themeId) {
+    public void selectVortex(Identifier themeId) {
         assert Minecraft.getInstance().player != null;
         new C2SChangeVortex(Minecraft.getInstance().player.level().dimension(), themeId).send();
-        //Minecraft.getInstance().setScreen(null);
+        //Minecraft.getInstance().setScreenAndShow(null);
     }
 
     @Override
-    public void renderBackdrop(@NotNull GuiGraphics guiGraphics) {
+    public void renderBackdrop(@NotNull GuiGraphicsExtractor guiGraphics) {
         super.renderBackdrop(guiGraphics);
-
-        PoseStack poseStack = guiGraphics.pose();
 
         int hPos = (width - monitorWidth) / 2;
         int vPos = (height - monitorHeight) / 2;
 
-        poseStack.pushPose();
-
         int b = height - vPos, r = width - hPos;
-        int l1 = hPos + monitorWidth / 4, l2 = hPos + monitorWidth / 2;
+        int l2 = hPos + monitorWidth / 2;
 
         guiGraphics.fill(l2, vPos, r, b, -1072689136);
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-90));
-        poseStack.translate(-height, 0, 0);
-        guiGraphics.fillGradient(vPos, l1, b, l2, 0x00000000, -1072689136);
-        poseStack.popPose();
+        guiGraphics.fill(l2 - 4, vPos, l2, b, 0x88000000);
     }
 
     @Override
@@ -84,7 +75,6 @@ public class VortexSelectionScreen extends MonitorOS {
         int topPos = (height - monitorHeight) / 2;
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 105, 80, leftPos, topPos + 15, topPos + monitorHeight - 30, 12);
 
-        selectionList.setRenderBackground(false);
 
         List<Map.Entry<ResourceKey<VortexRegistry>, VortexRegistry>> values = VortexRegistry.VORTEX_DEFERRED_REGISTRY.entrySet().stream().toList();
         values = values.stream()
@@ -92,8 +82,8 @@ public class VortexSelectionScreen extends MonitorOS {
                 .toList();
 
         for (Map.Entry<ResourceKey<VortexRegistry>, VortexRegistry> vort : values) {
-            ResourceLocation vortId = VortexRegistry.VORTEX_DEFERRED_REGISTRY.getKey(vort.getValue());
-            String owner = Platform.getModName(vort.getKey().location().getNamespace());
+            Identifier vortId = VortexRegistry.VORTEX_DEFERRED_REGISTRY.getKey(vort.getValue());
+            String owner = Platform.getModName(vort.getKey().identifier().getNamespace());
             Component tooltip = Component.literal(ChatFormatting.BLUE + owner);
 
             SelectionListEntry selectionListEntry = new SelectionListEntry(vort.getValue().getDisplayName(), (entry) -> {
@@ -114,7 +104,7 @@ public class VortexSelectionScreen extends MonitorOS {
                 selectionListEntry.setChecked(true);
             }
 
-            selectionList.children().add(selectionListEntry);
+            selectionList.addEntryPublic(selectionListEntry);
         }
 
         return selectionList;

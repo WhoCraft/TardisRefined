@@ -17,7 +17,7 @@ public class LoopingGravBlockSound extends LoopingSoundGeneric {
     @Override
     public void playSoundInstance(Player player) {
         BlockPos position = player.blockPosition();
-        Vec3 playerVec = position.getCenter();
+        Vec3 playerVec = Vec3.atCenterOf(position);
         this.setLocation(playerVec);
         this.setVolume(0.5F);
     }

@@ -1,52 +1,53 @@
 package whocraft.tardis_refined.client.renderer;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 public class RenderHelper {
 
-    public static Tesselator tesselator;
-
-
     public static void renderFilledBox(PoseStack stack, VertexConsumer vertexConsumer, AABB box, float red, float green, float blue, float alpha, int combinedLightIn) {
-        Matrix4f matrix = stack.last().pose();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
+        add(vertexConsumer, stack, box.minX, box.maxY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.maxY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.maxY, box.minZ, red, green, blue, alpha, combinedLightIn);
 
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
+        add(vertexConsumer, stack, box.minX, box.minY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.minY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.minY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.minY, box.maxZ, red, green, blue, alpha, combinedLightIn);
 
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
+        add(vertexConsumer, stack, box.minX, box.minY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.maxY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.maxY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.minY, box.minZ, red, green, blue, alpha, combinedLightIn);
 
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
+        add(vertexConsumer, stack, box.minX, box.minY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.minY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.maxY, box.maxZ, red, green, blue, alpha, combinedLightIn);
 
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.maxX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
+        add(vertexConsumer, stack, box.maxX, box.minY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.maxY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.maxY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.maxX, box.minY, box.maxZ, red, green, blue, alpha, combinedLightIn);
 
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.minY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.maxZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
-        vertexConsumer.vertex(matrix, (float) box.minX, (float) box.maxY, (float) box.minZ).color(red, green, blue, alpha).uv2(combinedLightIn).endVertex();
+        add(vertexConsumer, stack, box.minX, box.minY, box.minZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.minY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.maxY, box.maxZ, red, green, blue, alpha, combinedLightIn);
+        add(vertexConsumer, stack, box.minX, box.maxY, box.minZ, red, green, blue, alpha, combinedLightIn);
+    }
+
+    private static void add(VertexConsumer consumer, PoseStack stack, double x, double y, double z,
+                            float red, float green, float blue, float alpha, int light) {
+        consumer.addVertex(stack.last(), (float) x, (float) y, (float) z)
+                .setColor(red, green, blue, alpha).setLight(light);
     }
 
 
@@ -60,37 +61,27 @@ public class RenderHelper {
     }
 
     public static void rotateZYX(PoseStack poseStack, float x, float y, float z) {
-        poseStack.mulPose((new Quaternionf()).rotationZYX(Mth.DEG_TO_RAD * z, Mth.DEG_TO_RAD * y, Mth.DEG_TO_RAD * x));
+        poseStack.rotate((new Quaternionf()).rotationZYX(Mth.DEG_TO_RAD * z, Mth.DEG_TO_RAD * y, Mth.DEG_TO_RAD * x));
     }
 
-    public static Tesselator beginTextureColor(ResourceLocation texture, VertexFormat.Mode mode, boolean cull) {
-        RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
-        RenderSystem.enableBlend();
-        if (cull) RenderSystem.enableCull();
-        else RenderSystem.disableCull();
-        RenderSystem.enableDepthTest();
-        tesselator = Tesselator.getInstance();
-        tesselator.getBuilder().begin(mode, DefaultVertexFormat.POSITION_TEX_COLOR);
-        return tesselator;
-    }
-
-    public static void vertexUVColor(@NotNull PoseStack pose, float x, float y, float z, float u, float v, float r, float g, float b, float a) {
-        tesselator.getBuilder().vertex(pose.last().pose(), x, y, z).uv(u, v).color(r, g, b, a).endVertex();
+    public static void vertexUVColor(@NotNull VertexConsumer consumer, @NotNull PoseStack pose, float x, float y, float z, float u, float v, float r, float g, float b, float a) {
+        consumer.addVertex(pose.last(), x, y, z).setUv(u, v).setColor(r, g, b, a);
     }
 
     public static class CustomProgressBar {
-        private final ResourceLocation texture;
+        private final Identifier texture;
 
-        private final int height, width;
+        private final int height, width, textureWidth, textureHeight;
         private final int framesU, framesV, mspf;
         public boolean animate = true;
         private int anim = 1;
         private long last_frame;
         private boolean started = false;
 
-        public CustomProgressBar(ResourceLocation texture, int texWidth, int texHeight, int height, int width, int fps) {
+        public CustomProgressBar(Identifier texture, int texWidth, int texHeight, int height, int width, int fps) {
             this.texture = texture;
+            this.textureWidth = texWidth;
+            this.textureHeight = texHeight;
             this.height = height;
             this.width = width;
             this.mspf = 1000 / fps;
@@ -98,7 +89,7 @@ public class RenderHelper {
             this.framesV = texWidth / width;
         }
 
-        public void blit(GuiGraphics gg, int x, int y, double progress) {
+        public void blit(GuiGraphicsExtractor gg, int x, int y, double progress) {
             if (!started) {
                 started = true;
                 last_frame = System.currentTimeMillis();
@@ -107,8 +98,14 @@ public class RenderHelper {
             int u = anim / framesU;
             int v = anim % framesU;
 
-            gg.blit(texture, x, y, 0, 0, width, height);
-            gg.blit(texture, x, y, width * u, height * v, (int) (width * progress), height);
+            // 26.3's extractor overload takes source pixel coordinates and
+            // dimensions. The legacy normalized UV overload stretches the
+            // animated fuel atlas into a screen-sized purple panel.
+            gg.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, width, height,
+                    width, height, textureWidth, textureHeight, net.minecraft.util.ARGB.white(1.0f));
+            gg.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, width * u, height * v,
+                    (int) (width * progress), height, (int) (width * progress), height,
+                    textureWidth, textureHeight, net.minecraft.util.ARGB.white(1.0f));
 
             if (System.currentTimeMillis() - last_frame > mspf) {
                 anim++;
@@ -121,7 +118,7 @@ public class RenderHelper {
 
     public static class DynamicTimeKeep {
         public double speed = 1f;
-        private long time = Long.MIN_VALUE;
+        private long time = 0L;
         private long last_time = System.currentTimeMillis();
 
         public DynamicTimeKeep() {

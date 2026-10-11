@@ -8,7 +8,7 @@ import net.minecraft.world.entity.ai.Brain;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.behavior.WorkAtPoi;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.villager.Villager;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -56,7 +56,7 @@ public class FlyTardisAtPOI extends WorkAtPoi {
                 for (ControlEntity controlEntity : console.getControlEntityList()) {
                     if (controlEntity.isTickingDown()) {
                         rotateDirection();
-                        if (controlEntity.level().random.nextBoolean()) {
+                        if (controlEntity.level().getRandom().nextBoolean()) {
                             for (int i = 0; i < 5; i++) {
                                 controlEntity.realignControl();
                             }
@@ -69,6 +69,17 @@ public class FlyTardisAtPOI extends WorkAtPoi {
         });
 
         super.useWorkstation(serverLevel, villager);
+
+        // Each completed console interaction sends the pilot to the next
+        // side of the console, producing the same repeated walk-and-work
+        // cycle as the older villager pilot.
+        rotateDirection();
+        villager.getBrain().getMemory(MemoryModuleType.JOB_SITE).ifPresent(globalPos -> {
+            BlockPos nextStation = globalPos.pos().relative(direction, 2);
+            villager.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(nextStation));
+            villager.getNavigation().moveTo(nextStation.getX(), nextStation.getY(), nextStation.getZ(), 1.0);
+            villager.getLookControl().setLookAt(globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ());
+        });
     }
 
     @Override
@@ -81,10 +92,6 @@ public class FlyTardisAtPOI extends WorkAtPoi {
             villager.getNavigation().moveTo(position.getX(), position.getY(), position.getZ(), 1);
             villager.getLookControl().setLookAt(globalPos.pos().getX(), globalPos.pos().getY(), globalPos.pos().getZ());
         });
-
-        if (villager.tickCount % 80 == 0) {
-            rotateDirection();
-        }
 
         this.useWorkstation(serverLevel, villager);
     }
@@ -99,7 +106,14 @@ public class FlyTardisAtPOI extends WorkAtPoi {
             return false;
         } else {
             GlobalPos globalPos = optional.get();
-            return villagerDuck.tardisRefined$getPilotingTicks() > 0 && tardisLevelOperator.getPilotingManager().isInFlight() && tardisLevelOperator.getPilotingManager().isCrashing() && globalPos.dimension() == serverLevel.dimension() && globalPos.pos().closerToCenterThan(villager.position(), 1.73);
+            return tardisLevelOperator != null
+                    && villagerDuck.tardisRefined$getPilotingTicks() > 0
+                    && tardisLevelOperator.getPilotingManager().isInFlight()
+                    && !tardisLevelOperator.getPilotingManager().isCrashing()
+                    && globalPos.dimension() == serverLevel.dimension()
+                    // The pilot works from a station beside the console, so
+                    // keep the behavior active while standing at that station.
+                    && globalPos.pos().closerToCenterThan(villager.position(), 3.5);
         }
     }
 }

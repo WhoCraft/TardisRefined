@@ -1,18 +1,20 @@
 package whocraft.tardis_refined.registry;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.entity.ControlEntity;
+import whocraft.tardis_refined.common.entity.ShellPreviewEntity;
 
 public class TREntityRegistry {
 
     public static final DeferredRegistry<EntityType<?>> ENTITY_TYPES = DeferredRegistry.create(TardisRefined.MODID, Registries.ENTITY_TYPE);
 
     public static final RegistrySupplier<EntityType<ControlEntity>> CONTROL_ENTITY = ENTITY_TYPES.register("console_control", () -> registerStatic(ControlEntity::new, MobCategory.MISC, 0.125F, 0.125F, 64, 40, "console_control"));
+    public static final RegistrySupplier<EntityType<ShellPreviewEntity>> SHELL_PREVIEW = ENTITY_TYPES.register("shell_preview", () -> registerStatic(ShellPreviewEntity::new, MobCategory.MISC, 1.0F, 2.0F, 0, 1, "shell_preview"));
 
     /**
      * @param factory
@@ -26,14 +28,13 @@ public class TREntityRegistry {
      * @return
      */
     public static <T extends Entity> EntityType<T> registerStatic(EntityType.EntityFactory<T> factory, MobCategory classification, float width, float height, int trackingRange, int updateFreq, String name) {
-        ResourceLocation loc = new ResourceLocation(TardisRefined.MODID, name);
+        Identifier loc = Identifier.fromNamespaceAndPath(TardisRefined.MODID, name);
         EntityType.Builder<T> builder = EntityType.Builder.of(factory, classification);
         builder.clientTrackingRange(trackingRange);
         builder.updateInterval(updateFreq);
         builder.sized(width, height);
         builder.fireImmune();
-        return builder.build(loc.toString());
+        return builder.build(net.minecraft.resources.ResourceKey.create(Registries.ENTITY_TYPE, loc));
     }
 
 }
-

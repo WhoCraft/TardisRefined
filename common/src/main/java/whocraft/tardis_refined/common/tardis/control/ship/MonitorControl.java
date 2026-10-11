@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.tardis.control.ship;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -20,12 +20,12 @@ import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
 
 public class MonitorControl extends Control {
-    public MonitorControl(ResourceLocation id) {
+    public MonitorControl(Identifier id) {
         super(id, true);
     }
 
 
-    public MonitorControl(ResourceLocation id, String langId) {
+    public MonitorControl(Identifier id, String langId) {
         super(id, langId, true);
     }
 
@@ -52,12 +52,16 @@ public class MonitorControl extends Control {
 
 
             boolean isSyncingKey = false;
-            if (hand.getItem() instanceof KeyItem key) {
-                if (key.interactMonitor(hand, player, controlEntity, player.getUsedItemHand()))
+            for (var interactionHand : net.minecraft.world.InteractionHand.values()) {
+                ItemStack heldStack = player.getItemInHand(interactionHand);
+                if (heldStack.getItem() instanceof KeyItem key
+                        && key.interactMonitor(heldStack, player, controlEntity, interactionHand)) {
                     isSyncingKey = true;
+                    break;
+                }
             }
             if (!isSyncingKey)
-                new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), operator.getPilotingManager().getCurrentLocation(), operator.getPilotingManager().getTargetLocation(), operator.getUpgradeHandler(), operator.getAestheticHandler().getShellTheme()).send((ServerPlayer) player);
+                new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), operator.getPilotingManager().getCurrentLocation(), operator.getPilotingManager().getTargetLocation(), operator.getUpgradeHandler(), operator.getExteriorShellTheme(), operator.getExteriorShellPattern().id()).send((ServerPlayer) player);
             return true;
         }
         return false;

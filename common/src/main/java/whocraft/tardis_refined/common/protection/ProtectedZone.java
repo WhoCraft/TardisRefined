@@ -45,6 +45,6 @@ public class ProtectedZone {
     }
 
     public AABB getArea() {
-        return new AABB(topCorner, bottomCorner);
+        return AABB.encapsulatingFullBlocks(topCorner, bottomCorner);
     }
 }

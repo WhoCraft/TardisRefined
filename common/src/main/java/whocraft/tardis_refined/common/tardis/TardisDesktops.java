@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.common.tardis;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.TardisRefined;
@@ -27,9 +27,10 @@ public class TardisDesktops {
      * A reference to the default Factory theme, intended for convenience. <br> DO NOT REGISTER THIS, it has already been included in the default list of desktops.
      */
     public static final DesktopTheme FACTORY_THEME = new DesktopTheme("factory", "desktop/factory");
+    // Keep the Terraformer on the same structure variant used by 1.20.2.
     public static final DesktopTheme TERRAFORMED = new DesktopTheme("terraformed", "desktop/terraformed");
     private static final CodecJsonReloadListener<DesktopTheme> RELOAD_LISTENER = createReloadListener();
-    private static final Map<ResourceLocation, DesktopTheme> DEFAULT_DESKTOPS = new HashMap<>();
+    private static final Map<Identifier, DesktopTheme> DEFAULT_DESKTOPS = new HashMap<>();
 
     /**
      * A factory method to create the instance of our reload listener.
@@ -47,11 +48,11 @@ public class TardisDesktops {
         return RELOAD_LISTENER;
     }
 
-    public static Map<ResourceLocation, DesktopTheme> getRegistry() {
+    public static Map<Identifier, DesktopTheme> getRegistry() {
         return RELOAD_LISTENER.getData();
     }
 
-    public static DesktopTheme getDesktopById(ResourceLocation location) {
+    public static DesktopTheme getDesktopById(Identifier location) {
         return RELOAD_LISTENER.getData().getOrDefault(location, TardisDesktops.FACTORY_THEME);
     }
 
@@ -60,7 +61,7 @@ public class TardisDesktops {
      * Can be used for datagenerators or as a fallback registry
      *
      */
-    public static Map<ResourceLocation, DesktopTheme> registerDefaultDesktops() {
+    public static Map<Identifier, DesktopTheme> registerDefaultDesktops() {
         DEFAULT_DESKTOPS.clear();
         addDefaultDesktop(new DesktopTheme("arnet", "desktop/arnet"));
         addDefaultDesktop(new DesktopTheme("copper", "desktop/copper"));
@@ -99,7 +100,7 @@ public class TardisDesktops {
     /**
      * Gets a default list of Desktops added by Tardis Refined. Useful as a fallback list.
      */
-    public static Map<ResourceLocation, DesktopTheme> getDefaultDesktops() {
+    public static Map<Identifier, DesktopTheme> getDefaultDesktops() {
         return DEFAULT_DESKTOPS;
     }
 

@@ -53,7 +53,7 @@ public class LevelCommand {
     private static int getDimensionPoints(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             int points = tardisLevelOperator.getUpgradeHandler().getUpgradePoints();
@@ -68,7 +68,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
@@ -85,7 +85,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
@@ -102,11 +102,13 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             UpgradeHandler upgradeHandler = tardisLevelOperator.getUpgradeHandler();
-            upgradeHandler.setUpgradeXP(upgradeHandler.getUpgradeXP() + amount);
+            // Adding XP must pass through the threshold conversion so XP above
+            // 49 grants upgrade points instead of being clamped back to 49.
+            upgradeHandler.addUpgradeXP(amount);
             int xp = upgradeHandler.getUpgradeXP();
             context.getSource().sendSystemMessage(Component.translatable(ModMessages.CMD_LEVEL_XP_ADD, amount, tardisId, xp));
         });
@@ -117,7 +119,7 @@ public class LevelCommand {
     private static int getDimensionXp(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             int xp = tardisLevelOperator.getUpgradeHandler().getUpgradeXP();
@@ -132,7 +134,7 @@ public class LevelCommand {
         int amount = IntegerArgumentType.getInteger(context, "amount");
         ServerLevel dimension = DimensionArgument.getDimension(context, "tardis");
 
-        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().location());
+        MutableComponent tardisId = TardisHelper.createTardisIdComponent(dimension.dimension().identifier());
 
         TardisLevelOperator.get(dimension).ifPresent(tardisLevelOperator -> {
             tardisLevelOperator.getUpgradeHandler().setUpgradeXP(amount);

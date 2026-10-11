@@ -1,0 +1,5 @@
+{
+  "id": "tardis_refined:terraformed",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Terraformed\"}",
+  "structure": "tardis_refined:desktop/terraformed_useable"
+}

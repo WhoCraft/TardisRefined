@@ -4,9 +4,9 @@ import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.*;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,16 +33,15 @@ public class Frame {
     private static final Logger LOGGER = LogManager.getLogger("TardisRefined/FrameByJeryn");
 
     public static final AnimationChannel.Interpolation SNAP_TO = (destination, progress, keyFrames, startIndex, endIndex, scaleFactor) -> {
-        Vector3f startVector = keyFrames[startIndex].target();
-        Vector3f endVector = keyFrames[endIndex].target();
-        return startVector.lerp(endVector, 0, destination).mul(scaleFactor);
+        Vector3f startVector = new Vector3f(keyFrames[startIndex].postTarget());
+        return destination.set(startVector).mul(scaleFactor);
     };
 
-    public static AnimationDefinition loadAnimation(ResourceLocation resourceLocation) {
+    public static AnimationDefinition loadAnimation(Identifier resourceLocation) {
         return loadAnimation(Minecraft.getInstance().getResourceManager(), resourceLocation);
     }
 
-    public static AnimationDefinition loadAnimation(ResourceManager resourceManager, ResourceLocation resourceLocation) {
+    public static AnimationDefinition loadAnimation(ResourceManager resourceManager, Identifier resourceLocation) {
         if(resourceManager == null) return null;
         JsonObject animationJson = loadJsonFromResource(resourceManager, resourceLocation);
 
@@ -78,7 +77,7 @@ public class Frame {
         return animationDefinition.build();
     }
 
-    private static void validateAnimationJson(JsonObject animationJson, ResourceLocation resourceLocation) {
+    private static void validateAnimationJson(JsonObject animationJson, Identifier resourceLocation) {
         if (animationJson == null || !animationJson.has("animations") || animationJson.getAsJsonArray("animations").isEmpty()) {
             LOGGER.error("Invalid or missing animation JSON: {}", resourceLocation);
             throw new IllegalArgumentException("Invalid or missing animation JSON: " + resourceLocation);
@@ -171,7 +170,7 @@ public class Frame {
         };
     }
 
-    public static JsonObject loadJsonFromResource(ResourceManager resourceManager, ResourceLocation resourceLocation) {
+    public static JsonObject loadJsonFromResource(ResourceManager resourceManager, Identifier resourceLocation) {
         LOGGER.info("Loading animation: {}", resourceLocation);
 
         return resourceManager.getResource(resourceLocation).map(resource -> {
@@ -187,9 +186,10 @@ public class Frame {
         });
     }
 
-    public static ModelPart findPart(HierarchicalModel<?> model, String partName) {
+    public static ModelPart findPart(TardisModel model, String partName) {
         return model.root()
                 .getAllParts()
+                .stream()
                 .filter(part -> part.hasChild(partName))
                 .findFirst()
                 .map(part -> part.getChild(partName))

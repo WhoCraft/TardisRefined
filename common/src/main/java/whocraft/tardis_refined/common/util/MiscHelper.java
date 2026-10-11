@@ -1,13 +1,12 @@
 package whocraft.tardis_refined.common.util;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.TicketType;
@@ -40,9 +39,8 @@ import java.util.List;
 
 public class MiscHelper {
 
-    @ExpectPlatform
-    public static Packet<ClientGamePacketListener> spawnPacket(Entity entity) {
-        throw new RuntimeException(PlatformWarning.addWarning(MiscHelper.class));
+    Packet<ClientGamePacketListener> spawnPacket(Entity entity){
+        return whocraft.tardis_refined.common.util.fabric.MiscHelperImpl.spawnPacket(entity);
     }
 
     public static String convertTicksToRealTime(int ticks) {
@@ -92,7 +90,7 @@ public class MiscHelper {
         return aabb.contains(blockPos.getX(), blockPos.getY(), blockPos.getZ());
     }
 
-    public static ResourceKey<Level> idToKey(ResourceLocation identifier) {
+    public static ResourceKey<Level> idToKey(Identifier identifier) {
         return ResourceKey.create(Registries.DIMENSION, identifier);
     }
 
@@ -111,8 +109,8 @@ public class MiscHelper {
             float f = Mth.wrapDegrees(pYaw);
             float f1 = Mth.wrapDegrees(pPitch);
             if (pEntity instanceof ServerPlayer serverPlayer) {
-                ChunkPos chunkpos = new ChunkPos(blockpos);
-                pLevel.getChunkSource().addRegionTicket(TicketType.POST_TELEPORT, chunkpos, 1, pEntity.getId());
+                ChunkPos chunkpos = ChunkPos.containing(blockpos);
+                pLevel.getChunkSource().addTicketWithRadius(TicketType.PORTAL, chunkpos, 1);
                 pEntity.stopRiding();
                 if (serverPlayer.isSleeping()) {
                     serverPlayer.stopSleepInBed(true, true);
@@ -121,24 +119,28 @@ public class MiscHelper {
                 if (pLevel == pEntity.level()) {
                     serverPlayer.connection.teleport(pX, pY, pZ, f, f1);
                 } else {
-                    serverPlayer.teleportTo(pLevel, pX, pY, pZ, f, f1);
+                    serverPlayer.teleportTo(pLevel, pX, pY, pZ, java.util.Set.of(), f, f1, false);
                 }
                 pEntity.setYHeadRot(f);
             } else {
                 float f2 = Mth.clamp(f1, -90.0F, 90.0F);
                 if (pLevel == pEntity.level()) {
-                    pEntity.moveTo(pX, pY, pZ, f, f2);
+                    pEntity.setPos(pX, pY, pZ);
+                    pEntity.setYRot(f);
+                    pEntity.setXRot(f2);
                     pEntity.setYHeadRot(f);
                 } else {
                     pEntity.unRide();
                     Entity entity = pEntity;
-                    pEntity = pEntity.getType().create(pLevel);
+                    pEntity = pEntity.getType().create(pLevel, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
                     if (pEntity == null) {
                         return false;
                     }
 
                     pEntity.restoreFrom(entity);
-                    pEntity.moveTo(pX, pY, pZ, f, f2);
+                    pEntity.setPos(pX, pY, pZ);
+                    pEntity.setYRot(f);
+                    pEntity.setXRot(f2);
                     pEntity.setYHeadRot(f);
                     entity.setRemoved(Entity.RemovalReason.CHANGED_DIMENSION);
                     pLevel.addDuringTeleport(pEntity);
@@ -159,7 +161,7 @@ public class MiscHelper {
     }
 
     public static boolean shouldStopItem(Level level, Player player, BlockPos blockPos, ItemStack itemInHand) {
-        if (level.dimensionTypeId() == TRDimensionTypes.TARDIS && level instanceof ServerLevel serverLevel) {
+        if (level.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS) && level instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
 
             // Consoles
@@ -180,7 +182,7 @@ public class MiscHelper {
 
     public static boolean shouldCancelBreaking(Level world, Entity entity, BlockPos pos, BlockState state) {
 
-        if (world.dimensionTypeId() == TRDimensionTypes.TARDIS && world instanceof ServerLevel serverLevel) {
+        if (world.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS) && world instanceof ServerLevel serverLevel) {
             TardisLevelOperator data = TardisLevelOperator.get(serverLevel).get();
             for (ProtectedZone protectedZone : data.getInteriorManager().unbreakableZones()) {
                 boolean shouldCancel = !protectedZone.isAllowBreaking() && isBlockPosInBox(pos, protectedZone.getArea());
@@ -188,11 +190,11 @@ public class MiscHelper {
             }
         }
 
-        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeId() == TRDimensionTypes.TARDIS) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
+        return (state.getBlock() instanceof GlobalConsoleBlock && world.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) || state.getBlock() instanceof ShellBaseBlock || state.getBlock() instanceof EyeBlock;
     }
 
     public static String getCleanDimensionName(ResourceKey<Level> dimensionKey) {
-        return getCleanName(dimensionKey.location().getPath());
+        return getCleanName(dimensionKey.identifier().getPath());
     }
 
     public static String getCleanName(String name) {
@@ -202,8 +204,8 @@ public class MiscHelper {
 
     public static DamageSource getDamageSource(ServerLevel level, ResourceKey<DamageType> damageTypeResourceKey) {
         Holder.Reference<DamageType> damageType = level.registryAccess()
-                .registryOrThrow(Registries.DAMAGE_TYPE)
-                .getHolderOrThrow(damageTypeResourceKey);
+                .lookupOrThrow(Registries.DAMAGE_TYPE)
+                .getOrThrow(damageTypeResourceKey);
         DamageSource source = new DamageSource(damageType);
         return source;
     }
@@ -230,4 +232,3 @@ public class MiscHelper {
     }
 
 }
-

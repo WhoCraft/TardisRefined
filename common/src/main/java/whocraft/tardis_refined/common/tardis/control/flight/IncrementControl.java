@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.entity.ControlEntity;
@@ -10,11 +10,11 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 
 public class IncrementControl extends whocraft.tardis_refined.common.tardis.control.Control {
-    public IncrementControl(ResourceLocation id) {
+    public IncrementControl(Identifier id) {
         super(id);
     }
 
-    public IncrementControl(ResourceLocation id, String langId) {
+    public IncrementControl(Identifier id, String langId) {
         super(id, langId);
     }
 

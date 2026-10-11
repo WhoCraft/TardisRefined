@@ -3,8 +3,8 @@ package whocraft.tardis_refined.common.items;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -12,12 +12,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.model.pallidium.BedrockModelUtil;
+import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.common.util.PlayerUtil;
 import whocraft.tardis_refined.constants.ModMessages;
@@ -31,8 +34,31 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import net.minecraft.world.item.component.TooltipDisplay;
 
-public class ScrewdriverItem extends Item implements DyeableLeatherItem {
+public class ScrewdriverItem extends Item {
+
+
+    private static CompoundTag readCustomTag(ItemStack stack) {
+        return stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+    }
+
+    private static void writeCustomTag(ItemStack stack, CompoundTag tag) {
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+    }
+
+    private static CompoundTag writeBlockPos(BlockPos pos) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("X", pos.getX());
+        tag.putInt("Y", pos.getY());
+        tag.putInt("Z", pos.getZ());
+        return tag;
+    }
+
+    private static BlockPos readBlockPos(CompoundTag tag) {
+        return new BlockPos(tag.getIntOr("X", 0), tag.getIntOr("Y", 0), tag.getIntOr("Z", 0));
+    }
 
     // Constants
     public static final String SCREWDRIVER_MODE = "screwdriver_mode";
@@ -46,14 +72,12 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     public static ItemStack forceColor(ItemStack itemStack, int color) {
-        itemStack.getOrCreateTagElement("display").putInt("color", color);
+        itemStack.set(DataComponents.DYED_COLOR, new DyedItemColor(color));
         return itemStack;
     }
 
-    @Override
     public int getColor(ItemStack itemStack) {
-        CompoundTag compoundTag = itemStack.getTagElement("display");
-        return compoundTag != null && compoundTag.contains("color", 99) ? compoundTag.getInt("color") : DyeColor.PINK.getTextColor();
+        return DyedItemColor.getOrDefault(itemStack, DyeColor.PINK.getTextColor());
     }
 
     @Override
@@ -67,6 +91,15 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
         var itemInHand = context.getItemInHand();
         var clickedPos = context.getClickedPos();
         var blockState = context.getLevel().getBlockState(clickedPos);
+
+        if (!player.isCrouching()
+                && !isScrewdriverMode(itemInHand, ScrewdriverMode.DRAWING)
+                && blockState.getBlock() instanceof ConsoleConfigurationBlock configurator) {
+            TardisRefined.LOGGER.info("Amethyst screwdriver used on console configurator: player={}, dimension={}, position={}, mode={}",
+                    player.getGameProfile().name(), serverLevel.dimension().identifier(), clickedPos,
+                    readCustomTag(itemInHand).getStringOr(SCREWDRIVER_MODE, "default"));
+            return configurator.useScrewdriver(serverLevel, clickedPos, player);
+        }
 
         if (player.isCrouching()) {
             ScrewdriverMode newMode = isScrewdriverMode(itemInHand, ScrewdriverMode.ENABLED)
@@ -83,9 +116,9 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
 
 
     public void setScrewdriverMode(Player player, ItemStack stack, ScrewdriverMode mode, BlockPos sourceChange, @Nullable ServerLevel serverLevel) {
-        CompoundTag itemTag = stack.getOrCreateTag();
+        CompoundTag itemTag = readCustomTag(stack);
         ScrewdriverMode currentMode = itemTag.contains(SCREWDRIVER_MODE)
-                ? ScrewdriverMode.valueOf(itemTag.getString(SCREWDRIVER_MODE))
+                ? ScrewdriverMode.valueOf(itemTag.getStringOr(SCREWDRIVER_MODE, ""))
                 : ScrewdriverMode.DISABLED;
 
         if (serverLevel != null) {
@@ -104,22 +137,22 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
 
         if (mode == ScrewdriverMode.DRAWING) {
             // Save manipulator position for DRAWING mode
-            itemTag.put(LINKED_MANIPULATOR_POS, NbtUtils.writeBlockPos(sourceChange));
+            itemTag.put(LINKED_MANIPULATOR_POS, writeBlockPos(sourceChange));
         }
 
         Block sourceBlock = player.level().getBlockState(sourceChange).getBlock();
         if(sourceBlock != null && sourceBlock != TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get()) {
             PlayerUtil.sendMessage(player, mode.toString(), true);
         }
-        stack.setTag(itemTag);
+        writeCustomTag(stack, itemTag);
     }
 
 
     public boolean isScrewdriverMode(ItemStack stack, ScrewdriverMode mode) {
-        CompoundTag itemtag = stack.getOrCreateTag();
+        CompoundTag itemtag = readCustomTag(stack);
 
         if (itemtag.contains(SCREWDRIVER_MODE)) {
-            ScrewdriverMode currentMode = ScrewdriverMode.valueOf(itemtag.getString(SCREWDRIVER_MODE));
+            ScrewdriverMode currentMode = ScrewdriverMode.valueOf(itemtag.getStringOr(SCREWDRIVER_MODE, ""));
             return mode == currentMode;
         }
 
@@ -127,14 +160,14 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     private void addBlockPosToScrewdriver(ServerLevel serverLevel, Player player, ItemStack stack, BlockPos pos) {
-        CompoundTag itemtag = stack.getOrCreateTag();
+        CompoundTag itemtag = readCustomTag(stack);
 
 
         boolean isUpdatingA = true;
         String target = SCREWDRIVER_POINT_A;
 
         if (itemtag.contains(SCREWDRIVER_B_WAS_LAST_UPDATED)) {
-            isUpdatingA = itemtag.getBoolean(SCREWDRIVER_B_WAS_LAST_UPDATED);
+            isUpdatingA = itemtag.getBooleanOr(SCREWDRIVER_B_WAS_LAST_UPDATED, false);
 
             if (!isUpdatingA) {
                 target = SCREWDRIVER_POINT_B;
@@ -142,11 +175,11 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
 
         }
 
-        itemtag.put(target, NbtUtils.writeBlockPos(pos));
+        itemtag.put(target, writeBlockPos(pos));
         updatedLinkedManipulator(player, (ServerLevel) player.level(), stack, pos, isUpdatingA);
 
         itemtag.putBoolean(SCREWDRIVER_B_WAS_LAST_UPDATED, !isUpdatingA);
-        stack.setTag(itemtag);
+        writeCustomTag(stack, itemtag);
 
         playScrewdriverSound(serverLevel, player.getOnPos(), TRSoundRegistry.SCREWDRIVER_SHORT.get());
     }
@@ -156,9 +189,9 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     private void updatedLinkedManipulator(Player player, ServerLevel level, ItemStack stack, BlockPos pos, boolean isPointA) {
-        CompoundTag itemtag = stack.getOrCreateTag();
+        CompoundTag itemtag = readCustomTag(stack);
         if (itemtag.contains(LINKED_MANIPULATOR_POS)) {
-            BlockPos manipulator = NbtUtils.readBlockPos(itemtag.getCompound(LINKED_MANIPULATOR_POS));
+            BlockPos manipulator = readBlockPos(itemtag.getCompoundOrEmpty(LINKED_MANIPULATOR_POS));
             if (level.getBlockEntity(manipulator) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
 
                 if (!astralManipulatorBlockEntity.setProjectionBlockPos(pos, isPointA)) {
@@ -170,9 +203,9 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     private void clearLinkedManipulator(ServerLevel level, ItemStack stack) {
-        CompoundTag itemtag = stack.getOrCreateTag();
+        CompoundTag itemtag = readCustomTag(stack);
         if (itemtag.contains(LINKED_MANIPULATOR_POS)) {
-            BlockPos manipulator = NbtUtils.readBlockPos(itemtag.getCompound(LINKED_MANIPULATOR_POS));
+            BlockPos manipulator = readBlockPos(itemtag.getCompoundOrEmpty(LINKED_MANIPULATOR_POS));
             if (level.getBlockEntity(manipulator) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
                 astralManipulatorBlockEntity.clearDisplay();
             }
@@ -182,7 +215,7 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
     }
 
     public void clearBlockPosFromScrewdriver(ItemStack stack) {
-        CompoundTag itemtag = stack.getOrCreateTag();
+        CompoundTag itemtag = readCustomTag(stack);
         if (itemtag.contains(SCREWDRIVER_POINT_A)) {
             itemtag.remove(SCREWDRIVER_POINT_A);
         }
@@ -195,29 +228,27 @@ public class ScrewdriverItem extends Item implements DyeableLeatherItem {
             itemtag.remove(LINKED_MANIPULATOR_POS);
         }
 
-        stack.setTag(itemtag);
+        writeCustomTag(stack, itemtag);
     }
 
     public List<BlockPos> getScrewdriverPoint(ItemStack stack) {
-        CompoundTag itemtag = stack.getOrCreateTag();
+        CompoundTag itemtag = readCustomTag(stack);
         List<BlockPos> listOfBlockPos = new ArrayList<BlockPos>();
 
         if (itemtag.contains(SCREWDRIVER_POINT_A)) {
-            listOfBlockPos.add(NbtUtils.readBlockPos(itemtag.getCompound(SCREWDRIVER_POINT_A)));
+            listOfBlockPos.add(readBlockPos(itemtag.getCompoundOrEmpty(SCREWDRIVER_POINT_A)));
         }
 
         if (itemtag.contains(SCREWDRIVER_POINT_B)) {
-            listOfBlockPos.add(NbtUtils.readBlockPos(itemtag.getCompound(SCREWDRIVER_POINT_B)));
+            listOfBlockPos.add(readBlockPos(itemtag.getCompoundOrEmpty(SCREWDRIVER_POINT_B)));
         }
 
         return listOfBlockPos;
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> list, TooltipFlag tooltipFlag) {
-        super.appendHoverText(itemStack, level, list, tooltipFlag);
-
-        list.add(Component.translatable(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION));
+    public void appendHoverText(ItemStack itemStack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag tooltipFlag) {
+        super.appendHoverText(itemStack, context, display, tooltip, tooltipFlag);
+        tooltip.accept(Component.translatable(ModMessages.TOOLTIP_SCREWDRIVER_DESCRIPTION));
     }
 }
-

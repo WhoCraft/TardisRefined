@@ -27,15 +27,6 @@ public class TardisLevelOperatorDummy extends TardisLevelOperatorImpl {
         }
     }
 
-    @Override
-    public void writeToNbt(CompoundTag tag) {
-
-    }
-
-    @Override
-    public void readFromNbt(CompoundTag tag) {
-
-    }
 
 
 }

@@ -1,0 +1,9 @@
+{
+  "ambient_sounds": [
+    "minecraft:ambient.nether_wastes.additions",
+    "minecraft:ambient.nether_wastes.mood"
+  ],
+  "hum_sound": "minecraft:ambient.nether_wastes.loop",
+  "id": "tardis_refined:nether_wastes",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Nether Wastes\"}"
+}

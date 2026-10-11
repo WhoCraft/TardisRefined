@@ -1,15 +1,18 @@
 package whocraft.tardis_refined.client.renderer.blockentity.life;
 
+import whocraft.tardis_refined.client.renderer.LegacyBlockEntityRenderer;
+import whocraft.tardis_refined.client.renderer.DeferredGeometryBuffer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
@@ -21,18 +24,19 @@ import whocraft.tardis_refined.common.blockentity.life.ArsEggBlockEntity;
 import static whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel.CRASHING;
 import static whocraft.tardis_refined.client.model.blockentity.life.ArsEggModel.SWINGING;
 
-public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, BlockEntityRendererProvider<ArsEggBlockEntity> {
+public class ArsEggRenderer extends LegacyBlockEntityRenderer<ArsEggBlockEntity> {
 
     private final ArsEggModel arsEggModel;
-    private final ResourceLocation arsEggTexture = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg.png");
-    private final ResourceLocation arsEggTextureEmissive = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/life/ars_egg_emissive.png");
+    private final Identifier arsEggTexture = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/life/ars_egg.png");
+    private final Identifier arsEggTextureEmissive = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/life/ars_egg_emissive.png");
 
     public ArsEggRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
         this.arsEggModel = new ArsEggModel(context.bakeLayer(ModelRegistry.ARS_EGG));
     }
 
     @Override
-    public void render(ArsEggBlockEntity blockEntity, float f, PoseStack poseStack, MultiBufferSource multiBufferSource, int i, int j) {
+    protected void renderLegacy(ArsEggBlockEntity blockEntity, float f, PoseStack poseStack, DeferredGeometryBuffer multiBufferSource, int i) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
         poseStack.translate(0, 0.3, 0);
@@ -43,7 +47,7 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
             poseStack.translate(0, -0.3, 0);
         }
 
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+        poseStack.rotateDegrees(Axis.ZP, 180F);
 
         arsEggModel.root().getAllParts().forEach(ModelPart::resetPose);
 
@@ -59,11 +63,11 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
             arsEggModel.doAnimation(blockEntity.getLiveliness(), crashing ? CRASHING : SWINGING, animationCounter);
         }
 
-        arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucent(arsEggTexture)),
+        arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderTypes.entityTranslucent(arsEggTexture)),
                 i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1f);
 
         if (blockState.getValue(ArsEggBlock.ALIVE)) {
-            arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderType.entityTranslucentEmissive(arsEggTextureEmissive)),
+            arsEggModel.renderToBuffer(blockEntity, poseStack, multiBufferSource.getBuffer(RenderTypes.entityTranslucentEmissive(arsEggTextureEmissive)),
                     i, OverlayTexture.NO_OVERLAY, 1f, 1f, 1f, 1F);
         }
 
@@ -71,12 +75,8 @@ public class ArsEggRenderer implements BlockEntityRenderer<ArsEggBlockEntity>, B
     }
 
     @Override
-    public boolean shouldRenderOffScreen(ArsEggBlockEntity blockEntity) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 
-    @Override
-    public BlockEntityRenderer<ArsEggBlockEntity> create(Context context) {
-        return new ArsEggRenderer(context);
-    }
 }

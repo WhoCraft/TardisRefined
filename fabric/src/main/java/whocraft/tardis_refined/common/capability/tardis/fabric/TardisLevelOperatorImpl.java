@@ -1,9 +1,11 @@
 package whocraft.tardis_refined.common.capability.tardis.fabric;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentV3;
+import org.ladysnake.cca.api.v3.component.ComponentV3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.fabric.TRComponents;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
@@ -30,15 +32,12 @@ public class TardisLevelOperatorImpl extends TardisLevelOperator implements Comp
     }
 
     @Override
-    public void readFromNbt(CompoundTag tag) {
-        this.deserializeNBT(tag);
+    public void readData(ValueInput input) {
+        input.read("tardis_refined_data", CompoundTag.CODEC).ifPresent(this::deserializeNBT);
     }
 
     @Override
-    public void writeToNbt(CompoundTag tag) {
-        CompoundTag nbt = this.serializeNBT();
-        for (String key : nbt.getAllKeys()) {
-            tag.put(key, Objects.requireNonNull(nbt.get(key)));
-        }
+    public void writeData(ValueOutput output) {
+        output.store("tardis_refined_data", CompoundTag.CODEC, this.serializeNBT());
     }
 }

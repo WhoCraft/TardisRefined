@@ -30,7 +30,7 @@ public class DrillItem extends Item {
             Level level = useOnContext.getLevel();
             BlockPos clickedPos = useOnContext.getClickedPos();
 
-            player.getCooldowns().addCooldown(this, 5);
+            player.getCooldowns().addCooldown(useOnContext.getItemInHand(), 5);
             destroyGrowthBlock(level, clickedPos);
 
             if (player.isShiftKeyDown()) {

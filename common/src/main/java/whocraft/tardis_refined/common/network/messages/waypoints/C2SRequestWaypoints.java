@@ -37,7 +37,7 @@ public class C2SRequestWaypoints extends MessageC2S {
     @Override
     public void handle(MessageContext context) {
         ServerPlayer player = context.getPlayer();
-        ServerLevel level = player.serverLevel();
+        ServerLevel level = player.level();
         TardisLevelOperator.get(level).ifPresent(tardisLevelOperator -> {
             TardisWaypointManager waypointManager = tardisLevelOperator.getTardisWaypointManager();
             Collection<TardisWaypoint> waypoints = waypointManager.getWaypoints();

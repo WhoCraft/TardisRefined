@@ -1,10 +1,9 @@
 package whocraft.tardis_refined.registry;
 
 import com.mojang.serialization.Codec;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
 import whocraft.tardis_refined.common.util.PlatformWarning;
@@ -21,7 +20,7 @@ import java.util.function.Supplier;
  * <pre>{@code
  * public class TRControlRegistry {
  *
- *     public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(TardisRefined.MODID, "control"));
+ *     public static final ResourceKey<Registry<Control>> CONTROL_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "control"));
  *
  *     public static final DeferredRegistry<Control> TR_CONTROLS =  DeferredRegistry.createCustom(TardisRefined.MODID, CONTROL_REGISTRY_KEY, true);
  *
@@ -31,7 +30,7 @@ import java.util.function.Supplier;
  *     public static final Map.Entry<ResourceKey<Control>, Control> GLOBAL_CONTROL_REGISTRY = TR_CONTROLS.entrySet();
  *
  *     //Register using RegistrySupplier if you only need the raw object and no compatibiltiy with other vanilla features
- *     public static final RegistrySupplier<Control> THROTTLE = TR_CONTROLS.register("throttle", () -> new GenericControl(new ResourceLocation(TardisRefined.MODID, "throttle"));
+ *     public static final RegistrySupplier<Control> THROTTLE = TR_CONTROLS.register("throttle", () -> new GenericControl(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "throttle"));
  *
  *     //Unfortunately, we cannot register using RegistrySupplierHolder in 1.20.1 because Forge's Registries are isolated from vanilla, so in order to have unified modding interface we must only use suppliers
  *
@@ -39,7 +38,7 @@ import java.util.function.Supplier;
  *
  * public class TardisConsoleBlock {
  *
- *     public Set<ResourceLocation> getAllControls() {
+ *     public Set<Identifier> getAllControls() {
  *         return TRControlRegistry.TR_CONTROLS.keySet();
  *     }
  * }
@@ -58,7 +57,7 @@ import java.util.function.Supplier;
  *     private static final DeferredRegistry<Control> MY_ADDON_CONTROLS =  DeferredRegistry.createCustom(MyAddonMod.MODID, TRControlRegistry.CONTROL_REGISTRY_KEY, true);
  *
  *     //Register entries to the addon mod's instance of the deferred registry using a RegistrySupplier
- *     public static final RegistrySupplier<Control> SPEED = MY_ADDON_CONTROLS.register("speed", () -> new GenericControl(new ResourceLocation(MyAddonMod.MODID, "speed"));
+ *     public static final RegistrySupplier<Control> SPEED = MY_ADDON_CONTROLS.register("speed", () -> new GenericControl(Identifier.fromNamespaceAndPath(MyAddonMod.MODID, "speed"));
  *
  *     //Unfortunately, we cannot register using RegistrySupplierHolder in 1.20.1 because Forge's Registries are isolated from vanilla, so in order to have unified modding interface we must only use suppliers
  * }
@@ -85,9 +84,8 @@ public abstract class DeferredRegistry<T> {
      * @param <T>
      * @return
      */
-    @ExpectPlatform
-    public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
-        throw new RuntimeException(PlatformWarning.addWarning(DeferredRegistry.class));
+    public static <T> DeferredRegistry<T> create(String modid, ResourceKey<? extends Registry<T>> resourceKey){
+        return whocraft.tardis_refined.registry.fabric.DeferredRegistryImpl.create(modid, resourceKey);
     }
 
     /**
@@ -99,9 +97,8 @@ public abstract class DeferredRegistry<T> {
      * @param <T>
      * @return
      */
-    @ExpectPlatform
-    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
-        throw new AssertionError();
+    public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient){
+        return whocraft.tardis_refined.registry.fabric.DeferredRegistryImpl.createCustom(modid, resourceKey, syncToClient);
     }
 
     /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
@@ -133,18 +130,18 @@ public abstract class DeferredRegistry<T> {
 
     public abstract ResourceKey<? extends Registry<T>> key();
 
-    public abstract T get(ResourceLocation key);
+    public abstract T get(Identifier key);
 
-    public abstract ResourceLocation getKey(T object);
+    public abstract Identifier getKey(T object);
 
-    public abstract Set<ResourceLocation> keySet();
+    public abstract Set<Identifier> keySet();
 
     /**
      * Gets the values in the underlying registry ordered by key. This is sufficient for most purposes
      */
     public abstract Set<Map.Entry<ResourceKey<T>, T>> entrySet();
 
-    public abstract boolean containsKey(ResourceLocation key);
+    public abstract boolean containsKey(Identifier key);
 
 
     /**

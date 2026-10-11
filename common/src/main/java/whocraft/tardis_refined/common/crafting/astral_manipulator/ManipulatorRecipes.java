@@ -2,7 +2,7 @@ package whocraft.tardis_refined.common.crafting.astral_manipulator;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.*;
@@ -25,7 +25,7 @@ import java.util.Optional;
  */
 public class ManipulatorRecipes {
 
-    public static Map<ResourceLocation, ManipulatorCraftingRecipe> MANIPULATOR_CRAFTING_RECIPES = new HashMap<>();
+    public static Map<Identifier, ManipulatorCraftingRecipe> MANIPULATOR_CRAFTING_RECIPES = new HashMap<>();
 
     public static void registerRecipes() {
 
@@ -139,15 +139,15 @@ public class ManipulatorRecipes {
                 new ManipulatorCraftingIngredient(new BlockPos(2, 0, 1), Blocks.AMETHYST_BLOCK),
                 new ManipulatorCraftingIngredient(new BlockPos(2, 0, 2), TRBlockRegistry.ZEITON_FUSED_IRON_BLOCK.get()),
 
-                new ManipulatorCraftingIngredient(new BlockPos(0, 1, 0), Blocks.CUT_COPPER_SLAB),
+                new ManipulatorCraftingIngredient(new BlockPos(0, 1, 0), Blocks.CUT_COPPER_SLAB.weathering().unaffected()),
                 new ManipulatorCraftingIngredient(new BlockPos(0, 1, 1), Blocks.IRON_TRAPDOOR),
-                new ManipulatorCraftingIngredient(new BlockPos(0, 1, 2), Blocks.CUT_COPPER_SLAB),
+                new ManipulatorCraftingIngredient(new BlockPos(0, 1, 2), Blocks.CUT_COPPER_SLAB.weathering().unaffected()),
                 new ManipulatorCraftingIngredient(new BlockPos(1, 1, 0), Blocks.IRON_TRAPDOOR),
                 new ManipulatorCraftingIngredient(new BlockPos(1, 1, 1), Blocks.AIR),
                 new ManipulatorCraftingIngredient(new BlockPos(1, 1, 2), Blocks.IRON_TRAPDOOR),
-                new ManipulatorCraftingIngredient(new BlockPos(2, 1, 0), Blocks.CUT_COPPER_SLAB),
+                new ManipulatorCraftingIngredient(new BlockPos(2, 1, 0), Blocks.CUT_COPPER_SLAB.weathering().unaffected()),
                 new ManipulatorCraftingIngredient(new BlockPos(2, 1, 1), Blocks.IRON_TRAPDOOR),
-                new ManipulatorCraftingIngredient(new BlockPos(2, 1, 2), Blocks.CUT_COPPER_SLAB)
+                new ManipulatorCraftingIngredient(new BlockPos(2, 1, 2), Blocks.CUT_COPPER_SLAB.weathering().unaffected())
 
         ), new ItemStack(TRBlockRegistry.LANDING_PAD.get().asItem())));
 
@@ -185,10 +185,10 @@ public class ManipulatorRecipes {
     }
 
     public static ManipulatorCraftingRecipe register(String id, ManipulatorCraftingRecipe manipulatorCraftingRecipe) {
-        return register(new ResourceLocation(TardisRefined.MODID, id), manipulatorCraftingRecipe);
+        return register(Identifier.fromNamespaceAndPath(TardisRefined.MODID, id), manipulatorCraftingRecipe);
     }
 
-    public static ManipulatorCraftingRecipe register(ResourceLocation id, ManipulatorCraftingRecipe manipulatorCraftingRecipe) {
+    public static ManipulatorCraftingRecipe register(Identifier id, ManipulatorCraftingRecipe manipulatorCraftingRecipe) {
         MANIPULATOR_CRAFTING_RECIPES.put(id, manipulatorCraftingRecipe.setRegistryId(id));
 
         return manipulatorCraftingRecipe;

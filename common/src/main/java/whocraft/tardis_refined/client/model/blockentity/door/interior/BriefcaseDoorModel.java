@@ -32,12 +32,12 @@ public class BriefcaseDoorModel extends ShellDoorModel {
     @Override
     public void renderFrame(GlobalDoorBlockEntity doorBlockEntity, boolean open, boolean isBaseModel, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         if (isDoorOpen) {
-            door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+            door_open.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
         } else {
-            door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+            door_closed.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
         }
 
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

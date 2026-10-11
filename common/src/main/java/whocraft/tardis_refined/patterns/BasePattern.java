@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MiscHelper;
 
@@ -15,19 +15,19 @@ import java.util.Objects;
  */
 public abstract class BasePattern {
 
-    private final ResourceLocation identifier;
-    protected ResourceLocation themeId;
+    private final Identifier identifier;
+    protected Identifier themeId;
     private String name;
 
     public BasePattern(String id) {
-        this(new ResourceLocation(TardisRefined.MODID, id));
+        this(Identifier.fromNamespaceAndPath(TardisRefined.MODID, id));
     }
 
-    public BasePattern(ResourceLocation identifier) {
+    public BasePattern(Identifier identifier) {
         this(identifier, TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(identifier.getPath())).setStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW))));
     }
 
-    public BasePattern(ResourceLocation identifier, String name) {
+    public BasePattern(Identifier identifier, String name) {
         this.identifier = identifier;
         this.name = name;
     }
@@ -43,15 +43,15 @@ public abstract class BasePattern {
         return this;
     }
 
-    public ResourceLocation id() {
+    public Identifier id() {
         return this.identifier;
     }
 
-    public ResourceLocation getThemeId() {
+    public Identifier getThemeId() {
         return this.themeId;
     }
 
-    public BasePattern setThemeId(ResourceLocation themeId) {
+    public BasePattern setThemeId(Identifier themeId) {
         this.themeId = themeId;
         return this;
     }

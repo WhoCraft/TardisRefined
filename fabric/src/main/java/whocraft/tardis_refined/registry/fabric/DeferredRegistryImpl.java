@@ -8,7 +8,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.registry.DeferredRegistry;
 import whocraft.tardis_refined.registry.RegistrySupplier;
 
@@ -25,7 +25,7 @@ public class DeferredRegistryImpl {
     public static <T> DeferredRegistry<T> createCustom(String modid, ResourceKey<Registry<T>> resourceKey, boolean syncToClient) {
         //Add our custom registry to vanilla's list of registries
         //Must call FabricRegistryBuilder#createSimple directly and not in a supplier.
-        WritableRegistry<T> registry = syncToClient ? FabricRegistryBuilder.createSimple(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : FabricRegistryBuilder.createSimple(resourceKey).buildAndRegister();
+        WritableRegistry<T> registry = syncToClient ? FabricRegistryBuilder.create(resourceKey).attribute(RegistryAttribute.SYNCED).buildAndRegister() : FabricRegistryBuilder.create(resourceKey).buildAndRegister();
         return new Impl<>(modid, resourceKey, syncToClient, () -> registry);
     }
 
@@ -48,7 +48,7 @@ public class DeferredRegistryImpl {
         }
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey) {
-            this(modid, resourceKey, false, false, () -> (WritableRegistry<T>) BuiltInRegistries.REGISTRY.get(resourceKey.location()));
+            this(modid, resourceKey, false, false, () -> (WritableRegistry<T>) BuiltInRegistries.REGISTRY.getValue(resourceKey.identifier()));
         }
 
         public Impl(String modid, ResourceKey<? extends Registry<T>> resourceKey, boolean syncToClient, Supplier<WritableRegistry<T>> registry) {
@@ -62,14 +62,14 @@ public class DeferredRegistryImpl {
 
         @Override
         public <R extends T> RegistrySupplier<R> register(String id, Supplier<R> supplier) {
-            ResourceLocation registeredId = new ResourceLocation(this.modid, id);
+            Identifier registeredId = Identifier.fromNamespaceAndPath(this.modid, id);
             RegistrySupplier<R> registrySupplier = new RegistrySupplier<>(registeredId, Registry.register(this.registry.get(), registeredId, supplier.get()));
             return registrySupplier;
         }
 
         /** 1.20.1: Comment out due to Forge 1.20.1 not exposing the vanilla registry, thus we need to exclude this to have a common interface for both Fabric and Forge
          @Override public <I extends T> RegistrySupplierHolder<T, I> registerHolder(String id, Supplier<I> sup) {
-         ResourceLocation registeredId = new ResourceLocation(this.modid, id);
+         Identifier registeredId = Identifier.fromNamespaceAndPath(this.modid, id);
          Registry.register(this.registry.get(), registeredId, sup.get()); //Need to call this explicitly to register the object
          RegistrySupplierHolder<T, I> registryHolder = RegistrySupplierHolder.create(this.resourceKey, registeredId); //Create the holder, it will automatically bind the underlying value when the object is registered
          return registryHolder;
@@ -90,22 +90,22 @@ public class DeferredRegistryImpl {
         }
 
         @Override
-        public T get(ResourceLocation key) {
-            return this.registry.get().get(key);
+        public T get(Identifier key) {
+            return this.registry.get().getValue(key);
         }
 
         @Override
-        public ResourceLocation getKey(T object) {
+        public Identifier getKey(T object) {
             return this.registry.get().getKey(object);
         }
 
         @Override
-        public boolean containsKey(ResourceLocation key) {
+        public boolean containsKey(Identifier key) {
             return this.registry.get().containsKey(key);
         }
 
         @Override
-        public Set<ResourceLocation> keySet() {
+        public Set<Identifier> keySet() {
             return this.registry.get().keySet();
         }
 

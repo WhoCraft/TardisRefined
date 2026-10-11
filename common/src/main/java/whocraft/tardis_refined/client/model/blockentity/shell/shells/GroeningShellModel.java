@@ -29,7 +29,7 @@ public class GroeningShellModel extends ShellModel {
 
     @Override
     public void setDoorPosition(boolean open) {
-        this.door.yRot = (open) ? -275f : 0;
+        this.door.yRot = open ? (float) Math.toRadians(-275.0F) : 0.0F;
     }
 
     @Override
@@ -44,6 +44,6 @@ public class GroeningShellModel extends ShellModel {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        root().render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 }

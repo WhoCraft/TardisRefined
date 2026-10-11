@@ -1,0 +1,10 @@
+{
+  "ambient_sounds": [
+    "minecraft:ambient.underwater.loop.additions",
+    "minecraft:ambient.underwater.loop.additions.rare",
+    "minecraft:ambient.underwater.loop.additions.ultra_rare"
+  ],
+  "hum_sound": "minecraft:ambient.underwater.loop",
+  "id": "tardis_refined:under_water",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Under Water\"}"
+}

@@ -3,7 +3,7 @@ package whocraft.tardis_refined.common.blockentity.shell;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -58,10 +58,10 @@ public class RootedShellBlockEntity extends ShellBaseBlockEntity {
         if (level instanceof ServerLevel serverLevel) {
             if (this.shouldSetup()) {
                 //Create a Level Key with a randomised UUID
-                ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+                ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TardisRefined.MODID, UUID.randomUUID().toString()));
 
                 //Create the Level on demand which will create our capability
-                ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, generatedLevelKey.location());
+                ServerLevel interior = DimensionHandler.getOrCreateInterior(serverLevel, generatedLevelKey.identifier());
 
                 // Set the UUID on the block entity.
                 this.setTardisId(generatedLevelKey);

@@ -15,14 +15,14 @@ import net.minecraft.world.phys.Vec3;
  */
 public abstract class LoopingSound extends AbstractTickableSoundInstance {
 
-    protected SoundEvent soundEvent;
+    protected SoundEvent soundEventRef;
     protected Player player;
     protected Level level;
     protected float defaultVolume = 0.5F;
 
     public LoopingSound(SoundEvent soundEvent, SoundSource soundSource, Attenuation attenuation) {
         super(soundEvent, soundSource, SoundInstance.createUnseededRandom());
-        this.soundEvent = soundEvent;
+        this.soundEventRef = soundEvent;
         this.attenuation = attenuation;
         this.looping = true;
         this.delay = 0;
@@ -99,10 +99,6 @@ public abstract class LoopingSound extends AbstractTickableSoundInstance {
     @Override
     public Sound getSound() {
         return super.getSound();
-    }
-
-    public SoundEvent getSoundEvent() {
-        return this.soundEvent;
     }
 
     /**

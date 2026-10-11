@@ -2,7 +2,7 @@ package whocraft.tardis_refined.patterns.sound;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 
 /**
@@ -45,8 +45,8 @@ public class ConfiguredSound {
         return this.soundEvent;
     }
 
-    public ResourceLocation getSoundEventKey() {
-        return this.soundEvent.getLocation();
+    public Identifier getSoundEventKey() {
+        return net.minecraft.core.registries.BuiltInRegistries.SOUND_EVENT.getKey(this.soundEvent);
     }
 
     public float getPitch() {

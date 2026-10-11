@@ -1,0 +1,267 @@
+{
+  "type": "tardis_refined:astral_manipulator",
+  "ingredients": [
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_iron_block"
+      },
+      "relative_pos": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:smooth_stone_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_iron_block"
+      },
+      "relative_pos": [
+        0,
+        0,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:smooth_stone_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:landing_pad",
+        "properties": {
+          "facing": "north"
+        }
+      },
+      "relative_pos": [
+        1,
+        0,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:smooth_stone_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        1,
+        0,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_iron_block"
+      },
+      "relative_pos": [
+        2,
+        0,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:smooth_stone_slab",
+        "properties": {
+          "type": "bottom",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        2,
+        0,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "tardis_refined:zeiton_fused_iron_block"
+      },
+      "relative_pos": [
+        2,
+        0,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        0,
+        1,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        1,
+        1,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:air"
+      },
+      "relative_pos": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        1,
+        1,
+        2
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        2,
+        1,
+        0
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        2,
+        1,
+        1
+      ]
+    },
+    {
+      "block_state": {
+        "id": "minecraft:iron_trapdoor",
+        "properties": {
+          "facing": "north",
+          "half": "bottom",
+          "open": "false",
+          "powered": "false",
+          "waterlogged": "false"
+        }
+      },
+      "relative_pos": [
+        2,
+        1,
+        2
+      ]
+    }
+  ],
+  "result": {
+    "type": "tardis_refined:item_result",
+    "data": {
+      "id": "tardis_refined:corridor_teleporter",
+      "count": 1
+    }
+  }
+}

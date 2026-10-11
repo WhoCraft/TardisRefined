@@ -3,7 +3,7 @@ package whocraft.tardis_refined.patterns.sound;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.patterns.PatternResourceConstants;
 
 import java.util.HashMap;
@@ -15,16 +15,16 @@ import java.util.Map;
  */
 public class ConsoleSoundProfile {
 
-    private static final UnboundedMapCodec<ResourceLocation, ConsoleSound> UNBOUNDED_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, ConsoleSound.CODEC);
+    private static final UnboundedMapCodec<Identifier, ConsoleSound> UNBOUNDED_MAP_CODEC = Codec.unboundedMap(Identifier.CODEC, ConsoleSound.CODEC);
     public static final Codec<ConsoleSoundProfile> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
                 ConsoleSoundProfile.UNBOUNDED_MAP_CODEC.fieldOf("sounds").forGetter(ConsoleSoundProfile::getSoundEntries)
         ).apply(instance, ConsoleSoundProfile::new);
     });
-    protected Map<ResourceLocation, ConsoleSound> consoleSoundEntries = new HashMap<>();
+    protected Map<Identifier, ConsoleSound> consoleSoundEntries = new HashMap<>();
 
 
-    public ConsoleSoundProfile(Map<ResourceLocation, ConsoleSound> consoleSoundEntries) {
+    public ConsoleSoundProfile(Map<Identifier, ConsoleSound> consoleSoundEntries) {
         this.consoleSoundEntries = consoleSoundEntries;
     }
 
@@ -32,7 +32,7 @@ public class ConsoleSoundProfile {
         this(new HashMap<>());
     }
 
-    public Map<ResourceLocation, ConsoleSound> getSoundEntries() {
+    public Map<Identifier, ConsoleSound> getSoundEntries() {
         return consoleSoundEntries;
     }
 

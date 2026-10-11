@@ -5,9 +5,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import whocraft.tardis_refined.TRConfig;
@@ -18,13 +18,13 @@ import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEnti
 import whocraft.tardis_refined.common.tardis.manager.TardisPilotingManager;
 import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 
-public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit {
+public class CoralConsoleModel extends TardisModel implements ConsoleUnit {
 
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation(new ResourceLocation(TardisRefined.MODID, "frame/console/coral/idle.json"));
-    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(new ResourceLocation(TardisRefined.MODID, "frame/console/coral/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/coral/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/coral/flight.json"));
 
-    private static final ResourceLocation CORAL_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
+    private static final Identifier CORAL_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/coral/coral_console.png");
     private final ModelPart throttle;
     private final ModelPart handbrake;
     private final ModelPart base_console;
@@ -42,8 +42,8 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -67,12 +67,12 @@ public class CoralConsoleModel extends HierarchicalModel implements ConsoleUnit 
 
         this.handbrake.xRot = !reactions.isHandbrakeEngaged() ? 1f : -0.25f;
 
-        base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        base_console.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        anim_parts.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
-    public ResourceLocation getDefaultTexture() {
+    public Identifier getDefaultTexture() {
         return CORAL_TEXTURE;
     }
 

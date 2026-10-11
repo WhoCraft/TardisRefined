@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 300,
+  "experience": 0.7,
+  "ingredient": "tardis_refined:raw_zeiton",
+  "result": {
+    "id": "tardis_refined:zeiton_ingot"
+  }
+}

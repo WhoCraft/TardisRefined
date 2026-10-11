@@ -3,7 +3,8 @@ package whocraft.tardis_refined.client.screen.upgrades;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -53,21 +54,20 @@ public class BuyUpgradeScreen extends Screen {
 
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int guiLeft = (this.width - GUI_WIDTH) / 2;
         int guiTop = (this.height - GUI_HEIGHT) / 2;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        guiGraphics.blit(UpgradesScreen.WINDOW, guiLeft, guiTop, 0, 196, GUI_WIDTH, GUI_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, UpgradesScreen.WINDOW, guiLeft, guiTop, 0, 196, GUI_WIDTH, GUI_HEIGHT, 256, 256);
 
         List<FormattedCharSequence> lines = this.font.split(this.text, GUI_WIDTH - 40);
         for (int k = 0; k < lines.size(); k++) {
             FormattedCharSequence text = lines.get(k);
             int width = this.font.width(text);
-            guiGraphics.drawString(font, text, (int) (guiLeft + GUI_WIDTH / 2F - width / 2F), guiTop + 9 + k * 10, ChatFormatting.BLACK.getColor(), false);
+            guiGraphics.text(font, text, (int) (guiLeft + GUI_WIDTH / 2F - width / 2F), guiTop + 9 + k * 10, 0xFF000000, false);
         }
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 }

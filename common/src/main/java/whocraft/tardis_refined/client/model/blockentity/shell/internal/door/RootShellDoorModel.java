@@ -3,13 +3,13 @@ package whocraft.tardis_refined.client.model.blockentity.shell.internal.door;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.model.HierarchicalModel;
+import whocraft.tardis_refined.client.model.TardisModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.Entity;
 
-public class RootShellDoorModel extends HierarchicalModel {
+public class RootShellDoorModel extends TardisModel {
 
     private final ModelPart root;
     private final ModelPart stage7;
@@ -22,7 +22,7 @@ public class RootShellDoorModel extends HierarchicalModel {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        stage7.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        stage7.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override

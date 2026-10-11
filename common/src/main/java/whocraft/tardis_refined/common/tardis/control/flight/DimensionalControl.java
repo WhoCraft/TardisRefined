@@ -1,7 +1,7 @@
 package whocraft.tardis_refined.common.tardis.control.flight;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,11 +21,11 @@ import java.util.List;
 import static net.minecraft.world.level.Level.OVERWORLD;
 
 public class DimensionalControl extends Control {
-    public DimensionalControl(ResourceLocation id) {
+    public DimensionalControl(Identifier id) {
         super(id);
     }
 
-    public DimensionalControl(ResourceLocation id, String langId) {
+    public DimensionalControl(Identifier id, String langId) {
         super(id, langId);
     }
 

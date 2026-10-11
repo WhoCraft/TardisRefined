@@ -2,7 +2,7 @@ package whocraft.tardis_refined.patterns;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 
 /**
@@ -12,29 +12,29 @@ public class PatternTexture {
 
     private static final Codec<PatternTexture> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
-                ResourceLocation.CODEC.fieldOf("texture").forGetter(PatternTexture::texture),
+                Identifier.CODEC.fieldOf("texture").forGetter(PatternTexture::texture),
                 Codec.BOOL.fieldOf("emissive").forGetter(PatternTexture::emissive)
         ).apply(instance, PatternTexture::new);
     });
-    private final ResourceLocation textureLocation, emissiveTexture;
+    private final Identifier textureLocation, emissiveTexture;
     private boolean hasEmissiveTexture = false;
 
     public PatternTexture(String textureLocation, boolean hasEmissiveTexture) {
-        this(new ResourceLocation(TardisRefined.MODID, textureLocation), hasEmissiveTexture);
+        this(Identifier.fromNamespaceAndPath(TardisRefined.MODID, textureLocation), hasEmissiveTexture);
     }
 
     public PatternTexture(String textureLocation) {
-        this(new ResourceLocation(TardisRefined.MODID, textureLocation));
+        this(Identifier.fromNamespaceAndPath(TardisRefined.MODID, textureLocation));
     }
 
-    public PatternTexture(ResourceLocation textureLocation) {
+    public PatternTexture(Identifier textureLocation) {
         this(textureLocation, false);
     }
 
-    public PatternTexture(ResourceLocation textureLocation, boolean hasEmissiveTexture) {
+    public PatternTexture(Identifier textureLocation, boolean hasEmissiveTexture) {
         this.textureLocation = textureLocation;
         this.hasEmissiveTexture = hasEmissiveTexture;
-        this.emissiveTexture = new ResourceLocation(textureLocation.getNamespace(), textureLocation.getPath().replace(".png", "_emissive.png"));
+        this.emissiveTexture = Identifier.fromNamespaceAndPath(textureLocation.getNamespace(), textureLocation.getPath().replace(".png", "_emissive.png"));
     }
 
     public static Codec<PatternTexture> getCodec() {
@@ -50,11 +50,11 @@ public class PatternTexture {
         return this;
     }
 
-    public ResourceLocation emissiveTexture() {
+    public Identifier emissiveTexture() {
         return this.emissiveTexture;
     }
 
-    public ResourceLocation texture() {
+    public Identifier texture() {
         return this.textureLocation;
     }
 

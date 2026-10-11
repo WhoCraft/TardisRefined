@@ -67,8 +67,8 @@ public class FlightDanceManager extends TickableHandler {
 
     @Override
     public void loadData(CompoundTag tag) {
-        weAreDancing = tag.getBoolean("weAreDancing");
-        damagedControlCount = tag.getInt("damagedControlCount");
+        weAreDancing = tag.getBooleanOr("weAreDancing", false);
+        damagedControlCount = tag.getIntOr("damagedControlCount", 0);
     }
 
     public void stopDancing() {
@@ -88,7 +88,7 @@ public class FlightDanceManager extends TickableHandler {
         }
 
         int chance = 20 - this.operator.getPilotingManager().getThrottleStage() * 2;
-        if (operatorLevel.random.nextInt(chance) == 0) {
+        if (operatorLevel.getRandom().nextInt(chance) == 0) {
             this.triggerNextEvent();
         }
 
@@ -109,7 +109,7 @@ public class FlightDanceManager extends TickableHandler {
 
             }
         }
-        ControlEntity randomControlEntity = controlEntityList.get(this.operator.getLevel().random.nextInt(controlEntityList.size() - 1));
+        ControlEntity randomControlEntity = controlEntityList.get(this.operator.getLevel().getRandom().nextInt(controlEntityList.size() - 1));
         randomControlEntity.setTickingDown(this);
     }
 

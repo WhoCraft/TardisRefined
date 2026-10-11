@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tardis_refined:block/console_configuration",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "tardis_refined:block/console_configuration",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "tardis_refined:block/console_configuration"
+    },
+    "facing=west": {
+      "model": "tardis_refined:block/console_configuration",
+      "y": 90
+    }
+  }
+}

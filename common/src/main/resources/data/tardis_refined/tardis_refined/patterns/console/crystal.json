@@ -1,0 +1,188 @@
+{
+  "patterns": [
+    {
+      "id": "tardis_refined:default",
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Default\"}",
+      "sound_profile": {
+        "sounds": {
+          "tardis_refined:generic_console": {
+            "left_click": {
+              "pitch": 0.95,
+              "sound_event": {
+                "sound_id": "minecraft:block.stone_button.click_on"
+              },
+              "volume": 1.0
+            },
+            "right_click": {
+              "pitch": 1.1,
+              "sound_event": {
+                "sound_id": "minecraft:block.stone_button.click_on"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:handbrake_disable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.5,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:handbrake_enable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.6,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:throttle_disable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.5,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:throttle_enable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.6,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          }
+        }
+      },
+      "texture_definition": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/console/crystal/crystal_console.png"
+      }
+    },
+    {
+      "id": "tardis_refined:corrupted",
+      "name_component": "{\"color\":\"yellow\",\"text\":\"Corrupted\"}",
+      "sound_profile": {
+        "sounds": {
+          "tardis_refined:generic_console": {
+            "left_click": {
+              "pitch": 0.95,
+              "sound_event": {
+                "sound_id": "minecraft:block.stone_button.click_on"
+              },
+              "volume": 1.0
+            },
+            "right_click": {
+              "pitch": 1.1,
+              "sound_event": {
+                "sound_id": "minecraft:block.stone_button.click_on"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:handbrake_disable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.5,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:handbrake_enable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.6,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:throttle_disable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.5,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          },
+          "tardis_refined:throttle_enable": {
+            "left_click": {
+              "pitch": 1.0,
+              "sound_event": {
+                "sound_id": "minecraft:intentionally_empty"
+              },
+              "volume": 0.0
+            },
+            "right_click": {
+              "pitch": 0.6,
+              "sound_event": {
+                "sound_id": "minecraft:block.lever.click"
+              },
+              "volume": 1.0
+            }
+          }
+        }
+      },
+      "texture_definition": {
+        "emissive": true,
+        "texture": "tardis_refined:textures/blockentity/console/crystal/crystal_console_corrupted.png"
+      }
+    }
+  ]
+}

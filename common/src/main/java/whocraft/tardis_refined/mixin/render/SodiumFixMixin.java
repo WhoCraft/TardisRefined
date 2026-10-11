@@ -41,11 +41,11 @@ public class SodiumFixMixin {
                     poseStack.pushPose();
                     part.translateAndRotate(poseStack);
                     if (!part.skipDraw && ((Object) part) instanceof ModelPartInvoker invoker) {
-                        invoker.invokeCompile(poseStack.last(), vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+                        invoker.invokeCompile(poseStack.last(), vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
                     }
 
                     for (ModelPart modelPart : part.children.values()) {
-                        modelPart.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+                        modelPart.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
                     }
 
                     poseStack.popPose();

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "Z": "tardis_refined:zeiton_nugget"
+  },
+  "pattern": [
+    "ZZZ",
+    "ZZZ",
+    "ZZZ"
+  ],
+  "result": {
+    "id": "tardis_refined:zeiton_ingot"
+  },
+  "show_notification": true
+}

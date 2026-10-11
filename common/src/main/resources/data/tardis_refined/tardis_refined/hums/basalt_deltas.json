@@ -1,0 +1,9 @@
+{
+  "ambient_sounds": [
+    "minecraft:ambient.basalt_deltas.additions",
+    "minecraft:ambient.basalt_deltas.mood"
+  ],
+  "hum_sound": "minecraft:ambient.basalt_deltas.loop",
+  "id": "tardis_refined:basalt_deltas",
+  "name_component": "{\"color\":\"gold\",\"text\":\"Basalt Deltas\"}"
+}

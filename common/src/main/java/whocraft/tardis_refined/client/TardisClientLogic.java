@@ -9,7 +9,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -39,6 +39,32 @@ public class TardisClientLogic {
     @Environment(EnvType.CLIENT)
     public static void tickClientside(TardisClientData clientData) {
 
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+
+        // Start exterior-view audio as soon as the vortex view begins, including
+        // during takeoff. The animation bookkeeping below returns early while
+        // taking off, so this must run before those early returns.
+        handleVortexSounds(clientData, player);
+
+        if (clientData.isTakingOff() || clientData.isFlying() || clientData.isLanding()) {
+            TardisPlayerInfo.get(player).ifPresent(info -> ShellPreviewDiagnostics.reportEvery(
+                    "client-flight-state-" + clientData.getLevelKey().identifier(),
+                    "tardis=" + clientData.getLevelKey().identifier()
+                            + ", takeoff=" + clientData.isTakingOff()
+                            + ", flying=" + clientData.isFlying()
+                            + ", landing=" + clientData.isLanding()
+                            + ", takeOffTime=" + clientData.takeOffTime
+                            + ", landingTime=" + clientData.landingTime
+                            + ", takeoffAnimation=" + clientData.TAKEOFF_ANIMATION.isStarted()
+                            + ", rotorAnimation=" + clientData.ROTOR_ANIMATION.isStarted()
+                            + ", viewedTardis=" + info.getViewedTardis()
+                            + ", viewing=" + info.isViewingTardis()
+                            + ", vortex=" + info.isRenderVortex()
+                            + ", playerDimension=" + player.level().dimension().identifier(),
+                    1000));
+        }
+
         if (clientData.isTakingOff()) {
             clientData.takeOffTime++;
             clientData.landingTime = 0;
@@ -50,38 +76,39 @@ public class TardisClientLogic {
             clientData.takeOffTime = 0;
         }
 
-        Player player = Minecraft.getInstance().player;
-
         TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
             if (tardisPlayerInfo.isViewingTardis()) {
                 Minecraft.getInstance().options.setCameraType(CameraType.THIRD_PERSON_FRONT);
             }
         });
 
-        if (player.level().dimensionTypeId() == TRDimensionTypes.TARDIS) {
+        if (player.level().dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
             ClientLevel tardisLevel = Minecraft.getInstance().level;
             createWorldAmbience(player);
             handleTardisLoopingSounds(clientData, player, tardisLevel);
             handleScreenShake(clientData, player);
             handleAestheticEffects(clientData, tardisLevel);
         }
-
-        handleVortexSounds(clientData, player);
-
     }
 
     private static void handleVortexSounds(TardisClientData clientData, Player player) {
         SoundManager soundManager = Minecraft.getInstance().getSoundManager();
 
         TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
-            if (!clientData.isLanding() && !clientData.isTakingOff() && tardisPlayerInfo.isRenderVortex() && !soundManager.isActive(TRSoundInstances.TARDIS_SINGLE_FLY_VORTEX)) {
+            // The client tick visits cached data for every TARDIS. During
+            // exterior shell view, always use the TARDIS the player is
+            // actually viewing instead of whichever cache entry is ticking.
+            TardisClientData viewedTardis = TardisClientData.getForTardis(tardisPlayerInfo.getViewedTardis());
+            boolean vortexFlight = tardisPlayerInfo.isViewingTardis()
+                    && tardisPlayerInfo.isRenderVortex()
+                    && viewedTardis != null
+                    && (viewedTardis.isFlying() || viewedTardis.isTakingOff())
+                    && !viewedTardis.isLanding();
+            if (vortexFlight && !soundManager.isActive(TRSoundInstances.TARDIS_SINGLE_FLY_VORTEX)) {
                 TRSoundInstances.TARDIS_SINGLE_FLY_VORTEX.restartSoundPlaying(); //Explicity tell the LoopingSound to set its volume to a non-zero value so that the SoundEngine will play it again.
                 soundManager.play(TRSoundInstances.TARDIS_SINGLE_FLY_VORTEX.setPlayer(player).setLevel(Minecraft.getInstance().level));
             }
-        });
-
-        TardisPlayerInfo.get(player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isRenderVortex() && !soundManager.isActive(VORTEX_WINDS)) {
+            if (vortexFlight && !soundManager.isActive(VORTEX_WINDS)) {
                 TRSoundInstances.VORTEX_WINDS.restartSoundPlaying();
                 soundManager.play(TRSoundInstances.VORTEX_WINDS.setPlayer(player));
             }
@@ -98,6 +125,9 @@ public class TardisClientLogic {
         }
         // Check if the Tardis is flying and the rotor animation is not started
         else if (tardisClientData.isFlying() && !tardisClientData.ROTOR_ANIMATION.isStarted()) {
+            // Keep the same global-age phase used by 1.20.2. The legacy
+            // AnimationState accumulated from start(0); the 26.3 state derives
+            // elapsed time from this absolute start tick.
             tardisClientData.ROTOR_ANIMATION.start(0);
         }
 
@@ -141,9 +171,16 @@ public class TardisClientLogic {
      * @param client Minecraft client
      */
     public static void tickClientData(Minecraft client) {
-        // Inelegant solution, please revise
-        if (client.level == null || client.isPaused()) {
-            if (!TardisClientData.getAllEntries().isEmpty() && !client.isPaused()) {
+        // Minecraft briefly clears the client level while changing dimensions.
+        // Keep synchronized TARDIS state through that gap: shell previews use
+        // it immediately after entering the exterior view, before the next
+        // periodic server sync. Only discard it when the player has actually
+        // left the world.
+        if (client.isPaused()) {
+            return;
+        }
+        if (client.level == null) {
+            if (client.player == null && !TardisClientData.getAllEntries().isEmpty()) {
                 TardisClientData.clearAll();
             }
             return;
@@ -158,7 +195,7 @@ public class TardisClientLogic {
 
     private static void createWorldAmbience(Player player) {
         if (player.tickCount % 120 == 0 && !isInArsArea(player.blockPosition())) return;
-        RandomSource random = player.level().random;
+        RandomSource random = player.level().getRandom();
         Level level = player.level();
         ClientLevel clientLevel = (ClientLevel) level;
         double originX = player.getX();
@@ -220,18 +257,18 @@ public class TardisClientLogic {
 
             //Play hums, and use the dedicated HumSoundManager to stop and start sounds
             HumEntry humEntry = clientData.getHumEntry();
-            if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().getLocation().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
+            if (isThisTardis && humEntry != null && !humEntry.getSoundEventId().toString().equals(HumSoundManager.getCurrentRawSound().location().toString()) || !soundManager.isActive(HumSoundManager.getCurrentHumSound())) {
                 HumSoundManager.playHum(SoundEvent.createFixedRangeEvent(humEntry.getSoundEventId(), 1F), player, targetLevel);
             }
 
             //Hum ambient sounds
             if (isThisTardis && targetLevel.getGameTime() % clientData.nextAmbientNoiseCall == 0) {
-                clientData.nextAmbientNoiseCall = targetLevel.random.nextInt(400, 2400);
-                List<ResourceLocation> ambientSounds = humEntry.getAmbientSounds();
+                clientData.nextAmbientNoiseCall = targetLevel.getRandom().nextInt(400, 2400);
+                List<Identifier> ambientSounds = humEntry.getAmbientSounds();
                 if (ambientSounds != null && !ambientSounds.isEmpty()) {
-                    RandomSource randomSource = targetLevel.random;
+                    RandomSource randomSource = targetLevel.getRandom();
 
-                    ResourceLocation randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
+                    Identifier randomSoundLocation = ambientSounds.get(randomSource.nextInt(ambientSounds.size()));
                     SoundEvent randomSoundEvent = SoundEvent.createVariableRangeEvent(randomSoundLocation);
 
                     QuickSimpleSound simpleSoundInstance = new QuickSimpleSound(randomSoundEvent, SoundSource.AMBIENT);
@@ -244,9 +281,9 @@ public class TardisClientLogic {
 
             //Interior Voice
             if (isThisTardis && targetLevel.getGameTime() % clientData.nextVoiceAmbientCall == 0) {
-                clientData.nextVoiceAmbientCall = targetLevel.random.nextInt(6000, 36000);
+                clientData.nextVoiceAmbientCall = targetLevel.getRandom().nextInt(6000, 36000);
 
-                RandomSource randomSource = targetLevel.random;
+                RandomSource randomSource = targetLevel.getRandom();
                 ClientHelper.playAmbientSound(TRSoundInstances.INTERIOR_VOICE, randomSource, 0.3f);
             }
 
@@ -315,9 +352,9 @@ public class TardisClientLogic {
 
         if (isThisTardis && clientData.getTardisState() == TardisLevelOperator.STATE_EYE_OF_HARMONY) {
             double motionX = 0;
-            double motionY = 0.1 + targetLevel.random.nextFloat() / 2;
+            double motionY = 0.1 + targetLevel.getRandom().nextFloat() / 2;
             double motionZ = 0;
-            Vec3 position = new Vec3((double) 1013 + 0.5 - 2 + targetLevel.random.nextInt(4), 71, (double) 55 + 0.5 - 2 + targetLevel.random.nextInt(4));
+            Vec3 position = new Vec3((double) 1013 + 0.5 - 2 + targetLevel.getRandom().nextInt(4), 71, (double) 55 + 0.5 - 2 + targetLevel.getRandom().nextInt(4));
             ClientHelper.playParticle((ClientLevel) targetLevel, ParticleTypes.CLOUD, position, motionX, motionY, motionZ);
         }
     }

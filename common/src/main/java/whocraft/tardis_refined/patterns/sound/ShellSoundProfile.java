@@ -3,7 +3,7 @@ package whocraft.tardis_refined.patterns.sound;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.patterns.PatternResourceConstants;
 
 import java.util.HashMap;
@@ -15,16 +15,16 @@ import java.util.Map;
  */
 public class ShellSoundProfile {
 
-    private static final UnboundedMapCodec<ResourceLocation, ConfiguredSound> UNBOUNDED_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, ConfiguredSound.CODEC);
+    private static final UnboundedMapCodec<Identifier, ConfiguredSound> UNBOUNDED_MAP_CODEC = Codec.unboundedMap(Identifier.CODEC, ConfiguredSound.CODEC);
     public static final Codec<ShellSoundProfile> CODEC = RecordCodecBuilder.create(instance -> {
         return instance.group(
                 ShellSoundProfile.UNBOUNDED_MAP_CODEC.fieldOf("sounds").forGetter(ShellSoundProfile::getSoundEntries)
         ).apply(instance, ShellSoundProfile::new);
     });
-    protected Map<ResourceLocation, ConfiguredSound> shellSoundEntries = new HashMap<>();
+    protected Map<Identifier, ConfiguredSound> shellSoundEntries = new HashMap<>();
 
 
-    public ShellSoundProfile(Map<ResourceLocation, ConfiguredSound> shellSoundEntries) {
+    public ShellSoundProfile(Map<Identifier, ConfiguredSound> shellSoundEntries) {
         this.shellSoundEntries = shellSoundEntries;
     }
 
@@ -32,7 +32,7 @@ public class ShellSoundProfile {
         this(new HashMap<>());
     }
 
-    public Map<ResourceLocation, ConfiguredSound> getSoundEntries() {
+    public Map<Identifier, ConfiguredSound> getSoundEntries() {
         return shellSoundEntries;
     }
 

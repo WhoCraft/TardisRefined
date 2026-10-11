@@ -42,14 +42,14 @@ public class InteriorCommand implements Command<CommandSourceStack> {
         if (tardisData.isPresent()) {
             for (Entity entity : entities) {
                 if (!teleportToInterior(tardisData.get(), entity)) { //If internal door doesn't exist during teleport attempt, stop teleporting and notify the command sender.
-                    Component tpCommandSuggestion = CommandHelper.createComponentSuggestCommand("Default Teleport", "/execute in " + tardis.dimension().location().toString() + " run tp 0 100 0");
-                    PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_NO_INTERNAL_DOOR, tardis.dimension().location().toString(), tpCommandSuggestion), false);
+                    Component tpCommandSuggestion = CommandHelper.createComponentSuggestCommand("Default Teleport", "/execute in " + tardis.dimension().identifier().toString() + " run tp 0 100 0");
+                    PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_NO_INTERNAL_DOOR, tardis.dimension().identifier().toString(), tpCommandSuggestion), false);
                     return 0;
                 }
             }
             return Command.SINGLE_SUCCESS;
         }
-        PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_DIM_NOT_A_TARDIS, tardis.dimensionTypeId().location().toString()), false);
+        PlayerUtil.sendMessage(sender, Component.translatable(ModMessages.CMD_DIM_NOT_A_TARDIS, tardis.dimension().identifier().toString()), false);
         return 0;
     }
 

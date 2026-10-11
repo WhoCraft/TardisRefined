@@ -57,7 +57,7 @@ public class LevelHelper {
             BlockPos offsettedPos = referencePoint.relative(dir, radius);
             posList.add(offsettedPos);
             if (interCardinal) {
-                BlockPos interCardinalPos = offsettedPos.offset(dir.getClockWise().getNormal());
+                BlockPos interCardinalPos = offsettedPos.offset(dir.getClockWise().getStep());
                 posList.add(interCardinalPos);
             }
         }

@@ -1,12 +1,14 @@
 package whocraft.tardis_refined.client.screen.screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
@@ -34,7 +36,7 @@ public class WaypointManageScreen extends MonitorOS {
     private Button onSaveWaypoint;
 
     public WaypointManageScreen(List<ResourceKey<Level>> ignoredWorlds, CoordInputType coordInputType, TardisNavLocation tardisNavLocation) {
-        super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(coordInputType == CoordInputType.WAYPOINT ? ModMessages.UI_MONITOR_UPLOAD_WAYPOINTS : ModMessages.UI_MONITOR_UPLOAD_COORDS), Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.coordInputType = coordInputType;
         this.tardisNavLocation = tardisNavLocation;
         tardisNavLocation.setName("Waypoint");
@@ -46,7 +48,7 @@ public class WaypointManageScreen extends MonitorOS {
     }
 
     public WaypointManageScreen(TardisWaypoint waypoint) {
-        super(Component.translatable("Edit waypoint"), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable("Edit waypoint"), Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.preExistingWaypoint = waypoint;
         this.tardisNavLocation = waypoint.getLocation();
         this.coordInputType = CoordInputType.WAYPOINT;
@@ -100,7 +102,7 @@ public class WaypointManageScreen extends MonitorOS {
                 }
             });
             // Waypoint Stuff
-            this.addWidget(waypointName);
+            this.addRenderableWidget(waypointName);
 
             onSaveWaypoint.setPosition(xPosition, yPosition);
             onSaveWaypoint.setWidth(120);
@@ -112,14 +114,9 @@ public class WaypointManageScreen extends MonitorOS {
     }
 
     @Override
-    public void inMonitorRender(@NotNull GuiGraphics guiGraphics, int i, int j, float f) {
+    public void inMonitorRender(@NotNull GuiGraphicsExtractor guiGraphics, int i, int j, float f) {
 
-        if (coordInputType == CoordInputType.WAYPOINT)
-            this.waypointName.render(guiGraphics, i, j, f);
-
-
-        onSaveWaypoint.active = !waypointName.getValue().isEmpty();
-        onSaveWaypoint.render(guiGraphics, i, j, f);
+        if (waypointName != null) onSaveWaypoint.active = !waypointName.getValue().isEmpty();
 
         int headerHeight = height / 2 - monitorHeight / 3;
         int starterCordHeight = height / 2 - monitorHeight / 3 + 7;
@@ -141,13 +138,13 @@ public class WaypointManageScreen extends MonitorOS {
     }
 
     @Override
-    public boolean keyPressed(int i, int j, int k) {
-        return super.keyPressed(i, j, k);
+    public boolean keyPressed(KeyEvent event) {
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int i) {
-        return super.charTyped(c, i);
+    public boolean charTyped(CharacterEvent event) {
+        return super.charTyped(event);
     }
 
 }

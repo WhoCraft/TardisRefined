@@ -1,9 +1,8 @@
 package whocraft.tardis_refined.client;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.common.util.PlatformWarning;
 
 import java.util.function.Supplier;
@@ -93,16 +92,15 @@ public class ModelRegistry {
 
 
     private static ModelLayerLocation createLocation(String name, String layer) {
-        return new ModelLayerLocation(new ResourceLocation(MODID, name), layer);
+        return new ModelLayerLocation(Identifier.fromNamespaceAndPath(MODID, name), layer);
     }
 
     public static void init() {
 
     }
 
-    @ExpectPlatform
-    public static ModelLayerLocation register(ModelLayerLocation location, Supplier<LayerDefinition> definitionSupplier) {
-        throw new RuntimeException(PlatformWarning.addWarning(ModelRegistry.class));
+    public static ModelLayerLocation register(ModelLayerLocation location, Supplier<LayerDefinition> definitionSupplier){
+        return whocraft.tardis_refined.client.fabric.ModelRegistryImpl.register(location, definitionSupplier);
     }
 
 }

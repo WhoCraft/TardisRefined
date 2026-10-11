@@ -40,7 +40,7 @@ public class SummonCommand implements Command<CommandSourceStack> {
         Optional<TardisLevelOperator> tardisData = TardisLevelOperator.get(tardis);
         ServerPlayer sender = context.getSource().getPlayer();
 
-        if (sender.level().dimensionTypeId() == TRDimensionTypes.TARDIS) {
+        if (sender.level().dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
             PlayerUtil.sendMessage(sender, Component.literal(ChatFormatting.RED + "You cannot Summon a TARDIS within a TARDIS."), false);
             return 0;
         }
@@ -66,7 +66,7 @@ public class SummonCommand implements Command<CommandSourceStack> {
             var keychain = KeyItem.getKeychain(mainHandItem);
             if (!keychain.isEmpty()) {
                 ResourceKey<Level> tardisDimKey = keychain.get(0);
-                ServerLevel tardisLevel = sender.server.getLevel(tardisDimKey);
+                ServerLevel tardisLevel = sender.level().getServer().getLevel(tardisDimKey);
                 if (tardisLevel != null) {
                     return summonTardis(context, tardisLevel);
                 }

@@ -1,31 +1,25 @@
 package whocraft.tardis_refined.client.screen.main;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexSorting;
-import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Matrix4f;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.ShellPreviewDiagnostics;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModel;
 import whocraft.tardis_refined.client.model.blockentity.shell.ShellModelCollection;
-import whocraft.tardis_refined.client.renderer.vortex.VortexRenderer;
+import whocraft.tardis_refined.client.renderer.vortex.ShellRenderer;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
 import whocraft.tardis_refined.client.screen.components.CommonTRWidgets;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
@@ -45,27 +39,26 @@ import java.util.UUID;
 
 public class MonitorOS extends Screen {
 
-    public static ResourceLocation FRAME = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/frame_brass.png");
+    public static Identifier FRAME = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/frame_brass.png");
     protected static final int frameWidth = 256, frameHeight = 180;
     protected static final int monitorWidth = 230, monitorHeight = 130;
-    public final ResourceLocation backdrop;
-    public static final VortexRenderer VORTEX = new VortexRenderer(VortexRegistry.CLOUDS.get());
-    public static ResourceLocation currentVortex = VortexRegistry.VORTEX_DEFERRED_REGISTRY.getKey(VortexRegistry.CLOUDS.get());
-    public static ResourceLocation NOISE = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/noise.png");
-    public static ResourceLocation SYMBLS = new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/gallifreyan_symbols.png");
+    public final Identifier backdrop;
+    public static Identifier currentVortex = VortexRegistry.VORTEX_DEFERRED_REGISTRY.getKey(VortexRegistry.CLOUDS.get());
+    public static Identifier NOISE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/noise.png");
+    public static Identifier SYMBLS = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/gallifreyan_symbols.png");
 
     public MonitorOS LEFT;
     public MonitorOS RIGHT;
     public MonitorOS PREVIOUS;
 
-    public static final ResourceLocation BUTTON_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/save.png");
-    public static final ResourceLocation BCK_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/back.png");
+    public static final Identifier BUTTON_LOCATION = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "save");
+    public static final Identifier BCK_LOCATION = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "back");
     public int shakeX, shakeY, age, transitionStartTime = -1;
     public float shakeAlpha;
     private MonitorOSRun onSubmit;
     private MonitorOSRun onCancel;
 
-    public MonitorOS(Component title, ResourceLocation backdrop) {
+    public MonitorOS(Component title, Identifier backdrop) {
         super(title);
         this.backdrop = backdrop;
     }
@@ -77,16 +70,15 @@ public class MonitorOS extends Screen {
         if (list != null) this.addRenderableWidget(list);
     }
 
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics) {
+    public void renderBackground(GuiGraphicsExtractor guiGraphics) {
 
     }
 
-    public ResourceLocation getPatternForRender(){
+    public Identifier getPatternForRender(){
         return null;
     }
 
-    public void render2Background(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render2Background(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int hPos = (width - monitorWidth) / 2;
         int vPos = (height - monitorHeight) / 2;
 
@@ -105,147 +97,162 @@ public class MonitorOS extends Screen {
     }
 
 
-    public void renderVortex(@NotNull GuiGraphics guiGraphics) {
-        PoseStack poseStack = guiGraphics.pose();
+    public void renderVortex(@NotNull GuiGraphicsExtractor guiGraphics) {
+        renderVortex(guiGraphics, 1.0F);
+    }
 
+    private void renderVortex(@NotNull GuiGraphicsExtractor guiGraphics, float alpha) {
+        if (Minecraft.getInstance().level == null) return;
         int hPos = (width - monitorWidth) / 2;
         int vPos = (height - monitorHeight) / 2;
-
         guiGraphics.enableScissor(hPos + shakeX, vPos + shakeY, width - hPos + shakeX, height - vPos + shakeY);
-        RenderSystem.backupProjectionMatrix();
-        assert minecraft != null;
-        Matrix4f perspective = new Matrix4f();
-        perspective.perspective((float) Math.toRadians(minecraft.options.fov().get()), (float) width / (float) height, 0, 9999, false, perspective);
-        perspective.translate(0, 0, Platform.isForge() ? 10000f : 11000f);
-        RenderSystem.setProjectionMatrix(perspective, VertexSorting.DISTANCE_TO_ORIGIN);
-        poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(20));
-
-        // Blindly assume that the player is not doing weird stuff to open the menu outside a TARDIS
-        assert Minecraft.getInstance().level != null;
-        TardisClientData tardisClientData = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
-
-        VORTEX.vortexType = VortexRegistry.VORTEX_DEFERRED_REGISTRY.get(this instanceof VortexSelectionScreen ? VortexSelectionScreen.currentVortex : tardisClientData.getVortex());
-        VORTEX.time.speed = 0.3;
-        VORTEX.renderVortex(guiGraphics, 1, false);
-        RenderSystem.restoreProjectionMatrix();
-        poseStack.popPose();
+        TardisClientData data = TardisClientData.getInstance(Minecraft.getInstance().level.dimension());
+        Identifier selectedVortex = this instanceof VortexSelectionScreen
+                ? VortexSelectionScreen.currentVortex : data.getVortex();
+        // Use the same perspective tunnel mesh as shell view, rendered into the Computer Base
+        // monitor's picture-in-picture viewport instead of flattening the surface texture.
+        ShellRenderer.renderVortexPreview(guiGraphics, selectedVortex,
+                hPos + shakeX, vPos + shakeY, monitorWidth, monitorHeight);
         guiGraphics.disableScissor();
     }
 
-    public void renderBackdrop(@NotNull GuiGraphics guiGraphics) {
+    public void renderBackdrop(@NotNull GuiGraphicsExtractor guiGraphics) {
+        renderBackdrop(guiGraphics, 1.0F);
+    }
+
+    private void renderBackdrop(@NotNull GuiGraphicsExtractor guiGraphics, float alpha) {
+        // The vortex is the screen texture behind the Computer Base UI. VortexSelectionScreen
+        // uses its current choice here; all other pages use the user's saved vortex.
+        renderVortex(guiGraphics, alpha);
         if (backdrop == null) return;
         int hPos = (width - monitorWidth) / 2;
         int vPos = (height - monitorHeight) / 2;
-        guiGraphics.blit(backdrop, hPos, vPos, 0, 0, monitorWidth, monitorHeight);
+        // The brown patterned panel occupies the top-left 230x128 pixels of
+        // backdrop.png. The remaining 26 columns are transparent atlas space;
+        // including them in the UV range shrinks the artwork and lets the
+        // vortex show through at the right edge. Crop to the panel itself and
+        // map it across the full monitor viewport.
+        blitTexture(guiGraphics, backdrop, hPos, vPos, monitorWidth, monitorHeight, 0, 0,
+                monitorWidth, 128, 256, 256,
+                net.minecraft.util.ARGB.colorFromFloat(alpha, 1, 1, 1));
         int b = height - vPos, r = width - hPos;
         guiGraphics.fill(hPos, vPos, r, b, 0x40000000);
     }
 
+    protected static void blitTexture(GuiGraphicsExtractor graphics, Identifier texture, int x, int y,
+                                    int width, int height, float u, float v, int sourceWidth,
+                                    int sourceHeight, int textureWidth, int textureHeight, int color) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, width, height,
+                sourceWidth, sourceHeight, textureWidth, textureHeight, color);
+    }
+
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         render2Background(guiGraphics, mouseX, mouseY, partialTick);
-        RenderSystem.enableBlend();
-        renderVortex(guiGraphics);
 
         int hPos = (width - monitorWidth) / 2;
         int vPos = (height - monitorHeight) / 2;
 
         guiGraphics.enableScissor(hPos, vPos, width - hPos, height - vPos);
 
-        PoseStack poseStack = guiGraphics.pose();
-        poseStack.pushPose();
-        poseStack.translate(shakeX, shakeY, 0);
+        var poseStack = guiGraphics.pose();
+        poseStack.pushMatrix();
+        poseStack.translate(shakeX, shakeY);
 
         int symb = 0 % 64;
-        poseStack.pushPose();
-        poseStack.translate(hPos + 10, vPos + 10, 0);
-        poseStack.scale(2, 2, 1);
-        poseStack.mulPose(Axis.ZP.rotationDegrees((float) (System.currentTimeMillis() % 5400L) / 15L));
-        poseStack.translate(-31 / 2f, -31 / 2f, 0);
-        guiGraphics.blit(SYMBLS, 0, 0, 32 * (symb % 8), 32 * (symb / 8), 32, 32);
-        poseStack.popPose();
+        poseStack.pushMatrix();
+        poseStack.translate(hPos + 10, vPos + 10);
+        poseStack.scale(2, 2);
+        poseStack.rotate((float) Math.toRadians((float) (System.currentTimeMillis() % 5400L) / 15L));
+        poseStack.translate(-31 / 2f, -31 / 2f);
+        blitTexture(guiGraphics, SYMBLS, 0, 0, 32, 32, 32 * (symb % 8), 32 * (symb / 8), 32, 32, 128, 128, -1);
+        poseStack.popMatrix();
 
         symb = 3 % 64;
-        poseStack.pushPose();
-        poseStack.translate(hPos + monitorWidth - 10, vPos + monitorHeight - 10, 0);
-        poseStack.scale(2, 2, 1);
-        poseStack.mulPose(Axis.ZP.rotationDegrees((float) (System.currentTimeMillis() % 5400L) / 15L));
-        poseStack.translate(-31 / 2f, -31 / 2f, 0);
-        guiGraphics.blit(SYMBLS, 0, 0, 32 * (symb % 8), 32 * (symb / 8), 32, 32);
-        poseStack.popPose();
+        poseStack.pushMatrix();
+        poseStack.translate(hPos + monitorWidth - 10, vPos + monitorHeight - 10);
+        poseStack.scale(2, 2);
+        poseStack.rotate((float) Math.toRadians((float) (System.currentTimeMillis() % 5400L) / 15L));
+        poseStack.translate(-31 / 2f, -31 / 2f);
+        blitTexture(guiGraphics, SYMBLS, 0, 0, 32, 32, 32 * (symb % 8), 32 * (symb / 8), 32, 32, 128, 128, -1);
+        poseStack.popMatrix();
 
         symb = 9 % 64;
-        poseStack.pushPose();
-        poseStack.translate(hPos + 10, vPos + monitorHeight - 10, 0);
-        poseStack.scale(2, 2, 1);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-(float) (System.currentTimeMillis() % 5400L) / 15L));
-        poseStack.translate(-31 / 2f, -31 / 2f, 0);
-        guiGraphics.blit(SYMBLS, 0, 0, 32 * (symb % 8), 32 * (symb / 8), 32, 32);
-        poseStack.popPose();
+        poseStack.pushMatrix();
+        poseStack.translate(hPos + 10, vPos + monitorHeight - 10);
+        poseStack.scale(2, 2);
+        poseStack.rotate((float) Math.toRadians(-(float) (System.currentTimeMillis() % 5400L) / 15L));
+        poseStack.translate(-31 / 2f, -31 / 2f);
+        blitTexture(guiGraphics, SYMBLS, 0, 0, 32, 32, 32 * (symb % 8), 32 * (symb / 8), 32, 32, 128, 128, -1);
+        poseStack.popMatrix();
 
         symb = 8 % 64;
-        poseStack.pushPose();
-        poseStack.translate(hPos + monitorWidth - 10, vPos + 10, 0);
-        poseStack.scale(2, 2, 1);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-(float) (System.currentTimeMillis() % 5400L) / 15L));
-        poseStack.translate(-31 / 2f, -31 / 2f, 0);
-        guiGraphics.blit(SYMBLS, 0, 0, 32 * (symb % 8), 32 * (symb / 8), 32, 32);
-        poseStack.popPose();
+        poseStack.pushMatrix();
+        poseStack.translate(hPos + monitorWidth - 10, vPos + 10);
+        poseStack.scale(2, 2);
+        poseStack.rotate((float) Math.toRadians(-(float) (System.currentTimeMillis() % 5400L) / 15L));
+        poseStack.translate(-31 / 2f, -31 / 2f);
+        blitTexture(guiGraphics, SYMBLS, 0, 0, 32, 32, 32 * (symb % 8), 32 * (symb / 8), 32, 32, 128, 128, -1);
+        poseStack.popMatrix();
 
         boolean right = RIGHT != null && PREVIOUS != null && RIGHT == PREVIOUS && transitionStartTime >= 0;
         boolean left = LEFT != null && PREVIOUS != null && LEFT == PREVIOUS && transitionStartTime >= 0;
         float t = (age - transitionStartTime + partialTick) / 10f;
         float o = -0.5f * Mth.cos(Mth.PI * t) + 0.5f;
 
-        if (right || left) RenderSystem.setShaderColor(1, 1, 1, o);
-        RenderSystem.enableBlend();
-        renderBackdrop(guiGraphics);
-        RenderSystem.enableBlend();
-        if (right || left) RenderSystem.setShaderColor(1, 1, 1, 1 - o);
+        renderBackdrop(guiGraphics, right || left ? o : 1.0F);
+
         if (right) {
-            RIGHT.renderBackdrop(guiGraphics);
-            poseStack.translate(monitorWidth * o, 0, 0);
+            RIGHT.renderBackdrop(guiGraphics, 1.0F - o);
+            poseStack.translate(monitorWidth * o, 0);
             RIGHT.doRender(guiGraphics, mouseX, mouseY, partialTick);
         }
 
         if (left) {
-            LEFT.renderBackdrop(guiGraphics);
-            poseStack.translate(-monitorWidth * o, 0, 0);
+            LEFT.renderBackdrop(guiGraphics, 1.0F - o);
+            poseStack.translate(-monitorWidth * o, 0);
             LEFT.doRender(guiGraphics, mouseX, mouseY, partialTick);
         }
 
-        if (right || left) poseStack.translate(right ? -monitorWidth : monitorWidth, 0, 0);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        if (right || left) poseStack.translate(right ? -monitorWidth : monitorWidth, 0);
+
         doRender(guiGraphics, mouseX, mouseY, partialTick);
 
-        poseStack.popPose();
+        poseStack.popMatrix();
 
         guiGraphics.disableScissor();
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, (shakeAlpha + 1 - partialTick) / 100.0f);
-        guiGraphics.blit(NOISE, hPos + shakeX, vPos + shakeY, (int) (Math.random() * 736), (int) (414 * (System.currentTimeMillis() % 1000) / 1000.0), monitorWidth, monitorHeight);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+
+        // Static is a crash effect. A 1% noise layer was being composited onto
+        // every Computer Base page even when the TARDIS was healthy, causing a
+        // brief whole-screen flicker during page changes. Keep the effect only
+        // while crash shake is active.
+        if (shakeAlpha > 0.0F) {
+            blitTexture(guiGraphics, NOISE, hPos + shakeX, vPos + shakeY, monitorWidth, monitorHeight,
+                    (int) (Math.random() * 736), (int) (414 * (System.currentTimeMillis() % 1000) / 1000.0),
+                    monitorWidth, monitorHeight, 736, 414,
+                    net.minecraft.util.ARGB.colorFromFloat((shakeAlpha - partialTick) / 100.0f, 1, 1, 1));
+        }
 
         renderFrame(guiGraphics, mouseX, mouseY, partialTick);
-        RenderSystem.disableBlend();
+
     }
 
-    public void doRender(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void doRender(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         inMonitorRender(guiGraphics, mouseX, mouseY, partialTick);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         ScreenHelper.renderWidthScaledText(title.getString(), guiGraphics, Minecraft.getInstance().font, width / 2f, 5 + (height - monitorHeight) / 2f, Color.LIGHT_GRAY.getRGB(), 300, true);
     }
 
-    public void inMonitorRender(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void inMonitorRender(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
     }
 
-    public void renderFrame(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void renderFrame(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int hPos = (width - frameWidth) / 2;
         int vPos = -13 + (height - monitorHeight) / 2;
 
-        guiGraphics.blit(FRAME, hPos + shakeX, vPos + shakeY, 0, 0, frameWidth, frameHeight);
+        blitTexture(guiGraphics, FRAME, hPos + shakeX, vPos + shakeY, frameWidth, frameHeight,
+                0, 0, frameWidth, frameHeight, 256, 256, -1);
     }
 
     @Override
@@ -273,7 +280,7 @@ public class MonitorOS extends Screen {
         next.PREVIOUS = this;
         next.RIGHT = this;
         next.transition();
-        Minecraft.getInstance().setScreen(next);
+        Minecraft.getInstance().setScreenAndShow(next);
     }
 
     public void switchScreenToRight(MonitorOS next) {
@@ -281,7 +288,7 @@ public class MonitorOS extends Screen {
         next.PREVIOUS = this;
         next.LEFT = this;
         next.transition();
-        Minecraft.getInstance().setScreen(next);
+        Minecraft.getInstance().setScreenAndShow(next);
     }
 
     public void transition() {
@@ -323,10 +330,16 @@ public class MonitorOS extends Screen {
     }
 
     public static class MonitorOSExtension extends MonitorOS {
+        protected final Identifier currentShellPattern;
 
-        public MonitorOSExtension(Component title, ResourceLocation currentShellThem) {
+        public MonitorOSExtension(Component title, Identifier currentShellThem) {
+            this(title, currentShellThem, null);
+        }
+
+        public MonitorOSExtension(Component title, Identifier currentShellThem, Identifier currentShellPattern) {
             super(title, null);
             CURRENTSHELLTHEME = currentShellThem;
+            this.currentShellPattern = currentShellPattern;
             PATTERNCOLLECTION = ShellPatterns.getPatternCollectionForTheme(CURRENTSHELLTHEME);
             THEMELIST = ShellTheme.SHELL_THEME_DEFERRED_REGISTRY.keySet().stream().toList();
             generateDummyGlobalShell();
@@ -339,34 +352,25 @@ public class MonitorOS extends Screen {
         }
 
         public static GlobalShellBlockEntity GLOBALSHELL_BLOCKENTITY;
-        public static ResourceLocation CURRENTSHELLTHEME;
-        public static List<ResourceLocation> THEMELIST;
+        public static Identifier CURRENTSHELLTHEME;
+        public static List<Identifier> THEMELIST;
         public static List<ShellPattern> PATTERNCOLLECTION;
 
-        public void renderShell(GuiGraphics guiGraphics, int x, int y, float scale) {
-            ShellPattern pattern = ShellPatterns.getPatternOrDefault(CURRENTSHELLTHEME, getPatternForRender());
-            ShellModel model = ShellModelCollection.getInstance().getShellEntry(CURRENTSHELLTHEME).getShellModel(pattern);
-            model.setDoorPosition(false);
-            Lighting.setupForEntityInInventory();
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
-            pose.translate((float) x, y, 100.0F);
-            pose.scale(-scale, scale, scale);
-            pose.mulPose(Axis.XP.rotationDegrees(-15F));
-            pose.mulPose(Axis.YP.rotationDegrees((float) (System.currentTimeMillis() % 5400L) / 15L));
-
-            VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(model.renderType(model.getShellTexture(pattern, false)));
-            model.renderShell(GLOBALSHELL_BLOCKENTITY, false, false, pose, vertexConsumer, 15728880, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-            guiGraphics.flush();
-            pose.popPose();
-            Lighting.setupFor3DItems();
+        public void renderShell(GuiGraphicsExtractor guiGraphics, int x, int y, float scale) {
+            Identifier patternId = getPatternForRender();
+            if (patternId == null) patternId = currentShellPattern;
+            ShellPattern pattern = ShellPatterns.getPatternOrDefault(CURRENTSHELLTHEME, patternId);
+            ShellPreviewDiagnostics.report("monitor-shell",
+                    "theme=" + CURRENTSHELLTHEME + ", requestedPattern=" + patternId
+                            + ", resolvedPattern=" + pattern.id());
+            ShellRenderer.renderSelectedShell(guiGraphics, CURRENTSHELLTHEME, pattern.id(), x, y, scale);
         }
 
         public static void generateDummyGlobalShell() {
             GLOBALSHELL_BLOCKENTITY = new GlobalShellBlockEntity(BlockPos.ZERO, TRBlockRegistry.GLOBAL_SHELL_BLOCK.get().defaultBlockState());
             assert Minecraft.getInstance().level != null;
             GLOBALSHELL_BLOCKENTITY.setLevel(Minecraft.getInstance().level);
-            ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, new ResourceLocation(TardisRefined.MODID, UUID.randomUUID().toString()));
+            ResourceKey<Level> generatedLevelKey = ResourceKey.create(Registries.DIMENSION, Identifier.fromNamespaceAndPath(TardisRefined.MODID, UUID.randomUUID().toString()));
             GLOBALSHELL_BLOCKENTITY.setTardisId(generatedLevelKey);
             GLOBALSHELL_BLOCKENTITY.setShellTheme(ShellTheme.POLICE_BOX.getId());
             GLOBALSHELL_BLOCKENTITY.setPattern(ShellPatterns.DEFAULT);

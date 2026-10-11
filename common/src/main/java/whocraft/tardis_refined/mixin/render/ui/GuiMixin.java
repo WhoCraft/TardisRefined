@@ -1,68 +1,50 @@
 package whocraft.tardis_refined.mixin.render.ui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.DeltaTracker;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.Hud;
+import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 
-@Mixin(Gui.class)
+@Mixin(Hud.class)
 public class GuiMixin {
 
-    @Inject(method = "renderHotbar(FLnet/minecraft/client/gui/GuiGraphics;)V", at = @At(value = "HEAD"), cancellable = true)
-    public void renderHotbar(float f, GuiGraphics guiGraphics, CallbackInfo ci) {
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isViewingTardis()) {
-                ci.cancel();
-            }
-        });
+    @Inject(method = "extractHotbarAndDecorations(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    private void tardisRefined$hideHotbar(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        tardisRefined$cancelWhileViewing(ci);
     }
 
-    @Inject(method = "renderCrosshair(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At(value = "HEAD"), cancellable = true)
-    private void renderCrosshair(GuiGraphics guiGraphics, CallbackInfo ci) {
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isViewingTardis()) {
-                ci.cancel();
-            }
-        });
+    @Inject(method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("HEAD"), cancellable = true)
+    private void tardisRefined$hideCrosshair(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker, CallbackInfo ci) {
+        tardisRefined$cancelWhileViewing(ci);
     }
 
-    @Inject(method = "renderSpyglassOverlay(Lnet/minecraft/client/gui/GuiGraphics;F)V", at = @At(value = "HEAD"), cancellable = true)
-    public void renderSpyglassOverlay(GuiGraphics guiGraphics, float f, CallbackInfo ci) {
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isViewingTardis()) {
-                ci.cancel();
-            }
-        });
+    @Inject(method = "extractSpyglassOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;F)V", at = @At("HEAD"), cancellable = true)
+    private void tardisRefined$hideSpyglassOverlay(GuiGraphicsExtractor graphics, float partialTick, CallbackInfo ci) {
+        tardisRefined$cancelWhileViewing(ci);
     }
 
-    @Inject(method = "renderExperienceBar(Lnet/minecraft/client/gui/GuiGraphics;I)V", at = @At(value = "HEAD"), cancellable = true)
-    public void renderExperienceBar(GuiGraphics guiGraphics, int i, CallbackInfo ci) {
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isViewingTardis()) {
-                ci.cancel();
-            }
-        });
+    @Inject(method = "extractTextureOverlay(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/resources/Identifier;F)V", at = @At("HEAD"), cancellable = true)
+    private void tardisRefined$hideTextureOverlay(GuiGraphicsExtractor graphics, Identifier texture, float alpha, CallbackInfo ci) {
+        tardisRefined$cancelWhileViewing(ci);
     }
 
-    @Inject(method = "renderSpyglassOverlay(Lnet/minecraft/client/gui/GuiGraphics;F)V", at = @At(value = "HEAD"), cancellable = true)
-    protected void renderTextureOverlay(GuiGraphics guiGraphics, float f, CallbackInfo ci) {
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isViewingTardis()) {
-                ci.cancel();
-            }
-        });
+    @Inject(method = "extractPlayerHealth(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("HEAD"), cancellable = true)
+    private void tardisRefined$hidePlayerHealth(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+        tardisRefined$cancelWhileViewing(ci);
     }
 
-    @Inject(method = "renderPlayerHealth(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At(value = "HEAD"), cancellable = true)
-    private void renderPlayerHealth(GuiGraphics guiGraphics, CallbackInfo ci) {
-        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(tardisPlayerInfo -> {
-            if (tardisPlayerInfo.isViewingTardis()) {
-                ci.cancel();
-            }
+    @Unique
+    private static void tardisRefined$cancelWhileViewing(CallbackInfo ci) {
+        if (Minecraft.getInstance().player == null) return;
+        TardisPlayerInfo.get(Minecraft.getInstance().player).ifPresent(info -> {
+            if (info.isViewingTardis()) ci.cancel();
         });
     }
 }

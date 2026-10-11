@@ -1,18 +1,20 @@
 package whocraft.tardis_refined.client.renderer.blockentity.device;
 
+import whocraft.tardis_refined.client.renderer.LegacyBlockEntityRenderer;
+import whocraft.tardis_refined.client.renderer.DeferredGeometryBuffer;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleModelCollection;
 import whocraft.tardis_refined.client.model.blockentity.console.ConsoleUnit;
 import whocraft.tardis_refined.common.block.device.ConsoleConfigurationBlock;
-import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.console.GlobalConsoleBlockEntity;
 import whocraft.tardis_refined.common.blockentity.device.ConsoleConfigurationBlockEntity;
 import whocraft.tardis_refined.patterns.ConsolePattern;
@@ -20,53 +22,55 @@ import whocraft.tardis_refined.patterns.ConsolePatterns;
 
 import java.util.List;
 
-public class ConsoleConfigurationRenderer implements BlockEntityRenderer<ConsoleConfigurationBlockEntity>, BlockEntityRendererProvider<ConsoleConfigurationBlockEntity> {
+public class ConsoleConfigurationRenderer extends LegacyBlockEntityRenderer<ConsoleConfigurationBlockEntity> {
 
     public ConsoleConfigurationRenderer(Context context) {
+        super(context);
 
     }
 
-    @Override
-    public BlockEntityRenderer<ConsoleConfigurationBlockEntity> create(Context context) {
-        return new ConsoleConfigurationRenderer(context);
-    }
 
     @Override
-    public void render(ConsoleConfigurationBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+    protected void renderLegacy(ConsoleConfigurationBlockEntity blockEntity, float partialTick, PoseStack poseStack, DeferredGeometryBuffer bufferSource, int packedLight) {
 
-        var offset = blockEntity.getBlockState().getValue(ConsoleConfigurationBlock.FACING).getNormal();
-        if (blockEntity.getLevel().getBlockEntity(blockEntity.getBlockPos().offset(offset)) instanceof GlobalConsoleBlockEntity globalConsoleBlock) {
-            return; // Don't render the console into the console
+        var facing = blockEntity.getBlockState().getValue(ConsoleConfigurationBlock.FACING);
+        var adjacentConsolePos = ConsoleConfigurationBlock.findAdjacentConsolePos(
+                blockEntity.getLevel(), blockEntity.getBlockPos(), facing);
+        if (adjacentConsolePos != null
+                && blockEntity.getLevel().getBlockEntity(adjacentConsolePos) instanceof GlobalConsoleBlockEntity) {
+            return; // The real console is already rendered in this position.
         }
 
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.475F, 0.5F);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
+        poseStack.rotateDegrees(Axis.ZP, 180F);
 
         BlockState blockstate = blockEntity.getBlockState();
-        float rotation = blockstate.getValue(GlobalDoorBlock.FACING).getOpposite().toYRot();
-        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        float rotation = blockstate.getValue(ConsoleConfigurationBlock.FACING).getOpposite().toYRot();
+        poseStack.rotateDegrees(Axis.YP, rotation);
 
-        if (blockEntity != null && blockEntity.getLevel() != null && blockEntity.getLevel().random.nextInt(20) != 0) {
+        if (blockEntity.getLevel() != null) {
             poseStack.scale(0.25f, 0.25f, 0.25f);
-            poseStack.translate(0, 1.5f + blockEntity.getLevel().random.nextFloat() * 0.01, 0);
-            poseStack.mulPose(Axis.YP.rotationDegrees(blockEntity.getLevel().getGameTime() % 360));
+            poseStack.translate(0, 1.5f, 0);
+            poseStack.rotateDegrees(Axis.YP, (blockEntity.getLevel().getGameTime() + partialTick) % 360);
 
-            ResourceLocation theme = blockEntity.theme();
+            Identifier theme = blockEntity.theme();
             if (theme != null) {
                 List<ConsolePattern> patterns = ConsolePatterns.getPatternsForTheme(theme);
                 if (patterns != null && !patterns.isEmpty()) {
-                    ConsolePattern themePattern = patterns.get(0);
-                    ConsoleUnit consoleModel = ConsoleModelCollection.getInstance()
-                            .getConsoleEntry(theme)
-                            .getConsoleModel(themePattern);
+                    ConsolePattern themePattern = blockEntity.pattern();
+                    if (themePattern == null || !theme.equals(themePattern.getThemeId())) {
+                        themePattern = patterns.get(0);
+                    }
+                    var modelEntry = ConsoleModelCollection.getInstance().getConsoleEntry(theme);
+                    ConsoleUnit consoleModel = modelEntry == null ? null : modelEntry.getConsoleModel(themePattern);
 
                     if (consoleModel != null) {
                         consoleModel.renderConsole(
                                 null,
                                 blockEntity.getLevel(),
                                 poseStack,
-                                bufferSource.getBuffer(RenderType.entityTranslucent(consoleModel.getDefaultTexture())),
+                                bufferSource.getBuffer(RenderTypes.entityTranslucent(themePattern.texture())),
                                 packedLight,
                                 OverlayTexture.NO_OVERLAY,
                                 0.635f, 0.392f, 0.878f, 0.5f
@@ -81,7 +85,7 @@ public class ConsoleConfigurationRenderer implements BlockEntityRenderer<Console
     }
 
     @Override
-    public boolean shouldRenderOffScreen(ConsoleConfigurationBlockEntity blockEntity) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 }

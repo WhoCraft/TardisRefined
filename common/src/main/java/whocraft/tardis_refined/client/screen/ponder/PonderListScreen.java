@@ -4,7 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.components.GenericMonitorSelectionList;
 import whocraft.tardis_refined.client.screen.components.SelectionListEntry;
@@ -17,7 +17,7 @@ import java.util.List;
 public class PonderListScreen extends MonitorOS {
 
     public PonderListScreen() {
-        super(Component.literal(""), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.literal(""), Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
     }
 
     @Override
@@ -25,7 +25,6 @@ public class PonderListScreen extends MonitorOS {
         int vPos = (height - monitorHeight) / 2;
         int leftPos = this.width / 2 - 75;
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 150, 80, leftPos, vPos + 15, vPos + monitorHeight - 30, 12);
-        selectionList.setRenderBackground(false);
 
         if (Minecraft.getInstance().level == null) return null;
         if (ManipulatorCraftingRecipe.getAllRecipes(Minecraft.getInstance().level).isEmpty()) return null;
@@ -40,11 +39,11 @@ public class PonderListScreen extends MonitorOS {
             Component tooltip = Component.literal(ChatFormatting.BLUE + owner);
 
             SelectionListEntry entry = new SelectionListEntry(name, (selectedEntry) -> {
-                Minecraft.getInstance().setScreen(new PonderScreen(recipe));
+                Minecraft.getInstance().setScreenAndShow(new PonderScreen(recipe));
             }, leftPos);
 
             entry.setTooltip(tooltip);
-            selectionList.children().add(entry);
+            selectionList.addEntryPublic(entry);
         }
 
 

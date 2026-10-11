@@ -14,15 +14,15 @@ import java.util.Set;
 public class DimensionUtil {
 
     public static boolean isAllowedDimension(ResourceKey<Level> level) {
-        String namespace = level.location().getNamespace();
-        String location = level.location().toString();
+        String namespace = level.identifier().getNamespace();
+        String location = level.identifier().toString();
         var bannedDimensions = TRConfig.SERVER.BANNED_DIMENSIONS.get();
         return !namespace.contains("immersive_portals") && !namespace.contains(TardisRefined.MODID) && !bannedDimensions.contains(location);
     }
     public static Set<ResourceKey<Level>> getTardisLevels(MinecraftServer server) {
         Set<ResourceKey<Level>> set = Sets.newHashSet();
         for (ServerLevel level : server.getAllLevels()) {
-            if (level.dimensionTypeId() == TRDimensionTypes.TARDIS) {
+            if (level.dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
                 set.add(level.dimension());
             }
         }

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "Z": "tardis_refined:zeiton_ingot"
+  },
+  "pattern": [
+    "ZZZ",
+    "ZZZ",
+    "ZZZ"
+  ],
+  "result": {
+    "id": "tardis_refined:zeiton_block"
+  },
+  "show_notification": true
+}

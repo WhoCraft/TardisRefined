@@ -4,14 +4,18 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -107,8 +111,8 @@ public class ControlEntity extends Entity {
         this.controlSpecification = specification;
         this.consoleTheme = theme;
         if (this.controlSpecification != null) {
-            float width = controlSpecification.size().width;
-            float height = controlSpecification.size().height;
+            float width = controlSpecification.size().width();
+            float height = controlSpecification.size().height();
             this.setSizeData(width, height);
             this.setCustomName(Component.translatable(controlSpecification.control().getTranslationKey()));
         }
@@ -140,10 +144,7 @@ public class ControlEntity extends Entity {
 
     @Override
     public EntityDimensions getDimensions(Pose pose) {
-        if (this.getEntityData().hasItem(SIZE_WIDTH) && this.getEntityData().hasItem(SIZE_HEIGHT)) {
-            return EntityDimensions.scalable(this.getEntityData().get(SIZE_WIDTH), this.getEntityData().get(SIZE_HEIGHT));
-        }
-        return super.getDimensions(pose);
+        return EntityDimensions.scalable(this.getEntityData().get(SIZE_WIDTH), this.getEntityData().get(SIZE_HEIGHT));
     }
 
     @Override
@@ -186,13 +187,13 @@ public class ControlEntity extends Entity {
     }
 
     @Override
-    protected void defineSynchedData() {
-        getEntityData().define(SHOW_PARTICLE, false);
-        getEntityData().define(TICKING_DOWN, false);
-        getEntityData().define(IS_DEAD, false);
-        getEntityData().define(SIZE_WIDTH, 1F);
-        getEntityData().define(SIZE_HEIGHT, 1F);
-        getEntityData().define(CONTROL_HEALTH, 10);
+    protected void defineSynchedData(SynchedEntityData.Builder builder) {
+        builder.define(SHOW_PARTICLE, false);
+        builder.define(TICKING_DOWN, false);
+        builder.define(IS_DEAD, false);
+        builder.define(SIZE_WIDTH, 1F);
+        builder.define(SIZE_HEIGHT, 1F);
+        builder.define(CONTROL_HEALTH, 10);
 
     }
 
@@ -203,22 +204,11 @@ public class ControlEntity extends Entity {
 
 
     @Override
-    public boolean save(CompoundTag compound) {
-        if (consoleBlockPos != null) {
-            compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
-        }
-        compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
-        compound.putFloat(NbtConstants.CONTROL_SIZE_HEIGHT, this.getEntityData().get(SIZE_HEIGHT));
-        return super.save(compound);
-    }
+    public void readAdditionalSaveData(ValueInput compound) {
+        this.consoleBlockPos = compound.read(NbtConstants.CONSOLE_POS, BlockPos.CODEC).orElse(null);
 
-    @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
-        var consolePos = compound.getCompound(NbtConstants.CONSOLE_POS);
-        this.consoleBlockPos = NbtUtils.readBlockPos(consolePos);
-
-        float width = compound.getFloat(NbtConstants.CONTROL_SIZE_WIDTH);
-        float height = compound.getFloat(NbtConstants.CONTROL_SIZE_HEIGHT);
+        float width = compound.getFloatOr(NbtConstants.CONTROL_SIZE_WIDTH, 0.0F);
+        float height = compound.getFloatOr(NbtConstants.CONTROL_SIZE_HEIGHT, 0.0F);
 
         this.setSizeData(width, height);
 
@@ -232,9 +222,9 @@ public class ControlEntity extends Entity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         if (consoleBlockPos != null) {
-            compound.put(NbtConstants.CONSOLE_POS, NbtUtils.writeBlockPos(this.consoleBlockPos));
+            compound.store(NbtConstants.CONSOLE_POS, BlockPos.CODEC, this.consoleBlockPos);
         }
 
         compound.putFloat(NbtConstants.CONTROL_SIZE_WIDTH, this.getEntityData().get(SIZE_WIDTH));
@@ -243,15 +233,14 @@ public class ControlEntity extends Entity {
     }
 
     @Override
-    public Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return MiscHelper.spawnPacket(this);
+    public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity serverEntity) {
+        return new ClientboundAddEntityPacket(this, serverEntity);
     }
 
     @Override
-    public boolean hurt(DamageSource damageSource, float f) {
+    public boolean hurtServer(ServerLevel serverLevel, DamageSource damageSource, float f) {
         if (damageSource.getDirectEntity() instanceof Player player) { //Using getDirectEntity can allow for players to indirectly interact with controls, such as through primed TNT
-            if (this.level() instanceof ServerLevel serverLevel) {
-                if (!player.level().isClientSide()) {
+            if (!player.level().isClientSide()) {
                     if (entityData.get(IS_DEAD)) {
                         return false;
                     }
@@ -259,12 +248,10 @@ public class ControlEntity extends Entity {
 
                         ItemStack itemStack = player.getMainHandItem();
 
-                        if (itemStack.is(TRItemRegistry.MALLET.get()) && !player.getCooldowns().isOnCooldown(TRItemRegistry.MALLET.get())) {
-                            player.getCooldowns().addCooldown(TRItemRegistry.MALLET.get(), 600);
+                        if (itemStack.getItem() == TRItemRegistry.MALLET.get() && !player.getCooldowns().isOnCooldown(itemStack)) {
+                            player.getCooldowns().addCooldown(itemStack, 600);
                             playSound(TRSoundRegistry.MALLET.get());
-                            itemStack.hurtAndBreak(15, player, (livingEntityx) -> {
-                                livingEntityx.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-                            });
+                            itemStack.hurtAndBreak(15, player, EquipmentSlot.MAINHAND);
 
                             getConsoleBlockEntity().getControlEntityList().forEach(controlEntity -> {
                                 controlEntity.realignControl();
@@ -272,7 +259,7 @@ public class ControlEntity extends Entity {
                                 serverLevel.sendParticles(ParticleTypes.ENCHANT, blockPos.getX(), blockPos.getY() + 1.0, blockPos.getZ(), 120, 2.0, 1.0, 2.0, 0.005);
                             });
                         } else {
-                            this.realignControl();
+                            this.repairDamagedControl();
                         }
                         //Return early here because we want the player to re-align the control, but not actually activate the control's original function.
                         //e.g. If Randomiser control is re-aligned we shouldn't actually tell the Tardis to randomise its coordinates.
@@ -282,19 +269,18 @@ public class ControlEntity extends Entity {
                             return true;
                         }
                     }
-                }
             }
         }
-        return super.hurt(damageSource, f);
+        return false;
     }
 
     @Override
-    public InteractionResult interactAt(Player player, Vec3 hitPos, InteractionHand interactionHand) {
+    public InteractionResult interact(Player player, InteractionHand interactionHand, Vec3 hitPos) {
         if (this.level() instanceof ServerLevel serverLevel) {
             if (!player.level().isClientSide()) {
                 if (player.getMainHandItem().getItem() == Items.COMMAND_BLOCK_MINECART) {
                     this.handleControlSizeAndPositionAdjustment(player);
-                    return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                    return InteractionResult.SUCCESS_SERVER;
                 }
 
                 if (entityData.get(IS_DEAD)) {
@@ -302,24 +288,31 @@ public class ControlEntity extends Entity {
                 }
 
                 if (this.entityData.get(TICKING_DOWN)) {
-                    this.realignControl();
+                    this.repairDamagedControl();
                     //Return an InteractionResult here because we want the player to re-align the control, but not actually activate the control's original function.
                     //e.g. If Randomiser control is re-aligned we shouldn't actually tell the Tardis to randomise its coordinates.
-                    return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                    return InteractionResult.SUCCESS_SERVER;
                 } else {
                     if (this.handleRightClick(player, serverLevel, interactionHand)) {
                         //Return an InteractionResult here because we want to tell the player that the control was correctly interacted with.
-                        return InteractionResult.sidedSuccess(false); //Use InteractionResult.sidedSuccess(false) for non-client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+                        return InteractionResult.SUCCESS_SERVER;
                     }
                 }
             }
         }
 
-        return InteractionResult.sidedSuccess(true); //Use InteractionResult.sidedSuccess(true) for client side. Stops hand swinging twice. We don't want to use InteractionResult.SUCCESS because the client calls SUCCESS, so the server side calling it too sends the hand swinging packet twice.
+        return InteractionResult.SUCCESS;
     }
 
     public boolean isTickingDown() {
         return getEntityData().get(TICKING_DOWN);
+    }
+
+    /** A player repair interaction completes the full alignment in one click. */
+    private void repairDamagedControl() {
+        for (int repair = 0; repair < 5 && isTickingDown(); repair++) {
+            realignControl();
+        }
     }
 
     /**
@@ -371,7 +364,7 @@ public class ControlEntity extends Entity {
             onClientTick(this.level());
         }
 
-        if (level().dimensionTypeId() != TRDimensionTypes.TARDIS) {
+        if (!level().dimensionTypeRegistration().is(TRDimensionTypes.TARDIS)) {
             discard();
         }
 
@@ -416,8 +409,8 @@ public class ControlEntity extends Entity {
     private void onClientTick(Level level) {
 
         if (getEntityData().get(CONTROL_HEALTH) <= 5) {
-            if (level.random.nextInt(25) == 0) {
-                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA, this.position(), -0.5 + level.random.nextFloat(), 0.05D, -0.5 + level.random.nextFloat());
+            if (level.getRandom().nextInt(25) == 0) {
+                ClientHelper.playParticle((ClientLevel) level, ParticleTypes.LAVA, this.position(), -0.5 + level.getRandom().nextFloat(), 0.05D, -0.5 + level.getRandom().nextFloat());
 
                 level.playLocalSound(BlockPos.containing(this.position()), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 0.25f, level.getRandom().nextFloat() + 1f, false);
             }
@@ -534,7 +527,7 @@ public class ControlEntity extends Entity {
 
 
     @Override
-    public boolean mayInteract(Level level, BlockPos blockPos) {
+    public boolean mayInteract(ServerLevel level, BlockPos blockPos) {
         return true;
     }
 
@@ -544,7 +537,7 @@ public class ControlEntity extends Entity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(Entity entity) {
         return true;
     }
 

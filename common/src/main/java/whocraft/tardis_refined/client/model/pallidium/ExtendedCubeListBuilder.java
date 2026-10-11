@@ -14,6 +14,7 @@ import org.joml.Vector3f;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import whocraft.tardis_refined.mixin.fabric.CubeDeformationAccessor;
 
 /**
  * <h2>Credits</h2>
@@ -119,15 +120,33 @@ public class ExtendedCubeListBuilder extends CubeListBuilder {
     public static class PerFaceCubeDefinition extends CubeDefinition {
 
         public final Map<Direction, PerFaceUV> uvMap;
+        private final float originX, originY, originZ;
+        private final float dimensionX, dimensionY, dimensionZ;
+        private final float growX, growY, growZ;
+        private final boolean cubeMirror;
+        private final float texScaleU, texScaleV;
 
         protected PerFaceCubeDefinition(@Nullable String comment, float originX, float originY, float originZ, float dimensionX, float dimensionY, float dimensionZ, CubeDeformation grow, boolean mirror, Map<Direction, PerFaceUV> uvMap, float texScaleU, float texScaleV) {
             super(comment, 0, 0, originX, originY, originZ, dimensionX, dimensionY, dimensionZ, grow, mirror, texScaleU, texScaleV, Collections.emptySet());
             this.uvMap = uvMap;
+            this.originX = originX;
+            this.originY = originY;
+            this.originZ = originZ;
+            this.dimensionX = dimensionX;
+            this.dimensionY = dimensionY;
+            this.dimensionZ = dimensionZ;
+            CubeDeformationAccessor deformation = (CubeDeformationAccessor) (Object) grow;
+            this.growX = deformation.tr$getGrowX();
+            this.growY = deformation.tr$getGrowY();
+            this.growZ = deformation.tr$getGrowZ();
+            this.cubeMirror = mirror;
+            this.texScaleU = texScaleU;
+            this.texScaleV = texScaleV;
         }
 
         @Override
         public ModelPart.Cube bake(int texWidth, int texHeight) {
-            return new PerFaceUVCube(this.uvMap, this.origin.x, this.origin.y, this.origin.z, this.dimensions.x, this.dimensions.y, this.dimensions.z, this.grow.growX, this.grow.growY, this.grow.growZ, this.mirror, (float)texWidth * this.texScale.u(), (float)texHeight * this.texScale.v());
+            return new PerFaceUVCube(this.uvMap, this.originX, this.originY, this.originZ, this.dimensionX, this.dimensionY, this.dimensionZ, this.growX, this.growY, this.growZ, this.cubeMirror, (float) texWidth * this.texScaleU, (float) texHeight * this.texScaleV);
         }
     }
 

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "tardis_refined:block/landing_pad",
+      "y": 270
+    },
+    "facing=north": {
+      "model": "tardis_refined:block/landing_pad",
+      "y": 180
+    },
+    "facing=south": {
+      "model": "tardis_refined:block/landing_pad"
+    },
+    "facing=west": {
+      "model": "tardis_refined:block/landing_pad",
+      "y": 90
+    }
+  }
+}

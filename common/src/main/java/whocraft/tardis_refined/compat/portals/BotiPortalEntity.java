@@ -40,7 +40,7 @@ public class BotiPortalEntity extends Portal {
         super.addAdditionalSaveData(compoundTag);
         UUID tardisId = getTardisId();
         if (tardisId != null) {
-            compoundTag.putUUID(NbtConstants.TARDIS_ID, tardisId);
+            compoundTag.putString(NbtConstants.TARDIS_ID, tardisId.toString());
         }
         compoundTag.putBoolean("valid", isValid);
     }
@@ -49,7 +49,9 @@ public class BotiPortalEntity extends Portal {
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         if (compoundTag.contains(NbtConstants.TARDIS_ID)) {
-            setTardisId(compoundTag.getUUID(NbtConstants.TARDIS_ID));
+            UUID tardisId = compoundTag.getString(NbtConstants.TARDIS_ID).map(UUID::fromString)
+                    .orElseGet(() -> compoundTag.getIntArray(NbtConstants.TARDIS_ID).map(net.minecraft.core.UUIDUtil::uuidFromIntArray).orElse(null));
+            if (tardisId != null) setTardisId(tardisId);
         }
         if (compoundTag.contains("valid")) {
             setValid(compoundTag.getBoolean("valid"));

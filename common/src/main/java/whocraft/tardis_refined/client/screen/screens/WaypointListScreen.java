@@ -1,11 +1,11 @@
 package whocraft.tardis_refined.client.screen.screens;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.screen.ScreenHelper;
@@ -28,9 +28,9 @@ import java.util.Comparator;
 
 public class WaypointListScreen extends MonitorOS {
 
-    public static final ResourceLocation TRASH_LOCATION = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/trash.png");
-    public static final ResourceLocation OKAY_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/okay.png");
-    public static final ResourceLocation EDIT_TEXTURE = new ResourceLocation(TardisRefined.MODID, "textures/gui/sprites/edit.png");
+    public static final Identifier TRASH_LOCATION = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "trash");
+    public static final Identifier OKAY_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "okay");
+    public static final Identifier EDIT_TEXTURE = Identifier.fromNamespaceAndPath(TardisRefined.MODID, "edit");
     private final Component noWaypointsLabel = Component.translatable(ModMessages.UI_MONITOR_NO_WAYPOINTS);
     private Button loadButton;
     private Button editButton;
@@ -39,7 +39,7 @@ public class WaypointListScreen extends MonitorOS {
     private TardisWaypoint waypoint = null;
 
     public WaypointListScreen(Collection<TardisWaypoint> waypoints) {
-        super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE), new ResourceLocation(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
+        super(Component.translatable(ModMessages.UI_MONITOR_MAIN_TITLE), Identifier.fromNamespaceAndPath(TardisRefined.MODID, "textures/gui/monitor/backdrop.png"));
         this.WAYPOINTS = waypoints;
     }
 
@@ -70,7 +70,7 @@ public class WaypointListScreen extends MonitorOS {
             if (waypoint != null) {
 
                 new C2STravelToWaypoint(waypoint.getId()).send();
-                Minecraft.getInstance().setScreen(null);
+                Minecraft.getInstance().setScreenAndShow(null);
             }
         }, true, OKAY_TEXTURE));
         this.loadButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_LOAD)));
@@ -82,7 +82,7 @@ public class WaypointListScreen extends MonitorOS {
         this.editButton = this.addRenderableWidget(CommonTRWidgets.imageButton(20, Component.translatable("Edit"), (arg) -> {
             if (waypoint != null) {
                 new C2SOpenEditCoordinatesDisplayMessage(waypoint.getId()).send();
-                Minecraft.getInstance().setScreen(null);
+                Minecraft.getInstance().setScreenAndShow(null);
             }
         }, true, EDIT_TEXTURE));
         this.editButton.setTooltip(Tooltip.create(Component.translatable(ModMessages.UI_MONITOR_WAYPOINT_EDIT)));
@@ -102,13 +102,12 @@ public class WaypointListScreen extends MonitorOS {
         int vPos = (height - monitorHeight) / 2;
         int leftPos = this.width / 2 - 75;
         GenericMonitorSelectionList<SelectionListEntry> selectionList = new GenericMonitorSelectionList<>(this.minecraft, 150, 80, leftPos, vPos + 15, vPos + monitorHeight - 30, 12);
-        selectionList.setRenderBackground(false);
 
         Collection<TardisWaypoint> values = WAYPOINTS;
         values = values.stream().sorted(Comparator.comparing(TardisWaypoint::getName)).toList();
 
         for (TardisWaypoint waypointEntry : values) {
-            selectionList.children().add(new SelectionListEntry(Component.literal(waypointEntry.getLocation().getName()), entry -> {
+            selectionList.addEntryPublic(new SelectionListEntry(Component.literal(waypointEntry.getLocation().getName()), entry -> {
                 entry.setChecked(true);
                 this.waypoint = waypointEntry;
                 this.loadButton.active = true;
@@ -128,7 +127,7 @@ public class WaypointListScreen extends MonitorOS {
     }
 
     @Override
-    public void inMonitorRender(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void inMonitorRender(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         int textOffset = height / 2 - 60;
         int textScale = 40;
 

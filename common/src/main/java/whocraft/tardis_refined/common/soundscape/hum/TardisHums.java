@@ -1,6 +1,6 @@
 package whocraft.tardis_refined.common.soundscape.hum;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import whocraft.tardis_refined.TardisRefined;
@@ -18,32 +18,32 @@ public class TardisHums {
     public static final HumEntry VICTORIAN = new HumEntry("victorian", TRSoundRegistry.HUM_VICTORIAN.getId());
     public static final HumEntry BASALT_DELTAS = new HumEntry(
             "basalt_deltas",
-            SoundEvents.AMBIENT_BASALT_DELTAS_LOOP.value().getLocation(),
+            SoundEvents.AMBIENT_BASALT_DELTAS_LOOP.value().location(),
             createSoundList(SoundEvents.AMBIENT_BASALT_DELTAS_ADDITIONS.value(), SoundEvents.AMBIENT_BASALT_DELTAS_MOOD.value())
     );
     public static final HumEntry CRIMSON_FOREST = new HumEntry(
             "crimson_forest",
-            SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP.value().getLocation(),
+            SoundEvents.AMBIENT_CRIMSON_FOREST_LOOP.value().location(),
             createSoundList(SoundEvents.AMBIENT_CRIMSON_FOREST_ADDITIONS.value(), SoundEvents.AMBIENT_CRIMSON_FOREST_MOOD.value())
     );
     public static final HumEntry NETHER_WASTES = new HumEntry(
             "nether_wastes",
-            SoundEvents.AMBIENT_NETHER_WASTES_LOOP.value().getLocation(),
+            SoundEvents.AMBIENT_NETHER_WASTES_LOOP.value().location(),
             createSoundList(SoundEvents.AMBIENT_NETHER_WASTES_ADDITIONS.value(), SoundEvents.AMBIENT_NETHER_WASTES_MOOD.value())
     );
     public static final HumEntry UNDER_WATER = new HumEntry(
             "under_water",
-            SoundEvents.AMBIENT_UNDERWATER_LOOP.getLocation(),
+            SoundEvents.AMBIENT_UNDERWATER_LOOP.location(),
             createSoundList(SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS, SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS_RARE, SoundEvents.AMBIENT_UNDERWATER_LOOP_ADDITIONS_ULTRA_RARE)
     );
     public static final HumEntry SOUL_SAND_VALLEY = new HumEntry(
             "soul_sand_valley",
-            SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP.value().getLocation(),
+            SoundEvents.AMBIENT_SOUL_SAND_VALLEY_LOOP.value().location(),
             createSoundList(SoundEvents.AMBIENT_SOUL_SAND_VALLEY_ADDITIONS.value(), SoundEvents.AMBIENT_SOUL_SAND_VALLEY_MOOD.value())
     );
     public static final HumEntry WARPED_FOREST = new HumEntry(
             "warped_forest",
-            SoundEvents.AMBIENT_WARPED_FOREST_LOOP.value().getLocation(),
+            SoundEvents.AMBIENT_WARPED_FOREST_LOOP.value().location(),
             createSoundList(SoundEvents.AMBIENT_WARPED_FOREST_ADDITIONS.value(), SoundEvents.AMBIENT_WARPED_FOREST_MOOD.value())
     );
     public static final HumEntry AVIATRAX = new HumEntry(
@@ -57,12 +57,12 @@ public class TardisHums {
     );
 
     private static final CodecJsonReloadListener<HumEntry> RELOAD_LISTENER = createReloadListener();
-    private static final Map<ResourceLocation, HumEntry> DEFAULT_HUMS = new HashMap<>();
+    private static final Map<Identifier, HumEntry> DEFAULT_HUMS = new HashMap<>();
 
-    private static List<ResourceLocation> createSoundList(SoundEvent... sounds) {
-        ArrayList<ResourceLocation> soundList = new ArrayList<>();
+    private static List<Identifier> createSoundList(SoundEvent... sounds) {
+        ArrayList<Identifier> soundList = new ArrayList<>();
         for (SoundEvent sound : sounds) {
-            soundList.add(sound.getLocation());
+            soundList.add(sound.location());
         }
         return soundList;
     }
@@ -80,11 +80,11 @@ public class TardisHums {
         return RELOAD_LISTENER;
     }
 
-    public static Map<ResourceLocation, HumEntry> getRegistry() {
+    public static Map<Identifier, HumEntry> getRegistry() {
         return RELOAD_LISTENER.getData();
     }
 
-    public static HumEntry getHumById(ResourceLocation location) {
+    public static HumEntry getHumById(Identifier location) {
         return RELOAD_LISTENER.getData().getOrDefault(location, getDefaultHum());
     }
 
@@ -94,7 +94,7 @@ public class TardisHums {
      *
      * @return
      */
-    public static Map<ResourceLocation, HumEntry> registerDefaultHums() {
+    public static Map<Identifier, HumEntry> registerDefaultHums() {
         DEFAULT_HUMS.clear();
         addDefaultHum(getDefaultHum());
         addDefaultHum(CAVE);
@@ -115,12 +115,12 @@ public class TardisHums {
      * Gets a default HumEntry added by Tardis Refined. Useful as a fallback entry.
      */
     public static HumEntry getDefaultHum() {
-        ArrayList<ResourceLocation> arrayList = new ArrayList();
-        arrayList.add(new ResourceLocation(TardisRefined.MODID, "interior_creaks"));
-        return new HumEntry(new ResourceLocation(TardisRefined.MODID, "coral"), TRSoundRegistry.HUM_CORAL.getId(), arrayList);
+        ArrayList<Identifier> arrayList = new ArrayList();
+        arrayList.add(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "interior_creaks"));
+        return new HumEntry(Identifier.fromNamespaceAndPath(TardisRefined.MODID, "coral"), TRSoundRegistry.HUM_CORAL.getId(), arrayList);
     }
 
-    public static Map<ResourceLocation, HumEntry> getDefaultHums() {
+    public static Map<Identifier, HumEntry> getDefaultHums() {
         return DEFAULT_HUMS;
     }
 }

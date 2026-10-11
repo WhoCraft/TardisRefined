@@ -2,8 +2,10 @@ package whocraft.tardis_refined.common.blockentity.shell;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,10 +35,19 @@ import whocraft.tardis_refined.patterns.sound.TRShellSoundProfiles;
 import whocraft.tardis_refined.registry.TRBlockEntityRegistry;
 
 import java.util.Optional;
+import com.geckolib.animatable.GeoBlockEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.util.GeckoLibUtil;
 
-public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
+public class GlobalShellBlockEntity extends ShellBaseBlockEntity implements GeoBlockEntity {
 
-    private ResourceLocation shellTheme;
+    private final AnimatableInstanceCache geckoCache = GeckoLibUtil.createInstanceCache(this);
+
+    @Override public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {}
+    @Override public AnimatableInstanceCache getAnimatableInstanceCache() { return geckoCache; }
+
+    private Identifier shellTheme;
     private ShellPattern basePattern;
 
     public GlobalShellBlockEntity(BlockPos blockPos, BlockState blockState) {
@@ -45,21 +56,27 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
         this.basePattern = this.pattern();
     }
 
-    public ResourceLocation theme() {
+    public Identifier theme() {
         if (this.shellTheme == null) {
             this.shellTheme = ShellTheme.HALF_BAKED.getId();
         }
         return this.shellTheme;
     }
 
-    public ResourceLocation getShellTheme() {
+    public Identifier getShellTheme() {
         return shellTheme;
     }
 
-    public void setShellTheme(ResourceLocation theme) {
+    public void setShellTheme(Identifier theme) {
         this.shellTheme = theme;
         this.setChanged();
         this.level.sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), Block.UPDATE_CLIENTS);
+    }
+
+    /** Updates appearance on a client-only preview shell without world updates. */
+    public void setPreviewAppearance(Identifier theme, ShellPattern pattern) {
+        this.shellTheme = theme;
+        this.basePattern = pattern;
     }
 
     public ShellPattern pattern() {
@@ -74,17 +91,17 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag pTag) {
-        super.load(pTag);
+    protected void loadAdditional(ValueInput pTag) {
+        super.loadAdditional(pTag);
 
-        if (pTag.contains(NbtConstants.THEME)) {
-            ResourceLocation themeId = new ResourceLocation(pTag.getString(NbtConstants.THEME));
+        if (pTag.getString(NbtConstants.THEME).isPresent()) {
+            Identifier themeId = Identifier.parse(pTag.getStringOr(NbtConstants.THEME, ""));
             this.shellTheme = themeId;
         }
 
-        if (pTag.contains(NbtConstants.PATTERN)) {
+        if (pTag.getString(NbtConstants.PATTERN).isPresent()) {
             if (this.shellTheme != null) {
-                ResourceLocation currentPattern = new ResourceLocation(pTag.getString(NbtConstants.PATTERN));
+                Identifier currentPattern = Identifier.parse(pTag.getStringOr(NbtConstants.PATTERN, ""));
                 if (ShellPatterns.doesPatternExist(this.shellTheme, currentPattern)) {
                     this.basePattern = ShellPatterns.getPatternOrDefault(this.shellTheme, currentPattern);
                 }
@@ -102,7 +119,7 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag pTag) {
+    protected void saveAdditional(ValueOutput pTag) {
         super.saveAdditional(pTag);
         if (this.shellTheme != null) {
             pTag.putString(NbtConstants.THEME, this.shellTheme.toString());
@@ -133,8 +150,11 @@ public class GlobalShellBlockEntity extends ShellBaseBlockEntity {
                 if (tardisPilotingManager.isInFlight()) return false;
 
                 // Shearing the TARDIS
-                if (stack.is(Items.SHEARS) && aestheticHandler.getShellTheme() == ShellTheme.HALF_BAKED.getId()) {
-                    aestheticHandler.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(), tardisPilotingManager.getCurrentLocation());
+                if (stack.is(Items.SHEARS) && ShellTheme.HALF_BAKED.getId().equals(aestheticHandler.getShellTheme())) {
+                    // Use the unified update path so the shell block, interior door,
+                    // persisted aesthetic, and client render state all switch together.
+                    tardisLevelOperator.setShellTheme(ShellTheme.FACTORY.getId(), ShellPatterns.DEFAULT.id(),
+                            whocraft.tardis_refined.api.event.ShellChangeSources.GENERIC_UPDATE);
                     level.playSound(null, blockPos, SoundEvents.GROWING_PLANT_CROP, SoundSource.BLOCKS, 1, 1);
                     spawnCoralItems();
                     return true;

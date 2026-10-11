@@ -8,7 +8,7 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
@@ -18,7 +18,7 @@ import whocraft.tardis_refined.common.blockentity.shell.GlobalShellBlockEntity;
 
 public class MysticShellModel extends ShellModel {
 
-    public static final AnimationDefinition IDLE = Frame.loadAnimation( new ResourceLocation(TardisRefined.MODID, "frame/shell/myst/idle.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( Identifier.fromNamespaceAndPath(TardisRefined.MODID, "frame/shell/myst/idle.json"));
 
     private final ModelPart right_door;
     private final ModelPart left_door;
@@ -55,19 +55,19 @@ public class MysticShellModel extends ShellModel {
 
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone3.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone7.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone11.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        side_animations.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone56.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bone58.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        gold_animations.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        right_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        left_door.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone3.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone6.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone7.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone10.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone11.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        side_animations.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone56.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bone58.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        gold_animations.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
+        bb_main.render(poseStack, vertexConsumer, packedLight, packedOverlay, net.minecraft.util.ARGB.colorFromFloat(alpha, red, green, blue));
     }
 
     @Override
@@ -83,8 +83,8 @@ public class MysticShellModel extends ShellModel {
     @Override
     public void setDoorPosition(boolean open) {
         if (open) {
-            this.left_door.yRot = 250f;
-            this.right_door.yRot = -250f;
+            this.left_door.yRot = (float) Math.toRadians(250.0F);
+            this.right_door.yRot = (float) Math.toRadians(-250.0F);
         } else {
             this.left_door.yRot = 0;
             this.right_door.yRot = 0;
