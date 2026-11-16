@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.ModelRegistry;
-import whocraft.tardis_refined.client.model.blockentity.shell.rootplant.RootShellModel;
+import whocraft.tardis_refined.client.model.GenericModel;
 import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.common.block.shell.RootedShellBlock;
 import whocraft.tardis_refined.common.block.shell.ShellBaseBlock;
@@ -22,10 +22,10 @@ public class RootShellRenderer implements BlockEntityRenderer<RootedShellBlockEn
 
     private static final ResourceLocation rootShellTexture = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell.png");
     private static final ResourceLocation rootShellClosed = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/shell/root/root_shell_closed.png");
-    private static RootShellModel rootShellModel;
+    private static GenericModel rootShellModel;
 
     public RootShellRenderer(BlockEntityRendererProvider.Context context) {
-        rootShellModel = new RootShellModel(context.bakeLayer((ModelRegistry.ROOT_SHELL)));
+        rootShellModel = new GenericModel(context.bakeLayer((ModelRegistry.ROOT_SHELL)));
     }
 
     @Override

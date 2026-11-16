@@ -1,8 +1,6 @@
 package whocraft.tardis_refined.common.tardis.control.ship;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,6 +25,7 @@ public class MonitorControl extends Control {
         super(id, true);
     }
 
+
     public MonitorControl(ResourceLocation id, String langId) {
         super(id, langId, true);
     }
@@ -36,7 +35,7 @@ public class MonitorControl extends Control {
         if (!player.level().isClientSide()) {
 
             if (operator.getTardisState() != TardisLevelOperator.STATE_EYE_OF_HARMONY || operator.getPilotingManager().isOutOfFuel()) {
-                PlayerUtil.sendMessage(player, ModMessages.HARDWARE_OFFLINE, true);
+                PlayerUtil.sendMessage(player, ModMessages.FUEL_OFFLINE, true);
                 return false;
             }
 
@@ -58,12 +57,13 @@ public class MonitorControl extends Control {
                 if (key.interactMonitor(hand, player, controlEntity, player.getUsedItemHand()))
                     isSyncingKey = true;
             }
-            CustomPacketPayload packet;
             if (!isSyncingKey) {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    packet = new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), operator.getPilotingManager().getCurrentLocation(), operator.getPilotingManager().getTargetLocation(), operator.getUpgradeHandler().saveData(new CompoundTag()));
-                    NetworkManager.get().sendToPlayer(serverPlayer, packet);
-                }
+                var currentLocation = operator.getPilotingManager().getCurrentLocation();
+                var targetLocation = operator.getPilotingManager().getTargetLocation();
+                NetworkManager.get().sendToPlayer(
+                        (ServerPlayer) player,
+                        new S2COpenMonitor(operator.getInteriorManager().isWaitingToGenerate(), currentLocation, targetLocation, operator.getUpgradeHandler(), operator.getAestheticHandler().getShellTheme())
+                );
             }
             return true;
         }

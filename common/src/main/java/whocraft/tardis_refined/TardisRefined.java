@@ -2,13 +2,13 @@ package whocraft.tardis_refined;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.logging.LogUtils;
-import net.minecraft.network.chat.Style;
 import net.minecraft.util.LowerCaseEnumTypeAdapterFactory;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import whocraft.tardis_refined.client.TRParticles;
 import whocraft.tardis_refined.common.VortexRegistry;
-import whocraft.tardis_refined.common.hum.TardisHums;
+import whocraft.tardis_refined.common.items.TRItemData;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.network.TardisNetwork;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncConsolePatterns;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncDesktops;
@@ -19,6 +19,9 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 import whocraft.tardis_refined.common.tardis.themes.ShellTheme;
 import whocraft.tardis_refined.common.world.ChunkGenerators;
 import whocraft.tardis_refined.common.world.Features;
+import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.SublevelPositionRegistry;
+import whocraft.tardis_refined.compat.create.CreateIntergrationsInit;
 import whocraft.tardis_refined.patterns.ConsolePatterns;
 import whocraft.tardis_refined.patterns.ShellPatterns;
 import whocraft.tardis_refined.registry.*;
@@ -27,8 +30,7 @@ public class TardisRefined {
 
     public static final String MODID = "tardis_refined";
     public static final String NAME = "Tardis Refined";
-    public static final String PLATFORM_ERROR = "Something has gone critically wrong with platform definitions. Please contact the mod author.";
-    public static final Logger LOGGER = LogUtils.getLogger();
+    public static Logger LOGGER = LogManager.getLogger(NAME);
 
     public static Gson GSON = new GsonBuilder()
             .disableHtmlEscaping()
@@ -41,12 +43,13 @@ public class TardisRefined {
         TRItemRegistry.TABS.register();
         TRBlockRegistry.BLOCKS.register();
         TRItemRegistry.ITEMS.register();
+        TRItemData.ITEMS.register();
         TREntityRegistry.ENTITY_TYPES.register();
         TRSoundRegistry.SOUNDS.register();
         TRBlockEntityRegistry.BLOCK_ENTITY_TYPES.register();
-       //TODO! TRManipulatorRecipeResultTypes.MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY.register();
+        TRManipulatorRecipeResultTypes.MANIPULATOR_RECIPE_RESULT_DEFERRED_REGISTRY.register();
         TRCraftingRecipeTypes.RECIPE_TYPE_DEFERRED_REGISTRY.register();
-       //TODO! TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
+        TRCraftingRecipeSerializers.RECIPE_SERIALIZERS.register();
         TRDimensionTypes.register();
         ChunkGenerators.CHUNK_GENERATORS.register();
         Features.FEATURES.register();
@@ -63,13 +66,18 @@ public class TardisRefined {
         TRTagKeys.init();
         TardisNetwork.init();
 
-        //TODO!
-      /*  TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncDesktops::new);
+        TardisDesktops.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncDesktops::new);
         ConsolePatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncConsolePatterns::new);
         ShellPatterns.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncShellPatterns::new);
         TardisHums.getReloadListener().setSyncPacket(TardisNetwork.NETWORK, S2CSyncHums::new);
-*/
-        registerFallbackEntries();
+
+        TRARSStructurePieceRegistry.register();
+        SublevelPositionRegistry.DEFERRED.register();
+        //registerFallbackEntries();
+
+        if (ModCompatChecker.create()) {
+            CreateIntergrationsInit.init();
+        }
     }
 
     /**
@@ -86,7 +94,8 @@ public class TardisRefined {
         ShellPatterns.registerDefaultPatterns();
         TardisHums.registerDefaultHums();
 
-        TRARSStructurePieceRegistry.register();
+
+
     }
 
 }

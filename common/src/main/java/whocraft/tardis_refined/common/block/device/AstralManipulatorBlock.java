@@ -2,6 +2,7 @@ package whocraft.tardis_refined.common.block.device;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -24,6 +25,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import whocraft.tardis_refined.common.blockentity.device.AstralManipulatorBlockEntity;
 import whocraft.tardis_refined.common.items.ScrewdriverItem;
+import whocraft.tardis_refined.common.network.NetworkManager;
+import whocraft.tardis_refined.common.network.messages.screens.S2COpenCraftingScreen;
 import whocraft.tardis_refined.common.tardis.CorridorGenerator;
 
 
@@ -54,35 +57,32 @@ public class AstralManipulatorBlock extends Block implements EntityBlock {
         return Shapes.join(Block.box(0, 0, 0, 16, 12, 16), Block.box(4, 12, 4, 12, 14, 12), BooleanOp.OR);
     }
 
-
     @Override
-    protected ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
-
-        if (level instanceof ServerLevel serverLevel && interactionHand == InteractionHand.MAIN_HAND) {
-
-            if (level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity) {
-
-                if (itemStack == ItemStack.EMPTY) {
-                    astralManipulatorBlockEntity.clearDisplay();
-
-                    return ItemInteractionResult.sidedSuccess(false);
-                } else {
-
-                    if (itemStack.getItem() instanceof ScrewdriverItem) {
-
-                        astralManipulatorBlockEntity.onRightClick(itemStack, player);
-                    }
-
-                    CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player);
-                }
-
-            }
-
-
+    public ItemInteractionResult useItemOn(ItemStack itemStack, BlockState blockState, Level level, BlockPos blockPos, Player player, InteractionHand interactionHand, BlockHitResult blockHitResult) {
+        if (!(level instanceof ServerLevel serverLevel) || interactionHand != InteractionHand.MAIN_HAND) {
+            return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
         }
 
-        return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
+        if (!(level.getBlockEntity(blockPos) instanceof AstralManipulatorBlockEntity astralManipulatorBlockEntity)) {
+            return super.useItemOn(itemStack, blockState, level, blockPos, player, interactionHand, blockHitResult);
+        }
+
+        if (itemStack.isEmpty()) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                NetworkManager.get().sendToPlayer(serverPlayer, S2COpenCraftingScreen.INSTANCE);
+            }
+            astralManipulatorBlockEntity.clearDisplay();
+            return ItemInteractionResult.sidedSuccess(false);
+        }
+
+        if (itemStack.getItem() instanceof ScrewdriverItem) {
+            astralManipulatorBlockEntity.onRightClick(itemStack, player);
+        }
+
+        CorridorGenerator.onAttemptToUse(serverLevel, itemStack, blockPos, player);
+        return ItemInteractionResult.sidedSuccess(true);
     }
+
 
     @Override
     public BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {

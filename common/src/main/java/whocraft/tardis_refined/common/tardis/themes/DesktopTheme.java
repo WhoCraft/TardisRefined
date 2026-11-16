@@ -8,6 +8,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.util.MiscHelper;
+import whocraft.tardis_refined.patterns.BasePattern;
 
 
 public class DesktopTheme {
@@ -33,7 +34,7 @@ public class DesktopTheme {
      * @implNote NOTE: Users must also add a PNG display image under assets/tardis_refined/textures/gui/desktops/
      */
     public DesktopTheme(String id, String structureLocation) {
-        this(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, id), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, structureLocation), TardisRefined.GSON.toJson(Component.literal(MiscHelper.getCleanName(id)).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
+        this(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, id), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, structureLocation), BasePattern.serialize(Component.literal(MiscHelper.getCleanName(id)).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD))));
     }
 
     /**

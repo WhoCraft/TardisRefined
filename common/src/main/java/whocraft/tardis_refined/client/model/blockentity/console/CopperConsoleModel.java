@@ -3,16 +3,11 @@ package whocraft.tardis_refined.client.model.blockentity.console;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import dev.jeryn.anim.tardis.JsonToAnimationDefinition;
+import dev.jeryn.frame.tardis.Frame;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.animation.Keyframe;
-import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -27,8 +22,8 @@ import whocraft.tardis_refined.common.tardis.themes.ConsoleTheme;
 public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit {
 
 
-    public static final AnimationDefinition IDLE = JsonToAnimationDefinition.loadAnimation(Minecraft.getInstance().getResourceManager(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "animated/console/copper/idle.json"));
-    public static final AnimationDefinition FLIGHT = JsonToAnimationDefinition.loadAnimation(Minecraft.getInstance().getResourceManager(), ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "animated/console/copper/flight.json"));
+    public static final AnimationDefinition IDLE = Frame.loadAnimation( ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/copper/idle.json"));
+    public static final AnimationDefinition FLIGHT = Frame.loadAnimation(ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "frame/console/copper/flight.json"));
 
     private static final ResourceLocation COPPER_TEXTURE = ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, "textures/blockentity/console/copper/copper_console.png");
 
@@ -65,7 +60,7 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
         this.south_left = root.getChild("south_left");
         this.west = root.getChild("west");
         this.throttle = north_right.getChild("bone203").getChild("bone213").getChild("main_lever_control2");
-        this.handbrake = JsonToAnimationDefinition.findPart(this, "lever_control8");
+        this.handbrake = Frame.findPart(this, "lever_control8");
     }
 
 
@@ -97,15 +92,18 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
     }
 
     @Override
-    public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
+    public void renderConsole(GlobalConsoleBlockEntity globalConsoleBlock, float partialTick, Level level, PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int color) {
         this.modelRoot.getAllParts().forEach(ModelPart::resetPose);
         TardisClientData reactions = TardisClientData.getInstance(level.dimension());
 
+        int playerTicks = Minecraft.getInstance().player.tickCount;
+        float tickCount = playerTicks + partialTick;
+
         if (globalConsoleBlock != null && globalConsoleBlock.getBlockState().getValue(GlobalConsoleBlock.POWERED)) {
             if (!reactions.isFlying() && TRConfig.CLIENT.PLAY_CONSOLE_IDLE_ANIMATIONS.get() && globalConsoleBlock != null) {
-                this.animate(globalConsoleBlock.liveliness, IDLE, Minecraft.getInstance().player.tickCount);
+                this.animate(globalConsoleBlock.liveliness, IDLE, tickCount);
             } else {
-                this.animate(reactions.ROTOR_ANIMATION, FLIGHT, Minecraft.getInstance().player.tickCount);
+                this.animate(reactions.ROTOR_ANIMATION, FLIGHT, tickCount);
             }
         }
 
@@ -122,8 +120,4 @@ public class CopperConsoleModel extends HierarchicalModel implements ConsoleUnit
         return COPPER_TEXTURE;
     }
 
-    @Override
-    public ResourceLocation getConsoleTheme() {
-        return ConsoleTheme.COPPER.getId();
-    }
 }

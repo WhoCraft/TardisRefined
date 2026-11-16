@@ -39,7 +39,6 @@ public class UpgradesScreen extends Screen {
     public static final int WINDOW_INSIDE_HEIGHT = 169 - 46;
     private static final int WINDOW_INSIDE_X = 10;
     private static final int WINDOW_INSIDE_Y = 18;
-    private static final Component TITLE = Component.translatable(ModMessages.UI_UPGRADES);
     private static int tabPage;
     private static int maxPages;
     private final List<UpgradeTab> tabs = new ArrayList<>();
@@ -79,7 +78,6 @@ public class UpgradesScreen extends Screen {
 
         UpgradeTab upgradeTab = UpgradeTab.create(this.minecraft, this, 0, upgradeHandler);
         this.tabs.add(upgradeTab);
-
 
         if (this.tabs.size() > UpgradeTabType.MAX_TABS) {
             int guiLeft = (this.width - WINDOW_WIDTH) / 2;
@@ -148,8 +146,8 @@ public class UpgradesScreen extends Screen {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         int i = (this.width - WINDOW_WIDTH) / 2;
         int j = (this.height - WINDOW_HEIGHT) / 2;
-        this.renderTransparentBackground(guiGraphics);
-        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+        guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
+//        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         this.renderWindow(guiGraphics, i, j);
         this.renderInside(guiGraphics, mouseX, mouseY, i, j);
 

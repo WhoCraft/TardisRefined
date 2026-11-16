@@ -11,9 +11,9 @@ import net.minecraft.server.level.ServerLevel;
 import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.client.TardisClientData;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
-import whocraft.tardis_refined.common.hum.HumEntry;
-import whocraft.tardis_refined.common.hum.TardisHums;
-import whocraft.tardis_refined.common.network.NetworkManager;
+import whocraft.tardis_refined.common.network.*;
+import whocraft.tardis_refined.common.soundscape.hum.HumEntry;
+import whocraft.tardis_refined.common.soundscape.hum.TardisHums;
 import whocraft.tardis_refined.common.tardis.manager.TardisInteriorManager;
 
 import java.util.Optional;

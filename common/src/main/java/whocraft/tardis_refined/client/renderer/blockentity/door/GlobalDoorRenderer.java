@@ -4,7 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import whocraft.tardis_refined.client.renderer.vortex.RenderTargetHelper;
+import whocraft.tardis_refined.common.block.door.GlobalDoorBlock;
+import whocraft.tardis_refined.common.block.door.InternalDoorBlock;
 import whocraft.tardis_refined.common.blockentity.door.GlobalDoorBlockEntity;
 
 public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEntity>, BlockEntityRendererProvider<GlobalDoorBlockEntity> {
@@ -14,8 +18,13 @@ public class GlobalDoorRenderer implements BlockEntityRenderer<GlobalDoorBlockEn
 
 
     @Override
-    public void render(GlobalDoorBlockEntity blockEntity, float partialTick, PoseStack stack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        RenderTargetHelper.renderVortex(blockEntity, partialTick, stack, bufferSource, packedLight, packedOverlay);
+    public void render(GlobalDoorBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+
+        poseStack.pushPose();
+        BlockState blockstate = blockEntity.getBlockState();
+
+        RenderTargetHelper.renderVortex(blockEntity, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
+        poseStack.popPose();
     }
 
 

@@ -11,15 +11,15 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import whocraft.tardis_refined.client.TardisClientData;
+import whocraft.tardis_refined.client.renderer.RenderHelper;
 import whocraft.tardis_refined.client.renderer.vortex.VortexRenderer;
-import whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen;
+import whocraft.tardis_refined.client.screen.screens.ShellSelectionScreen;
 import whocraft.tardis_refined.common.VortexRegistry;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
-
-import java.util.Objects;
+import whocraft.tardis_refined.common.util.Platform;
 
 import static whocraft.tardis_refined.client.renderer.vortex.ShellRenderer.renderShell;
-import static whocraft.tardis_refined.client.screen.selections.ShellSelectionScreen.globalShellBlockEntity;
+import static whocraft.tardis_refined.client.screen.main.MonitorOS.MonitorOSExtension.GLOBALSHELL_BLOCKENTITY;
 
 public class VortexOverlay {
 
@@ -36,7 +36,7 @@ public class VortexOverlay {
     private static long LAST_TIME = System.currentTimeMillis();
 
     public static void update(GuiGraphics gg) {
-        if (globalShellBlockEntity == null) {
+        if (GLOBALSHELL_BLOCKENTITY == null) {
             ShellSelectionScreen.generateDummyGlobalShell();
             return;
         }
@@ -125,6 +125,7 @@ public class VortexOverlay {
                 DEMAT -= (System.currentTimeMillis() - LAST_TIME) / 12000.0f;
             }
 
+
             if (!tardisPlayerInfo.isViewingTardis()) return;
             if (!tardisPlayerInfo.isRenderVortex()) return;
 
@@ -161,12 +162,13 @@ public class VortexOverlay {
 
             Matrix4f perspective = new Matrix4f();
             perspective.perspective((float) Math.toRadians(mc.options.fov().get()), width / height, 1, 9999, false, perspective);
-            perspective.translate(0, 0, 11000f - (float) camdist * mulinv - 5 * mul);
+            perspective.translate(0, 0, RenderHelper.currentProjectionZOffset - (float) camdist * mulinv - 5 * mul);
             RenderSystem.setProjectionMatrix(perspective, VertexSorting.DISTANCE_TO_ORIGIN);
 
             pose.pushPose();
             pose.mulPose(Axis.XP.rotationDegrees(xRot));
             pose.mulPose(Axis.YP.rotationDegrees(YROT * mulinv));
+
             //Vortex
             pose.pushPose();
             pose.scale(100, 100, 100);
@@ -178,9 +180,12 @@ public class VortexOverlay {
             pose.translate(4 * tardisX * mul, 4 * tardisY * mul, 0);
             pose.mulPose(Axis.ZP.rotationDegrees((float) (mul * -450 * velX)));
             pose.mulPose(Axis.ZP.rotationDegrees(mul * VORTEX.lightning_strike * 90 * Mth.sin(VORTEX.lightning_strike)));
+            if (Platform.isForge()) {
+                pose.scale(0.4f, 0.4f, 0.4f);
+            }
 
             pose.pushPose();
-            pose.scale(0.95f, 0.95f, 0.95f);
+            pose.translate(0.5,0,0);
             renderShell(gg, IMMERSION, 1 - demat_transparency, tardisClientData.getThrottleStage());
             pose.popPose();
 

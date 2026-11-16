@@ -14,6 +14,7 @@ import whocraft.tardis_refined.TardisRefined;
 import whocraft.tardis_refined.common.capability.player.TardisPlayerInfo;
 import whocraft.tardis_refined.common.capability.tardis.TardisLevelOperator;
 import whocraft.tardis_refined.common.network.*;
+import whocraft.tardis_refined.common.util.DimensionUtil;
 import whocraft.tardis_refined.common.util.Platform;
 
 public record C2SExitTardisView() implements CustomPacketPayload, NetworkManager.Handler<C2SExitTardisView> {
@@ -39,10 +40,10 @@ public record C2SExitTardisView() implements CustomPacketPayload, NetworkManager
             if (tardisInfo.isViewingTardis()) {
                 ResourceKey<Level> key = ResourceKey.create(Registries.DIMENSION,
                         ResourceLocation.fromNamespaceAndPath(TardisRefined.MODID, tardisInfo.getViewedTardis().toString()));
-                ServerLevel tardisLevel = Platform.getServer().getLevel(key);
+                ServerLevel tardisLevel = DimensionUtil.getLevel(key);
                 if (tardisLevel != null) {
                     TardisLevelOperator.get(tardisLevel).ifPresent(tardisLevelOperator -> {
-                        tardisInfo.endPlayerForInspection(player);
+                        tardisInfo.endShellView(player);
                     });
                 }
             }

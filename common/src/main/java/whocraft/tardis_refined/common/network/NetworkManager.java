@@ -8,12 +8,14 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.Nullable;
+import whocraft.tardis_refined.common.util.PlatformWarning;
 
 public abstract class NetworkManager {
 
@@ -24,11 +26,10 @@ public abstract class NetworkManager {
     }
 
     @ExpectPlatform
-    private static NetworkManager make() {
-        throw new AssertionError();
+    public static NetworkManager make() {
+        throw new RuntimeException(PlatformWarning.addWarning(NetworkManager.class));
     }
 
-    @Environment(EnvType.CLIENT)
     public abstract <T extends CustomPacketPayload> void registerS2C(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver);
 
     public abstract <T extends CustomPacketPayload> void registerC2S(CustomPacketPayload.Type<T> type, StreamCodec<? super RegistryFriendlyByteBuf, T> codec, NetworkManager.Handler<T> receiver);

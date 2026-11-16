@@ -24,7 +24,7 @@ public class TRComponents implements WorldComponentInitializer {
     public void registerWorldComponentFactories(WorldComponentFactoryRegistry registry) {
         registry.register(TARDIS_DATA, level -> {
 
-            if (level instanceof ServerLevel serverLevel && level.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+            if (level instanceof ServerLevel serverLevel && TRDimensionTypes.isTARDISDimension(level)) {
                 return new TardisLevelOperatorImpl(serverLevel);
             }
             return new TardisLevelOperatorDummy(level);

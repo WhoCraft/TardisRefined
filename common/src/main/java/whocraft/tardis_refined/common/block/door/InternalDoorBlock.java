@@ -31,6 +31,8 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty OPEN = BooleanProperty.create("open");
+    public static final BooleanProperty OFFSET = BooleanProperty.create("offset");
+
     /**
      * This is this door instance's understanding of if it is locked or not.
      * <br> This is needed to account for when multiple internal doors are in a Tardis, and the player is locking a different door
@@ -42,7 +44,7 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     public InternalDoorBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false));
+        this.registerDefaultState(this.stateDefinition.any().setValue(OFFSET, false).setValue(FACING, Direction.NORTH).setValue(OPEN, false).setValue(LOCKED, false));
     }
 
     @Override
@@ -61,8 +63,23 @@ public class InternalDoorBlock extends BaseEntityBlock {
 
     @Override
     public VoxelShape getShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
+        if (blockState.getValue(OFFSET)) {
+            Direction facing = blockState.getValue(FACING);
+            double xOffset = 0.0;
+            double zOffset = 0.0;
+
+            switch (facing) {
+                case NORTH -> xOffset = -0.5;
+                case SOUTH -> xOffset = 0.5;
+                case EAST -> zOffset = -0.5;
+                case WEST -> zOffset = 0.5;
+            }
+
+            return COLLISION.move(xOffset, 0, zOffset);
+        }
         return COLLISION;
     }
+
 
     @Override
     public VoxelShape getCollisionShape(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos, CollisionContext collisionContext) {
@@ -86,13 +103,13 @@ public class InternalDoorBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
-        builder.add(OPEN, FACING, LOCKED);
+        builder.add(OPEN, FACING, LOCKED, OFFSET);
     }
 
     @Override
     public BlockState getStateForPlacement(@NotNull BlockPlaceContext blockPlaceContext) {
         BlockState state = super.getStateForPlacement(blockPlaceContext);
-        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false);
+        return state.setValue(FACING, blockPlaceContext.getHorizontalDirection()).setValue(OPEN, false).setValue(LOCKED, false).setValue(OFFSET, blockPlaceContext.getPlayer().isCrouching());
     }
 
     @Override
@@ -108,8 +125,10 @@ public class InternalDoorBlock extends BaseEntityBlock {
             if (serverLevel.getBlockEntity(blockPos) instanceof TardisInternalDoor door) {
 
                 TardisLevelOperator.get(serverLevel).ifPresent(tardisLevelOperator -> {
-                    if(!tardisLevelOperator.getPilotingManager().isInFlight()) {
-                        AABB teleportAABB = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity)).bounds().move(blockPos);
+                    if (!tardisLevelOperator.getPilotingManager().isInFlight()) {
+                        VoxelShape teleportShape = this.getCollisionShape(blockState, level, blockPos, CollisionContext.of(entity));
+                        if (teleportShape.isEmpty()) return;
+                        AABB teleportAABB = teleportShape.bounds().move(blockPos);
                         if (TRTeleporter.teleportIfCollided(serverLevel, blockPos, entity, teleportAABB)) {
                             door.onAttemptEnter(blockState, serverLevel, blockPos, entity);
                         }

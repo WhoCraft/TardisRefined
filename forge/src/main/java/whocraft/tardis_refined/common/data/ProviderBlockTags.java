@@ -4,17 +4,23 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.*;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 import whocraft.tardis_refined.TardisRefined;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorCraftingIngredient;
+import whocraft.tardis_refined.common.crafting.astral_manipulator.ManipulatorRecipes;
 import whocraft.tardis_refined.registry.RegistryHolder;
 import whocraft.tardis_refined.registry.TRBlockRegistry;
 import whocraft.tardis_refined.registry.TRTagKeys;
 
+
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -27,26 +33,28 @@ public class ProviderBlockTags extends BlockTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
 
-        for (RegistryHolder<Block, ? extends Block> blocksEntry : TRBlockRegistry.BLOCKS.getEntries()) {
-            Block block = blocksEntry.get();
+        for (var blocksEntry : TRBlockRegistry.BLOCKS.getEntries()) {
 
-            if (BuiltInRegistries.BLOCK.getKey(block).getNamespace().equals(TardisRefined.MODID)) {
+            if (blocksEntry.getId().getNamespace().equals(TardisRefined.MODID)) {
                 /*Fences*/
-                if (block instanceof FenceBlock fenceBlock) {
+                if (blocksEntry.get() instanceof FenceBlock fenceBlock) {
                     tag(BlockTags.FENCES).add(fenceBlock);
                 }
 
                 /*Leaves*/
-                if (block instanceof LeavesBlock leavesBlock) {
+                if (blocksEntry.get() instanceof LeavesBlock leavesBlock) {
                     tag(BlockTags.LEAVES).add(leavesBlock);
                 }
 
                 /*Slabs*/
-                if (block instanceof SlabBlock slabBlock) {
+                if (blocksEntry.get() instanceof SlabBlock slabBlock) {
                     tag(BlockTags.SLABS).add(slabBlock);
                 }
             }
         }
+
+        tag(Tags.Blocks.ORES).add(TRBlockRegistry.ZEITON_ORE.get()).add(TRBlockRegistry.ZEITON_ORE_DEEPSLATE.get()).add(TRBlockRegistry.ZEITON_BLOCK.get());
+
 
         tag(BlockTags.DRAGON_IMMUNE).add(TRBlockRegistry.ROOT_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
         tag(BlockTags.WITHER_IMMUNE).add(TRBlockRegistry.ROOT_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_SHELL_BLOCK.get()).add(TRBlockRegistry.GLOBAL_CONSOLE_BLOCK.get());
@@ -80,8 +88,7 @@ public class ProviderBlockTags extends BlockTagsProvider {
                 .add(TRBlockRegistry.ASTRAL_MANIPULATOR_BLOCK.get());
 
 
-        //TODO!!!!
-      /*  // ===== DIAGONAL WALLS =====
+        // ===== DIAGONAL WALLS =====
         // This is cursed, but we gotta do what we gotta do
 
         // Blocks
@@ -96,7 +103,7 @@ public class ProviderBlockTags extends BlockTagsProvider {
         Set<Block> glassBlocks = new HashSet<>();
         ManipulatorRecipes.MANIPULATOR_CRAFTING_RECIPES.forEach((resourceLocation, manipulatorCraftingRecipe) -> {
             for (ManipulatorCraftingIngredient ingredient : manipulatorCraftingRecipe.ingredients()) {
-                if(ingredient.inputBlockState().getBlock() instanceof TransparentBlock) {
+                if(ingredient.inputBlockState().getBlock() instanceof TransparentBlock || ingredient.inputBlockState().getBlock() instanceof StainedGlassPaneBlock) {
                     glassBlocks.add(ingredient.inputBlockState().getBlock());
                 }
             }
@@ -112,6 +119,5 @@ public class ProviderBlockTags extends BlockTagsProvider {
             }
         });
         tag(TRTagKeys.DIAGONAL_COMPAT_FENCES).add(fenceBlocks.toArray(new Block[0]));
-*/
     }
 }

@@ -31,32 +31,7 @@ public class TRItemData {
     public static final RegistryHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> SAVED_DIM = ITEMS.register("saved_dim", () -> DataComponentType.<ResourceLocation>builder().persistent(ResourceLocation.CODEC).build());
 
     // Key Item
-    public static final RegistryHolder<DataComponentType<?>, DataComponentType<List<ResourceKey<Level>>>> KEYCHAIN = ITEMS.register("keychain", () -> DataComponentType.<List<ResourceKey<Level>>>builder().persistent(listOfResourceKeys()).build());
-
-
-    public static <T> Codec<List<ResourceKey<T>>> listOfResourceKeys() {
-        return Codec.list(ResourceLocation.CODEC)
-                .comapFlatMap(
-                        resourceLocations -> {
-                            List<ResourceKey<T>> resourceKeys = new ArrayList<>();
-                            for (ResourceLocation location : resourceLocations) {
-                                try {
-                                    resourceKeys.add(ResourceKey.create(ResourceKey.createRegistryKey(location), location));
-                                } catch (Exception e) {
-                                    return DataResult.error(() -> "Failed to convert ResourceLocation to ResourceKey: " + location);
-                                }
-                            }
-                            return DataResult.success(resourceKeys);
-                        },
-                        resourceKeys -> {
-                            List<ResourceLocation> resourceLocations = new ArrayList<>();
-                            for (ResourceKey<T> resourceKey : resourceKeys) {
-                                resourceLocations.add(resourceKey.location());
-                            }
-                            return resourceLocations;
-                        }
-                );
-    }
+    public static final RegistryHolder<DataComponentType<?>, DataComponentType<List<ResourceKey<Level>>>> KEYCHAIN = ITEMS.register("keychain", () -> DataComponentType.<List<ResourceKey<Level>>>builder().persistent(Level.RESOURCE_KEY_CODEC.listOf()).build());
 
 
 }

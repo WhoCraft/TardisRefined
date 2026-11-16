@@ -23,9 +23,9 @@ public class CodecJsonReloadListenerImpl {
 
 
         @Override
-        public CodecJsonReloadListener<T> setSyncPacket(NetworkManager networkManager, CustomPacketPayload packetFactory) {
+        public CodecJsonReloadListener<T> setSyncPacket(NetworkManager networkManager, final Function<Map<ResourceLocation, T>, CustomPacketPayload> packetFactory) {
             ServerLifecycleEvents.SYNC_DATA_PACK_CONTENTS.register((player, joined) -> {
-                this.handleSyncPacket(player, networkManager, resourceLocationTMap -> packetFactory);
+                this.handleSyncPacket(player, networkManager, packetFactory);
             });
             return this;
         }

@@ -12,7 +12,7 @@ import java.util.List;
 public class KeyItemData {
 
     public static List<ResourceKey<Level>> getKeychain(ItemStack stack) {
-        return stack.get(TRItemData.KEYCHAIN.get());
+        return stack.getOrDefault(TRItemData.KEYCHAIN.get(), List.of());
     }
 
     public static void setKeychain(ItemStack stack, List<ResourceKey<Level>> dataType) {

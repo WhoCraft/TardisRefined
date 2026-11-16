@@ -1,7 +1,6 @@
 package whocraft.tardis_refined.common.dimension.fabric;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.MappedRegistry;
@@ -28,6 +27,7 @@ import whocraft.tardis_refined.common.dimension.DimensionHandler;
 import whocraft.tardis_refined.common.network.NetworkManager;
 import whocraft.tardis_refined.common.network.messages.sync.S2CSyncLevelList;
 import whocraft.tardis_refined.compat.ModCompatChecker;
+import whocraft.tardis_refined.compat.portals.DimLibCompat;
 import whocraft.tardis_refined.compat.portals.ImmersivePortals;
 import whocraft.tardis_refined.mixin.MappedRegistryAccessor;
 
@@ -42,8 +42,8 @@ public class DimensionHandlerImpl {
 
     public static ServerLevel createDimension(Level level, ResourceKey<Level> id) {
 
-        if (ModCompatChecker.immersivePortals()) {
-            return ImmersivePortals.createDimension(level, id);
+        if (ModCompatChecker.dimLib()) {
+            return DimLibCompat.createDimension(level, id);
         }
 
         BiFunction<MinecraftServer, ResourceKey<LevelStem>, LevelStem> dimensionFactory = DimensionHandler::formLevelStem;
@@ -107,6 +107,11 @@ public class DimensionHandlerImpl {
         ServerChunkCache serverchunkcache = newLevel.getChunkSource();
         serverchunkcache.getLightEngine().checkBlock(blockPos); //Runs lighting update
         serverchunkcache.addRegionTicket(TicketType.START, chunkPos, 11, Unit.INSTANCE);
+        server.tell(server.wrapRunnable(chunkListener::stop));
+
+        if (ModCompatChecker.immersivePortals()) {
+            ImmersivePortals.onDimensionAdded(server);
+        }
 
         return newLevel;
     }

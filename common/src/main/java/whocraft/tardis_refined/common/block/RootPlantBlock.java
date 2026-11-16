@@ -156,7 +156,7 @@ public class RootPlantBlock extends BaseEntityBlock implements SimpleWaterlogged
     @Override
     public void onPlace(BlockState blockState, Level level, BlockPos blockPos, BlockState blockState2, boolean bl) {
 
-        if (level instanceof ServerLevel serverLevel && level.dimensionTypeRegistration() == TRDimensionTypes.TARDIS) {
+        if (level instanceof ServerLevel serverLevel && TRDimensionTypes.isTARDISDimension(level)) {
             TardisLevelOperator.get(serverLevel).ifPresent(TardisHelper::playCloisterBell);
             serverLevel.destroyBlock(blockPos, true); //Use Level#destroyBlock with boolean flag to TRUE so that it both destroys the block and drops its resources based off its loot table, which is the source of truth.
             return;

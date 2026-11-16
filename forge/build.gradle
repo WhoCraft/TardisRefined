@@ -1,5 +1,7 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.gradleup.shadow" version '9.4.2'
+    id "me.shedaniel.unified-publishing" version "0.1.+"
+
 }
 architectury {
     platformSetupLoomIde()
@@ -14,8 +16,50 @@ sourceSets {
     }
 }
 
-remapJar {
-    atAccessWideners.add('tardis_refined.accesswidener')
+if (false) {
+    unifiedPublishing {
+        project {
+            displayName = "[NeoForge] Tardis Refined - $project.version"
+            releaseType = "release"
+            changelog = new File("${rootProject.projectDir}/changelog.md").text
+            gameVersions = ["$rootProject.minecraft_version"]
+            mainPublication tasks.remapJar
+            gameLoaders = ["neoforge"]
+            relations {
+                optional {
+                    curseforge = "immersive-portals-mod"
+                    modrinth = "immersiveportals"
+                }
+                optional {
+                    curseforge = "curios"
+                    modrinth = "curios"
+                }
+            }
+
+            var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
+            if (CURSE_API_KEY != "") {
+                curseforge {
+                    token = CURSE_API_KEY
+                    id = "782697"
+                    gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
+                }
+            }
+
+            var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
+            if (MODRINTH_TOKEN != "") {
+                modrinth {
+                    token = MODRINTH_TOKEN
+                    id = "nqVt6aES"
+                    version = "neoforge-$project.version"
+                }
+            }
+        }
+    }
+
+}
+
+tasks.remapJar {
+    atAccessWideners.add("tardis_refined.accesswidener")
 }
 
 loom {
@@ -66,54 +110,21 @@ dependencies {
     //   modCompileOnly "curse.maven:worldedit-225608:${world_edit_version}"
 //    modCompileOnly "curse.maven:structure-expansion-398430:${structure_expansion_version}"
 
-//    modCompileOnly "curse.maven:configured-457570:${configured_version}"
-    //   modCompileOnly "curse.maven:jei-238222:${jei_version}"
 
     compileOnly "curse.maven:immersive-portals-355440:${immersive_portals_forge_version}"
-    modImplementation "curse.maven:curios-309927:4921744"
+    modImplementation "maven.modrinth:curios:9.5.1+1.21.1"
     // With ForgeGradle 5, use the runtimeOnly configuration
     //runtimeOnly("me.djtheredstoner:DevAuth-${dev_auth_module_forge}:${dev_auth_forge_version}")
+
+    include(modApi("dev.ryanhcode.sable-companion:sable-companion-common-${project.minecraft_version}:${project.sable_companion_version}"))
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive false }
 
 }
 
-if (System.getenv("curseforge") != null && System.getenv("modrinth") != null) {
-    unifiedPublishing {
-        project {
-            displayName = "[NeoForge] Tardis Refined - $project.version"
-            releaseType = "release"
-            changelog = new File("${rootProject.projectDir}/changelog.md").text
-            gameVersions = ["$rootProject.minecraft_version"]
-            mainPublication tasks.remapJar
-            gameLoaders = ["neoforge"]
-            relations {
 
-            }
-
-            var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
-            if (CURSE_API_KEY != "") {
-                curseforge {
-                    token = CURSE_API_KEY
-                    id = "782697"
-                    gameVersions.addAll "Java 21", "$rootProject.minecraft_version"
-                }
-            }
-
-            var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
-            if (MODRINTH_TOKEN != "") {
-                modrinth {
-                    token = MODRINTH_TOKEN
-                    id = "nqVt6aES"
-                    version = "neoforge-$project.version"
-                }
-            }
-        }
-    }
-}
-
-def resourceTargets = ["META-INF/mods.toml", "pack.mcmeta"]
+def resourceTargets = ["META-INF/neoforge.mods.toml", "pack.mcmeta"]
 def intoTargets = ["$rootDir/out/production/resources/", "$rootDir/out/production/${project.name}.main/", "$rootDir/bin/main/"]
 def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_version,
                          mod_authors: mod_authors, credits:credits, mod_description: mod_description,
@@ -124,7 +135,7 @@ def replaceProperties = [mod_id: mod_id, mod_name: mod_name, mod_version: mod_ve
                          neoforge_version_range: neoforge_version_range, neoforge_minecraft_version_range: neoforge_minecraft_version_range,
                          neoforge_loader_version_range: neoforge_loader_version_range,
                          pack_format: pack_format,
-                         neoforge_resource_pack_format: forge_resource_pack_format,
+                         neoforge_resource_pack_format: neoforge_resource_pack_format,
                          neoforge_data_pack_format: neoforge_data_pack_format,
                          // forge_immersive_portals_version_range: forge_immersive_portals_version_range
                          // ,display_test_type: display_test_type
@@ -164,6 +175,7 @@ remapJar {
 }
 
 sourcesJar {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
     def commonSources = project(":common").sourcesJar
     dependsOn commonSources
     from commonSources.archiveFile.map { zipTree(it) }
@@ -192,7 +204,7 @@ publishing {
 
     repositories {
         maven {
-            url = "https://maven.craig.software/snapshots/"
+            url = "https://mvn.jeryn.dev/snapshots"
             credentials {
                 username = project.findProperty("MAVEN_REPO_USERNAME") ?: System.getenv("MAVEN_REPO_USERNAME") ?: ""
                 password = project.findProperty("MAVEN_REPO_PASSWORD") ?: System.getenv("MAVEN_REPO_PASSWORD") ?: ""
