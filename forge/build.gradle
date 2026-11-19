@@ -37,6 +37,7 @@ loom {
 
         runs {
             data {
+                property("tardis_refined.force_stop_datagen=true")
                 programArgs "--existing", project(":common").file("src/main/resources/").absolutePath
             }
         }
@@ -94,44 +95,44 @@ dependencies {
 }
 
 if (false) {
-	unifiedPublishing {
-		project {
-			displayName = "[Forge] Tardis Refined - $project.version"
-			releaseType = "release"
-			changelog = new File("${rootProject.projectDir}/changelog.md").text
-			gameVersions = ["$rootProject.minecraft_version"]
-			mainPublication tasks.remapJar
-			gameLoaders = ["neoforge", "forge"]
-			relations {
-				optional {
-					curseforge = "immersive-portals-mod"
-					modrinth = "immersiveportals"
-				}
-				optional {
-					curseforge = "curios"
-					modrinth = "curios"
-				}
-			}
+    unifiedPublishing {
+        project {
+            displayName = "[Forge] Tardis Refined - $project.version"
+            releaseType = "release"
+            changelog = new File("${rootProject.projectDir}/changelog.md").text
+            gameVersions = ["$rootProject.minecraft_version"]
+            mainPublication tasks.remapJar
+            gameLoaders = ["neoforge", "forge"]
+            relations {
+                optional {
+                    curseforge = "immersive-portals-mod"
+                    modrinth = "immersiveportals"
+                }
+                optional {
+                    curseforge = "curios"
+                    modrinth = "curios"
+                }
+            }
 
-			var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
-			if (CURSE_API_KEY != "") {
-				curseforge {
-					token = CURSE_API_KEY
-					id = "782697"
-					gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
-				}
-			}
+            var CURSE_API_KEY = project.findProperty("curseforge") ?: System.getenv("curseforge") ?: ""
+            if (CURSE_API_KEY != "") {
+                curseforge {
+                    token = CURSE_API_KEY
+                    id = "782697"
+                    gameVersions.addAll "Java 17", "$rootProject.minecraft_version"
+                }
+            }
 
-			var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
-			if (MODRINTH_TOKEN != "") {
-				modrinth {
-					token = MODRINTH_TOKEN
-					id = "nqVt6aES"
-					version = "neoforge-$project.version"
-				}
-			}
-		}
-	}
+            var MODRINTH_TOKEN = project.findProperty("modrinth") ?: System.getenv("modrinth") ?: ""
+            if (MODRINTH_TOKEN != "") {
+                modrinth {
+                    token = MODRINTH_TOKEN
+                    id = "nqVt6aES"
+                    version = "neoforge-$project.version"
+                }
+            }
+        }
+    }
 
 }
 
