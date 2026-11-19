@@ -1,4 +1,4 @@
-
+import org.ajoberstar.grgit.Grgit
 
 buildscript {
     repositories {
@@ -15,6 +15,7 @@ plugins {
     id "architectury-plugin" version "3.4-SNAPSHOT"
     id "dev.architectury.loom" version "1.13+" apply false
     id "me.shedaniel.unified-publishing" version "0.1.+"
+    id "org.ajoberstar.grgit" version "5.0.0" apply false
     id "com.github.breadmoirai.github-release" version "2.4.1"
 }
 
@@ -74,7 +75,24 @@ githubRelease {
     client
 }
 
+def isRelease() {
+    return rootProject.hasProperty("build.release")
+}
 
+def getVersionMetadata() {
+    if (project.name == "common") return ""
+    def grgit = Grgit.open(Map.of("dir", file("$projectDir")))
+    if (isRelease()) {
+        return ""
+    }
+    def commitHash = System.getenv("GITHUB_SHA") ?: grgit.head().abbreviatedId
+    def commitMeta = "+build." + commitHash.subSequence(0, 6)
+    if (System.getenv("GITHUB_RUN_NUMBER") == null) {
+        return commitMeta + "-local"
+    } else {
+        return commitMeta + "-nightly"
+    }
+}
 
 allprojects {
     apply plugin: "java"
@@ -82,7 +100,7 @@ allprojects {
     apply plugin: "maven-publish"
 
     archivesBaseName = "${project.name}-${rootProject.jar_name}"
-    version = "mc${rootProject.minecraft_version}-v${rootProject.mod_version}"
+    version = "mc${rootProject.minecraft_version}-v${rootProject.mod_version}" + getVersionMetadata()
     group = rootProject.maven_group
 
 

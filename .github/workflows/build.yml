@@ -42,7 +42,7 @@ jobs:
       - name: make-upload-dir
         run: mkdir upload
       - name: copy-binaries
-        run: find . -regextype posix-extended -iregex "\./(fabric|forge)/build/libs/(fabric|forge)-tardis_refined-mc[0-9]+(\.[0-9]+)+-v[0-9]+(\.[0-9]+)*\.jar" -exec cp {} ./upload \;
+        run: find . -regextype posix-extended -iregex "\./(fabric|forge)/build/libs/(fabric|forge)-tardis_refined-mc[0-9]+(\.[0-9]+)+-v[0-9]+(\.[0-9]+)*(\+build\.......-nightly)?.jar" -exec cp {} ./upload \;
       - name: capture build artifacts
         uses: actions/upload-artifact@v4
         with:
